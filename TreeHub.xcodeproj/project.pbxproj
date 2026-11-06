@@ -12,6 +12,7 @@
 		6916A3F5493F7690FBCB0E0B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB092BC5DB54656669557483 /* ActivityDetailView.swift */; };
 		7D19B0D84A5AC92016A96F8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		832E48E3D308E5F9D7DE93C8 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0739A25B4A2A5FBDBDA1DBFE /* TrackView.swift */; };
+		8952EA57C821B54AECC581B2 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
 		91315CD40B48D6AE38BA87D4 /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
 		98E1AA3BBF9ECA3952E4ADFA /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87C1EC18980611A2BDB7B51D /* HealthService.swift */; };
 		A0770BE053485A6C5B326261 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
@@ -48,6 +49,7 @@
 		BB092BC5DB54656669557483 /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
 		DFBB9C6BE4DBDB8F452B170A /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
 		FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		FB1240C67112B2502AB76F1D /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		FD533F40BAA6F6D9454E5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -138,6 +140,7 @@
 		FFBE1C6110AEEAC1EE7F36C8 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				FB1240C67112B2502AB76F1D /* DemoData.swift */,
 				0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */,
 			);
 			path = App;
@@ -218,6 +221,7 @@
 				0BDCC1C6BF6F680AD166276E /* CelebrationView.swift in Sources */,
 				A0770BE053485A6C5B326261 /* Collectibles.swift in Sources */,
 				F547396AB055A881F3BB44E4 /* CollectionView.swift in Sources */,
+				8952EA57C821B54AECC581B2 /* DemoData.swift in Sources */,
 				652A72A6BDE9FDC4C4CF62CD /* Format.swift in Sources */,
 				B61ADD1888A30D950E75B507 /* GameEngine.swift in Sources */,
 				98E1AA3BBF9ECA3952E4ADFA /* HealthService.swift in Sources */,
