@@ -10,23 +10,29 @@ Troy's personal hub: a tree-hugging game, a GPS tracker for walks, runs, hikes, 
 - **Apple Health**: reads heart rate, breathing rate, mindful minutes and workouts that Garmin Connect, Whoop and Strava save to Health. You can bring those workouts into the hub with one tap.
 - **Private**: no server. Data lives on your iPhone and syncs to your own iCloud.
 
-## Install on your iPhone (one-time setup)
+## Install on your iPhone, no Mac needed (TestFlight)
 
-1. **Apple Developer Program**: enroll at developer.apple.com/programs ($99/year). Approval can take up to 48 hours.
-2. **Xcode**: install it free from the Mac App Store, open it once and let it finish installing components.
-3. **Get the code**: in Terminal run `git clone https://github.com/troydunn1234-ux/treehub-.git`, or use GitHub Desktop.
-4. Open **`TreeHub.xcodeproj`**.
-5. In Xcode, click **TreeHub** (top of the left sidebar), then the **TreeHub** target, then **Signing & Capabilities**:
-   - Turn on **Automatically manage signing**.
-   - Set **Team** to your Apple Developer account.
-   - If Xcode says the bundle ID is taken, change it to something like `com.troydunn1234.treehub`. Then under iCloud, change the container to `iCloud.com.troydunn1234.treehub`.
-6. **iPhone**: plug it into the Mac and tap *Trust*. Then turn on Settings → Privacy & Security → **Developer Mode** and restart when asked.
-7. In Xcode's top bar, pick your iPhone as the device and press **▶ Run**.
-8. On the first launch, allow **Location (While Using)**, **Motion** and **Health**.
+GitHub's Macs build and sign the app, then send it to TestFlight on your iPhone.
 
-**Garmin to Health:** in Garmin Connect, go to More → Settings → Connected Apps → Apple Health and turn everything on. Whoop and Strava each have the same switch in their settings.
+1. **Enroll** in the Apple Developer Program ($99/yr) and wait for approval.
+2. **Register the App ID**: on developer.apple.com, open Certificates, IDs & Profiles → Identifiers → **+** → App IDs → App.
+   - Bundle ID (Explicit): `com.troydunn.treehub`
+   - Capabilities: turn on **HealthKit**, **iCloud** (with CloudKit) and **Push Notifications**.
+   - Then go to Identifiers → iCloud Containers → **+** → `iCloud.com.troydunn.treehub`. Open the App ID again → iCloud → Configure → tick that container → Save.
+3. **Create the app record**: on appstoreconnect.apple.com, open Apps → **+** → New App. Choose iOS, name it **TreeHub**, pick the bundle ID above, and use `treehub` as the SKU.
+4. **Create an API key**: in App Store Connect, open Users and Access → Integrations → App Store Connect API → **+**. Give it **Admin** access, download the `.p8` file (you only get one chance) and note the **Key ID** and **Issuer ID**.
+5. **Add the GitHub secrets**: in this repo, open Settings → Secrets and variables → Actions → New repository secret. Add:
+   - `APPLE_TEAM_ID`: from developer.apple.com → Membership
+   - `ASC_KEY_ID`
+   - `ASC_ISSUER_ID`
+   - `ASC_KEY_P8`: open the .p8 file in Notepad and paste everything in it
+6. **Ship**: go to Actions → **Ship to TestFlight** → Run workflow. It takes about 10 minutes, then Apple processes the build for another 5–15 minutes.
+7. **iPhone**: install **TestFlight** from the App Store, sign in with the same Apple ID and install TreeHub.
+8. On the first launch, allow **Location**, **Motion** and **Health**.
 
-The app stays installed for a year. To renew it, plug in and press Run again (the developer account renews yearly).
+**Garmin to Health:** in Garmin Connect, go to More → Settings → Connected Apps → Apple Health and turn everything on. Whoop and Strava each have the same switch.
+
+TestFlight builds last 90 days. Run step 6 again to refresh, or whenever there's an update.
 
 ## For developers
 
