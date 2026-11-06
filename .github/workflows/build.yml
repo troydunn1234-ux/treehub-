@@ -1,0 +1,57 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick newest Xcode
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          echo "Using $XCODE"
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Build for iOS Simulator (no signing)
+        run: |
+          set -o pipefail
+          xcodebuild build \
+            -project TreeHub.xcodeproj \
+            -scheme TreeHub \
+            -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO \
+            | tee build.log | grep -E "error:|warning: .*deprecated|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log
+
+      - name: Show errors
+        if: failure()
+        run: grep -n "error:" build.log | head -80 || true
+
+      - name: Commit generated Xcode project
+        if: success()
+        run: |
+          git config user.name "TreeHub CI"
+          git config user.email "ci@users.noreply.github.com"
+          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements
+          if git diff --cached --quiet; then
+            echo "Project unchanged"
+          else
+            git commit -m "Update generated Xcode project [skip ci]"
+            git push
+          fi
