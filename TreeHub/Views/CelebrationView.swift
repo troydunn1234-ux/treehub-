@@ -145,7 +145,7 @@ struct CelebrationView: View {
         if leveledUp { UINotificationFeedbackGenerator().notificationOccurred(.success) }
         try? await Task.sleep(nanoseconds: 1_600_000_000)
         burst = false
-        if data.leaf == nil { withAnimation { leafFlipped = true } }
+        if data.leaf == nil || DemoData.isOn { withAnimation { leafFlipped = true } }
     }
 }
 

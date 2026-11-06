@@ -8,6 +8,9 @@ struct TreeHubApp: App {
 
     let container: ModelContainer = {
         let schema = Schema([Hug.self, Activity.self])
+        if DemoData.isOn {
+            return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
+        }
         // Syncs to your private iCloud when the app is signed with iCloud; otherwise stays on the phone.
         if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)) {
             return c
@@ -39,8 +42,10 @@ enum AppTab: Hashable { case home, track, trees, collection }
 struct RootView: View {
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.modelContext) private var context
     @State private var tab: AppTab = .home
     @State private var showHugLog = false
+    @State private var demoCelebration: CelebrationData?
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -65,6 +70,34 @@ struct RootView: View {
         }
         .onAppear {
             if tracker.recoveredFromCrash { tab = .track }
+            if DemoData.isOn { setUpDemo() }
+        }
+        .fullScreenCover(item: $demoCelebration) { c in
+            CelebrationView(data: c) { demoCelebration = nil }
+        }
+    }
+
+    private func setUpDemo() {
+        DemoData.seed(context)
+        switch DemoData.argument(after: "-tab") {
+        case "track": tab = .track
+        case "trees": tab = .trees
+        case "collection": tab = .collection
+        default: tab = .home
+        }
+        if ProcessInfo.processInfo.arguments.contains("-hugLog") { showHugLog = true }
+        if ProcessInfo.processInfo.arguments.contains("-autostart") {
+            tab = .track
+            tracker.start(kind: .run)
+        }
+        if ProcessInfo.processInfo.arguments.contains("-celebrate") {
+            var b = XPBreakdown()
+            b.add("Tree hug", 50); b.add("Breathwork 12 min", 60); b.add("Barefoot grounding", 25)
+            b.add("Tree selfie", 10); b.add("3-day streak", 30)
+            let badges = GameEngine.badges(hugs: [], activities: []).filter { ["barefoot", "dawn", "twelve"].contains($0.id) }
+            demoCelebration = CelebrationData(breakdown: b, leaf: LeafType.find("moonlit"), newBadges: badges,
+                                              levelBefore: GameEngine.level(for: 400), levelAfter: GameEngine.level(for: 575),
+                                              treeName: "Grandpa Oak")
         }
     }
 }

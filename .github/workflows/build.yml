@@ -35,13 +35,25 @@ jobs:
             -sdk iphonesimulator \
             -destination 'generic/platform=iOS Simulator' \
             -configuration Debug \
+            -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO \
-            | tee build.log | grep -E "error:|warning: .*deprecated|BUILD (SUCCEEDED|FAILED)" || true
+            | tee build.log | grep -E "error:|warning: |BUILD (SUCCEEDED|FAILED)" || true
           grep -q "BUILD SUCCEEDED" build.log
 
       - name: Show errors
         if: failure()
         run: grep -n "error:" build.log | head -80 || true
+
+      - name: Run in simulator and screenshot
+        run: bash .github/scripts/screenshots.sh
+
+      - name: Upload screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: shots/
+          if-no-files-found: ignore
 
       - name: Commit generated Xcode project
         if: success()
@@ -53,5 +65,6 @@ jobs:
             echo "Project unchanged"
           else
             git commit -m "Update generated Xcode project [skip ci]"
+            git pull --rebase origin main
             git push
           fi
