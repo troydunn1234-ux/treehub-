@@ -110,7 +110,7 @@ struct TabBar: View {
     var body: some View {
         HStack(spacing: 0) {
             item(.home, "house.fill", "Home")
-            item(.track, recording ? "record.circle" : "location.north.line.fill", recording ? "Live" : "Track")
+            item(.track, recording ? "record.circle" : "map.fill", recording ? "Live" : "Track")
             Button(action: onHug) {
                 ZStack {
                     Circle().fill(Theme.leafGradient).frame(width: 64, height: 64)
