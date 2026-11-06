@@ -1,0 +1,107 @@
+name: Ship to TestFlight
+
+# Run by hand from GitHub: Actions → "Ship to TestFlight" → Run workflow.
+# Needs these repository secrets (Settings → Secrets and variables → Actions):
+#   APPLE_TEAM_ID     – 10-character Team ID (developer.apple.com → Membership)
+#   ASC_KEY_ID        – App Store Connect API key ID
+#   ASC_ISSUER_ID     – App Store Connect issuer ID
+#   ASC_KEY_P8        – full text of the downloaded AuthKey_XXXX.p8 file
+on:
+  workflow_dispatch:
+
+jobs:
+  testflight:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check secrets
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          missing=0
+          for v in TEAM KID ISS P8; do
+            if [ -z "${!v}" ]; then echo "Missing secret for $v"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Pick newest Xcode
+        run: |
+          sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+          xcodebuild -version
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          xcodegen generate
+
+      - name: Write API key
+        env:
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+        run: |
+          mkdir -p ~/private_keys
+          printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
+          echo "KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8" >> $GITHUB_ENV
+
+      - name: Archive (signed in the cloud)
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          set -o pipefail
+          xcodebuild archive \
+            -project TreeHub.xcodeproj -scheme TreeHub \
+            -destination 'generic/platform=iOS' \
+            -archivePath build/TreeHub.xcarchive \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$KID" \
+            -authenticationKeyIssuerID "$ISS" \
+            DEVELOPMENT_TEAM="$TEAM" \
+            CODE_SIGN_STYLE=Automatic \
+            CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+            | tee archive.log | grep -E "error:|ARCHIVE (SUCCEEDED|FAILED)" || true
+          grep -q "ARCHIVE SUCCEEDED" archive.log
+
+      - name: Upload to App Store Connect
+        env:
+          TEAM: ${{ secrets.APPLE_TEAM_ID }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          cat > ExportOptions.plist <<PLIST
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0"><dict>
+            <key>method</key><string>app-store-connect</string>
+            <key>destination</key><string>upload</string>
+            <key>signingStyle</key><string>automatic</string>
+            <key>teamID</key><string>${TEAM}</string>
+            <key>manageAppVersionAndBuildNumber</key><false/>
+          </dict></plist>
+          PLIST
+          set -o pipefail
+          xcodebuild -exportArchive \
+            -archivePath build/TreeHub.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath build/export \
+            -allowProvisioningUpdates \
+            -authenticationKeyPath "$KEY_PATH" \
+            -authenticationKeyID "$KID" \
+            -authenticationKeyIssuerID "$ISS" \
+            | tee export.log | grep -E "error:|EXPORT (SUCCEEDED|FAILED)|Upload" || true
+          grep -q "EXPORT SUCCEEDED" export.log
+
+      - name: Show errors
+        if: failure()
+        run: |
+          grep -hn "error:" archive.log export.log 2>/dev/null | head -60 || true
+
+      - name: Remove key
+        if: always()
+        run: rm -rf ~/private_keys
