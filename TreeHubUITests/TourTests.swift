@@ -7,7 +7,7 @@ final class TourTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = true
-        app.launchArguments = ["-demo"]
+        app.launchArguments = ["-demo", "-showIntro"]
         app.launch()
     }
 
@@ -51,8 +51,28 @@ final class TourTests: XCTestCase {
         pause(1)
     }
 
+    private func onboarding() {
+        pause(2.5)   // launch animation
+        for _ in 0..<3 {
+            let c = app.buttons["onboarding-continue"]
+            if c.waitForExistence(timeout: 3) { c.tap() }
+            pause(2)
+        }
+        let d = app.buttons["onboarding-done"]
+        if d.waitForExistence(timeout: 3) { d.tap() }
+        pause(2)
+    }
+
+    /// Leave the app for a moment so the Dynamic Island live activity shows.
+    private func peekAtDynamicIsland() {
+        XCUIDevice.shared.press(.home)
+        pause(5)
+        app.activate()
+        pause(2)
+    }
+
     func testTour() {
-        pause(3)
+        onboarding()
         // Home
         scrollDown(3)
         scrollUp(3)
@@ -96,6 +116,7 @@ final class TourTests: XCTestCase {
         tab("Stroll")
         tap("Start Stroll")
         pause(12)
+        peekAtDynamicIsland()
         tap("Hug a tree here")
         pause(3)
         tap("Barefoot")
@@ -109,7 +130,7 @@ final class TourTests: XCTestCase {
         tap("Save it")
         pause(4)
         scrollDown(1, pauseEach: 2.5)
-        tap("Done")
+        if !tap("Done") { app.swipeUp(velocity: .fast); pause(1); tap("Done") }
         pause(2)
 
         // Back home with everything

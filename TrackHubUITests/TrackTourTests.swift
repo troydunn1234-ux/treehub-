@@ -7,7 +7,7 @@ final class TrackTourTests: XCTestCase {
 
     override func setUp() {
         continueAfterFailure = true
-        app.launchArguments = ["-demo"]
+        app.launchArguments = ["-demo", "-showIntro"]
         app.launch()
     }
 
@@ -43,8 +43,28 @@ final class TrackTourTests: XCTestCase {
         pause(1)
     }
 
+    private func onboarding() {
+        pause(2.5)   // launch animation
+        for _ in 0..<3 {
+            let c = app.buttons["onboarding-continue"]
+            if c.waitForExistence(timeout: 3) { c.tap() }
+            pause(2)
+        }
+        let d = app.buttons["onboarding-done"]
+        if d.waitForExistence(timeout: 3) { d.tap() }
+        pause(2)
+    }
+
+    /// Leave the app for a moment so the Dynamic Island live activity shows.
+    private func peekAtDynamicIsland() {
+        XCUIDevice.shared.press(.home)
+        pause(5)
+        app.activate()
+        pause(2)
+    }
+
     func testTour() {
-        pause(3)
+        onboarding()
         // Track screen
         scrollDown(2)
         app.swipeDown(velocity: .fast); app.swipeDown(velocity: .fast)
@@ -74,11 +94,12 @@ final class TrackTourTests: XCTestCase {
         pause(1)
         tap("Start Run")
         pause(18)
+        peekAtDynamicIsland()
         tap("Finish")
         pause(1.5)
         tap("Save it")
         pause(4)
-        tap("Done")
+        if !tap("Done") { app.swipeUp(velocity: .fast); pause(1); tap("Done") }
         pause(2)
         tab("Stats")
         pause(2)
