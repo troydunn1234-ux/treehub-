@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F8A0555CF17EA2CB9683D5C6"
-               BuildableName = "TreeHub.app"
-               BlueprintName = "TreeHub"
+               BlueprintIdentifier = "8A0EE00DD725A91404FABCE3"
+               BuildableName = "Roamr.app"
+               BlueprintName = "Roamr"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,9 +29,9 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C6D9B407D357A72A8627067D"
-               BuildableName = "TreeHubUITests.xctest"
-               BlueprintName = "TreeHubUITests"
+               BlueprintIdentifier = "86AE38B230CE156F455829D8"
+               BuildableName = "RoamrUITests.xctest"
+               BlueprintName = "RoamrUITests"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +46,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8A0555CF17EA2CB9683D5C6"
-            BuildableName = "TreeHub.app"
-            BlueprintName = "TreeHub"
+            BlueprintIdentifier = "8A0EE00DD725A91404FABCE3"
+            BuildableName = "Roamr.app"
+            BlueprintName = "Roamr"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -58,9 +58,9 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C6D9B407D357A72A8627067D"
-               BuildableName = "TreeHubUITests.xctest"
-               BlueprintName = "TreeHubUITests"
+               BlueprintIdentifier = "86AE38B230CE156F455829D8"
+               BuildableName = "RoamrUITests.xctest"
+               BlueprintName = "RoamrUITests"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -82,9 +82,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8A0555CF17EA2CB9683D5C6"
-            BuildableName = "TreeHub.app"
-            BlueprintName = "TreeHub"
+            BlueprintIdentifier = "8A0EE00DD725A91404FABCE3"
+            BuildableName = "Roamr.app"
+            BlueprintName = "Roamr"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,9 +99,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F8A0555CF17EA2CB9683D5C6"
-            BuildableName = "TreeHub.app"
-            BlueprintName = "TreeHub"
+            BlueprintIdentifier = "8A0EE00DD725A91404FABCE3"
+            BuildableName = "Roamr.app"
+            BlueprintName = "Roamr"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>

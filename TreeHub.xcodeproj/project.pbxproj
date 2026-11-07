@@ -7,73 +7,84 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		000F2E00F78A4213F9283607 /* TrackTourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */; };
-		0BDCC1C6BF6F680AD166276E /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232467C1686C678F705B0C5 /* CelebrationView.swift */; };
-		1DBDEFDC1E9FA707141DD364 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
-		23D49F1AF3732A29E394DF6C /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
-		24E58170887993164FC6F05A /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
-		295011B739CCE3FC2097C5CE /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
-		36553290D8037DCB0F41F0E0 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
-		39A84B24AAA0DF0394453F6F /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
-		593552228A27B15E3DFCC426 /* TrackSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */; };
-		62A689237A98FF28E92CAFCF /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
-		6D20A4E64C8AFE10866D4E35 /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
-		7148C86695CD976511D76187 /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
-		714A6B975614F3B95365CAC8 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
-		7A469CB04F8D22E26C7855AC /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
-		7D19B0D84A5AC92016A96F8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
-		8952EA57C821B54AECC581B2 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
-		8A1B8DF3FEE611EC5E4BDA16 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
-		91315CD40B48D6AE38BA87D4 /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
-		943FDFD11D6DD38A3C7080F0 /* TrackHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */; };
-		A0770BE053485A6C5B326261 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
-		A0EEC593E61D7634F4980450 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
-		B3D75923404721F9238EFFAB /* Hug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D039EE51534C6E9717A31E3 /* Hug.swift */; };
-		B591615AB3F1EF167862CAF5 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
-		B61ADD1888A30D950E75B507 /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
-		B98CFA9139050BBB1C195FF0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
-		BD5B58FE540601F62062F218 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
-		C0D11FD29F639940CA627E85 /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
-		C15AF17776FC47E7702B1E05 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD533F40BAA6F6D9454E5913 /* Assets.xcassets */; };
-		C320700AAF11C2E95C134EBD /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
-		C411ECED879012C0200E4138 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
-		C731C38744BD8400F6B0839D /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
-		CC484F6FCC16243707B4A7D7 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
-		D25A17A4ACD462F5F2EF6D78 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
-		DDF8AC962F197F50AB823CDB /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
-		DE11E4F5E53793C354FDC3F8 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
-		EE329765F56A6D90DCC17794 /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
-		F2705B16F01EF603DD78A605 /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
-		F547396AB055A881F3BB44E4 /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18055774998E68B0A2D16D /* CollectionView.swift */; };
-		FAE34B8AA99A89BCA60E137F /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
+		07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		1305E466AF8A4CA4155AAA79 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
+		157EF78B4051A7B3606FB48E /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18055774998E68B0A2D16D /* CollectionView.swift */; };
+		16F74D5EDCCCF17E596B6CD3 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
+		18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
+		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
+		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
+		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
+		2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
+		3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
+		3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
+		3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
+		4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
+		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
+		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
+		5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
+		669DE02F9381489144BAADDF /* Hug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D039EE51534C6E9717A31E3 /* Hug.swift */; };
+		712FB74367AB1ECC10CB7747 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
+		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
+		7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
+		7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
+		80E6ECE39BD8543A049982CB /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4159F6563FEC514EECE6D1 /* LogicTests.swift */; };
+		81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */; };
+		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
+		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
+		AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
+		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
+		B76B4471ECBFAC9F8E794ED1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD533F40BAA6F6D9454E5913 /* Assets.xcassets */; };
+		C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
+		C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
+		C9E2B4C0AE82032C8D94541D /* TrackTourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */; };
+		CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */; };
+		D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
+		DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
+		DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
+		DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
+		E7A652424E4B7B22E764E2EB /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232467C1686C678F705B0C5 /* CelebrationView.swift */; };
+		F0DE5AE8600021162A52BCD0 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
+		F1711676D4D6C7B36CBFE60B /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
+		F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
+		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		67E8E10EAB6001111076E6D3 /* PBXContainerItemProxy */ = {
+		1B5C9DB84A03686FDDB1AA50 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F729A34EADDC34A852F0B73B;
-			remoteInfo = TrackHub;
+			remoteGlobalIDString = 8A0EE00DD725A91404FABCE3;
+			remoteInfo = Roamr;
 		};
-		DFBF09587428A87EC450BB8E /* PBXContainerItemProxy */ = {
+		690EEF602C528C3FA6587603 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = F8A0555CF17EA2CB9683D5C6;
-			remoteInfo = TreeHub;
+			remoteGlobalIDString = 7DAC63D05B83BBE7BD589AA8;
+			remoteInfo = Rootbound;
+		};
+		C2C4D2B7ED61FB9AAB816005 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 7DAC63D05B83BBE7BD589AA8;
+			remoteInfo = Rootbound;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		01A7383F3E50B876ECE6A78C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TreeHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
 		0C18055774998E68B0A2D16D /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeHubApp.swift; sourceTree = "<group>"; };
 		1466841354823062CD97D858 /* TrackDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDemo.swift; sourceTree = "<group>"; };
 		16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
+		2F4159F6563FEC514EECE6D1 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
@@ -81,13 +92,12 @@
 		463C0E94D514A99089BCC322 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
 		4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSettingsView.swift; sourceTree = "<group>"; };
+		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5884433CD32FDD4D160203A6 /* Roamr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Roamr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
-		602A797342C7ACE29E607B7F /* TrackHubUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TrackHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
-		7558F9267DAF53F83D892016 /* TrackHub.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TrackHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
-		89A8464FD0A0FAE7B0E01775 /* TreeHub.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TreeHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
 		96832C9E113D2C830820806F /* HealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthService.swift; sourceTree = "<group>"; };
@@ -96,13 +106,16 @@
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
+		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
+		EEF58211216804E6CF163DAA /* RootboundTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
 		F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTourTests.swift; sourceTree = "<group>"; };
 		FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		FB1240C67112B2502AB76F1D /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		FB23CD916A03A5E29B876B21 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		FD533F40BAA6F6D9454E5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -133,6 +146,7 @@
 		4E4FE5EFE033C93A7B45A5C2 = {
 			isa = PBXGroup;
 			children = (
+				DC82DFB1DD16B4F987429470 /* RootboundTests */,
 				9940A62A24413B2102E59F27 /* Shared */,
 				A7156C98667DC49141D2DC60 /* TrackApp */,
 				9A6C2866154D34A621C998DF /* TrackHubUITests */,
@@ -159,6 +173,7 @@
 		7461CFD64FA09CF34665A143 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				1C829C76FB92D53E3E90E395 /* AppInfo.swift */,
 				9F73AE90E29B0845AB46785E /* Format.swift */,
 				96832C9E113D2C830820806F /* HealthService.swift */,
 				44F00360DF850821B3293EA2 /* RouteTracker.swift */,
@@ -169,10 +184,11 @@
 		8ABDA768BBE5B199DC7E56EF /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				7558F9267DAF53F83D892016 /* TrackHub.app */,
-				602A797342C7ACE29E607B7F /* TrackHubUITests.xctest */,
-				89A8464FD0A0FAE7B0E01775 /* TreeHub.app */,
-				0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */,
+				5884433CD32FDD4D160203A6 /* Roamr.app */,
+				C81D053EF004338204CA6530 /* RoamrUITests.xctest */,
+				522763F1CEDB54BD89DE68DB /* Rootbound.app */,
+				EEF58211216804E6CF163DAA /* RootboundTests.xctest */,
+				FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -278,6 +294,14 @@
 			path = TreeHubUITests;
 			sourceTree = "<group>";
 		};
+		DC82DFB1DD16B4F987429470 /* RootboundTests */ = {
+			isa = PBXGroup;
+			children = (
+				2F4159F6563FEC514EECE6D1 /* LogicTests.swift */,
+			);
+			path = RootboundTests;
+			sourceTree = "<group>";
+		};
 		FFBE1C6110AEEAC1EE7F36C8 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -290,77 +314,95 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		2213D98B762F70CEEACBA7E4 /* TrackHubUITests */ = {
+		7DAC63D05B83BBE7BD589AA8 /* Rootbound */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = E8ADB188065730B1A1723ED9 /* Build configuration list for PBXNativeTarget "TrackHubUITests" */;
+			buildConfigurationList = F1DC6CEB7F5F704EB4B76EA9 /* Build configuration list for PBXNativeTarget "Rootbound" */;
 			buildPhases = (
-				4AC622C63F7F6F74DB07AC0A /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				795FDA06510ACD5B5AD09569 /* PBXTargetDependency */,
-			);
-			name = TrackHubUITests;
-			packageProductDependencies = (
-			);
-			productName = TrackHubUITests;
-			productReference = 602A797342C7ACE29E607B7F /* TrackHubUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		C6D9B407D357A72A8627067D /* TreeHubUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 7CBBB8E589B008EDAFF85897 /* Build configuration list for PBXNativeTarget "TreeHubUITests" */;
-			buildPhases = (
-				5386C71BBC1445E71DFEBDF8 /* Sources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				CD4166DFC44D657DFF28ABFA /* PBXTargetDependency */,
-			);
-			name = TreeHubUITests;
-			packageProductDependencies = (
-			);
-			productName = TreeHubUITests;
-			productReference = 0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
-		};
-		F729A34EADDC34A852F0B73B /* TrackHub */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 89C2C785F3A5920853C17595 /* Build configuration list for PBXNativeTarget "TrackHub" */;
-			buildPhases = (
-				955CBAFA168B75F72BF051DD /* Sources */,
-				DEA34DA7262D5211F39BF248 /* Resources */,
+				0C4868EBDABC69F59CA4C2C8 /* Sources */,
+				BAC0EB595805EE3BE63C30F9 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = TrackHub;
+			name = Rootbound;
 			packageProductDependencies = (
 			);
-			productName = TrackHub;
-			productReference = 7558F9267DAF53F83D892016 /* TrackHub.app */;
+			productName = Rootbound;
+			productReference = 522763F1CEDB54BD89DE68DB /* Rootbound.app */;
 			productType = "com.apple.product-type.application";
 		};
-		F8A0555CF17EA2CB9683D5C6 /* TreeHub */ = {
+		86AE38B230CE156F455829D8 /* RoamrUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 086562DB487BEE61D072E8AA /* Build configuration list for PBXNativeTarget "TreeHub" */;
+			buildConfigurationList = 85B77601F85F881D9B33B6F5 /* Build configuration list for PBXNativeTarget "RoamrUITests" */;
 			buildPhases = (
-				52E2424220F18482EF098DE1 /* Sources */,
-				3F203201F63DE3371E817149 /* Resources */,
+				088D0748B99B4EF9DC1C9FAB /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				7CD46F81FA4B7F70531E5F43 /* PBXTargetDependency */,
+			);
+			name = RoamrUITests;
+			packageProductDependencies = (
+			);
+			productName = RoamrUITests;
+			productReference = C81D053EF004338204CA6530 /* RoamrUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		8A0EE00DD725A91404FABCE3 /* Roamr */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CE605022DDE9ABB4B6BF4A5F /* Build configuration list for PBXNativeTarget "Roamr" */;
+			buildPhases = (
+				C792E3E32528ADE1D08CD6AB /* Sources */,
+				BB75CC7E69C1E56BBE2513F4 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
-			name = TreeHub;
+			name = Roamr;
 			packageProductDependencies = (
 			);
-			productName = TreeHub;
-			productReference = 89A8464FD0A0FAE7B0E01775 /* TreeHub.app */;
+			productName = Roamr;
+			productReference = 5884433CD32FDD4D160203A6 /* Roamr.app */;
 			productType = "com.apple.product-type.application";
+		};
+		8DA73B97E12AB1F55D9C112C /* RootboundUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A62923C6F8BBA5C7D405ACA0 /* Build configuration list for PBXNativeTarget "RootboundUITests" */;
+			buildPhases = (
+				34E51EED89E921D2138D39FD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EE05F41D0A621B753F601844 /* PBXTargetDependency */,
+			);
+			name = RootboundUITests;
+			packageProductDependencies = (
+			);
+			productName = RootboundUITests;
+			productReference = FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+		E9498F2180A2382DA621699E /* RootboundTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1CC9319547C41374208BACC4 /* Build configuration list for PBXNativeTarget "RootboundTests" */;
+			buildPhases = (
+				FF4177EC06AB31D582E071EF /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				6230A31EA4458C53CA116716 /* PBXTargetDependency */,
+			);
+			name = RootboundTests;
+			packageProductDependencies = (
+			);
+			productName = RootboundTests;
+			productReference = EEF58211216804E6CF163DAA /* RootboundTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -371,21 +413,25 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
-					2213D98B762F70CEEACBA7E4 = {
-						DevelopmentTeam = "";
-						ProvisioningStyle = Automatic;
-						TestTargetID = F729A34EADDC34A852F0B73B;
-					};
-					C6D9B407D357A72A8627067D = {
-						DevelopmentTeam = "";
-						ProvisioningStyle = Automatic;
-						TestTargetID = F8A0555CF17EA2CB9683D5C6;
-					};
-					F729A34EADDC34A852F0B73B = {
+					7DAC63D05B83BBE7BD589AA8 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
-					F8A0555CF17EA2CB9683D5C6 = {
+					86AE38B230CE156F455829D8 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 8A0EE00DD725A91404FABCE3;
+					};
+					8A0EE00DD725A91404FABCE3 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					8DA73B97E12AB1F55D9C112C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = 7DAC63D05B83BBE7BD589AA8;
+					};
+					E9498F2180A2382DA621699E = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
@@ -405,116 +451,132 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				F8A0555CF17EA2CB9683D5C6 /* TreeHub */,
-				F729A34EADDC34A852F0B73B /* TrackHub */,
-				C6D9B407D357A72A8627067D /* TreeHubUITests */,
-				2213D98B762F70CEEACBA7E4 /* TrackHubUITests */,
+				7DAC63D05B83BBE7BD589AA8 /* Rootbound */,
+				8A0EE00DD725A91404FABCE3 /* Roamr */,
+				8DA73B97E12AB1F55D9C112C /* RootboundUITests */,
+				86AE38B230CE156F455829D8 /* RoamrUITests */,
+				E9498F2180A2382DA621699E /* RootboundTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		3F203201F63DE3371E817149 /* Resources */ = {
+		BAC0EB595805EE3BE63C30F9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C15AF17776FC47E7702B1E05 /* Assets.xcassets in Resources */,
+				B76B4471ECBFAC9F8E794ED1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DEA34DA7262D5211F39BF248 /* Resources */ = {
+		BB75CC7E69C1E56BBE2513F4 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B98CFA9139050BBB1C195FF0 /* Assets.xcassets in Resources */,
+				FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		4AC622C63F7F6F74DB07AC0A /* Sources */ = {
+		088D0748B99B4EF9DC1C9FAB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				000F2E00F78A4213F9283607 /* TrackTourTests.swift in Sources */,
+				C9E2B4C0AE82032C8D94541D /* TrackTourTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		52E2424220F18482EF098DE1 /* Sources */ = {
+		0C4868EBDABC69F59CA4C2C8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8A1B8DF3FEE611EC5E4BDA16 /* Activity.swift in Sources */,
-				C320700AAF11C2E95C134EBD /* ActivityDetailView.swift in Sources */,
-				DE11E4F5E53793C354FDC3F8 /* ActivityRow.swift in Sources */,
-				0BDCC1C6BF6F680AD166276E /* CelebrationView.swift in Sources */,
-				A0770BE053485A6C5B326261 /* Collectibles.swift in Sources */,
-				F547396AB055A881F3BB44E4 /* CollectionView.swift in Sources */,
-				8952EA57C821B54AECC581B2 /* DemoData.swift in Sources */,
-				1DBDEFDC1E9FA707141DD364 /* Format.swift in Sources */,
-				B61ADD1888A30D950E75B507 /* GameEngine.swift in Sources */,
-				BD5B58FE540601F62062F218 /* HealthService.swift in Sources */,
-				7D19B0D84A5AC92016A96F8B /* HomeView.swift in Sources */,
-				B3D75923404721F9238EFFAB /* Hug.swift in Sources */,
-				91315CD40B48D6AE38BA87D4 /* HugDetailView.swift in Sources */,
-				FAE34B8AA99A89BCA60E137F /* HugLogView.swift in Sources */,
-				295011B739CCE3FC2097C5CE /* RouteTracker.swift in Sources */,
-				A0EEC593E61D7634F4980450 /* SettingsView.swift in Sources */,
-				EE329765F56A6D90DCC17794 /* Shapes.swift in Sources */,
-				62A689237A98FF28E92CAFCF /* Theme.swift in Sources */,
-				D25A17A4ACD462F5F2EF6D78 /* TrackView.swift in Sources */,
-				DDF8AC962F197F50AB823CDB /* TreeHubApp.swift in Sources */,
-				C731C38744BD8400F6B0839D /* TreesView.swift in Sources */,
+				F1711676D4D6C7B36CBFE60B /* Activity.swift in Sources */,
+				A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */,
+				3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */,
+				26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */,
+				E7A652424E4B7B22E764E2EB /* CelebrationView.swift in Sources */,
+				53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */,
+				157EF78B4051A7B3606FB48E /* CollectionView.swift in Sources */,
+				1305E466AF8A4CA4155AAA79 /* DemoData.swift in Sources */,
+				2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */,
+				94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */,
+				16F74D5EDCCCF17E596B6CD3 /* HealthService.swift in Sources */,
+				1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */,
+				669DE02F9381489144BAADDF /* Hug.swift in Sources */,
+				F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */,
+				DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */,
+				4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */,
+				C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */,
+				3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */,
+				D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */,
+				3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */,
+				2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */,
+				5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		5386C71BBC1445E71DFEBDF8 /* Sources */ = {
+		34E51EED89E921D2138D39FD /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7A469CB04F8D22E26C7855AC /* TourTests.swift in Sources */,
+				B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		955CBAFA168B75F72BF051DD /* Sources */ = {
+		C792E3E32528ADE1D08CD6AB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				CC484F6FCC16243707B4A7D7 /* Activity.swift in Sources */,
-				36553290D8037DCB0F41F0E0 /* ActivityDetailView.swift in Sources */,
-				714A6B975614F3B95365CAC8 /* ActivityRow.swift in Sources */,
-				23D49F1AF3732A29E394DF6C /* Format.swift in Sources */,
-				39A84B24AAA0DF0394453F6F /* HealthService.swift in Sources */,
-				C411ECED879012C0200E4138 /* HistoryView.swift in Sources */,
-				7148C86695CD976511D76187 /* RouteTracker.swift in Sources */,
-				6D20A4E64C8AFE10866D4E35 /* Shapes.swift in Sources */,
-				C0D11FD29F639940CA627E85 /* StatsView.swift in Sources */,
-				24E58170887993164FC6F05A /* Theme.swift in Sources */,
-				F2705B16F01EF603DD78A605 /* TrackDemo.swift in Sources */,
-				943FDFD11D6DD38A3C7080F0 /* TrackHubApp.swift in Sources */,
-				593552228A27B15E3DFCC426 /* TrackSettingsView.swift in Sources */,
-				B591615AB3F1EF167862CAF5 /* TrackView.swift in Sources */,
+				712FB74367AB1ECC10CB7747 /* Activity.swift in Sources */,
+				07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */,
+				5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */,
+				F0DE5AE8600021162A52BCD0 /* AppInfo.swift in Sources */,
+				DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */,
+				C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */,
+				AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */,
+				18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */,
+				DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */,
+				AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */,
+				7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */,
+				781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */,
+				CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */,
+				81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */,
+				7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		FF4177EC06AB31D582E071EF /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				80E6ECE39BD8543A049982CB /* LogicTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		795FDA06510ACD5B5AD09569 /* PBXTargetDependency */ = {
+		6230A31EA4458C53CA116716 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F729A34EADDC34A852F0B73B /* TrackHub */;
-			targetProxy = 67E8E10EAB6001111076E6D3 /* PBXContainerItemProxy */;
+			target = 7DAC63D05B83BBE7BD589AA8 /* Rootbound */;
+			targetProxy = 690EEF602C528C3FA6587603 /* PBXContainerItemProxy */;
 		};
-		CD4166DFC44D657DFF28ABFA /* PBXTargetDependency */ = {
+		7CD46F81FA4B7F70531E5F43 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = F8A0555CF17EA2CB9683D5C6 /* TreeHub */;
-			targetProxy = DFBF09587428A87EC450BB8E /* PBXContainerItemProxy */;
+			target = 8A0EE00DD725A91404FABCE3 /* Roamr */;
+			targetProxy = 1B5C9DB84A03686FDDB1AA50 /* PBXContainerItemProxy */;
+		};
+		EE05F41D0A621B753F601844 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 7DAC63D05B83BBE7BD589AA8 /* Rootbound */;
+			targetProxy = C2C4D2B7ED61FB9AAB816005 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		32047E9528C2C27C09A02E38 /* Release */ = {
+		06A1404F8DC4F0859477184A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -524,12 +586,46 @@
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub.uitests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.tests;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TreeHub;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rootbound.app/Rootbound";
 			};
 			name = Release;
+		};
+		2C63878DC8A4DFB5A8856314 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Rootbound;
+			};
+			name = Debug;
+		};
+		491D975D0866104950524D7F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Roamr;
+			};
+			name = Debug;
 		};
 		56E612E4F3CF697D95937ABD /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -600,25 +696,7 @@
 			};
 			name = Debug;
 		};
-		60B739F90E4F81DCA47BF90A /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = TreeHub/TreeHub.entitlements;
-				CODE_SIGN_IDENTITY = "iPhone Developer";
-				INFOPLIST_FILE = TreeHub/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
-		65A5416985F5BA543ABBF210 /* Debug */ = {
+		7EE764BDD478282C6F5821C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -630,14 +708,14 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.trackhub;
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACK_APP";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		6634A72E5545C0F196512E23 /* Debug */ = {
+		8DF60652FFED512DC9547427 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -649,60 +727,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub;
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		78AA41723A7A16268E75176E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.trackhub.uitests;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TrackHub;
-			};
-			name = Release;
-		};
-		7CACB77A851EAB8AAA8683E9 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub.uitests;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TreeHub;
-			};
-			name = Debug;
-		};
-		827D372D598F96B08EAAFF6E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				GENERATE_INFOPLIST_FILE = YES;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.trackhub.uitests;
-				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TrackHub;
 			};
 			name = Debug;
 		};
@@ -768,7 +795,7 @@
 			};
 			name = Release;
 		};
-		C96FDDF7CD4CD28D8943920E /* Release */ = {
+		A69D0C15D334D7D6D77AA673 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -780,48 +807,126 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.trackhub;
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr;
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) TRACK_APP";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
+		A8CE101E9AF72DB7CA33DE2E /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = TreeHub/TreeHub.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = TreeHub/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		DC08F5180859F61E6CFE3781 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Rootbound;
+			};
+			name = Release;
+		};
+		E4EDAFF5E7BC7EFA5588BE2B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.tests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rootbound.app/Rootbound";
+			};
+			name = Debug;
+		};
+		F28462A46FF91D7242F83A5F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = Roamr;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		086562DB487BEE61D072E8AA /* Build configuration list for PBXNativeTarget "TreeHub" */ = {
+		1CC9319547C41374208BACC4 /* Build configuration list for PBXNativeTarget "RootboundTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				6634A72E5545C0F196512E23 /* Debug */,
-				60B739F90E4F81DCA47BF90A /* Release */,
+				E4EDAFF5E7BC7EFA5588BE2B /* Debug */,
+				06A1404F8DC4F0859477184A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		7CBBB8E589B008EDAFF85897 /* Build configuration list for PBXNativeTarget "TreeHubUITests" */ = {
+		85B77601F85F881D9B33B6F5 /* Build configuration list for PBXNativeTarget "RoamrUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				7CACB77A851EAB8AAA8683E9 /* Debug */,
-				32047E9528C2C27C09A02E38 /* Release */,
+				491D975D0866104950524D7F /* Debug */,
+				F28462A46FF91D7242F83A5F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		89C2C785F3A5920853C17595 /* Build configuration list for PBXNativeTarget "TrackHub" */ = {
+		A62923C6F8BBA5C7D405ACA0 /* Build configuration list for PBXNativeTarget "RootboundUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				65A5416985F5BA543ABBF210 /* Debug */,
-				C96FDDF7CD4CD28D8943920E /* Release */,
+				2C63878DC8A4DFB5A8856314 /* Debug */,
+				DC08F5180859F61E6CFE3781 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
-		E8ADB188065730B1A1723ED9 /* Build configuration list for PBXNativeTarget "TrackHubUITests" */ = {
+		CE605022DDE9ABB4B6BF4A5F /* Build configuration list for PBXNativeTarget "Roamr" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				827D372D598F96B08EAAFF6E /* Debug */,
-				78AA41723A7A16268E75176E /* Release */,
+				7EE764BDD478282C6F5821C6 /* Debug */,
+				A69D0C15D334D7D6D77AA673 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		F1DC6CEB7F5F704EB4B76EA9 /* Build configuration list for PBXNativeTarget "Rootbound" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8DF60652FFED512DC9547427 /* Debug */,
+				A8CE101E9AF72DB7CA33DE2E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

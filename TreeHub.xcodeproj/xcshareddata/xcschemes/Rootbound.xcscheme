@@ -15,9 +15,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "F729A34EADDC34A852F0B73B"
-               BuildableName = "TrackHub.app"
-               BlueprintName = "TrackHub"
+               BlueprintIdentifier = "7DAC63D05B83BBE7BD589AA8"
+               BuildableName = "Rootbound.app"
+               BlueprintName = "Rootbound"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,9 +29,23 @@
             buildForAnalyzing = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2213D98B762F70CEEACBA7E4"
-               BuildableName = "TrackHubUITests.xctest"
-               BlueprintName = "TrackHubUITests"
+               BlueprintIdentifier = "E9498F2180A2382DA621699E"
+               BuildableName = "RootboundTests.xctest"
+               BlueprintName = "RootboundTests"
+               ReferencedContainer = "container:TreeHub.xcodeproj">
+            </BuildableReference>
+         </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "NO"
+            buildForProfiling = "NO"
+            buildForArchiving = "NO"
+            buildForAnalyzing = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8DA73B97E12AB1F55D9C112C"
+               BuildableName = "RootboundUITests.xctest"
+               BlueprintName = "RootboundUITests"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +60,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F729A34EADDC34A852F0B73B"
-            BuildableName = "TrackHub.app"
-            BlueprintName = "TrackHub"
+            BlueprintIdentifier = "7DAC63D05B83BBE7BD589AA8"
+            BuildableName = "Rootbound.app"
+            BlueprintName = "Rootbound"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -58,9 +72,20 @@
             parallelizable = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "2213D98B762F70CEEACBA7E4"
-               BuildableName = "TrackHubUITests.xctest"
-               BlueprintName = "TrackHubUITests"
+               BlueprintIdentifier = "E9498F2180A2382DA621699E"
+               BuildableName = "RootboundTests.xctest"
+               BlueprintName = "RootboundTests"
+               ReferencedContainer = "container:TreeHub.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "8DA73B97E12AB1F55D9C112C"
+               BuildableName = "RootboundUITests.xctest"
+               BlueprintName = "RootboundUITests"
                ReferencedContainer = "container:TreeHub.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -82,9 +107,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F729A34EADDC34A852F0B73B"
-            BuildableName = "TrackHub.app"
-            BlueprintName = "TrackHub"
+            BlueprintIdentifier = "7DAC63D05B83BBE7BD589AA8"
+            BuildableName = "Rootbound.app"
+            BlueprintName = "Rootbound"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
@@ -99,9 +124,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "F729A34EADDC34A852F0B73B"
-            BuildableName = "TrackHub.app"
-            BlueprintName = "TrackHub"
+            BlueprintIdentifier = "7DAC63D05B83BBE7BD589AA8"
+            BuildableName = "Rootbound.app"
+            BlueprintName = "Rootbound"
             ReferencedContainer = "container:TreeHub.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
