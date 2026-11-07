@@ -20,12 +20,10 @@ struct TreesView: View {
                             .font(Theme.rounded(14, .semibold)).foregroundStyle(Theme.textDim)
                     }
                     Spacer()
-                    Picker("", selection: $mode) {
-                        Image(systemName: "square.grid.2x2.fill").tag(0)
-                        Image(systemName: "map.fill").tag(1)
-                    }
-                    .pickerStyle(.segmented)
-                    .frame(width: 110)
+                    PillSwitcher(options: [.init(id: 0, label: "Grid", symbol: "square.grid.2x2.fill"),
+                                           .init(id: 1, label: "Map", symbol: "map.fill")],
+                                 selection: $mode)
+                        .frame(width: 180)
                 }
                 .padding(.horizontal, Theme.pad)
                 .padding(.top, 12)
@@ -64,8 +62,10 @@ struct TreesView: View {
                 }
             }
             .padding(.horizontal, Theme.pad)
-            .padding(.bottom, 120)
+            .padding(.top, 4)
+            .padding(.bottom, 130)
         }
+        .scrollIndicators(.hidden)
     }
 
     private var map: some View {
@@ -125,27 +125,40 @@ struct TreeCard: View {
     let tree: TreeSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
+        ZStack(alignment: .bottomLeading) {
             PhotoView(data: tree.coverPhoto)
-                .frame(height: 150)
+                .frame(height: 220)
                 .frame(maxWidth: .infinity)
                 .clipped()
-                .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .overlay(alignment: .topLeading) {
-                    Text("\(tree.hugCount)×")
-                        .font(Theme.rounded(12, .heavy))
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(.ultraThinMaterial, in: Capsule())
-                        .padding(8)
-                }
-            Text(tree.name).font(.system(size: 17, weight: .bold, design: .serif)).foregroundStyle(.white).lineLimit(1)
-            Text(tree.species.isEmpty ? "Mystery species" : tree.species)
-                .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.glow).lineLimit(1)
-            HeartsView(filled: tree.bond, size: 10)
+            LinearGradient(stops: [
+                .init(color: .clear, location: 0.35),
+                .init(color: .black.opacity(0.75), location: 1),
+            ], startPoint: .top, endPoint: .bottom)
+            VStack(alignment: .leading, spacing: 4) {
+                Text(tree.name)
+                    .font(.system(size: 18, weight: .bold, design: .serif))
+                    .foregroundStyle(.white)
+                    .lineLimit(1)
+                Text(tree.species.isEmpty ? "Mystery species" : tree.species)
+                    .font(Theme.rounded(12, .semibold))
+                    .foregroundStyle(Theme.glow)
+                    .lineLimit(1)
+                HeartsView(filled: tree.bond, size: 10)
+            }
+            .padding(12)
         }
-        .padding(10)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 22))
-        .overlay(RoundedRectangle(cornerRadius: 22).stroke(Theme.cardStroke))
+        .overlay(alignment: .topTrailing) {
+            Text("\(tree.hugCount)×")
+                .font(Theme.rounded(12, .heavy))
+                .foregroundStyle(.white)
+                .padding(.horizontal, 9).padding(.vertical, 4)
+                .background(.ultraThinMaterial, in: Capsule())
+                .padding(10)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+            .strokeBorder(LinearGradient(colors: [.white.opacity(0.25), .white.opacity(0.03)], startPoint: .top, endPoint: .bottom)))
+        .shadow(color: .black.opacity(0.35), radius: 14, y: 8)
     }
 }
 

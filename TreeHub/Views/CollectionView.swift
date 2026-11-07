@@ -17,19 +17,19 @@ struct CollectionView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Text("Collection").font(Theme.title(36)).foregroundStyle(.white).padding(.top, 8)
+                    ScreenHeader(title: "Collection", subtitle: "Badges you've earned and leaves you've found")
                     summary
-                    Picker("", selection: $section) {
-                        Text("Badges").tag(0)
-                        Text("Leaves").tag(1)
-                    }
-                    .pickerStyle(.segmented)
+                    PillSwitcher(options: [.init(id: 0, label: "Badges", symbol: "rosette"),
+                                           .init(id: 1, label: "Leaves", symbol: "leaf.fill")],
+                                 selection: $section)
 
                     if section == 0 { badgeGrid } else { leafGrid }
                 }
                 .padding(.horizontal, Theme.pad)
-                .padding(.bottom, 120)
+                .padding(.bottom, 130)
+                .animation(.spring(response: 0.4, dampingFraction: 0.85), value: section)
             }
+            .scrollIndicators(.hidden)
             .forestScreen()
             .toolbar(.hidden, for: .navigationBar)
         }
@@ -78,7 +78,7 @@ struct CollectionView: View {
                         }
                     }
                 }
-                .buttonStyle(.plain)
+                .pressable()
             }
         }
     }
@@ -102,7 +102,7 @@ struct CollectionView: View {
                     .background(count > 0 ? leaf.rarity.color.opacity(0.12) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 18))
                     .overlay(RoundedRectangle(cornerRadius: 18).stroke(count > 0 ? leaf.rarity.color.opacity(0.5) : Theme.cardStroke))
                 }
-                .buttonStyle(.plain)
+                .pressable()
             }
         }
     }

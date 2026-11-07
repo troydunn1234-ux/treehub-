@@ -136,23 +136,34 @@ struct HugLogView: View {
                                 .padding(.horizontal, 14).padding(.vertical, 8)
                                 .background(Theme.leafGradient, in: Capsule())
                         }
-                        photosCard
-                        treeCard
-                        locationCard
-                        breathCard
-                        vibeCard
+                        photosCard.cardAppear()
+                        treeCard.cardAppear()
+                        locationCard.cardAppear()
+                        breathCard.cardAppear()
+                        vibeCard.cardAppear()
                         if !errorText.isEmpty {
                             Text(errorText).font(Theme.rounded(14)).foregroundStyle(.red)
                         }
-                        Button(action: save) {
-                            Label(editing == nil ? "Save this hug" : "Save changes", systemImage: "heart.fill")
-                        }
-                        .buttonStyle(PrimaryButtonStyle())
-                        .padding(.bottom, 30)
                     }
-                    .padding(16)
+                    .padding(.horizontal, Theme.pad)
+                    .padding(.top, 8)
+                    .padding(.bottom, 24)
                 }
                 .scrollDismissesKeyboard(.interactively)
+                .scrollIndicators(.hidden)
+                .safeAreaInset(edge: .bottom) {
+                    Button(action: save) {
+                        Label(editing == nil ? "Save this hug" : "Save changes", systemImage: "heart.fill")
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .padding(.horizontal, Theme.pad)
+                    .padding(.top, 12)
+                    .padding(.bottom, 8)
+                    .background {
+                        LinearGradient(colors: [Theme.forestDeep.opacity(0), Theme.forestDeep.opacity(0.92)], startPoint: .top, endPoint: .center)
+                            .ignoresSafeArea()
+                    }
+                }
             }
             .forestScreen()
             .navigationTitle(editing == nil ? "Hug a Tree" : "Edit Hug")

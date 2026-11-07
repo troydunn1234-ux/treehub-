@@ -432,3 +432,74 @@ struct FloatingTabBar: View {
         .sensoryFeedback(.selection, trigger: active)
     }
 }
+
+// MARK: - Screen header & pill switcher
+
+/// Big title with a dim subtitle, used at the top of every main screen.
+struct ScreenHeader: View {
+    let title: String
+    var subtitle: String? = nil
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(title)
+                .font(Theme.title(36))
+                .foregroundStyle(.white)
+            if let subtitle, !subtitle.isEmpty {
+                Text(subtitle)
+                    .font(Theme.rounded(14, .semibold))
+                    .foregroundStyle(Theme.textDim)
+                    .contentTransition(.numericText())
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, 8)
+    }
+}
+
+/// Capsule switcher with a sliding highlight (replaces the stock segmented control).
+struct PillSwitcher: View {
+    struct Option: Identifiable, Hashable {
+        let id: Int
+        let label: String
+        var symbol: String? = nil
+    }
+
+    let options: [Option]
+    @Binding var selection: Int
+    @Namespace private var ns
+
+    var body: some View {
+        HStack(spacing: 4) {
+            ForEach(options) { opt in
+                let active = selection == opt.id
+                Button {
+                    withAnimation(.spring(response: 0.36, dampingFraction: 0.8)) { selection = opt.id }
+                } label: {
+                    HStack(spacing: 6) {
+                        if let s = opt.symbol { Image(systemName: s).font(.system(size: 13, weight: .bold)) }
+                        Text(opt.label).font(Theme.rounded(14, .bold))
+                    }
+                    .foregroundStyle(active ? Theme.forestDeep : Color.white.opacity(0.7))
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 9)
+                    .background {
+                        if active {
+                            Capsule(style: .continuous)
+                                .fill(Theme.leafGradient)
+                                .matchedGeometryEffect(id: "pill", in: ns)
+                                .shadow(color: Theme.glow.opacity(0.35), radius: 8)
+                        }
+                    }
+                    .contentShape(Capsule())
+                }
+                .buttonStyle(.plain)
+                .accessibilityIdentifier("pill-\(opt.label)")
+                .sensoryFeedback(.selection, trigger: active)
+            }
+        }
+        .padding(4)
+        .background(Color.white.opacity(0.07), in: Capsule(style: .continuous))
+        .overlay(Capsule(style: .continuous).strokeBorder(Color.white.opacity(0.08)))
+    }
+}

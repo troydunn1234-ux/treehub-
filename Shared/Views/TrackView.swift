@@ -15,6 +15,7 @@ struct TrackView: View {
     var onHug: (() -> Void)? = nil
 
     @State private var chosenKind: ActivityKind = .walk
+    @Namespace private var kindNS
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
     @State private var justFinished: Activity?
     @State private var confirmFinish = false
@@ -43,101 +44,168 @@ struct TrackView: View {
 
     private var idleView: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 18) {
-                #if TRACK_APP
-                Text("Track").font(Theme.title(36)).foregroundStyle(.white).padding(.top, 8)
-                #else
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Stroll").font(Theme.title(36)).foregroundStyle(.white)
-                    Text("Wander to your trees. Every hug along the way gets pinned on your route.")
-                        .font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
-                }
-                .padding(.top, 8)
-                #endif
-
-                ZStack(alignment: .bottom) {
-                    Map(position: $camera) { UserAnnotation() }
-                        .mapStyle(.standard(elevation: .realistic))
-                        .mapControls { MapUserLocationButton() }
-                        .frame(height: 260)
-                        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.cardStroke))
-                }
-
-                if tracker.denied {
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 8) {
-                            Label("Location is off for \(AppInfo.name)", systemImage: "location.slash.fill").font(Theme.rounded(16, .bold))
-                            Text("Turn on Location (While Using) in Settings so \(AppInfo.name) can track your route.")
-                                .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                            Button("Open Settings") {
-                                if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
-                            }
-                            .font(Theme.rounded(15, .bold))
-                        }
-                    }
-                }
-
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("What are you doing?").font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
-                    HStack(spacing: 8) {
-                        ForEach(ActivityKind.available) { k in
-                            Button {
-                                withAnimation(.snappy) { chosenKind = k }
-                            } label: {
-                                VStack(spacing: 6) {
-                                    Image(systemName: k.symbol).font(.system(size: 22, weight: .semibold))
-                                    Text(k.title).font(Theme.rounded(12, .bold))
-                                }
-                                .foregroundStyle(chosenKind == k ? Theme.forestDeep : .white)
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 12)
-                                .background(chosenKind == k ? AnyShapeStyle(Theme.leafGradient) : AnyShapeStyle(Color.white.opacity(0.07)),
-                                            in: RoundedRectangle(cornerRadius: 16))
-                            }
-                            .buttonStyle(.plain)
-                            .haptic()
-                        }
-                    }
-                }
-
-                Button {
-                    UINotificationFeedbackGenerator().notificationOccurred(.success)
-                    tracker.start(kind: chosenKind)
-                    camera = .userLocation(followsHeading: false, fallback: .automatic)
-                } label: {
-                    Label("Start \(chosenKind.title)", systemImage: "play.fill")
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(tracker.denied)
-
-                Text("Keeps recording with your phone locked. Look for the blue location pill at the top of the screen.")
-                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-
-                if !activities.isEmpty {
+            VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                mapHero
+                VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                    if tracker.denied { deniedCard }
+                    kindPicker
+                    startButton
+                    Label("Keeps recording with your phone locked", systemImage: "lock.fill")
+                        .font(Theme.rounded(12, .semibold))
+                        .foregroundStyle(Theme.textDim)
+                        .frame(maxWidth: .infinity)
+                    if !activities.isEmpty { recentList }
                     #if TRACK_APP
-                    SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath").padding(.top, 6)
-                    ForEach(activities.prefix(3)) { a in
-                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
-                    }
-                    #else
-                    SectionHeader(title: "Your strolls", symbol: "clock.arrow.circlepath").padding(.top, 6)
-                    ForEach(activities) { a in
-                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
-                    }
+                    healthSection
                     #endif
                 }
-
-                #if TRACK_APP
-                healthSection
-                #endif
+                .padding(.horizontal, Theme.pad)
             }
-            .padding(.horizontal, Theme.pad)
-            .padding(.bottom, 120)
+            .padding(.bottom, 130)
         }
+        .ignoresSafeArea(edges: .top)
+        .scrollIndicators(.hidden)
         .onAppear {
             if tracker.authorization == .notDetermined { tracker.requestPermission() }
         }
+    }
+
+    private var screenTitle: String {
+        #if TRACK_APP
+        return "Track"
+        #else
+        return "Stroll"
+        #endif
+    }
+
+    private var screenSubtitle: String {
+        let weekAgo = Date().addingTimeInterval(-7 * 86_400)
+        let week = activities.filter { $0.start > weekAgo }
+        let dist = week.reduce(0.0) { $0 + $1.distanceM }
+        #if TRACK_APP
+        return week.isEmpty ? "Where to today?" : "This week: \(Format.distance(dist)) · \(week.count) trip\(week.count == 1 ? "" : "s")"
+        #else
+        return week.isEmpty ? "Wander to your trees. Hugs along the way get pinned on your route."
+            : "This week: \(Format.distance(dist)) · \(week.count) stroll\(week.count == 1 ? "" : "s")"
+        #endif
+    }
+
+    /// Full-bleed live map that fades into the page, with the title on top.
+    private var mapHero: some View {
+        ZStack(alignment: .bottomLeading) {
+            Map(position: $camera) { UserAnnotation() }
+                .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
+                .allowsHitTesting(false)
+                .frame(height: 400)
+                .overlay {
+                    LinearGradient(stops: [
+                        .init(color: Theme.forestDeep.opacity(0.55), location: 0),
+                        .init(color: .clear, location: 0.28),
+                        .init(color: Theme.forestDeep.opacity(0.55), location: 0.7),
+                        .init(color: Theme.forestDeep, location: 1),
+                    ], startPoint: .top, endPoint: .bottom)
+                }
+            VStack(alignment: .leading, spacing: 4) {
+                Text(screenTitle)
+                    .font(Theme.title(44))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.4), radius: 10, y: 4)
+                Text(screenSubtitle)
+                    .font(Theme.rounded(14, .semibold))
+                    .foregroundStyle(.white.opacity(0.8))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .padding(.horizontal, Theme.pad)
+            .padding(.bottom, 8)
+        }
+    }
+
+    private var deniedCard: some View {
+        GlassCard {
+            VStack(alignment: .leading, spacing: 8) {
+                Label("Location is off for \(AppInfo.name)", systemImage: "location.slash.fill").font(Theme.rounded(16, .bold))
+                Text("Turn on Location (While Using) in Settings so \(AppInfo.name) can track your route.")
+                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                Button("Open Settings") {
+                    if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                }
+                .font(Theme.rounded(15, .bold))
+            }
+        }
+    }
+
+    private var kindPicker: some View {
+        HStack(spacing: 6) {
+            ForEach(ActivityKind.available) { k in
+                kindButton(k)
+            }
+        }
+        .padding(6)
+        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.08)))
+    }
+
+    private func kindButton(_ k: ActivityKind) -> some View {
+        let active = chosenKind == k
+        return Button {
+            withAnimation(.spring(response: 0.36, dampingFraction: 0.8)) { chosenKind = k }
+        } label: {
+            VStack(spacing: 6) {
+                Image(systemName: k.symbol)
+                    .font(.system(size: 22, weight: .semibold))
+                    .symbolEffect(.bounce, value: active)
+                Text(k.title).font(Theme.rounded(12, .bold))
+            }
+            .foregroundStyle(active ? Theme.forestDeep : Color.white.opacity(0.75))
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 12)
+            .background {
+                if active {
+                    RoundedRectangle(cornerRadius: 17, style: .continuous)
+                        .fill(Theme.leafGradient)
+                        .matchedGeometryEffect(id: "kind", in: kindNS)
+                        .shadow(color: Theme.glow.opacity(0.4), radius: 10)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .sensoryFeedback(.selection, trigger: active)
+    }
+
+    private var startButton: some View {
+        Button {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            tracker.start(kind: chosenKind)
+            camera = .userLocation(followsHeading: false, fallback: .automatic)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "play.fill")
+                    .font(.system(size: 16, weight: .black))
+                    .frame(width: 36, height: 36)
+                    .background(Theme.forestDeep.opacity(0.18), in: Circle())
+                Text("Start \(chosenKind.title)")
+            }
+        }
+        .buttonStyle(PrimaryButtonStyle())
+        .disabled(tracker.denied)
+    }
+
+    private var recentList: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            #if TRACK_APP
+            SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath")
+            ForEach(activities.prefix(3)) { a in
+                NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
+            }
+            #else
+            SectionHeader(title: "Your strolls", symbol: "clock.arrow.circlepath")
+            ForEach(activities) { a in
+                NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
+            }
+            #endif
+        }
+        .padding(.top, 6)
     }
 
     private var healthSection: some View {

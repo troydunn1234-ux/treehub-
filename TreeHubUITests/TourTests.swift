@@ -82,16 +82,14 @@ final class TourTests: XCTestCase {
         pause(2.5)
         scrollDown(2)
         back()
-        let seg = app.segmentedControls.firstMatch
-        if seg.exists { seg.buttons.element(boundBy: 1).tap() }
+        app.buttons["pill-Map"].tap()
         pause(5)
 
         // Collection
         tab("Collection")
         scrollDown(2)
         scrollUp(2)
-        let cseg = app.segmentedControls.firstMatch
-        if cseg.exists { cseg.buttons.element(boundBy: 1).tap() }
+        if app.buttons["pill-Leaves"].waitForExistence(timeout: 2) { app.buttons["pill-Leaves"].tap() }
         pause(3)
 
         // Stroll, hugging a tree along the way
