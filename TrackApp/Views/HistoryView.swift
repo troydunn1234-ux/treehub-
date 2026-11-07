@@ -5,6 +5,9 @@ import SwiftData
 struct HistoryView: View {
     @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
 
+    /// Re-renders the list when the unit setting changes.
+    @AppStorage("useMetric") private var useMetric = false
+
     /// nil means "All".
     @State private var filter: ActivityKind? = nil
 
@@ -71,7 +74,7 @@ struct HistoryView: View {
                     }
                 }
                 .padding(.top, 8)
-                .padding(.bottom, 120)
+                .padding(.bottom, 130)
                 .animation(Self.spring, value: filter)
             }
             .scrollIndicators(.hidden)
