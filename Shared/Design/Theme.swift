@@ -2,11 +2,20 @@ import SwiftUI
 import UIKit
 
 enum Theme {
+    #if TRACK_APP
+    // Night-road palette for TrackHub
+    static let forestDeep = Color(red: 0.03, green: 0.05, blue: 0.10)
+    static let forest = Color(red: 0.07, green: 0.11, blue: 0.20)
+    static let moss = Color(red: 0.13, green: 0.19, blue: 0.32)
+    static let leaf = Color(red: 1.0, green: 0.42, blue: 0.20)
+    static let glow = Color(red: 1.0, green: 0.74, blue: 0.32)
+    #else
     static let forestDeep = Color(red: 0.04, green: 0.13, blue: 0.09)
     static let forest = Color(red: 0.08, green: 0.24, blue: 0.16)
     static let moss = Color(red: 0.16, green: 0.38, blue: 0.24)
     static let leaf = Color(red: 0.36, green: 0.72, blue: 0.42)
     static let glow = Color(red: 0.74, green: 0.96, blue: 0.55)
+    #endif
     static let cream = Color(red: 0.98, green: 0.96, blue: 0.90)
     static let bark = Color(red: 0.42, green: 0.29, blue: 0.18)
     static let gold = Color(red: 1.0, green: 0.80, blue: 0.32)
@@ -15,9 +24,15 @@ enum Theme {
     static let cardStroke = Color.white.opacity(0.12)
     static let textDim = Color.white.opacity(0.65)
 
+    #if TRACK_APP
+    static let background = LinearGradient(
+        colors: [Color(red: 0.09, green: 0.13, blue: 0.24), forestDeep, Color(red: 0.01, green: 0.02, blue: 0.05)],
+        startPoint: .top, endPoint: .bottom)
+    #else
     static let background = LinearGradient(
         colors: [Color(red: 0.06, green: 0.20, blue: 0.14), forestDeep, Color(red: 0.02, green: 0.07, blue: 0.06)],
         startPoint: .top, endPoint: .bottom)
+    #endif
 
     static let goldGradient = LinearGradient(colors: [Color(red: 1, green: 0.9, blue: 0.5), gold, Color(red: 0.9, green: 0.55, blue: 0.15)],
                                              startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -37,7 +52,9 @@ struct ForestBackground: View {
             Theme.background
             RadialGradient(colors: [Theme.leaf.opacity(0.22), .clear], center: .topTrailing, startRadius: 10, endRadius: 420)
             RadialGradient(colors: [Theme.gold.opacity(0.08), .clear], center: .bottomLeading, startRadius: 10, endRadius: 380)
+            #if !TRACK_APP
             if !reduceMotion { FallingLeaves() }
+            #endif
         }
         .ignoresSafeArea()
     }

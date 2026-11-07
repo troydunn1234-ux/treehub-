@@ -8,6 +8,11 @@ struct TrackView: View {
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.modelContext) private var context
     @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
+    #if !TRACK_APP
+    @Query(sort: \Hug.date, order: .reverse) private var hugs: [Hug]
+    #endif
+    /// Opens the hug logger (TreeHub only).
+    var onHug: (() -> Void)? = nil
 
     @State private var chosenKind: ActivityKind = .walk
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
@@ -39,7 +44,16 @@ struct TrackView: View {
     private var idleView: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
+                #if TRACK_APP
                 Text("Track").font(Theme.title(36)).foregroundStyle(.white).padding(.top, 8)
+                #else
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Stroll").font(Theme.title(36)).foregroundStyle(.white)
+                    Text("Wander to your trees. Every hug along the way gets pinned on your route.")
+                        .font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
+                }
+                .padding(.top, 8)
+                #endif
 
                 ZStack(alignment: .bottom) {
                     Map(position: $camera) { UserAnnotation() }
@@ -67,7 +81,7 @@ struct TrackView: View {
                 VStack(alignment: .leading, spacing: 10) {
                     Text("What are you doing?").font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
-                        ForEach(ActivityKind.allCases) { k in
+                        ForEach(ActivityKind.available) { k in
                             Button {
                                 withAnimation(.snappy) { chosenKind = k }
                             } label: {
@@ -101,13 +115,22 @@ struct TrackView: View {
                     .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
 
                 if !activities.isEmpty {
-                    SectionHeader(title: "Your moves", symbol: "clock.arrow.circlepath").padding(.top, 6)
+                    #if TRACK_APP
+                    SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath").padding(.top, 6)
+                    ForEach(activities.prefix(3)) { a in
+                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
+                    }
+                    #else
+                    SectionHeader(title: "Your strolls", symbol: "clock.arrow.circlepath").padding(.top, 6)
                     ForEach(activities) { a in
                         NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
                     }
+                    #endif
                 }
 
+                #if TRACK_APP
                 healthSection
+                #endif
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 120)
@@ -208,6 +231,11 @@ struct TrackView: View {
                     MapPolyline(coordinates: coords)
                         .stroke(Theme.glow, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
                 }
+                #if !TRACK_APP
+                ForEach(hugs.filter { $0.strollID == tracker.sessionID && $0.coordinate != nil }) { h in
+                    Annotation(h.treeName, coordinate: h.coordinate!) { TreePin(photo: h.treePhoto, size: 34) }
+                }
+                #endif
                 if let first = coords.first {
                     Annotation("Start", coordinate: first) {
                         Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))
@@ -231,7 +259,7 @@ struct TrackView: View {
                 }
                 HStack {
                     Menu {
-                        ForEach(ActivityKind.allCases) { k in
+                        ForEach(ActivityKind.available) { k in
                             Button { tracker.setKind(k) } label: { Label(k.title, systemImage: k.symbol) }
                         }
                     } label: {
@@ -271,6 +299,12 @@ struct TrackView: View {
                         .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
                 }
 
+                if let onHug {
+                    Button(action: onHug) {
+                        Label(hugCountLabel, systemImage: "tree.fill")
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                }
                 HStack(spacing: 12) {
                     if tracker.state == .recording {
                         Button { tracker.pause() } label: { Label("Pause", systemImage: "pause.fill") }
@@ -302,12 +336,22 @@ struct TrackView: View {
         }
     }
 
+    private var hugCountLabel: String {
+        #if TRACK_APP
+        return "Hug a tree"
+        #else
+        let n = hugs.filter { $0.strollID == tracker.sessionID }.count
+        return n == 0 ? "Hug a tree here" : "Hug a tree here · \(n) so far"
+        #endif
+    }
+
     private func finish() {
         let suggestion = tracker.suggestedKind
         let originalKind = tracker.kind
         guard let a = tracker.finish() else { return }
         // If the motion chip strongly disagrees (e.g. you picked Walk but drove), switch it; you can change it back.
-        if suggestion != originalKind && (suggestion == .drive || originalKind == .drive) { a.kind = suggestion }
+        if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
+            && ActivityKind.available.contains(suggestion) { a.kind = suggestion }
         context.insert(a)
         try? context.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)

@@ -52,7 +52,6 @@ struct HugTag: Identifiable, Hashable {
 
 // MARK: - Leaves (random collectible dropped by every hug)
 
-enum LeafShape { case oval, heart, ginkgo, maple, oak, needle }
 
 struct LeafType: Identifiable {
     let id: String
@@ -276,14 +275,15 @@ enum GameEngine {
             for i in 0..<coords.count { for j in (i + 1)..<coords.count { farthest = max(farthest, Geo.distance(coords[i], coords[j])) } }
         }
 
-        let onFoot = activities.filter { $0.kind.isOnFoot }
-        let movedMiles = activities.filter { $0.kind != .drive }.reduce(0) { $0 + $1.distanceM } / 1609.344
-        let longestRunKm = activities.filter { $0.kind == .run }.map(\.distanceM).max().map { $0 / 1000 } ?? 0
-        let bestClimbFt = onFoot.map(\.elevGainM).max().map { $0 * 3.28084 } ?? 0
-        let longestDriveMi = activities.filter { $0.kind == .drive }.map(\.distanceM).max().map { $0 / 1609.344 } ?? 0
-        let rideMiles = activities.filter { $0.kind == .bike }.reduce(0) { $0 + $1.distanceM } / 1609.344
-        let hikeDays = Set(activities.filter { $0.kind == .hike || $0.kind == .walk }.map { cal.startOfDay(for: $0.start) })
-        let trailHugs = hugs.filter { $0.tags.contains("hike") && hikeDays.contains(cal.startOfDay(for: $0.date)) }.count
+        let movedMiles = activities.reduce(0) { $0 + $1.distanceM } / 1609.344
+        let bestClimbFt = activities.map(\.elevGainM).max().map { $0 * 3.28084 } ?? 0
+        let hikeIDs = Set(activities.filter { $0.kind == .hike }.map(\.id))
+        let strollHugs = hugs.filter { $0.strollID != nil }
+        let strollHugCount = strollHugs.count
+        let trailHugs = strollHugs.filter { hikeIDs.contains($0.strollID!) }.count
+        var perStroll: [UUID: Int] = [:]
+        for h in strollHugs { perStroll[h.strollID!, default: 0] += 1 }
+        let maxHugsOneStroll = perStroll.values.max() ?? 0
 
         func b(_ id: String, _ name: String, _ detail: String, _ symbol: String, _ r: Rarity, _ value: Double, _ goal: Double, unit: String = "") -> BadgeState {
             let p = goal <= 0 ? 0 : min(1, value / goal)
@@ -333,15 +333,15 @@ enum GameEngine {
             b("chill-10", "Certified Chill", "10 hugs tagged Chill", "cloud.sun.fill", .rare, Double(tagCount("chill")), 10),
             b("sober-10", "Clear Mind", "10 hugs tagged Sober", "drop.fill", .rare, Double(tagCount("sober")), 10),
             b("park-10", "Park Regular", "10 hugs tagged Park", "leaf.circle.fill", .rare, Double(tagCount("park")), 10),
-            // Moving
-            b("first-track", "First Tracks", "Record your first activity", "location.fill", .common, Double(activities.count), 1),
-            b("miles-100", "Hundred Miles", "Move 100 miles on foot or bike", "figure.walk.motion", .epic, movedMiles, 100, unit: " mi"),
-            b("run-10k", "10K Club", "Run 10 km in one go", "figure.run", .rare, longestRunKm, 10, unit: " km"),
-            b("climb", "Trailblazer", "Climb 1,000 ft in one outing", "mountain.2.fill", .rare, bestClimbFt, 1000, unit: " ft"),
-            b("ride-100", "Century Wheels", "Ride 100 miles total", "bicycle", .epic, rideMiles, 100, unit: " mi"),
-            b("road-trip", "Road Tripper", "Drive 100 miles in one trip", "car.fill", .rare, longestDriveMi, 100, unit: " mi"),
-            b("trail-hug", "Trail Hug", "Hug a tree tagged Hike on a day you tracked a hike", "point.topleft.down.to.point.bottomright.curvepath.fill",
-              .epic, Double(trailHugs), 1),
+            // Strolls & hikes
+            b("first-track", "First Steps", "Record your first stroll or hike", "figure.walk", .common, Double(activities.count), 1),
+            b("strolls-10", "Wanderlust", "Record 10 strolls or hikes", "shoe.2.fill", .rare, Double(activities.count), 10),
+            b("miles-100", "Hundred Miles", "Stroll or hike 100 miles", "figure.walk.motion", .epic, movedMiles, 100, unit: " mi"),
+            b("climb", "Trailblazer", "Climb 1,000 ft in one hike", "mountain.2.fill", .rare, bestClimbFt, 1000, unit: " ft"),
+            b("stroll-hug", "Stroll Hug", "Hug a tree during a stroll", "figure.walk.circle.fill", .common, Double(strollHugCount), 1),
+            b("stroll-hugs-3", "Tree Hopper", "Hug 3 trees on one stroll", "arrow.triangle.branch", .epic, Double(maxHugsOneStroll), 3),
+            b("trail-hug", "Trail Hug", "Hug a tree during a recorded hike", "point.topleft.down.to.point.bottomright.curvepath.fill",
+              .rare, Double(trailHugs), 1),
         ]
     }
 
@@ -355,22 +355,3 @@ enum GameEngine {
     }
 }
 
-/// Small deterministic random generator seeded from a string.
-struct SeededRNG {
-    private var state: UInt64
-
-    init(seed: String) {
-        var h: UInt64 = 0xcbf29ce484222325
-        for b in seed.utf8 { h ^= UInt64(b); h = h &* 0x100000001b3 }
-        state = h == 0 ? 0x9E3779B97F4A7C15 : h
-    }
-
-    mutating func next() -> Double {
-        state = state &+ 0x9E3779B97F4A7C15
-        var z = state
-        z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
-        z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
-        z = z ^ (z >> 31)
-        return Double(z >> 11) / Double(1 << 53)
-    }
-}

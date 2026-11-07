@@ -26,19 +26,22 @@ jobs:
           brew install xcodegen
           xcodegen generate
 
-      - name: Build for iOS Simulator (no signing)
+      - name: Build both apps for iOS Simulator (no signing)
         run: |
           set -o pipefail
-          xcodebuild build \
-            -project TreeHub.xcodeproj \
-            -scheme TreeHub \
-            -sdk iphonesimulator \
-            -destination 'generic/platform=iOS Simulator' \
-            -configuration Debug \
-            -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO \
-            | tee build.log | grep -E "error:|warning: |BUILD (SUCCEEDED|FAILED)" || true
-          grep -q "BUILD SUCCEEDED" build.log
+          for SCHEME in TreeHub TrackHub; do
+            echo "=== $SCHEME ==="
+            xcodebuild build \
+              -project TreeHub.xcodeproj \
+              -scheme $SCHEME \
+              -sdk iphonesimulator \
+              -destination 'generic/platform=iOS Simulator' \
+              -configuration Debug \
+              -derivedDataPath build \
+              CODE_SIGNING_ALLOWED=NO \
+              | tee -a build.log | grep -E "error:|warning: |BUILD (SUCCEEDED|FAILED)" || true
+          done
+          [ "$(grep -c 'BUILD SUCCEEDED' build.log)" -eq 2 ]
 
       - name: Show errors
         if: failure()
@@ -74,7 +77,7 @@ jobs:
         run: |
           git config user.name "TreeHub CI"
           git config user.email "ci@users.noreply.github.com"
-          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements
+          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements TrackApp/Info.plist TrackApp/TrackHub.entitlements
           if git diff --cached --quiet; then
             echo "Project unchanged"
           else

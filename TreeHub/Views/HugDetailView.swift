@@ -61,6 +61,7 @@ struct HugDetailView: View {
                 FlowLayout(spacing: 8) {
                     Chip(label: "+\(hug.xp) XP", symbol: "star.fill", selected: true)
                     if hug.barefoot { Chip(label: "Barefoot", symbol: "shoeprints.fill") }
+                    if hug.strollID != nil { Chip(label: "On a stroll", symbol: "figure.walk") }
                     ForEach(hug.tags, id: \.self) { t in Chip(label: HugTag.label(t), symbol: HugTag.symbol(t)) }
                     if !hug.weather.isEmpty { Chip(label: hug.weather, symbol: "cloud.sun") }
                 }

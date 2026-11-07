@@ -53,7 +53,7 @@ struct RootView: View {
             Group {
                 switch tab {
                 case .home: HomeView(tab: $tab, showHugLog: $showHugLog)
-                case .track: TrackView()
+                case .track: TrackView(onHug: { showHugLog = true })
                 case .trees: TreesView()
                 case .collection: CollectionView()
                 }
@@ -63,7 +63,7 @@ struct RootView: View {
             TabBar(tab: $tab, recording: tracker.isActive) { showHugLog = true }
         }
         .sheet(isPresented: $showHugLog) {
-            HugLogView(editing: nil)
+            HugLogView(editing: nil, strollID: tracker.isActive ? tracker.sessionID : nil)
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
@@ -88,7 +88,7 @@ struct RootView: View {
         if ProcessInfo.processInfo.arguments.contains("-hugLog") { showHugLog = true }
         if ProcessInfo.processInfo.arguments.contains("-autostart") {
             tab = .track
-            tracker.start(kind: .run)
+            tracker.start(kind: .walk)
         }
         if ProcessInfo.processInfo.arguments.contains("-celebrate") {
             var b = XPBreakdown()
@@ -110,7 +110,7 @@ struct TabBar: View {
     var body: some View {
         HStack(spacing: 0) {
             item(.home, "house.fill", "Home")
-            item(.track, recording ? "record.circle" : "map.fill", recording ? "Live" : "Track")
+            item(.track, recording ? "record.circle" : "figure.walk", recording ? "Live" : "Stroll")
             Button(action: onHug) {
                 ZStack {
                     Circle().fill(Theme.leafGradient).frame(width: 64, height: 64)
@@ -158,6 +158,7 @@ struct TabBar: View {
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityIdentifier("tab-\(label)")
         .haptic()
     }
 }

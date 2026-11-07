@@ -14,11 +14,13 @@ settings:
     DEVELOPMENT_TEAM: ""
     ENABLE_PREVIEWS: YES
 targets:
+  # Tree Hugger game (with Stroll / Hike)
   TreeHub:
     type: application
     platform: iOS
     sources:
       - path: TreeHub
+      - path: Shared
     entitlements:
       path: TreeHub/TreeHub.entitlements
       properties:
@@ -40,19 +42,59 @@ targets:
         UIBackgroundModes:
           - location
           - remote-notification
-        NSLocationWhenInUseUsageDescription: TreeHub uses your location to track your runs, hikes, rides and drives, and to pin the trees you hug.
-        NSLocationAlwaysAndWhenInUseUsageDescription: TreeHub keeps tracking your route while your phone is locked during a recording you started.
-        NSMotionUsageDescription: TreeHub uses motion data to tell whether you were walking, running, biking or driving.
+        NSLocationWhenInUseUsageDescription: TreeHub uses your location to record your strolls and hikes and to pin the trees you hug.
+        NSLocationAlwaysAndWhenInUseUsageDescription: TreeHub keeps recording your stroll while your phone is locked.
+        NSMotionUsageDescription: TreeHub uses motion data to tell a stroll from a hike.
         NSCameraUsageDescription: TreeHub uses the camera to snap your tree and your tree selfie.
         NSPhotoLibraryUsageDescription: TreeHub lets you pick tree photos and Garmin screenshots from your library.
-        NSHealthShareUsageDescription: TreeHub reads heart rate, breathing rate, mindful minutes and workouts that your Garmin, Whoop and other apps save to Apple Health.
+        NSHealthShareUsageDescription: TreeHub reads heart rate, breathing rate and mindful minutes that your Garmin and Whoop save to Apple Health.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.treehub
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
-        INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+
+  # Standalone tracker: walks, runs, hikes, rides, drives
+  TrackHub:
+    type: application
+    platform: iOS
+    sources:
+      - path: TrackApp
+      - path: Shared
+    entitlements:
+      path: TrackApp/TrackHub.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+        com.apple.developer.icloud-container-identifiers:
+          - iCloud.com.troydunn.trackhub
+        com.apple.developer.icloud-services:
+          - CloudKit
+        aps-environment: development
+    info:
+      path: TrackApp/Info.plist
+      properties:
+        CFBundleDisplayName: TrackHub
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIBackgroundModes:
+          - location
+          - remote-notification
+        NSLocationWhenInUseUsageDescription: TrackHub uses your location to record the route of your walks, runs, hikes, rides and drives.
+        NSLocationAlwaysAndWhenInUseUsageDescription: TrackHub keeps recording your route while your phone is locked.
+        NSMotionUsageDescription: TrackHub uses motion data to tell whether you were walking, running, biking or driving.
+        NSHealthShareUsageDescription: TrackHub reads the workouts and heart rate that your Garmin and Whoop save to Apple Health.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.trackhub
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) TRACK_APP"
+
   TreeHubUITests:
     type: bundle.ui-testing
     platform: iOS
@@ -65,6 +107,20 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.treehub.uitests
         GENERATE_INFOPLIST_FILE: YES
         TEST_TARGET_NAME: TreeHub
+
+  TrackHubUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - path: TrackHubUITests
+    dependencies:
+      - target: TrackHub
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.trackhub.uitests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_TARGET_NAME: TrackHub
+
 schemes:
   TreeHub:
     build:
@@ -74,4 +130,11 @@ schemes:
     test:
       targets:
         - TreeHubUITests
-
+  TrackHub:
+    build:
+      targets:
+        TrackHub: all
+        TrackHubUITests: [test]
+    test:
+      targets:
+        - TrackHubUITests

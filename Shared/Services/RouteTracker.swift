@@ -19,6 +19,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var currentSpeed: Double = 0
     private(set) var accuracy: Double = -1
     private(set) var startDate: Date?
+    /// Becomes the saved Activity's id, so things logged mid-recording (like hugs) can point at it.
+    private(set) var sessionID = UUID()
     private(set) var authorization: CLAuthorizationStatus = .notDetermined
     private(set) var recoveredFromCrash = false
     private(set) var motionCounts: [ActivityKind: Int] = [:]
@@ -80,6 +82,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         reset()
         self.kind = kind
         applyKindSettings()
+        sessionID = UUID()
         startDate = Date()
         resumedAt = Date()
         state = .recording
@@ -112,6 +115,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         if state == .recording, let resumedAt { accumulated += Date().timeIntervalSince(resumedAt) }
         stopUpdates()
         let a = Activity()
+        a.id = sessionID
         a.kind = kind
         a.start = startDate
         a.end = startDate.addingTimeInterval(max(accumulated, 1))
@@ -281,6 +285,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         var elevGain: Double
         var maxSpeed: Double
         var movingSec: Double
+        var sessionID: UUID?
     }
 
     private static var snapshotURL: URL {
@@ -294,7 +299,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         guard state != .idle, let startDate else { return }
         let snap = Snapshot(state: state, kind: kind, startDate: startDate, accumulated: accumulated,
                             resumedAt: resumedAt, points: points, distance: distance,
-                            elevGain: elevGain, maxSpeed: maxSpeed, movingSec: movingSec)
+                            elevGain: elevGain, maxSpeed: maxSpeed, movingSec: movingSec, sessionID: sessionID)
         if let data = try? JSONEncoder().encode(snap) {
             try? data.write(to: Self.snapshotURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
         }
@@ -309,6 +314,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
               let snap = try? JSONDecoder().decode(Snapshot.self, from: data) else { return }
         kind = snap.kind
         applyKindSettings()
+        sessionID = snap.sessionID ?? UUID()
         startDate = snap.startDate
         points = snap.points
         distance = snap.distance

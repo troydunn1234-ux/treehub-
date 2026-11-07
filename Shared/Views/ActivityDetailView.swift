@@ -12,6 +12,10 @@ struct ActivityDetailView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var confirmDelete = false
     @State private var gpxURL: URL?
+    #if !TRACK_APP
+    @Query(sort: \Hug.date) private var allHugs: [Hug]
+    private var strollHugs: [Hug] { allHugs.filter { $0.strollID == activity.id } }
+    #endif
 
     private var coords: [CLLocationCoordinate2D] { activity.route.map(\.coordinate) }
 
@@ -23,7 +27,9 @@ struct ActivityDetailView: View {
                         Image(systemName: "checkmark.seal.fill").font(.system(size: 28)).foregroundStyle(Theme.glow)
                         VStack(alignment: .leading) {
                             Text("Saved!").font(Theme.title(26))
+                            #if !TRACK_APP
                             Text("+\(GameEngine.xp(for: activity)) XP").font(Theme.rounded(15, .heavy)).foregroundStyle(Theme.gold)
+                            #endif
                         }
                     }
                     .padding(.top, 8)
@@ -38,6 +44,11 @@ struct ActivityDetailView: View {
                                 Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))
                             }
                         }
+                        #if !TRACK_APP
+                        ForEach(strollHugs.filter { $0.coordinate != nil }) { h in
+                            Annotation(h.treeName, coordinate: h.coordinate!) { TreePin(photo: h.treePhoto, size: 36) }
+                        }
+                        #endif
                         if let e = coords.last {
                             Annotation("Finish", coordinate: e) {
                                 Image(systemName: "flag.checkered.circle.fill").font(.system(size: 22))
@@ -83,7 +94,7 @@ struct ActivityDetailView: View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
-                        ForEach(ActivityKind.allCases) { k in
+                        ForEach(ActivityKind.available) { k in
                             Button { activity.kind = k } label: {
                                 Image(systemName: k.symbol)
                                     .font(.system(size: 18, weight: .semibold))
@@ -98,6 +109,29 @@ struct ActivityDetailView: View {
                         }
                     }
                 }
+
+                #if !TRACK_APP
+                if !strollHugs.isEmpty {
+                    GlassCard(padding: 14) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            SectionHeader(title: strollHugs.count == 1 ? "1 tree hugged on the way" : "\(strollHugs.count) trees hugged on the way",
+                                          symbol: "tree.fill")
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 10) {
+                                    ForEach(strollHugs) { h in
+                                        VStack(spacing: 4) {
+                                            PhotoView(data: h.treePhoto ?? h.selfiePhoto)
+                                                .frame(width: 76, height: 76)
+                                                .clipShape(RoundedRectangle(cornerRadius: 14))
+                                            Text(h.treeName).font(Theme.rounded(12, .bold)).lineLimit(1).frame(width: 76)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                #endif
 
                 TextField("", text: $activity.notes, prompt: Text("Notes").foregroundStyle(Theme.textDim), axis: .vertical)
                     .lineLimit(2...6)

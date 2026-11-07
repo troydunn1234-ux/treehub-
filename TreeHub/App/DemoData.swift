@@ -34,6 +34,7 @@ enum DemoData {
             (6, 1, 11, 20, true, ["hike", "sober"], 5),
             (9, 0, 18, 8, false, ["park"], 4),
         ]
+        let hikeID = UUID()
         let leaves = ["heart", "oak", "ginkgo", "moonlit", "maple"]
         for (i, p) in plan.enumerated() {
             let t = trees[p.1]
@@ -59,11 +60,13 @@ enum DemoData {
             h.weather = "Sunny"
             h.notes = i == 0 ? "Socks off, cold grass, twelve minutes of Tranquility. Felt the whole trunk breathing with me." : ""
             h.leafKey = leaves[i % leaves.count]
+            if i == 1 { h.strollID = hikeID }
             h.xp = GameEngine.xp(for: h, existing: []).total
             context.insert(h)
         }
         // A walk around Campbell
         let a = Activity()
+        a.id = hikeID
         a.kind = .hike
         a.start = cal.date(byAdding: .hour, value: -26, to: now)!
         a.end = a.start.addingTimeInterval(62 * 60)
@@ -84,17 +87,6 @@ enum DemoData {
         a.endPlace = "Los Gatos Creek Trail, Campbell"
         context.insert(a)
 
-        let d = Activity()
-        d.kind = .drive
-        d.title = "Drive to Big Basin"
-        d.start = cal.date(byAdding: .day, value: -6, to: now)!
-        d.end = d.start.addingTimeInterval(55 * 60)
-        d.distanceM = 48_000
-        d.movingSec = 3000
-        d.maxSpeed = 29
-        d.startPlace = "Campbell"
-        d.endPlace = "Boulder Creek"
-        context.insert(d)
         try? context.save()
     }
 

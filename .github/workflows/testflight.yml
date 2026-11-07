@@ -8,6 +8,12 @@ name: Ship to TestFlight
 #   ASC_KEY_P8        – full text of the downloaded AuthKey_XXXX.p8 file
 on:
   workflow_dispatch:
+    inputs:
+      app:
+        description: Which app to ship
+        type: choice
+        options: [TreeHub, TrackHub]
+        default: TreeHub
 
 jobs:
   testflight:
@@ -55,9 +61,9 @@ jobs:
         run: |
           set -o pipefail
           xcodebuild archive \
-            -project TreeHub.xcodeproj -scheme TreeHub \
+            -project TreeHub.xcodeproj -scheme ${{ inputs.app }} \
             -destination 'generic/platform=iOS' \
-            -archivePath build/TreeHub.xcarchive \
+            -archivePath build/App.xcarchive \
             -allowProvisioningUpdates \
             -authenticationKeyPath "$KEY_PATH" \
             -authenticationKeyID "$KID" \
@@ -87,7 +93,7 @@ jobs:
           PLIST
           set -o pipefail
           xcodebuild -exportArchive \
-            -archivePath build/TreeHub.xcarchive \
+            -archivePath build/App.xcarchive \
             -exportOptionsPlist ExportOptions.plist \
             -exportPath build/export \
             -allowProvisioningUpdates \

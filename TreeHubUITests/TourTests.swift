@@ -39,6 +39,12 @@ final class TourTests: XCTestCase {
         pause(0.6)
     }
 
+    private func tab(_ name: String) {
+        let b = app.buttons["tab-\(name)"]
+        if b.waitForExistence(timeout: 4) { b.tap() }
+        pause(2.5)
+    }
+
     private func back() {
         let b = app.navigationBars.buttons.element(boundBy: 0)
         if b.exists { b.tap() }
@@ -71,8 +77,7 @@ final class TourTests: XCTestCase {
         pause(2)
 
         // Grove
-        tap("Grove")
-        pause(2.5)
+        tab("Grove")
         tap("Grandpa Oak")
         pause(2.5)
         scrollDown(2)
@@ -82,20 +87,25 @@ final class TourTests: XCTestCase {
         pause(5)
 
         // Collection
-        tap("Collection")
-        pause(2.5)
+        tab("Collection")
         scrollDown(2)
         scrollUp(2)
-        tap("Leaves")
+        let cseg = app.segmentedControls.firstMatch
+        if cseg.exists { cseg.buttons.element(boundBy: 1).tap() }
         pause(3)
 
-        // Track a run
-        tap("Track")
-        pause(2.5)
-        tap("Run")
-        pause(1)
-        tap("Start Run")
-        pause(16)
+        // Stroll, hugging a tree along the way
+        tab("Stroll")
+        tap("Start Stroll")
+        pause(12)
+        tap("Hug a tree here")
+        pause(3)
+        tap("Barefoot")
+        scrollDown(3, pauseEach: 0.6)
+        tap("Save this hug")
+        pause(6)
+        tap("Back to the forest")
+        pause(6)
         tap("Finish")
         pause(1.5)
         tap("Save it")
@@ -105,7 +115,7 @@ final class TourTests: XCTestCase {
         pause(2)
 
         // Back home with everything
-        tap("Home")
-        pause(3)
+        tab("Home")
+        pause(2)
     }
 }

@@ -83,6 +83,8 @@ struct CelebrationData: Identifiable {
 @MainActor
 struct HugLogView: View {
     let editing: Hug?
+    /// Set when the hug happens during a stroll or hike that's being recorded.
+    var strollID: UUID? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -127,6 +129,13 @@ struct HugLogView: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 16) {
+                        if editing == nil && strollID != nil {
+                            Label("This hug gets pinned on your stroll", systemImage: "figure.walk")
+                                .font(Theme.rounded(14, .bold))
+                                .foregroundStyle(Theme.forestDeep)
+                                .padding(.horizontal, 14).padding(.vertical, 8)
+                                .background(Theme.leafGradient, in: Capsule())
+                        }
                         photosCard
                         treeCard
                         locationCard
@@ -565,6 +574,7 @@ struct HugLogView: View {
         }
         let isNew = editing == nil
         if isNew {
+            hug.strollID = strollID
             hug.leafKey = GameEngine.rollLeaf(for: hug).id
             context.insert(hug)
         }
