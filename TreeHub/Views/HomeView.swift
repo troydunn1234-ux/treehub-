@@ -16,17 +16,22 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    header
-                    levelCard
-                    statsGrid
-                    if hugs.isEmpty { firstHugCard } else { recentHugs }
-                    nextBadges
-                    if !activities.isEmpty { recentMoves }
+                VStack(alignment: .leading, spacing: Theme.gap + 6) {
+                    hero
+                    Group {
+                        levelCard.offset(y: -54).padding(.bottom, -54)
+                        quickActions
+                        statsGrid
+                        if hugs.isEmpty { firstHugCard } else { recentHugs }
+                        nextBadges
+                        if !activities.isEmpty { recentMoves }
+                    }
+                    .padding(.horizontal, Theme.pad)
                 }
-                .padding(.horizontal, 16)
-                .padding(.bottom, 120)
+                .padding(.bottom, 130)
             }
+            .ignoresSafeArea(edges: .top)
+            .scrollIndicators(.hidden)
             .forestScreen()
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: UUID.self) { id in
@@ -37,23 +42,92 @@ struct HomeView: View {
         }
     }
 
-    private var header: some View {
-        HStack(alignment: .top) {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(greeting.uppercased()).font(.system(size: 12, weight: .heavy, design: .rounded)).tracking(1.5)
+    /// Full-bleed photo of your latest hug that stretches when you pull down.
+    private var hero: some View {
+        let photo = hugs.first.flatMap { $0.selfiePhoto ?? $0.treePhoto }
+        return ZStack(alignment: .bottomLeading) {
+            GeometryReader { geo in
+                let pull = max(0, geo.frame(in: .scrollView).minY)
+                Group {
+                    if let photo, let ui = UIImage(data: photo) {
+                        Image(uiImage: ui).resizable().scaledToFill()
+                    } else {
+                        ZStack {
+                            LinearGradient(colors: [Theme.moss, Theme.forest, Theme.forestDeep], startPoint: .top, endPoint: .bottom)
+                            Image(systemName: "tree.fill")
+                                .font(.system(size: 120))
+                                .foregroundStyle(Theme.leafGradient)
+                                .opacity(0.35)
+                                .offset(y: 10)
+                        }
+                    }
+                }
+                .frame(width: geo.size.width, height: geo.size.height + pull)
+                .clipped()
+                .offset(y: -pull)
+                .overlay {
+                    LinearGradient(stops: [
+                        .init(color: .black.opacity(0.45), location: 0),
+                        .init(color: .clear, location: 0.3),
+                        .init(color: Theme.forestDeep.opacity(0.65), location: 0.72),
+                        .init(color: Theme.forestDeep, location: 1),
+                    ], startPoint: .top, endPoint: .bottom)
+                    .offset(y: -pull)
+                }
+            }
+            .frame(height: 400)
+
+            VStack(alignment: .leading, spacing: 4) {
+                Text(greeting.uppercased())
+                    .font(.system(size: 12, weight: .heavy, design: .rounded)).tracking(2)
                     .foregroundStyle(Theme.glow)
-                Text("Rootbound").font(Theme.title(36)).foregroundStyle(.white)
+                Text("Rootbound").font(Theme.title(44)).foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.4), radius: 10, y: 4)
+                if let latest = hugs.first {
+                    Text("Last hug: \(latest.treeName) · \(Format.day(latest.date))")
+                        .font(Theme.rounded(14, .semibold)).foregroundStyle(.white.opacity(0.8))
+                }
             }
-            Spacer()
+            .padding(.horizontal, Theme.pad)
+            .padding(.bottom, 74)
+        }
+        .overlay(alignment: .topTrailing) {
             Button { showSettings = true } label: {
-                Image(systemName: "gearshape.fill").font(.system(size: 18, weight: .semibold))
-                    .foregroundStyle(.white.opacity(0.8))
-                    .frame(width: 40, height: 40)
-                    .background(Color.white.opacity(0.08), in: Circle())
+                Image(systemName: "gearshape.fill").font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(.white)
+                    .frame(width: 42, height: 42)
+                    .background(.ultraThinMaterial, in: Circle())
             }
+            .pressable()
+            .padding(.trailing, Theme.pad)
+            .padding(.top, 60)
             .accessibilityLabel("Settings")
         }
-        .padding(.top, 8)
+    }
+
+    private var quickActions: some View {
+        HStack(spacing: 12) {
+            Button { showHugLog = true } label: {
+                Label("Hug a tree", systemImage: "heart.fill")
+                    .font(Theme.rounded(16, .bold))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(Theme.leafGradient, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .shadow(color: Theme.glow.opacity(0.35), radius: 12, y: 4)
+            }
+            .pressable()
+            Button { withAnimation(.spring(response: 0.38, dampingFraction: 0.8)) { tab = .track } } label: {
+                Label("Go for a stroll", systemImage: "figure.walk")
+                    .font(Theme.rounded(16, .bold))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+            }
+            .pressable()
+        }
     }
 
     private var greeting: String {
@@ -66,24 +140,29 @@ struct HomeView: View {
     }
 
     private var levelCard: some View {
-        GlassCard {
+        GlassCard(padding: 18) {
             HStack(spacing: 18) {
-                LevelRing(info: level, size: 92)
-                VStack(alignment: .leading, spacing: 6) {
+                LevelRing(info: level, size: 86)
+                VStack(alignment: .leading, spacing: 8) {
                     Text(level.title).font(Theme.title(24)).foregroundStyle(.white)
-                    Text("\(level.xpIntoLevel) / \(level.xpForNext) XP to level \(level.level + 1)")
-                        .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                    HStack(spacing: 6) {
-                        Image(systemName: "flame.fill")
-                            .foregroundStyle(streak > 0 ? Theme.gold : Color.white.opacity(0.3))
-                            .symbolEffect(.bounce, value: streak)
-                        Text(streak > 0 ? "\(streak)-day hug streak" : "Start a streak today")
-                            .font(Theme.rounded(14, .bold))
-                            .foregroundStyle(streak > 0 ? Theme.gold : Theme.textDim)
+                    ProgressView(value: level.progress)
+                        .tint(Theme.glow)
+                        .scaleEffect(x: 1, y: 1.4, anchor: .center)
+                    HStack {
+                        Text("\(level.xpForNext - level.xpIntoLevel) XP to level \(level.level + 1)")
+                            .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+                        Spacer()
+                        HStack(spacing: 4) {
+                            Image(systemName: "flame.fill").symbolEffect(.bounce, value: streak)
+                            Text(streak > 0 ? "\(streak)" : "0")
+                        }
+                        .font(Theme.rounded(13, .heavy))
+                        .foregroundStyle(streak > 0 ? Theme.forestDeep : Theme.textDim)
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(streak > 0 ? AnyShapeStyle(Theme.goldGradient) : AnyShapeStyle(Color.white.opacity(0.08)), in: Capsule())
+                        .accessibilityLabel("\(streak)-day hug streak")
                     }
-                    .padding(.top, 2)
                 }
-                Spacer(minLength: 0)
             }
         }
     }
@@ -92,7 +171,7 @@ struct HomeView: View {
         let trees = Set(hugs.map(\.treeID)).count
         let minutes = hugs.reduce(0) { $0 + $1.durationMin }
         let moved = activities.reduce(0) { $0 + $1.distanceM }
-        return LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+        return LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
             StatTile(value: "\(hugs.count)", label: "Hugs", symbol: "heart.fill", tint: Color(red: 1, green: 0.5, blue: 0.6))
             StatTile(value: "\(trees)", label: "Tree friends", symbol: "tree.fill")
             StatTile(value: Format.minutes(minutes), label: "Breathwork", symbol: "wind", tint: Theme.sky)
@@ -115,20 +194,32 @@ struct HomeView: View {
                 }
             }
         }
-        .buttonStyle(.plain)
+        .pressable()
     }
 
     private var recentHugs: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Recent hugs", symbol: "heart.fill")
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 12) {
-                    ForEach(hugs.prefix(10)) { h in
-                        NavigationLink(value: h.id) { HugCard(hug: h) }.buttonStyle(.plain)
+                LazyHStack(spacing: 16) {
+                    ForEach(Array(hugs.prefix(10).enumerated()), id: \.element.id) { i, h in
+                        NavigationLink(value: h.id) { HugCard(hug: h) }
+                            .pressable()
+                            .rotationEffect(.degrees(i % 2 == 0 ? -1.5 : 1.5))
+                            .scrollTransition(.interactive, axis: .horizontal) { content, phase in
+                                content
+                                    .scaleEffect(phase.isIdentity ? 1 : 0.9)
+                                    .opacity(phase.isIdentity ? 1 : 0.7)
+                                    .rotation3DEffect(.degrees(phase.value * -12), axis: (x: 0, y: 1, z: 0))
+                            }
                     }
                 }
-                .padding(.vertical, 4)
+                .scrollTargetLayout()
+                .padding(.vertical, 12)
             }
+            .scrollTargetBehavior(.viewAligned)
+            .contentMargins(.horizontal, Theme.pad, for: .scrollContent)
+            .padding(.horizontal, -Theme.pad)
         }
     }
 
@@ -143,8 +234,8 @@ struct HomeView: View {
                     Text("\(earned)/\(all.count) badges").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow)
                 }
             }
-            GlassCard(padding: 12) {
-                VStack(spacing: 12) {
+            GlassCard(padding: 16) {
+                VStack(spacing: 16) {
                     ForEach(Array(next)) { b in
                         HStack(spacing: 12) {
                             Medallion(symbol: b.symbol, rarity: b.rarity, earned: false, size: 42)
@@ -171,7 +262,7 @@ struct HomeView: View {
                 Button { tab = .track } label: { Text("All").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow) }
             }
             ForEach(activities.prefix(3)) { a in
-                NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
+                NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
             }
         }
     }
@@ -184,7 +275,7 @@ struct HugCard: View {
         VStack(alignment: .leading, spacing: 8) {
             ZStack(alignment: .topTrailing) {
                 PhotoView(data: hug.selfiePhoto ?? hug.treePhoto)
-                    .frame(width: 170, height: 200)
+                    .frame(width: 188, height: 228)
                     .clipped()
                 if let leaf = LeafType.find(hug.leafKey) {
                     LeafView(leaf: leaf, size: 30)
@@ -207,9 +298,9 @@ struct HugCard: View {
             .padding(.horizontal, 4)
             .padding(.bottom, 4)
         }
-        .padding(8)
-        .background(Theme.cream, in: RoundedRectangle(cornerRadius: 10))
-        .shadow(color: .black.opacity(0.35), radius: 8, y: 4)
+        .padding(9)
+        .background(Theme.cream, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .shadow(color: .black.opacity(0.45), radius: 14, y: 8)
     }
 }
 

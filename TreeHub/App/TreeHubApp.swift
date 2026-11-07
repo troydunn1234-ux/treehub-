@@ -37,7 +37,7 @@ struct TreeHubApp: App {
     }
 }
 
-enum AppTab: Hashable { case home, track, trees, collection }
+enum AppTab: String, Hashable { case home, track, trees, collection }
 
 struct RootView: View {
     @Environment(RouteTracker.self) private var tracker
@@ -60,7 +60,18 @@ struct RootView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
 
-            TabBar(tab: $tab, recording: tracker.isActive) { showHugLog = true }
+            FloatingTabBar(
+                items: [
+                    TabBarItem(id: "home", symbol: "house.fill", label: "Home"),
+                    TabBarItem(id: "track", symbol: tracker.isActive ? "record.circle" : "figure.walk", label: "Stroll", alert: tracker.isActive),
+                    TabBarItem(id: "trees", symbol: "tree.fill", label: "Grove"),
+                    TabBarItem(id: "collection", symbol: "sparkles", label: "Collection"),
+                ],
+                selection: Binding(get: { tab.rawValue }, set: { tab = AppTab(rawValue: $0) ?? .home }),
+                centerSymbol: "heart.fill",
+                centerLabel: "Log a tree hug",
+                centerAction: { showHugLog = true }
+            )
         }
         .sheet(isPresented: $showHugLog) {
             HugLogView(editing: nil, strollID: tracker.isActive ? tracker.sessionID : nil)
@@ -99,66 +110,5 @@ struct RootView: View {
                                               levelBefore: GameEngine.level(for: 400), levelAfter: GameEngine.level(for: 575),
                                               treeName: "Grandpa Oak")
         }
-    }
-}
-
-struct TabBar: View {
-    @Binding var tab: AppTab
-    var recording: Bool
-    var onHug: () -> Void
-
-    var body: some View {
-        HStack(spacing: 0) {
-            item(.home, "house.fill", "Home")
-            item(.track, recording ? "record.circle" : "figure.walk", recording ? "Live" : "Stroll")
-            Button(action: onHug) {
-                ZStack {
-                    Circle().fill(Theme.leafGradient).frame(width: 64, height: 64)
-                        .shadow(color: Theme.glow.opacity(0.6), radius: 14)
-                    Image(systemName: "tree.fill").font(.system(size: 26, weight: .bold)).foregroundStyle(Theme.forestDeep)
-                    Image(systemName: "plus.circle.fill")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundStyle(Theme.forestDeep, Theme.gold)
-                        .offset(x: 20, y: -20)
-                }
-            }
-            .buttonStyle(.plain)
-            .haptic(.medium)
-            .offset(y: -18)
-            .frame(maxWidth: .infinity)
-            .accessibilityLabel("Log a tree hug")
-            item(.trees, "tree.circle.fill", "Grove")
-            item(.collection, "sparkles", "Collection")
-        }
-        .padding(.horizontal, 8)
-        .padding(.top, 10)
-        .padding(.bottom, 4)
-        .background(
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(.ultraThinMaterial)
-                .overlay(RoundedRectangle(cornerRadius: 28, style: .continuous).stroke(Theme.cardStroke))
-                .shadow(color: .black.opacity(0.4), radius: 20, y: 8)
-        )
-        .padding(.horizontal, 12)
-        .padding(.bottom, 2)
-    }
-
-    private func item(_ t: AppTab, _ symbol: String, _ label: String) -> some View {
-        Button {
-            withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { tab = t }
-        } label: {
-            VStack(spacing: 4) {
-                Image(systemName: symbol)
-                    .font(.system(size: 20, weight: .semibold))
-                    .symbolEffect(.pulse, isActive: t == .track && recording)
-                Text(label).font(.system(size: 10, weight: .bold, design: .rounded))
-            }
-            .foregroundStyle(tab == t ? Theme.glow : (t == .track && recording ? Color.red : Color.white.opacity(0.55)))
-            .frame(maxWidth: .infinity)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityIdentifier("tab-\(label)")
-        .haptic()
     }
 }

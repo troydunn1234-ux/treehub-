@@ -21,6 +21,8 @@ struct HistoryView: View {
         return f
     }()
 
+    private static let spring = Animation.spring(response: 0.38, dampingFraction: 0.82)
+
     private var filtered: [Activity] {
         guard let filter else { return activities }
         return activities.filter { $0.kind == filter }
@@ -38,25 +40,41 @@ struct HistoryView: View {
         }
     }
 
+    private var subtitle: String {
+        let list = filtered
+        let total: Double = list.reduce(0.0) { $0 + $1.distanceM }
+        let noun = list.count == 1 ? "trip" : "trips"
+        return "\(list.count) \(noun) · \(Format.distance(total))"
+    }
+
     var body: some View {
-        NavigationStack {
+        let groupList = groups
+        return NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    Text("History").font(Theme.title(36)).foregroundStyle(.white).padding(.top, 8)
+                VStack(alignment: .leading, spacing: Theme.gap) {
+                    header
+                        .padding(.horizontal, Theme.pad)
 
                     filterRow
 
-                    if groups.isEmpty {
+                    if groupList.isEmpty {
                         emptyState
+                            .padding(.horizontal, Theme.pad)
+                            .transition(.opacity.combined(with: .scale(scale: 0.96)))
                     } else {
-                        ForEach(groups) { group in
-                            monthSection(group)
+                        LazyVStack(alignment: .leading, spacing: Theme.gap) {
+                            ForEach(groupList) { group in
+                                monthSection(group)
+                            }
                         }
+                        .padding(.horizontal, Theme.pad)
                     }
                 }
-                .padding(.horizontal, 16)
+                .padding(.top, 8)
                 .padding(.bottom, 120)
+                .animation(Self.spring, value: filter)
             }
+            .scrollIndicators(.hidden)
             .forestScreen()
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: UUID.self) { id in
@@ -65,33 +83,46 @@ struct HistoryView: View {
         }
     }
 
+    // MARK: Header
+
+    private var header: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text("History")
+                .font(Theme.title(34))
+                .foregroundStyle(.white)
+            Text(subtitle)
+                .font(Theme.rounded(14, .semibold))
+                .foregroundStyle(Theme.textDim)
+                .contentTransition(.numericText())
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
     // MARK: Filter chips
 
     private var filterRow: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 Button {
-                    withAnimation(.snappy) { filter = nil }
+                    withAnimation(Self.spring) { filter = nil }
                 } label: {
                     Chip(label: "All", symbol: "square.grid.2x2.fill", selected: filter == nil)
                 }
-                .buttonStyle(.plain)
-                .haptic()
+                .pressable()
 
                 ForEach(ActivityKind.allCases) { (k: ActivityKind) in
                     Button {
-                        withAnimation(.snappy) { filter = (filter == k) ? nil : k }
+                        withAnimation(Self.spring) { filter = (filter == k) ? nil : k }
                     } label: {
                         Chip(label: k.title, symbol: k.symbol, selected: filter == k)
                     }
-                    .buttonStyle(.plain)
-                    .haptic()
+                    .pressable()
                 }
             }
-            .padding(.vertical, 2)
+            .padding(.vertical, 4)
         }
-        .padding(.horizontal, -16)
-        .contentMargins(.horizontal, 16, for: .scrollContent)
+        .contentMargins(.horizontal, Theme.pad, for: .scrollContent)
+        .sensoryFeedback(.selection, trigger: filter)
     }
 
     // MARK: Month sections
@@ -99,18 +130,24 @@ struct HistoryView: View {
     private func monthSection(_ group: MonthGroup) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                Text(Self.monthFormatter.string(from: group.month))
-                    .font(Theme.rounded(17, .bold))
-                    .foregroundStyle(.white)
+                Text(Self.monthFormatter.string(from: group.month).uppercased())
+                    .font(Theme.rounded(12, .bold))
+                    .tracking(1.4)
+                    .foregroundStyle(Theme.textDim)
                 Spacer()
                 Text("\(group.items.count) \(group.items.count == 1 ? "trip" : "trips") · \(Format.distance(group.totalDistance))")
-                    .font(Theme.rounded(13, .bold))
-                    .foregroundStyle(Theme.glow)
+                    .font(Theme.rounded(12, .bold))
+                    .foregroundStyle(Theme.glow.opacity(0.9))
+                    .contentTransition(.numericText())
             }
-            .padding(.top, 6)
+            .padding(.horizontal, 4)
+            .padding(.top, 10)
 
             ForEach(group.items) { (a: Activity) in
-                NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
+                NavigationLink(value: a.id) { ActivityRow(activity: a) }
+                    .pressable()
+                    .cardAppear()
+                    .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
     }
@@ -118,12 +155,14 @@ struct HistoryView: View {
     // MARK: Empty
 
     private var emptyState: some View {
-        GlassCard(padding: 24) {
+        GlassCard(padding: 28) {
             VStack(spacing: 12) {
                 Image(systemName: filter?.symbol ?? "map")
                     .font(.system(size: 40, weight: .semibold))
                     .foregroundStyle(Theme.leafGradient)
-                Text("No trips yet")
+                    .frame(width: 76, height: 76)
+                    .background(Theme.glow.opacity(0.12), in: Circle())
+                Text(filter == nil ? "No trips yet" : "No \(filter?.title.lowercased() ?? "") trips yet")
                     .font(Theme.rounded(18, .bold))
                     .foregroundStyle(.white)
                 Text("Start a trip from the Track tab and it will show up here.")
@@ -133,6 +172,6 @@ struct HistoryView: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .padding(.top, 20)
+        .padding(.top, 12)
     }
 }

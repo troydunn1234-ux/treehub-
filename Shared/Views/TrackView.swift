@@ -118,12 +118,12 @@ struct TrackView: View {
                     #if TRACK_APP
                     SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath").padding(.top, 6)
                     ForEach(activities.prefix(3)) { a in
-                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
+                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
                     }
                     #else
                     SectionHeader(title: "Your strolls", symbol: "clock.arrow.circlepath").padding(.top, 6)
                     ForEach(activities) { a in
-                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.buttonStyle(.plain)
+                        NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
                     }
                     #endif
                 }
@@ -132,7 +132,7 @@ struct TrackView: View {
                 healthSection
                 #endif
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, Theme.pad)
             .padding(.bottom, 120)
         }
         .onAppear {

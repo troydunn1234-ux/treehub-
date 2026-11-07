@@ -13,8 +13,12 @@ struct TreesView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 14) {
-                HStack {
-                    Text("My Grove").font(Theme.title(36)).foregroundStyle(.white)
+                HStack(alignment: .bottom) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("My Grove").font(Theme.title(36)).foregroundStyle(.white)
+                        Text("\(trees.count) tree friend\(trees.count == 1 ? "" : "s") · \(hugs.count) hugs")
+                            .font(Theme.rounded(14, .semibold)).foregroundStyle(Theme.textDim)
+                    }
                     Spacer()
                     Picker("", selection: $mode) {
                         Image(systemName: "square.grid.2x2.fill").tag(0)
@@ -23,8 +27,8 @@ struct TreesView: View {
                     .pickerStyle(.segmented)
                     .frame(width: 110)
                 }
-                .padding(.horizontal, 16)
-                .padding(.top, 8)
+                .padding(.horizontal, Theme.pad)
+                .padding(.top, 12)
 
                 if trees.isEmpty {
                     Spacer()
@@ -56,10 +60,10 @@ struct TreesView: View {
         ScrollView {
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 14) {
                 ForEach(trees) { t in
-                    NavigationLink(value: t.id) { TreeCard(tree: t) }.buttonStyle(.plain)
+                    NavigationLink(value: t.id) { TreeCard(tree: t) }.pressable().cardAppear()
                 }
             }
-            .padding(.horizontal, 16)
+            .padding(.horizontal, Theme.pad)
             .padding(.bottom, 120)
         }
     }

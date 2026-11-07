@@ -27,7 +27,7 @@ struct CollectionView: View {
 
                     if section == 0 { badgeGrid } else { leafGrid }
                 }
-                .padding(.horizontal, 16)
+                .padding(.horizontal, Theme.pad)
                 .padding(.bottom, 120)
             }
             .forestScreen()

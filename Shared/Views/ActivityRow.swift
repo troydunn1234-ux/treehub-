@@ -6,34 +6,52 @@ struct ActivityRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            ZStack {
-                RouteThumbnail(points: activity.route.map(\.coordinate))
-                    .frame(width: 58, height: 58)
-                    .background(Theme.forest, in: RoundedRectangle(cornerRadius: 14))
-                Image(systemName: activity.kind.symbol)
-                    .font(.system(size: 11, weight: .bold))
-                    .foregroundStyle(Theme.forestDeep)
-                    .padding(5)
-                    .background(Theme.glow, in: Circle())
-                    .offset(x: 24, y: 24)
-            }
-            VStack(alignment: .leading, spacing: 3) {
+            RouteThumbnail(points: activity.route.map(\.coordinate))
+                .frame(width: 64, height: 64)
+                .background(
+                    LinearGradient(colors: [Theme.moss.opacity(0.9), Theme.forest], startPoint: .topLeading, endPoint: .bottomTrailing),
+                    in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .overlay(alignment: .bottomTrailing) {
+                    Image(systemName: activity.kind.symbol)
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(Theme.forestDeep)
+                        .frame(width: 24, height: 24)
+                        .background(Theme.leafGradient, in: Circle())
+                        .overlay(Circle().strokeBorder(Theme.forestDeep, lineWidth: 2))
+                        .offset(x: 6, y: 6)
+                }
+            VStack(alignment: .leading, spacing: 4) {
                 Text(activity.displayTitle).font(Theme.rounded(16, .bold)).foregroundStyle(.white).lineLimit(1)
                 Text(Format.dayTime(activity.start)).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                HStack(spacing: 10) {
-                    Text(Format.distance(activity.distanceM))
-                    Text(Format.duration(activity.elapsedSec))
-                    if activity.kind.isOnFoot && activity.elevGainM > 5 { Text("↑ " + Format.elevation(activity.elevGainM)) }
+                HStack(spacing: 12) {
+                    Label(Format.distance(activity.distanceM), systemImage: "arrow.triangle.swap")
+                    Label(Format.duration(activity.elapsedSec), systemImage: "clock")
+                    if activity.kind.isOnFoot && activity.elevGainM > 5 {
+                        Label(Format.elevation(activity.elevGainM), systemImage: "arrow.up.right")
+                    }
                 }
-                .font(Theme.rounded(13, .bold))
+                .labelStyle(CompactLabelStyle())
+                .font(Theme.rounded(12, .bold))
                 .foregroundStyle(Theme.glow)
             }
-            Spacer()
-            Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.textDim)
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
         }
-        .padding(12)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 18))
-        .overlay(RoundedRectangle(cornerRadius: 18).stroke(Theme.cardStroke))
+        .padding(14)
+        .background {
+            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
+            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Color.white.opacity(0.05))
+        }
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+    }
+}
+
+struct CompactLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 3) {
+            configuration.icon.font(.system(size: 9, weight: .heavy)).opacity(0.8)
+            configuration.title
+        }
     }
 }
 
