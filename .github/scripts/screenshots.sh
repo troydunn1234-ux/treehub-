@@ -1,8 +1,8 @@
 #!/bin/bash
 # Boots an iPhone simulator, runs TreeHub with demo data and captures each screen.
 set -u
-APP=build/Build/Products/Debug-iphonesimulator/TreeHub.app
-BUNDLE=com.troydunn.treehub
+APP=build/Build/Products/Debug-iphonesimulator/Rootbound.app
+BUNDLE=com.troydunn.rootbound
 mkdir -p shots
 
 UDID=$(xcrun simctl list devices available -j | python3 -c '
@@ -61,6 +61,6 @@ xcrun simctl io "$UDID" screenshot "shots/7-live-run.png" > /dev/null 2>&1
 xcrun simctl location "$UDID" clear || true
 
 # Crash reports, if any
-find ~/Library/Logs/DiagnosticReports -name "TreeHub*" -mmin -30 -exec cp {} shots/ \; 2>/dev/null || true
+find ~/Library/Logs/DiagnosticReports -name "Rootbound*" -mmin -30 -exec cp {} shots/ \; 2>/dev/null || true
 ls shots
 exit $FAIL

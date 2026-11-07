@@ -42,7 +42,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 2) {
                 Text(greeting.uppercased()).font(.system(size: 12, weight: .heavy, design: .rounded)).tracking(1.5)
                     .foregroundStyle(Theme.glow)
-                Text("TreeHub").font(Theme.title(36)).foregroundStyle(.white)
+                Text("Rootbound").font(Theme.title(36)).foregroundStyle(.white)
             }
             Spacer()
             Button { showSettings = true } label: {

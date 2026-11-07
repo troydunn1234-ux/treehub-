@@ -15,10 +15,10 @@ jobs:
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
       - name: Generate Xcode project
         run: brew install xcodegen && xcodegen generate
-      - name: Record TreeHub tour
-        run: bash .github/scripts/tour.sh TreeHub com.troydunn.treehub treehub-tour
-      - name: Record TrackHub tour
-        run: bash .github/scripts/tour.sh TrackHub com.troydunn.trackhub trackhub-tour
+      - name: Record Rootbound tour
+        run: bash .github/scripts/tour.sh Rootbound com.troydunn.rootbound rootbound-tour
+      - name: Record Roamr tour
+        run: bash .github/scripts/tour.sh Roamr com.troydunn.roamr roamr-tour
       - name: Publish to the ci-tour branch
         run: |
           TMP=$(mktemp -d); cp -R shots/. "$TMP"/; cd "$TMP"

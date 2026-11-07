@@ -493,7 +493,7 @@ struct HugLogView: View {
         locating = true
         defer { locating = false }
         guard let loc = await fetcher.current() else {
-            if !autoPickTree { errorText = "Couldn't get your location. Check that TreeHub has Location access in Settings." }
+            if !autoPickTree { errorText = "Couldn't get your location. Check that Rootbound has Location access in Settings." }
             return
         }
         // Don't overwrite a pin the user already chose while we were waiting.

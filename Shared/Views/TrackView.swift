@@ -67,8 +67,8 @@ struct TrackView: View {
                 if tracker.denied {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 8) {
-                            Label("Location is off for TreeHub", systemImage: "location.slash.fill").font(Theme.rounded(16, .bold))
-                            Text("Turn on Location (While Using) in Settings so TreeHub can track your route.")
+                            Label("Location is off for \(AppInfo.name)", systemImage: "location.slash.fill").font(Theme.rounded(16, .bold))
+                            Text("Turn on Location (While Using) in Settings so \(AppInfo.name) can track your route.")
                                 .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                             Button("Open Settings") {
                                 if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }

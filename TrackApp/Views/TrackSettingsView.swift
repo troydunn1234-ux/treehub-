@@ -25,7 +25,7 @@ struct TrackSettingsView: View {
                 } header: {
                     Text("Garmin · Whoop")
                 } footer: {
-                    Text("In Garmin Connect: More → Settings → Connected Apps → Apple Health. TrackHub then lists those workouts so you can add them with one tap.")
+                    Text("In Garmin Connect: More → Settings → Connected Apps → Apple Health. Roamr then lists those workouts so you can add them with one tap.")
                 }
                 Section {
                     if let exportURL {
@@ -62,7 +62,7 @@ struct TrackSettingsView: View {
         let root: [String: Any] = ["exported": iso.string(from: Date()), "activities": rows]
         guard JSONSerialization.isValidJSONObject(root),
               let data = try? JSONSerialization.data(withJSONObject: root, options: [.prettyPrinted]) else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("TrackHub-export.json")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Roamr-export.json")
         do { try data.write(to: url); return url } catch { return nil }
     }
 }

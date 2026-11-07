@@ -20,14 +20,14 @@ struct SettingsView: View {
                     Button("Connect Apple Health") {
                         Task {
                             let ok = await HealthService.shared.requestAccess()
-                            healthStatus = ok ? "Done. TreeHub can read what you allowed." : "Apple Health isn't available on this device."
+                            healthStatus = ok ? "Done. Rootbound can read what you allowed." : "Apple Health isn't available on this device."
                         }
                     }
                     if !healthStatus.isEmpty { Text(healthStatus).font(.footnote).foregroundStyle(.secondary) }
                 } header: {
                     Text("Garmin · Whoop · Strava")
                 } footer: {
-                    Text("These apps share into Apple Health. In Garmin Connect: More → Settings → Connected Apps → Apple Health. In Whoop and Strava, turn on Apple Health in their settings. TreeHub then reads heart rate, breathing rate, mindful minutes and workouts.")
+                    Text("These apps share into Apple Health. In Garmin Connect: More → Settings → Connected Apps → Apple Health. In Whoop and Strava, turn on Apple Health in their settings. Rootbound then reads heart rate, breathing rate, mindful minutes and workouts.")
                 }
                 Section {
                     if let exportURL {
@@ -85,7 +85,7 @@ enum DataExport {
         let root: [String: Any] = ["exported": iso.string(from: Date()), "hugs": hugRows, "activities": actRows]
         guard JSONSerialization.isValidJSONObject(root),
               let data = try? JSONSerialization.data(withJSONObject: root, options: [.prettyPrinted, .sortedKeys]) else { return nil }
-        let url = FileManager.default.temporaryDirectory.appendingPathComponent("TreeHub-export.json")
+        let url = FileManager.default.temporaryDirectory.appendingPathComponent("Rootbound-export.json")
         do { try data.write(to: url); return url } catch { return nil }
     }
 }

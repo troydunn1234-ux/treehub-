@@ -12,8 +12,8 @@ on:
       app:
         description: Which app to ship
         type: choice
-        options: [TreeHub, TrackHub]
-        default: TreeHub
+        options: [Rootbound, Roamr]
+        default: Rootbound
 
 jobs:
   testflight:

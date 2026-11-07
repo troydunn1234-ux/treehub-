@@ -14,8 +14,8 @@ settings:
     DEVELOPMENT_TEAM: ""
     ENABLE_PREVIEWS: YES
 targets:
-  # Tree Hugger game (with Stroll / Hike)
-  TreeHub:
+  # Rootbound: tree-hugging game (with Stroll / Hike)
+  Rootbound:
     type: application
     platform: iOS
     sources:
@@ -27,14 +27,14 @@ targets:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.troydunn.treehub
+          - iCloud.com.troydunn.rootbound
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
     info:
       path: TreeHub/Info.plist
       properties:
-        CFBundleDisplayName: TreeHub
+        CFBundleDisplayName: Rootbound
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
@@ -42,21 +42,21 @@ targets:
         UIBackgroundModes:
           - location
           - remote-notification
-        NSLocationWhenInUseUsageDescription: TreeHub uses your location to record your strolls and hikes and to pin the trees you hug.
-        NSLocationAlwaysAndWhenInUseUsageDescription: TreeHub keeps recording your stroll while your phone is locked.
-        NSMotionUsageDescription: TreeHub uses motion data to tell a stroll from a hike.
-        NSCameraUsageDescription: TreeHub uses the camera to snap your tree and your tree selfie.
-        NSPhotoLibraryUsageDescription: TreeHub lets you pick tree photos and Garmin screenshots from your library.
-        NSHealthShareUsageDescription: TreeHub reads heart rate, breathing rate and mindful minutes that your Garmin and Whoop save to Apple Health.
+        NSLocationWhenInUseUsageDescription: Rootbound uses your location to record your strolls and hikes and to pin the trees you hug.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Rootbound keeps recording your stroll while your phone is locked.
+        NSMotionUsageDescription: Rootbound uses motion data to tell a stroll from a hike.
+        NSCameraUsageDescription: Rootbound uses the camera to snap your tree and your tree selfie.
+        NSPhotoLibraryUsageDescription: Rootbound lets you pick tree photos and Garmin screenshots from your library.
+        NSHealthShareUsageDescription: Rootbound reads heart rate, breathing rate and mindful minutes that your Garmin and Whoop save to Apple Health.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.treehub
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
 
-  # Standalone tracker: walks, runs, hikes, rides, drives
-  TrackHub:
+  # Roamr: tracker for walks, runs, hikes, rides, drives
+  Roamr:
     type: application
     platform: iOS
     sources:
@@ -68,14 +68,14 @@ targets:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
         com.apple.developer.icloud-container-identifiers:
-          - iCloud.com.troydunn.trackhub
+          - iCloud.com.troydunn.roamr
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
     info:
       path: TrackApp/Info.plist
       properties:
-        CFBundleDisplayName: TrackHub
+        CFBundleDisplayName: Roamr
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
@@ -83,58 +83,84 @@ targets:
         UIBackgroundModes:
           - location
           - remote-notification
-        NSLocationWhenInUseUsageDescription: TrackHub uses your location to record the route of your walks, runs, hikes, rides and drives.
-        NSLocationAlwaysAndWhenInUseUsageDescription: TrackHub keeps recording your route while your phone is locked.
-        NSMotionUsageDescription: TrackHub uses motion data to tell whether you were walking, running, biking or driving.
-        NSHealthShareUsageDescription: TrackHub reads the workouts and heart rate that your Garmin and Whoop save to Apple Health.
+        NSLocationWhenInUseUsageDescription: Roamr uses your location to record the route of your walks, runs, hikes, rides and drives.
+        NSLocationAlwaysAndWhenInUseUsageDescription: Roamr keeps recording your route while your phone is locked.
+        NSMotionUsageDescription: Roamr uses motion data to tell whether you were walking, running, biking or driving.
+        NSHealthShareUsageDescription: Roamr reads the workouts and heart rate that your Garmin and Whoop save to Apple Health.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.trackhub
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) TRACK_APP"
 
-  TreeHubUITests:
+  RootboundUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
       - path: TreeHubUITests
     dependencies:
-      - target: TreeHub
+      - target: Rootbound
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.treehub.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound.uitests
         GENERATE_INFOPLIST_FILE: YES
-        TEST_TARGET_NAME: TreeHub
+        TEST_TARGET_NAME: Rootbound
 
-  TrackHubUITests:
+  RootboundTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RootboundTests
+    dependencies:
+      - target: Rootbound
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  RoamrUITests:
     type: bundle.ui-testing
     platform: iOS
     sources:
       - path: TrackHubUITests
     dependencies:
-      - target: TrackHub
+      - target: Roamr
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.trackhub.uitests
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr.uitests
         GENERATE_INFOPLIST_FILE: YES
-        TEST_TARGET_NAME: TrackHub
+        TEST_TARGET_NAME: Roamr
 
 schemes:
-  TreeHub:
+  Rootbound:
     build:
       targets:
-        TreeHub: all
-        TreeHubUITests: [test]
+        Rootbound: all
+        RootboundTests: [test]
+        RootboundUITests: [test]
     test:
       targets:
-        - TreeHubUITests
-  TrackHub:
+        - RootboundTests
+        - RootboundUITests
+  Roamr:
     build:
       targets:
-        TrackHub: all
-        TrackHubUITests: [test]
+        Roamr: all
+        RootboundTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RootboundTests
+    dependencies:
+      - target: Rootbound
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  RoamrUITests: [test]
     test:
       targets:
-        - TrackHubUITests
+        - RoamrUITests

@@ -195,7 +195,7 @@ enum GPX {
         let iso = ISO8601DateFormatter()
         var s = """
         <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="TreeHub" xmlns="http://www.topografix.com/GPX/1/1">
+        <gpx version="1.1" creator="\(AppInfo.name)" xmlns="http://www.topografix.com/GPX/1/1">
         <trk><name>\(escape(a.displayTitle))</name><type>\(a.kind.rawValue)</type><trkseg>
 
         """
@@ -205,7 +205,7 @@ enum GPX {
             s += "<time>\(iso.string(from: Date(timeIntervalSince1970: p.t)))</time></trkpt>\n"
         }
         s += "</trkseg></trk></gpx>\n"
-        let name = "TreeHub-\(a.kind.title)-\(Int(a.start.timeIntervalSince1970)).gpx"
+        let name = "\(AppInfo.name)-\(a.kind.title)-\(Int(a.start.timeIntervalSince1970)).gpx"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do { try s.write(to: url, atomically: true, encoding: .utf8); return url } catch { return nil }
     }
