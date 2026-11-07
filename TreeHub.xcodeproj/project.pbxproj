@@ -10,6 +10,7 @@
 		0BDCC1C6BF6F680AD166276E /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232467C1686C678F705B0C5 /* CelebrationView.swift */; };
 		652A72A6BDE9FDC4C4CF62CD /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67FD9E95B9A4AFE888D98701 /* Format.swift */; };
 		6916A3F5493F7690FBCB0E0B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB092BC5DB54656669557483 /* ActivityDetailView.swift */; };
+		7A469CB04F8D22E26C7855AC /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
 		7D19B0D84A5AC92016A96F8B /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		832E48E3D308E5F9D7DE93C8 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0739A25B4A2A5FBDBDA1DBFE /* TrackView.swift */; };
 		8952EA57C821B54AECC581B2 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
@@ -28,8 +29,19 @@
 		FAE34B8AA99A89BCA60E137F /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		DFBF09587428A87EC450BB8E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = F8A0555CF17EA2CB9683D5C6;
+			remoteInfo = TreeHub;
+		};
+/* End PBXContainerItemProxy section */
+
 /* Begin PBXFileReference section */
 		0739A25B4A2A5FBDBDA1DBFE /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = TreeHubUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C18055774998E68B0A2D16D /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeHubApp.swift; sourceTree = "<group>"; };
 		14C7E3A044E2824695654A25 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
@@ -44,6 +56,7 @@
 		89A8464FD0A0FAE7B0E01775 /* TreeHub.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = TreeHub.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
 		BB092BC5DB54656669557483 /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
@@ -93,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				2535BCD53907184A8980C35F /* TreeHub */,
+				D6A15AD9851995B292B60E11 /* TreeHubUITests */,
 				8ABDA768BBE5B199DC7E56EF /* Products */,
 			);
 			sourceTree = "<group>";
@@ -117,6 +131,7 @@
 			isa = PBXGroup;
 			children = (
 				89A8464FD0A0FAE7B0E01775 /* TreeHub.app */,
+				0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -137,6 +152,14 @@
 			path = Game;
 			sourceTree = "<group>";
 		};
+		D6A15AD9851995B292B60E11 /* TreeHubUITests */ = {
+			isa = PBXGroup;
+			children = (
+				9FFCEABC9A0E997904C8A2AA /* TourTests.swift */,
+			);
+			path = TreeHubUITests;
+			sourceTree = "<group>";
+		};
 		FFBE1C6110AEEAC1EE7F36C8 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -149,6 +172,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		C6D9B407D357A72A8627067D /* TreeHubUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 7CBBB8E589B008EDAFF85897 /* Build configuration list for PBXNativeTarget "TreeHubUITests" */;
+			buildPhases = (
+				5386C71BBC1445E71DFEBDF8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CD4166DFC44D657DFF28ABFA /* PBXTargetDependency */,
+			);
+			name = TreeHubUITests;
+			packageProductDependencies = (
+			);
+			productName = TreeHubUITests;
+			productReference = 0A752BDD12C4CFE09DCAEC0C /* TreeHubUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		F8A0555CF17EA2CB9683D5C6 /* TreeHub */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 086562DB487BEE61D072E8AA /* Build configuration list for PBXNativeTarget "TreeHub" */;
@@ -176,6 +217,11 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					C6D9B407D357A72A8627067D = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+						TestTargetID = F8A0555CF17EA2CB9683D5C6;
+					};
 					F8A0555CF17EA2CB9683D5C6 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -197,6 +243,7 @@
 			projectRoot = "";
 			targets = (
 				F8A0555CF17EA2CB9683D5C6 /* TreeHub */,
+				C6D9B407D357A72A8627067D /* TreeHubUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -238,9 +285,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		5386C71BBC1445E71DFEBDF8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7A469CB04F8D22E26C7855AC /* TourTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		CD4166DFC44D657DFF28ABFA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = F8A0555CF17EA2CB9683D5C6 /* TreeHub */;
+			targetProxy = DFBF09587428A87EC450BB8E /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin XCBuildConfiguration section */
+		32047E9528C2C27C09A02E38 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TreeHub;
+			};
+			name = Release;
+		};
 		56E612E4F3CF697D95937ABD /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -348,6 +428,23 @@
 			};
 			name = Debug;
 		};
+		7CACB77A851EAB8AAA8683E9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				GENERATE_INFOPLIST_FILE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.treehub.uitests;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TreeHub;
+			};
+			name = Debug;
+		};
 		A1B5AD3B111FABB701B7157A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -418,6 +515,15 @@
 			buildConfigurations = (
 				6634A72E5545C0F196512E23 /* Debug */,
 				60B739F90E4F81DCA47BF90A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		7CBBB8E589B008EDAFF85897 /* Build configuration list for PBXNativeTarget "TreeHubUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7CACB77A851EAB8AAA8683E9 /* Debug */,
+				32047E9528C2C27C09A02E38 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
