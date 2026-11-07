@@ -38,6 +38,8 @@ targets:
       properties:
         CFBundleDisplayName: Rootbound
         NSSupportsLiveActivities: true
+        UIRequiresFullScreen: true
+        NSHealthUpdateUsageDescription: Rootbound does not write to Apple Health; it only reads your workouts and heart data.
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
@@ -82,6 +84,8 @@ targets:
       properties:
         CFBundleDisplayName: Roamr
         NSSupportsLiveActivities: true
+        UIRequiresFullScreen: true
+        NSHealthUpdateUsageDescription: Roamr does not write to Apple Health; it only reads your workouts and heart data.
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
