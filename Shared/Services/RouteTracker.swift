@@ -335,7 +335,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     // MARK: - Helpers
 
     /// Keeps the route light for storage while keeping its shape.
-    static func simplify(_ pts: [RoutePoint], maxCount: Int) -> [RoutePoint] {
+    nonisolated static func simplify(_ pts: [RoutePoint], maxCount: Int) -> [RoutePoint] {
         guard pts.count > maxCount, maxCount > 2 else { return pts }
         let step = Double(pts.count - 1) / Double(maxCount - 1)
         return (0..<maxCount).map { pts[min(pts.count - 1, Int((Double($0) * step).rounded()))] }
