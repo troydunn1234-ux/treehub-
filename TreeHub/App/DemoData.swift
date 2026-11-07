@@ -12,8 +12,12 @@ enum DemoData {
         return args[i + 1]
     }
 
+    @MainActor private static var seeded = false
+
     @MainActor
     static func seed(_ context: ModelContext) {
+        guard !seeded else { return }
+        seeded = true
         let cal = Calendar.current
         let now = Date()
         let oakID = UUID(), redwoodID = UUID(), sycamoreID = UUID()
