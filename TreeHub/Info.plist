@@ -34,6 +34,8 @@
 	<string>Rootbound uses motion data to tell a stroll from a hike.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Rootbound lets you pick tree photos and Garmin screenshots from your library.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

@@ -30,6 +30,8 @@
 	<string>Roamr uses your location to record the route of your walks, runs, hikes, rides and drives.</string>
 	<key>NSMotionUsageDescription</key>
 	<string>Roamr uses motion data to tell whether you were walking, running, biking or driving.</string>
+	<key>NSSupportsLiveActivities</key>
+	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

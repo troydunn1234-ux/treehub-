@@ -8,13 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		1305E466AF8A4CA4155AAA79 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
 		157EF78B4051A7B3606FB48E /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18055774998E68B0A2D16D /* CollectionView.swift */; };
 		16F74D5EDCCCF17E596B6CD3 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
 		18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
+		1B9DFC673067578DFA6B520F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
 		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
+		2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */; };
 		2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
 		3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
@@ -23,13 +26,22 @@
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
 		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
+		623E64AFF025111C49695B04 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
+		6244A61CEBB8FEB86A0C8DA5 /* LaunchGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */; };
+		65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
 		669DE02F9381489144BAADDF /* Hug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D039EE51534C6E9717A31E3 /* Hug.swift */; };
 		712FB74367AB1ECC10CB7747 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
+		71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
 		7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
 		7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
 		80E6ECE39BD8543A049982CB /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4159F6563FEC514EECE6D1 /* LogicTests.swift */; };
 		81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */; };
+		84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
+		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
@@ -37,6 +49,7 @@
 		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
 		B76B4471ECBFAC9F8E794ED1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD533F40BAA6F6D9454E5913 /* Assets.xcassets */; };
 		C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
+		C6B0BAD9C9E7C09C0D6E6EB6 /* RootboundWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 14EA827DC7590876A4C29524 /* RootboundWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
 		C9E2B4C0AE82032C8D94541D /* TrackTourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */; };
 		CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */; };
@@ -44,11 +57,14 @@
 		DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
 		DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
 		DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
+		E01DA781781C62D9F85A219D /* LaunchGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */; };
 		E7A652424E4B7B22E764E2EB /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232467C1686C678F705B0C5 /* CelebrationView.swift */; };
 		F0DE5AE8600021162A52BCD0 /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
 		F1711676D4D6C7B36CBFE60B /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
 		F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
+		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
+		FF30618CD569AF92BE3DF1E4 /* RoamrWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,21 +89,64 @@
 			remoteGlobalIDString = 7DAC63D05B83BBE7BD589AA8;
 			remoteInfo = Rootbound;
 		};
+		C4B6E640B6A928790AAB222A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 36AF664DCB7ADFE0ECC78B19;
+			remoteInfo = RoamrWidgets;
+		};
+		F3813E2EE4CF4AE29697BFE6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 099FC797BCDA66F81042627D;
+			remoteInfo = RootboundWidgets;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		63928FA0A47F51AEC641B1D9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				C6B0BAD9C9E7C09C0D6E6EB6 /* RootboundWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		673B45A6B8E36A8A35FC11F9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		01A7383F3E50B876ECE6A78C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingActivityAttributes.swift; sourceTree = "<group>"; };
 		0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
 		0C18055774998E68B0A2D16D /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeHubApp.swift; sourceTree = "<group>"; };
 		1466841354823062CD97D858 /* TrackDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDemo.swift; sourceTree = "<group>"; };
+		14EA827DC7590876A4C29524 /* RootboundWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RootboundWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
+		2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWidgets.swift; sourceTree = "<group>"; };
 		2F4159F6563FEC514EECE6D1 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
+		40ECC54940AA2F6838B4759D /* LaunchSplash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplash.swift; sourceTree = "<group>"; };
 		44F00360DF850821B3293EA2 /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
 		463C0E94D514A99089BCC322 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
@@ -95,27 +154,34 @@
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5884433CD32FDD4D160203A6 /* Roamr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Roamr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
+		685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootboundWidgets.swift; sourceTree = "<group>"; };
+		6AB6F40618E7D146443B85E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		95627826BBB39644B9BEF65D /* RoamrWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RoamrWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		96832C9E113D2C830820806F /* HealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthService.swift; sourceTree = "<group>"; };
 		9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F73AE90E29B0845AB46785E /* Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
+		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchGate.swift; sourceTree = "<group>"; };
 		EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
 		EEF58211216804E6CF163DAA /* RootboundTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
 		F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTourTests.swift; sourceTree = "<group>"; };
+		F74EEDFE1E4F546C9F5233D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		FB1240C67112B2502AB76F1D /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		FB23CD916A03A5E29B876B21 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityController.swift; sourceTree = "<group>"; };
 		FD533F40BAA6F6D9454E5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -146,7 +212,9 @@
 		4E4FE5EFE033C93A7B45A5C2 = {
 			isa = PBXGroup;
 			children = (
+				EE02868A2EE0C783F32AB7BB /* RoamrWidgets */,
 				DC82DFB1DD16B4F987429470 /* RootboundTests */,
+				8E50F0002DF27F9235BA0101 /* RootboundWidgets */,
 				9940A62A24413B2102E59F27 /* Shared */,
 				A7156C98667DC49141D2DC60 /* TrackApp */,
 				9A6C2866154D34A621C998DF /* TrackHubUITests */,
@@ -186,11 +254,22 @@
 			children = (
 				5884433CD32FDD4D160203A6 /* Roamr.app */,
 				C81D053EF004338204CA6530 /* RoamrUITests.xctest */,
+				95627826BBB39644B9BEF65D /* RoamrWidgets.appex */,
 				522763F1CEDB54BD89DE68DB /* Rootbound.app */,
 				EEF58211216804E6CF163DAA /* RootboundTests.xctest */,
 				FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */,
+				14EA827DC7590876A4C29524 /* RootboundWidgets.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8E50F0002DF27F9235BA0101 /* RootboundWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				6AB6F40618E7D146443B85E7 /* Info.plist */,
+				685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */,
+			);
+			path = RootboundWidgets;
 			sourceTree = "<group>";
 		};
 		96ED29F8B0CC3CBC5FB610BC /* Models */ = {
@@ -205,6 +284,7 @@
 			isa = PBXGroup;
 			children = (
 				C382FF243C18EC3BAF41AF5C /* Design */,
+				BBB92CBC426230754037F9D0 /* LiveActivity */,
 				96ED29F8B0CC3CBC5FB610BC /* Models */,
 				7461CFD64FA09CF34665A143 /* Services */,
 				B0C14D1F0D97C9E1709FBF2F /* Views */,
@@ -255,9 +335,21 @@
 			children = (
 				F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */,
 				0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */,
+				E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */,
+				40ECC54940AA2F6838B4759D /* LaunchSplash.swift */,
+				B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */,
 				D11DBD0989B6A34A4EA014E8 /* TrackView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		BBB92CBC426230754037F9D0 /* LiveActivity */ = {
+			isa = PBXGroup;
+			children = (
+				FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */,
+				048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */,
+			);
+			path = LiveActivity;
 			sourceTree = "<group>";
 		};
 		C1D167C953C6D4147EC64727 /* App */ = {
@@ -302,6 +394,15 @@
 			path = RootboundTests;
 			sourceTree = "<group>";
 		};
+		EE02868A2EE0C783F32AB7BB /* RoamrWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				F74EEDFE1E4F546C9F5233D4 /* Info.plist */,
+				2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */,
+			);
+			path = RoamrWidgets;
+			sourceTree = "<group>";
+		};
 		FFBE1C6110AEEAC1EE7F36C8 /* App */ = {
 			isa = PBXGroup;
 			children = (
@@ -314,16 +415,52 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		099FC797BCDA66F81042627D /* RootboundWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EBF8E87B8EFF839B5A5E400B /* Build configuration list for PBXNativeTarget "RootboundWidgets" */;
+			buildPhases = (
+				B143382CF41380BB21C3714A /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RootboundWidgets;
+			packageProductDependencies = (
+			);
+			productName = RootboundWidgets;
+			productReference = 14EA827DC7590876A4C29524 /* RootboundWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		36AF664DCB7ADFE0ECC78B19 /* RoamrWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFD058F115E7AA6E543AA7CA /* Build configuration list for PBXNativeTarget "RoamrWidgets" */;
+			buildPhases = (
+				F6AD8DCE76927D2C03FDA493 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RoamrWidgets;
+			packageProductDependencies = (
+			);
+			productName = RoamrWidgets;
+			productReference = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		7DAC63D05B83BBE7BD589AA8 /* Rootbound */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = F1DC6CEB7F5F704EB4B76EA9 /* Build configuration list for PBXNativeTarget "Rootbound" */;
 			buildPhases = (
 				0C4868EBDABC69F59CA4C2C8 /* Sources */,
 				BAC0EB595805EE3BE63C30F9 /* Resources */,
+				63928FA0A47F51AEC641B1D9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				2E24266B2F105950525E09C9 /* PBXTargetDependency */,
 			);
 			name = Rootbound;
 			packageProductDependencies = (
@@ -356,10 +493,12 @@
 			buildPhases = (
 				C792E3E32528ADE1D08CD6AB /* Sources */,
 				BB75CC7E69C1E56BBE2513F4 /* Resources */,
+				673B45A6B8E36A8A35FC11F9 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				D11122DF81A5A65C1AF66336 /* PBXTargetDependency */,
 			);
 			name = Roamr;
 			packageProductDependencies = (
@@ -413,6 +552,14 @@
 				BuildIndependentTargetsInParallel = YES;
 				LastUpgradeCheck = 1430;
 				TargetAttributes = {
+					099FC797BCDA66F81042627D = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					36AF664DCB7ADFE0ECC78B19 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					7DAC63D05B83BBE7BD589AA8 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -453,6 +600,8 @@
 			targets = (
 				7DAC63D05B83BBE7BD589AA8 /* Rootbound */,
 				8A0EE00DD725A91404FABCE3 /* Roamr */,
+				099FC797BCDA66F81042627D /* RootboundWidgets */,
+				36AF664DCB7ADFE0ECC78B19 /* RoamrWidgets */,
 				8DA73B97E12AB1F55D9C112C /* RootboundUITests */,
 				86AE38B230CE156F455829D8 /* RoamrUITests */,
 				E9498F2180A2382DA621699E /* RootboundTests */,
@@ -507,11 +656,16 @@
 				669DE02F9381489144BAADDF /* Hug.swift in Sources */,
 				F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */,
 				DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */,
+				E01DA781781C62D9F85A219D /* LaunchGate.swift in Sources */,
+				F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */,
+				623E64AFF025111C49695B04 /* LiveActivityController.swift in Sources */,
+				65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */,
 				4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */,
 				C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */,
 				3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */,
 				D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */,
 				3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */,
+				8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */,
 				2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */,
 				5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */,
 			);
@@ -522,6 +676,15 @@
 			buildActionMask = 2147483647;
 			files = (
 				B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B143382CF41380BB21C3714A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */,
+				71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -536,6 +699,10 @@
 				DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */,
 				C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */,
 				AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */,
+				6244A61CEBB8FEB86A0C8DA5 /* LaunchGate.swift in Sources */,
+				105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */,
+				7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */,
+				8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */,
 				18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */,
 				DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */,
 				AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */,
@@ -544,6 +711,16 @@
 				CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */,
 				81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */,
 				7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */,
+				84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F6AD8DCE76927D2C03FDA493 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				FF30618CD569AF92BE3DF1E4 /* RoamrWidgets.swift in Sources */,
+				1B9DFC673067578DFA6B520F /* TrackingActivityAttributes.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -558,6 +735,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		2E24266B2F105950525E09C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 099FC797BCDA66F81042627D /* RootboundWidgets */;
+			targetProxy = F3813E2EE4CF4AE29697BFE6 /* PBXContainerItemProxy */;
+		};
 		6230A31EA4458C53CA116716 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7DAC63D05B83BBE7BD589AA8 /* Rootbound */;
@@ -567,6 +749,11 @@
 			isa = PBXTargetDependency;
 			target = 8A0EE00DD725A91404FABCE3 /* Roamr */;
 			targetProxy = 1B5C9DB84A03686FDDB1AA50 /* PBXContainerItemProxy */;
+		};
+		D11122DF81A5A65C1AF66336 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 36AF664DCB7ADFE0ECC78B19 /* RoamrWidgets */;
+			targetProxy = C4B6E640B6A928790AAB222A /* PBXContainerItemProxy */;
 		};
 		EE05F41D0A621B753F601844 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -696,6 +883,22 @@
 			};
 			name = Debug;
 		};
+		621CFE587973C6237079B8F9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = RootboundWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		7EE764BDD478282C6F5821C6 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -729,6 +932,22 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound;
 				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		93591D9A5418F27492A63757 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = RoamrWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -832,6 +1051,38 @@
 			};
 			name = Release;
 		};
+		AA691C3D3950C4D88B358562 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = RootboundWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.rootbound.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		D0B0AACE059F3B0DFECA381D /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = RoamrWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.roamr.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		DC08F5180859F61E6CFE3781 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -922,6 +1173,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		EBF8E87B8EFF839B5A5E400B /* Build configuration list for PBXNativeTarget "RootboundWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AA691C3D3950C4D88B358562 /* Debug */,
+				621CFE587973C6237079B8F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		F1DC6CEB7F5F704EB4B76EA9 /* Build configuration list for PBXNativeTarget "Rootbound" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -936,6 +1196,15 @@
 			buildConfigurations = (
 				56E612E4F3CF697D95937ABD /* Debug */,
 				A1B5AD3B111FABB701B7157A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FFD058F115E7AA6E543AA7CA /* Build configuration list for PBXNativeTarget "RoamrWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				93591D9A5418F27492A63757 /* Debug */,
+				D0B0AACE059F3B0DFECA381D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
