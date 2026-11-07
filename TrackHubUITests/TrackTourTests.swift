@@ -47,11 +47,11 @@ final class TrackTourTests: XCTestCase {
         pause(2.5)   // launch animation
         for _ in 0..<3 {
             let c = app.buttons["onboarding-continue"]
-            if c.waitForExistence(timeout: 3) { c.tap() }
+            if c.waitForExistence(timeout: 3) { c.tap() } else { tap("Continue") }
             pause(2)
         }
         let d = app.buttons["onboarding-done"]
-        if d.waitForExistence(timeout: 3) { d.tap() }
+        if d.waitForExistence(timeout: 3) { d.tap() } else { tap("Let's go") }
         pause(2)
     }
 

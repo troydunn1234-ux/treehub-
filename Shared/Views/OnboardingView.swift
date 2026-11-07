@@ -70,7 +70,6 @@ struct OnboardingView: View {
         .sensoryFeedback(.success, trigger: health) { (_: HealthLinkState, new: HealthLinkState) -> Bool in
             new == .connected
         }
-        .accessibilityIdentifier("onboarding")
     }
 
     // MARK: Chrome
