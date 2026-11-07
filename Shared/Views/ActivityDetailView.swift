@@ -21,57 +21,9 @@ struct ActivityDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if isNew {
-                    HStack(spacing: 10) {
-                        Image(systemName: "checkmark.seal.fill").font(.system(size: 28)).foregroundStyle(Theme.glow)
-                        VStack(alignment: .leading) {
-                            Text("Saved!").font(Theme.title(26))
-                            #if !TRACK_APP
-                            Text("+\(GameEngine.xp(for: activity)) XP").font(Theme.rounded(15, .heavy)).foregroundStyle(Theme.gold)
-                            #endif
-                        }
-                    }
-                    .padding(.top, 8)
-                }
-
-                if coords.count > 1 {
-                    Map(initialPosition: .automatic) {
-                        MapPolyline(coordinates: coords)
-                            .stroke(Theme.glow, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
-                        if let s = coords.first {
-                            Annotation("Start", coordinate: s) {
-                                Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))
-                            }
-                        }
-                        #if !TRACK_APP
-                        ForEach(strollHugs.filter { $0.coordinate != nil }) { h in
-                            Annotation(h.treeName, coordinate: h.coordinate!) { TreePin(photo: h.treePhoto, size: 36) }
-                        }
-                        #endif
-                        if let e = coords.last {
-                            Annotation("Finish", coordinate: e) {
-                                Image(systemName: "flag.checkered.circle.fill").font(.system(size: 22))
-                                    .foregroundStyle(Theme.forestDeep, Theme.gold)
-                            }
-                        }
-                    }
-                    .mapStyle(.standard(elevation: .realistic))
-                    .frame(height: 300)
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                } else {
-                    GlassCard {
-                        Label("No route map for this one (imported or too short).", systemImage: "map")
-                            .font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
-                    }
-                }
-
-                VStack(alignment: .leading, spacing: 4) {
-                    TextField("", text: $activity.title, prompt: Text(activity.displayTitle).foregroundStyle(.white))
-                        .font(Theme.title(26))
-                    Text(Format.dayTime(activity.start)).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                }
-
+            VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                hero
+                VStack(alignment: .leading, spacing: Theme.gap + 4) {
                 if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty {
                     GlassCard(padding: 14) {
                         VStack(alignment: .leading, spacing: 10) {
@@ -81,7 +33,7 @@ struct ActivityDetailView: View {
                     }
                 }
 
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                     StatTile(value: Format.distance(activity.distanceM), label: "Distance", symbol: "point.topleft.down.to.point.bottomright.curvepath")
                     StatTile(value: Format.duration(activity.elapsedSec), label: "Total time", symbol: "clock")
                     StatTile(value: Format.paceOrSpeed(distance: activity.distanceM, seconds: max(activity.movingSec, 1), kind: activity.kind),
@@ -157,10 +109,13 @@ struct ActivityDetailView: View {
                     Label("Delete", systemImage: "trash").font(Theme.rounded(15, .bold)).frame(maxWidth: .infinity)
                 }
                 .padding(.top, 4)
+                }
+                .padding(.horizontal, Theme.pad)
             }
-            .padding(16)
-            .padding(.bottom, 110)
+            .padding(.bottom, 130)
         }
+        .ignoresSafeArea(edges: isNew ? Edge.Set() : Edge.Set.top)
+        .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { gpxURL = GPX.write(activity) }
@@ -177,6 +132,96 @@ struct ActivityDetailView: View {
             }
             Button("Cancel", role: .cancel) {}
         }
+    }
+
+    /// Full-bleed route map that fades into the page, with the title on top.
+    private var hero: some View {
+        ZStack(alignment: .bottomLeading) {
+            Group {
+                if coords.count > 1 {
+                    routeMap
+                } else {
+                    ZStack {
+                        LinearGradient(colors: [Theme.moss, Theme.forestDeep], startPoint: .top, endPoint: .bottom)
+                        Image(systemName: activity.kind.symbol)
+                            .font(.system(size: 90, weight: .bold))
+                            .foregroundStyle(Theme.leafGradient)
+                            .opacity(0.3)
+                    }
+                }
+            }
+            .frame(height: isNew ? 320 : 400)
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: Theme.forestDeep.opacity(isNew ? 0 : 0.5), location: 0),
+                    .init(color: .clear, location: 0.25),
+                    .init(color: Theme.forestDeep.opacity(0.4), location: 0.65),
+                    .init(color: Theme.forestDeep, location: 1),
+                ], startPoint: .top, endPoint: .bottom)
+                .allowsHitTesting(false)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                if isNew { savedBadge }
+                HStack(spacing: 8) {
+                    Image(systemName: activity.kind.symbol)
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Theme.forestDeep)
+                        .frame(width: 26, height: 26)
+                        .background(Theme.leafGradient, in: Circle())
+                    Text(Format.dayTime(activity.start).uppercased())
+                        .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1.2)
+                        .foregroundStyle(.white.opacity(0.85))
+                }
+                TextField("", text: $activity.title, prompt: Text(activity.displayTitle).foregroundStyle(.white))
+                    .font(Theme.title(32))
+                    .foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
+            }
+            .padding(.horizontal, Theme.pad)
+            .padding(.bottom, 4)
+        }
+    }
+
+    private var savedBadge: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "checkmark.seal.fill")
+            Text("Saved")
+            #if !TRACK_APP
+            Text("· +\(GameEngine.xp(for: activity)) XP").foregroundStyle(Theme.gold)
+            #endif
+        }
+        .font(Theme.rounded(14, .heavy))
+        .foregroundStyle(.white)
+        .padding(.horizontal, 12).padding(.vertical, 6)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(Capsule().strokeBorder(Theme.glow.opacity(0.5)))
+    }
+
+    private var routeMap: some View {
+        Map(initialPosition: .automatic) {
+            MapPolyline(coordinates: coords)
+                .stroke(Theme.glow.opacity(0.35), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
+            MapPolyline(coordinates: coords)
+                .stroke(Theme.leafGradient, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+            if let s = coords.first {
+                Annotation("Start", coordinate: s) {
+                    Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))
+                }
+            }
+            #if !TRACK_APP
+            ForEach(strollHugs.filter { $0.coordinate != nil }) { h in
+                Annotation(h.treeName, coordinate: h.coordinate!) { TreePin(photo: h.treePhoto, size: 36) }
+            }
+            #endif
+            if let e = coords.last {
+                Annotation("Finish", coordinate: e) {
+                    Image(systemName: "flag.checkered.circle.fill").font(.system(size: 22))
+                        .foregroundStyle(Theme.forestDeep, Theme.gold)
+                }
+            }
+        }
+        .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
     }
 
     private func placeRow(_ label: String, _ value: String, _ symbol: String, _ tint: Color) -> some View {

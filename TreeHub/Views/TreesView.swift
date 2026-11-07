@@ -176,22 +176,8 @@ struct TreeDetailView: View {
         ScrollView {
             if let tree {
                 VStack(alignment: .leading, spacing: 16) {
-                    PhotoView(data: tree.coverPhoto)
-                        .frame(height: 280)
-                        .frame(maxWidth: .infinity)
-                        .clipped()
-                        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                        .overlay(alignment: .bottomLeading) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(tree.name).font(Theme.title(32)).foregroundStyle(.white)
-                                Text(tree.species.isEmpty ? "Mystery species" : tree.species)
-                                    .font(Theme.rounded(15, .bold)).foregroundStyle(Theme.glow)
-                            }
-                            .padding(16)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(LinearGradient(colors: [.clear, .black.opacity(0.7)], startPoint: .top, endPoint: .bottom))
-                            .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-                        }
+                    treeHero(tree)
+                        .padding(.horizontal, -Theme.pad)
 
                     HStack {
                         HeartsView(filled: tree.bond, size: 16)
@@ -247,10 +233,12 @@ struct TreeDetailView: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(16)
-                .padding(.bottom, 110)
+                .padding(.horizontal, Theme.pad)
+                .padding(.bottom, 130)
             }
         }
+        .ignoresSafeArea(edges: .top)
+        .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
         .alert("Rename tree", isPresented: $renaming) {
@@ -262,6 +250,34 @@ struct TreeDetailView: View {
                 try? context.save()
             }
             Button("Cancel", role: .cancel) {}
+        }
+    }
+
+    private func treeHero(_ tree: TreeSummary) -> some View {
+        ZStack(alignment: .bottomLeading) {
+            PhotoView(data: tree.coverPhoto)
+                .frame(height: 440)
+                .frame(maxWidth: .infinity)
+                .clipped()
+                .overlay {
+                    LinearGradient(stops: [
+                        .init(color: .black.opacity(0.45), location: 0),
+                        .init(color: .clear, location: 0.22),
+                        .init(color: Theme.forestDeep.opacity(0.55), location: 0.68),
+                        .init(color: Theme.forestDeep, location: 1),
+                    ], startPoint: .top, endPoint: .bottom)
+                }
+            VStack(alignment: .leading, spacing: 4) {
+                Text("MET \(Format.day(tree.firstHug).uppercased())")
+                    .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1.2)
+                    .foregroundStyle(Theme.glow)
+                Text(tree.name).font(Theme.title(38)).foregroundStyle(.white)
+                    .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
+                Text(tree.species.isEmpty ? "Mystery species" : tree.species)
+                    .font(Theme.rounded(15, .semibold)).foregroundStyle(.white.opacity(0.8))
+            }
+            .padding(.horizontal, Theme.pad)
+            .padding(.bottom, 4)
         }
     }
 

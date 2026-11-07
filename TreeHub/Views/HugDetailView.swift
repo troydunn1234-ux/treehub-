@@ -19,45 +19,9 @@ struct HugDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 16) {
-                if !photos.isEmpty {
-                    TabView {
-                        ForEach(photos, id: \.0) { item in
-                            PhotoView(data: item.1)
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 360)
-                                .clipped()
-                                .overlay(alignment: .bottomLeading) {
-                                    Text(item.0).font(Theme.rounded(12, .bold))
-                                        .padding(.horizontal, 10).padding(.vertical, 5)
-                                        .background(.ultraThinMaterial, in: Capsule())
-                                        .padding(12)
-                                }
-                                .onTapGesture { fullPhoto = IdentifiedData(data: item.1) }
-                        }
-                    }
-                    .tabViewStyle(.page)
-                    .frame(height: 360)
-                    .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                }
-
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(hug.treeName).font(Theme.title(30)).foregroundStyle(.white)
-                        if !hug.species.isEmpty {
-                            Text(hug.species).font(Theme.rounded(15, .semibold)).foregroundStyle(Theme.glow)
-                        }
-                        Text(Format.dayTime(hug.date)).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                    }
-                    Spacer()
-                    if let leaf = LeafType.find(hug.leafKey) {
-                        VStack(spacing: 4) {
-                            LeafView(leaf: leaf, size: 52)
-                            RarityLabel(rarity: leaf.rarity)
-                        }
-                    }
-                }
-
+            VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                hero
+                VStack(alignment: .leading, spacing: Theme.gap + 4) {
                 FlowLayout(spacing: 8) {
                     Chip(label: "+\(hug.xp) XP", symbol: "star.fill", selected: true)
                     if hug.barefoot { Chip(label: "Barefoot", symbol: "shoeprints.fill") }
@@ -70,7 +34,7 @@ struct HugDetailView: View {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 12) {
                             SectionHeader(title: hug.exercise.isEmpty ? "Breathwork" : hug.exercise, symbol: "wind")
-                            LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
                                 if hug.durationMin > 0 { StatTile(value: Format.minutes(hug.durationMin), label: "Time") }
                                 if hug.avgHR != nil { StatTile(value: Format.number(hug.avgHR), label: "Avg HR") }
                                 if hug.minHR != nil { StatTile(value: Format.number(hug.minHR), label: "Low HR") }
@@ -130,10 +94,13 @@ struct HugDetailView: View {
                 Button(role: .destructive) { confirmDelete = true } label: {
                     Label("Delete hug", systemImage: "trash").font(Theme.rounded(15, .bold)).frame(maxWidth: .infinity)
                 }
+                }
+                .padding(.horizontal, Theme.pad)
             }
-            .padding(16)
-            .padding(.bottom, 110)
+            .padding(.bottom, 130)
         }
+        .ignoresSafeArea(edges: .top)
+        .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $editing) { HugLogView(editing: hug) }
@@ -161,6 +128,67 @@ struct HugDetailView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Its XP and leaf go with it.")
+        }
+    }
+
+    /// Swipeable full-bleed photos with the tree's name over them.
+    private var hero: some View {
+        ZStack(alignment: .bottomLeading) {
+            Group {
+                if photos.isEmpty {
+                    ZStack {
+                        LinearGradient(colors: [Theme.moss, Theme.forestDeep], startPoint: .top, endPoint: .bottom)
+                        Image(systemName: "tree.fill").font(.system(size: 110)).foregroundStyle(Theme.leafGradient).opacity(0.3)
+                    }
+                } else {
+                    TabView {
+                        ForEach(photos, id: \.0) { item in
+                            PhotoView(data: item.1)
+                                .frame(maxWidth: .infinity)
+                                .clipped()
+                                .contentShape(Rectangle())
+                                .onTapGesture { fullPhoto = IdentifiedData(data: item.1) }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: photos.count > 1 ? .always : .never))
+                }
+            }
+            .frame(height: 460)
+            .overlay {
+                LinearGradient(stops: [
+                    .init(color: .black.opacity(0.45), location: 0),
+                    .init(color: .clear, location: 0.22),
+                    .init(color: Theme.forestDeep.opacity(0.55), location: 0.68),
+                    .init(color: Theme.forestDeep, location: 1),
+                ], startPoint: .top, endPoint: .bottom)
+                .allowsHitTesting(false)
+            }
+
+            HStack(alignment: .bottom) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(Format.dayTime(hug.date).uppercased())
+                        .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1.2)
+                        .foregroundStyle(Theme.glow)
+                    Text(hug.treeName)
+                        .font(Theme.title(36))
+                        .foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
+                    if !hug.species.isEmpty {
+                        Text(hug.species).font(Theme.rounded(15, .semibold)).foregroundStyle(.white.opacity(0.8))
+                    }
+                }
+                Spacer()
+                if let leaf = LeafType.find(hug.leafKey) {
+                    VStack(spacing: 6) {
+                        LeafView(leaf: leaf, size: 54)
+                        RarityLabel(rarity: leaf.rarity)
+                    }
+                    .padding(10)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                }
+            }
+            .padding(.horizontal, Theme.pad)
+            .padding(.bottom, 4)
         }
     }
 
