@@ -42,6 +42,8 @@ shot () {
   xcrun simctl io "$UDID" screenshot "shots/$name.png" > /dev/null 2>&1
 }
 
+shot 0-intro 0.9 -showIntro
+shot 0b-onboarding 4 -showIntro
 shot 1-home 8
 shot 2-hug-log 8 -hugLog
 shot 3-celebration 9 -celebrate

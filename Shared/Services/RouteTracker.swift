@@ -43,6 +43,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         authorization = manager.authorizationStatus
         applyKindSettings()
         restoreIfNeeded()
+        // Re-attach the Live Activity for a restored recording, or clear an orphaned one.
+        LiveActivityController.shared.sync(with: self)
     }
 
     // MARK: - Derived
@@ -89,6 +91,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         beginUpdates()
         startMotion()
         persist()
+        if let startDate { LiveActivityController.shared.start(kind: kind, startDate: startDate) }
     }
 
     func pause() {
@@ -99,6 +102,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         lastAccepted = nil
         manager.stopUpdatingLocation()
         persist()
+        LiveActivityController.shared.update(tracker: self, force: true)
     }
 
     func resume() {
@@ -107,6 +111,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         state = .recording
         beginUpdates()
         persist()
+        LiveActivityController.shared.update(tracker: self, force: true)
     }
 
     /// Stops recording and returns a filled-in Activity (not yet inserted into the database).
@@ -125,6 +130,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         a.maxSpeed = maxSpeed
         a.route = Self.simplify(points, maxCount: 4000)
         reset()
+        LiveActivityController.shared.end()
         return a
     }
 
@@ -133,11 +139,13 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         kind = k
         applyKindSettings()
         persist()
+        if state != .idle { LiveActivityController.shared.update(tracker: self, force: true) }
     }
 
     func discard() {
         stopUpdates()
         reset()
+        LiveActivityController.shared.end()
     }
 
     // MARK: - Private
@@ -248,6 +256,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         points.append(RoutePoint(loc))
         unsavedCount += 1
         if unsavedCount >= 10 { persist() }
+        LiveActivityController.shared.update(tracker: self)
     }
 
     // MARK: - CLLocationManagerDelegate

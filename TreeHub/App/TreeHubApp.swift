@@ -28,7 +28,7 @@ struct TreeHubApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
+            LaunchGate { RootView() }
                 .environment(tracker)
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)

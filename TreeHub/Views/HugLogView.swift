@@ -606,6 +606,10 @@ struct HugLogView: View {
         let levelAfter = GameEngine.level(for: GameEngine.totalXP(hugs: after, activities: activities))
         let newBadges = GameEngine.badges(hugs: after, activities: activities).filter { $0.earned && !badgesBefore.contains($0.id) }
 
+        if isNew, let strollID {
+            let onStroll = after.filter { $0.strollID == strollID }.count
+            LiveActivityController.shared.setHugs(onStroll)
+        }
         if isNew {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             celebration = CelebrationData(breakdown: breakdown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,

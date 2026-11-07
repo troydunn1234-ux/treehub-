@@ -21,6 +21,8 @@ targets:
     sources:
       - path: TreeHub
       - path: Shared
+    dependencies:
+      - target: RootboundWidgets
     entitlements:
       path: TreeHub/TreeHub.entitlements
       properties:
@@ -35,6 +37,7 @@ targets:
       path: TreeHub/Info.plist
       properties:
         CFBundleDisplayName: Rootbound
+        NSSupportsLiveActivities: true
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
@@ -62,6 +65,8 @@ targets:
     sources:
       - path: TrackApp
       - path: Shared
+    dependencies:
+      - target: RoamrWidgets
     entitlements:
       path: TrackApp/TrackHub.entitlements
       properties:
@@ -76,6 +81,7 @@ targets:
       path: TrackApp/Info.plist
       properties:
         CFBundleDisplayName: Roamr
+        NSSupportsLiveActivities: true
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
@@ -94,6 +100,43 @@ targets:
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) TRACK_APP"
+
+
+  # Lock Screen / Dynamic Island live activity for Rootbound
+  RootboundWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: RootboundWidgets
+      - path: Shared/LiveActivity/TrackingActivityAttributes.swift
+    info:
+      path: RootboundWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Rootbound
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound.widgets
+        SKIP_INSTALL: YES
+
+  # Lock Screen / Dynamic Island live activity for Roamr
+  RoamrWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: RoamrWidgets
+      - path: Shared/LiveActivity/TrackingActivityAttributes.swift
+    info:
+      path: RoamrWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Roamr
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr.widgets
+        SKIP_INSTALL: YES
 
   RootboundUITests:
     type: bundle.ui-testing

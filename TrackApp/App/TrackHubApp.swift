@@ -26,7 +26,7 @@ struct TrackHubApp: App {
 
     var body: some Scene {
         WindowGroup {
-            TrackRootView()
+            LaunchGate { TrackRootView() }
                 .environment(tracker)
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)
