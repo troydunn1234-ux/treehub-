@@ -15,12 +15,14 @@
 		1305E466AF8A4CA4155AAA79 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
 		157EF78B4051A7B3606FB48E /* CollectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C18055774998E68B0A2D16D /* CollectionView.swift */; };
 		16F74D5EDCCCF17E596B6CD3 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
+		17652B6477B12D75146F57AB /* VizioClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8FA044D7503651EA2DC32 /* VizioClient.swift */; };
 		18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
 		1B9DFC673067578DFA6B520F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		1FA66182A2E82790776C71F3 /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
 		29467D912B072530A65EEF83 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
+		2BB69615245B34B7F063673A /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C64D37B318F75453FE1CCF /* RemoteView.swift */; };
 		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
 		2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */; };
 		2EB207FD9A37C0BBE687BD5A /* seed.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AF3BE2ACB5948886F563F6 /* seed.json */; };
@@ -31,10 +33,13 @@
 		3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
 		439660E157C058142F67DF47 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4307BE1856AAD8B00961B3DF /* TreeFacts.swift */; };
+		452B55C6051B0156C2215E46 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62D8F1DE137F76D14BFBA78 /* SetupView.swift */; };
 		4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
+		53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE617454CF624295615806D /* TVDiscovery.swift */; };
 		56A2D49624FFB8EF56D22FF5 /* BridgeScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */; };
 		5824B5BA169822B6DCB40526 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CA977CF56EAADE45A4D8DE /* WebScreen.swift */; };
+		5843362A054EB4DED1466857 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7602D94C88BBCEBD16741BBC /* Assets.xcassets */; };
 		5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
@@ -47,6 +52,7 @@
 		71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
+		7930AF457083499037988843 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A56120F979883274950676C /* AppsView.swift */; };
 		7BCD9A2BDD4FC8C1AE537766 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
 		7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
@@ -58,12 +64,16 @@
 		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE36C7584CE358A1400B2C5 /* Assets.xcassets */; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
+		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		AB06264988421B3AB01E26B9 /* Look.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF9FA8F8D82A9B59632D6F3 /* Look.swift */; };
+		AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D854BA14681BFCF2190CE5 /* ClickerApp.swift */; };
 		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
 		AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
 		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
 		B4D8DD07B70C2AE132653BC6 /* BridgeScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */; };
 		B76B4471ECBFAC9F8E794ED1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD533F40BAA6F6D9454E5913 /* Assets.xcassets */; };
+		BB054BC9F7175CD6F38639F3 /* vizio_apps.json in Resources */ = {isa = PBXBuildFile; fileRef = ACC631B71309791C55329B7D /* vizio_apps.json */; };
 		C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
 		C437CC238D3E3E6FBF9C35F7 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CA977CF56EAADE45A4D8DE /* WebScreen.swift */; };
 		C5808D4C5DE8FBD43020790C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52E3D277EF6186E89CD7A080 /* Assets.xcassets */; };
@@ -161,6 +171,7 @@
 
 /* Begin PBXFileReference section */
 		01A7383F3E50B876ECE6A78C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		01D854BA14681BFCF2190CE5 /* ClickerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerApp.swift; sourceTree = "<group>"; };
 		0280FF1C22E640C6CE99F86D /* SpeedZones.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedZones.swift; sourceTree = "<group>"; };
 		048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingActivityAttributes.swift; sourceTree = "<group>"; };
 		0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
@@ -169,6 +180,8 @@
 		1466841354823062CD97D858 /* TrackDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDemo.swift; sourceTree = "<group>"; };
 		14EA827DC7590876A4C29524 /* RootboundWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RootboundWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		17C64D37B318F75453FE1CCF /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
+		1C1E9F1FDB7C2DA8347EB134 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
 		2C1F7B48E188C0AD4BB6F0FB /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/FoodBook/web; sourceTree = SOURCE_ROOT; };
@@ -177,6 +190,7 @@
 		2F4159F6563FEC514EECE6D1 /* LogicTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogicTests.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
+		3FC8FA044D7503651EA2DC32 /* VizioClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizioClient.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
 		40ECC54940AA2F6838B4759D /* LaunchSplash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplash.swift; sourceTree = "<group>"; };
 		4307BE1856AAD8B00961B3DF /* TreeFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeFacts.swift; sourceTree = "<group>"; };
@@ -191,32 +205,40 @@
 		597A4F6DE910B32A5C72BD0B /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/QuestApp/web; sourceTree = SOURCE_ROOT; };
 		5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebShellApp.swift; sourceTree = "<group>"; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
+		5F5D7F6A26846A82824D69E1 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
 		685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootboundWidgets.swift; sourceTree = "<group>"; };
 		68CA977CF56EAADE45A4D8DE /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
 		6AB6F40618E7D146443B85E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScripts.swift; sourceTree = "<group>"; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		7602D94C88BBCEBD16741BBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
 		80ACEC3C05F648903A54E16B /* seed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed.json; sourceTree = "<group>"; };
+		8EF9FA8F8D82A9B59632D6F3 /* Look.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Look.swift; sourceTree = "<group>"; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
 		95627826BBB39644B9BEF65D /* RoamrWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RoamrWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		96832C9E113D2C830820806F /* HealthService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthService.swift; sourceTree = "<group>"; };
+		9A56120F979883274950676C /* AppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppsView.swift; sourceTree = "<group>"; };
+		9AE617454CF624295615806D /* TVDiscovery.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVDiscovery.swift; sourceTree = "<group>"; };
 		9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F73AE90E29B0845AB46785E /* Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesGuesser.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		A6D1895159EA264D0659FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
 		B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NatalOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9FB470D73E21C7F253D4FE7 /* FoodBook.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoodBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C62D8F1DE137F76D14BFBA78 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveEffects.swift; sourceTree = "<group>"; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		D7BA3D260B47B8A0E389F675 /* Clicker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Clicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D98D314E35365B34A5FCA998 /* LiveAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAvatar.swift; sourceTree = "<group>"; };
 		E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitAnnouncer.swift; sourceTree = "<group>"; };
 		E3E091DF3578856789807FDF /* RideQuest.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = RideQuest.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -278,6 +300,20 @@
 			path = TreeHub;
 			sourceTree = "<group>";
 		};
+		4387B860F0394C4335BA58E8 /* TVRemote */ = {
+			isa = PBXGroup;
+			children = (
+				7602D94C88BBCEBD16741BBC /* Assets.xcassets */,
+				1C1E9F1FDB7C2DA8347EB134 /* Info.plist */,
+				56211356747BA84BE38BADBD /* App */,
+				EB257888952653AED511941E /* Design */,
+				B1896BE5E7FFB21D89DEFA25 /* Resources */,
+				D93FFFC0033E056B6A89CA21 /* Services */,
+				C0163F5F145C6765F0FA9BBE /* Views */,
+			);
+			path = TVRemote;
+			sourceTree = "<group>";
+		};
 		4E4FE5EFE033C93A7B45A5C2 = {
 			isa = PBXGroup;
 			children = (
@@ -289,6 +325,7 @@
 				9A6C2866154D34A621C998DF /* TrackHubUITests */,
 				2535BCD53907184A8980C35F /* TreeHub */,
 				D6A15AD9851995B292B60E11 /* TreeHubUITests */,
+				4387B860F0394C4335BA58E8 /* TVRemote */,
 				8DB6336EE4FF867FE5193077 /* WebApps */,
 				8ABDA768BBE5B199DC7E56EF /* Products */,
 			);
@@ -302,6 +339,14 @@
 				2C1F7B48E188C0AD4BB6F0FB /* web */,
 			);
 			path = FoodBook;
+			sourceTree = "<group>";
+		};
+		56211356747BA84BE38BADBD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				01D854BA14681BFCF2190CE5 /* ClickerApp.swift */,
+			);
+			path = App;
 			sourceTree = "<group>";
 		};
 		5A5AD11E7E9A9BE2BA26BE42 /* QuestApp */ = {
@@ -345,6 +390,7 @@
 		8ABDA768BBE5B199DC7E56EF /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				D7BA3D260B47B8A0E389F675 /* Clicker.app */,
 				B9FB470D73E21C7F253D4FE7 /* FoodBook.app */,
 				B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */,
 				E3E091DF3578856789807FDF /* RideQuest.app */,
@@ -452,6 +498,14 @@
 			path = Views;
 			sourceTree = "<group>";
 		};
+		B1896BE5E7FFB21D89DEFA25 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				ACC631B71309791C55329B7D /* vizio_apps.json */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
 		BBB92CBC426230754037F9D0 /* LiveActivity */ = {
 			isa = PBXGroup;
 			children = (
@@ -459,6 +513,16 @@
 				048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */,
 			);
 			path = LiveActivity;
+			sourceTree = "<group>";
+		};
+		C0163F5F145C6765F0FA9BBE /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				9A56120F979883274950676C /* AppsView.swift */,
+				17C64D37B318F75453FE1CCF /* RemoteView.swift */,
+				C62D8F1DE137F76D14BFBA78 /* SetupView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		C1D167C953C6D4147EC64727 /* App */ = {
@@ -505,12 +569,30 @@
 			path = TreeHubUITests;
 			sourceTree = "<group>";
 		};
+		D93FFFC0033E056B6A89CA21 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				9AE617454CF624295615806D /* TVDiscovery.swift */,
+				5F5D7F6A26846A82824D69E1 /* TVStore.swift */,
+				3FC8FA044D7503651EA2DC32 /* VizioClient.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		DC82DFB1DD16B4F987429470 /* RootboundTests */ = {
 			isa = PBXGroup;
 			children = (
 				2F4159F6563FEC514EECE6D1 /* LogicTests.swift */,
 			);
 			path = RootboundTests;
+			sourceTree = "<group>";
+		};
+		EB257888952653AED511941E /* Design */ = {
+			isa = PBXGroup;
+			children = (
+				8EF9FA8F8D82A9B59632D6F3 /* Look.swift */,
+			);
+			path = Design;
 			sourceTree = "<group>";
 		};
 		EE02868A2EE0C783F32AB7BB /* RoamrWidgets */ = {
@@ -662,6 +744,24 @@
 			productReference = FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		C4BDDADD84DD81FCDB3C3F84 /* Clicker */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 45517D6AB6A1A275217219E7 /* Build configuration list for PBXNativeTarget "Clicker" */;
+			buildPhases = (
+				7E24F25F9118002A8532F0A2 /* Sources */,
+				2ABB267FAF9A9AD02D390B9C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Clicker;
+			packageProductDependencies = (
+			);
+			productName = Clicker;
+			productReference = D7BA3D260B47B8A0E389F675 /* Clicker.app */;
+			productType = "com.apple.product-type.application";
+		};
 		CE1DBA3830897DC743A2CD97 /* FoodBook */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 815E3ED81A5BEA3CE8F36941 /* Build configuration list for PBXNativeTarget "FoodBook" */;
@@ -755,6 +855,10 @@
 						ProvisioningStyle = Automatic;
 						TestTargetID = 7DAC63D05B83BBE7BD589AA8;
 					};
+					C4BDDADD84DD81FCDB3C3F84 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					CE1DBA3830897DC743A2CD97 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
@@ -793,6 +897,7 @@
 				CE1DBA3830897DC743A2CD97 /* FoodBook */,
 				3F62CE67F166982972F2D90D /* NatalOrbit */,
 				D5F72C6A2B774EF77A2C6334 /* RideQuest */,
+				C4BDDADD84DD81FCDB3C3F84 /* Clicker */,
 			);
 		};
 /* End PBXProject section */
@@ -805,6 +910,15 @@
 				9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */,
 				CAED1284BA559F4B0C7CF9A8 /* seed.json in Resources */,
 				EDDBAED9DDAB69BE21E36E5E /* web in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		2ABB267FAF9A9AD02D390B9C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5843362A054EB4DED1466857 /* Assets.xcassets in Resources */,
+				BB054BC9F7175CD6F38639F3 /* vizio_apps.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -933,6 +1047,21 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		7E24F25F9118002A8532F0A2 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				7930AF457083499037988843 /* AppsView.swift in Sources */,
+				AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */,
+				AB06264988421B3AB01E26B9 /* Look.swift in Sources */,
+				2BB69615245B34B7F063673A /* RemoteView.swift in Sources */,
+				452B55C6051B0156C2215E46 /* SetupView.swift in Sources */,
+				53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */,
+				9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */,
+				17652B6477B12D75146F57AB /* VizioClient.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B143382CF41380BB21C3714A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1036,6 +1165,22 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Rootbound.app/Rootbound";
+			};
+			name = Release;
+		};
+		0D0068A684E9856A2069C23F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = TVRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -1201,6 +1346,22 @@
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.ridequest;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5E6406C76CCE8146DB294B20 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				INFOPLIST_FILE = TVRemote/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -1506,6 +1667,15 @@
 			buildConfigurations = (
 				5D94D850F9823240F28DD1DA /* Debug */,
 				221DD1F9716899E6E5EDDEC0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		45517D6AB6A1A275217219E7 /* Build configuration list for PBXNativeTarget "Clicker" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5E6406C76CCE8146DB294B20 /* Debug */,
+				0D0068A684E9856A2069C23F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
