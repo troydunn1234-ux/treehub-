@@ -743,6 +743,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (Array.isArray(s.moves)) o.moves = s.moves.filter(function (m) { return m && typeof m.d === "string" && typeof m.amt === "number"; });
     if (s.bankRules && typeof s.bankRules === "object" && !Array.isArray(s.bankRules)) o.bankRules = s.bankRules;
     if (s.bankWallet && typeof s.bankWallet === "object" && !Array.isArray(s.bankWallet)) o.bankWallet = s.bankWallet;
+    if (typeof s.bankMatchedAt === "number") o.bankMatchedAt = s.bankMatchedAt;
     if (Array.isArray(s.bankSkip)) o.bankSkip = s.bankSkip.filter(function (x) { return typeof x === "string"; }).slice(-800);
     return o;
   }
@@ -1968,6 +1969,22 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   function looksLikeTransfer(t) {
     return /transfer|xfer|payment.*thank|autopay|online payment|card payment|pymt|zelle to troy|to savings|from savings|from checking|to checking|discover.*payment|sofi.*(transfer|savings)/i.test((t.description || "") + " " + (t.payee || ""));
   }
+  function isCredit(a) {
+    return /discover|credit|card|visa|mastercard|amex|apple card/i.test((a.name || "") + " " + (a.org || "")) || (+a.balance || 0) < 0;
+  }
+  /* Make each wallet's balance equal what the bank says right now (SoFi Checking -> Checking, SoFi Savings -> Savings).
+     Credit cards aren't wallets, so they're left out. */
+  function bankReconcile(res) {
+    var sums = {}, any = false;
+    (res.accounts || []).forEach(function (a) {
+      if (isCredit(a) || a.balance === undefined || a.balance === null || !isFinite(+a.balance)) return;
+      var w = walletFor(a); sums[w] = r2((sums[w] || 0) + (+a.balance)); any = true;
+    });
+    if (!any) return false;
+    Object.keys(sums).forEach(function (w) { S.start[w] = r2(sums[w] - (bal(w) - (S.start[w] || 0))); });
+    S.bankMatchedAt = Date.now();
+    return true;
+  }
   function bankImport(res) {
     var seen = {}, added = 0, inc = 0, skipped = 0;
     S.tx.forEach(function (t) { if (t.bank && t.bank.id) seen[t.bank.id] = t; });
@@ -1982,7 +1999,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       for (var j = i + 1; j < all.length; j++) {
         var y = all[j];
         if (mirror[j] || y.a.id === x.a.id) continue;
-        if (Math.abs(x.t.amount + y.t.amount) < 0.005 && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 4 * 86400) { mirror[i] = mirror[j] = 1; break; }
+        /* only pair real transfers: same bank, or one side says transfer/payment (a $5 coffee on the card isn't a transfer) */
+        var related = (x.a.org && x.a.org === y.a.org) || looksLikeTransfer(x.t) || looksLikeTransfer(y.t);
+        if (related && Math.abs(x.t.amount + y.t.amount) < 0.005 && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 4 * 86400) { mirror[i] = j + 1; mirror[j] = i + 1; break; }
       }
     });
     all.forEach(function (x, i) {
@@ -1995,12 +2014,27 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         return;
       }
       if (t.pending) return; /* wait until it posts: pending ids can change, which would double-count */
-      if (mirror[i] || looksLikeTransfer(t)) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
+      if (mirror[i]) {
+        var o = all[mirror[i] - 1], oid = o.t.id ? o.a.id + ":" + o.t.id : "";
+        var fromW = t.amount < 0 ? walletFor(a) : walletFor(o.a), toW = t.amount < 0 ? walletFor(o.a) : walletFor(a);
+        if (!isCredit(a) && !isCredit(o.a) && fromW !== toW && !seen[oid] && !o.t.pending) {
+          S.moves.push({ id: uid(), d: isoDay(t.posted || t.transacted), from: fromW, to: toW, amt: r2(Math.abs(t.amount)), note: "Bank transfer", bank: { id: id, org: a.org || a.name, key: "transfer", pend: false } });
+          seen[id] = true; seen[oid] = true;
+          S.bankSkip = (S.bankSkip || []).concat([oid]).slice(-800);
+          inc++; return;
+        }
+        S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return;
+      }
+      if (looksLikeTransfer(t)) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
       var text = t.payee || t.description || "Bank purchase", key = payeeKey(text);
       var when = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000);
       var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending };
       if (t.amount < 0) {
         S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: text.slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
+        added++;
+      } else if (isCredit(a)) {
+        /* money back on a card (a return/refund) takes spending back down in its category */
+        S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: ("Refund: " + text).slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
         added++;
       } else {
         S.moves.push({ id: uid(), d: when, from: "outside", to: walletFor(a), amt: r2(t.amount), note: text.slice(0, 60), bank: bank });
@@ -2017,10 +2051,13 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var since = last ? Math.floor(last / 1000) - 3 * 86400 : Math.floor(Date.now() / 1000) - 30 * 86400;
     bankNative({ op: "simplefin", action: "sync", since: since }).then(function (res) {
       var r = bankImport(res || {});
+      var matched = bankReconcile(res || {});
       BANK.busy = false;
       var errs = (res && res.errors && res.errors.length) ? " " + res.errors.length + " bank message(s): " + res.errors.join(" ").slice(0, 140) : "";
       BANK.msg = (r.added || r.inc) ? "Imported " + r.added + " purchase" + (r.added === 1 ? "" : "s") + (r.inc ? " and " + r.inc + " deposit" + (r.inc === 1 ? "" : "s") : "") + "." + errs : "Up to date." + errs;
-      if (r.added || r.inc) { touch(); renderAll(); if (manual || r.added) toast(BANK.msg); beep("coin"); }
+      if (matched) BANK.msg += " Balances match your bank.";
+      if (r.added || r.inc || matched) { touch(); renderAll(); }
+      if (r.added || r.inc) { if (manual || r.added) toast(BANK.msg); beep("coin"); }
       return bankStatus();
     }, function (e) {
       BANK.busy = false; BANK.msg = String((e && e.message) || e || "Sync failed"); renderBank();
