@@ -23,6 +23,10 @@ if [ -d "$APPF" ]; then
   xcrun simctl launch "$UDID" com.troydunn.foodbook -supps > /dev/null; sleep 5
   xcrun simctl io "$UDID" screenshot shots/food-2-supps.png > /dev/null 2>&1
   xcrun simctl terminate "$UDID" com.troydunn.foodbook 2>/dev/null || true
+  xcrun simctl launch "$UDID" com.troydunn.foodbook -demo -snap > /dev/null; sleep 6
+  xcrun simctl io "$UDID" screenshot shots/food-3-plate.png > /dev/null 2>&1
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.foodbook; then echo "OK    food-plate"; else echo "CRASH food-plate"; FAIL=1; fi
+  xcrun simctl terminate "$UDID" com.troydunn.foodbook 2>/dev/null || true
 fi
 
 # Roamr test drive on I-280 at ~80 mph: truck avatar, chase cam, speed limit HUD, colored route.
@@ -54,6 +58,13 @@ if ways:
   sleep 30; xcrun simctl io "$UDID" screenshot "shots/drive-1.png" > /dev/null 2>&1
   sleep 20; xcrun simctl io "$UDID" screenshot "shots/drive-2.png" > /dev/null 2>&1
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; FAIL=1; fi
+  xcrun simctl terminate "$UDID" com.troydunn.roamr || true
+  # Same drive with turn-by-turn directions on
+  xcrun simctl launch "$UDID" com.troydunn.roamr -demo -autodrive -nav > /dev/null
+  sleep 4
+  xcrun simctl location "$UDID" start --speed=36 --interval=1 $ROUTE || true
+  sleep 25; xcrun simctl io "$UDID" screenshot "shots/drive-3-nav.png" > /dev/null 2>&1
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-nav"; else echo "CRASH roamr-nav"; FAIL=1; fi
   xcrun simctl location "$UDID" clear || true
 fi
 
@@ -71,7 +82,14 @@ if [ -d "$APP" ]; then
   xcrun simctl launch "$UDID" com.troydunn.clicker -demo -pc > /dev/null; sleep 5
   xcrun simctl io "$UDID" screenshot shots/clicker-3-pc.png > /dev/null 2>&1
   xcrun simctl terminate "$UDID" com.troydunn.clicker
+  xcrun simctl launch "$UDID" com.troydunn.clicker -demo -switcher > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/clicker-4-switcher.png > /dev/null 2>&1
+  xcrun simctl terminate "$UDID" com.troydunn.clicker
+  xcrun simctl launch "$UDID" com.troydunn.clicker -demo -picker > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/clicker-5-picker.png > /dev/null 2>&1
+  xcrun simctl terminate "$UDID" com.troydunn.clicker
   xcrun simctl launch "$UDID" com.troydunn.clicker > /dev/null; sleep 4
   xcrun simctl io "$UDID" screenshot shots/clicker-0-setup.png > /dev/null 2>&1
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.clicker; then echo "OK    clicker-setup"; else echo "CRASH clicker-setup"; FAIL=1; fi
 fi
 exit $FAIL
