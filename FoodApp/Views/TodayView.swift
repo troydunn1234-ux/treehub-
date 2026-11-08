@@ -236,9 +236,9 @@ struct FoodRow: View {
             HStack(spacing: 12) {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.name).font(Ember.font(16, .bold)).foregroundStyle(Ember.cream).lineLimit(1)
-                    let macros = [entry.protein > 0 ? "\(Int(entry.protein * entry.servings))g P" : nil,
-                                  entry.carbs > 0 ? "\(Int(entry.carbs * entry.servings))g C" : nil,
-                                  entry.fat > 0 ? "\(Int(entry.fat * entry.servings))g F" : nil].compactMap { $0 }
+                    let macros = [Int(entry.protein * entry.servings) > 0 ? "\(Int(entry.protein * entry.servings))g P" : nil,
+                                  Int(entry.carbs * entry.servings) > 0 ? "\(Int(entry.carbs * entry.servings))g C" : nil,
+                                  Int(entry.fat * entry.servings) > 0 ? "\(Int(entry.fat * entry.servings))g F" : nil].compactMap { $0 }
                     if !macros.isEmpty || entry.servings != 1 {
                         Text(((entry.servings != 1 ? ["×\(entry.servings.formatted())"] : []) + macros).joined(separator: " · "))
                             .font(Ember.font(12, .medium)).foregroundStyle(Ember.dim)
