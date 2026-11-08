@@ -19,11 +19,14 @@
 		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
 		2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */; };
 		2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
+		34903B18BC206AE96DF01EB4 /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
 		3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
+		4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4307BE1856AAD8B00961B3DF /* TreeFacts.swift */; };
 		4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
+		5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
 		623E64AFF025111C49695B04 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
@@ -53,6 +56,7 @@
 		C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 96832C9E113D2C830820806F /* HealthService.swift */; };
 		C9E2B4C0AE82032C8D94541D /* TrackTourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */; };
 		CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */; };
+		D351BF789B84FF07B0C7D443 /* SpeciesGuesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */; };
 		D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
 		DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
 		DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
@@ -147,6 +151,7 @@
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
 		40ECC54940AA2F6838B4759D /* LaunchSplash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplash.swift; sourceTree = "<group>"; };
+		4307BE1856AAD8B00961B3DF /* TreeFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeFacts.swift; sourceTree = "<group>"; };
 		44F00360DF850821B3293EA2 /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
 		463C0E94D514A99089BCC322 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
@@ -166,11 +171,13 @@
 		9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9F73AE90E29B0845AB46785E /* Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
+		A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesGuesser.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
+		E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplitAnnouncer.swift; sourceTree = "<group>"; };
 		E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchGate.swift; sourceTree = "<group>"; };
 		EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
 		EEF58211216804E6CF163DAA /* RootboundTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -186,6 +193,14 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		18B05CB192F0B04F80BB6489 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		24BFABCDC18D079B2E2D7DD1 /* Design */ = {
 			isa = PBXGroup;
 			children = (
@@ -204,6 +219,7 @@
 				24BFABCDC18D079B2E2D7DD1 /* Design */,
 				CD8E4361CA6E5FB03C20CFAC /* Game */,
 				A7F6806044A020BFD54EE5B2 /* Models */,
+				18B05CB192F0B04F80BB6489 /* Services */,
 				603250096F975E0EA47D666F /* Views */,
 			);
 			path = TreeHub;
@@ -245,6 +261,7 @@
 				9F73AE90E29B0845AB46785E /* Format.swift */,
 				96832C9E113D2C830820806F /* HealthService.swift */,
 				44F00360DF850821B3293EA2 /* RouteTracker.swift */,
+				E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -374,6 +391,7 @@
 			isa = PBXGroup;
 			children = (
 				934BDCB20C653E5C70F14DE5 /* GameEngine.swift */,
+				4307BE1856AAD8B00961B3DF /* TreeFacts.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -663,9 +681,12 @@
 				4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */,
 				C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */,
 				3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */,
+				D351BF789B84FF07B0C7D443 /* SpeciesGuesser.swift in Sources */,
+				34903B18BC206AE96DF01EB4 /* SplitAnnouncer.swift in Sources */,
 				D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */,
 				3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */,
 				8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */,
+				4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */,
 				2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */,
 				5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */,
 			);
@@ -705,6 +726,7 @@
 				8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */,
 				18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */,
 				DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */,
+				5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */,
 				AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */,
 				7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */,
 				781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */,
