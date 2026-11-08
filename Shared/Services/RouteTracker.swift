@@ -24,12 +24,20 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var authorization: CLAuthorizationStatus = .notDetermined
     private(set) var recoveredFromCrash = false
     private(set) var motionCounts: [ActivityKind: Int] = [:]
+    /// Paused by the app because you stopped moving (GPS keeps running so it can resume itself).
+    private(set) var autoPaused = false
 
     private(set) var accumulated: TimeInterval = 0
     private(set) var resumedAt: Date?
     @ObservationIgnored private var elevRef: Double?
     @ObservationIgnored private var lastAccepted: CLLocation?
     @ObservationIgnored private var unsavedCount = 0
+    @ObservationIgnored private var slowSince: Date?
+    @ObservationIgnored private var fastFixes = 0
+    @ObservationIgnored private var lastRaw: CLLocation?
+    @ObservationIgnored private var splitsAnnounced = 0
+    @ObservationIgnored private var lastSplitElapsed: TimeInterval = 0
+    @ObservationIgnored private var stillTimer: Timer?
 
     private let manager = CLLocationManager()
     private let motion = CMMotionActivityManager()
@@ -95,11 +103,22 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     func pause() {
+        if state == .paused && autoPaused {
+            // Turning an auto-pause into a manual one: stop GPS and never resume on our own.
+            autoPaused = false
+            lastAccepted = nil
+            manager.stopUpdatingLocation()
+            persist()
+            LiveActivityController.shared.update(tracker: self, force: true)
+            return
+        }
         guard state == .recording else { return }
         if let resumedAt { accumulated += Date().timeIntervalSince(resumedAt) }
         resumedAt = nil
         state = .paused
+        autoPaused = false
         lastAccepted = nil
+        slowSince = nil
         manager.stopUpdatingLocation()
         persist()
         LiveActivityController.shared.update(tracker: self, force: true)
@@ -107,11 +126,84 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
     func resume() {
         guard state == .paused else { return }
+        let wasAuto = autoPaused
         resumedAt = Date()
         state = .recording
-        beginUpdates()
+        autoPaused = false
+        slowSince = nil
+        fastFixes = 0
+        if !wasAuto { beginUpdates() }
         persist()
         LiveActivityController.shared.update(tracker: self, force: true)
+    }
+
+    /// Below this speed (m/s) you count as stopped for auto-pause.
+    nonisolated static func autoPauseThreshold(for kind: ActivityKind) -> Double? {
+        switch kind {
+        case .drive: return nil
+        case .run, .bike: return 1.0
+        default: return 0.4
+        }
+    }
+
+    private var autoPauseEnabled: Bool {
+        TrackPrefs.autoPause && Self.autoPauseThreshold(for: kind) != nil
+    }
+
+    private func autoPause(since: Date) {
+        guard state == .recording else { return }
+        if let resumedAt { accumulated += max(0, since.timeIntervalSince(resumedAt)) }
+        resumedAt = nil
+        state = .paused
+        autoPaused = true
+        fastFixes = 0
+        currentSpeed = 0
+        persist()
+        LiveActivityController.shared.update(tracker: self, force: true)
+    }
+
+    /// Handles auto-pause / auto-resume for each raw fix. Returns false if the fix should not be recorded.
+    private func handleAutoPause(_ loc: CLLocation) -> Bool {
+        let prev = lastRaw
+        lastRaw = loc
+        guard autoPauseEnabled, let threshold = Self.autoPauseThreshold(for: kind) else {
+            return state == .recording
+        }
+        var speed = loc.speed
+        if speed < 0, let prev {
+            let dt = loc.timestamp.timeIntervalSince(prev.timestamp)
+            speed = dt > 0 ? loc.distance(from: prev) / dt : 0
+        }
+        if state == .paused && autoPaused {
+            if speed >= threshold { fastFixes += 1 } else { fastFixes = 0 }
+            if fastFixes >= 2 { resume(); return true }
+            return false
+        }
+        guard state == .recording else { return false }
+        if speed < threshold {
+            let since = slowSince ?? loc.timestamp
+            slowSince = since
+            if loc.timestamp.timeIntervalSince(since) >= 12 {
+                autoPause(since: since)
+                return false
+            }
+        } else {
+            slowSince = nil
+        }
+        return true
+    }
+
+    private func checkSplits(previousDistance: Double) {
+        guard TrackPrefs.announceSplits else { return }
+        let metric = Units.metric
+        let unit = metric ? 1000.0 : 1609.344
+        let crossed = SplitAnnouncer.splitsCrossed(previous: previousDistance, current: distance, unit: unit)
+        guard let split = crossed.last, split > splitsAnnounced else { return }
+        let total = elapsed
+        let splitTime = (total - lastSplitElapsed) / Double(split - splitsAnnounced)
+        splitsAnnounced = split
+        lastSplitElapsed = total
+        SplitAnnouncer.shared.announce(split: split, metric: metric, splitTime: splitTime, total: total)
     }
 
     /// Stops recording and returns a filled-in Activity (not yet inserted into the database).
@@ -164,7 +256,26 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         }
     }
 
+    /// With the distance filter, a standing phone may send no fixes at all, so check on a timer too.
+    private func startStillTimer() {
+        stillTimer?.invalidate()
+        stillTimer = Timer.scheduledTimer(withTimeInterval: 3, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.stillCheck() }
+        }
+    }
+
+    private func stillCheck() {
+        // Wait for a first GPS fix, so a slow start doesn't look like a stop.
+        guard state == .recording, autoPauseEnabled, let resumedAt, let raw = lastRaw else { return }
+        let lastFix = max(raw.timestamp, resumedAt)
+        let since = max(slowSince ?? lastFix, resumedAt)
+        if Date().timeIntervalSince(lastFix) >= 12 || Date().timeIntervalSince(since) >= 12 && slowSince != nil {
+            autoPause(since: since)
+        }
+    }
+
     private func beginUpdates() {
+        startStillTimer()
         if authorization == .notDetermined { manager.requestWhenInUseAuthorization() }
         manager.allowsBackgroundLocationUpdates = true
         manager.showsBackgroundLocationIndicator = true
@@ -175,6 +286,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     private func stopUpdates() {
+        stillTimer?.invalidate()
+        stillTimer = nil
         manager.stopUpdatingLocation()
         manager.allowsBackgroundLocationUpdates = false
         if #available(iOS 17.0, *), let s = backgroundSession as? CLBackgroundActivitySession {
@@ -200,6 +313,12 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         lastAccepted = nil
         motionCounts = [:]
         recoveredFromCrash = false
+        autoPaused = false
+        slowSince = nil
+        fastFixes = 0
+        lastRaw = nil
+        splitsAnnounced = 0
+        lastSplitElapsed = 0
     }
 
     private func startMotion() {
@@ -220,12 +339,14 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     private func accept(_ loc: CLLocation) {
-        guard state == .recording else { return }
+        guard state == .recording || autoPaused else { return }
         // Throw away stale or fuzzy fixes.
         guard loc.horizontalAccuracy >= 0, abs(loc.timestamp.timeIntervalSinceNow) < 15 else { return }
         let maxAcc: Double = kind == .drive ? 65 : 35
         accuracy = loc.horizontalAccuracy
         guard loc.horizontalAccuracy <= maxAcc else { return }
+        guard handleAutoPause(loc) else { return }
+        let previousDistance = distance
 
         if let last = lastAccepted {
             let d = loc.distance(from: last)
@@ -254,6 +375,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
         lastAccepted = loc
         points.append(RoutePoint(loc))
+        checkSplits(previousDistance: previousDistance)
         unsavedCount += 1
         if unsavedCount >= 10 { persist() }
         LiveActivityController.shared.update(tracker: self)
@@ -339,6 +461,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         resumedAt = nil
         state = .paused
         recoveredFromCrash = true
+        splitsAnnounced = Int((distance / (Units.metric ? 1000.0 : 1609.344)).rounded(.down))
+        lastSplitElapsed = accumulated
     }
 
     // MARK: - Helpers

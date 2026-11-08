@@ -337,12 +337,22 @@ struct TrackView: View {
                             .background(Color.white.opacity(0.1), in: Capsule())
                     }
                     Spacer()
-                    HStack(spacing: 6) {
-                        Circle().fill(tracker.state == .recording ? Color.red : Theme.gold).frame(width: 8, height: 8)
-                        Text(tracker.state == .recording ? "RECORDING" : "PAUSED")
-                            .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1)
+                    if tracker.autoPaused {
+                        Label("Auto-paused", systemImage: "figure.stand")
+                            .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(0.5)
+                            .foregroundStyle(Theme.forestDeep)
+                            .padding(.horizontal, 10).padding(.vertical, 5)
+                            .background(Theme.gold, in: Capsule())
+                            .transition(.scale.combined(with: .opacity))
+                            .accessibilityLabel("Auto-paused. Resumes when you move.")
+                    } else {
+                        HStack(spacing: 6) {
+                            Circle().fill(tracker.state == .recording ? Color.red : Theme.gold).frame(width: 8, height: 8)
+                            Text(tracker.state == .recording ? "RECORDING" : "PAUSED")
+                                .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1)
+                        }
+                        .foregroundStyle(tracker.state == .recording ? Color.red : Theme.gold)
                     }
-                    .foregroundStyle(tracker.state == .recording ? Color.red : Theme.gold)
                 }
 
                 TimelineView(.periodic(from: .now, by: 1)) { _ in

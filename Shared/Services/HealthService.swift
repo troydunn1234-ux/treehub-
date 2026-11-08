@@ -72,6 +72,26 @@ final class HealthService {
         }.sorted { abs($0.start.timeIntervalSince(date)) < abs($1.start.timeIntervalSince(date)) }
     }
 
+    /// Garmin saves breathwork to Apple Health as a short "Mind & Body"-style workout,
+    /// not as mindful minutes, so look for those too.
+    func breathworkWorkouts(around date: Date, hours: Double = 3) async -> [MindfulSession] {
+        let calm: Set<HKWorkoutActivityType> = [.mindAndBody, .yoga, .other, .flexibility, .preparationAndRecovery, .cooldown, .taiChi]
+        let raw = await samples(of: HKObjectType.workoutType(),
+                                start: date.addingTimeInterval(-hours * 3600),
+                                end: date.addingTimeInterval(hours * 3600), limit: 30)
+        return raw.compactMap { $0 as? HKWorkout }
+            .filter { calm.contains($0.workoutActivityType) && $0.duration >= 60 && $0.duration <= 90 * 60 }
+            .map { MindfulSession(start: $0.startDate, end: $0.endDate, source: $0.sourceRevision.source.name) }
+            .sorted { abs($0.start.timeIntervalSince(date)) < abs($1.start.timeIntervalSince(date)) }
+    }
+
+    /// The breathwork session closest to a moment, from either place Garmin/others save it.
+    func nearestBreathSession(around date: Date) async -> MindfulSession? {
+        let all = await mindfulSessions(around: date) + breathworkWorkouts(around: date)
+        return all.filter { $0.minutes >= 1 }
+            .min { abs($0.start.timeIntervalSince(date)) < abs($1.start.timeIntervalSince(date)) }
+    }
+
     struct WorkoutInfo: Identifiable {
         let id: UUID
         var kind: ActivityKind?

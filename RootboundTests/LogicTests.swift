@@ -146,3 +146,58 @@ final class TrackingTests: XCTestCase {
         XCTAssertEqual(Format.minutes(75), "1h 15m")
     }
 }
+
+final class SplitTests: XCTestCase {
+    func testSplitBoundaries() {
+        let mile = 1609.344
+        XCTAssertEqual(SplitAnnouncer.splitsCrossed(previous: 1600, current: 1610, unit: mile), [1])
+        XCTAssertEqual(SplitAnnouncer.splitsCrossed(previous: 1610, current: 1700, unit: mile), [])
+        XCTAssertEqual(SplitAnnouncer.splitsCrossed(previous: 900, current: 3300, unit: 1000), [1, 2, 3])
+        XCTAssertEqual(SplitAnnouncer.splitsCrossed(previous: 500, current: 400, unit: 1000), [])
+    }
+
+    func testSpokenPhrase() {
+        XCTAssertEqual(SplitAnnouncer.phrase(split: 2, metric: false, splitTime: 581, total: 1143),
+                       "Mile 2. Split 9 minutes 41 seconds. Total 19 minutes 3 seconds.")
+        XCTAssertEqual(SplitAnnouncer.spoken(3720), "1 hour 2 minutes")
+        XCTAssertEqual(SplitAnnouncer.spoken(60), "1 minute")
+    }
+
+    func testAutoPauseThresholds() {
+        XCTAssertNil(RouteTracker.autoPauseThreshold(for: .drive))
+        XCTAssertEqual(RouteTracker.autoPauseThreshold(for: .run), 1.0)
+        XCTAssertEqual(RouteTracker.autoPauseThreshold(for: .hike), 0.4)
+    }
+}
+
+final class SpeciesTests: XCTestCase {
+    func testMapsLabelsWordByWord() {
+        let r = SpeciesGuesser.interpret([("palm_tree", 0.8), ("cashew", 0.6), ("tree", 0.9)])
+        XCTAssertEqual(r.guesses.first?.name, "Palm")
+        XCTAssertFalse(r.guesses.contains { $0.name == "Ash" })
+        XCTAssertTrue(r.looksLikeTree)
+    }
+
+    func testGenericTreeHasNoSpecies() {
+        let r = SpeciesGuesser.interpret([("tree", 0.7), ("sky", 0.5)])
+        XCTAssertTrue(r.guesses.isEmpty)
+        XCTAssertTrue(r.looksLikeTree)
+    }
+
+    func testFactsMatchLoosely() {
+        XCTAssertNotNil(TreeFacts.fact(for: "Coast Live Oak"))
+        XCTAssertNotNil(TreeFacts.fact(for: "Giant Sequoia"))
+        XCTAssertNil(TreeFacts.fact(for: ""))
+    }
+
+    /// Prints the classifier's plant-ish labels so the species map can be checked against them.
+    func testListClassifierLabels() {
+        let labels = SpeciesGuesser.supportedLabels()
+        let plant = labels.filter { l in
+            ["tree", "palm", "oak", "maple", "pine", "conifer", "birch", "willow", "redwood", "sequoia", "cypress", "cedar",
+             "fir", "spruce", "blossom", "plant", "forest", "eucalyptus", "bonsai", "bamboo", "cactus", "fig", "olive",
+             "citrus", "ginkgo", "magnolia", "leaf", "bark", "wood"].contains { l.contains($0) }
+        }
+        print("CLASSIFIER_LABELS total=\(labels.count) plant=\(plant.joined(separator: ","))")
+    }
+}

@@ -4,6 +4,8 @@ import SwiftData
 @MainActor
 struct TrackSettingsView: View {
     @AppStorage("useMetric") private var useMetric = false
+    @AppStorage(TrackPrefs.announceSplitsKey) private var announceSplits = TrackPrefs.defaultOn
+    @AppStorage(TrackPrefs.autoPauseKey) private var autoPause = TrackPrefs.defaultOn
     @Query(sort: \Activity.start) private var activities: [Activity]
     @State private var healthStatus = ""
     @State private var healthConnecting = false
@@ -33,6 +35,10 @@ struct TrackSettingsView: View {
                     sectionLabel("Units")
                     unitsCard.cardAppear()
 
+                    sectionLabel("Recording")
+                    recordingCard.cardAppear()
+                    footnote("Auto-pause never kicks in while driving. A pause you tap yourself always waits for you.")
+
                     sectionLabel("Garmin · Whoop")
                     healthCard.cardAppear()
                     footnote("In Garmin Connect: More → Settings → Connected Apps → Apple Health. \(AppInfo.name) then lists those workouts so you can add them with one tap.")
@@ -56,6 +62,8 @@ struct TrackSettingsView: View {
             .onAppear { exportURL = Self.export(activities) }
             .onChange(of: activities.count) { _, _ in exportURL = Self.export(activities) }
             .sensoryFeedback(.selection, trigger: useMetric)
+            .sensoryFeedback(.selection, trigger: announceSplits)
+            .sensoryFeedback(.selection, trigger: autoPause)
         }
     }
 
@@ -95,6 +103,30 @@ struct TrackSettingsView: View {
                         .monospacedDigit()
                         .foregroundStyle(Theme.glow)
                         .contentTransition(.numericText())
+                }
+            }
+        }
+    }
+
+    // MARK: Recording
+
+    private var recordingCard: some View {
+        GlassCard(padding: 0) {
+            VStack(spacing: 0) {
+                row(symbol: "speaker.wave.2.fill", tint: Theme.glow,
+                    title: "Announce splits",
+                    subtitle: announceSplits ? "Voice + tap every \(useMetric ? "kilometer" : "mile")" : "Off") {
+                    Toggle("Announce splits", isOn: $announceSplits.animation(Self.spring))
+                        .labelsHidden()
+                        .tint(Theme.glow)
+                }
+                divider
+                row(symbol: "pause.circle.fill", tint: Theme.gold,
+                    title: "Auto-pause",
+                    subtitle: autoPause ? "Pauses when you stop, resumes when you move" : "Off") {
+                    Toggle("Auto-pause", isOn: $autoPause.animation(Self.spring))
+                        .labelsHidden()
+                        .tint(Theme.glow)
                 }
             }
         }

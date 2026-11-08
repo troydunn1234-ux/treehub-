@@ -92,6 +92,7 @@ targets:
           - UIInterfaceOrientationPortrait
         UIBackgroundModes:
           - location
+          - audio
           - remote-notification
         NSLocationWhenInUseUsageDescription: Roamr uses your location to record the route of your walks, runs, hikes, rides and drives.
         NSLocationAlwaysAndWhenInUseUsageDescription: Roamr keeps recording your route while your phone is locked.

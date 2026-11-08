@@ -101,6 +101,10 @@ struct HugLogView: View {
     @State private var celebration: CelebrationData?
     @State private var errorText = ""
     @State private var fetcher = LocationFetcher()
+    @State private var guesses: [SpeciesGuess] = []
+    @State private var guessing = false
+    @State private var guessNote = ""
+    @State private var showExtras = false
 
     private static let speciesSuggestions = [
         "Coast Redwood", "Coast Live Oak", "Valley Oak", "California Sycamore", "Eucalyptus", "Monterey Pine",
@@ -193,11 +197,11 @@ struct HugLogView: View {
                 HStack(spacing: 10) {
                     PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -3) { data in
                         readPhotoMetadata(data)
+                        Task { await guessSpecies(data) }
                     }
                     PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto, tilt: 2) { data in
                         if d.treePhoto == nil { readPhotoMetadata(data) }
                     }
-                    PhotoSlot(title: "Garmin", symbol: "applewatch", data: $d.garminPhoto, tilt: -1) { _ in }
                 }
             }
         }
@@ -228,6 +232,33 @@ struct HugLogView: View {
                 }
                 field("Name your tree", text: $d.treeName, prompt: d.treeID == nil ? "e.g. Grandpa Oak" : "Tree name")
                 field("Species", text: $d.species, prompt: "What kind of tree?")
+                if guessing || !guesses.isEmpty || !guessNote.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Label(guessing ? "Looking at your photo…" : "Suggested from your photo", systemImage: "sparkles")
+                            .font(Theme.rounded(12, .bold)).foregroundStyle(Theme.glow)
+                        if !guesses.isEmpty {
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 8) {
+                                    ForEach(guesses) { g in
+                                        Button { withAnimation(.snappy) { d.species = g.name } } label: {
+                                            Chip(label: "\(g.name) · \(Int((g.confidence * 100).rounded()))%", symbol: "leaf.fill",
+                                                 selected: d.species == g.name)
+                                        }
+                                        .buttonStyle(.plain)
+                                        .haptic()
+                                    }
+                                }
+                            }
+                        }
+                        if !guessNote.isEmpty {
+                            Text(guessNote).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        }
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(Theme.leaf.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
+                    .transition(.opacity.combined(with: .move(edge: .top)))
+                }
                 let q = d.species.lowercased()
                 let suggestions = Self.speciesSuggestions.filter { q.isEmpty || ($0.lowercased().contains(q) && $0.lowercased() != q) }
                 if !suggestions.isEmpty {
@@ -360,7 +391,7 @@ struct HugLogView: View {
                 } label: {
                     HStack {
                         Image(systemName: healthBusy ? "hourglass" : "heart.text.square.fill")
-                        Text(healthBusy ? "Reading Apple Health…" : "Fill from Apple Health")
+                        Text(healthBusy ? "Reading Apple Health…" : (healthMessage.isEmpty ? "Fill from Apple Health" : "Refresh from Apple Health"))
                     }
                     .font(Theme.rounded(15, .bold))
                     .frame(maxWidth: .infinity)
@@ -378,11 +409,19 @@ struct HugLogView: View {
                     NumberField(label: "Breaths / min", value: $d.respRate)
                     NumberField(label: "Avg heart rate", value: $d.avgHR)
                     NumberField(label: "Lowest HR", value: $d.minHR)
-                    NumberField(label: "Stress before", value: $d.stressStart)
-                    NumberField(label: "Stress after", value: $d.stressEnd)
-                    NumberField(label: "Body Battery ±", value: $d.bodyBattery, allowNegative: true)
                     NumberField(label: "Max HR", value: $d.maxHR)
                 }
+                DisclosureGroup(isExpanded: $showExtras) {
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                        NumberField(label: "Stress before", value: $d.stressStart)
+                        NumberField(label: "Stress after", value: $d.stressEnd)
+                        NumberField(label: "Body Battery ±", value: $d.bodyBattery, allowNegative: true)
+                    }
+                    .padding(.top, 8)
+                } label: {
+                    Text("Stress & Body Battery (optional)").font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
+                }
+                .tint(Theme.glow)
             }
         }
     }
@@ -484,8 +523,11 @@ struct HugLogView: View {
         loaded = true
         if let editing {
             d = HugDraft(editing)
+            showExtras = editing.stressStart != nil || editing.stressEnd != nil || editing.bodyBattery != nil
         } else {
             Task { await useCurrentLocation(autoPickTree: true) }
+            // Your watch's breathwork syncs to Apple Health; grab it straight away.
+            Task { await pullFromHealth(quiet: true) }
         }
     }
 
@@ -536,16 +578,33 @@ struct HugLogView: View {
         }
     }
 
-    private func pullFromHealth() async {
+    private func guessSpecies(_ data: Data) async {
+        withAnimation(.snappy) { guessing = true; guesses = []; guessNote = "" }
+        let r = await SpeciesGuesser.guess(from: data)
+        withAnimation(.snappy) {
+            guessing = false
+            guesses = r.guesses
+            if r.guesses.isEmpty {
+                guessNote = r.looksLikeTree
+                    ? "Can't tell the exact species from this one. For a sharper ID, open the photo in Photos, swipe up and tap Look Up Plant."
+                    : "That doesn't look much like a tree to me. Try a shot of the trunk and leaves."
+            } else if d.species.isEmpty, let top = r.guesses.first, top.confidence >= 0.5 {
+                d.species = top.name
+                guessNote = "Best guess filled in. Tap another if it's wrong."
+            }
+        }
+    }
+
+    private func pullFromHealth(quiet: Bool = false) async {
         healthBusy = true
         defer { healthBusy = false }
         let hs = HealthService.shared
         guard hs.isAvailable, await hs.requestAccess() else {
-            healthMessage = "Apple Health isn't available. You can type the numbers in."
+            if !quiet { healthMessage = "Apple Health isn't available. You can type the numbers in." }
             return
         }
         var found: [String] = []
-        if let s = await hs.mindfulSessions(around: d.date).first, s.minutes >= 1 {
+        if let s = await hs.nearestBreathSession(around: d.date) {
             d.date = s.start
             d.durationMin = (s.minutes * 10).rounded() / 10
             found.append("\(Format.minutes(d.durationMin ?? 0)) session from \(s.source)")
@@ -562,9 +621,11 @@ struct HugLogView: View {
             d.respRate = (rr * 10).rounded() / 10
             found.append("breathing rate")
         }
-        healthMessage = found.isEmpty
-            ? "No Health data for that time yet. Garmin can take a few minutes to sync, and stress and Body Battery stay in Garmin Connect, so add those from your watch."
-            : "Filled: " + found.joined(separator: ", ") + ". Stress and Body Battery come from Garmin Connect."
+        if found.isEmpty {
+            healthMessage = quiet ? "" : "Nothing in Apple Health for that time yet. Garmin Connect can take a few minutes to sync after a session, so try Refresh in a bit."
+        } else {
+            healthMessage = "Filled from Apple Health: " + found.joined(separator: ", ") + "."
+        }
     }
 
     private func save() {

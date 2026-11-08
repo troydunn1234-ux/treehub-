@@ -192,6 +192,8 @@ struct TreeDetailView: View {
                         StatTile(value: Format.day(tree.firstHug), label: "Met")
                     }
 
+                    TreeFactCard(species: tree.species)
+
                     if let c = tree.coordinate {
                         Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 500, longitudinalMeters: 500))) {
                             Annotation(tree.name, coordinate: c) { TreePin(photo: tree.coverPhoto) }
