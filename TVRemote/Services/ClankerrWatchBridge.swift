@@ -45,7 +45,7 @@ final class ClankerrWatchBridge: NSObject {
             return ["name": app.name, "c1": Self.hex(c.first ?? .purple), "c2": Self.hex(c.last ?? .black)] as [String: Any]
         }
         return ["paired": store.isPaired, "tv": store.tv?.name ?? "", "now": store.nowPlaying ?? "",
-                "reachable": store.reachable, "apps": apps]
+                "reachable": store.reachable, "brand": store.tv?.brand.displayName ?? "", "apps": apps]
     }
 
     private static func hex(_ color: Color) -> Int {
@@ -60,7 +60,7 @@ final class ClankerrWatchBridge: NSObject {
     fileprivate func handle(_ msg: [String: Any]) async -> [String: Any] {
         guard let store else { return snapshot() }
         if let k = msg["key"] as? String {
-            let key: VizioClient.Key?
+            let key: RemoteKey?
             switch k {
             case "up": key = .up
             case "down": key = .down
@@ -78,7 +78,7 @@ final class ClankerrWatchBridge: NSObject {
             case "playPause":
                 key = playing ? .pause : .play
                 playing.toggle()
-            default: key = nil
+            default: key = RemoteKey(rawValue: k)
             }
             if let key { store.press(key) }
         } else if let name = msg["launch"] as? String, let app = store.catalog.first(where: { $0.name == name }) {

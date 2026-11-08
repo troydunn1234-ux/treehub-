@@ -1,19 +1,24 @@
 import SwiftUI
 
-/// First run: find the TV on Wi-Fi, then type the code it shows.
+/// First run: find the TV on Wi-Fi (any supported brand), then approve this phone the way that
+/// TV wants: type the code it shows, choose Allow on the TV, or nothing at all (Roku).
 struct SetupView: View {
     /// Called after a TV pairs (used when adding another TV from a sheet).
     var onPaired: (() -> Void)? = nil
     @Environment(TVStore.self) private var store
     @State private var step: Step = .find
-    @State private var chosen: VizioClient.TVInfo?
+    @State private var chosen: DiscoveredTV?
+    @State private var showCompat = false
     @State private var pin = ""
     @State private var busy = false
     @State private var manualIP = ""
     @FocusState private var pinFocused: Bool
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    enum Step { case find, pin }
+    enum Step { case find, pin, allow, done }
+
+    private var pinLength: Int { chosen?.brand == .googleTV ? 6 : 4 }
+    private var pinIsHex: Bool { chosen?.brand == .googleTV }
 
     var body: some View {
         ScrollView {
@@ -24,19 +29,21 @@ struct SetupView: View {
                             .font(.system(size: 11, weight: .black)).foregroundStyle(.white)
                             .frame(width: 24, height: 24)
                             .background(Look.accent, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-                        Text("CLANKERR").font(Look.font(14, .black)).tracking(3.5).foregroundStyle(Look.accentH)
+                        Text("COUCH REMOTE").font(Look.font(14, .black)).tracking(3.5).foregroundStyle(Look.accentH)
                     }
                     .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Clankerr")
+                    .accessibilityLabel("Couch Remote")
                 }
-                RadarView(scanning: step == .find,
-                          icon: step == .find ? "tv" : "lock.open.fill",
+                RadarView(scanning: step == .find || step == .allow,
+                          icon: step == .find ? "tv" : step == .allow ? "hand.tap.fill" : step == .done ? "checkmark" : "lock.open.fill",
                           blips: step == .find ? store.discovery.found.count : 0,
                           diameter: 250)
                     .padding(.vertical, Look.S.s)
                 switch step {
                 case .find: findStep
                 case .pin: pinStep
+                case .allow: allowStep
+                case .done: doneStep
                 }
                 if let e = store.errorText {
                     Label(e, systemImage: "exclamationmark.triangle.fill")
@@ -55,6 +62,7 @@ struct SetupView: View {
         .scrollDismissesKeyboard(.interactively)
         .onAppear { store.discovery.start() }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
+        .sheet(isPresented: $showCompat) { CompatibilityView().presentationDetents([.large]) }
     }
 
     private var findStep: some View {
@@ -63,20 +71,26 @@ struct SetupView: View {
                 CapsLabel("Step 1 of 2", color: Look.cyan)
                 Text("Let's find\nyour TV.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                Text("Turn on your TV and keep your phone on the same Wi-Fi. We'll spot it in a few seconds.")
+                Text("Turn on your TV and keep your phone on the same Wi-Fi. We'll spot VIZIO, Roku, Samsung, LG and Google TV sets in a few seconds.")
                     .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
+                Button { showCompat = true } label: {
+                    Label("Which TVs work?", systemImage: "questionmark.circle.fill")
+                        .font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
+                }
+                .frame(minHeight: 32)
             }
 
             VStack(spacing: Look.S.s) {
-                ForEach(store.discovery.found, id: \.host) { tv in
+                ForEach(store.discovery.found) { tv in
                     Button { Task { await pick(tv) } } label: {
                         DeviceRow(icon: "tv.fill", title: tv.name, subtitle: "\(tv.model) · \(tv.host)",
-                                  busy: busy && chosen?.host == tv.host)
+                                  busy: busy && chosen?.id == tv.id)
+                            .overlay(alignment: .topTrailing) { BrandChip(brand: tv.brand).padding(8) }
                     }
                     .buttonStyle(SquishStyle(scale: 0.97))
                     .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
-                    .accessibilityLabel("Pair with \(tv.name)")
+                    .accessibilityLabel("Pair with \(tv.name), \(tv.brand.displayName)")
                 }
                 if store.discovery.searching {
                     HStack(spacing: Look.S.s) {
@@ -102,9 +116,7 @@ struct SetupView: View {
                         Task {
                             busy = true
                             let ip = manualIP.trimmingCharacters(in: .whitespaces)
-                            var found = await store.client.probe(host: ip, port: 7345, timeout: 4)
-                            if found == nil { found = await store.client.probe(host: ip, port: 9000, timeout: 4) }
-                            if let tv = found {
+                            if let tv = await store.discovery.probe(host: ip) {
                                 await pick(tv)
                             } else {
                                 store.errorText = "No TV answered at \(ip). Find its IP on the TV under Network settings."
@@ -143,21 +155,24 @@ struct SetupView: View {
                 CapsLabel("Step 2 of 2", color: Look.cyan)
                 Text("Type the code\non your TV.").font(Look.display(34)).tracking(-1).foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                Text("A 4-digit code just popped up on \(chosen?.name ?? "the TV").")
+                Text("A \(pinLength)-\(pinIsHex ? "character" : "digit") code just popped up on \(chosen?.name ?? "the TV").")
                     .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
             }
             ZStack {
-                CodeBoxes(code: pin, count: 4, boxWidth: 60, boxHeight: 74, focused: pinFocused)
+                CodeBoxes(code: pin, count: pinLength, boxWidth: pinLength > 4 ? 44 : 60, boxHeight: 74, focused: pinFocused)
                 TextField("", text: $pin)
-                    .keyboardType(.numberPad)
+                    .keyboardType(pinIsHex ? .asciiCapable : .numberPad)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
                     .textContentType(.oneTimeCode)
                     .focused($pinFocused)
                     .opacity(0.02)
                     .frame(width: 290, height: 74)
                     .onChange(of: pin) { _, v in
-                        let digits = String(v.filter(\.isNumber).prefix(4))
-                        if digits != v { pin = digits }
-                        if digits.count == 4 { Task { await submit() } }
+                        let allowed: (Character) -> Bool = pinIsHex ? { $0.isHexDigit } : { $0.isNumber }
+                        let cleaned = String(v.uppercased().filter(allowed).prefix(pinLength))
+                        if cleaned != v { pin = cleaned }
+                        if cleaned.count == pinLength { Task { await submit() } }
                     }
                     .accessibilityLabel("TV code")
             }
@@ -172,25 +187,143 @@ struct SetupView: View {
         .onAppear { pinFocused = true }
     }
 
-    private func pick(_ tv: VizioClient.TVInfo) async {
+    private var allowStep: some View {
+        VStack(spacing: Look.S.l) {
+            VStack(spacing: Look.S.s) {
+                CapsLabel("Step 2 of 2", color: Look.cyan)
+                Text("Look at\nyour TV.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("\(chosen?.name ?? "Your TV") is asking if Couch Remote can control it. Pick **Allow** with your TV remote.")
+                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            AllowPulse()
+            if !busy {
+                Button("Ask again") { if let tv = chosen { Task { await pick(tv) } } }
+                    .buttonStyle(PrimaryButtonStyle())
+            }
+            Button("Start over") {
+                Task { await store.cancelPairing(); step = .find; store.errorText = nil; store.discovery.start() }
+            }
+            .font(Look.font(14, .bold)).foregroundStyle(Look.dim)
+            .frame(minHeight: 44)
+        }
+    }
+
+    private var doneStep: some View {
+        VStack(spacing: Look.S.m) {
+            Text("You're in.").font(Look.display(40)).tracking(-1).foregroundStyle(Look.accentH)
+            Text("\(chosen?.name ?? "Your TV") is ready. Your phone is the remote now.")
+                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+        }
+        .transition(.scale(scale: 0.7).combined(with: .opacity))
+    }
+
+    private func pick(_ tv: DiscoveredTV) async {
         chosen = tv
+        store.errorText = nil
         busy = true
         defer { busy = false }
-        if await store.beginPairing(with: tv) {
+        switch tv.brand.pairing {
+        case .pinOnTV:
+            if await store.beginPairing(with: tv) {
+                store.discovery.stop()
+                pin = ""
+                step = .pin
+            }
+        case .allowPromptOnTV:
             store.discovery.stop()
-            pin = ""
-            step = .pin
+            step = .allow
+            if await store.beginPairing(with: tv) { await celebrate() }
+        case .none:
+            if await store.beginPairing(with: tv) {
+                store.discovery.stop()
+                await celebrate()
+            }
         }
+    }
+
+    /// Success burst, then hand over to the app.
+    private func celebrate() async {
+        step = .done
+        try? await Task.sleep(nanoseconds: 1_100_000_000)
+        onPaired?()
     }
 
     private func submit() async {
         busy = true
         defer { busy = false }
         if await store.finishPairing(pin: pin) {
-            onPaired?()
+            await celebrate()
         } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             pin = ""
+        }
+    }
+}
+
+/// Small brand tag on a found TV.
+struct BrandChip: View {
+    let brand: TVBrand
+    var body: some View {
+        Text(brand.shortName.uppercased())
+            .font(Look.font(10, .black)).tracking(1.2)
+            .foregroundStyle(.white)
+            .padding(.horizontal, 8).padding(.vertical, 4)
+            .background(brand.tint.opacity(0.85), in: Capsule())
+            .accessibilityHidden(true)
+    }
+}
+
+/// "Choose Allow on your TV": a TV with a pulsing check prompt.
+private struct AllowPulse: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var on = false
+    var body: some View {
+        ZStack {
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(Look.accentH, lineWidth: 3)
+                .frame(width: 220, height: 128)
+            VStack(spacing: 10) {
+                Text("Allow Couch Remote?").font(Look.font(13, .heavy)).foregroundStyle(.white)
+                HStack(spacing: 10) {
+                    Text("Deny").font(Look.font(12, .bold)).foregroundStyle(Look.dim)
+                        .padding(.horizontal, 14).padding(.vertical, 6)
+                        .background(Color.white.opacity(0.08), in: Capsule())
+                    Text("Allow").font(Look.font(12, .heavy)).foregroundStyle(.white)
+                        .padding(.horizontal, 14).padding(.vertical, 6)
+                        .background(Look.accentH, in: Capsule())
+                        .scaleEffect(on ? 1.12 : 1)
+                        .shadow(color: Look.magenta.opacity(on ? 0.8 : 0.2), radius: on ? 14 : 4)
+                }
+            }
+        }
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true)) { on = true }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Your TV shows a prompt. Choose Allow.")
+    }
+}
+
+extension TVBrand {
+    var shortName: String {
+        switch self {
+        case .vizio: return "VIZIO"
+        case .roku: return "Roku"
+        case .samsung: return "Samsung"
+        case .lg: return "LG"
+        case .googleTV: return "Google TV"
+        }
+    }
+    var tint: Color {
+        switch self {
+        case .vizio: return Color(hex: 0x6B4BFF)
+        case .roku: return Color(hex: 0x6C2BD9)
+        case .samsung: return Color(hex: 0x1F4FD8)
+        case .lg: return Color(hex: 0xC8102E)
+        case .googleTV: return Color(hex: 0x1A9E5C)
         }
     }
 }

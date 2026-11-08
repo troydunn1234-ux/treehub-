@@ -55,7 +55,7 @@ private struct PCPairing: View {
                 CapsLabel("PC remote", color: Look.cyan)
                 Text("Run your PC\nfrom bed.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                Text("Open Clankerr PC on your computer, on the same Wi-Fi as your phone.")
+                Text("Open the Couch Remote PC app (ClankerrPC.exe) on your computer, on the same Wi-Fi as your phone.")
                     .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -98,7 +98,7 @@ private struct PCPairing: View {
             VStack(spacing: Look.S.xs) {
                 Text("Don't have the PC app yet?").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
                 Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/releases/tag/pc-latest")!) {
-                    Label("Get Clankerr PC for Windows", systemImage: "arrow.down.circle.fill")
+                    Label("Get Couch Remote PC for Windows", systemImage: "arrow.down.circle.fill")
                         .font(Look.font(14, .heavy)).foregroundStyle(Look.cyan)
                         .padding(.horizontal, Look.S.l).frame(minHeight: 44)
                         .glassCapsule(tint: Look.cyan)

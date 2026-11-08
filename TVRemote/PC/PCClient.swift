@@ -2,7 +2,7 @@ import Foundation
 import Network
 import UIKit
 
-/// Talks to the Clankerr PC companion (ws://<pc>:47815) on your home Wi-Fi.
+/// Talks to the Couch Remote PC companion (ws://<pc>:47815) on your home Wi-Fi.
 @MainActor
 @Observable
 final class PCClient {
@@ -204,7 +204,7 @@ final class PCClient {
         }
         state = .connecting
         retry += 1
-        if retry > 6 { state = .disconnected; lastError = "Can't reach your PC. Is Clankerr PC running?"; return }
+        if retry > 6 { state = .disconnected; lastError = "Can't reach your PC. Is the PC app (Clankerr PC) running?"; return }
         let delay = min(10.0, pow(1.8, Double(retry)))
         reconnectTask = Task {
             try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))

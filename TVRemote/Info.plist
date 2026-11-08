@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Clankerr</string>
+	<string>Couch Remote</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -31,9 +31,10 @@
 	<array>
 		<string>_viziocast._tcp</string>
 		<string>_clankerr._tcp</string>
+		<string>_androidtvremote2._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Clankerr finds and controls your TV on your Wi-Fi.</string>
+	<string>Couch Remote finds and controls your TV (and your PC, if you want) on your Wi-Fi.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

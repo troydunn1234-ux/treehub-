@@ -4,7 +4,6 @@ import Security
 struct StreamingApp: Identifiable, Hashable, Codable {
     var id: String { name }
     let name: String
-    let configs: [VizioClient.AppConfig]
 
     /// A rich two-tone gradient per app (no logos, just a vibe).
     var colors: [Color] {
@@ -41,74 +40,90 @@ extension Color {
 
 @MainActor
 @Observable
+final class TVStor@MainActor
+@Observable
 final class TVStore {
-    let client = VizioClient()
-    @ObservationIgnored lazy var discovery = TVDiscovery(client: client)
+    // One controller per brand. Each speaks its TV's own local-network protocol.
+    @ObservationIgnored let vizio = VizioController()
+    @ObservationIgnored private(set) lazy var controllers: [TVBrand: TVController] = [
+        .vizio: vizio, .roku: RokuController(), .samsung: SamsungController(),
+        .lg: LGController(), .googleTV: GoogleTVController(),
+    ]
+    func controller(for brand: TVBrand) -> TVController { controllers[brand] ?? vizio }
+
+    @ObservationIgnored lazy var discovery = TVDiscovery(controllers: TVBrand.allCases.map { controller(for: $0) })
 
     /// Every TV this phone is paired with, and which one the remote controls.
-    private(set) var tvs: [VizioClient.TVInfo] = [] { didSet { saveTVs() } }
-    private(set) var activeID: String? = nil { didSet { UserDefaults.standard.set(activeID, forKey: "activeTV") } }
-    var tv: VizioClient.TVInfo? { tvs.first { $0.id == activeID } ?? tvs.first }
+    private(set) var tvs: [DiscoveredTV] = [] { didSet { saveTVs() } }
+    private(set) var activeID: String? = nil { didSet { UserDefaults.standard.set(activeID, forKey: "activeDevice") } }
+    var tv: DiscoveredTV? { tvs.first { $0.id == activeID } ?? tvs.first }
     private(set) var reconnecting = false
     @ObservationIgnored private var failures = 0
     @ObservationIgnored private var lastReconnect = Date.distantPast
     private(set) var catalog: [StreamingApp] = []
     var favorites: [String] { didSet { UserDefaults.standard.set(favorites, forKey: "favorites") } }
     private(set) var nowPlaying: String?
-    private(set) var screenOn: Bool?
     private(set) var reachable = true
     var toast: String?
     var errorText: String?
-
-    private var auth: String? { tv.flatMap { Keychain.get($0.id) } }
     private(set) var isPaired = false
 
     private func saveTVs() {
         guard !Self.demo, let d = try? JSONEncoder().encode(tvs) else { return }
-        UserDefaults.standard.set(d, forKey: "tvs")
+        UserDefaults.standard.set(d, forKey: "devices")
     }
 
-    private func updatePaired() { isPaired = Self.demo || (tv != nil && auth != nil) }
+    private func updatePaired() {
+        isPaired = Self.demo || (tv.map { controller(for: $0.brand).isPaired($0) } ?? false)
+    }
 
     static let defaultFavorites = ["Netflix", "YouTube", "Prime Video", "Hulu", "Disney+", "HBO Max",
                                    "Peacock", "Paramount+", "Apple TV+", "YouTube TV", "Tubi", "Pluto TV"]
+
+    static let demoTVs: [DiscoveredTV] = [
+        DiscoveredTV(brand: .vizio, host: "192.168.1.40", port: 7345, name: "Living Room TV", model: "V-Series 65", serial: "demo1"),
+        DiscoveredTV(brand: .samsung, host: "192.168.1.41", port: 8002, name: "Bedroom TV", model: "Crystal UHD 55", serial: "demo2"),
+        DiscoveredTV(brand: .roku, host: "192.168.1.42", port: 8060, name: "Basement Roku", model: "TCL Roku TV 50", serial: "demo3"),
+    ]
 
     init() {
         favorites = UserDefaults.standard.stringArray(forKey: "favorites") ?? Self.defaultFavorites
         loadCatalog()
         if Self.demo {
-            tvs = [VizioClient.TVInfo(host: "192.168.1.40", port: 7345, name: "Living Room TV", model: "V-Series 65", tokenKey: "demo.1"),
-                   VizioClient.TVInfo(host: "192.168.1.41", port: 7345, name: "Bedroom TV", model: "M-Series 50", tokenKey: "demo.2")]
-            activeID = "demo.1"
+            tvs = Self.demoTVs
+            activeID = Self.demoTVs[0].id
             nowPlaying = "HBO Max"
         } else {
-            if let d = UserDefaults.standard.data(forKey: "tvs"), let list = try? JSONDecoder().decode([VizioClient.TVInfo].self, from: d) {
-                tvs = list
-            } else if let d = UserDefaults.standard.data(forKey: "tv"), var old = try? JSONDecoder().decode(VizioClient.TVInfo.self, from: d) {
-                // One-time move from the single-TV version: its token lives at "auth.<host>".
-                old.tokenKey = "auth.\(old.host)"
-                tvs = [old]
-                UserDefaults.standard.removeObject(forKey: "tv")
+            tvs = Self.loadSaved()
+            if let migrated = VizioController.migrateLegacy() {
+                for t in migrated.tvs where !tvs.contains(where: { $0.id == t.id }) { tvs.append(t) }
+                activeID = UserDefaults.standard.string(forKey: "activeDevice") ?? migrated.activeID
+            } else {
+                activeID = UserDefaults.standard.string(forKey: "activeDevice") ?? tvs.first?.id
             }
-            activeID = UserDefaults.standard.string(forKey: "activeTV") ?? tvs.first?.id
-            // Observers don't run during init, so save explicitly (keeps the migrated TV).
+            // Observers don't run during init, so save explicitly (keeps migrated TVs).
             saveTVs()
-            UserDefaults.standard.set(activeID, forKey: "activeTV")
+            UserDefaults.standard.set(activeID, forKey: "activeDevice")
         }
         updatePaired()
     }
 
-    /// Simulator screenshots: pretend a TV is paired and never touch the network.
+    private static func loadSaved() -> [DiscoveredTV] {
+        guard let d = UserDefaults.standard.data(forKey: "devices"),
+              let list = try? JSONDecoder().decode([DiscoveredTV].self, from: d) else { return [] }
+        return list
+    }
+
+    /// Simulator screenshots: pretend TVs are paired and never touch the network.
     static var demo: Bool { ProcessInfo.processInfo.arguments.contains("-demo") || UserDefaults.standard.bool(forKey: "demoMode") }
     /// Demo started from the setup screen (not from screenshots), so it can be exited.
     var inAppDemo: Bool { UserDefaults.standard.bool(forKey: "demoMode") }
 
-    /// "Try the demo": explore the whole app with two pretend TVs, no network.
+    /// "Try the demo": explore the whole app with pretend TVs of different brands, no network.
     func startDemo() {
         UserDefaults.standard.set(true, forKey: "demoMode")
-        tvs = [VizioClient.TVInfo(host: "192.168.1.40", port: 7345, name: "Living Room TV", model: "V-Series 65", tokenKey: "demo.1"),
-               VizioClient.TVInfo(host: "192.168.1.41", port: 7345, name: "Bedroom TV", model: "M-Series 50", tokenKey: "demo.2")]
-        activeID = "demo.1"
+        tvs = Self.demoTVs
+        activeID = Self.demoTVs[0].id
         nowPlaying = "HBO Max"
         updatePaired()
         show("Demo mode: nothing is sent to a TV")
@@ -116,41 +131,38 @@ final class TVStore {
 
     func endDemo() {
         UserDefaults.standard.set(false, forKey: "demoMode")
-        tvs = []
-        if let d = UserDefaults.standard.data(forKey: "tvs"), let list = try? JSONDecoder().decode([VizioClient.TVInfo].self, from: d) { tvs = list }
-        activeID = tvs.first?.id
+        tvs = Self.loadSaved()
+        activeID = UserDefaults.standard.string(forKey: "activeDevice").flatMap { id in tvs.first { $0.id == id }?.id } ?? tvs.first?.id
         nowPlaying = nil
         updatePaired()
     }
 
     private func loadCatalog() {
-        struct Raw: Decodable { let name: String; let config: [VizioClient.AppConfig]? }
-        guard let url = Bundle.main.url(forResource: "vizio_apps", withExtension: "json"),
-              let data = try? Data(contentsOf: url),
-              let raw = try? JSONDecoder().decode([Raw].self, from: data) else { return }
-        catalog = raw.compactMap { r in
-            guard let c = r.config, !c.isEmpty else { return nil }
-            return StreamingApp(name: r.name, configs: c)
-        }.sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
+        // The app list is brand-neutral: names (+ colors). Each brand's controller knows how to open them.
+        var names = Set(vizio.catalog.keys)
+        // Popular apps every brand has, even if the VIZIO list lacks them.
+        names.formUnion(Self.defaultFavorites)
+        catalog = names.map { StreamingApp(name: $0) }
+            .sorted { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending }
     }
 
     var favoriteApps: [StreamingApp] { favorites.compactMap { f in catalog.first { $0.name == f } } }
 
-    func app(matching cfg: VizioClient.AppConfig) -> StreamingApp? {
-        catalog.first { $0.configs.contains { $0.APP_ID == cfg.APP_ID && $0.NAME_SPACE == cfg.NAME_SPACE } }
-            ?? catalog.first { $0.configs.contains { $0.APP_ID == cfg.APP_ID } }
-    }
-
     // MARK: Pairing
 
-    private var pairing: (token: Int, challenge: Int)?
-    private var pairingTV: VizioClient.TVInfo?
+    private var pairingTV: DiscoveredTV?
+    var phoneName: String { "Couch Remote (\(UIDevice.current.name))" }
 
-    func beginPairing(with t: VizioClient.TVInfo) async -> Bool {
+    /// Starts pairing. For PIN brands the TV now shows a code (call finishPairing next).
+    /// For "Allow" brands this waits until the user accepts on the TV, then the TV is saved.
+    /// For Roku it just connects. Returns true when the step succeeded.
+    func beginPairing(with t: DiscoveredTV) async -> Bool {
         errorText = nil
+        let c = controller(for: t.brand)
         do {
-            pairing = try await client.startPairing(t, deviceName: "Clicker (\(UIDevice.current.name))")
+            try await c.beginPairing(t, phoneName: phoneName)
             pairingTV = t
+            if t.brand.pairing != .pinOnTV { completePairing(t) }
             return true
         } catch {
             errorText = error.localizedDescription
@@ -159,52 +171,46 @@ final class TVStore {
     }
 
     func finishPairing(pin: String) async -> Bool {
-        guard let t = pairingTV, let p = pairing else { return false }
+        guard let t = pairingTV else { return false }
         errorText = nil
         do {
-            let token = try await client.finishPairing(t, pin: pin, token: p.token, challenge: p.challenge)
-            var paired = t
-            // Re-pairing a TV we already know keeps its slot; otherwise it's a new one.
-            if let existing = tvs.firstIndex(where: { $0.isSameTV(as: t) }) {
-                paired.tokenKey = tvs[existing].id
-                tvs[existing] = paired
-            } else {
-                paired.tokenKey = "auth.\(t.serial ?? UUID().uuidString)"
-                tvs.append(paired)
-            }
-            Keychain.set(token, for: paired.id)
-            await client.pinCertificate(for: t.host, port: t.port)
-            withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { activeID = paired.id }
-            reachable = true
-            updatePaired()
-            nowPlaying = nil
-            pairing = nil; pairingTV = nil
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            try await controller(for: t.brand).finishPairing(t, pin: pin)
+            completePairing(t)
             return true
         } catch {
-            errorText = "That code didn't work. Check the code on your TV and try again."
+            errorText = (error as? TVControlError)?.errorDescription ?? "That code didn't work. Check the code on your TV and try again."
             return false
         }
     }
 
+    private func completePairing(_ t: DiscoveredTV) {
+        if let i = tvs.firstIndex(where: { sameTV($0, t) }) { tvs[i] = t } else { tvs.append(t) }
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { activeID = t.id }
+        reachable = true
+        failures = 0
+        nowPlaying = nil
+        pairingTV = nil
+        updatePaired()
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+    }
+
     func cancelPairing() async {
-        if let t = pairingTV, let p = pairing { await client.cancelPairing(t, token: p.token, challenge: p.challenge) }
-        pairing = nil; pairingTV = nil
+        if let t = pairingTV { await controller(for: t.brand).cancelPairing(t) }
+        pairingTV = nil
     }
 
     /// Forget the active TV.
     func forgetTV() { if let t = tv { forget(t) } }
 
-    func forget(_ t: VizioClient.TVInfo) {
-        Keychain.delete(t.id)
-        VizioClient.forgetPin(host: t.host)
+    func forget(_ t: DiscoveredTV) {
+        if !Self.demo { controller(for: t.brand).forget(t) }
         tvs.removeAll { $0.id == t.id }
         if activeID == t.id { activeID = tvs.first?.id; nowPlaying = nil }
         reachable = true
         updatePaired()
     }
 
-    func switchTo(_ t: VizioClient.TVInfo) {
+    func switchTo(_ t: DiscoveredTV) {
         guard t.id != activeID else { return }
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
@@ -215,6 +221,14 @@ final class TVStore {
         failures = 0
         updatePaired()
         Task { await refresh() }
+    }
+
+    /// Same physical TV? Same brand, and the same hardware id, else same name + model.
+    func sameTV(_ a: DiscoveredTV, _ b: DiscoveredTV) -> Bool {
+        guard a.brand == b.brand else { return false }
+        let real: (String?) -> String? = { s in (s?.isEmpty == false && !(s!.hasPrefix("legacy-"))) ? s : nil }
+        if let x = real(a.serial), let y = real(b.serial) { return x == y }
+        return (a.name == b.name && a.model == b.model) || a.host == b.host
     }
 
     // MARK: Reconnect
@@ -230,17 +244,18 @@ final class TVStore {
         discovery.start()
         let deadline = Date().addingTimeInterval(25)
         while Date() < deadline {
-            if let found = discovery.found.first(where: { $0.isSameTV(as: lost) || $0.host == lost.host }) {
+            if let found = discovery.found.first(where: { sameTV($0, lost) }) {
                 discovery.stop()
                 if found.host != lost.host || found.port != lost.port {
                     if let i = tvs.firstIndex(where: { $0.id == lost.id }) {
                         var moved = tvs[i]
-                        VizioClient.forgetPin(host: found.host)   // new address: trust its cert fresh
                         moved.host = found.host
                         moved.port = found.port
-                        if moved.serial == nil { moved.serial = found.serial }
+                        // Keep the saved id (and its credentials) stable when the TV had none.
+                        if moved.serial == nil, let s = found.serial { moved.serial = s }
+                        if let v = controller(for: lost.brand) as? VizioController { await v.didMove(from: lost, to: moved) }
                         tvs[i] = moved
-                        await client.pinCertificate(for: found.host, port: found.port)
+                        if activeID == lost.id { activeID = moved.id }
                     }
                     show("Found \(lost.name) again")
                 } else if userInitiated {
@@ -248,10 +263,11 @@ final class TVStore {
                 }
                 failures = 0
                 reachable = true
+                updatePaired()
                 await refresh()
                 return
             }
-            if !discovery.searching && Date() > deadline.addingTimeInterval(-20) { break }
+            if !discovery.searching { break }
             try? await Task.sleep(nanoseconds: 500_000_000)
         }
         discovery.stop()
@@ -268,51 +284,59 @@ final class TVStore {
 
     func launch(_ app: StreamingApp) async {
         if Self.demo { show("Opening \(app.name) on your TV"); nowPlaying = app.name; return }
-        guard let t = tv, let a = auth else { return }
+        guard let t = tv else { return }
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
-        // Some apps have more than one launch recipe depending on the TV's software; try each.
-        var lastError: Error?
-        for cfg in app.configs {
-            do {
-                try await client.launch(t, auth: a, app: cfg)
-                show("Opening \(app.name) on your TV")
-                nowPlaying = app.name
-                reachable = true
-                failures = 0
-                return
-            } catch { lastError = error }
+        do {
+            try await controller(for: t.brand).launch(t, appName: app.name)
+            show("Opening \(app.name) on your TV")
+            nowPlaying = app.name
+            reachable = true
+            failures = 0
+        } catch {
+            handle(error)
         }
-        handle(lastError)
     }
 
-    func press(_ key: VizioClient.Key) {
+    func press(_ key: RemoteKey) {
         if Self.demo { return }
-        guard let t = tv, let a = auth else { return }
+        guard let t = tv else { return }
+        let c = controller(for: t.brand)
         Task {
-            do { try await client.press(t, auth: a, key); reachable = true; failures = 0 } catch { handle(error) }
+            do { try await c.press(t, key); reachable = true; failures = 0 } catch { handle(error) }
         }
+    }
+
+    func sendText(_ text: String) async {
+        if Self.demo { show("Typed on your TV"); return }
+        guard let t = tv else { return }
+        do { try await controller(for: t.brand).sendText(t, text) } catch { handle(error) }
     }
 
     func refresh() async {
         if Self.demo { return }
-        guard let t = tv, let a = auth else { return }
-        do {
-            let cur = try await client.currentApp(t, auth: a)
-            nowPlaying = cur.flatMap { app(matching: $0)?.name }
-            reachable = true
-            failures = 0
-            screenOn = await client.powerState(t, auth: a)
-        } catch VizioClient.VizioError.notPaired {
-            handle(VizioClient.VizioError.notPaired)
-        } catch {
-            noteUnreachable()
+        guard let t = tv else { return }
+        let c = controller(for: t.brand)
+        if let v = c as? VizioController {
+            do {
+                nowPlaying = try await v.check(t).appName
+                reachable = true; failures = 0
+            } catch TVControlError.notPaired {
+                handle(TVControlError.notPaired)
+            } catch {
+                noteUnreachable()
+            }
+            return
+        }
+        if let now = await c.nowPlaying(t) {
+            nowPlaying = now.appName
+            reachable = true; failures = 0
         }
     }
 
     private func handle(_ error: Error?) {
         guard let error else { return }
-        if case VizioClient.VizioError.unreachable = error { noteUnreachable() }
-        if case VizioClient.VizioError.notPaired = error, let t = tv { Keychain.delete(t.id); updatePaired() }
+        if case TVControlError.unreachable = error { noteUnreachable() }
+        if case TVControlError.notPaired = error, let t = tv { controller(for: t.brand).forget(t); updatePaired() }
         UINotificationFeedbackGenerator().notificationOccurred(.error)
         show(error.localizedDescription)
     }
@@ -331,7 +355,7 @@ final class TVStore {
     }
 }
 
-/// Minimal Keychain wrapper for the TV's auth token.
+ auth token.
 enum Keychain {
     static func set(_ value: String, for key: String) {
         delete(key)

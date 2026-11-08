@@ -41,6 +41,17 @@ loc = next((l for l in locs if l["attributes"]["locale"] == "en-US"), locs[0])
 attrs = {k: meta[k] for k in ("subtitle", "privacyPolicyUrl") if meta.get(k)}
 if call(f"/appInfoLocalizations/{loc['id']}", "PATCH", {"data": {"type": "appInfoLocalizations", "id": loc["id"], "attributes": attrs}}) is not None:
     print("Subtitle and privacy policy set")
+# App name: only while that appInfo is editable (a new version is being prepared), and in its own
+# request so a taken name doesn't block the subtitle.
+EDITABLE = ("PREPARE_FOR_SUBMISSION", "DEVELOPER_REJECTED", "REJECTED", "METADATA_REJECTED")
+if meta.get("name") and loc["attributes"].get("name") != meta["name"]:
+    if info["attributes"].get("appStoreState") in EDITABLE:
+        if call(f"/appInfoLocalizations/{loc['id']}", "PATCH", {"data": {"type": "appInfoLocalizations", "id": loc["id"], "attributes": {"name": meta["name"]}}}) is not None:
+            print("App name set to", meta["name"])
+        else:
+            print("App name not changed (the name may be taken)")
+    else:
+        print("App name change waits for the next editable version")
 
 # --- Version-level: description, keywords, promo text, support URL
 versions = call(f"/apps/{app_id}/appStoreVersions?filter[platform]=IOS&limit=5")["data"]

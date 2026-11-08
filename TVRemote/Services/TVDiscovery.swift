@@ -1,102 +1,77 @@
 import Foundation
 import Network
 
-/// Finds Vizio TVs on your Wi-Fi: first by asking the network who advertises the
-/// SmartCast service, then by checking every address on your Wi-Fi for a TV.
+/// Looks for every supported TV brand on your Wi-Fi at once: each brand's controller
+/// streams what it finds, and this merges them into one list.
 @MainActor
 @Observable
 final class TVDiscovery {
-    private(set) var found: [VizioClient.TVInfo] = []
+    private(set) var found: [DiscoveredTV] = []
     private(set) var searching = false
     private(set) var progress: Double = 0
 
-    private let client: VizioClient
-    private var browser: NWBrowser?
+    private let controllers: [TVController]
+    private var tasks: [Task<Void, Never>] = []
+    private var ticker: Task<Void, Never>?
+    private var remaining = 0
 
-    init(client: VizioClient) { self.client = client }
+    /// About how long a full search takes; drives the progress bar.
+    private static let expected: Double = 9
+
+    init(controllers: [TVController]) { self.controllers = controllers }
 
     func start() {
         guard !searching else { return }
         searching = true
         progress = 0
         found = []
-        startBonjour()
-        Task { await scanSubnet() }
+        remaining = controllers.count
+        for c in controllers {
+            let stream = c.discover()
+            tasks.append(Task { [weak self] in
+                for await tv in stream {
+                    guard let self, self.searching else { break }
+                    self.add(tv)
+                }
+                guard let self, self.searching else { return }
+                self.remaining -= 1
+                if self.remaining <= 0 { self.finish() }
+            })
+        }
+        let started = Date()
+        ticker = Task { [weak self] in
+            while let self, self.searching, !Task.isCancelled {
+                self.progress = min(0.97, Date().timeIntervalSince(started) / Self.expected)
+                if Date().timeIntervalSince(started) > 20 { self.finish(); break }
+                try? await Task.sleep(nanoseconds: 200_000_000)
+            }
+        }
     }
 
     func stop() {
-        browser?.cancel(); browser = nil
+        tasks.forEach { $0.cancel() }; tasks = []
+        ticker?.cancel(); ticker = nil
         searching = false
     }
 
-    private func add(_ tv: VizioClient.TVInfo) {
-        guard !found.contains(where: { $0.host == tv.host }) else { return }
+    private func finish() {
+        stop()
+        progress = 1
+    }
+
+    private func add(_ tv: DiscoveredTV) {
+        // One entry per physical TV: the same host can't be two brands, but a Roku TV made by
+        // TCL may answer on more than one protocol; keep the first.
+        guard !found.contains(where: { $0.host == tv.host || ($0.brand == tv.brand && $0.serial != nil && $0.serial == tv.serial) }) else { return }
         found.append(tv)
     }
 
-    // MARK: Bonjour
-
-    private func startBonjour() {
-        let params = NWParameters.tcp
-        params.includePeerToPeer = false
-        let b = NWBrowser(for: .bonjour(type: "_viziocast._tcp", domain: nil), using: params)
-        b.browseResultsChangedHandler = { [weak self] results, _ in
-            for r in results {
-                Task { @MainActor in self?.resolve(r.endpoint) }
-            }
-        }
-        b.start(queue: .main)
-        browser = b
-    }
-
-    private func resolve(_ endpoint: NWEndpoint) {
-        let conn = NWConnection(to: endpoint, using: .tcp)
-        conn.stateUpdateHandler = { [weak self] state in
-            switch state {
-            case .ready:
-                if case let .hostPort(host, port)? = conn.currentPath?.remoteEndpoint {
-                    var h = "\(host)"
-                    if let pct = h.firstIndex(of: "%") { h = String(h[..<pct]) }
-                    let p = Int(port.rawValue)
-                    conn.cancel()
-                    Task { @MainActor in
-                        guard let self else { return }
-                        if let tv = await self.client.probe(host: h, port: p == 0 ? 7345 : p, timeout: 3) { self.add(tv) }
-                    }
-                } else { conn.cancel() }
-            case .failed, .cancelled: break
-            default: break
-            }
-        }
-        conn.start(queue: .main)
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) { conn.cancel() }
-    }
-
-    // MARK: Subnet scan
-
-    private func scanSubnet() async {
-        defer { searching = false; progress = 1 }
-        guard let prefix = Self.wifiPrefix() else { return }
-        let hosts = (1...254).map { "\(prefix).\($0)" }
-        let client = self.client
-        var done = 0
-        await withTaskGroup(of: VizioClient.TVInfo?.self) { group in
-            var it = hosts.makeIterator()
-            func next() -> Bool {
-                guard let h = it.next() else { return false }
-                group.addTask {
-                    if let tv = await client.probe(host: h, port: 7345) { return tv }
-                    return await client.probe(host: h, port: 9000, timeout: 1.0)
-                }
-                return true
-            }
-            for _ in 0..<40 { if !next() { break } }
-            while let r = await group.next() {
-                done += 1
-                progress = Double(done) / Double(hosts.count)
-                if let r { add(r) }
-                _ = next()
-            }
+    /// Try one address the user typed against every brand; first match wins.
+    func probe(host: String) async -> DiscoveredTV? {
+        await withTaskGroup(of: DiscoveredTV?.self) { group in
+            for c in controllers { group.addTask { await c.probe(host: host) } }
+            for await r in group { if let r { group.cancelAll(); return r } }
+            return nil
         }
     }
 

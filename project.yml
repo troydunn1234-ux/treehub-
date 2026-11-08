@@ -314,16 +314,17 @@ targets:
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
-        CFBundleDisplayName: Clankerr
+        CFBundleDisplayName: Couch Remote
         UIRequiresFullScreen: true
         UILaunchScreen:
           UIColorName: LaunchBackground
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
-        NSLocalNetworkUsageDescription: Clankerr finds and controls your TV on your Wi-Fi.
+        NSLocalNetworkUsageDescription: Couch Remote finds and controls your TV (and your PC, if you want) on your Wi-Fi.
         NSBonjourServices:
           - _viziocast._tcp
           - _clankerr._tcp
+          - _androidtvremote2._tcp
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         ITSAppUsesNonExemptEncryption: false
@@ -379,7 +380,7 @@ targets:
         SKIP_INSTALL: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
-  # Clankerr remote on Apple Watch
+  # Couch Remote (was Clankerr) on Apple Watch
   ClankerrWatch:
     type: application
     platform: watchOS
@@ -391,7 +392,7 @@ targets:
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
-        CFBundleDisplayName: Clankerr
+        CFBundleDisplayName: Couch Remote
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.troydunn.clicker
         ITSAppUsesNonExemptEncryption: false

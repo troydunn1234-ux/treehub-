@@ -89,7 +89,7 @@ struct RootView: View {
         .sheet(isPresented: $showAbout) { AboutView() }
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { store.forgetTV() }
-        } message: { Text("You'll pair again with a new code from the TV.") }
+        } message: { Text("You'll need to pair it again to use it.") }
     }
 
     private var topBar: some View {
@@ -100,14 +100,14 @@ struct RootView: View {
                 .background(Look.accent, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
                 .shadow(color: Look.magenta.opacity(0.6), radius: 6)
                 .accessibilityHidden(true)
-            Text("CLANKERR").font(Look.font(14, .black)).tracking(3.5)
+            Text("COUCH REMOTE").font(Look.font(14, .black)).tracking(3.5)
                 .foregroundStyle(Look.accentH)
             Spacer()
             Menu {
                 Button { store.press(.powerToggle) } label: { Label("Power", systemImage: "power") }
                 Button { store.press(.inputNext) } label: { Label("Switch input", systemImage: "rectangle.on.rectangle") }
                 Divider()
-                Button { showAbout = true } label: { Label("About Clankerr", systemImage: "info.circle") }
+                Button { showAbout = true } label: { Label("About Couch Remote", systemImage: "info.circle") }
                 if store.inAppDemo {
                     Button(role: .destructive) { store.endDemo() } label: { Label("Exit demo", systemImage: "xmark.circle") }
                 } else {
@@ -177,6 +177,7 @@ struct RootView: View {
 
 struct AboutView: View {
     @Environment(\.dismiss) private var dismiss
+    @State private var showCompat = false
     private var license: String {
         (Bundle.main.url(forResource: "pyvizio-LICENSE", withExtension: "txt")).flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? ""
     }
@@ -184,12 +185,20 @@ struct AboutView: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
-                    Text("Clankerr").font(Look.display(36)).tracking(-0.5).foregroundStyle(Look.accentH)
+                    Text("Couch Remote").font(Look.display(36)).tracking(-0.5).foregroundStyle(Look.accentH)
                     Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
                         .font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
-                    section("Privacy", "Clankerr talks only to your TV, directly over your Wi-Fi. It has no account, no tracking and no servers. The pairing code from your TV stays in your phone's Keychain.")
-                    section("Not affiliated", "Clankerr is an independent app. It is not made, endorsed or supported by VIZIO. VIZIO, SmartCast and the names of the streaming services shown are trademarks of their owners and are used only to identify what opens on your TV.")
-                    section("Open source", "The list of TV apps comes from pyvizio, used under the MIT License:")
+                    Button { showCompat = true } label: {
+                        Label("Which TVs work?", systemImage: "tv.and.mediabox.fill")
+                            .font(Look.font(16, .heavy)).foregroundStyle(.white)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(Look.S.m)
+                            .glass(16, tint: Look.cyan)
+                    }
+                    section("Works with", "VIZIO SmartCast, Roku TVs and players, Samsung (Tizen), LG (webOS), and Google TV / Android TV, on the same Wi-Fi as your phone.")
+                    section("Privacy", "Couch Remote talks only to your TV (and your PC, if you use it), directly over your Wi-Fi. It has no account, no tracking and no servers. Pairing keys stay in your phone's Keychain.")
+                    section("Not affiliated", "Couch Remote is an independent app. It is not made, endorsed or supported by VIZIO, Roku, Samsung, LG or Google. Those names, and the names of the streaming services shown, are trademarks of their owners and are used only to identify which TVs work and what opens on your TV.")
+                    section("Open source", "The VIZIO app list comes from pyvizio, used under the MIT License:")
                     Text(license).font(.system(size: 11, design: .monospaced)).foregroundStyle(Look.dim)
                 }
                 .padding(22)
@@ -198,6 +207,7 @@ struct AboutView: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
         .preferredColorScheme(.dark)
+        .sheet(isPresented: $showCompat) { CompatibilityView() }
     }
     private func section(_ title: String, _ body: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {

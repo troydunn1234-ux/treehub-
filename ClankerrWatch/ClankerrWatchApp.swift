@@ -139,7 +139,7 @@ struct ClankerrWatchRoot: View {
             }
             .tabViewStyle(.verticalPage)
         }
-        .alert("Clankerr", isPresented: Binding(get: { link.error != nil }, set: { if !$0 { link.error = nil } })) {
+        .alert("Couch Remote", isPresented: Binding(get: { link.error != nil }, set: { if !$0 { link.error = nil } })) {
             Button("OK", role: .cancel) { link.error = nil }
         } message: { Text(link.error ?? "") }
     }
@@ -178,7 +178,7 @@ struct PadPage: View {
         .navigationTitle {
             HStack(spacing: 4) {
                 Circle().fill(link.state.reachable ? Color.green : Color.orange).frame(width: 6, height: 6)
-                Text(link.state.now.isEmpty ? (link.state.tv.isEmpty ? "Clankerr" : link.state.tv) : link.state.now)
+                Text(link.state.now.isEmpty ? (link.state.tv.isEmpty ? "Couch Remote" : link.state.tv) : link.state.now)
                     .font(CW.font(14, .heavy)).lineLimit(1)
             }
         }
@@ -262,7 +262,7 @@ struct AppsPage: View {
     var body: some View {
         ScrollView {
             if link.state.apps.isEmpty {
-                Text("Pair your TV in Clankerr on your iPhone and your apps show up here.")
+                Text("Pair your TV in Couch Remote on your iPhone and your apps show up here.")
                     .font(CW.font(13, .medium)).foregroundStyle(.secondary).padding(.top, 8)
             }
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {

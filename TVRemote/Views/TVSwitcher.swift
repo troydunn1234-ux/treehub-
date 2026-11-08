@@ -47,7 +47,7 @@ struct TVSwitcherSheet: View {
     @Environment(TVStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     let onAdd: () -> Void
-    @State private var forgetting: VizioClient.TVInfo?
+    @State private var forgetting: DiscoveredTV?
 
     var body: some View {
         ZStack {
@@ -99,10 +99,10 @@ struct TVSwitcherSheet: View {
         .onChange(of: store.tvs.count) { _, n in if n == 0 { dismiss() } }
         .confirmationDialog("Forget \(forgetting?.name ?? "this TV")?", isPresented: Binding(get: { forgetting != nil }, set: { if !$0 { forgetting = nil } }), titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { if let t = forgetting { withAnimation(.snappy) { store.forget(t) } } }
-        } message: { Text("You'll pair it again with a code from the TV.") }
+        } message: { Text("You'll need to pair it again to use it.") }
     }
 
-    private func row(_ t: VizioClient.TVInfo) -> some View {
+    private func row(_ t: DiscoveredTV) -> some View {
         let active = t.id == store.tv?.id
         let statusColor: Color = active ? (store.reachable ? Look.live : .orange) : Look.faint
         let status = active ? (store.reconnecting ? "Searching…" : store.reachable ? "Connected" : "Offline") : "Saved"
@@ -123,7 +123,7 @@ struct TVSwitcherSheet: View {
                         HStack(spacing: 6) {
                             LiveDot(color: statusColor, size: 6, pulsing: active && store.reachable)
                                 .frame(width: 10, height: 10)
-                            Text("\(status) · \(t.model)").font(Look.font(12, .semibold)).foregroundStyle(Look.dim).lineLimit(1)
+                            Text("\(status) · \(t.brand.shortName) · \(t.model)").font(Look.font(12, .semibold)).foregroundStyle(Look.dim).lineLimit(1)
                         }
                     }
                     Spacer(minLength: Look.S.s)
@@ -135,7 +135,7 @@ struct TVSwitcherSheet: View {
                 .contentShape(Rectangle())
             }
             .buttonStyle(SquishStyle(scale: 0.97))
-            .accessibilityLabel("\(t.name), \(status)\(active ? ", current TV" : ". Switch to this TV")")
+            .accessibilityLabel("\(t.name), \(t.brand.displayName), \(status)\(active ? ", current TV" : ". Switch to this TV")")
 
             Menu {
                 Button(role: .destructive) { forgetting = t } label: { Label("Forget \(t.name)", systemImage: "tv.slash") }

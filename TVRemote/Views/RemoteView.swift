@@ -172,7 +172,7 @@ struct RemoteView: View {
 
     // MARK: Actions
 
-    private func send(_ key: VizioClient.Key, heavy: Bool = false) {
+    private func send(_ key: RemoteKey, heavy: Bool = false) {
         UIImpactFeedbackGenerator(style: heavy ? .medium : .light).impactOccurred()
         store.press(key)
     }
@@ -210,12 +210,12 @@ private struct Spark { let p: CGPoint; let v: CGVector; let t: Date }
 
 private struct TouchPad: View {
     let size: CGFloat
-    let onKey: (VizioClient.Key, Bool) -> Void
+    let onKey: (RemoteKey, Bool) -> Void
     @State private var trail: [TrailDot] = []
     @State private var ripples: [Ripple] = []
     @State private var anchor: CGPoint?
     @State private var presses = 0
-    @State private var flash: VizioClient.Key?
+    @State private var flash: RemoteKey?
     @State private var flashTick = 0
     @State private var touching = false
     @State private var sparks: [Spark] = []
@@ -337,7 +337,7 @@ private struct TouchPad: View {
         .animation(.easeOut(duration: 0.2), value: touching)
     }
 
-    private func edgeButton(_ key: VizioClient.Key, _ symbol: String, x: CGFloat, y: CGFloat) -> some View {
+    private func edgeButton(_ key: RemoteKey, _ symbol: String, x: CGFloat, y: CGFloat) -> some View {
         let lit = flash == key
         return Button { fire(key) } label: {
             Image(systemName: symbol)
@@ -369,7 +369,7 @@ private struct TouchPad: View {
                 let dy = v.location.y - a.y
                 let need: CGFloat = presses == 0 ? 30 : 60
                 if max(abs(dx), abs(dy)) >= need {
-                    let key: VizioClient.Key = abs(dx) > abs(dy) ? (dx > 0 ? .right : .left) : (dy > 0 ? .down : .up)
+                    let key: RemoteKey = abs(dx) > abs(dy) ? (dx > 0 ? .right : .left) : (dy > 0 ? .down : .up)
                     fire(key, from: v.location)
                     anchor = v.location
                     presses += 1
@@ -389,7 +389,7 @@ private struct TouchPad: View {
             }
     }
 
-    private func fire(_ key: VizioClient.Key, from point: CGPoint? = nil) {
+    private func fire(_ key: RemoteKey, from point: CGPoint? = nil) {
         onKey(key, false)
         if !reduceMotion {
             // A short burst of sparks flying the way you swiped.
@@ -433,7 +433,7 @@ private struct TouchPad: View {
         }
     }
 
-    private func arrowSymbol(_ k: VizioClient.Key) -> String {
+    private func arrowSymbol(_ k: RemoteKey) -> String {
         switch k {
         case .up: return "chevron.up"
         case .down: return "chevron.down"
@@ -442,7 +442,7 @@ private struct TouchPad: View {
         }
     }
 
-    private func arrowOffset(_ k: VizioClient.Key) -> CGSize {
+    private func arrowOffset(_ k: RemoteKey) -> CGSize {
         let d = size * 0.22
         switch k {
         case .up: return CGSize(width: 0, height: -d)
@@ -452,7 +452,7 @@ private struct TouchPad: View {
         }
     }
 
-    private func label(for k: VizioClient.Key) -> String {
+    private func label(for k: RemoteKey) -> String {
         switch k {
         case .up: return "Up"
         case .down: return "Down"
