@@ -39,7 +39,9 @@
 		3A6C8E11BD2AA96AC7728B96 /* RokuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC350677FD1B20FA0A0874F /* RokuController.swift */; };
 		3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		3CFB9ADBBF4FE148D6830DBD /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
+		3D4F7768A084056DE6C96320 /* NavViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A870D9A1F43A4D08DC2F855 /* NavViews.swift */; };
 		3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
+		42291D55AAA46116799F3434 /* NavViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A870D9A1F43A4D08DC2F855 /* NavViews.swift */; };
 		439660E157C058142F67DF47 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4307BE1856AAD8B00961B3DF /* TreeFacts.swift */; };
 		452B55C6051B0156C2215E46 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62D8F1DE137F76D14BFBA78 /* SetupView.swift */; };
@@ -63,6 +65,7 @@
 		669DE02F9381489144BAADDF /* Hug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D039EE51534C6E9717A31E3 /* Hug.swift */; };
 		699581299FF297492D4CB650 /* LaneHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4501D91E9229D0F700114F2 /* LaneHUD.swift */; };
 		6B5403D2D0B30590A4051BF2 /* Ember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654224256546BBEC27F74485 /* Ember.swift */; };
+		6BA0EB6F0E19DDD4028F0CF8 /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97EF2596A61FB7C47D91DDF /* Navigator.swift */; };
 		6C649E02624AA526A50F78DC /* GTVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1E693EC526B4FBB5F067C9 /* GTVLink.swift */; };
 		6C65F686CA73C7A26ECF3223 /* RoamrWatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F345C9AD9E3A1079859D83 /* RoamrWatchBridge.swift */; };
 		7036C6632A4247739F5EE781 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
@@ -90,6 +93,7 @@
 		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE36C7584CE358A1400B2C5 /* Assets.xcassets */; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
+		965C96BD74C27CFBF48A9A00 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		A3133445F911E31569ECED60 /* Supplement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46113FE710889BDCB1BC002 /* Supplement.swift */; };
@@ -131,6 +135,7 @@
 		DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
 		E01DA781781C62D9F85A219D /* LaunchGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */; };
 		E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = CB213271A39B184F8A858EDC /* FoodBookApp.swift */; };
+		E504781A95012E8E83F8C6F1 /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97EF2596A61FB7C47D91DDF /* Navigator.swift */; };
 		E5B7644B7EE908D8AB25A4A9 /* SamsungController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444B042C895F841A544269AC /* SamsungController.swift */; };
 		E71F2B55DEDFFDA8CE7574B7 /* RoamrWatchViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17A85904C3DA96179CC73DF7 /* RoamrWatchViews.swift */; };
 		E7A652424E4B7B22E764E2EB /* CelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9232467C1686C678F705B0C5 /* CelebrationView.swift */; };
@@ -145,6 +150,7 @@
 		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		F5E75A4754328A8867116941 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
 		F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
+		F7703AC7E6D97541E5889F04 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		F82117E4DD96DD24C8EE1D41 /* CompatibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AECFA1A94F497D848E305C /* CompatibilityView.swift */; };
 		F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */; };
 		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
@@ -313,10 +319,12 @@
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52E3D277EF6186E89CD7A080 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		546E982877DEECF72E33F533 /* PCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCClient.swift; sourceTree = "<group>"; };
+		555C0CD0AA455767020BE7B4 /* LaneMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneMath.swift; sourceTree = "<group>"; };
 		56B2A6670639240E7A7152A6 /* FoodAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAI.swift; sourceTree = "<group>"; };
 		5884433CD32FDD4D160203A6 /* Roamr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Roamr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B86A832B9932FA9DF012C5 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		597A4F6DE910B32A5C72BD0B /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/QuestApp/web; sourceTree = SOURCE_ROOT; };
+		5A870D9A1F43A4D08DC2F855 /* NavViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavViews.swift; sourceTree = "<group>"; };
 		5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebShellApp.swift; sourceTree = "<group>"; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
 		5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchApp.swift; sourceTree = "<group>"; };
@@ -368,6 +376,7 @@
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
+		B97EF2596A61FB7C47D91DDF /* Navigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NatalOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9FB470D73E21C7F253D4FE7 /* FoodBook.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoodBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFC350677FD1B20FA0A0874F /* RokuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RokuController.swift; sourceTree = "<group>"; };
@@ -614,6 +623,8 @@
 				9F73AE90E29B0845AB46785E /* Format.swift */,
 				96832C9E113D2C830820806F /* HealthService.swift */,
 				C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */,
+				555C0CD0AA455767020BE7B4 /* LaneMath.swift */,
+				B97EF2596A61FB7C47D91DDF /* Navigator.swift */,
 				44F00360DF850821B3293EA2 /* RouteTracker.swift */,
 				2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */,
 				0280FF1C22E640C6CE99F86D /* SpeedZones.swift */,
@@ -740,6 +751,7 @@
 				E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */,
 				40ECC54940AA2F6838B4759D /* LaunchSplash.swift */,
 				D98D314E35365B34A5FCA998 /* LiveAvatar.swift */,
+				5A870D9A1F43A4D08DC2F855 /* NavViews.swift */,
 				B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */,
 				F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */,
 				D11DBD0989B6A34A4EA014E8 /* TrackView.swift */,
@@ -1397,10 +1409,13 @@
 				DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */,
 				A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */,
 				699581299FF297492D4CB650 /* LaneHUD.swift in Sources */,
+				F7703AC7E6D97541E5889F04 /* LaneMath.swift in Sources */,
 				E01DA781781C62D9F85A219D /* LaunchGate.swift in Sources */,
 				F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */,
 				623E64AFF025111C49695B04 /* LiveActivityController.swift in Sources */,
 				0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */,
+				42291D55AAA46116799F3434 /* NavViews.swift in Sources */,
+				6BA0EB6F0E19DDD4028F0CF8 /* Navigator.swift in Sources */,
 				65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */,
 				4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */,
 				C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */,
@@ -1539,10 +1554,13 @@
 				AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */,
 				7ED0930BBFC58AC2942739F5 /* LaneChangeDetector.swift in Sources */,
 				617B6CFFAF2C1ABF7C094F51 /* LaneHUD.swift in Sources */,
+				965C96BD74C27CFBF48A9A00 /* LaneMath.swift in Sources */,
 				6244A61CEBB8FEB86A0C8DA5 /* LaunchGate.swift in Sources */,
 				105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */,
 				7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */,
 				0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */,
+				3D4F7768A084056DE6C96320 /* NavViews.swift in Sources */,
+				E504781A95012E8E83F8C6F1 /* Navigator.swift in Sources */,
 				8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */,
 				6C65F686CA73C7A26ECF3223 /* RoamrWatchBridge.swift in Sources */,
 				18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */,
