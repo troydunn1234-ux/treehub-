@@ -5,7 +5,7 @@ import UserNotifications
 
 @main
 struct TrackHubApp: App {
-    @State private var tracker = RouteTracker()
+    @State private var tracker: RouteTracker
 
     let container: ModelContainer = {
         let schema = Schema([Activity.self])
@@ -25,6 +25,10 @@ struct TrackHubApp: App {
         UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true])
         UNUserNotificationCenter.current().delegate = DriveNotificationRouter.shared
         DriveDetector.registerCategory()
+        let t = RouteTracker()
+        _tracker = State(initialValue: t)
+        // Apple Watch: live stats out, start/stop in.
+        if !TrackDemo.isOn { RoamrWatchBridge.shared.attach(tracker: t, container: container) }
     }
 
     var body: some Scene {

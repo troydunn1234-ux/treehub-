@@ -9,6 +9,11 @@ struct FoodBookApp: App {
         return try! ModelContainer(for: schema, configurations: config)
     }()
 
+    init() {
+        // Apple Watch: today's numbers out, quick logs and check-offs in.
+        FoodWatchBridge.shared.attach(container: container)
+    }
+
     var body: some Scene {
         WindowGroup {
             Splash { RootTabs() }

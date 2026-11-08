@@ -82,9 +82,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         laneIndex = to
     }
 
-    private func updateLaneCount(_ n: Int?, estimated: Bool) {
-        guard let n, n > 0, demoLaneTimer == nil else { return }
-        let n = min(n, 8)
+    private func updateLaneCount(_ raw: Int?, estimated: Bool) {
+        guard let raw, raw > 0, demoLaneTimer == nil else { return }
+        let n = min(raw, 8)
         laneCountEstimated = estimated
         if !laneAnchored {
             // First real road of the drive: start in the usual lane for that many lanes.

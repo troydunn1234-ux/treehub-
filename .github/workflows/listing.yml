@@ -23,6 +23,9 @@ jobs:
       - name: Pick newest Xcode
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
 
+      - name: Make sure the watchOS SDK is installed (Apple Watch apps)
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
       - name: Generate Xcode project
         run: |
           brew install xcodegen
@@ -38,7 +41,7 @@ jobs:
       - name: Build for the simulator
         run: |
           set -o pipefail
-          xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} -sdk iphonesimulator \
+          xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} \
             -destination 'generic/platform=iOS Simulator' -configuration Release -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
           ls build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app > /dev/null

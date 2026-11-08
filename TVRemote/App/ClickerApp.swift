@@ -2,8 +2,15 @@ import SwiftUI
 
 @main
 struct ClickerApp: App {
-    @State private var store = TVStore()
+    @State private var store: TVStore
     @State private var pc = PCClient()
+
+    init() {
+        let s = TVStore()
+        _store = State(initialValue: s)
+        // Apple Watch remote: presses from the watch go to the TV through this phone.
+        ClankerrWatchBridge.shared.attach(s)
+    }
     var body: some Scene {
         WindowGroup {
             RootView()

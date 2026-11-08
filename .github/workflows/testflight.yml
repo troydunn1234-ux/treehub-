@@ -39,6 +39,9 @@ jobs:
           sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
           xcodebuild -version
 
+      - name: Make sure the watchOS SDK is installed (Apple Watch apps)
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
       - name: Generate Xcode project
         run: |
           brew install xcodegen
@@ -64,6 +67,10 @@ jobs:
           BUNDLE=$(xcodebuild -project TreeHub.xcodeproj -scheme ${{ inputs.app }} -showBuildSettings 2>/dev/null | awk -F' = ' '/ PRODUCT_BUNDLE_IDENTIFIER /{print $2; exit}')
           echo "Bundle: $BUNDLE"
           python3 .github/scripts/ensure_bundle_id.py "$BUNDLE" "${{ inputs.app }}" || true
+          # Apps with an Apple Watch companion: register the watch app's ID too.
+          if grep -q "$BUNDLE.watchkitapp;" TreeHub.xcodeproj/project.pbxproj; then
+            python3 .github/scripts/ensure_bundle_id.py "$BUNDLE.watchkitapp" "${{ inputs.app }} Watch" || true
+          fi
 
       - name: Archive (signed in the cloud)
         env:
