@@ -22,10 +22,6 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
-	<key>NSCameraUsageDescription</key>
-	<string>Food Book uses the camera to snap photos of your food.</string>
-	<key>NSPhotoLibraryUsageDescription</key>
-	<string>Food Book lets you add food photos from your library.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>
@@ -33,17 +29,9 @@
 	</dict>
 	<key>UIRequiresFullScreen</key>
 	<true/>
-	<key>UIStatusBarStyle</key>
-	<string>UIStatusBarStyleLightContent</string>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
-	<key>WebShellAccent</key>
-	<string>#f2b34a</string>
-	<key>WebShellBackground</key>
-	<string>#0c0907</string>
-	<key>WebShellSymbol</key>
-	<string>fork.knife</string>
 </dict>
 </plist>
