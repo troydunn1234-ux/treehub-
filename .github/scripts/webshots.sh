@@ -24,8 +24,24 @@ if [ -d "$APP" ]; then
   xcrun simctl location "$UDID" set 37.3229,-122.0322 || true
   xcrun simctl launch "$UDID" com.troydunn.roamr -demo -autodrive > /dev/null
   sleep 4
-  xcrun simctl location "$UDID" start --speed=36 --interval=1 \
-    37.3229,-122.0322 37.3262,-122.0400 37.3302,-122.0480 37.3344,-122.0560 37.3381,-122.0640 37.3420,-122.0730 37.3455,-122.0820 || true
+  # Follow a real stretch of I-280 from OpenStreetMap so the speed-limit lookup has a road to find.
+  ROUTE=$(curl -s -m 25 -G https://overpass-api.de/api/interpreter --data-urlencode \
+    'data=[out:json][timeout:20];way(around:600,37.3302,-122.0480)[highway=motorway];out tags geom;' | python3 -c '
+import json,sys
+try:
+    d=json.load(sys.stdin)["elements"]
+except Exception:
+    sys.exit(0)
+ways=sorted(d,key=lambda w:-len(w.get("geometry",[])))
+for w in ways[:2]: sys.stderr.write("way %s maxspeed=%s ref=%s pts=%d\n"%(w["id"],w["tags"].get("maxspeed"),w["tags"].get("ref"),len(w["geometry"])))
+if ways:
+    g=ways[0]["geometry"]
+    step=max(1,len(g)//14)
+    print(" ".join("%.6f,%.6f"%(p["lat"],p["lon"]) for p in g[::step]))
+')
+  echo "Drive route: ${ROUTE:-fallback}"
+  [ -n "$ROUTE" ] || ROUTE="37.3229,-122.0322 37.3262,-122.0400 37.3302,-122.0480 37.3344,-122.0560 37.3381,-122.0640"
+  xcrun simctl location "$UDID" start --speed=36 --interval=1 $ROUTE || true
   sleep 30; xcrun simctl io "$UDID" screenshot "shots/drive-1.png" > /dev/null 2>&1
   sleep 20; xcrun simctl io "$UDID" screenshot "shots/drive-2.png" > /dev/null 2>&1
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; FAIL=1; fi

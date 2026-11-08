@@ -304,8 +304,8 @@ struct TrackView: View {
         default: distance = 360
         }
         let heading = tracker.course >= 0 ? tracker.course : mapHeading
-        // Aim the camera a bit ahead of you so you sit in the open map above the stats card.
-        let ahead = distance * 0.42
+        // Aim the camera a little behind you, so you sit in the open map above the stats card.
+        let ahead = -distance * 0.22
         let rad = heading * .pi / 180
         let center = CLLocationCoordinate2D(
             latitude: here.latitude + ahead * cos(rad) / 111_320,

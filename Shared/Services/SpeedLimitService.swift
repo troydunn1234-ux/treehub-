@@ -68,7 +68,7 @@ final class SpeedLimitService {
 
     private static func fetch(_ c: CLLocationCoordinate2D, preferFast: Bool) async -> Limit? {
         let types = roadRank.keys.sorted().joined(separator: "|")
-        let q = "[out:json][timeout:8];way(around:22,\(c.latitude),\(c.longitude))[highway~\"^(\(types))$\"];out tags;"
+        let q = "[out:json][timeout:8];way(around:30,\(c.latitude),\(c.longitude))[highway~\"^(\(types))$\"];out tags;"
         var comps = URLComponents(string: "https://overpass-api.de/api/interpreter")!
         comps.queryItems = [URLQueryItem(name: "data", value: q)]
         guard let url = comps.url else { return nil }
