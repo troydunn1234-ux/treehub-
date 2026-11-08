@@ -39,6 +39,7 @@
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
 		53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE617454CF624295615806D /* TVDiscovery.swift */; };
 		5843362A054EB4DED1466857 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7602D94C88BBCEBD16741BBC /* Assets.xcassets */; };
+		59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6338EB695CED8F5839461B32 /* SuppsView.swift */; };
 		5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
 		5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AAA987D1340DD344CF0E569 /* TreesView.swift */; };
@@ -69,6 +70,7 @@
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		A3133445F911E31569ECED60 /* Supplement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46113FE710889BDCB1BC002 /* Supplement.swift */; };
 		A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
 		AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B86A832B9932FA9DF012C5 /* TodayView.swift */; };
 		AB06264988421B3AB01E26B9 /* Look.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF9FA8F8D82A9B59632D6F3 /* Look.swift */; };
@@ -215,6 +217,7 @@
 		5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebShellApp.swift; sourceTree = "<group>"; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
 		5F5D7F6A26846A82824D69E1 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
+		6338EB695CED8F5839461B32 /* SuppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppsView.swift; sourceTree = "<group>"; };
 		654224256546BBEC27F74485 /* Ember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ember.swift; sourceTree = "<group>"; };
 		685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootboundWidgets.swift; sourceTree = "<group>"; };
 		68CA977CF56EAADE45A4D8DE /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
@@ -237,6 +240,7 @@
 		9F73AE90E29B0845AB46785E /* Format.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Format.swift; sourceTree = "<group>"; };
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeciesGuesser.swift; sourceTree = "<group>"; };
+		A46113FE710889BDCB1BC002 /* Supplement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supplement.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		A6D1895159EA264D0659FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
@@ -279,6 +283,7 @@
 			isa = PBXGroup;
 			children = (
 				C01750639F52088FDDAA89CB /* FoodEntry.swift */,
+				A46113FE710889BDCB1BC002 /* Supplement.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -408,6 +413,7 @@
 			isa = PBXGroup;
 			children = (
 				D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */,
+				6338EB695CED8F5839461B32 /* SuppsView.swift */,
 				58B86A832B9932FA9DF012C5 /* TodayView.swift */,
 			);
 			path = Views;
@@ -1129,6 +1135,8 @@
 				6B5403D2D0B30590A4051BF2 /* Ember.swift in Sources */,
 				E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */,
 				B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */,
+				A3133445F911E31569ECED60 /* Supplement.swift in Sources */,
+				59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */,
 				AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
