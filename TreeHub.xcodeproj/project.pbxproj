@@ -12,6 +12,7 @@
 		04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E982877DEECF72E33F533 /* PCClient.swift */; };
 		07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
+		0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */; };
 		0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
 		105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		10C349711E25FB05FCEFDCFA /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CA977CF56EAADE45A4D8DE /* WebScreen.swift */; };
@@ -23,6 +24,7 @@
 		1B9DFC673067578DFA6B520F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		1FA66182A2E82790776C71F3 /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
+		2028F8406ABA834033BB2236 /* SnapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5282B10CF508CE08565DA73 /* SnapView.swift */; };
 		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
 		29467D912B072530A65EEF83 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		2BB69615245B34B7F063673A /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C64D37B318F75453FE1CCF /* RemoteView.swift */; };
@@ -40,6 +42,7 @@
 		452B55C6051B0156C2215E46 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62D8F1DE137F76D14BFBA78 /* SetupView.swift */; };
 		4AC862D52836E07642D6835D /* PhoneLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D83E689391AF8586E322F4 /* PhoneLink.swift */; };
 		4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
+		50F82DDDA1BA6D7CD9A5962F /* Camera.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AB83B63312836096D3E476 /* Camera.swift */; };
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
 		53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE617454CF624295615806D /* TVDiscovery.swift */; };
 		5843362A054EB4DED1466857 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7602D94C88BBCEBD16741BBC /* Assets.xcassets */; };
@@ -108,6 +111,7 @@
 		D351BF789B84FF07B0C7D443 /* SpeciesGuesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */; };
 		D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
 		D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2B4B2002AF716FBD275A725 /* FoodWatchBridge.swift */; };
+		D6A539157CB944634005F61D /* FoodVision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C5A2F2435EAC0C4C16ABFD /* FoodVision.swift */; };
 		D7DAD1D01212E022B2B4A4DB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 32DA9DFEEDD192CB3A30525C /* Assets.xcassets */; };
 		D83E2FAD990E00783FF59E4D /* DriveEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */; };
 		D934B55D13476E521593D35E /* ClankerrWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = A28DDBC93021FD58B540B885 /* ClankerrWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -299,6 +303,7 @@
 		5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchApp.swift; sourceTree = "<group>"; };
 		5F5D7F6A26846A82824D69E1 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
 		6338EB695CED8F5839461B32 /* SuppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppsView.swift; sourceTree = "<group>"; };
+		63C5A2F2435EAC0C4C16ABFD /* FoodVision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodVision.swift; sourceTree = "<group>"; };
 		654224256546BBEC27F74485 /* Ember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ember.swift; sourceTree = "<group>"; };
 		685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootboundWidgets.swift; sourceTree = "<group>"; };
 		68CA977CF56EAADE45A4D8DE /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
@@ -313,7 +318,9 @@
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
 		80ACEC3C05F648903A54E16B /* seed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed.json; sourceTree = "<group>"; };
 		84020FAF6BBD9C477A647FFD /* DriveDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveDetector.swift; sourceTree = "<group>"; };
+		89AB83B63312836096D3E476 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		8A93A146F95A24090BFD1768 /* FoodBookWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookWatchApp.swift; sourceTree = "<group>"; };
+		8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapResultSheet.swift; sourceTree = "<group>"; };
 		8EF9FA8F8D82A9B59632D6F3 /* Look.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Look.swift; sourceTree = "<group>"; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
@@ -341,6 +348,7 @@
 		B9FB470D73E21C7F253D4FE7 /* FoodBook.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoodBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01750639F52088FDDAA89CB /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
 		C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneChangeDetector.swift; sourceTree = "<group>"; };
+		C5282B10CF508CE08565DA73 /* SnapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapView.swift; sourceTree = "<group>"; };
 		C62D8F1DE137F76D14BFBA78 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C86A93C7C984AD7AE8470297 /* Clicker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clicker.entitlements; sourceTree = "<group>"; };
@@ -435,6 +443,17 @@
 			path = ClankerrWatch;
 			sourceTree = "<group>";
 		};
+		42ACC7696771E67669212B9A /* Snap */ = {
+			isa = PBXGroup;
+			children = (
+				89AB83B63312836096D3E476 /* Camera.swift */,
+				63C5A2F2435EAC0C4C16ABFD /* FoodVision.swift */,
+				8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */,
+				C5282B10CF508CE08565DA73 /* SnapView.swift */,
+			);
+			path = Snap;
+			sourceTree = "<group>";
+		};
 		4387B860F0394C4335BA58E8 /* TVRemote */ = {
 			isa = PBXGroup;
 			children = (
@@ -487,6 +506,7 @@
 				44C46A53ECE9701E86E77CEA /* Design */,
 				05FC2B481E6166D2EEC1F906 /* Models */,
 				E0BC4BC2A20D509EE3AD0A5C /* Resources */,
+				42ACC7696771E67669212B9A /* Snap */,
 				6004107CC2559F7F1759AD3D /* Views */,
 			);
 			path = FoodApp;
@@ -1373,10 +1393,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				806F7A43C436AD068D6EC7BF /* AddFoodSheet.swift in Sources */,
+				50F82DDDA1BA6D7CD9A5962F /* Camera.swift in Sources */,
 				6B5403D2D0B30590A4051BF2 /* Ember.swift in Sources */,
 				E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */,
 				B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */,
+				D6A539157CB944634005F61D /* FoodVision.swift in Sources */,
 				D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */,
+				0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */,
+				2028F8406ABA834033BB2236 /* SnapView.swift in Sources */,
 				A3133445F911E31569ECED60 /* Supplement.swift in Sources */,
 				59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */,
 				AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */,
