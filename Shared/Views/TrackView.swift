@@ -150,6 +150,8 @@ struct TrackView: View {
             chosenKind = nav.mode.activity
             tracker.start(kind: nav.mode.activity)
             camera = .userLocation(followsHeading: false, fallback: .automatic)
+        } else if tracker.state == .paused {
+            tracker.resume()   // directions need live location; a paused recording stops GPS
         }
         chaseCam = true
         withAnimation(.snappy) { nav.go() }
