@@ -71,6 +71,7 @@
 		AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D854BA14681BFCF2190CE5 /* ClickerApp.swift */; };
 		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
 		AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
+		AF5D4436E4BAE070350D06F5 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
 		B4D8DD07B70C2AE132653BC6 /* BridgeScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */; };
 		B76B4471ECBFAC9F8E794ED1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FD533F40BAA6F6D9454E5913 /* Assets.xcassets */; };
@@ -103,6 +104,7 @@
 		F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
 		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		F5E75A4754328A8867116941 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
+		F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
 		FB90DA692EBD344592F2764D /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		FF30618CD569AF92BE3DF1E4 /* RoamrWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */; };
@@ -253,6 +255,7 @@
 		EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shapes.swift; sourceTree = "<group>"; };
 		EEF58211216804E6CF163DAA /* RootboundTests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
+		F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopDownTruck.swift; sourceTree = "<group>"; };
 		F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTourTests.swift; sourceTree = "<group>"; };
 		F6ADD0E961A8A829FF411833 /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/NatalOrbit/web; sourceTree = SOURCE_ROOT; };
 		F74EEDFE1E4F546C9F5233D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -544,6 +547,7 @@
 				40ECC54940AA2F6838B4759D /* LaunchSplash.swift */,
 				D98D314E35365B34A5FCA998 /* LiveAvatar.swift */,
 				B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */,
+				F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */,
 				D11DBD0989B6A34A4EA014E8 /* TrackView.swift */,
 			);
 			path = Views;
@@ -1071,6 +1075,7 @@
 				7036C6632A4247739F5EE781 /* SpeedZones.swift in Sources */,
 				34903B18BC206AE96DF01EB4 /* SplitAnnouncer.swift in Sources */,
 				D4D9169DE4A2E1E9A3E77A42 /* Theme.swift in Sources */,
+				AF5D4436E4BAE070350D06F5 /* TopDownTruck.swift in Sources */,
 				3E92FFF5C5CFA33730CC5181 /* TrackView.swift in Sources */,
 				8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */,
 				4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */,
@@ -1157,6 +1162,7 @@
 				5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */,
 				AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */,
 				7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */,
+				F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */,
 				781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */,
 				CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */,
 				81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */,
