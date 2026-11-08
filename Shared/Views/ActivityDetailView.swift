@@ -11,6 +11,7 @@ struct ActivityDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var confirmDelete = false
+    @State private var probe: RoutePoint?
     @State private var gpxURL: URL?
     #if !TRACK_APP
     @Query(sort: \Hug.date) private var allHugs: [Hug]
@@ -234,7 +235,12 @@ struct ActivityDetailView: View {
     }
 
     private var routeMap: some View {
+        MapReader { proxy in
         Map(initialPosition: .automatic) {
+            if let p = probe {
+                Annotation("", coordinate: p.coordinate, anchor: .bottom) { SpeedCallout(point: p) }
+                    .annotationTitles(.hidden)
+            }
             if activity.kind == .drive {
                 ForEach(SpeedZones.segments(activity.route)) { seg in
                     MapPolyline(coordinates: seg.coords)
@@ -269,6 +275,18 @@ struct ActivityDetailView: View {
             }
         }
         .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
+        .onTapGesture { pt in
+            guard activity.kind == .drive else { return }
+            let p = RouteProbe.nearest(activity.route, tap: pt, proxy: proxy)
+            withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) { probe = p }
+            if let p {
+                UISelectionFeedbackGenerator().selectionChanged()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                    if probe?.t == p.t { withAnimation(.easeOut) { probe = nil } }
+                }
+            }
+        }
+        }
     }
 
     private func placeRow(_ label: String, _ value: String, _ symbol: String, _ tint: Color) -> some View {

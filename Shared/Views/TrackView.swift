@@ -25,6 +25,8 @@ struct TrackView: View {
     @State private var healthLoaded = false
     @State private var chaseCam = true
     @State private var mapHeading: Double = 0
+    @State private var mapPitch: Double = 0
+    @State private var probe: RoutePoint?
 
     var body: some View {
         NavigationStack {
@@ -292,6 +294,15 @@ struct TrackView: View {
 
     // MARK: Live
 
+    private func showProbe(_ p: RoutePoint?) {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) { probe = p }
+        guard let p else { return }
+        UISelectionFeedbackGenerator().selectionChanged()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+            if probe?.t == p.t { withAnimation(.easeOut) { probe = nil } }
+        }
+    }
+
     /// GTA-style chase camera: sits behind you, tilted, turned to your direction of travel,
     /// and pulls back the faster you go.
     private func followIfNeeded() {
@@ -318,8 +329,13 @@ struct TrackView: View {
 
     private var liveView: some View {
         ZStack(alignment: .bottom) {
+            MapReader { proxy in
             Map(position: $camera) {
                 let coords = tracker.points.map(\.coordinate)
+                if let p = probe {
+                    Annotation("", coordinate: p.coordinate, anchor: .bottom) { SpeedCallout(point: p) }
+                        .annotationTitles(.hidden)
+                }
                 if tracker.kind == .drive {
                     // Neon route colored by speed vs the limit, with a soft glow under it.
                     ForEach(SpeedZones.segments(tracker.points)) { seg in
@@ -348,7 +364,16 @@ struct TrackView: View {
                     }
                 }
                 // You: a little truck, walker, runner, hiker or e-bike instead of the blue dot.
-                if let here = coords.last {
+                if let here = coords.last, tracker.kind == .drive {
+                    // Top-down truck, turned to match the road and laid flat on the tilted map.
+                    Annotation("", coordinate: here, anchor: .center) {
+                        TopDownTruck(bearing: tracker.course >= 0 ? tracker.course - mapHeading : 0,
+                                     pitch: mapPitch,
+                                     speed: tracker.state == .recording ? tracker.currentSpeed : 0,
+                                     overLimit: tracker.isOverLimit)
+                    }
+                    .annotationTitles(.hidden)
+                } else if let here = coords.last {
                     Annotation("", coordinate: here, anchor: UnitPoint(x: 0.5, y: 0.82)) {
                         LiveAvatar(kind: tracker.kind, speed: tracker.state == .recording ? tracker.currentSpeed : 0,
                                    course: tracker.course, mapHeading: mapHeading, overLimit: tracker.isOverLimit)
@@ -364,7 +389,12 @@ struct TrackView: View {
             .mapControls {
                 MapCompass()
             }
-            .onMapCameraChange(frequency: .continuous) { ctx in mapHeading = ctx.camera.heading }
+            .onMapCameraChange(frequency: .continuous) { ctx in
+                mapHeading = ctx.camera.heading
+                mapPitch = ctx.camera.pitch
+            }
+            .onTapGesture { pt in showProbe(RouteProbe.nearest(tracker.points, tap: pt, proxy: proxy)) }
+            }
             .onChange(of: tracker.points.count) { _, _ in followIfNeeded() }
             .onAppear { followIfNeeded() }
             .overlay { SpeedFX(speed: tracker.kind == .drive || tracker.kind == .bike ? tracker.currentSpeed : 0,

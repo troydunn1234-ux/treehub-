@@ -1,4 +1,5 @@
 import SwiftUI
+import MapKit
 
 /// Speedometer + speed-limit sign shown while driving.
 struct DriveHUD: View {
@@ -131,5 +132,60 @@ struct SpeedFX: View {
         }
         .animation(.easeInOut(duration: 0.6), value: overLimit)
         .animation(.easeInOut(duration: 0.6), value: intensity > 0.01)
+    }
+}
+
+// MARK: - Tap the route to see your speed
+
+
+enum RouteProbe {
+    /// The route point nearest a tap, if the tap is within ~44 pt of the line.
+    @MainActor
+    static func nearest(_ pts: [RoutePoint], tap: CGPoint, proxy: MapProxy) -> RoutePoint? {
+        var best: (d: CGFloat, p: RoutePoint)?
+        for p in pts {
+            guard let s = proxy.convert(p.coordinate, to: .local) else { continue }
+            let d = hypot(s.x - tap.x, s.y - tap.y)
+            if best == nil || d < best!.d { best = (d, p) }
+        }
+        guard let b = best, b.d < 44 else { return nil }
+        return b.p
+    }
+}
+
+/// Small glass card above a point on the route: speed, limit, time.
+struct SpeedCallout: View {
+    let point: RoutePoint
+    var body: some View {
+        let toUnit = Units.metric ? 3.6 : 2.236936
+        let speed = max(0, point.speed) * toUnit
+        let band = SpeedBand.of(speed: point.speed, limit: point.limit)
+        VStack(spacing: 4) {
+            VStack(spacing: 2) {
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text(point.speed >= 0 ? "\(Int(speed.rounded()))" : "—")
+                        .font(.system(size: 26, weight: .black, design: .rounded)).monospacedDigit()
+                    Text(Units.metric ? "km/h" : "mph").font(.system(size: 11, weight: .heavy, design: .rounded)).opacity(0.7)
+                }
+                if point.limit > 0 {
+                    let lim = Int((point.limit * toUnit).rounded())
+                    let over = Int(((point.speed - point.limit) * toUnit).rounded())
+                    Text(over > 0 ? "+\(over) over \(lim)" : "limit \(lim)")
+                        .font(.system(size: 12, weight: .heavy, design: .rounded))
+                        .foregroundStyle(over > 0 ? band.color : .white.opacity(0.75))
+                }
+                Text(Date(timeIntervalSince1970: point.t).formatted(date: .omitted, time: .shortened))
+                    .font(.system(size: 10, weight: .semibold, design: .rounded)).opacity(0.6)
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(band.color, lineWidth: 1.5))
+            .shadow(color: band.color.opacity(0.5), radius: 8)
+            Circle().fill(band.color).frame(width: 12, height: 12)
+                .overlay(Circle().stroke(.white, lineWidth: 2))
+                .shadow(color: band.color, radius: 6)
+        }
+        .transition(.scale(scale: 0.6, anchor: .bottom).combined(with: .opacity))
     }
 }

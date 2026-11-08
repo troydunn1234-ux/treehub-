@@ -2,6 +2,8 @@ import SwiftUI
 
 /// First run: find the TV on Wi-Fi, then type the code it shows.
 struct SetupView: View {
+    /// Called after a TV pairs (used when adding another TV from a sheet).
+    var onPaired: (() -> Void)? = nil
     @Environment(TVStore.self) private var store
     @State private var step: Step = .find
     @State private var chosen: VizioClient.TVInfo?
@@ -194,7 +196,9 @@ struct SetupView: View {
     private func submit() async {
         busy = true
         defer { busy = false }
-        if !(await store.finishPairing(pin: pin)) {
+        if await store.finishPairing(pin: pin) {
+            onPaired?()
+        } else {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             pin = ""
         }

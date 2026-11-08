@@ -78,7 +78,7 @@ struct RootView: View {
                 Button { store.press(.inputNext) } label: { Label("Switch input", systemImage: "rectangle.on.rectangle") }
                 Divider()
                 Button { showAbout = true } label: { Label("About Clicker", systemImage: "info.circle") }
-                Button(role: .destructive) { confirmForget = true } label: { Label("Forget this TV", systemImage: "tv.slash") }
+                Button(role: .destructive) { confirmForget = true } label: { Label("Forget \(store.tv?.name ?? "this TV")", systemImage: "tv.slash") }
             } label: {
                 Image(systemName: "ellipsis").font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
                     .frame(width: 36, height: 36).background(Look.card, in: Circle())

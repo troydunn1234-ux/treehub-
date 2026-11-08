@@ -5,6 +5,8 @@ struct AppsView: View {
     @Environment(TVStore.self) private var store
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var editing = false
+    @State private var addingTV = false
+    @State private var forgetting: VizioClient.TVInfo?
     @State private var launching: String?
     @State private var appeared = false
     @State private var beam: Beam?
@@ -65,6 +67,18 @@ struct AppsView: View {
         }
         .coordinateSpace(name: "apps")
         .sheet(isPresented: $editing) { AppPicker().environment(store) }
+        .sheet(isPresented: $addingTV) {
+            ZStack {
+                AuroraBackground()
+                SetupView(onPaired: { addingTV = false })
+            }
+            .environment(store)
+            .preferredColorScheme(.dark)
+            .onDisappear { Task { await store.cancelPairing() } }
+        }
+        .confirmationDialog("Forget \(forgetting?.name ?? "this TV")?", isPresented: Binding(get: { forgetting != nil }, set: { if !$0 { forgetting = nil } }), titleVisibility: .visible) {
+            Button("Forget TV", role: .destructive) { if let t = forgetting { withAnimation(.snappy) { store.forget(t) } } }
+        } message: { Text("You'll pair it again with a code from the TV.") }
         .onAppear { appeared = true }
     }
 
@@ -90,18 +104,65 @@ struct AppsView: View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 2) {
                 Text(greeting.uppercased()).font(Look.font(12, .heavy)).tracking(2).foregroundStyle(Look.accent)
-                Text(store.tv?.name ?? "Your TV").font(Look.font(30, .heavy)).foregroundStyle(.white).lineLimit(1)
+                tvSwitcher
             }
             Spacer()
-            HStack(spacing: 6) {
-                Circle().fill(store.reachable ? Color.green : Color.orange).frame(width: 8, height: 8)
-                    .shadow(color: store.reachable ? .green : .orange, radius: 4)
-                Text(store.reachable ? "Connected" : "Offline").font(Look.font(12, .bold)).foregroundStyle(Look.dim)
+            Button {
+                guard !store.reachable, !store.reconnecting else { return }
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                Task { await store.reconnect(userInitiated: true) }
+            } label: {
+                HStack(spacing: 6) {
+                    if store.reconnecting {
+                        ProgressView().controlSize(.mini).tint(.white)
+                    } else {
+                        Circle().fill(store.reachable ? Color.green : Color.orange).frame(width: 8, height: 8)
+                            .shadow(color: store.reachable ? .green : .orange, radius: 4)
+                    }
+                    Text(store.reconnecting ? "Searching…" : store.reachable ? "Connected" : "Offline · Retry")
+                        .font(Look.font(12, .bold)).foregroundStyle(store.reachable ? Look.dim : .white)
+                }
+                .padding(.horizontal, 10).padding(.vertical, 6)
+                .background(store.reachable ? AnyShapeStyle(Look.card) : AnyShapeStyle(Color.orange.opacity(0.25)), in: Capsule())
+                .animation(.snappy, value: store.reconnecting)
             }
-            .padding(.horizontal, 10).padding(.vertical, 6)
-            .background(Look.card, in: Capsule())
+            .buttonStyle(SquishStyle())
+            .disabled(store.reachable)
+            .accessibilityLabel(store.reachable ? "Connected" : "TV offline. Tap to search for it again.")
         }
         .padding(.top, 8)
+    }
+
+    /// Tap the TV name to switch TVs, add another, or forget one.
+    private var tvSwitcher: some View {
+        Menu {
+            Section("Your TVs") {
+                ForEach(store.tvs) { t in
+                    Button { store.switchTo(t) } label: {
+                        if t.id == store.tv?.id { Label(t.name, systemImage: "checkmark") } else { Text(t.name) }
+                    }
+                }
+            }
+            Button { addingTV = true } label: { Label("Add another TV", systemImage: "plus") }
+            Menu {
+                ForEach(store.tvs) { t in
+                    Button(role: .destructive) { forgetting = t } label: { Text(t.name) }
+                }
+            } label: { Label("Forget a TV", systemImage: "tv.slash") }
+        } label: {
+            HStack(spacing: 6) {
+                Text(store.tv?.name ?? "Your TV").font(Look.font(30, .heavy)).foregroundStyle(.white).lineLimit(1)
+                    .contentTransition(.opacity)
+                    .id(store.tv?.id)
+                    .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),
+                                            removal: .move(edge: .top).combined(with: .opacity)))
+                Image(systemName: "chevron.down.circle.fill")
+                    .font(.system(size: 18, weight: .bold))
+                    .foregroundStyle(Look.dim)
+            }
+            .animation(.spring(response: 0.4, dampingFraction: 0.85), value: store.tv?.id)
+        }
+        .accessibilityLabel("TV: \(store.tv?.name ?? "none"). Switch TVs")
     }
 
     private var quickChips: some View {

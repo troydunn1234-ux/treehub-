@@ -5,11 +5,23 @@ import Security
 /// The TV uses a self-signed certificate, so we trust exactly the certificate it showed
 /// the first time (stored per TV) and nothing else.
 final class VizioClient: NSObject, URLSessionDelegate, @unchecked Sendable {
-    struct TVInfo: Codable, Equatable, Hashable {
+    struct TVInfo: Codable, Equatable, Hashable, Identifiable {
         var host: String
         var port: Int
         var name: String
         var model: String
+        /// From the TV's device info; stays the same when its IP address changes.
+        var serial: String? = nil
+        /// Keychain key of this TV's auth token. Fixed at pairing, so it survives IP changes.
+        var tokenKey: String? = nil
+
+        var id: String { tokenKey ?? "auth.\(host)" }
+
+        /// Same physical TV? Serial wins; otherwise name + model.
+        func isSameTV(as other: TVInfo) -> Bool {
+            if let a = serial, let b = other.serial, !a.isEmpty, !b.isEmpty { return a == b }
+            return name == other.name && model == other.model
+        }
     }
 
     struct AppConfig: Codable, Hashable {
@@ -148,7 +160,8 @@ final class VizioClient: NSObject, URLSessionDelegate, @unchecked Sendable {
         var name = (value?["SETTINGS"] as? [String: Any])?["NAME"] as? String
             ?? value?["NAME"] as? String ?? ""
         if name.isEmpty { name = model }
-        return TVInfo(host: host, port: port, name: name, model: model)
+        let serial = value?["SERIAL_NUMBER"] as? String
+        return TVInfo(host: host, port: port, name: name, model: model, serial: (serial?.isEmpty ?? true) ? nil : serial)
     }
 
     /// Step 1: the TV shows a 4-digit code.
