@@ -33,7 +33,7 @@
 		<string>_clankerr._tcp</string>
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
-	<string>Clicker finds and controls your TV on your Wi-Fi.</string>
+	<string>Clankerr finds and controls your TV on your Wi-Fi.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

@@ -56,6 +56,7 @@
 		7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
 		7930AF457083499037988843 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A56120F979883274950676C /* AppsView.swift */; };
+		7B01831BBC9261B80938F4F1 /* TVSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5189A52DDC1654714EC861 /* TVSwitcher.swift */; };
 		7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
 		7ED0930BBFC58AC2942739F5 /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
 		7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
@@ -223,6 +224,7 @@
 		68CA977CF56EAADE45A4D8DE /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
 		6AB6F40618E7D146443B85E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScripts.swift; sourceTree = "<group>"; };
+		6F5189A52DDC1654714EC861 /* TVSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSwitcher.swift; sourceTree = "<group>"; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		7602D94C88BBCEBD16741BBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
@@ -592,6 +594,7 @@
 				9A56120F979883274950676C /* AppsView.swift */,
 				17C64D37B318F75453FE1CCF /* RemoteView.swift */,
 				C62D8F1DE137F76D14BFBA78 /* SetupView.swift */,
+				6F5189A52DDC1654714EC861 /* TVSwitcher.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1154,6 +1157,7 @@
 				452B55C6051B0156C2215E46 /* SetupView.swift in Sources */,
 				53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */,
 				9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */,
+				7B01831BBC9261B80938F4F1 /* TVSwitcher.swift in Sources */,
 				17652B6477B12D75146F57AB /* VizioClient.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
