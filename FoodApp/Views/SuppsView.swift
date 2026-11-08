@@ -11,6 +11,7 @@ struct SuppsView: View {
     @State private var editing = false
     @State private var celebrate = 0
     @State private var day = Day.key(Date())
+    @State private var sheet: SuppSheet?
 
     private func taken(_ s: Supplement, on d: String) -> SuppDose? { doses.first { $0.suppID == s.id && $0.day == d } }
     private var takenCount: Int { supps.filter { taken($0, on: day) != nil }.count }
@@ -46,6 +47,7 @@ struct SuppsView: View {
             Confetti(trigger: celebrate)
         }
         .sheet(isPresented: $editing) { StackEditor().presentationDetents([.large]) }
+        .sheet(item: $sheet) { SuppEditSheet(target: $0).presentationDetents([.large]) }
         .onAppear { day = Day.key(Date()) }
     }
 
@@ -140,7 +142,8 @@ struct SuppsView: View {
                 VStack(alignment: .leading, spacing: 2) {
                     Text(s.name).font(Ember.font(17, .bold)).foregroundStyle(Ember.cream)
                         .strikethrough(done, color: Ember.dim)
-                    if !s.dose.isEmpty { Text(s.dose).font(Ember.font(13, .medium)).foregroundStyle(Ember.dim) }
+                    let sub = [s.dose, s.withFood ? "with food" : ""].filter { !$0.isEmpty }.joined(separator: " · ")
+                    if !sub.isEmpty { Text(sub).font(Ember.font(13, .medium)).foregroundStyle(Ember.dim) }
                 }
                 Spacer()
                 ZStack {
@@ -160,7 +163,11 @@ struct SuppsView: View {
             .opacity(done ? 0.8 : 1)
         }
         .buttonStyle(Squish())
+        .contextMenu {
+            Button { sheet = .edit(s) } label: { Label("Edit dose & time", systemImage: "slider.horizontal.3") }
+        }
         .accessibilityLabel("\(s.name), \(s.dose)")
+        .accessibilityAction(named: "Edit") { sheet = .edit(s) }
         .accessibilityValue(done ? "Taken" : "Not taken")
     }
 
@@ -202,66 +209,64 @@ struct StackEditor: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \Supplement.order) private var supps: [Supplement]
-    @State private var name = ""
-    @State private var dose = ""
-    @State private var emoji = "💊"
-    @State private var time: SuppTime = .morning
-    private let emojis = ["💊", "☀️", "🐟", "🍊", "⚡️", "💪", "🥤", "🧂", "🥬", "✨", "🔥", "🦠", "🛡️", "🌙", "🌿", "😴", "🧲", "🟡", "🍵", "🧪"]
+    @State private var sheet: SuppSheet?
 
     var body: some View {
         NavigationStack {
             List {
-                Section("Your stack") {
+                Section {
                     if supps.isEmpty { Text("Nothing yet. Add from below.").foregroundStyle(Ember.dim) }
                     ForEach(supps) { s in
-                        HStack(spacing: 12) {
-                            Text(s.emoji).font(.system(size: 24))
-                            VStack(alignment: .leading) {
-                                Text(s.name).font(Ember.font(16, .bold))
-                                Text([s.dose, s.time.rawValue].filter { !$0.isEmpty }.joined(separator: " · "))
-                                    .font(Ember.font(12, .medium)).foregroundStyle(Ember.dim)
-                            }
-                            Spacer()
-                            Menu {
-                                ForEach(SuppTime.allCases) { t in
-                                    Button { s.timeRaw = t.rawValue; try? context.save() } label: { Label(t.rawValue, systemImage: t.symbol) }
+                        Button { sheet = .edit(s) } label: {
+                            HStack(spacing: 12) {
+                                Text(s.emoji).font(.system(size: 24))
+                                VStack(alignment: .leading) {
+                                    Text(s.name).font(Ember.font(16, .bold)).foregroundStyle(Ember.cream)
+                                    Text([s.dose, s.time.rawValue, s.withFood ? "with food" : ""].filter { !$0.isEmpty }.joined(separator: " · "))
+                                        .font(Ember.font(12, .medium)).foregroundStyle(Ember.dim)
                                 }
-                            } label: { Image(systemName: s.time.symbol).foregroundStyle(Ember.orange) }
+                                Spacer()
+                                Image(systemName: "slider.horizontal.3").foregroundStyle(Ember.orange)
+                            }
                         }
+                        .accessibilityHint("Edit dose, unit and time")
                     }
-                    .onDelete { idx in for i in idx { context.delete(supps[i]) }; try? context.save() }
+                    .onDelete { idx in
+                        for i in idx { context.delete(supps[i]) }
+                        try? context.save()
+                        FoodWatchBridge.shared.pushNow()
+                    }
                     .onMove { from, to in
                         var list = supps
                         list.move(fromOffsets: from, toOffset: to)
                         for (i, s) in list.enumerated() { s.order = i }
                         try? context.save()
+                        FoodWatchBridge.shared.pushNow()
                     }
+                } header: {
+                    Text("Your stack")
+                } footer: {
+                    Text("Tap one to change its dose or time. Tap Edit to drag them into order.")
                 }
                 .listRowBackground(Color.white.opacity(0.05))
 
-                Section("Add your own") {
-                    TextField("Name (e.g. Vitamin D3)", text: $name)
-                    TextField("Dose (e.g. 5000 IU, 1 scoop)", text: $dose)
-                    Picker("When", selection: $time) { ForEach(SuppTime.allCases) { Text($0.rawValue).tag($0) } }
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack { ForEach(emojis, id: \.self) { e in
-                            Button { emoji = e } label: {
-                                Text(e).font(.system(size: 24)).padding(6)
-                                    .background(emoji == e ? Ember.orange.opacity(0.3) : .clear, in: RoundedRectangle(cornerRadius: 10))
-                            }.buttonStyle(.plain)
-                        } }
+                Section {
+                    Button { sheet = .new } label: {
+                        Label("Create your own", systemImage: "plus.circle.fill")
+                            .font(Ember.font(16, .bold)).foregroundStyle(Ember.orange)
                     }
-                    Button("Add to stack") { add(name, dose, emoji, time); name = ""; dose = "" }
-                        .font(Ember.font(16, .bold)).foregroundStyle(Ember.orange)
-                        .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
                 .listRowBackground(Color.white.opacity(0.05))
 
                 Section("Quick add") {
                     ForEach(SuppPreset.all.filter { p in !supps.contains { $0.name == p.name } }, id: \.self) { p in
-                        Button { add(p.name, p.dose, p.emoji, p.time) } label: {
+                        Button { sheet = .preset(p) } label: {
                             HStack {
-                                Text(p.emoji); Text(p.name).foregroundStyle(Ember.cream)
+                                Text(p.emoji)
+                                VStack(alignment: .leading, spacing: 1) {
+                                    Text(p.name).foregroundStyle(Ember.cream)
+                                    Text(p.dose).font(Ember.font(12, .medium)).foregroundStyle(Ember.dim)
+                                }
                                 Spacer()
                                 Image(systemName: "plus.circle.fill").foregroundStyle(Ember.orange)
                             }
@@ -277,15 +282,9 @@ struct StackEditor: View {
                 ToolbarItem(placement: .topBarLeading) { EditButton().foregroundStyle(Ember.orange) }
                 ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() }.foregroundStyle(Ember.orange) }
             }
+            .sheet(item: $sheet) { SuppEditSheet(target: $0).presentationDetents([.large]) }
         }
         .preferredColorScheme(.dark)
-    }
-
-    private func add(_ n: String, _ d: String, _ e: String, _ t: SuppTime) {
-        let s = Supplement(name: n.trimmingCharacters(in: .whitespaces), dose: d, emoji: e, time: t, order: (supps.map(\.order).max() ?? -1) + 1)
-        context.insert(s)
-        try? context.save()
-        UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 }
 

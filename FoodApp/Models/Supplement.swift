@@ -28,6 +28,8 @@ final class Supplement {
     var timeRaw: String = SuppTime.morning.rawValue
     var order: Int = 0
     var createdAt: Date = Date()
+    /// Take it with a meal (shown on the checklist).
+    var withFood: Bool = false
     var time: SuppTime { SuppTime(rawValue: timeRaw) ?? .anytime }
 
     init(name: String, dose: String, emoji: String, time: SuppTime, order: Int) {
