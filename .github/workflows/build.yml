@@ -29,7 +29,7 @@ jobs:
       - name: Build both apps for iOS Simulator (no signing)
         run: |
           set -o pipefail
-          for SCHEME in Rootbound Roamr; do
+          for SCHEME in Rootbound Roamr FoodBook NatalOrbit RideQuest; do
             echo "=== $SCHEME ==="
             xcodebuild build \
               -project TreeHub.xcodeproj \
@@ -41,7 +41,7 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               | tee -a build.log | grep -E "error:|warning: |BUILD (SUCCEEDED|FAILED)" || true
           done
-          [ "$(grep -c 'BUILD SUCCEEDED' build.log)" -eq 2 ]
+          [ "$(grep -c 'BUILD SUCCEEDED' build.log)" -eq 5 ]
 
       - name: Show errors
         if: failure()
@@ -57,6 +57,10 @@ jobs:
 
       - name: Run in simulator and screenshot
         run: bash .github/scripts/screenshots.sh
+
+      - name: Run the web apps and screenshot
+        if: always()
+        run: bash .github/scripts/webshots.sh
 
       - name: Upload screenshots
         if: always()
@@ -85,7 +89,7 @@ jobs:
         run: |
           git config user.name "TreeHub CI"
           git config user.email "ci@users.noreply.github.com"
-          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements TrackApp/Info.plist TrackApp/TrackHub.entitlements RootboundWidgets/Info.plist RoamrWidgets/Info.plist
+          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements TrackApp/Info.plist TrackApp/TrackHub.entitlements RootboundWidgets/Info.plist RoamrWidgets/Info.plist WebApps/*/Info.plist
           if git diff --cached --quiet; then
             echo "Project unchanged"
           else
