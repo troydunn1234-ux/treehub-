@@ -38,11 +38,22 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     var cutCount: Int { laneChanges.filter(\.quick).count }
     @ObservationIgnored private let gyro = CMMotionManager()
     @ObservationIgnored private var laneDetector = LaneChangeDetector()
+    /// Road-relative detector (used whenever a map road is matched): ignores curves.
+    @ObservationIgnored private var roadLaneDetector = RoadLaneDetector()
+    @ObservationIgnored private var roadGeo: SpeedLimitService.RoadGeometry?
+    /// How much the road ahead bends over the next ~200 m (degrees, + = left), for the lane HUD.
+    private(set) var roadBend: Double = 0
+    /// The road is curving here (so the HUD can say CURVE instead of guessing lane changes).
+    private(set) var onCurve = false
 
     /// Live lane picture for the lane HUD (drives only). Lane 0 is the leftmost lane going your way.
     /// GPS can't see lanes, so the starting lane is a guess; lane changes from the motion sensors
     /// move it, turns re-anchor it, and you can tap the HUD to correct it.
-    struct LaneShift: Equatable { let id = UUID(); let from: Int; let to: Int; let left: Bool; let quick: Bool; let at: Date }
+    struct LaneShift: Equatable {
+        let id = UUID(); let from: Int; let to: Int; let left: Bool; let quick: Bool; let at: Date
+        /// You tapped the lane yourself (no "LANE CHANGE" pill for these).
+        var manual = false
+    }
     private(set) var laneCount = 2
     private(set) var laneIndex = 1
     private(set) var laneCountEstimated = true
@@ -61,8 +72,34 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         let to = max(0, min(laneCount - 1, i))
         laneAnchored = true
         guard to != laneIndex else { return }
-        lastLaneShift = LaneShift(from: laneIndex, to: to, left: to < laneIndex, quick: false, at: Date())
+        lastLaneShift = LaneShift(from: laneIndex, to: to, left: to < laneIndex, quick: false, at: Date(), manual: true)
         laneIndex = to
+    }
+
+    /// A confirmed lane change from either detector.
+    private func recordLaneChange(_ e: LaneChangeDetector.Event) {
+        guard let here = points.last else { return }
+        laneChanges.append(LaneChange(t: e.t, lat: here.lat, lng: here.lng, left: e.left, speed: e.speed, quick: e.quick))
+        applyLaneChange(left: e.left, quick: e.quick)
+        if e.quick { UIImpactFeedbackGenerator(style: .rigid).impactOccurred(intensity: 0.6) }
+    }
+
+    /// New matched road shape from the latest fix.
+    private func updateRoadShape(_ g: SpeedLimitService.RoadGeometry?) {
+        let isNew = g != nil && g?.at != roadGeo?.at
+        roadGeo = g
+        guard let g else {
+            if roadBend != 0 { roadBend = 0 }
+            if onCurve { onCurve = false }
+            return
+        }
+        let bend = (-LaneMath.signedAngle(g.bearingAhead200, g.bearing)).rounded()
+        if bend != roadBend { roadBend = bend }
+        let curving = abs(g.curvatureWide) > 1.0 / 700 || abs(bend) >= 12
+        if curving != onCurve { onCurve = curving }
+        if isNew, let e = roadLaneDetector.addFix(t: g.at.timeIntervalSince1970, crossTrack: g.crossTrack, accuracy: g.accuracy) {
+            recordLaneChange(e)
+        }
     }
 
     private func applyLaneChange(left: Bool, quick: Bool) {
@@ -110,6 +147,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         var d = (c - old.c).truncatingRemainder(dividingBy: 360)
         if d > 180 { d -= 360 } else if d < -180 { d += 360 }
         guard abs(d) > 60 else { return }
+        // Still lined up with the matched road? Then the road bent (a sweeping curve or
+        // interchange), you didn't turn off it, so keep your lane.
+        if let g = roadGeo, Date().timeIntervalSince(g.at) < 3, abs(LaneMath.signedAngle(c, g.bearing)) < 25 { return }
         laneTurnCooldown = t + 8
         laneCourses.removeAll()
         laneIndex = d > 0 ? laneCount - 1 : 0   // right turn → right lane, left turn → left lane
@@ -451,6 +491,10 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         limits.reset()
         laneChanges = []
         laneDetector = LaneChangeDetector()
+        roadLaneDetector = RoadLaneDetector()
+        roadGeo = nil
+        roadBend = 0
+        onCurve = false
         resetLanes()
     }
 
@@ -470,13 +514,21 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
             let yaw = -(r.x * g.x + r.y * g.y + r.z * g.z) / gl
             let t = Date().timeIntervalSince1970
             let a = m.userAcceleration
-            if (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot() > 0.35 { self.laneDetector.handled(at: t) }
-            if let e = self.laneDetector.add(t: t, yawRate: yaw, speed: self.currentSpeed, course: self.course),
-               let here = self.points.last {
-                self.laneChanges.append(LaneChange(t: e.t, lat: here.lat, lng: here.lng, left: e.left, speed: e.speed, quick: e.quick))
-                self.applyLaneChange(left: e.left, quick: e.quick)
-                if e.quick { UIImpactFeedbackGenerator(style: .rigid).impactOccurred(intensity: 0.6) }
+            if (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot() > 0.35 {
+                self.laneDetector.handled(at: t)
+                self.roadLaneDetector.handled(at: t)
             }
+            let event: LaneChangeDetector.Event?
+            if let g = self.roadGeo, Date().timeIntervalSince(g.at) < 3 {
+                // Matched road: judge the swerve relative to the road so curves don't count.
+                let he: Double? = self.course >= 0 ? LaneMath.signedAngle(self.course, g.bearing) : nil
+                event = self.roadLaneDetector.add(RoadLaneDetector.Sample(t: t, yawRate: yaw, speed: self.currentSpeed,
+                                                                         curvature: g.curvature, curvatureWide: g.curvatureWide,
+                                                                         headingError: he))
+            } else {
+                event = self.laneDetector.add(t: t, yawRate: yaw, speed: self.currentSpeed, course: self.course)
+            }
+            if let e = event { self.recordLaneChange(e) }
         }
     }
 
@@ -545,6 +597,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
                 self.speedLimit = l
                 if let l { self.updateLaneCount(l.lanes, estimated: l.lanesEstimated) }
             }
+            updateRoadShape(limits.geometry)
         }
         lastAccepted = loc
         var pt = RoutePoint(loc)

@@ -243,3 +243,63 @@ final class LaneChangeTests: XCTestCase {
         XCTAssertTrue(events.isEmpty)
     }
 }
+
+final class RoadLaneTests: XCTestCase {
+    /// Cycloid lane change: W meters sideways in T seconds starting at t0 (+ = left).
+    private func laneChangeYaw(_ t: Double, t0: Double, T: Double, W: Double, v: Double) -> Double {
+        guard t >= t0, t <= t0 + T else { return 0 }
+        return W / (v * T) * (2 * .pi / T) * sin(2 * .pi * (t - t0) / T)
+    }
+
+    /// 20 Hz gyro + 1 Hz GPS cross-track (centered on 0 before, `shiftAfter` after `shiftAt`).
+    private func run(seconds: Double, v: Double = 30, curvature: (Double) -> Double,
+                     extraYaw: (Double) -> Double, shiftAt: Double = .infinity, shiftAfter: Double = 0) -> [LaneChangeDetector.Event] {
+        var d = RoadLaneDetector()
+        var out: [LaneChangeDetector.Event] = []
+        var t = 0.0, nextFix = 0.0
+        while t < seconds {
+            let k = curvature(t)
+            if let e = d.add(RoadLaneDetector.Sample(t: t, yawRate: v * k + extraYaw(t) + 0.004, speed: v,
+                                                     curvature: k, curvatureWide: k, headingError: 0)) { out.append(e) }
+            if t >= nextFix {
+                if let e = d.addFix(t: t, crossTrack: t > shiftAt ? shiftAfter : 0, accuracy: 6) { out.append(e) }
+                nextFix += 1
+            }
+            t += 0.05
+        }
+        return out
+    }
+
+    private func bend(_ t: Double) -> Double {
+        if t > 10 && t < 15 { return (t - 10) / 5 / 500 }
+        if t >= 15 && t < 30 { return 1.0 / 500 }
+        if t >= 30 && t < 35 { return (35 - t) / 5 / 500 }
+        return 0
+    }
+
+    func testSteadyCurveIsNotALaneChange() {
+        XCTAssertTrue(run(seconds: 45, curvature: bend, extraYaw: { _ in 0 }).isEmpty)
+    }
+
+    func testStraightRoadLaneChangeCountsOnce() {
+        let e = run(seconds: 30, curvature: { _ in 0 }, extraYaw: { self.laneChangeYaw($0, t0: 10, T: 4, W: 3.6, v: 30) })
+        XCTAssertEqual(e.count, 1)
+        XCTAssertEqual(e.first?.left, true)
+        XCTAssertEqual(e.first?.quick, false)
+    }
+
+    func testLaneChangeInACurveNeedsGPSToAgree() {
+        let yaw: (Double) -> Double = { self.laneChangeYaw($0, t0: 20, T: 3, W: -3.6, v: 30) }
+        XCTAssertEqual(run(seconds: 35, curvature: bend, extraYaw: yaw, shiftAt: 23.5, shiftAfter: -3.5).count, 1)
+        XCTAssertTrue(run(seconds: 35, curvature: bend, extraYaw: yaw).isEmpty)
+    }
+
+    func testCurvatureSign() {
+        // North then bending west (left).
+        var pts: [LaneMath.Vec] = []
+        for i in 0..<40 { let a = Double(i) * 0.02; pts.append(LaneMath.Vec(x: -300 * (1 - cos(a)), y: 300 * sin(a))) }
+        let line = LaneMath.Polyline(points: pts)
+        XCTAssertGreaterThan(LaneMath.curvature(line, around: line.length / 2, halfSpan: 40), 0)
+        XCTAssertEqual(LaneMath.signedAngle(350, 10), -20, accuracy: 1e-9)
+    }
+}

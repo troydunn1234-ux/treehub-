@@ -27,6 +27,8 @@ struct TrackView: View {
     @State private var mapHeading: Double = 0
     @State private var mapPitch: Double = 0
     @State private var probe: RoutePoint?
+    @State private var nav = Navigator.shared
+    @State private var showDirections = false
 
     var body: some View {
         NavigationStack {
@@ -40,6 +42,18 @@ struct TrackView: View {
             }
             .sheet(item: $justFinished) { a in
                 NavigationStack { ActivityDetailView(activity: a, isNew: true) }
+            }
+            .sheet(isPresented: $showDirections) {
+                DirectionsSheet(nav: nav, origin: tracker.points.last?.coordinate, onGo: startNavigation)
+                    .presentationDragIndicator(.visible)
+            }
+            .onAppear {
+                // Screenshots (-demo -nav): follow a fake route along the demo drive.
+                if Navigator.demo, nav.phase == .idle {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        Task { await nav.plan(to: Navigator.demoPlace, from: nil); startNavigation() }
+                    }
+                }
             }
         }
     }
@@ -122,6 +136,23 @@ struct TrackView: View {
             .padding(.horizontal, Theme.pad)
             .padding(.bottom, 8)
         }
+        #if TRACK_APP
+        .overlay(alignment: .topTrailing) {
+            DirectionsButton { showDirections = true }
+                .padding(.top, 58).padding(.trailing, 14)
+        }
+        #endif
+    }
+
+    /// Go from the directions sheet: start recording if needed, then follow the route.
+    private func startNavigation() {
+        if !tracker.isActive {
+            chosenKind = nav.mode.activity
+            tracker.start(kind: nav.mode.activity)
+            camera = .userLocation(followsHeading: false, fallback: .automatic)
+        }
+        chaseCam = true
+        withAnimation(.snappy) { nav.go() }
     }
 
     private var deniedCard: some View {
@@ -303,6 +334,9 @@ struct TrackView: View {
         }
     }
 
+    /// Room the maneuver banner takes at the top while navigating.
+    private let navBannerHeight: CGFloat = 132
+
     /// GTA-style chase camera: sits behind you, tilted, turned to your direction of travel,
     /// and pulls back the faster you go.
     private func followIfNeeded() {
@@ -332,6 +366,9 @@ struct TrackView: View {
             MapReader { proxy in
             Map(position: $camera) {
                 let coords = tracker.points.map(\.coordinate)
+                if nav.isNavigating, let r = nav.active {
+                    NavRouteContent(route: r, traveledIndex: nav.traveledIndex, destination: nav.destination)
+                }
                 if let p = probe {
                     Annotation("", coordinate: p.coordinate, anchor: .bottom) { SpeedCallout(point: p) }
                         .annotationTitles(.hidden)
@@ -399,7 +436,10 @@ struct TrackView: View {
             }
             .onTapGesture { pt in showProbe(RouteProbe.nearest(tracker.points, tap: pt, proxy: proxy)) }
             }
-            .onChange(of: tracker.points.count) { _, _ in followIfNeeded() }
+            .onChange(of: tracker.points.count) { _, _ in
+                followIfNeeded()
+                if let here = tracker.points.last?.coordinate { nav.update(here, speed: tracker.currentSpeed) }
+            }
             .onAppear { followIfNeeded() }
             .overlay { SpeedFX(speed: tracker.kind == .drive || tracker.kind == .bike ? tracker.currentSpeed : 0,
                                overLimit: tracker.isOverLimit).allowsHitTesting(false).ignoresSafeArea() }
@@ -416,6 +456,9 @@ struct TrackView: View {
                             .background(chaseCam ? AnyShapeStyle(Theme.glow) : AnyShapeStyle(.ultraThinMaterial), in: Circle())
                     }
                     .accessibilityLabel(chaseCam ? "Chase camera on" : "Chase camera off")
+                    #if TRACK_APP
+                    if !nav.isNavigating { DirectionsButton { showDirections = true } }
+                    #endif
                     if tracker.kind == .drive {
                         DriveHUD(speed: tracker.currentSpeed, limit: tracker.speedLimit, over: tracker.isOverLimit)
                             .transition(.scale.combined(with: .opacity))
@@ -423,18 +466,33 @@ struct TrackView: View {
                     }
                 }
                 .padding(.trailing, 14)
-                .padding(.top, 58)
+                .padding(.top, nav.isNavigating ? 58 + navBannerHeight : 58)
             }
             .overlay(alignment: .topLeading) {
                 if tracker.kind == .drive && tracker.state != .idle {
                     LaneHUD(laneCount: tracker.laneCount, laneIndex: tracker.laneIndex, estimated: true,
                             shift: tracker.lastLaneShift, speed: tracker.state == .recording ? tracker.currentSpeed : 0,
+                            bend: tracker.roadBend, curving: tracker.onCurve,
                             tint: tracker.speedLimit.map { SpeedBand.of(speed: tracker.currentSpeed, limit: $0.mps).color } ?? Theme.glow,
                             onSetLane: { tracker.setLane($0) })
-                        .padding(.leading, 14).padding(.top, 58)
+                        .scaleEffect(nav.isNavigating ? 0.8 : 1, anchor: .topLeading)
+                        .padding(.leading, 14).padding(.top, nav.isNavigating ? 58 + navBannerHeight : 58)
                         .transition(.move(edge: .leading).combined(with: .opacity))
                 }
             }
+            .overlay(alignment: .top) {
+                if nav.phase == .navigating {
+                    NavBanner(nav: nav)
+                        .padding(.top, 54)
+                        .transition(.move(edge: .top).combined(with: .opacity))
+                }
+            }
+            .overlay {
+                if nav.phase == .arrived {
+                    NavArrivalCard(nav: nav) { confirmFinish = true }
+                }
+            }
+            .animation(.snappy, value: nav.phase)
             .ignoresSafeArea(edges: .top)
 
             VStack(spacing: 14) {

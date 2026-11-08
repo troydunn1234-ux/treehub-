@@ -10,6 +10,7 @@ struct LaneChange: Codable, Hashable {
     var quick: Bool        // a fast "cut": whole swerve in under 2.5 s above ~45 mph
 }
 
+/// Fallback used when no map road is matched (RoadLaneDetector is used when one is).
 /// Spots lane changes from the phone's rotation. GPS can't see lanes (it's off by a car width
 /// or more), but a lane change is a quick S-shaped swerve: the car yaws one way, then back the
 /// other way, and ends up pointing the same direction. A curve or a turn yaws one way only.
@@ -25,6 +26,8 @@ struct LaneChangeDetector {
     var lobeMin = 0.35, lobeMax = 3.0
     var maxGap = 3.0               // seconds between the two halves
     var maxHeadingChange = 8.0     // degrees: more than this is a curve, not a lane change
+    var maxPeakRatio = 2.0         // both halves of the S about equally strong (curves aren't)
+    var minSpacing = 6.0           // seconds between reported changes (no map to check against)
 
     private struct Lobe { var sign: Int; var start: Double; var end: Double; var peak: Double }
     private var current: Lobe?
@@ -32,6 +35,7 @@ struct LaneChangeDetector {
     private var history: [(t: Double, course: Double)] = []
     private var suppressedUntil = 0.0
     private var smoothed = 0.0
+    private var lastEventT = -Double.infinity
 
     /// Ignore a couple of seconds after the phone itself was moved around (picked up, bumped).
     mutating func handled(at t: Double) {
@@ -69,8 +73,12 @@ struct LaneChangeDetector {
         guard lobe.peak >= lobePeak, dur >= lobeMin, dur <= lobeMax else { return nil }
         if let first = lastLobe, first.sign == -lobe.sign, lobe.start - first.end <= maxGap, headingSteady(from: first.start - 1, to: lobe.end + 0.5) {
             lastLobe = nil
+            let ratio = max(first.peak, lobe.peak) / max(0.001, min(first.peak, lobe.peak))
+            guard ratio <= maxPeakRatio, t - lastEventT >= minSpacing else { return nil }
+            lastEventT = t
             // First swerve to the left (+) means moving into the left lane.
-            return Event(t: lobe.end, left: first.sign > 0, quick: lobe.end - first.start < 2.5 && speed > 20, speed: speed)
+            // Quick = under ~2 s for the whole swerve (measured a bit long because of smoothing) above 45 mph.
+            return Event(t: lobe.end, left: first.sign > 0, quick: lobe.end - first.start < 2.4 && speed > 20.1, speed: speed)
         }
         lastLobe = lobe
         return nil

@@ -21,6 +21,22 @@ final class SpeedLimitService {
         var lanesEstimated = true
     }
 
+    /// The shape of the matched road around you, in your direction of travel.
+    /// Bearings are compass degrees (0 = north, clockwise). Curvature is radians per meter, + = bending left.
+    struct RoadGeometry: Equatable {
+        var at: Date
+        var bearing: Double            // road direction where you are
+        var bearingAhead100: Double
+        var bearingAhead200: Double
+        var curvature: Double          // local, over about ±40 m
+        var curvatureWide: Double      // largest bend magnitude over the 150 m behind and ahead (signed)
+        var crossTrack: Double         // meters left (+) / right (-) of the road's centerline
+        var accuracy: Double           // GPS horizontal accuracy of the fix it came from
+    }
+
+    /// Updated on every matched fix (nil when no road matched).
+    private(set) var geometry: RoadGeometry?
+
     // MARK: Tiles
 
     private struct Road: Codable, Sendable {
@@ -128,7 +144,7 @@ final class SpeedLimitService {
         let c = loc.coordinate
         let k = TileKey(c)
         let course = loc.course >= 0 && speed > 3 ? loc.course : -1
-        var best: (score: Double, road: Road, forward: Bool)?
+        var best: (score: Double, road: Road, forward: Bool, seg: Int, t: Double)?
         let mPerLat = 111_320.0, mPerLng = 111_320.0 * cos(c.latitude * .pi / 180)
         for ty in (k.y - 1)...(k.y + 1) {
             for tx in (k.x - 1)...(k.x + 1) {
@@ -160,13 +176,14 @@ final class SpeedLimitService {
                         }
                         // Fast → favor bigger roads; slow → don't.
                         if speed > 22 && (r.hw == "residential" || r.hw == "service") { score += 25 }
-                        if best == nil || score < best!.score { best = (score, r, forward) }
+                        if best == nil || score < best!.score { best = (score, r, forward, i, t) }
                     }
                 }
             }
         }
-        guard let hit = best else { return nil }
+        guard let hit = best else { geometry = nil; return nil }
         let b = hit.road
+        geometry = Self.roadShape(of: b, seg: hit.seg, t: hit.t, forward: hit.forward, at: loc)
         let (lanes, guessed) = Self.lanesYourWay(b, forward: hit.forward)
         return Limit(mps: b.mps, estimated: b.est, road: b.name, lanes: lanes, lanesEstimated: guessed)
     }
@@ -185,6 +202,35 @@ final class SpeedLimitService {
         case "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link", "living_street": return (1, true)
         default: return (1, true)
         }
+    }
+
+    // MARK: Road shape
+
+    /// Walks the matched road in your direction of travel to get its bearing here and ahead,
+    /// how much it bends, and how far you are from its centerline.
+    private static func roadShape(of r: Road, seg: Int, t: Double, forward: Bool, at loc: CLLocation) -> RoadGeometry? {
+        let c = loc.coordinate
+        let mPerLat = 111_320.0, mPerLng = 111_320.0 * cos(c.latitude * .pi / 180)
+        var pts: [LaneMath.Vec] = zip(r.lat, r.lng).map { pair in LaneMath.Vec(x: (pair.1 - c.longitude) * mPerLng, y: (pair.0 - c.latitude) * mPerLat) }
+        guard pts.count > 1 else { return nil }
+        var pos = Double(seg) + t
+        if !forward {
+            pts.reverse()
+            pos = Double(pts.count - 1) - pos
+        }
+        let line = LaneMath.Polyline(points: pts)
+        guard let here = line.locate(index: pos) else { return nil }
+        let b0 = line.bearing(at: here)
+        let b100 = line.bearing(at: here + 100), b200 = line.bearing(at: here + 200)
+        let k = LaneMath.curvature(line, around: here, halfSpan: 40)
+        var wide = 0.0
+        for off in stride(from: -150.0, through: 150.0, by: 25) {
+            let kk = LaneMath.curvature(line, around: here + off, halfSpan: 40)
+            if abs(kk) > abs(wide) { wide = kk }
+        }
+        let xt = line.crossTrack(of: LaneMath.Vec(x: 0, y: 0), at: here)
+        return RoadGeometry(at: loc.timestamp, bearing: b0, bearingAhead100: b100, bearingAhead200: b200,
+                            curvature: k, curvatureWide: wide, crossTrack: xt, accuracy: loc.horizontalAccuracy)
     }
 
     // MARK: Download
