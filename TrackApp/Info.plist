@@ -27,7 +27,7 @@
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Roamr does not write to Apple Health; it only reads your workouts and heart data.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Roamr keeps recording your route while your phone is locked.</string>
+	<string>Roamr keeps recording your route while your phone is locked, and notices when you start driving so it can offer to track the drive.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Roamr uses your location to record the route of your walks, runs, hikes, rides and drives.</string>
 	<key>NSMotionUsageDescription</key>

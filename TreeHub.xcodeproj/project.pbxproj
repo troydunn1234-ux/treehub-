@@ -67,6 +67,7 @@
 		84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
+		8F0D4E1477121671784B6FFB /* DriveDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84020FAF6BBD9C477A647FFD /* DriveDetector.swift */; };
 		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE36C7584CE358A1400B2C5 /* Assets.xcassets */; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
@@ -232,6 +233,7 @@
 		79C9BD53DFB9DFF3238E80D8 /* PCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCView.swift; sourceTree = "<group>"; };
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
 		80ACEC3C05F648903A54E16B /* seed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed.json; sourceTree = "<group>"; };
+		84020FAF6BBD9C477A647FFD /* DriveDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveDetector.swift; sourceTree = "<group>"; };
 		8EF9FA8F8D82A9B59632D6F3 /* Look.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Look.swift; sourceTree = "<group>"; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
@@ -607,6 +609,7 @@
 		C1D167C953C6D4147EC64727 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				84020FAF6BBD9C477A647FFD /* DriveDetector.swift */,
 				1466841354823062CD97D858 /* TrackDemo.swift */,
 				76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */,
 			);
@@ -1185,6 +1188,7 @@
 				07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */,
 				5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */,
 				F0DE5AE8600021162A52BCD0 /* AppInfo.swift in Sources */,
+				8F0D4E1477121671784B6FFB /* DriveDetector.swift in Sources */,
 				ED1DDC6DAB604700D6A73466 /* DriveEffects.swift in Sources */,
 				DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */,
 				C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */,
