@@ -36,6 +36,8 @@ targets:
     info:
       path: TreeHub/Info.plist
       properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Rootbound
         NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
@@ -82,6 +84,8 @@ targets:
     info:
       path: TrackApp/Info.plist
       properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Roamr
         NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
@@ -117,6 +121,8 @@ targets:
     info:
       path: RootboundWidgets/Info.plist
       properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Rootbound
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
@@ -135,6 +141,8 @@ targets:
     info:
       path: RoamrWidgets/Info.plist
       properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Roamr
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
