@@ -32,10 +32,14 @@ for info in infos:
     decl, err = call(f"/v1/appInfos/{info['id']}/ageRatingDeclaration")
     if err: print("age rating read failed", err); continue
     did = decl["data"]["id"]; ok = 0
+    print("current:", json.dumps(decl["data"]["attributes"]))
+    _, err = call(f"/v1/ageRatingDeclarations/{did}", "PATCH", {"data": {"type": "ageRatingDeclarations", "id": did, "attributes": answers}})
+    print("all-at-once:", err or "OK")
+    if not err: continue
     for k, v in answers.items():
         _, err = call(f"/v1/ageRatingDeclarations/{did}", "PATCH",
                       {"data": {"type": "ageRatingDeclarations", "id": did, "attributes": {k: v}}})
-        if err: print(f"  skip {k}: {err[:120]}")
+        if err: print(f"  skip {k}: {err[:300]}")
         else: ok += 1
     print(f"Age rating: answered {ok} questions (all none/no) on appInfo {info['id']}")
 

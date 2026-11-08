@@ -4,7 +4,7 @@ import SwiftUI
 struct AppsView: View {
     @Environment(TVStore.self) private var store
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var editing = false
+    @State private var editing = ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-picker")
     @State private var sheet: TVSheet? = (ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-switcher")) ? .switcher : nil
     @State private var launching: String?
     @State private var appeared = false
@@ -101,7 +101,7 @@ struct AppsView: View {
             if let b = beam { BeamView(beam: b).id(b.id).allowsHitTesting(false) }
         }
         .coordinateSpace(name: "apps")
-        .sheet(isPresented: $editing) { AppPicker().environment(store) }
+        .fullScreenCover(isPresented: $editing) { AppPicker().environment(store) }
         .tvSheets($sheet, store: store)
         .onAppear { appeared = true }
     }
@@ -447,44 +447,5 @@ private struct PressReader: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .onChange(of: configuration.isPressed) { _, p in pressed = p }
-    }
-}
-
-/// Pick which apps show up on the main screen.
-struct AppPicker: View {
-    @Environment(TVStore.self) private var store
-    @Environment(\.dismiss) private var dismiss
-    @State private var query = ""
-
-    var body: some View {
-        NavigationStack {
-            List {
-                let apps = store.catalog.filter { query.isEmpty || $0.name.localizedCaseInsensitiveContains(query) }
-                ForEach(apps) { app in
-                    Button { store.toggleFavorite(app) } label: {
-                        HStack(spacing: 12) {
-                            RoundedRectangle(cornerRadius: 11, style: .continuous)
-                                .fill(LinearGradient(colors: app.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                                .overlay(Text(String(app.name.prefix(1))).font(Look.display(17)).foregroundStyle(.white.opacity(0.9)))
-                                .overlay(RoundedRectangle(cornerRadius: 11, style: .continuous).strokeBorder(.white.opacity(0.2), lineWidth: 1))
-                                .frame(width: 40, height: 40)
-                            Text(app.name).font(Look.font(16, .bold)).foregroundStyle(.white)
-                            Spacer()
-                            Image(systemName: store.favorites.contains(app.name) ? "checkmark.circle.fill" : "plus.circle")
-                                .font(.system(size: 20))
-                                .foregroundStyle(store.favorites.contains(app.name) ? Look.cyan : Look.dim)
-                        }
-                    }
-                    .listRowBackground(Color.white.opacity(0.05))
-                    .accessibilityLabel(store.favorites.contains(app.name) ? "\(app.name), in your apps" : "Add \(app.name)")
-                }
-            }
-            .scrollContentBackground(.hidden)
-            .background(AuroraBackground())
-            .searchable(text: $query, prompt: "Search apps")
-            .navigationTitle("My apps")
-            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
-        }
-        .preferredColorScheme(.dark)
     }
 }
