@@ -191,7 +191,7 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
     func webView(_ webView: WKWebView, decidePolicyFor action: WKNavigationAction,
                  decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         guard let url = action.request.url else { decisionHandler(.allow); return }
-        if url.scheme == "app" || url.scheme == "about" || url.scheme == "blob" || url.scheme == "data" || !action.targetFrame.isMainFrame {
+        if url.scheme == "app" || url.scheme == "about" || url.scheme == "blob" || url.scheme == "data" || !(action.targetFrame?.isMainFrame ?? true) {
             decisionHandler(.allow)
         } else {
             UIApplication.shared.open(url)
