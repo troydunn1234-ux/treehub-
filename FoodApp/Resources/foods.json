@@ -2274,5 +2274,174 @@
    "seltzer",
    "alcohol"
   ]
+ },
+ {
+  "name": "Roasted potatoes",
+  "serving": "1 cup, roasted in oil",
+  "cal": 200,
+  "p": 4,
+  "c": 30,
+  "f": 8,
+  "caf": 0,
+  "tags": [
+   "potato",
+   "roasted",
+   "side"
+  ]
+ },
+ {
+  "name": "Asparagus",
+  "serving": "1 cup cooked",
+  "cal": 40,
+  "p": 4.3,
+  "c": 7.4,
+  "f": 0.4,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable"
+  ]
+ },
+ {
+  "name": "Roasted asparagus",
+  "serving": "1 cup, roasted in oil",
+  "cal": 80,
+  "p": 4.3,
+  "c": 7.4,
+  "f": 4.5,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable",
+   "roasted"
+  ]
+ },
+ {
+  "name": "Mixed veggies",
+  "serving": "1 cup cooked",
+  "cal": 80,
+  "p": 4,
+  "c": 16,
+  "f": 0.5,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable"
+  ]
+ },
+ {
+  "name": "Black beans",
+  "serving": "1/2 cup cooked",
+  "cal": 114,
+  "p": 7.6,
+  "c": 20,
+  "f": 0.5,
+  "caf": 0,
+  "tags": [
+   "beans",
+   "legume"
+  ]
+ },
+ {
+  "name": "Pinto beans",
+  "serving": "1/2 cup cooked",
+  "cal": 122,
+  "p": 7.7,
+  "c": 22,
+  "f": 0.6,
+  "caf": 0,
+  "tags": [
+   "beans",
+   "legume"
+  ]
+ },
+ {
+  "name": "Brussels sprouts",
+  "serving": "1 cup roasted",
+  "cal": 90,
+  "p": 4,
+  "c": 12,
+  "f": 4,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable",
+   "roasted"
+  ]
+ },
+ {
+  "name": "Zucchini",
+  "serving": "1 cup cooked",
+  "cal": 27,
+  "p": 2,
+  "c": 5,
+  "f": 0.5,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable"
+  ]
+ },
+ {
+  "name": "Cauliflower",
+  "serving": "1 cup cooked",
+  "cal": 29,
+  "p": 2.3,
+  "c": 5,
+  "f": 0.6,
+  "caf": 0,
+  "tags": [
+   "veggie",
+   "vegetable"
+  ]
+ },
+ {
+  "name": "Sirloin steak",
+  "serving": "6 oz cooked",
+  "cal": 340,
+  "p": 50,
+  "c": 0,
+  "f": 14,
+  "caf": 0,
+  "tags": [
+   "beef",
+   "steak"
+  ]
+ },
+ {
+  "name": "Pork tenderloin",
+  "serving": "4 oz cooked",
+  "cal": 160,
+  "p": 30,
+  "c": 0,
+  "f": 4,
+  "caf": 0,
+  "tags": [
+   "pork"
+  ]
+ },
+ {
+  "name": "Turkey burger patty",
+  "serving": "4 oz cooked",
+  "cal": 200,
+  "p": 22,
+  "c": 0,
+  "f": 12,
+  "caf": 0,
+  "tags": [
+   "turkey"
+  ]
+ },
+ {
+  "name": "Hard boiled eggs",
+  "serving": "2 large",
+  "cal": 144,
+  "p": 12.6,
+  "c": 0.8,
+  "f": 9.6,
+  "caf": 0,
+  "tags": [
+   "eggs"
+  ]
  }
 ]

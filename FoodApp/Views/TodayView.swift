@@ -61,7 +61,7 @@ struct TodayView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { demoSnap = DemoSnap.result }
             }
         }
-        .sheet(isPresented: $editingGoal) { GoalSheet(goal: $goal).presentationDetents([.height(320)]) }
+        .sheet(isPresented: $editingGoal) { GoalSheet(goal: $goal).presentationDetents([.height(320), .large]) }
         .preferredColorScheme(.dark)
     }
 
@@ -304,10 +304,61 @@ struct GoalSheet: View {
             Slider(value: $goal, in: 1200...4500, step: 50).tint(Ember.orange)
                 .onChange(of: goal) { _, _ in UISelectionFeedbackGenerator().selectionChanged() }
             Button("Done") { dismiss() }.font(Ember.font(17, .bold)).foregroundStyle(Ember.orange)
+            SmartPhotoSettings().padding(.top, 24)
         }
         .padding(28)
+        .frame(maxHeight: .infinity, alignment: .top)
         .presentationBackground(Ember.bg)
         .animation(.snappy, value: goal)
+    }
+}
+
+/// "Smart photo (AI)": paste an Anthropic API key so meal photos are read by Claude.
+struct SmartPhotoSettings: View {
+    @State private var hasKey = FoodAI.hasKey
+    @State private var message: String?
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label("Smart photo (AI)", systemImage: "sparkles").font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
+            Text(hasKey
+                 ? "On. Meal photos are read by Claude, which lists each item on your plate with portions. About 1¢ per photo, billed to your Anthropic account."
+                 : "Optional. Paste an Anthropic API key and meal photos get read by Claude: every item on the plate, with portions. About 1¢ per photo, billed to your Anthropic account. Without it, Food Book guesses on your phone for free.")
+                .font(Ember.font(13, .medium)).foregroundStyle(Ember.dim)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                Button {
+                    let pasted = UIPasteboard.general.string ?? ""
+                    if FoodAI.save(key: pasted) {
+                        hasKey = true; message = "Key saved on this phone."
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    } else {
+                        message = "Copy your key (starts with sk-ant-) first, then tap Paste key."
+                        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                    }
+                } label: {
+                    Label(hasKey ? "Replace key" : "Paste key", systemImage: "doc.on.clipboard")
+                        .font(Ember.font(15, .heavy)).foregroundStyle(.white)
+                        .padding(.horizontal, 16).frame(height: 44)
+                        .background(Ember.fire, in: Capsule())
+                }
+                .buttonStyle(Squish())
+                if hasKey {
+                    Button(role: .destructive) {
+                        FoodAI.removeKey(); hasKey = false; message = "AI turned off."
+                    } label: {
+                        Text("Turn off").font(Ember.font(15, .heavy)).foregroundStyle(Ember.pink)
+                            .padding(.horizontal, 16).frame(height: 44)
+                            .background(Ember.card, in: Capsule())
+                    }
+                    .buttonStyle(Squish())
+                }
+            }
+            if let message { Text(message).font(Ember.font(12, .semibold)).foregroundStyle(Ember.orange) }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Ember.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 }
 

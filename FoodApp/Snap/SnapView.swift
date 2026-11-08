@@ -212,8 +212,22 @@ struct SnapView: View {
         var failure: String?
         switch mode {
         case .meal:
-            let r = await FoodVision.recognizeMeal(img)
-            next = SnapResult(image: img, mode: .meal, guesses: r.guesses, topLabel: r.topLabel)
+            var note: String?
+            if FoodAI.hasKey {
+                status = "AI is reading your plate…"
+                if let items = try? await FoodAI.readPlate(img), !items.isEmpty {
+                    let local = await FoodVision.recognizeMeal(img)
+                    next = SnapResult(image: img, mode: .meal, guesses: local.alternatives, topLabel: nil,
+                                      plate: items, ai: true)
+                } else {
+                    note = "AI unavailable, guessed on your phone"
+                }
+            }
+            if next == nil {
+                let r = await FoodVision.recognizeMeal(img)
+                next = SnapResult(image: img, mode: .meal, guesses: r.alternatives, topLabel: r.topLabel,
+                                  plate: r.plate, note: note)
+            }
         case .label:
             if let facts = await FoodVision.readLabel(img) {
                 next = SnapResult(image: img, mode: .label, guesses: [FoodGuess(

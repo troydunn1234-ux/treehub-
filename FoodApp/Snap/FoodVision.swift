@@ -42,6 +42,59 @@ struct SnapResult: Identifiable {
     var guesses: [FoodGuess]
     /// The strongest image label, used to learn when you pick a different food.
     var topLabel: String?
+    /// Items already on the plate when the sheet opens (several for a mixed meal).
+    var plate: [FoodGuess] = []
+    /// True when the Claude photo reader made the plate.
+    var ai: Bool = false
+    /// Small note under the photo, e.g. "AI unavailable, guessed on your phone".
+    var note: String? = nil
+}
+
+/// Rough food groups, for the picker tabs and for building a plate (one protein, one side, one veggie).
+enum FoodGroup: String, CaseIterable, Identifiable {
+    case protein = "Protein", sides = "Carbs & sides", veggies = "Veggies & fruit", drinks = "Drinks", snacks = "Snacks", other = "Meals"
+    var id: String { rawValue }
+
+    var emoji: String {
+        switch self {
+        case .protein: return "🥩"
+        case .sides: return "🥔"
+        case .veggies: return "🥦"
+        case .drinks: return "🥤"
+        case .snacks: return "🍪"
+        case .other: return "🍽️"
+        }
+    }
+
+    static func of(_ q: QuickFood) -> FoodGroup { of(name: q.name, tags: q.tags) }
+
+    static func of(name: String, tags: [String] = []) -> FoodGroup {
+        let t = Set(tags.map { $0.lowercased() })
+        let n = name.lowercased()
+        // Whole words only ("steak" must not match "tea", "popcorn" must not match "pop").
+        let words = Set(n.split { !$0.isLetter }.map { String($0) }.flatMap { [$0, $0.hasSuffix("s") ? String($0.dropLast()) : $0] })
+        func has(_ list: [String]) -> Bool {
+            list.contains { w in t.contains(w) || (w.contains(" ") ? n.contains(w) : words.contains(w)) }
+        }
+        // A few names the word rules would misfile.
+        if words.contains("patty") { return .protein }
+        if n.contains("tortilla chips") || n.contains("chips and salsa") { return .snacks }
+        if n == "pasta" || n.hasSuffix("tortilla") { return .sides }
+        if n.contains("plate") { return .other }
+        if has(["coffee", "tea", "juice", "pop", "soda", "milk", "alcohol", "beer", "wine", "water", "latte", "smoothie", "shake",
+                "energy drink", "kombucha", "espresso", "cold brew", "margarita", "liquor"]) && !has(["milk chocolate", "cereal"]) { return .drinks }
+        if has(["sandwich", "burrito", "taco", "pizza", "burger", "bowl", "soup", "ramen", "pho", "sushi", "nachos", "quesadilla",
+                "chili", "mein", "orange chicken", "ribs", "mac and cheese", "grilled cheese", "wrap", "spaghetti"]) { return .other }
+        if has(["veggie", "vegetable", "greens", "salad", "broccoli", "asparagus", "beans", "carrot", "spinach", "zucchini",
+                "cauliflower", "sprouts", "corn", "pepper", "cucumber", "tomato", "fruit", "berries"]) && !has(["chips"]) { return .veggies }
+        if has(["beef", "steak", "chicken", "pork", "fish", "salmon", "shrimp", "tuna", "turkey", "eggs", "egg", "bacon", "sausage",
+                "tofu", "ham", "jerky", "tilapia"]) { return .protein }
+        if has(["potato", "rice", "pasta", "noodles", "bread", "tortilla", "toast", "bagel", "quinoa", "oatmeal", "fries", "tots",
+                "muffin", "cereal", "pancake", "waffle"]) { return .sides }
+        if has(["snack", "chips", "candy", "cookie", "dessert", "nuts", "bar", "chocolate", "popcorn", "pretzel", "cracker",
+                "ice cream", "donut", "cake", "brownie", "trail mix"]) { return .snacks }
+        return .other
+    }
 }
 
 /// On-device food recognition (Vision), nutrition-label reading, and barcode lookups.
@@ -79,7 +132,7 @@ enum FoodVision {
 
     /// Vision labels that only say "there's food" and should never pick a food.
     private static let generic: Set<String> = ["food", "dish", "meal", "plate", "tableware", "bowl", "cup", "dining", "table",
-        "produce", "fruit", "vegetable", "dessert", "baked_goods", "snack", "beverage", "drink", "cookware", "utensil",
+        "produce", "fruit", "dessert", "baked_goods", "snack", "beverage", "drink", "cookware", "utensil",
         "fork", "spoon", "knife", "people", "adult", "container", "jar", "bottle", "glass", "drinking_glass", "mug"]
 
     /// Vision label → Food Book food name (exact names from foods.json).
@@ -91,7 +144,9 @@ enum FoodVision {
         "broccoli": "Broccoli", "carrot": "Carrots", "spinach": "Spinach", "salad": "Side salad", "leafy_green": "Side salad",
         "lettuce": "Side salad", "caesar_salad": "Caesar salad", "cucumber": "Cucumber", "tomato": "Tomato",
         "bell_pepper": "Bell pepper", "pepper_veggie": "Bell pepper", "corn": "Corn", "green_beans": "Green beans",
-        "sweet_potato": "Sweet potato", "potato": "Baked potato", "mashed_potatoes": "Mashed potatoes",
+        "sweet_potato": "Sweet potato", "potato": "Roasted potatoes", "roasted_potato": "Roasted potatoes", "baked_potato": "Baked potato",
+        "asparagus": "Roasted asparagus", "brussels_sprouts": "Brussels sprouts", "zucchini": "Zucchini", "cauliflower": "Cauliflower",
+        "vegetable": "Mixed veggies", "beans": "Black beans", "legume": "Black beans", "sirloin": "Sirloin steak", "ribeye": "Ribeye steak", "filet": "Steak", "mashed_potatoes": "Mashed potatoes",
         "egg": "Egg", "boiled_egg": "Egg", "fried_egg": "Fried egg", "scrambled_eggs": "Scrambled eggs", "omelet": "Scrambled eggs",
         "chicken": "Chicken breast", "poultry": "Chicken breast", "grilled_chicken": "Chicken breast", "fried_chicken": "Chicken tenders",
         "chicken_wings": "Chicken wings", "wings": "Chicken wings", "rotisserie": "Rotisserie chicken", "nugget": "Chicken tenders",
@@ -142,28 +197,53 @@ enum FoodVision {
         (UserDefaults.standard.dictionary(forKey: learnKey) as? [String: String])?[label]
     }
 
-    /// Runs the classifier and turns its labels into foods, strongest first.
-    static func recognizeMeal(_ image: UIImage) async -> (guesses: [FoodGuess], topLabel: String?) {
-        let labels = await classify(image)
+    /// Labels that would turn a plate into a sandwich/burger. Only trusted when Vision is quite sure.
+    private static let handheld = ["sandwich", "burger", "hamburger", "cheeseburger", "bread", "bun", "hotdog", "hot_dog", "wrap",
+                                   "sub_sandwich", "chicken_sandwich", "pizza", "taco", "burrito"]
+
+    /// Runs the classifier and builds a plate: up to one protein, one side and one veggie the photo most looks like,
+    /// plus alternatives for the "Not it?" row. Never guesses a sandwich unless Vision is fairly sure.
+    static func recognizeMeal(_ image: UIImage) async -> (plate: [FoodGuess], alternatives: [FoodGuess], topLabel: String?) {
+        let labels = Array(await classify(image).prefix(12))
         let foods = Dictionary(QuickFood.all.map { ($0.name, $0) }, uniquingKeysWith: { a, _ in a })
-        var out: [FoodGuess] = []
+        var ranked: [(QuickFood, Float)] = []
         var seen = Set<String>()
         var top: String?
-        for (label, _) in labels {
+        for (label, conf) in labels {
             let key = label.lowercased()
             guard !generic.contains(key) else { continue }
-            var name = learned(key) ?? synonyms[key]
-            if name == nil {
-                // Loose match: "fried_chicken" → a food whose name contains "chicken".
-                let words = key.split(separator: "_").map(String.init).filter { $0.count > 3 }
-                name = QuickFood.all.first { q in words.contains { q.name.lowercased().contains($0) } }?.name
-            }
-            guard let n = name, let q = foods[n] else { continue }
+            if handheld.contains(where: { key.contains($0) }) && conf < 0.3 { continue }
+            guard let n = learned(key) ?? synonyms[key], let q = foods[n] else { continue }
             if top == nil { top = key }
-            if seen.insert(n).inserted { out.append(FoodGuess(q)) }
-            if out.count == 6 { break }
+            if seen.insert(n).inserted { ranked.append((q, conf)) }
         }
-        return (out, top)
+        // Plate: best item per group (protein, side, veggie); a full meal (e.g. burrito) stands alone.
+        var plate: [FoodGuess] = []
+        if let meal = ranked.first(where: { FoodGroup.of($0.0) == .other && $0.1 >= 0.3 }) {
+            plate = [FoodGuess(meal.0)]
+        } else {
+            for g in [FoodGroup.protein, .sides, .veggies, .drinks, .snacks] {
+                if let hit = ranked.first(where: { FoodGroup.of($0.0) == g }) { plate.append(FoodGuess(hit.0)) }
+                if plate.count == 3 { break }
+            }
+        }
+        // Alternatives: other matches, then close relatives of what's on the plate (same group).
+        let onPlate = Set(plate.map(\.name))
+        var alts = ranked.map { FoodGuess($0.0) }.filter { !onPlate.contains($0.name) }
+        for item in plate {
+            let g = FoodGroup.of(name: item.name, tags: foods[item.name]?.tags ?? [])
+            let relatives = QuickFood.all.filter { FoodGroup.of($0) == g && !onPlate.contains($0.name) }
+                .sorted { relatedScore($0.name, to: item.name) > relatedScore($1.name, to: item.name) }
+                .prefix(3)
+            for r in relatives where !alts.contains(where: { $0.name == r.name }) { alts.append(FoodGuess(r)) }
+        }
+        return (plate, Array(alts.prefix(8)), top)
+    }
+
+    /// Shares a word with the plate item (Steak → Ribeye steak, Sirloin steak) ranks first.
+    private static func relatedScore(_ a: String, to b: String) -> Int {
+        let wa = Set(a.lowercased().split(separator: " ")), wb = Set(b.lowercased().split(separator: " "))
+        return wa.intersection(wb).count
     }
 
     private static func classify(_ image: UIImage) async -> [(String, Float)] {
@@ -174,7 +254,7 @@ enum FoodVision {
                 let handler = VNImageRequestHandler(cgImage: cg, options: [:])
                 do { try handler.perform([req]) } catch { cont.resume(returning: []); return }
                 let obs = (req.results ?? [])
-                    .filter { $0.confidence > 0.08 }
+                    .filter { $0.confidence > 0.05 }
                     .sorted { $0.confidence > $1.confidence }
                     .map { ($0.identifier, $0.confidence) }
                 cont.resume(returning: obs)

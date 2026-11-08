@@ -2,7 +2,15 @@ import SwiftData
 import SwiftUI
 import UIKit
 
-/// "Here's what I see": the photo, the food with its macros, portion and meal chips, one big Log it.
+/// One thing on the plate, with its own portion.
+struct PlateItem: Identifiable, Equatable {
+    let id = UUID()
+    var food: FoodGuess
+    var servings: Double = 1
+    var cal: Double { food.cal * servings }
+}
+
+/// "Here's what I see": the photo, a plate of items (each with its own portion), totals, meal chips, one big Log it.
 struct SnapResultSheet: View {
     let result: SnapResult
     let day: String
@@ -13,69 +21,83 @@ struct SnapResultSheet: View {
     @Environment(\.accessibilityReduceMotion) private var reduce
     @Query(sort: \FoodEntry.createdAt, order: .reverse) private var history: [FoodEntry]
 
-    @State private var selected: FoodGuess?
-    @State private var servings: Double = 1
+    @State private var plate: [PlateItem] = []
     @State private var meal: Meal = .now
     @State private var shown = false
-    @State private var showMore = false
+    @State private var picking = false
+    /// When set, the picker swaps this item instead of adding a new one.
+    @State private var swapping: UUID?
 
-    private let portions: [(Double, String)] = [(0.5, "½"), (1, "1"), (1.5, "1½"), (2, "2"), (3, "3")]
+    private let portions: [(Double, String)] = [(0.5, "½"), (1, "1"), (1.5, "1½"), (2, "2")]
 
-    /// Your recent foods first, then popular ones: the tap-to-pick fallback.
-    private var picks: [FoodGuess] {
-        var seen = Set<String>()
-        var out: [FoodGuess] = []
-        for e in history where seen.insert(e.name.lowercased()).inserted {
-            out.append(FoodGuess(name: e.name, serving: "Recent", cal: e.cal, p: e.protein, c: e.carbs, f: e.fat, caf: e.caffeine, source: .recent))
-            if out.count == 8 { break }
+    private var totals: (cal: Double, p: Double, c: Double, f: Double) {
+        var t: (cal: Double, p: Double, c: Double, f: Double) = (0, 0, 0, 0)
+        for i in plate {
+            t.cal += i.food.cal * i.servings; t.p += i.food.p * i.servings
+            t.c += i.food.c * i.servings; t.f += i.food.f * i.servings
         }
-        if out.count < 8 {
-            let popular = ["Burrito bowl", "Pizza", "Chicken breast", "Cheeseburger", "Side salad", "Tacos", "Sushi roll", "Pasta",
-                           "Scrambled eggs", "Greek yogurt", "Protein shake", "Iced latte"]
-            for n in popular where out.count < 8 && !seen.contains(n.lowercased()) {
-                if let q = QuickFood.all.first(where: { $0.name == n }) { out.append(FoodGuess(q, source: .recent)) }
-            }
-        }
-        return out
+        return t
     }
 
-    private var alternatives: [FoodGuess] { result.guesses.filter { $0.id != selected?.id } }
+    /// "Not it?" row: what the photo also looked like, plus close relatives. Never random snacks.
+    private var alternatives: [FoodGuess] {
+        let on = Set(plate.map { $0.food.name })
+        return result.guesses.filter { !on.contains($0.name) }
+    }
 
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 18) {
                 photo
-                if let s = selected {
-                    hero(s)
-                        .id(s.id)
-                        .transition(.asymmetric(insertion: .scale(scale: 0.92).combined(with: .opacity), removal: .opacity))
-                    if !alternatives.isEmpty || result.mode == .meal { notIt }
-                    chips("PORTION", portions.map(\.1), selectedIndex: portions.firstIndex { $0.0 == servings }) { i in
-                        servings = portions[i].0
-                    }
-                    chips("MEAL", Meal.allCases.map(\.rawValue), selectedIndex: Meal.allCases.firstIndex(of: meal)) { i in
-                        meal = Meal.allCases[i]
-                    }
-                } else {
-                    Text("Couldn't tell what that is. Tap it:")
-                        .font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
-                    pickGrid
+                if let note = result.note {
+                    Label(note, systemImage: "wifi.exclamationmark").font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim)
                 }
-                if showMore && selected != nil { pickGrid }
+                if plate.isEmpty {
+                    Text("Couldn't tell what that is. Add what's on your plate:")
+                        .font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
+                } else {
+                    totalsCard
+                    ForEach($plate) { $item in
+                        itemCard($item)
+                            .transition(.asymmetric(insertion: .scale(scale: 0.92).combined(with: .opacity),
+                                                    removal: .move(edge: .leading).combined(with: .opacity)))
+                    }
+                }
+                addButton
+                if result.mode == .meal && !alternatives.isEmpty { notIt }
+                chips("MEAL", Meal.allCases.map(\.rawValue), selectedIndex: Meal.allCases.firstIndex(of: meal)) { i in
+                    meal = Meal.allCases[i]
+                }
             }
             .padding(20)
             .padding(.bottom, 110)
             .opacity(shown ? 1 : 0)
             .offset(y: shown ? 0 : 30)
+            .animation(reduce ? .easeOut(duration: 0.2) : .spring(response: 0.45, dampingFraction: 0.8), value: plate)
         }
         .scrollIndicators(.hidden)
         .background(EmberBackground())
         .safeAreaInset(edge: .bottom) { logButton }
         .preferredColorScheme(.dark)
+        .sheet(isPresented: $picking) {
+            FoodPicker(recent: recentFoods) { food in pick(food) }
+                .presentationDetents([.large])
+        }
         .onAppear {
-            selected = result.guesses.first
+            plate = (result.plate.isEmpty ? Array(result.guesses.prefix(result.mode == .meal ? 0 : 1)) : result.plate)
+                .map { PlateItem(food: $0) }
+            if plate.isEmpty && result.mode != .meal, let g = result.guesses.first { plate = [PlateItem(food: g)] }
             withAnimation(reduce ? .easeOut(duration: 0.2) : .spring(response: 0.55, dampingFraction: 0.75)) { shown = true }
         }
+    }
+
+    private var recentFoods: [FoodGuess] {
+        var seen = Set<String>(), out: [FoodGuess] = []
+        for e in history where seen.insert(e.name.lowercased()).inserted {
+            out.append(FoodGuess(name: e.name, serving: "Recent", cal: e.cal, p: e.protein, c: e.carbs, f: e.fat, caf: e.caffeine, source: .recent))
+            if out.count == 12 { break }
+        }
+        return out
     }
 
     // MARK: Pieces
@@ -84,20 +106,28 @@ struct SnapResultSheet: View {
         ZStack(alignment: .bottomLeading) {
             if let img = result.image {
                 Image(uiImage: img).resizable().scaledToFill()
-                    .frame(height: 210).frame(maxWidth: .infinity).clipped()
+                    .frame(height: 200).frame(maxWidth: .infinity).clipped()
             } else {
                 Ember.fire.opacity(0.35).frame(height: 130)
                 Image(systemName: result.mode.symbol).font(.system(size: 54, weight: .bold)).foregroundStyle(.white.opacity(0.9))
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
             LinearGradient(colors: [.clear, .black.opacity(0.6)], startPoint: .center, endPoint: .bottom)
-            Label(badge, systemImage: result.mode.symbol)
-                .font(Ember.font(12, .heavy)).tracking(1).foregroundStyle(.white)
-                .padding(.horizontal, 12).padding(.vertical, 7)
-                .background(.ultraThinMaterial, in: Capsule())
-                .padding(12)
+            HStack(spacing: 8) {
+                Label(badge, systemImage: result.mode.symbol)
+                    .font(Ember.font(12, .heavy)).tracking(1).foregroundStyle(.white)
+                    .padding(.horizontal, 12).padding(.vertical, 7)
+                    .background(.ultraThinMaterial, in: Capsule())
+                if result.ai {
+                    Label("AI", systemImage: "sparkles")
+                        .font(Ember.font(12, .black)).tracking(1).foregroundStyle(.white)
+                        .padding(.horizontal, 12).padding(.vertical, 7)
+                        .background(Ember.fire, in: Capsule())
+                }
+            }
+            .padding(12)
         }
-        .frame(height: result.image == nil ? 130 : 210)
+        .frame(height: result.image == nil ? 130 : 200)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).strokeBorder(Ember.line))
         .accessibilityHidden(true)
@@ -105,52 +135,118 @@ struct SnapResultSheet: View {
 
     private var badge: String {
         switch result.mode {
-        case .meal: return result.guesses.isEmpty ? "SNAPPED" : "LOOKS LIKE"
+        case .meal: return plate.count > 1 ? "ON YOUR PLATE" : (plate.isEmpty ? "SNAPPED" : "LOOKS LIKE")
         case .barcode: return "SCANNED BARCODE"
         case .label: return "READ FROM LABEL"
         }
     }
 
-    private func hero(_ s: FoodGuess) -> some View {
-        VStack(alignment: .leading, spacing: 14) {
+    private var totalsCard: some View {
+        let t = totals
+        return VStack(alignment: .leading, spacing: 12) {
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(s.name).font(Ember.font(26, .black)).foregroundStyle(Ember.cream).lineLimit(2)
-                        .minimumScaleFactor(0.7)
-                    Text(servings == 1 ? s.serving : "\(s.serving) × \(portionLabel)")
-                        .font(Ember.font(14, .semibold)).foregroundStyle(Ember.dim)
-                }
+                Text(plate.count == 1 ? "1 item" : "\(plate.count) items")
+                    .font(Ember.font(15, .heavy)).foregroundStyle(Ember.dim)
                 Spacer()
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text("\(Int((s.cal * servings).rounded()))")
-                        .font(.system(size: 40, weight: .black, design: .rounded)).foregroundStyle(Ember.fire)
-                        .contentTransition(.numericText(value: s.cal * servings))
-                    Text("CAL").font(Ember.font(11, .heavy)).tracking(1.5).foregroundStyle(Ember.dim)
-                }
+                Text("\(Int(t.cal.rounded()))")
+                    .font(.system(size: 40, weight: .black, design: .rounded)).foregroundStyle(Ember.fire)
+                    .contentTransition(.numericText(value: t.cal))
+                Text("CAL").font(Ember.font(11, .heavy)).tracking(1.5).foregroundStyle(Ember.dim)
             }
             HStack(spacing: 10) {
-                MacroPill(label: "Protein", grams: s.p * servings, color: Ember.protein)
-                MacroPill(label: "Carbs", grams: s.c * servings, color: Ember.carbs)
-                MacroPill(label: "Fat", grams: s.f * servings, color: Ember.fat)
+                MacroPill(label: "Protein", grams: t.p, color: Ember.protein)
+                MacroPill(label: "Carbs", grams: t.c, color: Ember.carbs)
+                MacroPill(label: "Fat", grams: t.f, color: Ember.fat)
             }
         }
         .padding(18)
         .background(Ember.card, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(Ember.orange.opacity(0.35)))
         .shadow(color: Ember.orange.opacity(0.18), radius: 20, y: 8)
-        .animation(.snappy, value: servings)
         .accessibilityElement(children: .combine)
     }
 
-    private var portionLabel: String { portions.first { $0.0 == servings }?.1 ?? servings.formatted() }
+    private func itemCard(_ item: Binding<PlateItem>) -> some View {
+        let it = item.wrappedValue
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                Text(FoodGroup.of(name: it.food.name, tags: QuickFood.all.first { $0.name == it.food.name }?.tags ?? []).emoji)
+                    .font(.system(size: 26))
+                    .frame(width: 44, height: 44)
+                    .background(Ember.card, in: Circle())
+                VStack(alignment: .leading, spacing: 2) {
+                    Button { swapping = it.id; picking = true } label: {
+                        HStack(spacing: 4) {
+                            Text(it.food.name).font(Ember.font(18, .heavy)).foregroundStyle(Ember.cream)
+                                .lineLimit(2).multilineTextAlignment(.leading)
+                            Image(systemName: "chevron.down").font(.system(size: 11, weight: .heavy)).foregroundStyle(Ember.dim)
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityHint("Swap for a different food")
+                    Text("\(it.food.serving)\(it.servings == 1 ? "" : " × \(label(it.servings))") · P \(Int((it.food.p * it.servings).rounded())) C \(Int((it.food.c * it.servings).rounded())) F \(Int((it.food.f * it.servings).rounded()))")
+                        .font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim).lineLimit(2)
+                }
+                Spacer(minLength: 4)
+                VStack(alignment: .trailing, spacing: 6) {
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        plate.removeAll { $0.id == it.id }
+                    } label: {
+                        Image(systemName: "xmark").font(.system(size: 12, weight: .black)).foregroundStyle(Ember.dim)
+                            .frame(width: 30, height: 30).background(Ember.card, in: Circle())
+                    }
+                    .accessibilityLabel("Remove \(it.food.name)")
+                    Text("\(Int(it.cal.rounded())) cal").font(Ember.font(15, .black)).foregroundStyle(Ember.orange)
+                        .contentTransition(.numericText(value: it.cal))
+                }
+            }
+            HStack(spacing: 8) {
+                ForEach(portions.indices, id: \.self) { k in
+                    let p = portions[k]
+                    let on = p.0 == it.servings
+                    Button {
+                        UISelectionFeedbackGenerator().selectionChanged()
+                        item.wrappedValue.servings = p.0
+                    } label: {
+                        Text(p.1).font(Ember.font(16, .heavy)).foregroundStyle(on ? .white : Ember.cream)
+                            .frame(maxWidth: .infinity, minHeight: 40)
+                            .background {
+                                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                    .fill(on ? AnyShapeStyle(Ember.fire) : AnyShapeStyle(Ember.card))
+                            }
+                    }
+                    .buttonStyle(Squish())
+                    .accessibilityLabel("\(p.1) serving")
+                    .accessibilityAddTraits(on ? .isSelected : [])
+                }
+            }
+        }
+        .padding(14)
+        .background(Ember.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(Ember.line))
+    }
+
+    private func label(_ s: Double) -> String { portions.first { $0.0 == s }?.1 ?? s.formatted() }
+
+    private var addButton: some View {
+        Button { swapping = nil; picking = true } label: {
+            Label(plate.isEmpty ? "Add what's on your plate" : "Add item", systemImage: "plus.circle.fill")
+                .font(Ember.font(16, .heavy)).foregroundStyle(Ember.orange)
+                .frame(maxWidth: .infinity, minHeight: 52)
+                .background(RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(Ember.orange.opacity(0.6), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5])))
+        }
+        .buttonStyle(Squish())
+    }
 
     private var notIt: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text("NOT IT? TAP THE RIGHT ONE").font(Ember.font(11, .heavy)).tracking(1.5).foregroundStyle(Ember.dim)
+            Text("ALSO LOOKS LIKE · TAP TO ADD").font(Ember.font(11, .heavy)).tracking(1.5).foregroundStyle(Ember.dim)
             ScrollView(.horizontal) {
                 HStack(spacing: 8) {
-                    ForEach(Array(alternatives.enumerated()), id: \.element.id) { i, alt in
-                        Button { choose(alt) } label: {
+                    ForEach(alternatives) { alt in
+                        Button { pick(alt) } label: {
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(alt.name).font(Ember.font(14, .bold)).foregroundStyle(Ember.cream).lineLimit(1)
                                 Text("\(Int(alt.cal)) cal").font(Ember.font(12, .semibold)).foregroundStyle(Ember.orange)
@@ -160,41 +256,10 @@ struct SnapResultSheet: View {
                             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Ember.line))
                         }
                         .buttonStyle(Squish())
-                        .transition(.scale.combined(with: .opacity))
-                        .animation(reduce ? nil : .spring(response: 0.5, dampingFraction: 0.7).delay(Double(i) * 0.05), value: shown)
                     }
-                    Button { withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { showMore.toggle() } } label: {
-                        Label(showMore ? "Less" : "Something else", systemImage: showMore ? "chevron.up" : "square.grid.2x2")
-                            .font(Ember.font(14, .bold)).foregroundStyle(Ember.cream)
-                            .padding(.horizontal, 14).padding(.vertical, 16)
-                            .background(Ember.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                    }
-                    .buttonStyle(Squish())
                 }
             }
             .scrollIndicators(.hidden)
-        }
-    }
-
-    private var pickGrid: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-            ForEach(picks) { p in
-                Button { choose(p) } label: {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(p.name).font(Ember.font(15, .heavy)).foregroundStyle(Ember.cream).lineLimit(2)
-                            .multilineTextAlignment(.leading)
-                        Spacer(minLength: 0)
-                        Text("\(Int(p.cal)) cal").font(Ember.font(13, .bold)).foregroundStyle(Ember.orange)
-                    }
-                    .frame(maxWidth: .infinity, minHeight: 74, alignment: .leading)
-                    .padding(12)
-                    .background(selected?.id == p.id ? Ember.orange.opacity(0.22) : Ember.card,
-                                in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(selected?.id == p.id ? Ember.orange : Ember.line))
-                }
-                .buttonStyle(Squish())
-            }
         }
     }
 
@@ -208,7 +273,7 @@ struct SnapResultSheet: View {
                         UISelectionFeedbackGenerator().selectionChanged()
                         withAnimation(.spring(response: 0.3, dampingFraction: 0.75)) { onPick(i) }
                     } label: {
-                        Text(labels[i]).font(Ember.font(labels[i].count > 3 ? 13 : 18, .heavy))
+                        Text(labels[i]).font(Ember.font(13, .heavy))
                             .lineLimit(1).minimumScaleFactor(0.7)
                             .foregroundStyle(on ? .white : Ember.cream)
                             .frame(maxWidth: .infinity, minHeight: 48)
@@ -226,10 +291,11 @@ struct SnapResultSheet: View {
     }
 
     private var logButton: some View {
-        Button(action: log) {
+        let t = totals
+        return Button(action: log) {
             HStack(spacing: 10) {
                 Image(systemName: "checkmark.circle.fill").font(.system(size: 20, weight: .black))
-                Text(selected.map { "Log it · \(Int(($0.cal * servings).rounded())) cal" } ?? "Pick a food")
+                Text(plate.isEmpty ? "Add a food" : "Log \(plate.count == 1 ? "it" : "\(plate.count) items") · \(Int(t.cal.rounded())) cal")
                     .font(Ember.font(19, .black))
                     .contentTransition(.numericText())
             }
@@ -237,10 +303,10 @@ struct SnapResultSheet: View {
             .frame(maxWidth: .infinity, minHeight: 60)
             .background(Ember.fire, in: Capsule())
             .shadow(color: Ember.pink.opacity(0.5), radius: 18, y: 6)
-            .opacity(selected == nil ? 0.45 : 1)
+            .opacity(plate.isEmpty ? 0.45 : 1)
         }
         .buttonStyle(Squish())
-        .disabled(selected == nil)
+        .disabled(plate.isEmpty)
         .padding(.horizontal, 20)
         .padding(.top, 8)
         .padding(.bottom, 10)
@@ -249,25 +315,34 @@ struct SnapResultSheet: View {
 
     // MARK: Actions
 
-    private func choose(_ g: FoodGuess) {
+    private func pick(_ g: FoodGuess) {
         UISelectionFeedbackGenerator().selectionChanged()
-        // You corrected the camera: next time this kind of photo suggests your pick first.
-        if result.mode == .meal, let label = result.topLabel, g.name != result.guesses.first?.name,
-           QuickFood.all.contains(where: { $0.name == g.name }) {
-            FoodVision.learn(label: label, food: g.name)
+        if let sid = swapping, let i = plate.firstIndex(where: { $0.id == sid }) {
+            // You corrected the camera: next time this kind of photo suggests your pick first.
+            if result.mode == .meal, !result.ai, i == 0, let label = result.topLabel,
+               QuickFood.all.contains(where: { $0.name == g.name }) {
+                FoodVision.learn(label: label, food: g.name)
+            }
+            plate[i].food = g
+        } else if let i = plate.firstIndex(where: { $0.food.name == g.name }) {
+            plate[i].servings += 1
+        } else {
+            plate.append(PlateItem(food: g))
         }
-        withAnimation(.spring(response: 0.45, dampingFraction: 0.75)) {
-            selected = g
-            showMore = false
-        }
+        swapping = nil
     }
 
     private func log() {
-        guard let s = selected else { return }
+        guard !plate.isEmpty else { return }
         let thumb = result.image.flatMap { FoodVision.thumbnail($0) }
-        let entry = FoodEntry(name: s.name, cal: s.cal, protein: s.p, carbs: s.c, fat: s.f, caffeine: s.caf,
-                              servings: servings, meal: meal, day: day, photo: thumb)
-        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) { context.insert(entry) }
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) {
+            for (i, it) in plate.enumerated() {
+                let entry = FoodEntry(name: it.food.name, cal: it.food.cal, protein: it.food.p, carbs: it.food.c, fat: it.food.f,
+                                      caffeine: it.food.caf, servings: it.servings, meal: meal, day: day,
+                                      photo: i == 0 ? thumb : nil)
+                context.insert(entry)
+            }
+        }
         try? context.save()
         FoodWatchBridge.shared.pushNow()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
@@ -276,12 +351,104 @@ struct SnapResultSheet: View {
     }
 }
 
+/// Fast "what else is on the plate" picker: search, group tabs, emoji grid.
+struct FoodPicker: View {
+    let recent: [FoodGuess]
+    var onPick: (FoodGuess) -> Void
+
+    @Environment(\.dismiss) private var dismiss
+    @State private var query = ""
+    @State private var group: FoodGroup? = .protein
+
+    private var foods: [FoodGuess] {
+        let q = query.trimmingCharacters(in: .whitespaces).lowercased()
+        if !q.isEmpty {
+            return QuickFood.all.filter { $0.name.lowercased().contains(q) || $0.tags.contains { $0.lowercased().contains(q) } }
+                .prefix(40).map { FoodGuess($0) }
+        }
+        guard let g = group else { return recent }
+        return QuickFood.all.filter { FoodGroup.of($0) == g }.map { FoodGuess($0) }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            HStack {
+                Text("Add to plate").font(Ember.font(24, .black)).foregroundStyle(Ember.cream)
+                Spacer()
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark").font(.system(size: 14, weight: .black)).foregroundStyle(Ember.dim)
+                        .frame(width: 36, height: 36).background(Ember.card, in: Circle())
+                }
+                .accessibilityLabel("Close")
+            }
+            HStack(spacing: 8) {
+                Image(systemName: "magnifyingglass").foregroundStyle(Ember.dim)
+                TextField("", text: $query, prompt: Text("Search foods").foregroundStyle(Ember.dim))
+                    .font(Ember.font(16, .semibold)).foregroundStyle(Ember.cream)
+                    .autocorrectionDisabled()
+            }
+            .padding(.horizontal, 14).frame(height: 46)
+            .background(Ember.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            ScrollView(.horizontal) {
+                HStack(spacing: 8) {
+                    if !recent.isEmpty { tab(nil, "🕘 Recent") }
+                    ForEach(FoodGroup.allCases) { g in tab(g, "\(g.emoji) \(g.rawValue)") }
+                }
+            }
+            .scrollIndicators(.hidden)
+            ScrollView {
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                    ForEach(foods) { f in
+                        Button { onPick(f); dismiss() } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(FoodGroup.of(name: f.name, tags: QuickFood.all.first { $0.name == f.name }?.tags ?? []).emoji)
+                                    .font(.system(size: 22))
+                                Text(f.name).font(Ember.font(15, .heavy)).foregroundStyle(Ember.cream).lineLimit(2)
+                                    .multilineTextAlignment(.leading)
+                                Spacer(minLength: 0)
+                                Text("\(Int(f.cal)) cal · \(f.serving)").font(Ember.font(11, .bold)).foregroundStyle(Ember.orange)
+                                    .lineLimit(1)
+                            }
+                            .frame(maxWidth: .infinity, minHeight: 96, alignment: .leading)
+                            .padding(12)
+                            .background(Ember.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Ember.line))
+                        }
+                        .buttonStyle(Squish())
+                    }
+                }
+                .padding(.bottom, 30)
+            }
+            .scrollIndicators(.hidden)
+        }
+        .padding(20)
+        .background(EmberBackground())
+        .preferredColorScheme(.dark)
+    }
+
+    private func tab(_ g: FoodGroup?, _ title: String) -> some View {
+        let on = query.isEmpty && g == group
+        return Button {
+            UISelectionFeedbackGenerator().selectionChanged()
+            query = ""
+            withAnimation(.snappy) { group = g }
+        } label: {
+            Text(title).font(Ember.font(14, .heavy)).foregroundStyle(on ? .white : Ember.cream)
+                .padding(.horizontal, 14).frame(height: 38)
+                .background { Capsule().fill(on ? AnyShapeStyle(Ember.fire) : AnyShapeStyle(Ember.card)) }
+        }
+        .buttonStyle(Squish())
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+}
+
 /// A drawn sample plate for simulator screenshots (launch with -demo -snap).
 enum DemoSnap {
     static var result: SnapResult {
-        let names = ["Burrito bowl", "Tacos", "Burrito", "Nachos"]
-        let guesses = names.compactMap { n in QuickFood.all.first { $0.name == n }.map { FoodGuess($0) } }
-        return SnapResult(image: image(), mode: .meal, guesses: guesses, topLabel: nil)
+        func g(_ n: String) -> FoodGuess? { QuickFood.all.first { $0.name == n }.map { FoodGuess($0) } }
+        let plate = ["Steak", "Roasted potatoes", "Roasted asparagus"].compactMap(g)
+        let alts = ["Ribeye steak", "Sirloin steak", "Baked potato", "Green beans"].compactMap(g)
+        return SnapResult(image: image(), mode: .meal, guesses: alts, topLabel: nil, plate: plate)
     }
 
     static func image() -> UIImage {
