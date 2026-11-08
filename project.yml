@@ -290,6 +290,34 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.ridequest
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
 
+  # Clicker: Vizio TV remote and app launcher
+  Clicker:
+    type: application
+    platform: iOS
+    sources:
+      - path: TVRemote
+    info:
+      path: TVRemote/Info.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Clicker
+        UIRequiresFullScreen: true
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        NSLocalNetworkUsageDescription: Clicker finds and controls your TV on your Wi-Fi.
+        NSBonjourServices:
+          - _viziocast._tcp
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.clicker
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
 schemes:
   Rootbound:
     build:
@@ -321,3 +349,7 @@ schemes:
     build:
       targets:
         RideQuest: all
+  Clicker:
+    build:
+      targets:
+        Clicker: all

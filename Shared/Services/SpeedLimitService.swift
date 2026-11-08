@@ -69,15 +69,27 @@ final class SpeedLimitService {
     private static func fetch(_ c: CLLocationCoordinate2D, preferFast: Bool) async -> Limit? {
         let types = roadRank.keys.sorted().joined(separator: "|")
         let q = "[out:json][timeout:8];way(around:30,\(c.latitude),\(c.longitude))[highway~\"^(\(types))$\"];out tags;"
-        var comps = URLComponents(string: "https://overpass-api.de/api/interpreter")!
-        comps.queryItems = [URLQueryItem(name: "data", value: q)]
-        guard let url = comps.url else { return nil }
-        var req = URLRequest(url: url, timeoutInterval: 10)
-        req.setValue("Roamr iOS app (personal route tracker)", forHTTPHeaderField: "User-Agent")
-        guard let (data, resp) = try? await URLSession.shared.data(for: req),
-              (resp as? HTTPURLResponse)?.statusCode == 200,
-              let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
-              let elements = obj["elements"] as? [[String: Any]] else { return nil }
+        // Public OpenStreetMap servers; if one is busy, try the next.
+        let servers = ["https://overpass-api.de/api/interpreter",
+                       "https://overpass.kumi.systems/api/interpreter",
+                       "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
+        var elements: [[String: Any]]?
+        for server in servers {
+            var req = URLRequest(url: URL(string: server)!, timeoutInterval: 8)
+            req.httpMethod = "POST"
+            req.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
+            req.setValue("Roamr iOS app (personal route tracker)", forHTTPHeaderField: "User-Agent")
+            let encoded = q.addingPercentEncoding(withAllowedCharacters: .alphanumerics) ?? q
+            req.httpBody = Data("data=\(encoded)".utf8)
+            if let (data, resp) = try? await URLSession.shared.data(for: req),
+               (resp as? HTTPURLResponse)?.statusCode == 200,
+               let obj = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+               let els = obj["elements"] as? [[String: Any]] {
+                elements = els
+                break
+            }
+        }
+        guard let elements else { return nil }
         let ways: [(rank: Int, tags: [String: String])] = elements.compactMap { e in
             guard let tags = e["tags"] as? [String: String], let hw = tags["highway"], let r = roadRank[hw] else { return nil }
             return (r, tags)
