@@ -121,6 +121,16 @@ jobs:
         run: |
           grep -hn "error:" archive.log export.log 2>/dev/null | head -60 || true
 
+      - name: Make sure you're a tester
+        if: success()
+        env:
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip3 install --quiet --break-system-packages "pyjwt[crypto]" || pip3 install --quiet "pyjwt[crypto]"
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" build/App.xcarchive/Products/Applications/*.app/Info.plist)
+          python3 .github/scripts/ensure_testers.py "$BUNDLE" || true
+
       - name: Remove key
         if: always()
         run: rm -rf ~/private_keys
