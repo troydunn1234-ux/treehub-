@@ -1978,7 +1978,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var sums = {}, any = false;
     (res.accounts || []).forEach(function (a) {
       if (isCredit(a) || a.balance === undefined || a.balance === null || !isFinite(+a.balance)) return;
-      var w = walletFor(a); sums[w] = r2((sums[w] || 0) + (+a.balance)); any = true;
+      /* pending charges are in the log now, so match the balance that already counts them (available), when the bank gives it */
+      var b = (a.available !== undefined && a.available !== null && isFinite(+a.available)) ? +a.available : +a.balance;
+      var w = walletFor(a); sums[w] = r2((sums[w] || 0) + b); any = true;
     });
     if (!any) return false;
     Object.keys(sums).forEach(function (w) { S.start[w] = r2(sums[w] - (bal(w) - (S.start[w] || 0))); });
@@ -2013,7 +2015,15 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         if (existing.bank && existing.bank.pend && !t.pending) { existing.bank.pend = false; existing.d = isoDay(t.posted || t.transacted); }
         return;
       }
-      if (t.pending) return; /* wait until it posts: pending ids can change, which would double-count */
+      if (!t.pending) {
+        /* a posted charge whose pending version we already logged (banks often give it a new id) */
+        var pend = null;
+        S.tx.concat(S.moves).forEach(function (o) {
+          if (pend || !o.bank || !o.bank.pend || o.bank.acc !== a.id) return;
+          if (Math.abs(o.amt - Math.abs(t.amount)) < 0.01 && Math.abs(daysBetween(o.d, isoDay(t.posted || t.transacted))) <= 6) pend = o;
+        });
+        if (pend) { pend.bank.id = id; pend.bank.pend = false; pend.d = isoDay(t.posted || t.transacted); seen[id] = pend; return; }
+      }
       if (mirror[i]) {
         var o = all[mirror[i] - 1], oid = o.t.id ? o.a.id + ":" + o.t.id : "";
         var fromW = t.amount < 0 ? walletFor(a) : walletFor(o.a), toW = t.amount < 0 ? walletFor(o.a) : walletFor(a);
@@ -2028,7 +2038,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       if (looksLikeTransfer(t)) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
       var text = t.payee || t.description || "Bank purchase", key = payeeKey(text);
       var when = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000);
-      var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending };
+      var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending, acc: a.id };
       if (t.amount < 0) {
         S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: text.slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
         added++;
@@ -2041,7 +2051,15 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         inc++;
       }
     });
-    return { added: added, inc: inc, skipped: skipped };
+    /* pending charges that disappeared from the bank feed for 2+ days were voided or declined: remove them */
+    var live = {};
+    all.forEach(function (x) { if (x.t.id) live[x.a.id + ":" + x.t.id] = true; });
+    var cut = isoDay(Date.now() / 1000 - 2 * 86400);
+    function keep(o) { return !(o.bank && o.bank.pend && !live[o.bank.id] && o.d < cut); }
+    var before = S.tx.length + S.moves.length;
+    S.tx = S.tx.filter(keep); S.moves = S.moves.filter(keep);
+    var dropped = before - S.tx.length - S.moves.length;
+    return { added: added, inc: inc, skipped: skipped, dropped: dropped };
   }
   function bankSync(manual) {
     if (!BANK.on || BANK.busy) return;
