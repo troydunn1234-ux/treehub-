@@ -74,7 +74,9 @@
 		806F7A43C436AD068D6EC7BF /* AddFoodSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */; };
 		80E6ECE39BD8543A049982CB /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4159F6563FEC514EECE6D1 /* LogicTests.swift */; };
 		81A11661457D8F18780CB93B /* TrackSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */; };
+		84B4AAD5C9BC3209E12A1AC4 /* BankSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8941F8309AEBE4A083DE0DD /* BankSync.swift */; };
 		84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		87CCA73B8401912B96483744 /* BankSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8941F8309AEBE4A083DE0DD /* BankSync.swift */; };
 		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
 		8F0D4E1477121671784B6FFB /* DriveDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84020FAF6BBD9C477A647FFD /* DriveDetector.swift */; };
@@ -340,6 +342,7 @@
 		A46113FE710889BDCB1BC002 /* Supplement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supplement.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		A6D1895159EA264D0659FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A8941F8309AEBE4A083DE0DD /* BankSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankSync.swift; sourceTree = "<group>"; };
 		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -402,6 +405,7 @@
 		1AF60AF349FD8E2F052172DF /* Shell */ = {
 			isa = PBXGroup;
 			children = (
+				A8941F8309AEBE4A083DE0DD /* BankSync.swift */,
 				6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */,
 				68CA977CF56EAADE45A4D8DE /* WebScreen.swift */,
 				5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */,
@@ -1312,6 +1316,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				84B4AAD5C9BC3209E12A1AC4 /* BankSync.swift in Sources */,
 				CD311C4159C7D9BB383C5476 /* BridgeScripts.swift in Sources */,
 				C437CC238D3E3E6FBF9C35F7 /* WebScreen.swift in Sources */,
 				439660E157C058142F67DF47 /* WebShellApp.swift in Sources */,
@@ -1374,6 +1379,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				87CCA73B8401912B96483744 /* BankSync.swift in Sources */,
 				B4D8DD07B70C2AE132653BC6 /* BridgeScripts.swift in Sources */,
 				10C349711E25FB05FCEFDCFA /* WebScreen.swift in Sources */,
 				29467D912B072530A65EEF83 /* WebShellApp.swift in Sources */,

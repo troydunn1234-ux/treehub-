@@ -41,6 +41,8 @@
 	<string>#3dff95</string>
 	<key>WebShellBackground</key>
 	<string>#050c08</string>
+	<key>WebShellBankSync</key>
+	<true/>
 	<key>WebShellSymbol</key>
 	<string>flag.checkered</string>
 </dict>
