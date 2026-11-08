@@ -20,122 +20,119 @@ private struct PCPairing: View {
     @Environment(PCClient.self) private var pc
     @State private var manualIP = ""
     @State private var code = ""
-    @State private var spin = false
     @FocusState private var codeFocused: Bool
 
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                ZStack {
-                    Circle().stroke(Look.line, lineWidth: 1).frame(width: 180, height: 180)
-                    Circle().stroke(Look.line, lineWidth: 1).frame(width: 120, height: 120)
-                    Circle()
-                        .trim(from: 0, to: 0.22)
-                        .stroke(AngularGradient(colors: [Look.cyan.opacity(0), Look.cyan], center: .center), lineWidth: 90)
-                        .frame(width: 90, height: 90)
-                        .rotationEffect(.degrees(spin ? 360 : 0))
-                        .opacity(pc.state == .needsCode ? 0 : 0.6)
-                    Circle().fill(Look.accent).frame(width: 84, height: 84).shadow(color: Look.violet.opacity(0.7), radius: 20)
-                    Image(systemName: pc.state == .needsCode ? "lock.open.fill" : "desktopcomputer")
-                        .font(.system(size: 32, weight: .bold)).foregroundStyle(.white)
-                }
-                .frame(height: 200)
-                .onAppear { withAnimation(.linear(duration: 2.2).repeatForever(autoreverses: false)) { spin = true } }
+            VStack(spacing: Look.S.xl) {
+                RadarView(scanning: pc.state != .needsCode,
+                          icon: pc.state == .needsCode ? "lock.open.fill" : "desktopcomputer",
+                          blips: pc.state == .needsCode ? 0 : pc.found.count,
+                          diameter: 230)
 
                 if pc.state == .needsCode { codeEntry } else { finder }
 
                 if let e = pc.lastError {
-                    Text(e).font(Look.font(14, .semibold)).foregroundStyle(.orange).multilineTextAlignment(.center)
+                    Label(e, systemImage: "exclamationmark.triangle.fill")
+                        .font(Look.font(14, .semibold)).foregroundStyle(.white)
+                        .padding(Look.S.m).frame(maxWidth: .infinity)
+                        .glass(18, tint: .orange, glow: .orange, strength: 1.5)
                 }
             }
-            .padding(.horizontal, 22)
-            .padding(.top, 10)
-            .padding(.bottom, 40)
+            .padding(.horizontal, Look.S.xl)
+            .padding(.top, Look.S.xl)
+            .padding(.bottom, Look.S.xxl)
         }
         .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
         .onAppear { pc.startSearch() }
         .onDisappear { pc.stopSearch() }
     }
 
     private var finder: some View {
-        VStack(spacing: 14) {
-            Text("Control your PC").font(Look.font(28, .heavy)).foregroundStyle(.white)
-            Text("Run Clankerr PC on your computer, on the same Wi-Fi as your phone.")
-                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+        VStack(spacing: Look.S.l) {
+            VStack(spacing: Look.S.s) {
+                CapsLabel("PC remote", color: Look.cyan)
+                Text("Run your PC\nfrom bed.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("Open Clankerr PC on your computer, on the same Wi-Fi as your phone.")
+                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             if pc.state == .connecting {
-                HStack(spacing: 8) { ProgressView().tint(.white); Text("Connecting to \(pc.pc?.name ?? "your PC")…").font(Look.font(14, .semibold)).foregroundStyle(Look.dim) }
-            }
-            ForEach(pc.found, id: \.host) { p in
-                Button { pc.choose(p) } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: "desktopcomputer").font(.system(size: 20, weight: .bold)).foregroundStyle(Look.cyan)
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text(p.name).font(Look.font(17, .heavy)).foregroundStyle(.white)
-                            Text(p.host).font(Look.font(12, .medium)).foregroundStyle(Look.dim)
-                        }
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(Look.dim)
-                    }
-                    .padding(16)
-                    .background(Look.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Look.line))
+                HStack(spacing: Look.S.s) {
+                    ProgressView().tint(.white)
+                    Text("Connecting to \(pc.pc?.name ?? "your PC")…").font(Look.font(14, .bold)).foregroundStyle(Look.dim)
                 }
-                .buttonStyle(SquishStyle(scale: 0.97))
-                .transition(.scale.combined(with: .opacity))
             }
+            VStack(spacing: Look.S.s) {
+                ForEach(pc.found, id: \.host) { p in
+                    Button { pc.choose(p) } label: {
+                        DeviceRow(icon: "desktopcomputer", title: p.name, subtitle: p.host)
+                    }
+                    .buttonStyle(SquishStyle(scale: 0.97))
+                    .transition(.scale.combined(with: .opacity))
+                    .accessibilityLabel("Connect to \(p.name)")
+                }
+            }
+            .animation(.spring(response: 0.45, dampingFraction: 0.6), value: pc.found.count)
             if let saved = pc.pc, pc.state == .disconnected, !pc.found.contains(where: { $0.host == saved.host }) {
                 Button("Reconnect to \(saved.name)") { pc.connect() }
-                    .font(Look.font(15, .bold)).foregroundStyle(Look.cyan)
+                    .buttonStyle(PrimaryButtonStyle())
             }
             if pc.searching && pc.found.isEmpty {
-                Text("Looking for PCs…").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
+                Text("Looking for PCs…").font(Look.font(13, .bold)).foregroundStyle(Look.dim)
             }
-            HStack {
-                TextField("", text: $manualIP, prompt: Text("PC's IP address, like 192.168.1.20").foregroundStyle(Look.dim))
-                    .keyboardType(.decimalPad).font(Look.font(15, .medium)).foregroundStyle(.white)
+            HStack(spacing: Look.S.s) {
+                TextField("", text: $manualIP, prompt: Text("PC's IP, like 192.168.1.20").foregroundStyle(Look.faint))
+                    .keyboardType(.decimalPad).font(Look.font(15, .semibold)).foregroundStyle(.white)
+                    .padding(.horizontal, Look.S.m).frame(height: 48)
+                    .glass(14)
                 Button("Connect") { pc.choose(host: manualIP) }
-                    .font(Look.font(15, .bold)).foregroundStyle(Look.cyan).disabled(manualIP.isEmpty)
+                    .font(Look.font(15, .heavy)).foregroundStyle(.white)
+                    .padding(.horizontal, Look.S.l).frame(height: 48)
+                    .background(Look.accentH, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .opacity(manualIP.isEmpty ? 0.4 : 1)
+                    .disabled(manualIP.isEmpty)
             }
-            .padding(14)
-            .background(Look.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-            VStack(spacing: 4) {
+            VStack(spacing: Look.S.xs) {
                 Text("Don't have the PC app yet?").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
-                Link("Get the PC app: github.com/troydunn1234-ux/treehub-/releases/tag/pc-latest",
-                     destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/releases/tag/pc-latest")!)
-                    .font(Look.font(13, .bold)).foregroundStyle(Look.cyan).multilineTextAlignment(.center)
+                Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/releases/tag/pc-latest")!) {
+                    Label("Get Clankerr PC for Windows", systemImage: "arrow.down.circle.fill")
+                        .font(Look.font(14, .heavy)).foregroundStyle(Look.cyan)
+                        .padding(.horizontal, Look.S.l).frame(minHeight: 44)
+                        .glassCapsule(tint: Look.cyan)
+                }
+                .accessibilityLabel("Get the PC app: github.com/troydunn1234-ux/treehub-/releases/tag/pc-latest")
             }
-            .padding(.top, 6)
+            .padding(.top, Look.S.xs)
         }
     }
 
     private var codeEntry: some View {
-        VStack(spacing: 16) {
-            Text("Enter the code on your PC").font(Look.font(26, .heavy)).foregroundStyle(.white).multilineTextAlignment(.center)
-            Text("A 6-digit code just popped up on \(pc.pc?.name ?? "your PC").")
-                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+        VStack(spacing: Look.S.l) {
+            VStack(spacing: Look.S.s) {
+                CapsLabel("Almost there", color: Look.cyan)
+                Text("Type the code\non your PC.").font(Look.display(34)).tracking(-1).foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("A 6-digit code just popped up on \(pc.pc?.name ?? "your PC").")
+                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+            }
             ZStack {
-                HStack(spacing: 8) {
-                    ForEach(0..<6, id: \.self) { i in
-                        let ch = i < code.count ? String(code[code.index(code.startIndex, offsetBy: i)]) : ""
-                        Text(ch)
-                            .font(.system(size: 28, weight: .black, design: .rounded)).foregroundStyle(.white)
-                            .frame(width: 46, height: 60)
-                            .background(Look.card, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                .strokeBorder(i == code.count ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Look.line), lineWidth: i == code.count ? 2 : 1))
-                    }
-                }
+                CodeBoxes(code: code, count: 6, boxWidth: 46, boxHeight: 62, focused: codeFocused)
                 TextField("", text: $code)
                     .keyboardType(.numberPad).textContentType(.oneTimeCode)
-                    .focused($codeFocused).opacity(0.02).frame(width: 320, height: 60)
+                    .focused($codeFocused).opacity(0.02).frame(width: 320, height: 62)
                     .onChange(of: code) { _, v in
                         let digits = String(v.filter(\.isNumber).prefix(6))
                         if digits != v { code = digits }
                         if digits.count == 6 { pc.submitCode(digits); code = "" }
                     }
+                    .accessibilityLabel("PC code")
             }
             .onTapGesture { codeFocused = true }
-            Button("Cancel") { pc.disconnect() }.font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
+            Button("Cancel") { pc.disconnect() }
+                .font(Look.font(14, .bold)).foregroundStyle(Look.dim).frame(minHeight: 44)
         }
         .onAppear { codeFocused = true }
     }
@@ -152,20 +149,26 @@ private struct ConnectedPC: View {
     @FocusState private var keyboardUp: Bool
 
     var body: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: Look.S.m) {
             header
             Trackpad(
                 onMove: { dx, dy in pc.move(dx: dx, dy: dy) },
                 onClick: { b, d in UIImpactFeedbackGenerator(style: .light).impactOccurred(); pc.click(b, double: d) },
                 onScroll: { dx, dy in pc.scroll(dx: dx, dy: dy) },
                 onDrag: { down in UIImpactFeedbackGenerator(style: .medium).impactOccurred(); down ? pc.buttonDown() : pc.buttonUp() })
+                .overlay(alignment: .bottom) {
+                    CapsLabel("Drag · Tap · Two fingers to scroll", color: .white.opacity(0.22), size: 9)
+                        .padding(.bottom, Look.S.m)
+                        .allowsHitTesting(false)
+                        .accessibilityHidden(true)
+                }
                 .frame(maxHeight: .infinity)
             keysRow
             mediaDeck
             appsRow
         }
-        .padding(.horizontal, 18)
-        .padding(.bottom, 8)
+        .padding(.horizontal, 20)
+        .padding(.bottom, Look.S.s)
         .overlay {
             // Hidden field that drives the iOS keyboard; every change is sent as typing.
             TextField("", text: $typed)
@@ -187,10 +190,18 @@ private struct ConnectedPC: View {
     }
 
     private var header: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 1) {
-                Text("CONTROLLING").font(Look.font(11, .heavy)).tracking(2).foregroundStyle(Look.dim)
-                Text(pc.pc?.name ?? "Your PC").font(Look.font(24, .heavy)).foregroundStyle(.white).lineLimit(1)
+        HStack(spacing: Look.S.m) {
+            Image(systemName: "desktopcomputer").font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                .frame(width: 46, height: 46)
+                .background(Look.accent, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(.white.opacity(0.3), lineWidth: 1))
+                .shadow(color: Look.violet.opacity(0.6), radius: 10)
+            VStack(alignment: .leading, spacing: 2) {
+                HStack(spacing: 2) {
+                    LiveDot(color: Look.live, size: 6).frame(width: 12, height: 12)
+                    CapsLabel("Live · Controlling", color: Look.live.opacity(0.9), size: 10)
+                }
+                Text(pc.pc?.name ?? "Your PC").font(Look.display(24)).tracking(-0.5).foregroundStyle(.white).lineLimit(1)
             }
             Spacer()
             Menu {
@@ -200,91 +211,126 @@ private struct ConnectedPC: View {
                 Divider()
                 Button(role: .destructive) { pc.forget() } label: { Label("Forget this PC", systemImage: "desktopcomputer.trianglebadge.exclamationmark") }
             } label: {
-                Image(systemName: "power").font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
-                    .frame(width: 40, height: 40).background(Look.card, in: Circle())
+                Image(systemName: "power").font(.system(size: 17, weight: .black)).foregroundStyle(Look.red)
+                    .frame(width: 44, height: 44)
+                    .glassCircle(tint: Look.red, glow: Look.red)
             }
             .accessibilityLabel("PC power options")
         }
+        .padding(.top, Look.S.xs)
     }
 
     private var keysRow: some View {
-        HStack(spacing: 8) {
-            keyButton("keyboard", "Keyboard", highlighted: keyboardUp) { keyboardUp.toggle() }
-            keyButton("escape", "Esc") { pc.key("esc") }
-            keyButton("square.grid.2x2", "Windows key") { pc.key("win") }
-            keyButton("rectangle.2.swap", "Switch window") { pc.key("alt_tab") }
-            keyButton("return", "Enter") { pc.key("enter") }
+        HStack(spacing: Look.S.s) {
+            keyButton("keyboard", "Keyboard", caption: "type", highlighted: keyboardUp) { keyboardUp.toggle() }
+            keyButton("escape", "Esc", caption: "esc") { pc.key("esc") }
+            keyButton("square.grid.2x2", "Windows key", caption: "win") { pc.key("win") }
+            keyButton("rectangle.2.swap", "Switch window", caption: "alt-tab") { pc.key("alt_tab") }
+            keyButton("return", "Enter", caption: "enter") { pc.key("enter") }
         }
     }
 
-    private func keyButton(_ symbol: String, _ label: String, highlighted: Bool = false, _ action: @escaping () -> Void) -> some View {
+    private func keyButton(_ symbol: String, _ label: String, caption: String, highlighted: Bool = false, _ action: @escaping () -> Void) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             action()
         } label: {
-            Image(systemName: symbol).font(.system(size: 17, weight: .bold))
-                .foregroundStyle(.white)
-                .frame(maxWidth: .infinity).frame(height: 46)
-                .background(highlighted ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Look.card), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-                .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).strokeBorder(Look.line))
+            VStack(spacing: 3) {
+                Image(systemName: symbol).font(.system(size: 16, weight: .bold))
+                Text(caption.uppercased()).font(Look.font(8, .black)).tracking(0.8).opacity(0.6)
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity).frame(height: 52)
         }
-        .buttonStyle(SquishStyle())
+        .buttonStyle(KeycapStyle(lit: highlighted))
         .accessibilityLabel(label)
     }
 
     private var mediaDeck: some View {
         @Bindable var pc = pc
-        return VStack(spacing: 10) {
-            HStack(spacing: 10) {
+        return VStack(spacing: Look.S.m) {
+            HStack(spacing: Look.S.s) {
                 mediaButton("backward.fill", "Previous track") { pc.media("prev") }
                 Button { UIImpactFeedbackGenerator(style: .medium).impactOccurred(); pc.media("playpause") } label: {
                     Image(systemName: "playpause.fill").font(.system(size: 20, weight: .heavy)).foregroundStyle(.white)
-                        .frame(width: 58, height: 50).background(Look.accent, in: Capsule())
-                        .shadow(color: Look.magenta.opacity(0.5), radius: 10)
+                        .frame(width: 70, height: 50).background(Look.accentH, in: Capsule())
+                        .overlay(Capsule().fill(LinearGradient(colors: [.white.opacity(0.35), .clear], startPoint: .top, endPoint: .center)).padding(1.5))
+                        .overlay(Capsule().strokeBorder(.white.opacity(0.35), lineWidth: 1))
+                        .shadow(color: Look.magenta.opacity(0.5), radius: 12)
                 }
                 .buttonStyle(SquishStyle())
                 .accessibilityLabel("Play or pause")
                 mediaButton("forward.fill", "Next track") { pc.media("next") }
-                Spacer(minLength: 4)
+                Spacer(minLength: Look.S.xs)
                 mediaButton("speaker.slash.fill", "Mute") { pc.media("mute") }
             }
-            HStack(spacing: 10) {
-                Image(systemName: "speaker.fill").foregroundStyle(Look.dim)
+            HStack(spacing: Look.S.m) {
+                Image(systemName: "speaker.fill").font(.system(size: 13, weight: .bold)).foregroundStyle(Look.dim)
                 Slider(value: $pc.volume, in: 0...100, step: 1, onEditingChanged: { editing in
                     if !editing { pc.setVolume(pc.volume) }
                 })
                 .tint(Look.magenta)
                 .accessibilityLabel("PC volume")
-                Text("\(Int(pc.volume))").font(Look.font(14, .heavy)).foregroundStyle(.white).monospacedDigit().frame(width: 30)
+                Text("\(Int(pc.volume))").font(Look.font(15, .black)).foregroundStyle(.white).monospacedDigit().frame(width: 32)
+                    .contentTransition(.numericText())
             }
         }
-        .padding(12)
-        .background(Look.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(Look.line))
+        .padding(Look.S.m)
+        .glass(24)
     }
 
     private func mediaButton(_ symbol: String, _ label: String, _ action: @escaping () -> Void) -> some View {
         Button { UIImpactFeedbackGenerator(style: .light).impactOccurred(); action() } label: {
             Image(systemName: symbol).font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
-                .frame(width: 46, height: 44).background(Color.white.opacity(0.06), in: Capsule())
+                .frame(width: 48, height: 48).glassCircle()
         }
         .buttonStyle(SquishStyle())
         .accessibilityLabel(label)
     }
 
     private var appsRow: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack {
-                Text("APPS").font(Look.font(11, .heavy)).tracking(2).foregroundStyle(Look.dim)
-                Spacer()
-                Button("All apps") { showApps = true }.font(Look.font(13, .bold)).foregroundStyle(Look.cyan)
+        VStack(alignment: .leading, spacing: Look.S.s) {
+            SectionHeader(title: "Apps") {
+                Button { showApps = true } label: {
+                    Text("All apps").font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
+                        .padding(.horizontal, Look.S.m).frame(minHeight: 32)
+                        .background(Look.cyan.opacity(0.12), in: Capsule())
+                }
+                .buttonStyle(SquishStyle())
             }
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: 10) {
-                    ForEach(pc.apps.prefix(14)) { app in PCAppTile(app: app, size: 74) { pc.launch(app) } }
+                HStack(spacing: Look.S.m) {
+                    ForEach(pc.apps.prefix(14)) { app in PCAppTile(app: app, size: 64) { pc.launch(app) } }
                 }
+                .padding(.vertical, Look.S.xs)
             }
+            .scrollClipDisabled()
         }
+    }
+}
+
+/// A 3D keycap: a darker base with a lit face that sinks when pressed.
+struct KeycapStyle: ButtonStyle {
+    var lit = false
+    func makeBody(configuration: Configuration) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
+        let down = configuration.isPressed
+        return ZStack {
+            shape.fill(lit ? AnyShapeStyle(Color(red: 0.35, green: 0.12, blue: 0.45)) : AnyShapeStyle(Color.black.opacity(0.55)))
+                .offset(y: 4)
+            configuration.label
+                .background {
+                    ZStack {
+                        shape.fill(lit ? AnyShapeStyle(Look.accent)
+                                       : AnyShapeStyle(LinearGradient(colors: [Color(white: 0.24), Color(white: 0.12)], startPoint: .top, endPoint: .bottom)))
+                        shape.strokeBorder(LinearGradient(colors: [.white.opacity(0.35), .white.opacity(0.04)], startPoint: .top, endPoint: .bottom), lineWidth: 1)
+                    }
+                }
+                .offset(y: down ? 3 : 0)
+        }
+        .padding(.bottom, 4)
+        .shadow(color: lit ? Look.magenta.opacity(0.5) : .black.opacity(0.35), radius: lit ? 10 : 6, y: 4)
+        .animation(.spring(response: 0.18, dampingFraction: 0.6), value: down)
     }
 }
 
@@ -310,14 +356,19 @@ struct PCAppTile: View {
             action()
         } label: {
             VStack(spacing: 6) {
-                Text(initials)
-                    .font(.system(size: size * 0.3, weight: .black, design: .rounded)).foregroundStyle(.white)
-                    .frame(width: size, height: size)
-                    .background(LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing),
-                                in: RoundedRectangle(cornerRadius: size * 0.26, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: size * 0.26, style: .continuous).strokeBorder(Color.white.opacity(0.18)))
-                    .shadow(color: (colors.first ?? .clear).opacity(0.35), radius: 8, y: 4)
-                Text(app.name).font(Look.font(11, .bold)).foregroundStyle(.white.opacity(0.85)).lineLimit(1).frame(width: size + 8)
+                ZStack {
+                    LinearGradient(colors: colors, startPoint: .topLeading, endPoint: .bottomTrailing)
+                    RadialGradient(colors: [.white.opacity(0.35), .clear], center: .topLeading, startRadius: 0, endRadius: size)
+                    Text(initials)
+                        .font(.system(size: size * 0.32, weight: .black, design: .rounded)).foregroundStyle(.white)
+                        .shadow(color: .black.opacity(0.25), radius: 3, y: 1)
+                }
+                .frame(width: size, height: size)
+                .clipShape(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: size * 0.28, style: .continuous)
+                    .strokeBorder(LinearGradient(colors: [.white.opacity(0.45), .white.opacity(0.05)], startPoint: .top, endPoint: .bottom), lineWidth: 1))
+                .shadow(color: (colors.first ?? .clear).opacity(0.4), radius: 10, y: 5)
+                Text(app.name).font(Look.font(11, .bold)).foregroundStyle(.white.opacity(0.85)).lineLimit(1).frame(width: size + 14)
             }
         }
         .buttonStyle(SquishStyle())
@@ -339,7 +390,7 @@ private struct AllPCApps: View {
                 }
                 .padding(18)
             }
-            .background(Look.bg)
+            .background(AuroraBackground())
             .searchable(text: $query, prompt: "Search your PC's apps")
             .navigationTitle("PC apps")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
@@ -442,46 +493,80 @@ private struct Trackpad: UIViewRepresentable {
     }
 }
 
-/// The trackpad's look: rounded glass with a faint grid, a glow under your finger, ripples on clicks.
+/// The trackpad's look: a glass slab with a dotted grid, lit rim, a glow under your finger and ripples on clicks.
 final class TrackpadSurface: UIView {
+    private let fill = CAGradientLayer()
+    private let sheen = CAGradientLayer()
     private let glowLayer = CAGradientLayer()
-    private let border = CAShapeLayer()
+    private let rim = CAGradientLayer()
+    private let rimMask = CAShapeLayer()
     private let grid = CAShapeLayer()
+    private let radius: CGFloat = 32
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = UIColor.white.withAlphaComponent(0.05)
-        layer.cornerRadius = 28
+        backgroundColor = .clear
+        layer.cornerRadius = radius
         layer.cornerCurve = .continuous
         clipsToBounds = true
-        grid.strokeColor = UIColor.white.withAlphaComponent(0.05).cgColor
-        grid.lineWidth = 1
+
+        fill.colors = [UIColor(red: 0.16, green: 0.11, blue: 0.30, alpha: 0.75).cgColor,
+                       UIColor(red: 0.04, green: 0.03, blue: 0.10, alpha: 0.85).cgColor]
+        fill.startPoint = CGPoint(x: 0.2, y: 0); fill.endPoint = CGPoint(x: 0.8, y: 1)
+        layer.addSublayer(fill)
+
+        grid.fillColor = UIColor.white.withAlphaComponent(0.09).cgColor
         layer.addSublayer(grid)
+
+        sheen.colors = [UIColor.white.withAlphaComponent(0.10).cgColor, UIColor.clear.cgColor]
+        sheen.startPoint = CGPoint(x: 0.5, y: 0); sheen.endPoint = CGPoint(x: 0.5, y: 0.35)
+        layer.addSublayer(sheen)
+
         glowLayer.type = .radial
-        glowLayer.colors = [UIColor(red: 1, green: 0.24, blue: 0.62, alpha: 0.55).cgColor, UIColor.clear.cgColor]
+        glowLayer.colors = [UIColor(red: 1, green: 0.24, blue: 0.62, alpha: 0.6).cgColor,
+                            UIColor(red: 0.55, green: 0.33, blue: 1, alpha: 0.25).cgColor, UIColor.clear.cgColor]
         glowLayer.startPoint = CGPoint(x: 0.5, y: 0.5)
         glowLayer.endPoint = CGPoint(x: 1, y: 1)
-        glowLayer.frame = CGRect(x: 0, y: 0, width: 180, height: 180)
+        glowLayer.frame = CGRect(x: 0, y: 0, width: 200, height: 200)
         glowLayer.opacity = 0
         layer.addSublayer(glowLayer)
-        border.fillColor = UIColor.clear.cgColor
-        border.strokeColor = UIColor(red: 0.55, green: 0.33, blue: 1, alpha: 0.55).cgColor
-        border.lineWidth = 1.5
-        layer.addSublayer(border)
+
+        // Gradient rim: magenta → violet → cyan, masked to a thin stroke.
+        rim.colors = [UIColor.white.withAlphaComponent(0.45).cgColor,
+                      UIColor(red: 0.55, green: 0.33, blue: 1, alpha: 0.6).cgColor,
+                      UIColor(red: 0.25, green: 0.88, blue: 1, alpha: 0.5).cgColor]
+        rim.startPoint = CGPoint(x: 0, y: 0); rim.endPoint = CGPoint(x: 1, y: 1)
+        rimMask.fillColor = UIColor.clear.cgColor
+        rimMask.strokeColor = UIColor.black.cgColor
+        rimMask.lineWidth = 1.5
+        rim.mask = rimMask
+        layer.addSublayer(rim)
     }
 
     required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        border.path = UIBezierPath(roundedRect: bounds.insetBy(dx: 0.75, dy: 0.75), cornerRadius: 28).cgPath
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        fill.frame = bounds
+        sheen.frame = bounds
+        rim.frame = bounds
+        rimMask.path = UIBezierPath(roundedRect: bounds.insetBy(dx: 0.75, dy: 0.75), cornerRadius: radius).cgPath
+        // A dotted grid like a precision trackpad.
         let p = UIBezierPath()
-        let step: CGFloat = 28
-        var x = step
-        while x < bounds.width { p.move(to: CGPoint(x: x, y: 0)); p.addLine(to: CGPoint(x: x, y: bounds.height)); x += step }
+        let step: CGFloat = 22
         var y = step
-        while y < bounds.height { p.move(to: CGPoint(x: 0, y: y)); p.addLine(to: CGPoint(x: bounds.width, y: y)); y += step }
+        while y < bounds.height {
+            var x = step
+            while x < bounds.width {
+                p.append(UIBezierPath(ovalIn: CGRect(x: x - 1, y: y - 1, width: 2, height: 2)))
+                x += step
+            }
+            y += step
+        }
         grid.path = p.cgPath
+        CATransaction.commit()
     }
 
     func glow(at p: CGPoint, active: Bool) {

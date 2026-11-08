@@ -1,135 +1,173 @@
 import SwiftUI
 import UIKit
 
-/// The remote: a big swipe pad, edge chevrons, OK disc, nav pills, media controls and a hold-to-repeat volume rocker.
+/// The remote: a sculpted glass controller — swipe pad, OK disc, nav cluster, media keys and volume / mute rockers.
 struct RemoteView: View {
     @Environment(TVStore.self) private var store
     @State private var playing = true
-    @State private var volTick = 0
-    @State private var volUp = true
     @State private var bump = false
+    @State private var sheet: TVSheet?
 
     var body: some View {
         GeometryReader { geo in
             // Size the pad to whatever room is left, so nothing ends up under the tab bar.
-            let pad = min(geo.size.width - 64, max(190, geo.size.height - 372), 300)
-            VStack(spacing: 16) {
+            let pad = max(160, min(geo.size.width - 92, geo.size.height - 360 - (store.reachable ? 0 : 48), 290))
+            VStack(spacing: Look.S.m) {
                 if !store.reachable {
-                    Label("Can't reach your TV — is it on and on the same Wi-Fi?", systemImage: "wifi.exclamationmark")
-                        .font(Look.font(13, .semibold))
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 14).padding(.vertical, 8)
-                        .frame(maxWidth: .infinity)
-                        .background(Color.orange.opacity(0.28), in: Capsule())
-                        .overlay(Capsule().stroke(Color.orange.opacity(0.6), lineWidth: 1))
-                        .transition(.move(edge: .top).combined(with: .opacity))
+                    Button {
+                        guard !store.reconnecting else { return }
+                        Task { await store.reconnect(userInitiated: true) }
+                    } label: {
+                        Label(store.reconnecting ? "Searching for your TV…" : "Can't reach your TV — tap to retry", systemImage: "wifi.exclamationmark")
+                            .font(Look.font(13, .bold))
+                            .foregroundStyle(.white)
+                            .padding(.horizontal, Look.S.l).frame(minHeight: 36)
+                            .frame(maxWidth: .infinity)
+                            .glassCapsule(tint: .orange, glow: .orange, strength: 2)
+                    }
+                    .buttonStyle(SquishStyle(scale: 0.97))
+                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .accessibilityLabel("Can't reach your TV. Is it on and on the same Wi-Fi? Tap to search again.")
                 }
 
-                topRow
-
-                Spacer(minLength: 0)
-
-                TouchPad(size: pad) { key, heavy in send(key, heavy: heavy) }
-
-                Spacer(minLength: 0)
-
-                HStack(spacing: 12) {
-                    PillButton(symbol: "arrow.uturn.backward", label: "Back") { send(.back) }
-                    PillButton(symbol: "house.fill", label: "Home") { send(.home) }
-                    PillButton(symbol: "line.3.horizontal", label: "Menu") { send(.menu) }
+                VStack(spacing: Look.S.m) {
+                    topRow
+                    Spacer(minLength: 0)
+                    TouchPad(size: pad) { key, heavy in send(key, heavy: heavy) }
+                    Spacer(minLength: 0)
+                    navCluster
+                    controlDeck
                 }
-
-                controlDeck
+                .padding(.horizontal, 14)
+                .padding(.top, Look.S.l)
+                .padding(.bottom, Look.S.l)
+                .background(RemoteBody())
             }
-            .padding(.horizontal, 20)
-            .padding(.top, 8)
-            .padding(.bottom, 8)
+            .padding(.horizontal, 14)
+            .padding(.top, Look.S.xs)
+            .padding(.bottom, Look.S.s)
             .frame(width: geo.size.width, height: geo.size.height)
             .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.reachable)
         }
-    }
-
-    /// Volume on the left, play/pause in the middle, mute on the right: one tidy row.
-    private var controlDeck: some View {
-        HStack(spacing: 12) {
-            VStack(spacing: 4) {
-                HStack(spacing: 0) {
-                    HoldButton(symbol: "minus", label: "Volume down") { volume(up: false) }
-                    Rectangle().fill(Look.line).frame(width: 1, height: 26)
-                    HoldButton(symbol: "plus", label: "Volume up") { volume(up: true) }
-                }
-                .background(Look.card, in: Capsule())
-                .overlay(Capsule().stroke(Look.line, lineWidth: 1))
-                .overlay(alignment: .center) {
-                    Capsule().stroke(Look.accent, lineWidth: bump ? 2 : 0).opacity(bump ? 1 : 0)
-                        .animation(.easeOut(duration: 0.25), value: bump)
-                }
-                Text("VOLUME").font(Look.font(9, .heavy)).tracking(1.5).foregroundStyle(Look.dim)
-            }
-            Spacer(minLength: 0)
-            HStack(spacing: 10) {
-                RoundButton(symbol: "backward.fill", label: "Rewind", size: 44) { send(.seekBack) }
-                Button {
-                    send(playing ? .pause : .play, heavy: true)
-                    playing.toggle()
-                } label: {
-                    Image(systemName: playing ? "pause.fill" : "play.fill")
-                        .contentTransition(.symbolEffect(.replace))
-                        .font(Look.font(22, .heavy))
-                        .foregroundStyle(.white)
-                        .frame(width: 60, height: 60)
-                        .background(Circle().fill(Look.accent))
-                        .shadow(color: Look.magenta.opacity(0.55), radius: 12)
-                }
-                .buttonStyle(SquishStyle())
-                .accessibilityLabel(playing ? "Pause" : "Play")
-                RoundButton(symbol: "forward.fill", label: "Fast forward", size: 44) { send(.seekForward) }
-            }
-            Spacer(minLength: 0)
-            VStack(spacing: 4) {
-                RoundButton(symbol: "speaker.slash.fill", label: "Mute", size: 52) { send(.muteToggle) }
-                Text("MUTE").font(Look.font(9, .heavy)).tracking(1.5).foregroundStyle(Look.dim)
-            }
-        }
+        .tvSheets($sheet, store: store)
     }
 
     // MARK: Rows
 
     private var topRow: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: Look.S.s) {
             Button { send(.powerToggle, heavy: true) } label: {
                 Image(systemName: "power")
-                    .font(Look.font(20, .heavy))
-                    .foregroundStyle(Color(red: 1, green: 0.35, blue: 0.4))
+                    .font(.system(size: 20, weight: .black))
+                    .foregroundStyle(.white)
                     .frame(width: 52, height: 52)
-                    .background(Circle().fill(Color.red.opacity(0.12)))
-                    .overlay(Circle().stroke(Color.red.opacity(0.85), lineWidth: 2))
-                    .shadow(color: .red.opacity(0.7), radius: 10)
+                    .background(Circle().fill(RadialGradient(colors: [Look.red, Color(red: 0.55, green: 0.05, blue: 0.15)],
+                                                             center: .topLeading, startRadius: 2, endRadius: 60)))
+                    .overlay(Circle().fill(LinearGradient(colors: [.white.opacity(0.4), .clear], startPoint: .top, endPoint: .center)).padding(2))
+                    .overlay(Circle().strokeBorder(Color.white.opacity(0.3), lineWidth: 1))
+                    .shadow(color: Look.red.opacity(0.6), radius: 12)
             }
             .buttonStyle(SquishStyle())
             .accessibilityLabel("Power")
 
             Spacer(minLength: 0)
 
-            if let now = store.nowPlaying {
-                HStack(spacing: 6) {
-                    Circle().fill(Look.cyan).frame(width: 7, height: 7).shadow(color: Look.cyan, radius: 4)
-                    Text(now).font(Look.font(13, .bold)).foregroundStyle(.white).lineLimit(1)
-                }
-                .padding(.horizontal, 12).padding(.vertical, 7)
-                .background(Look.card, in: Capsule())
-                .overlay(Capsule().stroke(Look.line, lineWidth: 1))
-                .transition(.scale.combined(with: .opacity))
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Now playing: \(now)")
-            }
+            TVSwitcherPill(action: { sheet = .switcher }, subtitle: store.nowPlaying.map { "▶︎ \($0)" })
+                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.nowPlaying)
 
             Spacer(minLength: 0)
 
-            RoundButton(symbol: "arrow.left.arrow.right.square", label: "Input") { send(.inputNext) }
-            RoundButton(symbol: "captions.bubble", label: "Closed captions") { send(.ccToggle) }
+            KeyButton(symbol: "rectangle.on.rectangle", label: "Input", size: 48) { send(.inputNext) }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.nowPlaying)
+    }
+
+    /// Back / Home / Menu as one segmented glass bar.
+    private var navCluster: some View {
+        HStack(spacing: 0) {
+            segment("arrow.uturn.backward", "Back") { send(.back) }
+            divider
+            segment("house.fill", "Home") { send(.home) }
+            divider
+            segment("line.3.horizontal", "Menu") { send(.menu) }
+        }
+        .frame(height: 54)
+        .glassCapsule()
+    }
+
+    private var divider: some View {
+        Rectangle().fill(Color.white.opacity(0.1)).frame(width: 1, height: 24)
+    }
+
+    private func segment(_ symbol: String, _ label: String, _ run: @escaping () -> Void) -> some View {
+        Button(action: run) {
+            HStack(spacing: 7) {
+                Image(systemName: symbol).font(.system(size: 15, weight: .bold))
+                Text(label).font(Look.font(14, .heavy))
+            }
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(SquishStyle(scale: 0.9))
+        .accessibilityLabel(label)
+    }
+
+    /// Volume rocker · media keys · mute/CC rocker.
+    private var controlDeck: some View {
+        HStack(alignment: .center, spacing: Look.S.s) {
+            VStack(spacing: 0) {
+                HoldButton(symbol: "plus", label: "Volume up") { volume(up: true) }
+                Text("VOL").font(Look.font(10, .black)).tracking(1.8).foregroundStyle(Look.dim)
+                    .frame(height: 16)
+                    .accessibilityHidden(true)
+                HoldButton(symbol: "minus", label: "Volume down") { volume(up: false) }
+            }
+            .frame(width: 58)
+            .glassCapsule()
+            .overlay {
+                Capsule().strokeBorder(Look.accent, lineWidth: 2).opacity(bump ? 1 : 0)
+                    .shadow(color: Look.magenta, radius: bump ? 10 : 0)
+                    .animation(.easeOut(duration: 0.25), value: bump)
+            }
+
+            VStack(spacing: Look.S.m) {
+                HStack(spacing: 6) {
+                    KeyButton(symbol: "backward.fill", label: "Rewind", size: 46) { send(.seekBack) }
+                    Button {
+                        send(playing ? .pause : .play, heavy: true)
+                        playing.toggle()
+                    } label: {
+                        Image(systemName: playing ? "pause.fill" : "play.fill")
+                            .contentTransition(.symbolEffect(.replace))
+                            .font(.system(size: 24, weight: .black))
+                            .foregroundStyle(.white)
+                            .frame(width: 64, height: 64)
+                            .background(Circle().fill(Look.accent))
+                            .overlay(Circle().fill(LinearGradient(colors: [.white.opacity(0.4), .clear], startPoint: .top, endPoint: .center)).padding(2))
+                            .overlay(Circle().strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
+                            .shadow(color: Look.magenta.opacity(0.6), radius: 14)
+                    }
+                    .buttonStyle(SquishStyle())
+                    .accessibilityLabel(playing ? "Pause" : "Play")
+                    KeyButton(symbol: "forward.fill", label: "Fast forward", size: 46) { send(.seekForward) }
+                }
+                HStack(spacing: Look.S.s) {
+                    SmallKey(title: "Info") { send(.info) }
+                    SmallKey(title: "Exit") { send(.exit) }
+                }
+            }
+            .frame(maxWidth: .infinity)
+
+            VStack(spacing: 0) {
+                KeyButton(symbol: "speaker.slash.fill", label: "Mute", size: 54, plain: true) { send(.muteToggle) }
+                Rectangle().fill(Color.white.opacity(0.1)).frame(width: 26, height: 1)
+                    .padding(.vertical, Look.S.xs)
+                KeyButton(symbol: "captions.bubble.fill", label: "Closed captions", size: 54, plain: true) { send(.ccToggle) }
+            }
+            .padding(.vertical, 3)
+            .frame(width: 58)
+            .glassCapsule()
+        }
     }
 
     // MARK: Actions
@@ -140,11 +178,27 @@ struct RemoteView: View {
     }
 
     private func volume(up: Bool) {
-        volUp = up
-        volTick += 1
         send(up ? .volumeUp : .volumeDown)
         bump = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.14) { bump = false }
+    }
+}
+
+/// The physical controller's body: a tall glass slab with a lit rim.
+private struct RemoteBody: View {
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 44, style: .continuous)
+        ZStack {
+            shape.fill(LinearGradient(colors: [Color.white.opacity(0.09), Look.bgDeep.opacity(0.55), Color.white.opacity(0.03)],
+                                      startPoint: .top, endPoint: .bottom))
+            shape.fill(RadialGradient(colors: [Look.violet.opacity(0.18), .clear], center: .init(x: 0.5, y: 0.38), startRadius: 0, endRadius: 260))
+            shape.strokeBorder(LinearGradient(colors: [.white.opacity(0.22), .clear], startPoint: .top, endPoint: .center), lineWidth: 3)
+                .blur(radius: 2)
+            shape.strokeBorder(LinearGradient(colors: [.white.opacity(0.35), .white.opacity(0.05), Look.violet.opacity(0.45)],
+                                              startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+        }
+        .shadow(color: .black.opacity(0.5), radius: 24, y: 14)
+        .shadow(color: Look.violet.opacity(0.18), radius: 30)
     }
 }
 
@@ -176,21 +230,23 @@ private struct TouchPad: View {
                 .accessibilityLabel("Touch pad. Swipe to move, tap to select.")
                 .accessibilityAddTraits(.allowsDirectInteraction)
 
-            edgeButton(.up, "chevron.up", x: 0, y: -(size / 2 - 28))
-            edgeButton(.down, "chevron.down", x: 0, y: size / 2 - 28)
-            edgeButton(.left, "chevron.left", x: -(size / 2 - 28), y: 0)
-            edgeButton(.right, "chevron.right", x: size / 2 - 28, y: 0)
+            edgeButton(.up, "chevron.up", x: 0, y: -(size / 2 - 32))
+            edgeButton(.down, "chevron.down", x: 0, y: size / 2 - 32)
+            edgeButton(.left, "chevron.left", x: -(size / 2 - 32), y: 0)
+            edgeButton(.right, "chevron.right", x: size / 2 - 32, y: 0)
 
             Button { fireOK(at: CGPoint(x: size / 2, y: size / 2)) } label: {
                 Text("OK")
-                    .font(Look.font(22, .black))
+                    .font(Look.display(24)).tracking(1)
                     .foregroundStyle(.white)
-                    .frame(width: 92, height: 92)
+                    .frame(width: 94, height: 94)
                     .background(
-                        Circle().fill(RadialGradient(colors: [Look.violet, Look.magenta.opacity(0.85)],
+                        Circle().fill(RadialGradient(colors: [Look.violet, Look.magenta.opacity(0.9)],
                                                      center: .topLeading, startRadius: 4, endRadius: 110))
                     )
-                    .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
+                    .overlay(Circle().fill(LinearGradient(colors: [.white.opacity(0.45), .clear], startPoint: .top, endPoint: .center)).padding(3))
+                    .overlay(Circle().strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
+                    .background(Circle().fill(Color.black.opacity(0.5)).padding(-8).blur(radius: 6))
                     .shadow(color: Look.magenta.opacity(breathe ? 0.85 : 0.5), radius: breathe ? 24 : 16)
                     .scaleEffect(breathe ? 1.03 : 1.0)
             }
@@ -206,17 +262,30 @@ private struct TouchPad: View {
 
     private var surface: some View {
         ZStack {
+            // Sculpted well: dark recessed disc with an inner shadow ring.
             Circle()
-                .fill(RadialGradient(colors: [Look.violet.opacity(0.20), Look.bg.opacity(0.65)],
-                                     center: .center, startRadius: 10, endRadius: size / 2))
+                .fill(RadialGradient(colors: [Color(red: 0.10, green: 0.07, blue: 0.20), Look.bgDeep],
+                                     center: .center, startRadius: 10, endRadius: size / 2)
+                    .shadow(.inner(color: .black.opacity(0.85), radius: 14, x: 0, y: 8))
+                    .shadow(.inner(color: Look.violet.opacity(0.35), radius: 6, x: 0, y: -3)))
             ForEach(1..<4, id: \.self) { i in
                 Circle()
-                    .stroke(Look.line, lineWidth: 1)
+                    .stroke(Color.white.opacity(0.05), lineWidth: 1)
                     .frame(width: size * CGFloat(i) / 4 + 40, height: size * CGFloat(i) / 4 + 40)
             }
+            // Tick marks around the rim.
+            ForEach(0..<24, id: \.self) { i in
+                Capsule().fill(Color.white.opacity(i % 6 == 0 ? 0 : 0.10))
+                    .frame(width: 2, height: 6)
+                    .offset(y: -(size / 2 - 12))
+                    .rotationEffect(.degrees(Double(i) * 15))
+            }
             Circle()
-                .stroke(Look.accent, lineWidth: touching ? 3 : 2)
-                .shadow(color: Look.violet.opacity(touching ? 0.9 : 0.4), radius: touching ? 16 : 8)
+                .strokeBorder(Look.accent, lineWidth: touching ? 3 : 2)
+                .shadow(color: Look.violet.opacity(touching ? 0.9 : 0.45), radius: touching ? 18 : 10)
+            Circle()
+                .strokeBorder(Color.white.opacity(0.12), lineWidth: 1)
+                .padding(-7)
 
             TimelineView(.animation(minimumInterval: 1 / 60, paused: trail.isEmpty && ripples.isEmpty && sparks.isEmpty)) { tl in
                 let now = tl.date
@@ -277,7 +346,7 @@ private struct TouchPad: View {
                 .shadow(color: Look.cyan.opacity(lit ? 0.9 : 0), radius: lit ? 10 : 0)
                 .scaleEffect(lit ? 1.25 : 1)
                 .animation(.spring(response: 0.25, dampingFraction: 0.5), value: lit)
-                .frame(width: 44, height: 44)
+                .frame(width: 48, height: 48)
                 .contentShape(Rectangle())
         }
         .buttonStyle(SquishStyle(scale: 0.85))
@@ -395,45 +464,49 @@ private struct TouchPad: View {
 
 // MARK: - Buttons
 
-private struct RoundButton: View {
+/// Round glass key.
+private struct KeyButton: View {
     let symbol: String
     let label: String
     var size: CGFloat = 48
+    var plain = false
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
             Image(systemName: symbol)
-                .font(Look.font(size * 0.36, .bold))
+                .font(.system(size: size * 0.34, weight: .bold))
                 .foregroundStyle(.white)
                 .frame(width: size, height: size)
-                .background(Circle().fill(Look.card))
-                .overlay(Circle().stroke(Look.line, lineWidth: 1))
+                .modifier(KeyFace(plain: plain))
+                .contentShape(Circle())
         }
-        .buttonStyle(SquishStyle())
+        .buttonStyle(SquishStyle(scale: 0.88))
         .accessibilityLabel(label)
     }
 }
 
-private struct PillButton: View {
-    let symbol: String
-    let label: String
-    let action: () -> Void
+private struct KeyFace: ViewModifier {
+    let plain: Bool
+    func body(content: Content) -> some View {
+        if plain { content } else { content.glassCircle() }
+    }
+}
 
+/// Small text key (Info, Exit).
+private struct SmallKey: View {
+    let title: String
+    let action: () -> Void
     var body: some View {
         Button(action: action) {
-            HStack(spacing: 7) {
-                Image(systemName: symbol).font(Look.font(15, .bold))
-                Text(label).font(Look.font(14, .bold))
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity)
-            .frame(height: 50)
-            .background(Look.card, in: Capsule())
-            .overlay(Capsule().stroke(Look.line, lineWidth: 1))
+            Text(title.uppercased()).font(Look.font(11, .black)).tracking(1.4).foregroundStyle(.white.opacity(0.85))
+                .frame(width: 70, height: 36)
+                .glassCapsule()
+                .frame(height: 44)
+                .contentShape(Rectangle())
         }
-        .buttonStyle(SquishStyle())
-        .accessibilityLabel(label)
+        .buttonStyle(SquishStyle(scale: 0.9))
+        .accessibilityLabel(title)
     }
 }
 
@@ -448,11 +521,13 @@ private struct HoldButton: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(Look.font(22, .black))
+            .font(.system(size: 20, weight: .black))
             .foregroundStyle(.white)
-            .frame(width: 58, height: 52)
+            .frame(width: 50, height: 50)
+            .background(holding ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.white.opacity(0.05)), in: Circle())
+            .shadow(color: holding ? Look.magenta.opacity(0.6) : .clear, radius: 10)
+            .frame(width: 58, height: 54)
             .contentShape(Rectangle())
-            .background(holding ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.clear), in: Capsule())
             .scaleEffect(holding ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.6), value: holding)
             .gesture(

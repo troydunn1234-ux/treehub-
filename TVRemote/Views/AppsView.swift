@@ -1,12 +1,11 @@
 import SwiftUI
 
-/// Your streaming apps as big glowing tiles. Tap one and it opens on the TV.
+/// Your streaming apps as poster tiles. Tap one and it opens on the TV.
 struct AppsView: View {
     @Environment(TVStore.self) private var store
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var editing = false
-    @State private var addingTV = false
-    @State private var forgetting: VizioClient.TVInfo?
+    @State private var sheet: TVSheet? = (ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-switcher")) ? .switcher : nil
     @State private var launching: String?
     @State private var appeared = false
     @State private var beam: Beam?
@@ -18,47 +17,83 @@ struct AppsView: View {
         let color: Color
     }
 
-    private let cols = [GridItem(.flexible(), spacing: 14), GridItem(.flexible(), spacing: 14)]
+    private let cols = [GridItem(.flexible(), spacing: Look.S.m), GridItem(.flexible(), spacing: Look.S.m)]
 
     var body: some View {
         ZStack(alignment: .top) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: Look.S.xl) {
                     header
-                    if let now = store.nowPlaying { NowPlayingCard(name: now, app: store.catalog.first { $0.name == now }) { store.press(.home) } }
-                    quickChips
-                    LazyVGrid(columns: cols, spacing: 14) {
-                        ForEach(Array(store.favoriteApps.enumerated()), id: \.element.id) { i, app in
-                            AppTile(app: app, isPlaying: store.nowPlaying == app.name, launching: launching == app.name) { frame in
-                                fireBeam(from: frame, color: app.colors.first ?? Look.magenta)
-                                Task {
-                                    launching = app.name
-                                    await store.launch(app)
-                                    try? await Task.sleep(nanoseconds: 600_000_000)
-                                    launching = nil
+                    Group {
+                        if let now = store.nowPlaying {
+                            NowPlayingHero(name: now, app: store.catalog.first { $0.name == now }, tvName: store.tv?.name ?? "your TV",
+                                           onPlayPause: { play in store.press(play ? .play : .pause) },
+                                           onHome: { store.press(.home) },
+                                           onMute: { store.press(.muteToggle) })
+                                .transition(.move(edge: .top).combined(with: .opacity))
+                        } else {
+                            IdleHero()
+                        }
+                    }
+                    .animation(.spring(response: 0.5, dampingFraction: 0.85), value: store.nowPlaying)
+
+                    VStack(alignment: .leading, spacing: Look.S.m) {
+                        SectionHeader("Quick actions")
+                        HStack(spacing: Look.S.s) {
+                            action("Power", "power", tint: Look.red) { store.press(.powerToggle) }
+                            action("Input", "rectangle.on.rectangle", tint: Look.cyan) { store.press(.inputNext) }
+                            action("Home", "house.fill", tint: Look.violet) { store.press(.home) }
+                            action("Mute", "speaker.slash.fill", tint: Look.magenta) { store.press(.muteToggle) }
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: Look.S.m) {
+                        SectionHeader(title: "Your apps") {
+                            Button { editing = true } label: {
+                                Text("Edit").font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
+                                    .padding(.horizontal, Look.S.m).frame(minHeight: 32)
+                                    .background(Look.cyan.opacity(0.12), in: Capsule())
+                            }
+                            .buttonStyle(SquishStyle())
+                            .accessibilityLabel("Edit your apps")
+                        }
+                        LazyVGrid(columns: cols, spacing: Look.S.m) {
+                            ForEach(Array(store.favoriteApps.enumerated()), id: \.element.id) { i, app in
+                                AppTile(app: app, isPlaying: store.nowPlaying == app.name, launching: launching == app.name) { frame in
+                                    fireBeam(from: frame, color: app.colors.first ?? Look.magenta)
+                                    Task {
+                                        launching = app.name
+                                        await store.launch(app)
+                                        try? await Task.sleep(nanoseconds: 600_000_000)
+                                        launching = nil
+                                    }
+                                }
+                                .opacity(appeared ? 1 : 0)
+                                .offset(y: appeared || reduceMotion ? 0 : 28)
+                                .animation(.spring(response: 0.55, dampingFraction: 0.8).delay(Double(i) * 0.035), value: appeared)
+                                .contextMenu {
+                                    Button(role: .destructive) { store.toggleFavorite(app) } label: { Label("Remove from my apps", systemImage: "minus.circle") }
                                 }
                             }
-                            .opacity(appeared ? 1 : 0)
-                            .offset(y: appeared ? 0 : 24)
-                            .animation(.spring(response: 0.55, dampingFraction: 0.8).delay(Double(i) * 0.04), value: appeared)
-                            .contextMenu {
-                                Button(role: .destructive) { store.toggleFavorite(app) } label: { Label("Remove from my apps", systemImage: "minus.circle") }
+                            Button { editing = true } label: {
+                                VStack(spacing: Look.S.s) {
+                                    Image(systemName: "plus").font(.system(size: 22, weight: .heavy)).foregroundStyle(.white)
+                                        .frame(width: 48, height: 48)
+                                        .glassCircle()
+                                    Text("Add apps").font(Look.font(14, .heavy)).foregroundStyle(Look.dim)
+                                }
+                                .frame(maxWidth: .infinity).frame(height: AppTile.height)
+                                .background(RoundedRectangle(cornerRadius: 26, style: .continuous)
+                                    .strokeBorder(Color.white.opacity(0.16), style: StrokeStyle(lineWidth: 1.5, dash: [6, 7])))
                             }
+                            .buttonStyle(SquishStyle())
+                            .accessibilityLabel("Add apps")
                         }
-                        Button { editing = true } label: {
-                            VStack(spacing: 8) {
-                                Image(systemName: "plus").font(.system(size: 26, weight: .bold))
-                                Text("Add apps").font(Look.font(14))
-                            }
-                            .foregroundStyle(Look.dim)
-                            .frame(maxWidth: .infinity, minHeight: 112)
-                            .background(RoundedRectangle(cornerRadius: 24, style: .continuous).strokeBorder(Look.line, style: StrokeStyle(lineWidth: 1.5, dash: [6, 6])))
-                        }
-                        .buttonStyle(SquishStyle())
                     }
                 }
-                .padding(.horizontal, 18)
-                .padding(.bottom, 40)
+                .padding(.horizontal, 20)
+                .padding(.top, Look.S.xs)
+                .padding(.bottom, Look.S.xxl)
             }
             .scrollIndicators(.hidden)
             .refreshable { await store.refresh() }
@@ -67,18 +102,7 @@ struct AppsView: View {
         }
         .coordinateSpace(name: "apps")
         .sheet(isPresented: $editing) { AppPicker().environment(store) }
-        .sheet(isPresented: $addingTV) {
-            ZStack {
-                AuroraBackground()
-                SetupView(onPaired: { addingTV = false })
-            }
-            .environment(store)
-            .preferredColorScheme(.dark)
-            .onDisappear { Task { await store.cancelPairing() } }
-        }
-        .confirmationDialog("Forget \(forgetting?.name ?? "this TV")?", isPresented: Binding(get: { forgetting != nil }, set: { if !$0 { forgetting = nil } }), titleVisibility: .visible) {
-            Button("Forget TV", role: .destructive) { if let t = forgetting { withAnimation(.snappy) { store.forget(t) } } }
-        } message: { Text("You'll pair it again with a code from the TV.") }
+        .tvSheets($sheet, store: store)
         .onAppear { appeared = true }
     }
 
@@ -96,99 +120,67 @@ struct AppsView: View {
         case 5..<12: return "Good morning"
         case 12..<17: return "Good afternoon"
         case 17..<22: return "Good evening"
-        default: return "Late night vibes"
+        default: return "Late night"
         }
     }
 
     private var header: some View {
-        HStack(alignment: .center) {
+        VStack(alignment: .leading, spacing: Look.S.l) {
+            HStack(spacing: Look.S.s) {
+                TVSwitcherPill(action: { sheet = .switcher })
+                Spacer(minLength: Look.S.s)
+                statusPill
+            }
             VStack(alignment: .leading, spacing: 2) {
-                Text(greeting.uppercased()).font(Look.font(12, .heavy)).tracking(2).foregroundStyle(Look.accent)
-                tvSwitcher
+                (Text(greeting) + Text(".").foregroundColor(Look.magenta))
+                    .font(Look.display(38)).tracking(-1).foregroundStyle(.white)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+                Text("What are we watching?").font(Look.font(16, .semibold)).foregroundStyle(Look.dim)
             }
-            Spacer()
-            Button {
-                guard !store.reachable, !store.reconnecting else { return }
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                Task { await store.reconnect(userInitiated: true) }
-            } label: {
-                HStack(spacing: 6) {
-                    if store.reconnecting {
-                        ProgressView().controlSize(.mini).tint(.white)
-                    } else {
-                        Circle().fill(store.reachable ? Color.green : Color.orange).frame(width: 8, height: 8)
-                            .shadow(color: store.reachable ? .green : .orange, radius: 4)
-                    }
-                    Text(store.reconnecting ? "Searching…" : store.reachable ? "Connected" : "Offline · Retry")
-                        .font(Look.font(12, .bold)).foregroundStyle(store.reachable ? Look.dim : .white)
-                }
-                .padding(.horizontal, 10).padding(.vertical, 6)
-                .background(store.reachable ? AnyShapeStyle(Look.card) : AnyShapeStyle(Color.orange.opacity(0.25)), in: Capsule())
-                .animation(.snappy, value: store.reconnecting)
-            }
-            .buttonStyle(SquishStyle())
-            .disabled(store.reachable)
-            .accessibilityLabel(store.reachable ? "Connected" : "TV offline. Tap to search for it again.")
         }
-        .padding(.top, 8)
+        .padding(.top, Look.S.s)
     }
 
-    /// Tap the TV name to switch TVs, add another, or forget one.
-    private var tvSwitcher: some View {
-        Menu {
-            Section("Your TVs") {
-                ForEach(store.tvs) { t in
-                    Button { store.switchTo(t) } label: {
-                        if t.id == store.tv?.id { Label(t.name, systemImage: "checkmark") } else { Text(t.name) }
-                    }
-                }
-            }
-            Button { addingTV = true } label: { Label("Add another TV", systemImage: "plus") }
-            Menu {
-                ForEach(store.tvs) { t in
-                    Button(role: .destructive) { forgetting = t } label: { Text(t.name) }
-                }
-            } label: { Label("Forget a TV", systemImage: "tv.slash") }
+    private var statusPill: some View {
+        Button {
+            guard !store.reachable, !store.reconnecting else { return }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            Task { await store.reconnect(userInitiated: true) }
         } label: {
-            HStack(spacing: 6) {
-                Text(store.tv?.name ?? "Your TV").font(Look.font(30, .heavy)).foregroundStyle(.white).lineLimit(1)
-                    .contentTransition(.opacity)
-                    .id(store.tv?.id)
-                    .transition(.asymmetric(insertion: .move(edge: .bottom).combined(with: .opacity),
-                                            removal: .move(edge: .top).combined(with: .opacity)))
-                Image(systemName: "chevron.down.circle.fill")
-                    .font(.system(size: 18, weight: .bold))
-                    .foregroundStyle(Look.dim)
+            HStack(spacing: 4) {
+                if store.reconnecting {
+                    ProgressView().controlSize(.mini).tint(.white).frame(width: 16, height: 16)
+                } else {
+                    LiveDot(color: store.reachable ? Look.live : .orange, size: 7, pulsing: store.reachable)
+                        .frame(width: 16, height: 16)
+                }
+                Text(store.reconnecting ? "Searching…" : store.reachable ? "Live" : "Offline · Retry")
+                    .font(Look.font(12, .heavy)).foregroundStyle(Color.white.opacity(store.reachable ? 0.85 : 1))
             }
-            .animation(.spring(response: 0.4, dampingFraction: 0.85), value: store.tv?.id)
+            .padding(.leading, Look.S.s).padding(.trailing, Look.S.m).frame(minHeight: 36)
+            .glassCapsule(tint: store.reachable ? .white : .orange, glow: store.reachable ? nil : .orange, strength: store.reachable ? 1 : 2)
+            .animation(.snappy, value: store.reconnecting)
         }
-        .accessibilityLabel("TV: \(store.tv?.name ?? "none"). Switch TVs")
+        .buttonStyle(SquishStyle())
+        .disabled(store.reachable)
+        .accessibilityLabel(store.reachable ? "Connected" : "TV offline. Tap to search for it again.")
     }
 
-    private var quickChips: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 10) {
-                chip("Power", "power", tint: Color(red: 1, green: 0.35, blue: 0.4)) { store.press(.powerToggle) }
-                chip("Input", "rectangle.on.rectangle", tint: Look.cyan) { store.press(.inputNext) }
-                chip("Home", "house.fill", tint: Look.violet) { store.press(.home) }
-                chip("Mute", "speaker.slash.fill", tint: Look.magenta) { store.press(.muteToggle) }
-            }
-            .padding(.vertical, 2)
-        }
-    }
-
-    private func chip(_ title: String, _ symbol: String, tint: Color, action: @escaping () -> Void) -> some View {
+    private func action(_ title: String, _ symbol: String, tint: Color, run: @escaping () -> Void) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            action()
+            run()
         } label: {
-            HStack(spacing: 7) {
-                Image(systemName: symbol).font(.system(size: 13, weight: .bold)).foregroundStyle(tint)
-                Text(title).font(Look.font(14, .bold)).foregroundStyle(.white)
+            VStack(spacing: Look.S.s) {
+                Image(systemName: symbol).font(.system(size: 17, weight: .bold)).foregroundStyle(tint)
+                    .frame(width: 40, height: 40)
+                    .background(tint.opacity(0.16), in: Circle())
+                    .overlay(Circle().strokeBorder(tint.opacity(0.35), lineWidth: 1))
+                    .shadow(color: tint.opacity(0.45), radius: 8)
+                Text(title).font(Look.font(12, .heavy)).foregroundStyle(.white.opacity(0.9))
             }
-            .padding(.horizontal, 14).padding(.vertical, 10)
-            .background(Look.card, in: Capsule())
-            .overlay(Capsule().strokeBorder(tint.opacity(0.35), lineWidth: 1))
+            .frame(maxWidth: .infinity).frame(height: 84)
+            .glass(20)
         }
         .buttonStyle(SquishStyle())
         .accessibilityLabel(title)
@@ -213,41 +205,123 @@ private struct BeamView: View {
     }
 }
 
-private struct NowPlayingCard: View {
+/// Cinematic "Now on TV" card: the app's colors, big type, live bars and quick controls.
+private struct NowPlayingHero: View {
     let name: String
     let app: StreamingApp?
-    let home: () -> Void
+    let tvName: String
+    let onPlayPause: (Bool) -> Void
+    let onHome: () -> Void
+    let onMute: () -> Void
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var playing = true
+    @State private var glow = false
 
     var body: some View {
         let colors = app?.colors ?? [Look.violet, Look.bg]
-        HStack(spacing: 12) {
-            EqualizerBars(color: .white).frame(width: 26, height: 22)
-            VStack(alignment: .leading, spacing: 1) {
-                Text("NOW ON TV").font(Look.font(10, .heavy)).tracking(1.5).foregroundStyle(.white.opacity(0.7))
-                Text(name).font(Look.font(18, .heavy)).foregroundStyle(.white)
+        let c0 = colors.first ?? Look.violet
+        let c1 = colors.count > 1 ? colors[1] : Look.bg
+        VStack(alignment: .leading, spacing: 0) {
+            HStack(spacing: Look.S.s) {
+                EqualizerBars(color: .white).frame(width: 18, height: 14)
+                CapsLabel("Now on TV", color: .white.opacity(0.85), size: 11)
+                Spacer()
+                Text(tvName).font(Look.font(11, .bold)).foregroundStyle(.white.opacity(0.7)).lineLimit(1)
+                    .padding(.horizontal, Look.S.s).padding(.vertical, Look.S.xs)
+                    .background(.black.opacity(0.25), in: Capsule())
             }
-            Spacer()
-            Button(action: home) {
-                Image(systemName: "house.fill").font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
-                    .frame(width: 38, height: 38).background(.white.opacity(0.15), in: Circle())
+            Spacer(minLength: Look.S.m)
+            Text(name).font(Look.display(40)).tracking(-1).foregroundStyle(.white)
+                .lineLimit(1).minimumScaleFactor(0.55)
+                .shadow(color: .black.opacity(0.3), radius: 8, y: 3)
+            Spacer(minLength: Look.S.m)
+            HStack(spacing: Look.S.m) {
+                Button {
+                    UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                    playing.toggle()
+                    onPlayPause(playing)
+                } label: {
+                    Image(systemName: playing ? "pause.fill" : "play.fill")
+                        .contentTransition(.symbolEffect(.replace))
+                        .font(.system(size: 20, weight: .black)).foregroundStyle(c1)
+                        .frame(width: 56, height: 56)
+                        .background(.white, in: Circle())
+                        .shadow(color: .black.opacity(0.3), radius: 8, y: 4)
+                }
+                .buttonStyle(SquishStyle())
+                .accessibilityLabel(playing ? "Pause" : "Play")
+                control("house.fill", "Go to the TV home screen", onHome)
+                control("speaker.slash.fill", "Mute", onMute)
+                Spacer()
             }
-            .buttonStyle(SquishStyle())
-            .accessibilityLabel("Go to the TV home screen")
         }
-        .padding(14)
+        .padding(Look.S.l + 2)
+        .frame(height: 210)
         .background {
-            TimelineView(.animation(minimumInterval: 1 / 20, paused: reduceMotion)) { tl in
-                let t = tl.date.timeIntervalSinceReferenceDate
-                let shift = reduceMotion ? 0 : sin(t * 0.5)
-                LinearGradient(colors: [colors[0].opacity(0.75), colors[1].opacity(0.85), colors[0].opacity(0.55)],
-                               startPoint: UnitPoint(x: -0.2 + shift * 0.3, y: 0), endPoint: UnitPoint(x: 1.2 + shift * 0.3, y: 1))
+            ZStack {
+                TimelineView(.animation(minimumInterval: 1 / 20, paused: reduceMotion)) { tl in
+                    let t = tl.date.timeIntervalSinceReferenceDate
+                    let shift = reduceMotion ? 0 : sin(t * 0.45)
+                    LinearGradient(colors: [c0, c1, c0.opacity(0.8)],
+                                   startPoint: UnitPoint(x: -0.3 + shift * 0.3, y: 0), endPoint: UnitPoint(x: 1.3 + shift * 0.3, y: 1))
+                }
+                // Giant watermark of the app name.
+                Text(name.uppercased())
+                    .font(.system(size: 120, weight: .black, design: .rounded)).tracking(-4)
+                    .foregroundStyle(.white.opacity(0.08))
+                    .lineLimit(1).fixedSize()
+                    .offset(x: 40, y: -10)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                RadialGradient(colors: [.white.opacity(0.30), .clear], center: .topTrailing, startRadius: 0, endRadius: 240)
+                LinearGradient(colors: [.clear, .black.opacity(0.35)], startPoint: .center, endPoint: .bottom)
             }
-            .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: 30, style: .continuous))
         }
-        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.18)))
-        .shadow(color: colors[0].opacity(0.45), radius: 16, y: 6)
-        .transition(.move(edge: .top).combined(with: .opacity))
+        .overlay(RoundedRectangle(cornerRadius: 30, style: .continuous)
+            .strokeBorder(LinearGradient(colors: [.white.opacity(0.55), .white.opacity(0.08)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1))
+        .background {
+            RoundedRectangle(cornerRadius: 34, style: .continuous).fill(c0)
+                .blur(radius: 26).opacity(glow ? 0.65 : 0.35).scaleEffect(glow ? 1.0 : 0.94).offset(y: 10)
+        }
+        .onAppear {
+            guard !reduceMotion else { glow = true; return }
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) { glow = true }
+        }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Now on TV: \(name)")
+    }
+
+    private func control(_ symbol: String, _ label: String, _ run: @escaping () -> Void) -> some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            run()
+        } label: {
+            Image(systemName: symbol).font(.system(size: 17, weight: .bold)).foregroundStyle(.white)
+                .frame(width: 48, height: 48)
+                .background(.white.opacity(0.18), in: Circle())
+                .overlay(Circle().strokeBorder(.white.opacity(0.3), lineWidth: 1))
+        }
+        .buttonStyle(SquishStyle())
+        .accessibilityLabel(label)
+    }
+}
+
+/// Shown when nothing is playing.
+private struct IdleHero: View {
+    var body: some View {
+        HStack(spacing: Look.S.l) {
+            Image(systemName: "play.tv.fill").font(.system(size: 26, weight: .bold)).foregroundStyle(.white)
+                .frame(width: 60, height: 60)
+                .background(Look.accent, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                .shadow(color: Look.magenta.opacity(0.5), radius: 12)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Nothing playing").font(Look.font(19, .heavy)).foregroundStyle(.white)
+                Text("Tap an app below to start it on your TV.").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(Look.S.l)
+        .glass(28, tint: Look.violet, glow: Look.violet)
     }
 }
 
@@ -283,45 +357,65 @@ struct AppTile: View {
             .accessibilityLabel("Open \(app.name) on the TV")
     }
 
+    static let height: CGFloat = 150
+
+    private var initial: String { String(app.name.prefix(1)).uppercased() }
+
     private var tileFace: some View {
-        ZStack(alignment: .bottomLeading) {
-            LinearGradient(colors: app.colors, startPoint: .topLeading, endPoint: .bottomTrailing)
-            // Soft inner glow from the top-left and a diagonal light streak.
-            RadialGradient(colors: [.white.opacity(0.28), .clear], center: .topLeading, startRadius: 0, endRadius: 140)
-            LinearGradient(stops: [.init(color: .clear, location: 0.35), .init(color: .white.opacity(0.14), location: 0.45),
-                                   .init(color: .clear, location: 0.55)],
+        let c0 = app.colors.first ?? Look.violet
+        let c1 = app.colors.count > 1 ? app.colors[1] : Look.bg
+        return ZStack(alignment: .bottomLeading) {
+            LinearGradient(colors: [c0, c1], startPoint: .topLeading, endPoint: .bottomTrailing)
+            // Poster watermark: a giant initial bleeding off the top-right corner.
+            Text(initial)
+                .font(.system(size: 150, weight: .black, design: .rounded))
+                .foregroundStyle(LinearGradient(colors: [.white.opacity(0.22), .white.opacity(0.02)], startPoint: .top, endPoint: .bottom))
+                .fixedSize()
+                .offset(x: 24, y: -18)
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+            // Light from the top-left, a diagonal sheen, and a dark floor for the title.
+            RadialGradient(colors: [.white.opacity(0.30), .clear], center: .topLeading, startRadius: 0, endRadius: 150)
+            LinearGradient(stops: [.init(color: .clear, location: 0.30), .init(color: .white.opacity(0.13), location: 0.42),
+                                   .init(color: .clear, location: 0.54)],
                            startPoint: .topLeading, endPoint: .bottomTrailing)
-            VStack(alignment: .leading, spacing: 4) {
+            LinearGradient(colors: [.clear, .black.opacity(0.45)], startPoint: .center, endPoint: .bottom)
+            VStack(alignment: .leading, spacing: 6) {
                 if isPlaying {
-                    Label("On TV", systemImage: "tv.fill").font(Look.font(10, .heavy))
-                        .padding(.horizontal, 7).padding(.vertical, 3)
-                        .background(.black.opacity(0.35), in: Capsule())
+                    HStack(spacing: 5) {
+                        EqualizerBars(color: .white, bars: 3).frame(width: 10, height: 9)
+                        Text("ON TV").font(Look.font(10, .black)).tracking(1.2)
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 8).padding(.vertical, 4)
+                    .background(.black.opacity(0.35), in: Capsule())
+                    .overlay(Capsule().strokeBorder(.white.opacity(0.25), lineWidth: 1))
                 }
-                Text(app.name).font(Look.font(19, .heavy)).foregroundStyle(.white).lineLimit(2).minimumScaleFactor(0.7)
-                    .shadow(color: .black.opacity(0.25), radius: 3, y: 1)
+                Text(app.name).font(Look.display(21)).tracking(-0.4).foregroundStyle(.white)
+                    .lineLimit(2).minimumScaleFactor(0.7)
+                    .shadow(color: .black.opacity(0.35), radius: 4, y: 2)
             }
-            .padding(14)
+            .padding(Look.S.l - 2)
             if flash { Color.white.opacity(0.55).transition(.opacity) }
             if launching {
-                Color.black.opacity(0.25)
+                Color.black.opacity(0.3)
                 ProgressView().tint(.white).frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .frame(height: 112)
-        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous)
-            .strokeBorder(LinearGradient(colors: [.white.opacity(isPlaying ? 0.95 : 0.45), .white.opacity(isPlaying ? 0.6 : 0.06)],
+        .frame(height: Self.height)
+        .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous)
+            .strokeBorder(LinearGradient(colors: [.white.opacity(isPlaying ? 0.95 : 0.45), .white.opacity(isPlaying ? 0.55 : 0.05)],
                                          startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: isPlaying ? 2 : 1))
         .background {
             if isPlaying {
                 RoundedRectangle(cornerRadius: 30, style: .continuous)
-                    .fill(app.colors.first ?? Look.magenta)
+                    .fill(c0)
                     .blur(radius: 18)
-                    .opacity(aura ? 0.75 : 0.3)
-                    .scaleEffect(aura ? 1.06 : 0.98)
+                    .opacity(aura ? 0.8 : 0.35)
+                    .scaleEffect(aura ? 1.05 : 0.98)
             }
         }
-        .shadow(color: (app.colors.first ?? .clear).opacity(0.35), radius: 10, y: 6)
+        .shadow(color: c0.opacity(0.35), radius: 12, y: 8)
         .rotation3DEffect(.degrees(Double(tilt.height) * 9), axis: (x: 1, y: 0, z: 0), perspective: 0.6)
         .rotation3DEffect(.degrees(Double(-tilt.width) * 9), axis: (x: 0, y: 1, z: 0), perspective: 0.6)
         .scaleEffect(pressed ? 0.96 : 1)
@@ -331,7 +425,7 @@ struct AppTile: View {
             Color.clear.onAppear { frame = g.frame(in: .named("apps")) }
                 .onChange(of: g.frame(in: .named("apps"))) { _, f in frame = f }
         })
-        .contentShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
     }
 
     private func tap() {
@@ -356,22 +450,6 @@ private struct PressReader: ButtonStyle {
     }
 }
 
-struct EqualizerBars: View {
-    let color: Color
-    var body: some View {
-        TimelineView(.animation(minimumInterval: 1 / 24)) { tl in
-            let t = tl.date.timeIntervalSinceReferenceDate
-            HStack(alignment: .bottom, spacing: 3) {
-                ForEach(0..<4) { i in
-                    Capsule().fill(color)
-                        .frame(width: 4, height: 6 + 16 * abs(sin(t * (2.2 + Double(i) * 0.7) + Double(i))))
-                }
-            }
-            .frame(maxHeight: .infinity, alignment: .bottom)
-        }
-    }
-}
-
 /// Pick which apps show up on the main screen.
 struct AppPicker: View {
     @Environment(TVStore.self) private var store
@@ -385,21 +463,24 @@ struct AppPicker: View {
                 ForEach(apps) { app in
                     Button { store.toggleFavorite(app) } label: {
                         HStack(spacing: 12) {
-                            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                            RoundedRectangle(cornerRadius: 11, style: .continuous)
                                 .fill(LinearGradient(colors: app.colors, startPoint: .topLeading, endPoint: .bottomTrailing))
-                                .frame(width: 34, height: 34)
-                            Text(app.name).font(Look.font(16, .semibold)).foregroundStyle(.white)
+                                .overlay(Text(String(app.name.prefix(1))).font(Look.display(17)).foregroundStyle(.white.opacity(0.9)))
+                                .overlay(RoundedRectangle(cornerRadius: 11, style: .continuous).strokeBorder(.white.opacity(0.2), lineWidth: 1))
+                                .frame(width: 40, height: 40)
+                            Text(app.name).font(Look.font(16, .bold)).foregroundStyle(.white)
                             Spacer()
                             Image(systemName: store.favorites.contains(app.name) ? "checkmark.circle.fill" : "plus.circle")
                                 .font(.system(size: 20))
                                 .foregroundStyle(store.favorites.contains(app.name) ? Look.cyan : Look.dim)
                         }
                     }
-                    .listRowBackground(Color.white.opacity(0.04))
+                    .listRowBackground(Color.white.opacity(0.05))
+                    .accessibilityLabel(store.favorites.contains(app.name) ? "\(app.name), in your apps" : "Add \(app.name)")
                 }
             }
             .scrollContentBackground(.hidden)
-            .background(Look.bg)
+            .background(AuroraBackground())
             .searchable(text: $query, prompt: "Search apps")
             .navigationTitle("My apps")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }

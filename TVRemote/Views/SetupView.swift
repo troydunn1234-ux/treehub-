@@ -10,111 +10,94 @@ struct SetupView: View {
     @State private var pin = ""
     @State private var busy = false
     @State private var manualIP = ""
-    @State private var pulse = false
     @FocusState private var pinFocused: Bool
-    @State private var sweep = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     enum Step { case find, pin }
 
     var body: some View {
-        VStack(spacing: 22) {
-            Spacer(minLength: 20)
-            radar
-            switch step {
-            case .find: findStep
-            case .pin: pinStep
+        ScrollView {
+            VStack(spacing: Look.S.xl) {
+                if onPaired == nil {
+                    HStack(spacing: Look.S.s) {
+                        Image(systemName: "dot.radiowaves.left.and.right")
+                            .font(.system(size: 11, weight: .black)).foregroundStyle(.white)
+                            .frame(width: 24, height: 24)
+                            .background(Look.accent, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                        Text("CLANKERR").font(Look.font(14, .black)).tracking(3.5).foregroundStyle(Look.accentH)
+                    }
+                    .accessibilityElement(children: .combine)
+                    .accessibilityLabel("Clankerr")
+                }
+                RadarView(scanning: step == .find,
+                          icon: step == .find ? "tv" : "lock.open.fill",
+                          blips: step == .find ? store.discovery.found.count : 0,
+                          diameter: 250)
+                    .padding(.vertical, Look.S.s)
+                switch step {
+                case .find: findStep
+                case .pin: pinStep
+                }
+                if let e = store.errorText {
+                    Label(e, systemImage: "exclamationmark.triangle.fill")
+                        .font(Look.font(14, .semibold)).foregroundStyle(.white)
+                        .padding(Look.S.m)
+                        .frame(maxWidth: .infinity)
+                        .glass(18, tint: .orange, glow: .orange, strength: 1.5)
+                        .transition(.opacity)
+                }
             }
-            if let e = store.errorText {
-                Text(e).font(Look.font(14, .semibold)).foregroundStyle(.orange).multilineTextAlignment(.center)
-                    .padding(.horizontal, 24)
-            }
-            Spacer()
+            .padding(.horizontal, Look.S.xl)
+            .padding(.top, Look.S.xl)
+            .padding(.bottom, Look.S.xxl)
         }
-        .padding(.horizontal, 22)
-        .onAppear {
-            store.discovery.start()
-            pulse = true
-            if !reduceMotion { withAnimation(.linear(duration: 2.6).repeatForever(autoreverses: false)) { sweep = true } }
-        }
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .onAppear { store.discovery.start() }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
     }
 
-    private var radar: some View {
-        ZStack {
-            // Radar sweep: a rotating wedge of light.
-            Circle()
-                .fill(AngularGradient(gradient: Gradient(stops: [
-                    .init(color: Look.cyan.opacity(0.0), location: 0.0),
-                    .init(color: Look.cyan.opacity(0.0), location: 0.72),
-                    .init(color: Look.violet.opacity(0.25), location: 0.9),
-                    .init(color: Look.cyan.opacity(0.55), location: 1.0)]), center: .center))
-                .frame(width: 230, height: 230)
-                .rotationEffect(.degrees(sweep ? 360 : 0))
-                .mask(Circle().frame(width: 230, height: 230))
-                .opacity(step == .find ? 1 : 0)
-            Circle().stroke(Look.line, lineWidth: 1).frame(width: 230, height: 230)
-            Circle().stroke(Look.line, lineWidth: 1).frame(width: 160, height: 160)
-            ForEach(0..<3) { i in
-                Circle().stroke(Look.accent, lineWidth: 2)
-                    .frame(width: 120, height: 120)
-                    .scaleEffect(pulse ? 2.2 : 0.6)
-                    .opacity(pulse ? 0 : 0.8)
-                    .animation(.easeOut(duration: 2.4).repeatForever(autoreverses: false).delay(Double(i) * 0.8), value: pulse)
-            }
-            Circle().fill(Look.accent).frame(width: 96, height: 96)
-                .shadow(color: Look.magenta.opacity(0.7), radius: 24)
-            Image(systemName: step == .find ? "tv" : "lock.open.fill")
-                .font(.system(size: 38, weight: .bold)).foregroundStyle(.white)
-                .contentTransition(.symbolEffect(.replace))
-        }
-        .frame(height: 240)
-    }
-
     private var findStep: some View {
-        VStack(spacing: 16) {
-            Text("Let's find your TV").font(Look.font(28, .heavy)).foregroundStyle(.white)
-            Text("Turn on your Vizio and make sure your phone is on the same Wi-Fi.")
-                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+        VStack(spacing: Look.S.l) {
+            VStack(spacing: Look.S.s) {
+                CapsLabel("Step 1 of 2", color: Look.cyan)
+                Text("Let's find\nyour TV.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("Turn on your TV and keep your phone on the same Wi-Fi. We'll spot it in a few seconds.")
+                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
 
-            VStack(spacing: 10) {
+            VStack(spacing: Look.S.s) {
                 ForEach(store.discovery.found, id: \.host) { tv in
                     Button { Task { await pick(tv) } } label: {
-                        HStack(spacing: 12) {
-                            Image(systemName: "tv.fill").font(.system(size: 20, weight: .bold)).foregroundStyle(Look.cyan)
-                            VStack(alignment: .leading, spacing: 2) {
-                                Text(tv.name).font(Look.font(17, .heavy)).foregroundStyle(.white)
-                                Text("\(tv.model) · \(tv.host)").font(Look.font(12, .medium)).foregroundStyle(Look.dim)
-                            }
-                            Spacer()
-                            if busy && chosen?.host == tv.host { ProgressView().tint(.white) }
-                            else { Image(systemName: "chevron.right").foregroundStyle(Look.dim) }
-                        }
-                        .padding(16)
-                        .background(Look.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Look.line))
+                        DeviceRow(icon: "tv.fill", title: tv.name, subtitle: "\(tv.model) · \(tv.host)",
+                                  busy: busy && chosen?.host == tv.host)
                     }
                     .buttonStyle(SquishStyle(scale: 0.97))
                     .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
+                    .accessibilityLabel("Pair with \(tv.name)")
                 }
                 if store.discovery.searching {
-                    HStack(spacing: 8) {
-                        ProgressView(value: store.discovery.progress).tint(Look.magenta).frame(width: 120)
-                        Text("Searching your Wi-Fi…").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
+                    HStack(spacing: Look.S.s) {
+                        ProgressView(value: store.discovery.progress).tint(Look.magenta).frame(width: 110)
+                        Text("Scanning your Wi-Fi…").font(Look.font(13, .bold)).foregroundStyle(Look.dim)
                     }
-                    .padding(.top, 4)
+                    .padding(.top, Look.S.xs)
                 } else if store.discovery.found.isEmpty {
                     Text("No TV found yet.").font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
                     Button("Search again") { store.discovery.start() }
-                        .font(Look.font(15, .bold)).foregroundStyle(Look.cyan)
+                        .buttonStyle(PrimaryButtonStyle())
                 }
             }
             .animation(.spring(response: 0.45, dampingFraction: 0.55), value: store.discovery.found.count)
 
             DisclosureGroup {
-                HStack {
-                    TextField("TV's IP address, like 192.168.1.40", text: $manualIP)
-                        .keyboardType(.decimalPad).font(Look.font(15, .medium))
+                HStack(spacing: Look.S.s) {
+                    TextField("", text: $manualIP, prompt: Text("TV's IP, like 192.168.1.40").foregroundStyle(Look.faint))
+                        .keyboardType(.decimalPad).font(Look.font(15, .semibold)).foregroundStyle(.white)
+                        .padding(.horizontal, Look.S.m).frame(height: 48)
+                        .glass(14)
                     Button("Connect") {
                         Task {
                             busy = true
@@ -124,60 +107,57 @@ struct SetupView: View {
                             if let tv = found {
                                 await pick(tv)
                             } else {
-                                store.errorText = "No Vizio TV answered at \(ip). Find its IP on the TV under Network settings."
+                                store.errorText = "No TV answered at \(ip). Find its IP on the TV under Network settings."
                             }
                             busy = false
                         }
                     }
-                    .font(Look.font(15, .bold)).disabled(manualIP.isEmpty)
+                    .font(Look.font(15, .heavy)).foregroundStyle(.white)
+                    .padding(.horizontal, Look.S.l).frame(height: 48)
+                    .background(Look.accentH, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .opacity(manualIP.isEmpty ? 0.4 : 1)
+                    .disabled(manualIP.isEmpty)
                 }
-                .padding(.top, 8)
+                .padding(.top, Look.S.s)
             } label: {
-                Text("Enter the TV's address yourself").font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
+                Text("Enter the TV's address yourself").font(Look.font(14, .bold)).foregroundStyle(Look.dim)
             }
             .tint(Look.dim)
-            .padding(.top, 6)
+            .padding(.top, Look.S.xs)
         }
     }
 
     private var pinStep: some View {
-        VStack(spacing: 16) {
-            Text("Enter the code on your TV").font(Look.font(26, .heavy)).foregroundStyle(.white).multilineTextAlignment(.center)
-            Text("A 4-digit code just popped up on \(chosen?.name ?? "the TV").")
-                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+        VStack(spacing: Look.S.l) {
+            VStack(spacing: Look.S.s) {
+                CapsLabel("Step 2 of 2", color: Look.cyan)
+                Text("Type the code\non your TV.").font(Look.display(34)).tracking(-1).foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("A 4-digit code just popped up on \(chosen?.name ?? "the TV").")
+                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+            }
             ZStack {
-                HStack(spacing: 14) {
-                    ForEach(0..<4, id: \.self) { i in
-                        let ch = i < pin.count ? String(pin[pin.index(pin.startIndex, offsetBy: i)]) : ""
-                        Text(ch)
-                            .font(.system(size: 34, weight: .black, design: .rounded))
-                            .foregroundStyle(.white)
-                            .frame(width: 58, height: 70)
-                            .background(Look.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous)
-                                .strokeBorder(i == pin.count ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Look.line), lineWidth: i == pin.count ? 2 : 1))
-                            .scaleEffect(ch.isEmpty ? 1 : 1.04)
-                            .animation(.spring(response: 0.25, dampingFraction: 0.5), value: pin.count)
-                    }
-                }
+                CodeBoxes(code: pin, count: 4, boxWidth: 60, boxHeight: 74, focused: pinFocused)
                 TextField("", text: $pin)
                     .keyboardType(.numberPad)
                     .textContentType(.oneTimeCode)
                     .focused($pinFocused)
                     .opacity(0.02)
-                    .frame(width: 280, height: 70)
+                    .frame(width: 290, height: 74)
                     .onChange(of: pin) { _, v in
                         let digits = String(v.filter(\.isNumber).prefix(4))
                         if digits != v { pin = digits }
                         if digits.count == 4 { Task { await submit() } }
                     }
+                    .accessibilityLabel("TV code")
             }
             .onTapGesture { pinFocused = true }
             if busy { ProgressView().tint(.white) }
             Button("Start over") {
                 Task { await store.cancelPairing(); pin = ""; step = .find; store.discovery.start() }
             }
-            .font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
+            .font(Look.font(14, .bold)).foregroundStyle(Look.dim)
+            .frame(minHeight: 44)
         }
         .onAppear { pinFocused = true }
     }
