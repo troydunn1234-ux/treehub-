@@ -53,6 +53,14 @@ jobs:
           printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
           echo "KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8" >> $GITHUB_ENV
 
+      - name: Clear old CI development certificates
+        env:
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip3 install --quiet --break-system-packages "pyjwt[crypto]" || pip3 install --quiet "pyjwt[crypto]"
+          python3 .github/scripts/prune_dev_certs.py
+
       - name: Archive (signed in the cloud)
         env:
           TEAM: ${{ secrets.APPLE_TEAM_ID }}
