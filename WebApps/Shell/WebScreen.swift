@@ -163,6 +163,8 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
             let tmp = FileManager.default.temporaryDirectory.appendingPathComponent(name)
             try? data.write(to: tmp, options: .atomic)
             share(tmp) { done in replyHandler(done, done ? nil : "declined") }
+        case "simplefin", "pasteboard":
+            handleBank(body, reply: replyHandler)
         default:
             replyHandler(nil, "unknown op")
         }

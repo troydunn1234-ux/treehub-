@@ -163,6 +163,12 @@ td.r, th.r { text-align: right; }
 td small { display: block; color: var(--mute); font-size: 12px; }
 .empty { border: 2px dashed var(--line); padding: 18px; color: var(--mute); text-align: center; }
 .pill { font-size: 11px; padding: 2px 7px; border: 1px solid currentColor; }
+.bk { display: inline-block; font-size: 9px; font-family: var(--font-display); letter-spacing: .05em; color: var(--cyan); border: 1px solid var(--cyan); padding: 1px 4px; margin-left: 6px; vertical-align: middle; }
+.bk.pend { color: var(--mute); border-color: var(--mute); }
+.bankacc { display: flex; justify-content: space-between; gap: 10px; padding: 8px 0; border-bottom: 1px dashed var(--line); font-size: 14px; }
+.bankacc small { display: block; color: var(--mute); font-size: 11px; }
+.banksteps { margin: 0; padding-left: 18px; color: var(--mute); font-size: 13px; display: flex; flex-direction: column; gap: 6px; }
+.banksteps a { color: var(--cyan); }
 .pill.savings { color: var(--green); } .pill.checking { color: var(--cyan); } .pill.cash { color: var(--gold); } .pill.none, .pill.outside { color: var(--mute); }
 
 /* chart */
@@ -633,6 +639,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     <div class="box"><h2>Balances right now</h2>
       <p class="note">Type what each wallet really holds today and the page adjusts its starting point to match. Checking and Cash start at $0.00 until you do this.</p>
       <div class="setgrid" id="startSet"></div></div>
+    <div class="box" id="bankBox" hidden><h2>Bank sync</h2><div id="bankBody"></div><p class="note" id="bankMsg" role="status"></p></div>
     <div class="box"><h2>Backup</h2>
       <p class="note">Everything saves automatically. These downloads open in Numbers or Excel if you want your own copy.</p>
       <div class="row"><button class="btn ghost" id="dlTx" type="button">Download purchases</button><button class="btn ghost" id="dlMv" type="button">Download transfers</button></div>
@@ -734,6 +741,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (Array.isArray(s.budgets)) o.budgets = s.budgets.filter(function (b) { return b && typeof b.n === "string"; }).map(function (b) { return { n: b.n, l: +b.l || 0 }; });
     if (Array.isArray(s.tx)) o.tx = s.tx.filter(function (t) { return t && typeof t.d === "string" && typeof t.amt === "number"; });
     if (Array.isArray(s.moves)) o.moves = s.moves.filter(function (m) { return m && typeof m.d === "string" && typeof m.amt === "number"; });
+    if (s.bankRules && typeof s.bankRules === "object" && !Array.isArray(s.bankRules)) o.bankRules = s.bankRules;
+    if (s.bankWallet && typeof s.bankWallet === "object" && !Array.isArray(s.bankWallet)) o.bankWallet = s.bankWallet;
+    if (Array.isArray(s.bankSkip)) o.bankSkip = s.bankSkip.filter(function (x) { return typeof x === "string"; }).slice(-800);
     return o;
   }
   function bal(a) {
@@ -843,6 +853,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       loaded = true;
       renderAll();
       if (db) subscribe();
+      bankStatus().then(function (st) { if (st && st.connected) bankSync(false); });
     });
   }
 
@@ -1005,7 +1016,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
             '</td><td><input type="text" data-e="what" value="' + esc(t.what) + '" aria-label="What you bought"><input type="text" data-e="note" placeholder="Note" value="' + esc(t.note || "") + '" aria-label="Note"></td><td>' +
             sel("acct", t.acct, ACCTS) + '</td><td class="r"><input type="number" step="0.01" data-e="amt" value="' + t.amt + '" aria-label="Amount"></td><td class="r">' + acts("deltx", t.id, true) + "</td></tr>";
         }
-        return "<tr><td class=\"num\">" + esc(t.d.slice(5)) + "</td><td>" + ico(t.cat) + esc(t.cat) + "</td><td>" + esc(t.what || "-") + (t.note ? "<small>" + esc(t.note) + "</small>" : "") +
+        return "<tr><td class=\"num\">" + esc(t.d.slice(5)) + "</td><td>" + ico(t.cat) + esc(t.cat) + "</td><td>" + esc(t.what || "-") + bankBadge(t) + (t.note ? "<small>" + esc(t.note) + "</small>" : "") +
           "</td><td>" + pill(t.acct) + '</td><td class="r num">' + fmt(t.amt) + '</td><td class="r">' + acts("deltx", t.id, false) + "</td></tr>";
       }).join("") + "</tbody></table>" :
       '<div class="empty">Nothing logged for ' + monLabel(mon) + ' yet. Add your first purchase above.</div>';
@@ -1018,7 +1029,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
           return '<tr class="editing" data-eid="' + esc(m.id) + '"><td><input type="date" data-e="d" value="' + esc(m.d) + '"></td><td>' + sel("from", m.from, WHERE) + '<span class="arrow">&darr;</span>' + sel("to", m.to, WHERE) +
             '</td><td><input type="text" data-e="note" value="' + esc(m.note || "") + '" aria-label="Note"></td><td class="r"><input type="number" step="0.01" min="0.01" data-e="amt" value="' + m.amt + '" aria-label="Amount"></td><td class="r">' + acts("delmv", m.id, true) + "</td></tr>";
         }
-        return '<tr><td class="num">' + esc(m.d) + "</td><td>" + pill(m.from) + " &rarr; " + pill(m.to) + "</td><td>" + esc(m.note || "-") +
+        return '<tr><td class="num">' + esc(m.d) + "</td><td>" + pill(m.from) + " &rarr; " + pill(m.to) + "</td><td>" + esc(m.note || "-") + bankBadge(m) +
           '</td><td class="r num">' + fmt(m.amt) + '</td><td class="r">' + acts("delmv", m.id, false) + "</td></tr>";
       }).join("") + "</tbody></table>" : '<div class="empty">No transfers yet. Move money between wallets or log a paycheck above.</div>';
   }
@@ -1049,6 +1060,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var r = findRec(tr.dataset.eid); if (!r) return;
     var k = el.dataset.e, err = applyField(r, k, el.value);
     if (err) { if (!quiet) { el.value = r.o[k]; toast(err, true); } diag("field-invalid", k + ": " + err); return; }
+    if (k === "cat") learnCat(r.o);
     diag("field-ok", k); touch(); renderQuest(); renderWallets(); renderBudgets();
   }
   function saveEdit(btn) {
@@ -1062,7 +1074,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         err = applyField(r, inputs[i].dataset.e, inputs[i].value);
         if (err) { toast(err, true); diag("save-invalid", err); return; }
       }
-      if (r.tx) mon = monthOf(r.o.d);
+      if (r.tx) { mon = monthOf(r.o.d); learnCat(r.o); }
       editId = null; touch(); renderAll(); toast("Saved"); diag("save-ok");
     } catch (e) { toast("Error: " + (e && e.message), true); diag("save-exception", e && (e.stack || e.message)); }
   }
@@ -1076,6 +1088,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"].map(function (d, i) { return '<option value="' + i + '"' + (i === S.weekStart ? " selected" : "") + ">" + d + "</option>"; }).join("") + "</select></label>";
     function now(label, a) { return '<label class="f"><span class="lbl">' + label + '</span><input type="number" step="0.01" inputmode="decimal" data-bal="' + a + '" value="' + bal(a) + '"></label>'; }
     $("startSet").innerHTML = now("Savings now", "savings") + now("Checking now", "checking") + now("Cash now", "cash");
+    renderBank();
     $("limitSet").innerHTML = S.budgets.map(function (b, i) {
       return '<div class="limit"><span>' + esc(b.n) + '</span><input type="number" step="1" min="0" inputmode="decimal" data-lim="' + i + '" value="' + b.l + '" aria-label="Monthly limit for ' + esc(b.n) + '">' +
         '<button class="x" data-act="delcat" data-i="' + i + '" aria-label="Remove ' + esc(b.n) + '">&times;</button></div>';
@@ -1900,6 +1913,158 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     checkLevel(); checkRank();
   }
 
+  /* ---------- bank sync (SimpleFIN Bridge, through the phone) ---------- */
+  var BANK = { on: false, st: null, busy: false, msg: "" };
+  var BANK_EVERY = 6 * 3600 * 1000;
+  function bankNative(msg) {
+    try {
+      var h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native;
+      if (!h) return Promise.reject(new Error("off"));
+      return h.postMessage(msg);
+    } catch (e) { return Promise.reject(e); }
+  }
+  function bankBadge(o) {
+    if (!o || !o.bank) return "";
+    return '<span class="bk' + (o.bank.pend ? " pend" : "") + '" title="Imported from ' + esc(o.bank.org || "your bank") + '">' + (o.bank.pend ? "PENDING" : "BANK") + "</span>";
+  }
+  function payeeKey(s) {
+    return String(s || "").toLowerCase().replace(/#?\d{2,}/g, " ").replace(/[^a-z& ]+/g, " ").replace(/\s+/g, " ").trim().split(" ").slice(0, 3).join(" ");
+  }
+  function learnCat(o) {
+    if (!o || !o.bank || !o.bank.key || !o.cat) return;
+    S.bankRules = S.bankRules || {};
+    S.bankRules[o.bank.key] = o.cat;
+  }
+  var CAT_RULES = [
+    [/chevron|shell|arco|exxon|mobil|valero|\b76\b|circle k|speedway|sunoco|costco gas|sam'?s fuel|marathon|citgo|gas station|fuel/, ["Gas"]],
+    [/autozone|o'?reilly|napa|advance auto|pep boys|jiffy|firestone|midas|valvoline|discount tire|les schwab|car wash|carwash|auto parts|tire|smog|mechanic/, ["Car repairs / maintenance", "Car repairs", "Parts"]],
+    [/geico|progressive|state farm|allstate|farmers ins|insurance|usaa|liberty mutual/, ["Insurance"]],
+    [/\bdmv\b|registration|dept of motor/, ["Registration", "Car repairs / maintenance", "Needs"]],
+    [/netflix|spotify|hulu|disney|youtube|apple\.com|icloud|prime video|max\.com|hbo|paramount|peacock|patreon|openai|chatgpt|xbox|playstation|psn|steam/, ["Subscriptions"]],
+    [/planet fitness|24 hour|la fitness|crunch|equinox|gold'?s gym|\bgym\b|fitness/, ["Gym"]],
+    [/dispensary|cannabis|420|weed|eaze|stiiizy|budz|smoke shop/, ["Weed"]],
+    [/draftkings|fanduel|betmgm|casino|caesars|prizepicks|underdog|lottery|poker/, ["Gambling"]],
+    [/mcdonald|starbucks|chipotle|taco bell|in-n-out|in n out|wendy|burger|chick-fil|subway|panda|doordash|uber eats|ubereats|grubhub|pizza|domino|restaurant|cafe|coffee|boba|tea|kitchen|grill|bar\b/, ["Eating out"]],
+    [/safeway|trader joe|whole foods|sprouts|costco|walmart|target|kroger|ralphs|vons|lucky|smart ?& ?final|grocery|market|foods/, ["Food / groceries"]],
+    [/cvs|walgreens|pharmacy|pg&e|pge|comcast|xfinity|at&t|verizon|t-mobile|utility|water|electric|rent/, ["Needs"]]
+  ];
+  function guessCat(text) {
+    var key = payeeKey(text), names = S.budgets.map(function (b) { return b.n; });
+    if (S.bankRules && S.bankRules[key] && names.indexOf(S.bankRules[key]) >= 0) return S.bankRules[key];
+    var low = String(text || "").toLowerCase();
+    for (var i = 0; i < CAT_RULES.length; i++) {
+      if (CAT_RULES[i][0].test(low)) {
+        for (var j = 0; j < CAT_RULES[i][1].length; j++) if (names.indexOf(CAT_RULES[i][1][j]) >= 0) return CAT_RULES[i][1][j];
+      }
+    }
+    return names.indexOf("Wants") >= 0 ? "Wants" : (names.indexOf("Other") >= 0 ? "Other" : (names[0] || "Other"));
+  }
+  function walletFor(acc) {
+    S.bankWallet = S.bankWallet || {};
+    if (S.bankWallet[acc.id]) return S.bankWallet[acc.id];
+    return /saving/i.test(acc.name || "") ? "savings" : "checking";
+  }
+  function isoDay(sec) { var d = new Date(sec * 1000); return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  function looksLikeTransfer(t) {
+    return /transfer|xfer|payment.*thank|autopay|online payment|card payment|pymt|zelle to troy|to savings|from savings|from checking|to checking|discover.*payment|sofi.*(transfer|savings)/i.test((t.description || "") + " " + (t.payee || ""));
+  }
+  function bankImport(res) {
+    var seen = {}, added = 0, inc = 0, skipped = 0;
+    S.tx.forEach(function (t) { if (t.bank && t.bank.id) seen[t.bank.id] = t; });
+    S.moves.forEach(function (m) { if (m.bank && m.bank.id) seen[m.bank.id] = m; });
+    (S.bankSkip || []).forEach(function (id) { seen[id] = true; });
+    var all = [];
+    (res.accounts || []).forEach(function (a) { (a.transactions || []).forEach(function (t) { all.push({ a: a, t: t }); }); });
+    /* transfers between your own accounts: same amount, opposite sign, different account, within 4 days */
+    var mirror = {};
+    all.forEach(function (x, i) {
+      if (mirror[i]) return;
+      for (var j = i + 1; j < all.length; j++) {
+        var y = all[j];
+        if (mirror[j] || y.a.id === x.a.id) continue;
+        if (Math.abs(x.t.amount + y.t.amount) < 0.005 && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 4 * 86400) { mirror[i] = mirror[j] = 1; break; }
+      }
+    });
+    all.forEach(function (x, i) {
+      var t = x.t, a = x.a, id = t.id ? a.id + ":" + t.id : "";
+      if (!id || !t.amount) return;
+      var existing = seen[id];
+      if (existing === true) return;
+      if (existing) { /* pending that has now posted: update it */
+        if (existing.bank && existing.bank.pend && !t.pending) { existing.bank.pend = false; existing.d = isoDay(t.posted || t.transacted); }
+        return;
+      }
+      if (t.pending) return; /* wait until it posts: pending ids can change, which would double-count */
+      if (mirror[i] || looksLikeTransfer(t)) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
+      var text = t.payee || t.description || "Bank purchase", key = payeeKey(text);
+      var when = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000);
+      var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending };
+      if (t.amount < 0) {
+        S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: text.slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
+        added++;
+      } else {
+        S.moves.push({ id: uid(), d: when, from: "outside", to: walletFor(a), amt: r2(t.amount), note: text.slice(0, 60), bank: bank });
+        inc++;
+      }
+    });
+    return { added: added, inc: inc, skipped: skipped };
+  }
+  function bankSync(manual) {
+    if (!BANK.on || BANK.busy) return;
+    var last = (BANK.st && BANK.st.lastSync) ? BANK.st.lastSync * 1000 : 0;
+    if (!manual && last && Date.now() - last < BANK_EVERY) return;
+    BANK.busy = true; BANK.msg = "Syncing with your bank..."; renderBank();
+    var since = last ? Math.floor(last / 1000) - 3 * 86400 : Math.floor(Date.now() / 1000) - 30 * 86400;
+    bankNative({ op: "simplefin", action: "sync", since: since }).then(function (res) {
+      var r = bankImport(res || {});
+      BANK.busy = false;
+      var errs = (res && res.errors && res.errors.length) ? " " + res.errors.length + " bank message(s): " + res.errors.join(" ").slice(0, 140) : "";
+      BANK.msg = (r.added || r.inc) ? "Imported " + r.added + " purchase" + (r.added === 1 ? "" : "s") + (r.inc ? " and " + r.inc + " deposit" + (r.inc === 1 ? "" : "s") : "") + "." + errs : "Up to date." + errs;
+      if (r.added || r.inc) { touch(); renderAll(); if (manual || r.added) toast(BANK.msg); beep("coin"); }
+      return bankStatus();
+    }, function (e) {
+      BANK.busy = false; BANK.msg = String((e && e.message) || e || "Sync failed"); renderBank();
+      if (manual) toast(BANK.msg, true);
+    });
+  }
+  function bankStatus() {
+    return bankNative({ op: "simplefin", action: "status" }).then(function (st) { BANK.on = true; BANK.st = st; renderBank(); return st; }, function () { BANK.on = false; renderBank(); });
+  }
+  function renderBank() {
+    var box = $("bankBox"); if (!box) return;
+    box.hidden = !BANK.on;
+    if (!BANK.on) return;
+    var st = BANK.st || {}, body = "";
+    if (!st.connected) {
+      body = '<ol class="banksteps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and connect SoFi and Discover there.</li>' +
+        "<li>In SimpleFIN Bridge, make a new <b>setup token</b> and copy it.</li><li>Come back here and tap the button. Purchases then show up on their own.</li></ol>" +
+        '<div class="row"><button class="btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting..." : "Paste setup token") + "</button></div>";
+    } else {
+      var accs = st.accounts || [];
+      body = (accs.length ? accs.map(function (a) {
+        return '<div class="bankacc"><span>' + esc(a.name) + "<small>" + esc(a.org) + '</small></span><b class="num">' + fmt(+a.balance || 0) + "</b></div>";
+      }).join("") : '<p class="note">Connected. Tap Sync now to pull your accounts.</p>') +
+        '<p class="note">' + (st.lastSync ? "Last synced " + new Date(st.lastSync * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ". " : "") +
+        "Syncs on its own every few hours when you open the app. Banks update about once a day. Fix a category once and it remembers that store.</p>" +
+        '<div class="row"><button class="btn" type="button" data-act="banksync">' + (BANK.busy ? "Syncing..." : "Sync now") + '</button><button class="btn ghost" type="button" data-act="bankoff">Disconnect</button></div>';
+    }
+    $("bankBody").innerHTML = body;
+    $("bankMsg").textContent = BANK.msg || "";
+  }
+  function bankPaste() {
+    if (BANK.busy) return;
+    bankNative({ op: "pasteboard" }).then(function (txt) {
+      txt = String(txt || "").trim();
+      if (!txt) { BANK.msg = "Your clipboard is empty. Copy the setup token from SimpleFIN Bridge first."; renderBank(); return; }
+      BANK.busy = true; BANK.msg = "Connecting..."; renderBank();
+      return bankNative({ op: "simplefin", action: "claim", token: txt }).then(function (st) {
+        BANK.busy = false; BANK.st = st; BANK.msg = "Connected. Pulling your last 30 days..."; renderBank(); beep("up");
+        bankSync(true);
+      }, function (e) { BANK.busy = false; BANK.msg = String((e && e.message) || e); renderBank(); });
+    }, function () { BANK.msg = "Couldn't read the clipboard."; renderBank(); });
+  }
+  document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && loaded) bankSync(false); });
+
   /* ---------- events ---------- */
   function arm(btn, run) {
     if (btn.dataset.armed) { run(); return; }
@@ -1963,6 +2128,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "delmv") arm(t, function () { S.moves = S.moves.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderAll(); });
     else if (a === "delcat") arm(t, function () { S.budgets.splice(+t.dataset.i, 1); touch(); renderAll(); });
     else if (a === "resetall") arm(t, function () { S.tx = []; S.moves = []; touch(); renderAll(); });
+    else if (a === "bankpaste") bankPaste();
+    else if (a === "banksync") bankSync(true);
+    else if (a === "bankoff") arm(t, function () { bankNative({ op: "simplefin", action: "disconnect" }).then(function () { BANK.msg = "Disconnected. Imported entries stay."; bankStatus(); }); });
   }
   function setTab(n) {
     tab = n;

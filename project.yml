@@ -279,6 +279,7 @@ targets:
         WebShellBackground: "#050c08"
         WebShellAccent: "#3dff95"
         WebShellSymbol: flag.checkered
+        WebShellBankSync: true
         UIRequiresFullScreen: true
         UIStatusBarStyle: UIStatusBarStyleLightContent
         UILaunchScreen:
