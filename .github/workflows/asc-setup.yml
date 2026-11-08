@@ -3,6 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       bundle: {description: Bundle ID, default: com.troydunn.clicker}
+      min_build: {description: Wait for at least this build number, default: '0'}
 jobs:
   setup:
     runs-on: ubuntu-latest
@@ -16,5 +17,5 @@ jobs:
           pip install --quiet "pyjwt[crypto]"
           printf '%s\n' "$P8" > /tmp/key.p8
           KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_setup.py "${{ inputs.bundle }}"
-          KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_attach_build.py "${{ inputs.bundle }}"
+          MIN_BUILD="${{ inputs.min_build }}" KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_attach_build.py "${{ inputs.bundle }}"
           rm -f /tmp/key.p8

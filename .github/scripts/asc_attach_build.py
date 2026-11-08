@@ -22,7 +22,7 @@ for attempt in range(40):
     builds = call(f"/v1/builds?filter[app]={app_id}&sort=-uploadedDate&limit=5")[0]["data"]
     for b in builds: print(" build", b["attributes"]["version"], b["attributes"]["processingState"])
     ok = next((b for b in builds if b["attributes"]["processingState"] == "VALID"), None)
-    if ok and ok == builds[0]: break
+    if ok and ok == builds[0] and int(ok["attributes"]["version"]) >= int(os.environ.get("MIN_BUILD", "0")): break
     print("waiting for newest build to finish processing..."); time.sleep(30)
 _, err = call(f"/v1/appStoreVersions/{ver['id']}/relationships/build", "PATCH", {"data": {"type": "builds", "id": ok["id"]}})
 print(f"Attached build {ok['attributes']['version']} to {ver['attributes']['versionString']}" if not err else "attach failed " + err)
@@ -31,5 +31,19 @@ _, err = call(f"/v1/appStoreVersions/{ver['id']}", "PATCH", {"data": {"type": "a
 print("Copyright set" if not err else "copyright failed " + err)
 _, err = call(f"/v1/apps/{app_id}", "PATCH", {"data": {"type": "apps", "id": app_id, "attributes": {"contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT"}}})
 print("Content rights set" if not err else "content rights failed " + err)
+# review notes: no login; explain demo mode (never touches contact fields)
+NOTES = ("Clankerr has no account or login. It controls VIZIO SmartCast TVs on the same Wi-Fi network, "
+         "and optionally a Windows PC running the free Clankerr PC companion. Without a VIZIO TV, tap "
+         "'No TV handy? Try the demo' on the first screen to explore every screen with pretend TVs; "
+         "nothing is sent over the network in demo mode. Exit it from the ... menu.")
+rd, err = call(f"/v1/appStoreVersions/{ver['id']}/appStoreReviewDetail")
+attrs = {"demoAccountRequired": False, "demoAccountName": "", "demoAccountPassword": "", "notes": NOTES}
+if rd and rd.get("data"):
+    rid = rd["data"]["id"]
+    _, err = call(f"/v1/appStoreReviewDetails/{rid}", "PATCH", {"data": {"type": "appStoreReviewDetails", "id": rid, "attributes": attrs}})
+else:
+    _, err = call("/v1/appStoreReviewDetails", "POST", {"data": {"type": "appStoreReviewDetails", "attributes": attrs,
+                  "relationships": {"appStoreVersion": {"data": {"type": "appStoreVersions", "id": ver["id"]}}}}})
+print("Review notes set, sign-in not required" if not err else "review details failed " + err[:200])
 # export compliance: app only uses standard HTTPS/TLS
 call(f"/v1/builds/{ok['id']}", "PATCH", {"data": {"type": "builds", "id": ok["id"], "attributes": {"usesNonExemptEncryption": False}}})
