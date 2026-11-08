@@ -198,7 +198,7 @@ for i, s in enumerate(m["shots"]):
         tw = ImageDraw.Draw(img).textlength(text, font=f) + 120
         left = k % 2 == 0
         x = 28 if left else W - tw - 28
-        y = 1640 + k * 600
+        y = 1960 + k * 540
         chip(img, x, y, text, accents[(i + k + 1) % 3], f)
 
     path = os.path.join(out, f"{i + 1:02d}-{s['file']}")

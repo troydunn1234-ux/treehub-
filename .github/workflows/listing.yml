@@ -68,6 +68,9 @@ jobs:
           xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
           xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
           xcrun simctl terminate "$UDID" $BUNDLE
+          xcrun simctl launch "$UDID" $BUNDLE -demo -picker > /dev/null; sleep 7
+          xcrun simctl io "$UDID" screenshot raw/clicker-5-picker.png
+          xcrun simctl terminate "$UDID" $BUNDLE
           xcrun simctl launch "$UDID" $BUNDLE -demo -pc > /dev/null; sleep 6
           xcrun simctl io "$UDID" screenshot raw/clicker-3-pc.png
           xcrun simctl terminate "$UDID" $BUNDLE

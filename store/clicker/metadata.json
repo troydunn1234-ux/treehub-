@@ -32,6 +32,17 @@
       ]
     },
     {
+      "file": "clicker-5-picker.png",
+      "eyebrow": "Your wall",
+      "line1": "Build your",
+      "line2": "app wall.",
+      "sub": "150 apps. Pick, drag, done.",
+      "chips": [
+        "Movies, sports, kids",
+        "Drag to reorder"
+      ]
+    },
+    {
       "file": "clicker-3-pc.png",
       "eyebrow": "PC control",
       "line1": "Your PC,",
