@@ -298,6 +298,7 @@ targets:
         NSLocalNetworkUsageDescription: Clicker finds and controls your TV on your Wi-Fi.
         NSBonjourServices:
           - _viziocast._tcp
+          - _clankerr._tcp
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
         ITSAppUsesNonExemptEncryption: false

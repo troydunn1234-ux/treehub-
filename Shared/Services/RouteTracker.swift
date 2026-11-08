@@ -33,6 +33,11 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var speedLimit: SpeedLimitService.Limit?
     @ObservationIgnored private let limits = SpeedLimitService()
     @ObservationIgnored private var overWarned = false
+    /// Lane changes on this drive, estimated from phone motion.
+    private(set) var laneChanges: [LaneChange] = []
+    var cutCount: Int { laneChanges.filter(\.quick).count }
+    @ObservationIgnored private let gyro = CMMotionManager()
+    @ObservationIgnored private var laneDetector = LaneChangeDetector()
 
     /// More than 3 mph over a known limit right now.
     var isOverLimit: Bool {
@@ -234,6 +239,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         a.elevGainM = elevGain
         a.maxSpeed = maxSpeed
         a.route = Self.simplify(points, maxCount: 4000)
+        a.laneChanges = laneChanges
         reset()
         LiveActivityController.shared.end()
         return a
@@ -242,7 +248,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     /// Change the activity type while recording (e.g. a walk that became a hike).
     func setKind(_ k: ActivityKind) {
         kind = k
-        if k != .drive { speedLimit = nil; limits.reset() }
+        if k != .drive { speedLimit = nil; limits.reset(); stopLaneWatch() } else if state == .recording { startLaneWatch() }
         applyKindSettings()
         persist()
         if state != .idle { LiveActivityController.shared.update(tracker: self, force: true) }
@@ -290,6 +296,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
     private func beginUpdates() {
         startStillTimer()
+        if kind == .drive { startLaneWatch() }
         if authorization == .notDetermined { manager.requestWhenInUseAuthorization() }
         manager.allowsBackgroundLocationUpdates = true
         manager.showsBackgroundLocationIndicator = true
@@ -300,6 +307,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     private func stopUpdates() {
+        stopLaneWatch()
         stillTimer?.invalidate()
         stillTimer = nil
         manager.stopUpdatingLocation()
@@ -337,6 +345,36 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         speedLimit = nil
         overWarned = false
         limits.reset()
+        laneChanges = []
+        laneDetector = LaneChangeDetector()
+    }
+
+    // MARK: Lane changes (drives only)
+
+    private func startLaneWatch() {
+        guard gyro.isDeviceMotionAvailable, !gyro.isDeviceMotionActive else { return }
+        gyro.deviceMotionUpdateInterval = 1.0 / 20
+        gyro.startDeviceMotionUpdates(to: .main) { [weak self] m, _ in
+            guard let self, let m, self.state == .recording, self.kind == .drive else { return }
+            let g = m.gravity
+            let gl = (g.x * g.x + g.y * g.y + g.z * g.z).squareRoot()
+            guard gl > 0.5 else { return }
+            // Rotation about "up" (opposite gravity): + = turning left.
+            let r = m.rotationRate
+            let yaw = -(r.x * g.x + r.y * g.y + r.z * g.z) / gl
+            let t = Date().timeIntervalSince1970
+            let a = m.userAcceleration
+            if (a.x * a.x + a.y * a.y + a.z * a.z).squareRoot() > 0.35 { self.laneDetector.handled(at: t) }
+            if let e = self.laneDetector.add(t: t, yawRate: yaw, speed: self.currentSpeed, course: self.course),
+               let here = self.points.last {
+                self.laneChanges.append(LaneChange(t: e.t, lat: here.lat, lng: here.lng, left: e.left, speed: e.speed, quick: e.quick))
+                if e.quick { UIImpactFeedbackGenerator(style: .rigid).impactOccurred(intensity: 0.6) }
+            }
+        }
+    }
+
+    private func stopLaneWatch() {
+        if gyro.isDeviceMotionActive { gyro.stopDeviceMotionUpdates() }
     }
 
     private func startMotion() {

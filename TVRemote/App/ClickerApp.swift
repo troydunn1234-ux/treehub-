@@ -3,10 +3,12 @@ import SwiftUI
 @main
 struct ClickerApp: App {
     @State private var store = TVStore()
+    @State private var pc = PCClient()
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(store)
+                .environment(pc)
                 .preferredColorScheme(.dark)
                 .tint(Look.cyan)
         }
@@ -16,7 +18,8 @@ struct ClickerApp: App {
 struct RootView: View {
     @Environment(TVStore.self) private var store
     @Environment(\.scenePhase) private var phase
-    @State private var tab = ProcessInfo.processInfo.arguments.contains("-remote") ? 1 : 0
+    @State private var tab = ProcessInfo.processInfo.arguments.contains("-pc") ? 2
+        : (ProcessInfo.processInfo.arguments.contains("-remote") ? 1 : 0)
     @State private var confirmForget = false
     @State private var showAbout = false
     @Namespace private var tabNS
@@ -24,16 +27,20 @@ struct RootView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             AuroraBackground()
-            if store.isPaired {
-                Group {
-                    if tab == 0 { AppsView().transition(.opacity) } else { RemoteView().transition(.opacity) }
+            Group {
+                if tab == 2 {
+                    PCView().transition(.opacity)
+                } else if store.isPaired {
+                    Group {
+                        if tab == 0 { AppsView().transition(.opacity) } else { RemoteView().transition(.opacity) }
+                    }
+                    .safeAreaInset(edge: .top) { topBar }
+                } else {
+                    SetupView().transition(.opacity.combined(with: .scale(scale: 0.98)))
                 }
-                .safeAreaInset(edge: .top) { topBar }
-                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 84) }
-                tabBar
-            } else {
-                SetupView().transition(.opacity.combined(with: .scale(scale: 0.98)))
             }
+            .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 84) }
+            tabBar
             if let t = store.toast {
                 let ok = t.hasPrefix("Opening")
                 HStack(spacing: 10) {
@@ -92,6 +99,7 @@ struct RootView: View {
         HStack(spacing: 6) {
             tabButton(0, "Apps", "square.grid.2x2.fill")
             tabButton(1, "Remote", "appletvremote.gen4.fill")
+            tabButton(2, "PC", "desktopcomputer")
         }
         .padding(6)
         .background(.ultraThinMaterial, in: Capsule())
@@ -106,9 +114,9 @@ struct RootView: View {
             UISelectionFeedbackGenerator().selectionChanged()
         } label: {
             Label(title, systemImage: symbol)
-                .font(Look.font(16, .bold))
+                .font(Look.font(15, .bold))
                 .foregroundStyle(tab == i ? .white : Look.dim)
-                .padding(.horizontal, 26).padding(.vertical, 14)
+                .padding(.horizontal, 16).padding(.vertical, 13)
                 .background {
                     if tab == i {
                         ShiftingPill()

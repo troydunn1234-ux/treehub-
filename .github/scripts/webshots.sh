@@ -59,6 +59,9 @@ if [ -d "$APP" ]; then
   xcrun simctl io "$UDID" screenshot shots/clicker-2-remote.png > /dev/null 2>&1
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.clicker; then echo "OK    clicker"; else echo "CRASH clicker"; FAIL=1; fi
   xcrun simctl terminate "$UDID" com.troydunn.clicker
+  xcrun simctl launch "$UDID" com.troydunn.clicker -demo -pc > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/clicker-3-pc.png > /dev/null 2>&1
+  xcrun simctl terminate "$UDID" com.troydunn.clicker
   xcrun simctl launch "$UDID" com.troydunn.clicker > /dev/null; sleep 4
   xcrun simctl io "$UDID" screenshot shots/clicker-0-setup.png > /dev/null 2>&1
 fi

@@ -44,7 +44,7 @@ struct ActivityDetailView: View {
                              symbol: activity.kind.isOnFoot ? "mountain.2.fill" : "gauge.with.dots.needle.67percent")
                 }
 
-                if activity.kind == .drive { speedCard }
+                if activity.kind == .drive { speedCard; laneCard }
 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
@@ -201,6 +201,34 @@ struct ActivityDetailView: View {
         .overlay(Capsule().strokeBorder(Theme.glow.opacity(0.5)))
     }
 
+    /// Lane changes: total, quick cuts, and per 10 miles.
+    private var laneCard: some View {
+        let lanes = activity.laneChanges
+        let cuts = lanes.filter(\.quick).count
+        let miles = activity.distanceM / 1609.344
+        let per10 = miles > 0.5 ? Double(lanes.count) / miles * 10 : 0
+        return GlassCard(padding: 14) {
+            VStack(alignment: .leading, spacing: 10) {
+                Label("Lane changes", systemImage: "arrow.left.arrow.right").font(Theme.rounded(16, .heavy)).foregroundStyle(.white)
+                HStack(spacing: 0) {
+                    laneStat("\(lanes.count)", "changes")
+                    laneStat("\(cuts)", "quick cuts")
+                    laneStat(per10 > 0 ? String(format: "%.1f", per10) : "—", "per 10 mi")
+                }
+                Text("Estimated from your phone's motion. Most accurate with the phone mounted.")
+                    .font(Theme.rounded(11, .medium)).foregroundStyle(Theme.textDim)
+            }
+        }
+    }
+
+    private func laneStat(_ value: String, _ label: String) -> some View {
+        VStack(spacing: 2) {
+            Text(value).font(Theme.rounded(24, .black)).foregroundStyle(.white).monospacedDigit()
+            Text(label.uppercased()).font(Theme.rounded(10, .heavy)).foregroundStyle(Theme.textDim)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
     /// Speed legend and how much of the drive was over the limit.
     private var speedCard: some View {
         let pts = activity.route
@@ -250,6 +278,10 @@ struct ActivityDetailView: View {
                 }
                 ForEach(SpeedZones.overZones(activity.route)) { z in
                     Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
+                }
+                ForEach(activity.laneChanges, id: \.t) { c in
+                    Annotation("", coordinate: CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)) { LaneMarker(change: c) }
+                        .annotationTitles(.hidden)
                 }
             } else {
                 MapPolyline(coordinates: coords)

@@ -347,6 +347,10 @@ struct TrackView: View {
                     ForEach(SpeedZones.overZones(tracker.points)) { z in
                         Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
                     }
+                    ForEach(tracker.laneChanges, id: \.t) { c in
+                        Annotation("", coordinate: CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)) { LaneMarker(change: c) }
+                            .annotationTitles(.hidden)
+                    }
                 } else if coords.count > 1 {
                     MapPolyline(coordinates: coords)
                         .stroke(Theme.glow.opacity(0.3), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
@@ -415,6 +419,7 @@ struct TrackView: View {
                     if tracker.kind == .drive {
                         DriveHUD(speed: tracker.currentSpeed, limit: tracker.speedLimit, over: tracker.isOverLimit)
                             .transition(.scale.combined(with: .opacity))
+                        if tracker.state != .idle { LaneChip(lanes: tracker.laneChanges.count, cuts: tracker.cutCount) }
                     }
                 }
                 .padding(.trailing, 14)

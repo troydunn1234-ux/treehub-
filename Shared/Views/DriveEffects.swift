@@ -189,3 +189,43 @@ struct SpeedCallout: View {
         .transition(.scale(scale: 0.6, anchor: .bottom).combined(with: .opacity))
     }
 }
+
+// MARK: - Lane changes
+
+/// Little arrow on the map where you changed lanes; quick cuts glow hot pink.
+struct LaneMarker: View {
+    let change: LaneChange
+    var body: some View {
+        Image(systemName: change.left ? "arrow.turn.up.left" : "arrow.turn.up.right")
+            .font(.system(size: 10, weight: .black))
+            .foregroundStyle(.white)
+            .frame(width: 20, height: 20)
+            .background(Circle().fill(change.quick ? Color(red: 1, green: 0.2, blue: 0.55) : Color(white: 0.2).opacity(0.85)))
+            .overlay(Circle().stroke(.white.opacity(0.8), lineWidth: 1))
+            .shadow(color: change.quick ? Color(red: 1, green: 0.2, blue: 0.55) : .clear, radius: 6)
+            .accessibilityLabel(change.quick ? "Quick lane change" : "Lane change")
+    }
+}
+
+/// "LANES 7 · CUTS 2" chip for the live drive dashboard.
+struct LaneChip: View {
+    let lanes: Int
+    let cuts: Int
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "arrow.left.arrow.right").font(.system(size: 10, weight: .black))
+            Text("\(lanes)").font(.system(size: 14, weight: .black, design: .rounded)).monospacedDigit()
+            if cuts > 0 {
+                Text("·").opacity(0.5)
+                Image(systemName: "bolt.fill").font(.system(size: 10, weight: .black)).foregroundStyle(Color(red: 1, green: 0.3, blue: 0.6))
+                Text("\(cuts)").font(.system(size: 14, weight: .black, design: .rounded)).monospacedDigit()
+            }
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10).padding(.vertical, 6)
+        .background(.black.opacity(0.72), in: Capsule())
+        .contentTransition(.numericText())
+        .animation(.snappy, value: lanes)
+        .accessibilityLabel("\(lanes) lane changes, \(cuts) quick")
+    }
+}

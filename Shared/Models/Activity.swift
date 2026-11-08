@@ -60,8 +60,15 @@ final class Activity {
     var notes: String = ""
     var avgHR: Double?
     @Attribute(.externalStorage) var routeData: Data?
+    /// Lane changes spotted during a drive (JSON of [LaneChange]).
+    var laneChangesData: Data? = nil
 
     init() {}
+
+    var laneChanges: [LaneChange] {
+        get { laneChangesData.flatMap { try? JSONDecoder().decode([LaneChange].self, from: $0) } ?? [] }
+        set { laneChangesData = newValue.isEmpty ? nil : try? JSONEncoder().encode(newValue) }
+    }
 
     var kind: ActivityKind {
         get { ActivityKind(rawValue: kindRaw) ?? .walk }

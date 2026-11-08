@@ -201,3 +201,45 @@ final class SpeciesTests: XCTestCase {
         print("CLASSIFIER_LABELS total=\(labels.count) plant=\(plant.joined(separator: ","))")
     }
 }
+
+final class LaneChangeTests: XCTestCase {
+    /// Feeds yaw-rate samples at 20 Hz; returns detected events.
+    private func run(_ yaw: (Double) -> Double, seconds: Double, speed: Double = 28, course: (Double) -> Double = { _ in 90 }) -> [LaneChangeDetector.Event] {
+        var d = LaneChangeDetector()
+        var out: [LaneChangeDetector.Event] = []
+        var t = 0.0
+        while t < seconds {
+            if let e = d.add(t: t, yawRate: yaw(t), speed: speed, course: course(t)) { out.append(e) }
+            t += 0.05
+        }
+        return out
+    }
+
+    func testQuickLeftLaneChangeIsDetected() {
+        // Left swerve 1–2 s, right swerve 2–3 s, heading unchanged.
+        let events = run({ t in t >= 1 && t < 2 ? 0.12 : (t >= 2 && t < 3 ? -0.12 : 0) }, seconds: 6)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.left, true)
+    }
+
+    func testRightLaneChangeIsDetected() {
+        let events = run({ t in t >= 1 && t < 2.2 ? -0.1 : (t >= 2.2 && t < 3.4 ? 0.1 : 0) }, seconds: 6)
+        XCTAssertEqual(events.first?.left, false)
+    }
+
+    func testCurveIsNotALaneChange() {
+        // One long yaw one way while the GPS course swings 40°.
+        let events = run({ t in t >= 1 && t < 5 ? 0.15 : 0 }, seconds: 7, course: { t in 90 + min(40, max(0, (t - 1) * 10)) })
+        XCTAssertTrue(events.isEmpty)
+    }
+
+    func testSlowTrafficIsIgnored() {
+        let events = run({ t in t >= 1 && t < 2 ? 0.12 : (t >= 2 && t < 3 ? -0.12 : 0) }, seconds: 6, speed: 5)
+        XCTAssertTrue(events.isEmpty)
+    }
+
+    func testNoiseIsIgnored() {
+        let events = run({ t in 0.02 * sin(t * 13) }, seconds: 20)
+        XCTAssertTrue(events.isEmpty)
+    }
+}
