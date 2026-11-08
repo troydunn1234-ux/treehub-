@@ -55,6 +55,16 @@ jobs:
           printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
           echo "KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8" >> $GITHUB_ENV
 
+      - name: Register the app ID with Apple if needed
+        env:
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip3 install --quiet --break-system-packages "pyjwt[crypto]" || pip3 install --quiet "pyjwt[crypto]"
+          BUNDLE=$(xcodebuild -project TreeHub.xcodeproj -scheme ${{ inputs.app }} -showBuildSettings 2>/dev/null | awk -F' = ' '/ PRODUCT_BUNDLE_IDENTIFIER /{print $2; exit}')
+          echo "Bundle: $BUNDLE"
+          python3 .github/scripts/ensure_bundle_id.py "$BUNDLE" "${{ inputs.app }}" || true
+
       - name: Archive (signed in the cloud)
         env:
           TEAM: ${{ secrets.APPLE_TEAM_ID }}
