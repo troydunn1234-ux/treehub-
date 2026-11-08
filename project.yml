@@ -284,6 +284,10 @@ targets:
     platform: iOS
     sources:
       - path: TVRemote
+    entitlements:
+      path: TVRemote/Clicker.entitlements
+      properties:
+        com.apple.developer.game-center: true
     info:
       path: TVRemote/Info.plist
       properties:
