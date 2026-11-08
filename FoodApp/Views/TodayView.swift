@@ -1,0 +1,279 @@
+import SwiftUI
+import SwiftData
+
+struct TodayView: View {
+    @Environment(\.modelContext) private var context
+    @Query(sort: \FoodEntry.createdAt) private var all: [FoodEntry]
+    @AppStorage("goal") private var goal: Double = 2200
+    @State private var day = Day.key(Date())
+    @State private var adding = false
+    @State private var editingGoal = false
+    @State private var dragX: CGFloat = 0
+
+    private var entries: [FoodEntry] { all.filter { $0.day == day } }
+    private var eaten: Double { entries.reduce(0) { $0 + $1.cal * $1.servings } }
+    private func total(_ k: KeyPath<FoodEntry, Double>) -> Double { entries.reduce(0) { $0 + $1[keyPath: k] * $1.servings } }
+
+    /// Days in a row (ending today or yesterday) with something logged.
+    private var streak: Int {
+        let days = Set(all.map(\.day))
+        var k = Day.key(Date())
+        if !days.contains(k) { k = Day.shift(k, by: -1) }
+        var n = 0
+        while days.contains(k) { n += 1; k = Day.shift(k, by: -1) }
+        return n
+    }
+
+    var body: some View {
+        ZStack(alignment: .bottom) {
+            EmberBackground()
+            ScrollView {
+                VStack(spacing: 22) {
+                    header
+                    CalorieRing(eaten: eaten, goal: goal)
+                        .onTapGesture { editingGoal = true }
+                        .accessibilityHint("Double tap to change your daily goal")
+                    macros
+                    ForEach(Meal.allCases) { meal in mealSection(meal) }
+                    if entries.isEmpty { emptyState }
+                }
+                .padding(.horizontal, 20)
+                .padding(.bottom, 130)
+                .offset(x: dragX)
+            }
+            .scrollIndicators(.hidden)
+            .simultaneousGesture(daySwipe)
+
+            addButton
+        }
+        .sheet(isPresented: $adding) { AddFoodSheet(day: day).presentationDetents([.large]) }
+        .sheet(isPresented: $editingGoal) { GoalSheet(goal: $goal).presentationDetents([.height(320)]) }
+        .preferredColorScheme(.dark)
+    }
+
+    // MARK: Pieces
+
+    private var header: some View {
+        HStack {
+            Button { change(by: -1) } label: { Image(systemName: "chevron.left").font(.system(size: 17, weight: .bold)) }
+                .accessibilityLabel("Previous day")
+            Spacer()
+            VStack(spacing: 2) {
+                Text("FOOD BOOK").font(Ember.font(11, .heavy)).tracking(3).foregroundStyle(Ember.fire)
+                Text(Day.title(day)).font(Ember.font(26, .heavy)).foregroundStyle(Ember.cream)
+                    .contentTransition(.numericText())
+            }
+            Spacer()
+            if Day.key(Date()) != day {
+                Button { change(by: 1) } label: { Image(systemName: "chevron.right").font(.system(size: 17, weight: .bold)) }
+                    .accessibilityLabel("Next day")
+            } else {
+                HStack(spacing: 3) {
+                    Image(systemName: "flame.fill").foregroundStyle(Ember.fire)
+                    Text("\(streak)").font(Ember.font(15, .heavy)).foregroundStyle(Ember.cream)
+                }
+                .accessibilityLabel("\(streak) day streak")
+            }
+        }
+        .foregroundStyle(Ember.cream)
+        .padding(.top, 6)
+    }
+
+    private var macros: some View {
+        HStack(spacing: 10) {
+            MacroPill(label: "Protein", grams: total(\.protein), color: Ember.protein)
+            MacroPill(label: "Carbs", grams: total(\.carbs), color: Ember.carbs)
+            MacroPill(label: "Fat", grams: total(\.fat), color: Ember.fat)
+            let caf = total(\.caffeine)
+            if caf > 0 { MacroPill(label: "Caffeine", grams: caf, color: Ember.cream, unit: "mg") }
+        }
+    }
+
+    @ViewBuilder private func mealSection(_ meal: Meal) -> some View {
+        let items = entries.filter { $0.meal == meal }
+        if !items.isEmpty {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Label(meal.rawValue, systemImage: meal.symbol).font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
+                    Spacer()
+                    Text("\(Int(items.reduce(0) { $0 + $1.cal * $1.servings })) cal").font(Ember.font(14, .bold)).foregroundStyle(Ember.dim)
+                }
+                VStack(spacing: 0) {
+                    ForEach(items) { e in
+                        FoodRow(entry: e) { delete(e) }
+                        if e.id != items.last?.id { Divider().overlay(Ember.line).padding(.leading, 14) }
+                    }
+                }
+                .background(Ember.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(Ember.line))
+            }
+            .transition(.move(edge: .bottom).combined(with: .opacity))
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 8) {
+            Text("🍽️").font(.system(size: 44))
+            Text(day == Day.key(Date()) ? "Nothing logged yet today" : "Nothing logged this day")
+                .font(Ember.font(17, .bold)).foregroundStyle(Ember.cream)
+            Text("Tap + and pick a food. Two taps, done.").font(Ember.font(14, .medium)).foregroundStyle(Ember.dim)
+        }
+        .padding(.top, 10)
+    }
+
+    private var addButton: some View {
+        Button { adding = true } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "plus").font(.system(size: 20, weight: .black))
+                Text("Add food").font(Ember.font(18, .heavy))
+            }
+            .foregroundStyle(.white)
+            .padding(.horizontal, 28).padding(.vertical, 17)
+            .background(Ember.fire, in: Capsule())
+            .shadow(color: Ember.pink.opacity(0.55), radius: 18, y: 6)
+        }
+        .buttonStyle(Squish())
+        .padding(.bottom, 26)
+    }
+
+    private var daySwipe: some Gesture {
+        DragGesture(minimumDistance: 30)
+            .onChanged { v in if abs(v.translation.width) > abs(v.translation.height) { dragX = v.translation.width * 0.35 } }
+            .onEnded { v in
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { dragX = 0 }
+                guard abs(v.translation.width) > 80, abs(v.translation.width) > abs(v.translation.height) else { return }
+                change(by: v.translation.width > 0 ? -1 : 1)
+            }
+    }
+
+    private func change(by n: Int) {
+        let next = Day.shift(day, by: n)
+        guard Day.date(next) <= Date() else { return }
+        UISelectionFeedbackGenerator().selectionChanged()
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { day = next }
+    }
+
+    private func delete(_ e: FoodEntry) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { context.delete(e) }
+        try? context.save()
+    }
+}
+
+struct CalorieRing: View {
+    let eaten: Double
+    let goal: Double
+    @State private var shown: Double = 0
+
+    private var left: Int { Int((goal - eaten).rounded()) }
+    private var progress: Double { goal > 0 ? eaten / goal : 0 }
+
+    var body: some View {
+        ZStack {
+            Circle().stroke(Ember.card, lineWidth: 22)
+            Circle()
+                .trim(from: 0, to: min(1, shown))
+                .stroke(Ember.fire, style: StrokeStyle(lineWidth: 22, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .shadow(color: Ember.orange.opacity(0.6), radius: 14)
+            if shown > 1 {
+                Circle()
+                    .trim(from: 0, to: min(1, shown - 1))
+                    .stroke(Ember.pink, style: StrokeStyle(lineWidth: 10, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .padding(-22)
+            }
+            VStack(spacing: 2) {
+                Text("\(abs(left))")
+                    .font(.system(size: 58, weight: .black, design: .rounded))
+                    .foregroundStyle(Ember.cream)
+                    .contentTransition(.numericText(value: Double(left)))
+                Text(left >= 0 ? "CALORIES LEFT" : "OVER GOAL").font(Ember.font(12, .heavy)).tracking(1.5)
+                    .foregroundStyle(left >= 0 ? Ember.dim : Ember.pink)
+                Text("\(Int(eaten)) of \(Int(goal))").font(Ember.font(14, .bold)).foregroundStyle(Ember.dim).padding(.top, 4)
+            }
+        }
+        .frame(width: 240, height: 240)
+        .padding(.vertical, 8)
+        .onAppear { withAnimation(.spring(response: 1.1, dampingFraction: 0.8)) { shown = progress } }
+        .onChange(of: progress) { _, p in withAnimation(.spring(response: 0.7, dampingFraction: 0.75)) { shown = p } }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(left >= 0 ? "\(left) calories left of \(Int(goal))" : "\(-left) calories over your \(Int(goal)) goal")
+    }
+}
+
+struct MacroPill: View {
+    let label: String
+    let grams: Double
+    let color: Color
+    var unit = "g"
+    var body: some View {
+        VStack(spacing: 4) {
+            Text("\(Int(grams.rounded()))\(unit)").font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
+                .contentTransition(.numericText(value: grams))
+            Text(label.uppercased()).font(Ember.font(9, .heavy)).tracking(1).foregroundStyle(color)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 12)
+        .background(color.opacity(0.10), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(color.opacity(0.25)))
+        .animation(.snappy, value: grams)
+    }
+}
+
+struct FoodRow: View {
+    let entry: FoodEntry
+    let onDelete: () -> Void
+    @State private var offset: CGFloat = 0
+
+    var body: some View {
+        ZStack(alignment: .trailing) {
+            Button(role: .destructive, action: onDelete) {
+                Image(systemName: "trash.fill").foregroundStyle(.white).frame(width: 70).frame(maxHeight: .infinity)
+            }
+            .background(Ember.pink)
+            .opacity(offset < -10 ? 1 : 0)
+            HStack(spacing: 12) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.name).font(Ember.font(16, .bold)).foregroundStyle(Ember.cream).lineLimit(1)
+                    let macros = [entry.protein > 0 ? "\(Int(entry.protein * entry.servings))g P" : nil,
+                                  entry.carbs > 0 ? "\(Int(entry.carbs * entry.servings))g C" : nil,
+                                  entry.fat > 0 ? "\(Int(entry.fat * entry.servings))g F" : nil].compactMap { $0 }
+                    if !macros.isEmpty || entry.servings != 1 {
+                        Text(((entry.servings != 1 ? ["×\(entry.servings.formatted())"] : []) + macros).joined(separator: " · "))
+                            .font(Ember.font(12, .medium)).foregroundStyle(Ember.dim)
+                    }
+                }
+                Spacer()
+                Text("\(Int(entry.cal * entry.servings))").font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
+            }
+            .padding(.horizontal, 14).padding(.vertical, 12)
+            .background(Ember.bg.opacity(0.001))
+            .offset(x: offset)
+            .gesture(DragGesture(minimumDistance: 20)
+                .onChanged { v in if v.translation.width < 0 { offset = max(-80, v.translation.width) } }
+                .onEnded { _ in withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { offset = offset < -50 ? -70 : 0 } })
+        }
+        .clipped()
+        .accessibilityElement(children: .combine)
+        .accessibilityAction(named: "Delete") { onDelete() }
+    }
+}
+
+struct GoalSheet: View {
+    @Binding var goal: Double
+    @Environment(\.dismiss) private var dismiss
+    var body: some View {
+        VStack(spacing: 18) {
+            Text("Daily goal").font(Ember.font(22, .heavy)).foregroundStyle(Ember.cream)
+            Text("\(Int(goal)) cal").font(.system(size: 48, weight: .black, design: .rounded)).foregroundStyle(Ember.fire)
+                .contentTransition(.numericText(value: goal))
+            Slider(value: $goal, in: 1200...4500, step: 50).tint(Ember.orange)
+                .onChange(of: goal) { _, _ in UISelectionFeedbackGenerator().selectionChanged() }
+            Button("Done") { dismiss() }.font(Ember.font(17, .bold)).foregroundStyle(Ember.orange)
+        }
+        .padding(28)
+        .presentationBackground(Ember.bg)
+        .animation(.snappy, value: goal)
+    }
+}
