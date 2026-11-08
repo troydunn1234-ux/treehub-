@@ -90,18 +90,35 @@ enum BankSync {
             let pass = comps.percentEncodedPassword.flatMap { $0.removingPercentEncoding } ?? ""
             comps.user = nil; comps.password = nil
             comps.path = (comps.path.hasSuffix("/") ? String(comps.path.dropLast()) : comps.path) + "/accounts"
-            comps.queryItems = [URLQueryItem(name: "start-date", value: String(Int(max(0, since)))),
-                                URLQueryItem(name: "pending", value: "1")]
-            guard let url = comps.url else { throw Failure.message("Saved connection is broken. Disconnect and connect again.") }
-            var req = URLRequest(url: url)
-            req.timeoutInterval = 60
-            req.setValue("Basic " + Data("\(user):\(pass)".utf8).base64EncodedString(), forHTTPHeaderField: "Authorization")
-            let (data, resp) = try await URLSession.shared.data(for: req)
-            let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
-            if code == 403 { throw Failure.message("SimpleFIN says access was revoked. Disconnect and connect again.") }
-            if code == 402 { throw Failure.message("Your SimpleFIN Bridge subscription needs attention.") }
-            guard code == 200, let obj = try JSONSerialization.jsonObject(with: data) as? [String: Any] else {
-                throw Failure.message("Couldn't reach SimpleFIN (error \(code)). Try again later.")
+            let base = comps
+            let start = String(Int(max(0, since)))
+            let attempts: [[URLQueryItem]] = [
+                [URLQueryItem(name: "start-date", value: start), URLQueryItem(name: "pending", value: "1")],
+                [URLQueryItem(name: "start-date", value: start)],
+                [URLQueryItem(name: "start-date", value: start), URLQueryItem(name: "end-date", value: String(Int(Date().timeIntervalSince1970)))],
+                []
+            ]
+            var lastCode = 0, lastBody = ""
+            var got: [String: Any]? = nil
+            for q in attempts {
+                var c = base
+                c.queryItems = q.isEmpty ? nil : q
+                guard let url = c.url else { continue }
+                var req = URLRequest(url: url)
+                req.timeoutInterval = 60
+                req.setValue("Basic " + Data("\(user):\(pass)".utf8).base64EncodedString(), forHTTPHeaderField: "Authorization")
+                req.setValue("application/json", forHTTPHeaderField: "Accept")
+                let (data, resp) = try await URLSession.shared.data(for: req)
+                lastCode = (resp as? HTTPURLResponse)?.statusCode ?? 0
+                if lastCode == 403 { throw Failure.message("SimpleFIN says access was revoked. Disconnect and connect again.") }
+                if lastCode == 402 { throw Failure.message("Your SimpleFIN Bridge subscription needs attention.") }
+                if lastCode == 200, let o = try? JSONSerialization.jsonObject(with: data) as? [String: Any] { got = o; break }
+                lastBody = String(decoding: data.prefix(160), as: UTF8.self)
+                if lastCode != 400 { break }   // only 400s are worth retrying with simpler queries
+            }
+            guard let obj = got else {
+                let why = lastBody.trimmingCharacters(in: .whitespacesAndNewlines)
+                throw Failure.message("SimpleFIN error \(lastCode)" + (why.isEmpty ? ". Try again later." : ": \(why)"))
             }
             result = clean(obj)
         }
