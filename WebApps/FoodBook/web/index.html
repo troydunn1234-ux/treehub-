@@ -752,7 +752,7 @@ const dayStr = d => d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.
 const parseDay = s => { const [y, m, d] = s.split("-").map(Number); return new Date(y, m - 1, d); };
 const timeStr = ms => new Date(ms).toLocaleTimeString(undefined, { hour: "numeric", minute: "2-digit" });
 const MEALS = ["Breakfast", "Lunch", "Dinner", "Snacks"];
-const TRIGGER_ID = "REMOVED";
+const TRIGGER_ID = "";
 const REMOTE = "Claude Code Remote";
 const STATUS = { pending: "Waiting for Garmin", synced: "In Garmin", error: "Didn't sync", remove_requested: "Removing", update_requested: "Updating in Garmin" };
 

@@ -75,6 +75,8 @@ final class LocalStore {
         } else if let seedURL = Bundle.main.url(forResource: "seed", withExtension: "json"),
                   let seed = try? String(contentsOf: seedURL, encoding: .utf8) {
             json = seed
+            // Keep the starting data on the phone right away, so later builds without it never lose it.
+            try? Data(seed.utf8).write(to: url, options: [.atomic, .completeFileProtection])
         } else {
             json = "{}"
         }

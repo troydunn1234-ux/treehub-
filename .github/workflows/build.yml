@@ -24,6 +24,8 @@ jobs:
       - name: Generate Xcode project
         run: |
           brew install xcodegen
+          # Personal starting data is not in the public repo; build with empty data instead.
+          for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
           xcodegen generate
 
       - name: Build both apps for iOS Simulator (no signing)
