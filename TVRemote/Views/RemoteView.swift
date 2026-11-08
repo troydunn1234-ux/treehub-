@@ -10,9 +10,10 @@ struct RemoteView: View {
     @State private var bump = false
 
     var body: some View {
-        ZStack {
-            AuroraBackground()
-            VStack(spacing: 18) {
+        GeometryReader { geo in
+            // Size the pad to whatever room is left, so nothing ends up under the tab bar.
+            let pad = min(geo.size.width - 64, max(190, geo.size.height - 372), 300)
+            VStack(spacing: 16) {
                 if !store.reachable {
                     Label("Can't reach your TV — is it on and on the same Wi-Fi?", systemImage: "wifi.exclamationmark")
                         .font(Look.font(13, .semibold))
@@ -28,7 +29,7 @@ struct RemoteView: View {
 
                 Spacer(minLength: 0)
 
-                TouchPad { key, heavy in send(key, heavy: heavy) }
+                TouchPad(size: pad) { key, heavy in send(key, heavy: heavy) }
 
                 Spacer(minLength: 0)
 
@@ -38,14 +39,57 @@ struct RemoteView: View {
                     PillButton(symbol: "line.3.horizontal", label: "Menu") { send(.menu) }
                 }
 
-                mediaRow
-
-                volumeRow
+                controlDeck
             }
             .padding(.horizontal, 20)
             .padding(.top, 8)
-            .padding(.bottom, 12)
+            .padding(.bottom, 8)
+            .frame(width: geo.size.width, height: geo.size.height)
             .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.reachable)
+        }
+    }
+
+    /// Volume on the left, play/pause in the middle, mute on the right: one tidy row.
+    private var controlDeck: some View {
+        HStack(spacing: 12) {
+            VStack(spacing: 4) {
+                HStack(spacing: 0) {
+                    HoldButton(symbol: "minus", label: "Volume down") { volume(up: false) }
+                    Rectangle().fill(Look.line).frame(width: 1, height: 26)
+                    HoldButton(symbol: "plus", label: "Volume up") { volume(up: true) }
+                }
+                .background(Look.card, in: Capsule())
+                .overlay(Capsule().stroke(Look.line, lineWidth: 1))
+                .overlay(alignment: .center) {
+                    Capsule().stroke(Look.accent, lineWidth: bump ? 2 : 0).opacity(bump ? 1 : 0)
+                        .animation(.easeOut(duration: 0.25), value: bump)
+                }
+                Text("VOLUME").font(Look.font(9, .heavy)).tracking(1.5).foregroundStyle(Look.dim)
+            }
+            Spacer(minLength: 0)
+            HStack(spacing: 10) {
+                RoundButton(symbol: "backward.fill", label: "Rewind", size: 44) { send(.seekBack) }
+                Button {
+                    send(playing ? .pause : .play, heavy: true)
+                    playing.toggle()
+                } label: {
+                    Image(systemName: playing ? "pause.fill" : "play.fill")
+                        .contentTransition(.symbolEffect(.replace))
+                        .font(Look.font(22, .heavy))
+                        .foregroundStyle(.white)
+                        .frame(width: 60, height: 60)
+                        .background(Circle().fill(Look.accent))
+                        .shadow(color: Look.magenta.opacity(0.55), radius: 12)
+                }
+                .buttonStyle(SquishStyle())
+                .accessibilityLabel(playing ? "Pause" : "Play")
+                RoundButton(symbol: "forward.fill", label: "Fast forward", size: 44) { send(.seekForward) }
+            }
+            Spacer(minLength: 0)
+            VStack(spacing: 4) {
+                RoundButton(symbol: "speaker.slash.fill", label: "Mute", size: 52) { send(.muteToggle) }
+                Text("MUTE").font(Look.font(9, .heavy)).tracking(1.5).foregroundStyle(Look.dim)
+            }
         }
     }
 
@@ -88,57 +132,6 @@ struct RemoteView: View {
         .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.nowPlaying)
     }
 
-    private var mediaRow: some View {
-        HStack(spacing: 18) {
-            RoundButton(symbol: "backward.fill", label: "Rewind", size: 56) { send(.seekBack) }
-            Button {
-                send(playing ? .pause : .play, heavy: true)
-                playing.toggle()
-            } label: {
-                Image(systemName: playing ? "pause.fill" : "play.fill")
-                    .contentTransition(.symbolEffect(.replace))
-                    .font(Look.font(26, .heavy))
-                    .foregroundStyle(.white)
-                    .frame(width: 72, height: 72)
-                    .background(Circle().fill(Look.accent))
-                    .shadow(color: Look.magenta.opacity(0.55), radius: 14)
-            }
-            .buttonStyle(SquishStyle())
-            .accessibilityLabel(playing ? "Pause" : "Play")
-            RoundButton(symbol: "forward.fill", label: "Fast forward", size: 56) { send(.seekForward) }
-        }
-    }
-
-    private var volumeRow: some View {
-        HStack(spacing: 14) {
-            HStack(spacing: 0) {
-                HoldButton(symbol: "minus", label: "Volume down") { volume(up: false) }
-                HStack(alignment: .bottom, spacing: 3) {
-                    Image(systemName: volUp ? "speaker.wave.3.fill" : "speaker.wave.1.fill")
-                        .font(Look.font(14, .bold))
-                        .foregroundStyle(Look.dim)
-                        .symbolEffect(.bounce, value: volTick)
-                        .padding(.trailing, 4)
-                    ForEach(0..<6, id: \.self) { i in
-                        Capsule()
-                            .fill(Look.accent)
-                            .frame(width: 4, height: 6 + CGFloat(i) * 3)
-                            .scaleEffect(x: 1, y: bump ? 1 + CGFloat(i) * 0.14 : 1, anchor: .bottom)
-                            .opacity(bump ? 1 : 0.55)
-                            .animation(.spring(response: 0.2, dampingFraction: 0.45).delay(Double(i) * 0.02), value: bump)
-                    }
-                }
-                .frame(maxWidth: .infinity)
-                .accessibilityHidden(true)
-                HoldButton(symbol: "plus", label: "Volume up") { volume(up: true) }
-            }
-            .background(Look.card, in: Capsule())
-            .overlay(Capsule().stroke(Look.line, lineWidth: 1))
-
-            RoundButton(symbol: "speaker.slash.fill", label: "Mute", size: 56) { send(.muteToggle) }
-        }
-    }
-
     // MARK: Actions
 
     private func send(_ key: VizioClient.Key, heavy: Bool = false) {
@@ -161,9 +154,8 @@ private struct TrailDot { let p: CGPoint; let t: Date }
 private struct Ripple { let p: CGPoint; let t: Date }
 
 private struct TouchPad: View {
+    let size: CGFloat
     let onKey: (VizioClient.Key, Bool) -> Void
-
-    private let size: CGFloat = 300
     @State private var trail: [TrailDot] = []
     @State private var ripples: [Ripple] = []
     @State private var anchor: CGPoint?
@@ -408,11 +400,11 @@ private struct HoldButton: View {
 
     var body: some View {
         Image(systemName: symbol)
-            .font(Look.font(20, .heavy))
+            .font(Look.font(22, .black))
             .foregroundStyle(.white)
-            .frame(width: 64, height: 56)
+            .frame(width: 58, height: 52)
             .contentShape(Rectangle())
-            .background(holding ? Look.violet.opacity(0.35) : Color.clear, in: Capsule())
+            .background(holding ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.clear), in: Capsule())
             .scaleEffect(holding ? 0.92 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.6), value: holding)
             .gesture(

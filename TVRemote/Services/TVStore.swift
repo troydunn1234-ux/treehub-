@@ -65,7 +65,15 @@ final class TVStore {
         if let d = UserDefaults.standard.data(forKey: "tv"), let t = try? JSONDecoder().decode(VizioClient.TVInfo.self, from: d) { tv = t }
         loadCatalog()
         isPaired = tv != nil && auth != nil
+        if Self.demo {
+            tv = VizioClient.TVInfo(host: "192.168.1.40", port: 7345, name: "Living Room TV", model: "V-Series 65")
+            isPaired = true
+            nowPlaying = "HBO Max"
+        }
     }
+
+    /// Simulator screenshots: pretend a TV is paired and never touch the network.
+    static let demo = ProcessInfo.processInfo.arguments.contains("-demo")
 
     private func loadCatalog() {
         struct Raw: Decodable { let name: String; let config: [VizioClient.AppConfig]? }
@@ -137,6 +145,7 @@ final class TVStore {
     // MARK: Actions
 
     func launch(_ app: StreamingApp) async {
+        if Self.demo { show("Opening \(app.name) on your TV"); nowPlaying = app.name; return }
         guard let t = tv, let a = auth else { return }
         UIImpactFeedbackGenerator(style: .medium).impactOccurred()
         // Some apps have more than one launch recipe depending on the TV's software; try each.
@@ -154,6 +163,7 @@ final class TVStore {
     }
 
     func press(_ key: VizioClient.Key) {
+        if Self.demo { return }
         guard let t = tv, let a = auth else { return }
         Task {
             do { try await client.press(t, auth: a, key); reachable = true } catch { handle(error) }
@@ -161,6 +171,7 @@ final class TVStore {
     }
 
     func refresh() async {
+        if Self.demo { return }
         guard let t = tv, let a = auth else { return }
         do {
             let cur = try await client.currentApp(t, auth: a)

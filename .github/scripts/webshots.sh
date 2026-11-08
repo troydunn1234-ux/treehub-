@@ -47,4 +47,19 @@ if ways:
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; FAIL=1; fi
   xcrun simctl location "$UDID" clear || true
 fi
+
+# Clicker in demo mode (pretend-paired TV): apps grid and remote.
+APP=build/Build/Products/Debug-iphonesimulator/Clicker.app
+if [ -d "$APP" ]; then
+  xcrun simctl install "$UDID" "$APP"
+  xcrun simctl launch "$UDID" com.troydunn.clicker -demo > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/clicker-1-apps.png > /dev/null 2>&1
+  xcrun simctl terminate "$UDID" com.troydunn.clicker
+  xcrun simctl launch "$UDID" com.troydunn.clicker -demo -remote > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/clicker-2-remote.png > /dev/null 2>&1
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.clicker; then echo "OK    clicker"; else echo "CRASH clicker"; FAIL=1; fi
+  xcrun simctl terminate "$UDID" com.troydunn.clicker
+  xcrun simctl launch "$UDID" com.troydunn.clicker > /dev/null; sleep 4
+  xcrun simctl io "$UDID" screenshot shots/clicker-0-setup.png > /dev/null 2>&1
+fi
 exit $FAIL

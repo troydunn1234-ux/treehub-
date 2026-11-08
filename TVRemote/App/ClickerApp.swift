@@ -16,8 +16,9 @@ struct ClickerApp: App {
 struct RootView: View {
     @Environment(TVStore.self) private var store
     @Environment(\.scenePhase) private var phase
-    @State private var tab = 0
+    @State private var tab = ProcessInfo.processInfo.arguments.contains("-remote") ? 1 : 0
     @State private var confirmForget = false
+    @State private var showAbout = false
     @Namespace private var tabNS
 
     var body: some View {
@@ -28,6 +29,7 @@ struct RootView: View {
                     if tab == 0 { AppsView().transition(.opacity) } else { RemoteView().transition(.opacity) }
                 }
                 .safeAreaInset(edge: .top) { topBar }
+                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 78) }
                 tabBar
             } else {
                 SetupView().transition(.opacity.combined(with: .scale(scale: 0.98)))
@@ -52,6 +54,7 @@ struct RootView: View {
                 try? await Task.sleep(nanoseconds: 4_000_000_000)
             }
         }
+        .sheet(isPresented: $showAbout) { AboutView() }
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { store.forgetTV() }
         } message: { Text("You'll pair again with a new code from the TV.") }
@@ -66,6 +69,7 @@ struct RootView: View {
                 Button { store.press(.powerToggle) } label: { Label("Power", systemImage: "power") }
                 Button { store.press(.inputNext) } label: { Label("Switch input", systemImage: "rectangle.on.rectangle") }
                 Divider()
+                Button { showAbout = true } label: { Label("About Clicker", systemImage: "info.circle") }
                 Button(role: .destructive) { confirmForget = true } label: { Label("Forget this TV", systemImage: "tv.slash") }
             } label: {
                 Image(systemName: "ellipsis").font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
@@ -105,5 +109,37 @@ struct RootView: View {
                 }
         }
         .buttonStyle(SquishStyle())
+    }
+}
+
+struct AboutView: View {
+    @Environment(\.dismiss) private var dismiss
+    private var license: String {
+        (Bundle.main.url(forResource: "pyvizio-LICENSE", withExtension: "txt")).flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? ""
+    }
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 18) {
+                    Text("Clicker").font(Look.font(32, .heavy)).foregroundStyle(Look.accent)
+                    Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
+                        .font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
+                    section("Privacy", "Clicker talks only to your TV, directly over your Wi-Fi. It has no account, no tracking and no servers. The pairing code from your TV stays in your phone's Keychain.")
+                    section("Not affiliated", "Clicker is an independent app. It is not made, endorsed or supported by VIZIO. VIZIO, SmartCast and the names of the streaming services shown are trademarks of their owners and are used only to identify what opens on your TV.")
+                    section("Open source", "The list of TV apps comes from pyvizio, used under the MIT License:")
+                    Text(license).font(.system(size: 11, design: .monospaced)).foregroundStyle(Look.dim)
+                }
+                .padding(22)
+            }
+            .background(Look.bg)
+            .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+        }
+        .preferredColorScheme(.dark)
+    }
+    private func section(_ title: String, _ body: String) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text(title).font(Look.font(17, .heavy)).foregroundStyle(.white)
+            Text(body).font(Look.font(15, .medium)).foregroundStyle(.white.opacity(0.8))
+        }
     }
 }
