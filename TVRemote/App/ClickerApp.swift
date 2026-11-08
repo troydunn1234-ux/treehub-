@@ -29,20 +29,28 @@ struct RootView: View {
                     if tab == 0 { AppsView().transition(.opacity) } else { RemoteView().transition(.opacity) }
                 }
                 .safeAreaInset(edge: .top) { topBar }
-                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 78) }
+                .safeAreaInset(edge: .bottom) { Color.clear.frame(height: 84) }
                 tabBar
             } else {
                 SetupView().transition(.opacity.combined(with: .scale(scale: 0.98)))
             }
             if let t = store.toast {
-                Text(t)
-                    .font(Look.font(15, .bold)).foregroundStyle(.white)
-                    .padding(.horizontal, 18).padding(.vertical, 12)
-                    .background(.ultraThinMaterial, in: Capsule())
-                    .overlay(Capsule().strokeBorder(Look.accent, lineWidth: 1.2))
-                    .shadow(color: Look.magenta.opacity(0.4), radius: 14)
-                    .padding(.bottom, store.isPaired ? 104 : 40)
-                    .transition(.move(edge: .bottom).combined(with: .opacity))
+                let ok = t.hasPrefix("Opening")
+                HStack(spacing: 10) {
+                    Image(systemName: ok ? "checkmark.circle.fill" : "exclamationmark.triangle.fill")
+                        .font(.system(size: 18, weight: .bold))
+                        .foregroundStyle(ok ? Look.cyan : Color.orange)
+                        .symbolEffect(.bounce, value: t)
+                    Text(t).font(Look.font(15, .bold)).foregroundStyle(.white).lineLimit(2)
+                }
+                .padding(.horizontal, 18).padding(.vertical, 13)
+                .background(.ultraThinMaterial, in: Capsule())
+                .overlay(Capsule().strokeBorder(ok ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.orange.opacity(0.7)), lineWidth: 1.2))
+                .shadow(color: (ok ? Look.magenta : Color.orange).opacity(0.4), radius: 16)
+                .padding(.horizontal, 20)
+                .padding(.bottom, store.isPaired ? 112 : 40)
+                .transition(.move(edge: .bottom).combined(with: .scale(scale: 0.85)).combined(with: .opacity))
+                .accessibilityElement(children: .combine)
             }
         }
         .animation(.spring(response: 0.5, dampingFraction: 0.85), value: store.isPaired)
@@ -89,7 +97,7 @@ struct RootView: View {
         .background(.ultraThinMaterial, in: Capsule())
         .overlay(Capsule().strokeBorder(Look.line))
         .shadow(color: .black.opacity(0.4), radius: 16, y: 8)
-        .padding(.bottom, 18)
+        .padding(.bottom, 16)
     }
 
     private func tabButton(_ i: Int, _ title: String, _ symbol: String) -> some View {
@@ -98,13 +106,14 @@ struct RootView: View {
             UISelectionFeedbackGenerator().selectionChanged()
         } label: {
             Label(title, systemImage: symbol)
-                .font(Look.font(15, .bold))
+                .font(Look.font(16, .bold))
                 .foregroundStyle(tab == i ? .white : Look.dim)
-                .padding(.horizontal, 22).padding(.vertical, 12)
+                .padding(.horizontal, 26).padding(.vertical, 14)
                 .background {
                     if tab == i {
-                        Capsule().fill(Look.accent).matchedGeometryEffect(id: "tab", in: tabNS)
-                            .shadow(color: Look.magenta.opacity(0.6), radius: 10)
+                        ShiftingPill()
+                            .matchedGeometryEffect(id: "tab", in: tabNS)
+                            .shadow(color: Look.magenta.opacity(0.6), radius: 12)
                     }
                 }
         }
@@ -140,6 +149,19 @@ struct AboutView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title).font(Look.font(17, .heavy)).foregroundStyle(.white)
             Text(body).font(Look.font(15, .medium)).foregroundStyle(.white.opacity(0.8))
+        }
+    }
+}
+
+/// The selected tab's pill: the accent gradient slowly drifts around.
+private struct ShiftingPill: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1 / 20, paused: reduceMotion)) { tl in
+            let t = reduceMotion ? 0 : tl.date.timeIntervalSinceReferenceDate
+            Capsule().fill(LinearGradient(colors: [Look.magenta, Look.violet, Look.cyan],
+                                          startPoint: UnitPoint(x: 0.5 + 0.5 * cos(t * 0.6), y: 0.5 + 0.5 * sin(t * 0.6)),
+                                          endPoint: UnitPoint(x: 0.5 - 0.5 * cos(t * 0.6), y: 0.5 - 0.5 * sin(t * 0.6))))
         }
     }
 }

@@ -10,6 +10,8 @@ struct SetupView: View {
     @State private var manualIP = ""
     @State private var pulse = false
     @FocusState private var pinFocused: Bool
+    @State private var sweep = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     enum Step { case find, pin }
 
@@ -28,12 +30,29 @@ struct SetupView: View {
             Spacer()
         }
         .padding(.horizontal, 22)
-        .onAppear { store.discovery.start(); pulse = true }
+        .onAppear {
+            store.discovery.start()
+            pulse = true
+            if !reduceMotion { withAnimation(.linear(duration: 2.6).repeatForever(autoreverses: false)) { sweep = true } }
+        }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
     }
 
     private var radar: some View {
         ZStack {
+            // Radar sweep: a rotating wedge of light.
+            Circle()
+                .fill(AngularGradient(gradient: Gradient(stops: [
+                    .init(color: Look.cyan.opacity(0.0), location: 0.0),
+                    .init(color: Look.cyan.opacity(0.0), location: 0.72),
+                    .init(color: Look.violet.opacity(0.25), location: 0.9),
+                    .init(color: Look.cyan.opacity(0.55), location: 1.0)]), center: .center))
+                .frame(width: 230, height: 230)
+                .rotationEffect(.degrees(sweep ? 360 : 0))
+                .mask(Circle().frame(width: 230, height: 230))
+                .opacity(step == .find ? 1 : 0)
+            Circle().stroke(Look.line, lineWidth: 1).frame(width: 230, height: 230)
+            Circle().stroke(Look.line, lineWidth: 1).frame(width: 160, height: 160)
             ForEach(0..<3) { i in
                 Circle().stroke(Look.accent, lineWidth: 2)
                     .frame(width: 120, height: 120)
@@ -74,7 +93,7 @@ struct SetupView: View {
                         .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Look.line))
                     }
                     .buttonStyle(SquishStyle(scale: 0.97))
-                    .transition(.scale.combined(with: .opacity))
+                    .transition(.asymmetric(insertion: .scale(scale: 0.6).combined(with: .opacity), removal: .opacity))
                 }
                 if store.discovery.searching {
                     HStack(spacing: 8) {
@@ -88,7 +107,7 @@ struct SetupView: View {
                         .font(Look.font(15, .bold)).foregroundStyle(Look.cyan)
                 }
             }
-            .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.discovery.found.count)
+            .animation(.spring(response: 0.45, dampingFraction: 0.55), value: store.discovery.found.count)
 
             DisclosureGroup {
                 HStack {
