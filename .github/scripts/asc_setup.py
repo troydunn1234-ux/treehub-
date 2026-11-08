@@ -27,7 +27,7 @@ answers = {k: "NONE" for k in ["alcoholTobaccoOrDrugUseOrReferences", "contests"
            "sexualContentOrNudity", "violenceCartoonOrFantasy", "violenceRealistic", "violenceRealisticProlongedGraphicOrSadistic",
            "gunsOrOtherWeapons"]}
 answers.update({k: False for k in ["gambling", "unrestrictedWebAccess", "lootBox", "messagingAndChat", "parentalControls",
-                "ageAssurance", "userGeneratedContent", "advertising", "healthOrWellnessTopics"]})
+                "ageAssurance", "socialMedia", "userGeneratedContent", "advertising", "healthOrWellnessTopics"]})
 for info in infos:
     decl, err = call(f"/v1/appInfos/{info['id']}/ageRatingDeclaration")
     if err: print("age rating read failed", err); continue
