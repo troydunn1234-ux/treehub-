@@ -289,7 +289,7 @@ targets:
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
-        CFBundleDisplayName: Clicker
+        CFBundleDisplayName: Clankerr
         UIRequiresFullScreen: true
         UILaunchScreen:
           UIColorName: LaunchBackground

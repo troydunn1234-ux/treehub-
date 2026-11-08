@@ -1,15 +1,68 @@
 {
   "subtitle": "Your phone is the remote now",
-  "promotionalText": "Tap a tile and your show opens on the big screen. A gorgeous swipe-pad remote for VIZIO SmartCast TVs, with no ads and no tracking.",
-  "description": "Clicker turns your iPhone into a fast, beautiful remote for VIZIO SmartCast TVs.\n\nTAP A TILE, IT OPENS ON THE TV\nYour streaming apps live on big glowing tiles. Tap one and it launches on your TV in a second, no hunting through menus. Add or remove apps from a list of more than 100.\n\nA REMOTE THAT FEELS GOOD\nSwipe anywhere on the pad to move, tap to select. Back, Home and Menu are one tap away, with play/pause, skip, volume you can hold to repeat, mute, input and power.\n\nKNOWS WHAT'S ON\nClicker shows which app is on the TV right now, updated live.\n\nSET UP IN SECONDS\nClicker finds your TV on your Wi-Fi automatically. Type the 4-digit code your TV shows and you're in.\n\nPRIVATE BY DESIGN\nNo account, no ads, no tracking, no servers. Clicker talks only to your TV, directly over your home network.\n\nWorks with VIZIO SmartCast TVs (2016 and newer) on the same Wi-Fi network as your iPhone.\n\nClicker is an independent app and is not affiliated with or endorsed by VIZIO. Streaming service names are trademarks of their owners.",
-  "keywords": "tv remote,smart tv,remote control,smartcast,streaming,launcher,wifi remote,couch,universal,apps",
+  "promotionalText": "One tap and your show opens on the big screen. Steer your TV and your PC from the couch. One price, no ads, no subscription, no tracking.",
+  "description": "Clankerr turns your iPhone into a fast, gorgeous remote for VIZIO SmartCast TVs and your Windows PC. Pay once, keep it forever. No ads, no subscription, no tracking.\n\nTAP A TILE, IT OPENS ON THE TV\nYour streaming apps live on big glowing tiles. Tap one and it launches on your TV in a second. Pick from more than 100 apps.\n\nA REMOTE THAT FEELS GOOD\nSwipe anywhere on the pad to move, tap to select. Back, Home and Menu are one tap away, plus play/pause, skip, a big volume rocker you can hold, mute, input and power.\n\nEVERY TV IN THE HOUSE\nAdd the living room, the bedroom and the basement. Switch TVs with one tap. Moved a TV or changed your router? Clankerr finds it again on its own.\n\nYOUR PC, FROM BED\nInstall the free Clankerr PC companion and your phone becomes a trackpad and keyboard for your Windows PC: move the mouse, scroll, type, control media and volume, and open apps.\n\nKNOWS WHAT'S ON\nSee which app is on the TV right now, updated live.\n\nSET UP IN SECONDS\nClankerr finds your TV on your Wi-Fi automatically. Type the 4-digit code your TV shows and you're in.\n\nPRIVATE BY DESIGN\nNo account, no ads, no servers. Clankerr talks only to your TV and your PC, directly over your home network.\n\nWorks with VIZIO SmartCast TVs (2016 and newer) on the same Wi-Fi as your iPhone. PC control needs Windows 10 or 11 with the free companion app.\n\nClankerr is an independent app and is not affiliated with or endorsed by VIZIO or Microsoft. Streaming service names are trademarks of their owners.",
+  "keywords": "tv remote,smart tv,smartcast,pc remote,trackpad,mouse,keyboard,streaming,wifi remote,couch",
   "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/PRIVACY.md",
   "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/SUPPORT.md",
   "primaryCategory": "UTILITIES",
   "secondaryCategory": "ENTERTAINMENT",
-  "captions": [
-    ["clicker-1-apps.png", "Tap a tile.", "It opens on your TV."],
-    ["clicker-2-remote.png", "Swipe to steer.", "The remote, reimagined."],
-    ["clicker-0-setup.png", "Finds your TV.", "Pair once with a 4-digit code."]
+  "price": "2.99",
+  "shots": [
+    {
+      "file": "clicker-1-apps.png",
+      "eyebrow": "One tap launch",
+      "line1": "Tap a tile.",
+      "line2": "It's on TV.",
+      "sub": "Your apps, one tap from the couch.",
+      "chips": [
+        "100+ streaming apps",
+        "Live now playing"
+      ]
+    },
+    {
+      "file": "clicker-2-remote.png",
+      "eyebrow": "The remote",
+      "line1": "Swipe to",
+      "line2": "steer.",
+      "sub": "A pad, a rocker, zero hunting.",
+      "chips": [
+        "Swipe + tap pad",
+        "Hold-to-repeat volume"
+      ]
+    },
+    {
+      "file": "clicker-3-pc.png",
+      "eyebrow": "PC control",
+      "line1": "Your PC,",
+      "line2": "from bed.",
+      "sub": "Trackpad, keyboard and media keys.",
+      "chips": [
+        "Trackpad + scroll",
+        "Open any app"
+      ]
+    },
+    {
+      "file": "clicker-4-switcher.png",
+      "eyebrow": "Every TV",
+      "line1": "Every room.",
+      "line2": "One remote.",
+      "sub": "Switch TVs in a tap. Finds them if they move.",
+      "chips": [
+        "Auto reconnect",
+        "Unlimited TVs"
+      ]
+    },
+    {
+      "file": "clicker-0-setup.png",
+      "eyebrow": "Private by design",
+      "line1": "Pair in",
+      "line2": "seconds.",
+      "sub": "No account. No ads. No tracking.",
+      "chips": [
+        "Finds your TV",
+        "Pay once, own it"
+      ]
+    }
   ]
 }

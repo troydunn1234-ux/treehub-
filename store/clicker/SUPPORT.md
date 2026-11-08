@@ -1,8 +1,8 @@
-# Clicker Support
+# Clankerr Support
 
-**Clicker can't find my TV**
+**Clankerr can't find my TV**
 - Turn the TV on and make sure your iPhone is on the same Wi-Fi network.
-- Allow "Local Network" access: iPhone Settings → Clicker → Local Network.
+- Allow "Local Network" access: iPhone Settings → Clankerr → Local Network.
 - Still nothing? Find the TV's IP address on the TV (Settings → Network) and enter it under "Enter the TV's address yourself".
 
 **The TV didn't show a code / the code didn't work**

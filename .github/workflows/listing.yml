@@ -68,6 +68,12 @@ jobs:
           xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
           xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
           xcrun simctl terminate "$UDID" $BUNDLE
+          xcrun simctl launch "$UDID" $BUNDLE -demo -pc > /dev/null; sleep 6
+          xcrun simctl io "$UDID" screenshot raw/clicker-3-pc.png
+          xcrun simctl terminate "$UDID" $BUNDLE
+          xcrun simctl launch "$UDID" $BUNDLE -demo -switcher > /dev/null; sleep 7
+          xcrun simctl io "$UDID" screenshot raw/clicker-4-switcher.png
+          xcrun simctl terminate "$UDID" $BUNDLE
           xcrun simctl launch "$UDID" $BUNDLE > /dev/null; sleep 6
           xcrun simctl io "$UDID" screenshot raw/clicker-0-setup.png
 
@@ -85,6 +91,8 @@ jobs:
           mkdir -p ~/private_keys
           printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
           KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8 python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots
+          PRICE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json')).get('price',''))")
+          [ -n "$PRICE" ] && KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8 python3 .github/scripts/asc_price.py $BUNDLE $PRICE || true
 
       - name: Remove key
         if: always()
