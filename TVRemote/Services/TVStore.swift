@@ -40,8 +40,6 @@ extension Color {
 
 @MainActor
 @Observable
-final class TVStor@MainActor
-@Observable
 final class TVStore {
     // One controller per brand. Each speaks its TV's own local-network protocol.
     @ObservationIgnored let vizio = VizioController()
@@ -355,7 +353,7 @@ final class TVStore {
     }
 }
 
- auth token.
+/// Keychain storage for each TV's auth token.
 enum Keychain {
     static func set(_ value: String, for key: String) {
         delete(key)
