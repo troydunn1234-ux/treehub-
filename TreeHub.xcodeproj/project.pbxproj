@@ -50,6 +50,7 @@
 		7036C6632A4247739F5EE781 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
 		712FB74367AB1ECC10CB7747 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
 		71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		71D08AC5AED32C92F4E7695E /* pyvizio-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */; };
 		7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
 		7930AF457083499037988843 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A56120F979883274950676C /* AppsView.swift */; };
@@ -183,6 +184,7 @@
 		17C64D37B318F75453FE1CCF /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
 		1C1E9F1FDB7C2DA8347EB134 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "pyvizio-LICENSE.txt"; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
 		2C1F7B48E188C0AD4BB6F0FB /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/FoodBook/web; sourceTree = SOURCE_ROOT; };
 		2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWidgets.swift; sourceTree = "<group>"; };
@@ -501,6 +503,7 @@
 		B1896BE5E7FFB21D89DEFA25 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */,
 				ACC631B71309791C55329B7D /* vizio_apps.json */,
 			);
 			path = Resources;
@@ -918,6 +921,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				5843362A054EB4DED1466857 /* Assets.xcassets in Resources */,
+				71D08AC5AED32C92F4E7695E /* pyvizio-LICENSE.txt in Resources */,
 				BB054BC9F7175CD6F38639F3 /* vizio_apps.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
