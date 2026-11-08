@@ -304,8 +304,14 @@ struct TrackView: View {
         default: distance = 360
         }
         let heading = tracker.course >= 0 ? tracker.course : mapHeading
+        // Aim the camera a bit ahead of you so you sit in the open map above the stats card.
+        let ahead = distance * 0.42
+        let rad = heading * .pi / 180
+        let center = CLLocationCoordinate2D(
+            latitude: here.latitude + ahead * cos(rad) / 111_320,
+            longitude: here.longitude + ahead * sin(rad) / (111_320 * max(0.2, cos(here.latitude * .pi / 180))))
         withAnimation(.easeInOut(duration: 0.9)) {
-            camera = .camera(MapCamera(centerCoordinate: here, distance: distance, heading: heading, pitch: tracker.kind == .drive ? 62 : 50))
+            camera = .camera(MapCamera(centerCoordinate: center, distance: distance, heading: heading, pitch: tracker.kind == .drive ? 62 : 50))
         }
     }
 

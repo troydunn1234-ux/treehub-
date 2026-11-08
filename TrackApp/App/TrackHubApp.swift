@@ -83,6 +83,7 @@ struct TrackRootView: View {
                 default: tab = "track"
                 }
                 if ProcessInfo.processInfo.arguments.contains("-autostart") { tracker.start(kind: .run) }
+                if ProcessInfo.processInfo.arguments.contains("-autodrive") { tracker.start(kind: .drive) }
             }
         }
     }
