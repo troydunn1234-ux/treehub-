@@ -135,6 +135,7 @@
 		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		F5E75A4754328A8867116941 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
 		F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
+		F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */; };
 		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
 		FB90DA692EBD344592F2764D /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		FE65BC285F6F0C4A2B6DC347 /* FoodBookWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 0B43234A9F5073F9BE227887 /* FoodBookWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -277,6 +278,7 @@
 		1C1E9F1FDB7C2DA8347EB134 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
 		29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "pyvizio-LICENSE.txt"; sourceTree = "<group>"; };
+		2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppEditSheet.swift; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
 		2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWidgets.swift; sourceTree = "<group>"; };
 		2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpeedLimitService.swift; sourceTree = "<group>"; };
@@ -546,6 +548,7 @@
 			isa = PBXGroup;
 			children = (
 				D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */,
+				2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */,
 				6338EB695CED8F5839461B32 /* SuppsView.swift */,
 				58B86A832B9932FA9DF012C5 /* TodayView.swift */,
 			);
@@ -1407,6 +1410,7 @@
 				D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */,
 				0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */,
 				2028F8406ABA834033BB2236 /* SnapView.swift in Sources */,
+				F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */,
 				A3133445F911E31569ECED60 /* Supplement.swift in Sources */,
 				59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */,
 				AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */,
