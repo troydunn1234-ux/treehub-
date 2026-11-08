@@ -2,6 +2,7 @@ import SwiftUI
 import Observation
 import WatchConnectivity
 import WatchKit
+import UIKit
 
 @main
 struct FoodBookWatchApp: App {
@@ -30,12 +31,14 @@ enum FW {
 }
 
 struct FoodState: Equatable {
-    struct Quick: Identifiable, Equatable { var id: String; var name: String; var cal: Double }
+    struct Quick: Identifiable, Equatable { var id: String; var name: String; var cal: Double; var thumb: Data? = nil }
+    struct Last: Equatable { var name: String; var cal: Double; var thumb: Data?; var at: Date }
     struct Supp: Identifiable, Equatable { var id: String; var name: String; var dose: String; var emoji: String; var time: String; var taken: Bool }
 
     var cal: Double = 0, goal: Double = 2200, p: Double = 0, c: Double = 0, f: Double = 0
     var quick: [Quick] = []
     var supps: [Supp] = []
+    var last: Last?
 
     init() {}
     init(_ d: [String: Any]) {
@@ -43,7 +46,12 @@ struct FoodState: Equatable {
         goal = max(1, d["goal"] as? Double ?? 2200)
         p = d["p"] as? Double ?? 0; c = d["c"] as? Double ?? 0; f = d["f"] as? Double ?? 0
         quick = (d["quick"] as? [[String: Any]] ?? []).map {
-            Quick(id: $0["id"] as? String ?? "", name: $0["name"] as? String ?? "", cal: $0["cal"] as? Double ?? 0)
+            Quick(id: $0["id"] as? String ?? "", name: $0["name"] as? String ?? "", cal: $0["cal"] as? Double ?? 0,
+                  thumb: $0["thumb"] as? Data)
+        }
+        if let l = d["last"] as? [String: Any], let name = l["name"] as? String {
+            last = Last(name: name, cal: l["cal"] as? Double ?? 0, thumb: l["thumb"] as? Data,
+                        at: Date(timeIntervalSince1970: l["at"] as? Double ?? Date().timeIntervalSince1970))
         }
         supps = (d["supps"] as? [[String: Any]] ?? []).map {
             Supp(id: $0["id"] as? String ?? "", name: $0["name"] as? String ?? "", dose: $0["dose"] as? String ?? "",
@@ -78,6 +86,7 @@ final class FoodLink: NSObject {
     func log(_ q: FoodState.Quick) {
         // Show it right away; the iPhone's answer confirms.
         state.cal += q.cal
+        state.last = FoodState.Last(name: q.name, cal: q.cal, thumb: q.thumb, at: Date())
         justLogged = q.name
         WKInterfaceDevice.current().play(.success)
         send(["cmd": "logQuick", "id": q.id])
@@ -118,6 +127,7 @@ final class FoodLink: NSObject {
     static let demoState: FoodState = {
         var s = FoodState()
         s.cal = 1_340; s.goal = 2_200; s.p = 96; s.c = 140; s.f = 44
+        s.last = .init(name: "Chicken burrito bowl", cal: 680, thumb: nil, at: Date())
         s.quick = [.init(id: "1", name: "Iced latte", cal: 190), .init(id: "2", name: "Chicken burrito bowl", cal: 680),
                    .init(id: "3", name: "Protein shake", cal: 160), .init(id: "4", name: "Banana", cal: 105)]
         s.supps = [.init(id: "a", name: "Multivitamin", dose: "1 tablet", emoji: "💊", time: "Morning", taken: true),
@@ -187,13 +197,29 @@ struct TodayPage: View {
                     Text(s.left < 0 ? "OVER" : "LEFT").font(FW.font(10, .heavy)).foregroundStyle(.secondary)
                 }
             }
-            .frame(width: 108, height: 108)
+            .frame(width: s.last == nil ? 108 : 94, height: s.last == nil ? 108 : 94)
             HStack(spacing: 6) {
                 macro("P", s.p, FW.protein)
                 macro("C", s.c, FW.carbs)
                 macro("F", s.f, FW.fat)
             }
+            if let last = s.last {
+                HStack(spacing: 7) {
+                    FoodThumb(data: last.thumb, size: 26)
+                    VStack(alignment: .leading, spacing: 0) {
+                        Text("JUST LOGGED").font(FW.font(8, .heavy)).foregroundStyle(.secondary)
+                        Text("\(last.name) · \(Int(last.cal)) kcal").font(FW.font(12, .bold)).lineLimit(1)
+                            .minimumScaleFactor(0.75)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.horizontal, 8).padding(.vertical, 5)
+                .background(Color.white.opacity(0.08), in: Capsule())
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+                .id(last.name + "\(last.at.timeIntervalSince1970)")
+            }
         }
+        .animation(.spring(response: 0.45, dampingFraction: 0.8), value: s.last)
         .navigationTitle { Text("\(Int(s.cal)) cal").font(FW.font(15, .heavy)).foregroundStyle(FW.orange) }
         .onAppear { link.refresh() }
         .accessibilityElement(children: .combine)
@@ -220,7 +246,8 @@ struct QuickPage: View {
             }
             ForEach(link.state.quick) { q in
                 Button { link.log(q) } label: {
-                    HStack {
+                    HStack(spacing: 8) {
+                        if q.thumb != nil { FoodThumb(data: q.thumb, size: 32) }
                         VStack(alignment: .leading, spacing: 1) {
                             Text(q.name).font(FW.font(14, .bold)).lineLimit(2)
                             Text("\(Int(q.cal)) cal").font(FW.font(11, .semibold)).foregroundStyle(FW.orange)
@@ -276,5 +303,27 @@ struct StackPage: View {
             Text("Stack \(s.takenCount)/\(s.supps.count)").font(FW.font(15, .heavy))
                 .foregroundStyle(s.takenCount == s.supps.count && !s.supps.isEmpty ? FW.green : FW.orange)
         }
+    }
+}
+
+/// A food's photo in a circle (or a fork-and-knife badge when there's no photo).
+struct FoodThumb: View {
+    let data: Data?
+    let size: CGFloat
+    var body: some View {
+        Group {
+            if let data, let img = UIImage(data: data) {
+                Image(uiImage: img).resizable().scaledToFill()
+            } else {
+                ZStack {
+                    FW.fire
+                    Image(systemName: "fork.knife").font(.system(size: size * 0.42, weight: .bold)).foregroundStyle(.white)
+                }
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(Circle())
+        .overlay(Circle().strokeBorder(FW.orange.opacity(0.6), lineWidth: 1.5))
+        .accessibilityHidden(true)
     }
 }

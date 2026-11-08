@@ -9,6 +9,9 @@ struct TodayView: View {
     @State private var adding = false
     @State private var editingGoal = false
     @State private var dragX: CGFloat = 0
+    @State private var snapping = false
+    @State private var celebrate = 0
+    @State private var demoSnap: SnapResult?
 
     private var entries: [FoodEntry] { all.filter { $0.day == day } }
     private var eaten: Double { entries.reduce(0) { $0 + $1.cal * $1.servings } }
@@ -38,15 +41,26 @@ struct TodayView: View {
                     if entries.isEmpty { emptyState }
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 130)
+                .padding(.bottom, 170)
                 .offset(x: dragX)
             }
             .scrollIndicators(.hidden)
             .simultaneousGesture(daySwipe)
 
-            addButton
+            addButtons
+            Confetti(trigger: celebrate)
         }
         .sheet(isPresented: $adding) { AddFoodSheet(day: day).presentationDetents([.large]) }
+        .fullScreenCover(isPresented: $snapping) { SnapView(day: day) { celebrate += 1 } }
+        .sheet(item: $demoSnap) { r in
+            SnapResultSheet(result: r, day: day) { celebrate += 1 }.presentationDetents([.large])
+        }
+        .onAppear {
+            let args = ProcessInfo.processInfo.arguments
+            if args.contains("-demo") && args.contains("-snap") && demoSnap == nil {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { demoSnap = DemoSnap.result }
+            }
+        }
         .sheet(isPresented: $editingGoal) { GoalSheet(goal: $goal).presentationDetents([.height(320)]) }
         .preferredColorScheme(.dark)
     }
@@ -116,23 +130,36 @@ struct TodayView: View {
             Text("🍽️").font(.system(size: 44))
             Text(day == Day.key(Date()) ? "Nothing logged yet today" : "Nothing logged this day")
                 .font(Ember.font(17, .bold)).foregroundStyle(Ember.cream)
-            Text("Tap + and pick a food. Two taps, done.").font(Ember.font(14, .medium)).foregroundStyle(Ember.dim)
+            Text("Tap the camera and snap your plate. Food Book fills in the macros.")
+                .font(Ember.font(14, .medium)).foregroundStyle(Ember.dim).multilineTextAlignment(.center)
         }
         .padding(.top, 10)
     }
 
-    private var addButton: some View {
-        Button { adding = true } label: {
-            Image(systemName: "plus").font(.system(size: 26, weight: .black))
-                .foregroundStyle(.white)
-                .frame(width: 64, height: 64)
-                .background(Ember.fire, in: Circle())
-                .shadow(color: Ember.pink.opacity(0.55), radius: 18, y: 6)
+    /// Big camera (the main way in) with a small + above it for picking or searching by hand.
+    private var addButtons: some View {
+        VStack(spacing: 12) {
+            Button { adding = true } label: {
+                Image(systemName: "plus").font(.system(size: 18, weight: .black))
+                    .foregroundStyle(Ember.cream)
+                    .frame(width: 46, height: 46)
+                    .background(.ultraThinMaterial, in: Circle())
+                    .overlay(Circle().strokeBorder(Ember.line))
+            }
+            .buttonStyle(Squish())
+            .accessibilityLabel("Add food by name")
+            Button {
+                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                snapping = true
+            } label: {
+                SnapButtonFace()
+            }
+            .buttonStyle(Squish())
+            .accessibilityLabel("Snap food")
+            .accessibilityHint("Take a picture and Food Book fills in the calories and macros")
         }
-        .buttonStyle(Squish())
-        .accessibilityLabel("Add food")
-        .padding(.trailing, 22)
-        .padding(.bottom, 24)
+        .padding(.trailing, 20)
+        .padding(.bottom, 22)
     }
 
     private var daySwipe: some Gesture {
@@ -233,6 +260,13 @@ struct FoodRow: View {
             .background(Ember.pink)
             .opacity(offset < -10 ? 1 : 0)
             HStack(spacing: 12) {
+                if let data = entry.photo, let img = UIImage(data: data) {
+                    Image(uiImage: img).resizable().scaledToFill()
+                        .frame(width: 42, height: 42)
+                        .clipShape(RoundedRectangle(cornerRadius: 11, style: .continuous))
+                        .overlay(RoundedRectangle(cornerRadius: 11, style: .continuous).strokeBorder(Ember.line))
+                        .accessibilityHidden(true)
+                }
                 VStack(alignment: .leading, spacing: 2) {
                     Text(entry.name).font(Ember.font(16, .bold)).foregroundStyle(Ember.cream).lineLimit(1)
                     let macros = [Int(entry.protein * entry.servings) > 0 ? "\(Int(entry.protein * entry.servings))g P" : nil,
@@ -274,5 +308,26 @@ struct GoalSheet: View {
         .padding(28)
         .presentationBackground(Ember.bg)
         .animation(.snappy, value: goal)
+    }
+}
+
+/// The glowing camera button on Today, with a slow breathing halo.
+struct SnapButtonFace: View {
+    @Environment(\.accessibilityReduceMotion) private var reduce
+    @State private var breathe = false
+    var body: some View {
+        ZStack {
+            Circle().fill(Ember.fire).frame(width: 74, height: 74)
+                .blur(radius: 18).opacity(breathe ? 0.75 : 0.35)
+                .scaleEffect(breathe ? 1.15 : 0.95)
+            Circle().fill(Ember.fire).frame(width: 72, height: 72)
+            Circle().strokeBorder(.white.opacity(0.35), lineWidth: 2).frame(width: 64, height: 64)
+            Image(systemName: "camera.fill").font(.system(size: 27, weight: .black)).foregroundStyle(.white)
+        }
+        .shadow(color: Ember.pink.opacity(0.55), radius: 16, y: 6)
+        .onAppear {
+            guard !reduce else { return }
+            withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) { breathe = true }
+        }
     }
 }

@@ -38,6 +38,12 @@ final class FoodWatchBridge: NSObject {
         }
     }
 
+    /// Push right away (e.g. just after logging from the camera), skipping the coalescing delay.
+    func pushNow() {
+        pushTask?.cancel()
+        push()
+    }
+
     private func push() {
         let s = WCSession.default
         guard s.activationState == .activated, s.isPaired, s.isWatchAppInstalled else { return }
@@ -60,7 +66,9 @@ final class FoodWatchBridge: NSObject {
         var quick: [[String: Any]] = []
         for e in (try? ctx.fetch(recentFD)) ?? [] where !seen.contains(e.name.lowercased()) {
             seen.insert(e.name.lowercased())
-            quick.append(["id": e.name, "name": e.name, "cal": e.cal * e.servings])
+            var item: [String: Any] = ["id": e.name, "name": e.name, "cal": e.cal * e.servings]
+            if let t = Self.watchThumb(e.photo) { item["thumb"] = t }
+            quick.append(item)
             if quick.count == 6 { break }
         }
         if quick.isEmpty {
@@ -75,10 +83,47 @@ final class FoodWatchBridge: NSObject {
              "time": $0.time.rawValue, "taken": taken.contains($0.id)] as [String: Any]
         }
 
+        // The most recent thing logged today, shown on the watch's Today page.
+        var last: [String: Any]?
+        if let e = entries.max(by: { $0.createdAt < $1.createdAt }) {
+            var d: [String: Any] = ["name": e.name, "cal": e.cal * e.servings, "at": e.createdAt.timeIntervalSince1970]
+            if let t = Self.watchThumb(e.photo) { d["thumb"] = t }
+            last = d
+        }
+
         let goal = UserDefaults.standard.object(forKey: "goal") as? Double ?? 2200
-        return ["day": today, "cal": total(\.cal), "goal": goal,
-                "p": total(\.protein), "c": total(\.carbs), "f": total(\.fat), "caf": total(\.caffeine),
-                "quick": quick, "supps": suppList]
+        var state: [String: Any] = ["day": today, "cal": total(\.cal), "goal": goal,
+                                    "p": total(\.protein), "c": total(\.carbs), "f": total(\.fat), "caf": total(\.caffeine),
+                                    "quick": quick, "supps": suppList]
+        if let last { state["last"] = last }
+
+        // Stay well under WatchConnectivity's size limits: drop photos if the payload gets big.
+        if Self.size(of: state) > 60_000 {
+            state["quick"] = quick.map { q -> [String: Any] in var q = q; q["thumb"] = nil; return q }
+            if var l = last { l["thumb"] = nil; state["last"] = l }
+        }
+        return state
+    }
+
+    /// 64×64 JPEG of an entry's photo for the watch.
+    private static func watchThumb(_ data: Data?) -> Data? {
+        guard let data, let img = UIImage(data: data) else { return nil }
+        let side: CGFloat = 64
+        let s = img.size
+        guard s.width > 0, s.height > 0 else { return nil }
+        let crop = min(s.width, s.height), scale = side / crop
+        let fmt = UIGraphicsImageRendererFormat.default()
+        fmt.scale = 1
+        fmt.opaque = true
+        let small = UIGraphicsImageRenderer(size: CGSize(width: side, height: side), format: fmt).image { _ in
+            img.draw(in: CGRect(x: -(s.width - crop) / 2 * scale, y: -(s.height - crop) / 2 * scale,
+                                width: s.width * scale, height: s.height * scale))
+        }
+        return small.jpegData(compressionQuality: 0.5)
+    }
+
+    private static func size(of dict: [String: Any]) -> Int {
+        (try? PropertyListSerialization.data(fromPropertyList: dict, format: .binary, options: 0))?.count ?? 0
     }
 
     // MARK: Commands from the watch
@@ -98,7 +143,7 @@ final class FoodWatchBridge: NSObject {
                 fd.fetchLimit = 1
                 if let last = try? ctx.fetch(fd).first {
                     ctx.insert(FoodEntry(name: last.name, cal: last.cal, protein: last.protein, carbs: last.carbs, fat: last.fat,
-                                         caffeine: last.caffeine, servings: last.servings, meal: .now, day: today))
+                                         caffeine: last.caffeine, servings: last.servings, meal: .now, day: today, photo: last.photo))
                 }
             }
         case "toggleSupp":

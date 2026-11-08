@@ -36,11 +36,14 @@ final class FoodEntry {
     var mealRaw: String = Meal.snacks.rawValue
     var day: String = ""          // yyyy-MM-dd
     var createdAt: Date = Date()
+    /// Small JPEG of the snapped meal (optional; older entries have none).
+    @Attribute(.externalStorage) var photo: Data? = nil
 
     var meal: Meal { Meal(rawValue: mealRaw) ?? .snacks }
 
     init(name: String, cal: Double, protein: Double = 0, carbs: Double = 0, fat: Double = 0, caffeine: Double = 0,
-         servings: Double = 1, meal: Meal, day: String, createdAt: Date = Date()) {
+         servings: Double = 1, meal: Meal, day: String, createdAt: Date = Date(), photo: Data? = nil) {
+        self.photo = photo
         self.name = name; self.cal = cal; self.protein = protein; self.carbs = carbs; self.fat = fat
         self.caffeine = caffeine; self.servings = servings; self.mealRaw = meal.rawValue; self.day = day; self.createdAt = createdAt
     }

@@ -214,6 +214,8 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Food Book
+        NSCameraUsageDescription: Snap your food and Food Book fills in the calories and macros.
+        NSPhotoLibraryUsageDescription: Pick a food photo and Food Book fills in the calories and macros.
         UIRequiresFullScreen: true
         UILaunchScreen:
           UIColorName: LaunchBackground
