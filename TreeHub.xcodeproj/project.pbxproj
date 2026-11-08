@@ -257,6 +257,7 @@
 		C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneChangeDetector.swift; sourceTree = "<group>"; };
 		C62D8F1DE137F76D14BFBA78 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C86A93C7C984AD7AE8470297 /* Clicker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clicker.entitlements; sourceTree = "<group>"; };
 		CB213271A39B184F8A858EDC /* FoodBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookApp.swift; sourceTree = "<group>"; };
 		CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveEffects.swift; sourceTree = "<group>"; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
@@ -338,6 +339,7 @@
 			isa = PBXGroup;
 			children = (
 				7602D94C88BBCEBD16741BBC /* Assets.xcassets */,
+				C86A93C7C984AD7AE8470297 /* Clicker.entitlements */,
 				1C1E9F1FDB7C2DA8347EB134 /* Info.plist */,
 				56211356747BA84BE38BADBD /* App */,
 				EB257888952653AED511941E /* Design */,
@@ -1278,6 +1280,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TVRemote/Clicker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = TVRemote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1461,6 +1464,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = TVRemote/Clicker.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = TVRemote/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
