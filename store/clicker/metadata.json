@@ -1,0 +1,15 @@
+{
+  "subtitle": "Your phone is the remote now",
+  "promotionalText": "Tap a tile and your show opens on the big screen. A gorgeous swipe-pad remote for VIZIO SmartCast TVs, with no ads and no tracking.",
+  "description": "Clicker turns your iPhone into a fast, beautiful remote for VIZIO SmartCast TVs.\n\nTAP A TILE, IT OPENS ON THE TV\nYour streaming apps live on big glowing tiles. Tap one and it launches on your TV in a second, no hunting through menus. Add or remove apps from a list of more than 100.\n\nA REMOTE THAT FEELS GOOD\nSwipe anywhere on the pad to move, tap to select. Back, Home and Menu are one tap away, with play/pause, skip, volume you can hold to repeat, mute, input and power.\n\nKNOWS WHAT'S ON\nClicker shows which app is on the TV right now, updated live.\n\nSET UP IN SECONDS\nClicker finds your TV on your Wi-Fi automatically. Type the 4-digit code your TV shows and you're in.\n\nPRIVATE BY DESIGN\nNo account, no ads, no tracking, no servers. Clicker talks only to your TV, directly over your home network.\n\nWorks with VIZIO SmartCast TVs (2016 and newer) on the same Wi-Fi network as your iPhone.\n\nClicker is an independent app and is not affiliated with or endorsed by VIZIO. Streaming service names are trademarks of their owners.",
+  "keywords": "tv remote,smart tv,remote control,smartcast,streaming,launcher,wifi remote,couch,universal,apps",
+  "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/PRIVACY.md",
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/SUPPORT.md",
+  "primaryCategory": "UTILITIES",
+  "secondaryCategory": "ENTERTAINMENT",
+  "captions": [
+    ["clicker-1-apps.png", "Tap a tile.", "It opens on your TV."],
+    ["clicker-2-remote.png", "Swipe to steer.", "The remote, reimagined."],
+    ["clicker-0-setup.png", "Finds your TV.", "Pair once with a 4-digit code."]
+  ]
+}

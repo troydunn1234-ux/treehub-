@@ -152,6 +152,7 @@ struct RemoteView: View {
 
 private struct TrailDot { let p: CGPoint; let t: Date }
 private struct Ripple { let p: CGPoint; let t: Date }
+private struct Spark { let p: CGPoint; let v: CGVector; let t: Date }
 
 private struct TouchPad: View {
     let size: CGFloat
@@ -163,6 +164,9 @@ private struct TouchPad: View {
     @State private var flash: VizioClient.Key?
     @State private var flashTick = 0
     @State private var touching = false
+    @State private var sparks: [Spark] = []
+    @State private var breathe = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ZStack {
@@ -187,12 +191,17 @@ private struct TouchPad: View {
                                                      center: .topLeading, startRadius: 4, endRadius: 110))
                     )
                     .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
-                    .shadow(color: Look.magenta.opacity(0.6), radius: 18)
+                    .shadow(color: Look.magenta.opacity(breathe ? 0.85 : 0.5), radius: breathe ? 24 : 16)
+                    .scaleEffect(breathe ? 1.03 : 1.0)
             }
             .buttonStyle(SquishStyle(scale: 0.9))
             .accessibilityLabel("OK")
         }
         .frame(width: size, height: size)
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 2.2).repeatForever(autoreverses: true)) { breathe = true }
+        }
     }
 
     private var surface: some View {
@@ -209,7 +218,7 @@ private struct TouchPad: View {
                 .stroke(Look.accent, lineWidth: touching ? 3 : 2)
                 .shadow(color: Look.violet.opacity(touching ? 0.9 : 0.4), radius: touching ? 16 : 8)
 
-            TimelineView(.animation(minimumInterval: 1 / 60, paused: trail.isEmpty && ripples.isEmpty)) { tl in
+            TimelineView(.animation(minimumInterval: 1 / 60, paused: trail.isEmpty && ripples.isEmpty && sparks.isEmpty)) { tl in
                 let now = tl.date
                 Canvas { ctx, _ in
                     for d in trail {
@@ -227,6 +236,16 @@ private struct TouchPad: View {
                         let r = CGFloat(10 + 90 * k)
                         ctx.stroke(Path(ellipseIn: CGRect(x: rp.p.x - r, y: rp.p.y - r, width: r * 2, height: r * 2)),
                                    with: .color(Look.magenta.opacity(0.8 * (1 - k))), lineWidth: 3)
+                    }
+                    for sp in sparks {
+                        let age = now.timeIntervalSince(sp.t)
+                        guard age < 0.45 else { continue }
+                        let k = age / 0.45
+                        let x = sp.p.x + sp.v.dx * CGFloat(k)
+                        let y = sp.p.y + sp.v.dy * CGFloat(k)
+                        let r = CGFloat(3.5 * (1 - k) + 0.5)
+                        ctx.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
+                                 with: .color((Int(sp.v.dx + sp.v.dy) % 2 == 0 ? Look.cyan : Look.magenta).opacity(1 - k)))
                     }
                 }
             }
@@ -250,10 +269,14 @@ private struct TouchPad: View {
     }
 
     private func edgeButton(_ key: VizioClient.Key, _ symbol: String, x: CGFloat, y: CGFloat) -> some View {
-        Button { fire(key) } label: {
+        let lit = flash == key
+        return Button { fire(key) } label: {
             Image(systemName: symbol)
                 .font(Look.font(18, .heavy))
-                .foregroundStyle(Color.white.opacity(0.85))
+                .foregroundStyle(lit ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.white.opacity(0.85)))
+                .shadow(color: Look.cyan.opacity(lit ? 0.9 : 0), radius: lit ? 10 : 0)
+                .scaleEffect(lit ? 1.25 : 1)
+                .animation(.spring(response: 0.25, dampingFraction: 0.5), value: lit)
                 .frame(width: 44, height: 44)
                 .contentShape(Rectangle())
         }
@@ -278,7 +301,7 @@ private struct TouchPad: View {
                 let need: CGFloat = presses == 0 ? 30 : 60
                 if max(abs(dx), abs(dy)) >= need {
                     let key: VizioClient.Key = abs(dx) > abs(dy) ? (dx > 0 ? .right : .left) : (dy > 0 ? .down : .up)
-                    fire(key)
+                    fire(key, from: v.location)
                     anchor = v.location
                     presses += 1
                 }
@@ -297,8 +320,33 @@ private struct TouchPad: View {
             }
     }
 
-    private func fire(_ key: VizioClient.Key) {
+    private func fire(_ key: VizioClient.Key, from point: CGPoint? = nil) {
         onKey(key, false)
+        if !reduceMotion {
+            // A short burst of sparks flying the way you swiped.
+            let origin = point ?? CGPoint(x: size / 2, y: size / 2)
+            let (ux, uy): (CGFloat, CGFloat) = {
+                switch key {
+                case .up: return (0, -1)
+                case .down: return (0, 1)
+                case .left: return (-1, 0)
+                default: return (1, 0)
+                }
+            }()
+            let now = Date()
+            for i in 0..<10 {
+                let spread = CGFloat.random(in: -0.45...0.45)
+                let speed = CGFloat.random(in: 40...95)
+                let vx = (ux - uy * spread) * speed
+                let vy = (uy + ux * spread) * speed
+                sparks.append(Spark(p: origin, v: CGVector(dx: vx + CGFloat(i % 2), dy: vy), t: now))
+            }
+            if sparks.count > 120 { sparks.removeFirst(sparks.count - 120) }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                let cut = Date().addingTimeInterval(-0.5)
+                sparks.removeAll { $0.t < cut }
+            }
+        }
         flash = key
         flashTick += 1
         let tick = flashTick

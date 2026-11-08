@@ -1,0 +1,101 @@
+name: Update App Store listing
+
+# Run by hand: takes clean screenshots in the simulator, captions them, and fills in
+# the App Store listing (text + screenshots). It never submits anything for review.
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Which app
+        type: choice
+        options: [Clicker]
+        default: Clicker
+
+permissions:
+  contents: write
+
+jobs:
+  listing:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
+          xcodegen generate
+
+      - name: Pick app settings
+        run: |
+          case "${{ inputs.app }}" in
+            Clicker) echo "BUNDLE=com.troydunn.clicker" >> $GITHUB_ENV; echo "STORE=store/clicker" >> $GITHUB_ENV ;;
+          esac
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} -sdk iphonesimulator \
+            -destination 'generic/platform=iOS Simulator' -configuration Release -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          ls build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app > /dev/null
+
+      - name: Clean screenshots on the largest iPhone
+        run: |
+          UDID=$(xcrun simctl list devices available -j | python3 -c '
+          import json,sys,re
+          d=json.load(sys.stdin)["devices"]; best=None
+          for rt,devs in d.items():
+              if "iOS" not in rt: continue
+              ver=tuple(int(x) for x in re.findall(r"\d+",rt.split("iOS")[-1]))
+              for dv in devs:
+                  n=dv["name"]
+                  if not n.startswith("iPhone"): continue
+                  s=(ver,"Pro Max" in n,"Pro" in n)
+                  if best is None or s>best[0]: best=(s,dv["udid"])
+          print(best[1])')
+          xcrun simctl boot "$UDID" || true
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 --operatorName ""
+          xcrun simctl install "$UDID" build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app
+          mkdir -p raw
+          xcrun simctl launch "$UDID" $BUNDLE -demo > /dev/null; sleep 6
+          xcrun simctl io "$UDID" screenshot raw/clicker-1-apps.png
+          xcrun simctl terminate "$UDID" $BUNDLE
+          xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
+          xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
+          xcrun simctl terminate "$UDID" $BUNDLE
+          xcrun simctl launch "$UDID" $BUNDLE > /dev/null; sleep 6
+          xcrun simctl io "$UDID" screenshot raw/clicker-0-setup.png
+
+      - name: Caption the screenshots
+        run: |
+          pip3 install --quiet --break-system-packages pillow pyjwt[crypto] || pip3 install --quiet pillow "pyjwt[crypto]"
+          python3 .github/scripts/marketing_shots.py $STORE/metadata.json raw store-shots
+
+      - name: Fill in the App Store listing
+        env:
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          mkdir -p ~/private_keys
+          printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
+          KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8 python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots
+
+      - name: Remove key
+        if: always()
+        run: rm -rf ~/private_keys
+
+      - name: Publish the screenshots to the store-shots branch
+        if: always()
+        run: |
+          [ -d store-shots ] || exit 0
+          TMP=$(mktemp -d); cp -R store-shots/. raw/. "$TMP"/ 2>/dev/null || true
+          cd "$TMP"; git init -q -b store-shots
+          git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
+          git add -A; git commit -q -m "Store screenshots for ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" store-shots
