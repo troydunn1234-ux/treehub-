@@ -26,5 +26,10 @@ for attempt in range(40):
     print("waiting for newest build to finish processing..."); time.sleep(30)
 _, err = call(f"/v1/appStoreVersions/{ver['id']}/relationships/build", "PATCH", {"data": {"type": "builds", "id": ok["id"]}})
 print(f"Attached build {ok['attributes']['version']} to {ver['attributes']['versionString']}" if not err else "attach failed " + err)
+# copyright + content rights
+_, err = call(f"/v1/appStoreVersions/{ver['id']}", "PATCH", {"data": {"type": "appStoreVersions", "id": ver["id"], "attributes": {"copyright": "2026 Troy Dunn"}}})
+print("Copyright set" if not err else "copyright failed " + err)
+_, err = call(f"/v1/apps/{app_id}", "PATCH", {"data": {"type": "apps", "id": app_id, "attributes": {"contentRightsDeclaration": "DOES_NOT_USE_THIRD_PARTY_CONTENT"}}})
+print("Content rights set" if not err else "content rights failed " + err)
 # export compliance: app only uses standard HTTPS/TLS
 call(f"/v1/builds/{ok['id']}", "PATCH", {"data": {"type": "builds", "id": ok["id"], "attributes": {"usesNonExemptEncryption": False}}})
