@@ -90,6 +90,7 @@ struct RoutePoint: Codable, Hashable {
     var alt: Double
     var t: Double      // seconds since 1970
     var speed: Double  // m/s, -1 if unknown
+    var limit: Double = -1  // posted speed limit in m/s while driving, -1 if unknown
 
     var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: lat, longitude: lng) }
 
@@ -102,7 +103,7 @@ struct RoutePoint: Codable, Hashable {
     }
 
     // NaN is not valid JSON, so altitude is encoded as nil when unknown.
-    enum CodingKeys: String, CodingKey { case lat, lng, alt, t, speed }
+    enum CodingKeys: String, CodingKey { case lat, lng, alt, t, speed, lim }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -111,6 +112,7 @@ struct RoutePoint: Codable, Hashable {
         alt = try c.decodeIfPresent(Double.self, forKey: .alt) ?? .nan
         t = try c.decode(Double.self, forKey: .t)
         speed = try c.decodeIfPresent(Double.self, forKey: .speed) ?? -1
+        limit = try c.decodeIfPresent(Double.self, forKey: .lim) ?? -1
     }
 
     func encode(to encoder: Encoder) throws {
@@ -120,6 +122,7 @@ struct RoutePoint: Codable, Hashable {
         if alt.isFinite { try c.encode(alt, forKey: .alt) }
         try c.encode(t, forKey: .t)
         try c.encode(speed.isFinite ? speed : -1, forKey: .speed)
+        if limit > 0 { try c.encode(limit, forKey: .lim) }
     }
 }
 

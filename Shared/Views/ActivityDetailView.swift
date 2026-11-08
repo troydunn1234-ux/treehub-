@@ -43,6 +43,8 @@ struct ActivityDetailView: View {
                              symbol: activity.kind.isOnFoot ? "mountain.2.fill" : "gauge.with.dots.needle.67percent")
                 }
 
+                if activity.kind == .drive { speedCard }
+
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
@@ -198,12 +200,57 @@ struct ActivityDetailView: View {
         .overlay(Capsule().strokeBorder(Theme.glow.opacity(0.5)))
     }
 
+    /// Speed legend and how much of the drive was over the limit.
+    private var speedCard: some View {
+        let pts = activity.route
+        let zones = SpeedZones.overZones(pts)
+        let known = pts.filter { $0.limit > 0 }.count
+        return GlassCard(padding: 14) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    ForEach([(SpeedBand.cruise, "Under"), (.fast, "+10"), (.over, "+20"), (.wayOver, "20+")], id: \.1) { b, label in
+                        HStack(spacing: 4) {
+                            Capsule().fill(b.color).frame(width: 16, height: 5).shadow(color: b.color, radius: 3)
+                            Text(label).font(Theme.rounded(11, .bold)).foregroundStyle(Theme.textDim)
+                        }
+                    }
+                }
+                if known == 0 {
+                    Text("No speed limits on this drive, so it's colored by speed alone.")
+                        .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                } else if zones.isEmpty {
+                    Label("Stayed within 5 of the limit the whole way", systemImage: "checkmark.seal.fill")
+                        .font(Theme.rounded(14, .bold)).foregroundStyle(SpeedBand.cruise.color)
+                } else {
+                    let top = zones.map(\.peakOverMph).max() ?? 0
+                    let secs = zones.reduce(0) { $0 + $1.seconds }
+                    let topShown = Units.metric ? Int((top * 1.609344).rounded()) : Int(top.rounded())
+                    Label("\(zones.count) stretch\(zones.count == 1 ? "" : "es") over the limit · \(Format.duration(secs)) total · peak +\(topShown) \(Units.metric ? "km/h" : "mph")",
+                          systemImage: "exclamationmark.triangle.fill")
+                        .font(Theme.rounded(13, .bold)).foregroundStyle(SpeedBand.over.color)
+                }
+            }
+        }
+    }
+
     private var routeMap: some View {
         Map(initialPosition: .automatic) {
-            MapPolyline(coordinates: coords)
-                .stroke(Theme.glow.opacity(0.35), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
-            MapPolyline(coordinates: coords)
-                .stroke(Theme.leafGradient, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+            if activity.kind == .drive {
+                ForEach(SpeedZones.segments(activity.route)) { seg in
+                    MapPolyline(coordinates: seg.coords)
+                        .stroke(seg.band.color.opacity(0.3), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
+                    MapPolyline(coordinates: seg.coords)
+                        .stroke(seg.band.color, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                }
+                ForEach(SpeedZones.overZones(activity.route)) { z in
+                    Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
+                }
+            } else {
+                MapPolyline(coordinates: coords)
+                    .stroke(Theme.glow.opacity(0.35), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
+                MapPolyline(coordinates: coords)
+                    .stroke(Theme.leafGradient, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+            }
             if let s = coords.first {
                 Annotation("Start", coordinate: s) {
                     Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))

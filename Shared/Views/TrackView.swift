@@ -23,6 +23,8 @@ struct TrackView: View {
     @State private var healthWorkouts: [HealthService.WorkoutInfo] = []
     @State private var healthLoading = false
     @State private var healthLoaded = false
+    @State private var chaseCam = true
+    @State private var mapHeading: Double = 0
 
     var body: some View {
         NavigationStack {
@@ -290,14 +292,44 @@ struct TrackView: View {
 
     // MARK: Live
 
+    /// GTA-style chase camera: sits behind you, tilted, turned to your direction of travel,
+    /// and pulls back the faster you go.
+    private func followIfNeeded() {
+        guard chaseCam, let here = tracker.points.last?.coordinate else { return }
+        let v = max(0, tracker.currentSpeed)
+        let distance: Double
+        switch tracker.kind {
+        case .drive: distance = min(2600, 650 + v * 40)
+        case .bike: distance = 520 + v * 25
+        default: distance = 360
+        }
+        let heading = tracker.course >= 0 ? tracker.course : mapHeading
+        withAnimation(.easeInOut(duration: 0.9)) {
+            camera = .camera(MapCamera(centerCoordinate: here, distance: distance, heading: heading, pitch: tracker.kind == .drive ? 62 : 50))
+        }
+    }
+
+
     private var liveView: some View {
         ZStack(alignment: .bottom) {
             Map(position: $camera) {
-                UserAnnotation()
                 let coords = tracker.points.map(\.coordinate)
-                if coords.count > 1 {
+                if tracker.kind == .drive {
+                    // Neon route colored by speed vs the limit, with a soft glow under it.
+                    ForEach(SpeedZones.segments(tracker.points)) { seg in
+                        MapPolyline(coordinates: seg.coords)
+                            .stroke(seg.band.color.opacity(0.28), style: StrokeStyle(lineWidth: 16, lineCap: .round, lineJoin: .round))
+                        MapPolyline(coordinates: seg.coords)
+                            .stroke(seg.band.color, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                    }
+                    ForEach(SpeedZones.overZones(tracker.points)) { z in
+                        Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
+                    }
+                } else if coords.count > 1 {
                     MapPolyline(coordinates: coords)
-                        .stroke(Theme.glow, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                        .stroke(Theme.glow.opacity(0.3), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
+                    MapPolyline(coordinates: coords)
+                        .stroke(Theme.glow, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
                 }
                 #if !TRACK_APP
                 ForEach(hugs.filter { $0.strollID == tracker.sessionID && $0.coordinate != nil }) { h in
@@ -309,11 +341,48 @@ struct TrackView: View {
                         Circle().fill(.white).frame(width: 14, height: 14).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 3))
                     }
                 }
+                // You: a little truck, walker, runner, hiker or e-bike instead of the blue dot.
+                if let here = coords.last {
+                    Annotation("", coordinate: here, anchor: UnitPoint(x: 0.5, y: 0.82)) {
+                        LiveAvatar(kind: tracker.kind, speed: tracker.state == .recording ? tracker.currentSpeed : 0,
+                                   course: tracker.course, mapHeading: mapHeading, overLimit: tracker.isOverLimit)
+                    }
+                    .annotationTitles(.hidden)
+                } else {
+                    UserAnnotation()
+                }
             }
-            .mapStyle(.standard(elevation: .realistic))
+            .mapStyle(tracker.kind == .drive
+                      ? .standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll, showsTraffic: true)
+                      : .standard(elevation: .realistic))
             .mapControls {
-                MapUserLocationButton()
                 MapCompass()
+            }
+            .onMapCameraChange(frequency: .continuous) { ctx in mapHeading = ctx.camera.heading }
+            .onChange(of: tracker.points.count) { _, _ in followIfNeeded() }
+            .onAppear { followIfNeeded() }
+            .overlay { SpeedFX(speed: tracker.kind == .drive || tracker.kind == .bike ? tracker.currentSpeed : 0,
+                               overLimit: tracker.isOverLimit).allowsHitTesting(false).ignoresSafeArea() }
+            .overlay(alignment: .topTrailing) {
+                VStack(alignment: .trailing, spacing: 10) {
+                    Button {
+                        withAnimation(.snappy) { chaseCam.toggle() }
+                        if chaseCam { followIfNeeded() } else { camera = .userLocation(followsHeading: false, fallback: .automatic) }
+                    } label: {
+                        Image(systemName: chaseCam ? "video.fill" : "location.fill")
+                            .font(.system(size: 16, weight: .bold))
+                            .foregroundStyle(chaseCam ? Theme.forestDeep : .white)
+                            .frame(width: 44, height: 44)
+                            .background(chaseCam ? AnyShapeStyle(Theme.glow) : AnyShapeStyle(.ultraThinMaterial), in: Circle())
+                    }
+                    .accessibilityLabel(chaseCam ? "Chase camera on" : "Chase camera off")
+                    if tracker.kind == .drive {
+                        DriveHUD(speed: tracker.currentSpeed, limit: tracker.speedLimit, over: tracker.isOverLimit)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                }
+                .padding(.trailing, 14)
+                .padding(.top, 58)
             }
             .ignoresSafeArea(edges: .top)
 

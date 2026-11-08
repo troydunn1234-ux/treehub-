@@ -1,6 +1,7 @@
 import Foundation
 import CoreLocation
 import CoreMotion
+import UIKit
 import Observation
 
 /// Records a route with GPS, keeps going with the phone locked, and survives the app being closed.
@@ -26,6 +27,18 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var motionCounts: [ActivityKind: Int] = [:]
     /// Paused by the app because you stopped moving (GPS keeps running so it can resume itself).
     private(set) var autoPaused = false
+    /// Direction of travel in degrees from north, -1 when unknown.
+    private(set) var course: Double = -1
+    /// Posted limit for the road you're on (drives only).
+    private(set) var speedLimit: SpeedLimitService.Limit?
+    @ObservationIgnored private let limits = SpeedLimitService()
+    @ObservationIgnored private var overWarned = false
+
+    /// More than 3 mph over a known limit right now.
+    var isOverLimit: Bool {
+        guard kind == .drive, state == .recording, let l = speedLimit else { return false }
+        return currentSpeed > l.mps + 1.34
+    }
 
     private(set) var accumulated: TimeInterval = 0
     private(set) var resumedAt: Date?
@@ -229,6 +242,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     /// Change the activity type while recording (e.g. a walk that became a hike).
     func setKind(_ k: ActivityKind) {
         kind = k
+        if k != .drive { speedLimit = nil; limits.reset() }
         applyKindSettings()
         persist()
         if state != .idle { LiveActivityController.shared.update(tracker: self, force: true) }
@@ -319,6 +333,10 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         lastRaw = nil
         splitsAnnounced = 0
         lastSplitElapsed = 0
+        course = -1
+        speedLimit = nil
+        overWarned = false
+        limits.reset()
     }
 
     private func startMotion() {
@@ -373,8 +391,23 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
             }
         }
 
+        if loc.course >= 0 && currentSpeed > 1 { course = loc.course }
+        if kind == .drive {
+            limits.update(for: loc, speed: currentSpeed) { [weak self] l in
+                guard let self, self.kind == .drive, self.state != .idle else { return }
+                self.speedLimit = l
+            }
+        }
         lastAccepted = loc
-        points.append(RoutePoint(loc))
+        var pt = RoutePoint(loc)
+        if kind == .drive, let l = speedLimit { pt.limit = l.mps }
+        points.append(pt)
+        // One gentle warning buzz each time you go over, not a buzz on every fix.
+        if isOverLimit {
+            if !overWarned { overWarned = true; UINotificationFeedbackGenerator().notificationOccurred(.warning) }
+        } else if let l = speedLimit, currentSpeed < l.mps {
+            overWarned = false
+        }
         checkSplits(previousDistance: previousDistance)
         unsavedCount += 1
         if unsavedCount >= 10 { persist() }
