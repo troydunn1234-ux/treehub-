@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		03EBB2C2CBF4E703ECB256BC /* PCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C9BD53DFB9DFF3238E80D8 /* PCView.swift */; };
+		04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E982877DEECF72E33F533 /* PCClient.swift */; };
 		07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
 		0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
@@ -54,6 +56,7 @@
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
 		7930AF457083499037988843 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A56120F979883274950676C /* AppsView.swift */; };
 		7E9F009C8C64CA3347B4BD08 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB23CD916A03A5E29B876B21 /* Theme.swift */; };
+		7ED0930BBFC58AC2942739F5 /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
 		7FBABB37B36FE80947F22058 /* TrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D11DBD0989B6A34A4EA014E8 /* TrackView.swift */; };
 		806F7A43C436AD068D6EC7BF /* AddFoodSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */; };
 		80E6ECE39BD8543A049982CB /* LogicTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F4159F6563FEC514EECE6D1 /* LogicTests.swift */; };
@@ -66,6 +69,7 @@
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
 		AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B86A832B9932FA9DF012C5 /* TodayView.swift */; };
 		AB06264988421B3AB01E26B9 /* Look.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF9FA8F8D82A9B59632D6F3 /* Look.swift */; };
 		AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D854BA14681BFCF2190CE5 /* ClickerApp.swift */; };
@@ -204,6 +208,7 @@
 		4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSettingsView.swift; sourceTree = "<group>"; };
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52E3D277EF6186E89CD7A080 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		546E982877DEECF72E33F533 /* PCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCClient.swift; sourceTree = "<group>"; };
 		5884433CD32FDD4D160203A6 /* Roamr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Roamr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B86A832B9932FA9DF012C5 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
 		597A4F6DE910B32A5C72BD0B /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/QuestApp/web; sourceTree = SOURCE_ROOT; };
@@ -218,6 +223,7 @@
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		7602D94C88BBCEBD16741BBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
+		79C9BD53DFB9DFF3238E80D8 /* PCView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCView.swift; sourceTree = "<group>"; };
 		7D039EE51534C6E9717A31E3 /* Hug.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Hug.swift; sourceTree = "<group>"; };
 		80ACEC3C05F648903A54E16B /* seed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed.json; sourceTree = "<group>"; };
 		8EF9FA8F8D82A9B59632D6F3 /* Look.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Look.swift; sourceTree = "<group>"; };
@@ -240,6 +246,7 @@
 		B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NatalOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B9FB470D73E21C7F253D4FE7 /* FoodBook.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoodBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C01750639F52088FDDAA89CB /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
+		C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneChangeDetector.swift; sourceTree = "<group>"; };
 		C62D8F1DE137F76D14BFBA78 /* SetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SetupView.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		CB213271A39B184F8A858EDC /* FoodBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookApp.swift; sourceTree = "<group>"; };
@@ -325,6 +332,7 @@
 				1C1E9F1FDB7C2DA8347EB134 /* Info.plist */,
 				56211356747BA84BE38BADBD /* App */,
 				EB257888952653AED511941E /* Design */,
+				D7B1257FF6791C0143B3C1C6 /* PC */,
 				B1896BE5E7FFB21D89DEFA25 /* Resources */,
 				D93FFFC0033E056B6A89CA21 /* Services */,
 				C0163F5F145C6765F0FA9BBE /* Views */,
@@ -425,6 +433,7 @@
 				1C829C76FB92D53E3E90E395 /* AppInfo.swift */,
 				9F73AE90E29B0845AB46785E /* Format.swift */,
 				96832C9E113D2C830820806F /* HealthService.swift */,
+				C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */,
 				44F00360DF850821B3293EA2 /* RouteTracker.swift */,
 				2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */,
 				0280FF1C22E640C6CE99F86D /* SpeedZones.swift */,
@@ -623,6 +632,15 @@
 				9FFCEABC9A0E997904C8A2AA /* TourTests.swift */,
 			);
 			path = TreeHubUITests;
+			sourceTree = "<group>";
+		};
+		D7B1257FF6791C0143B3C1C6 /* PC */ = {
+			isa = PBXGroup;
+			children = (
+				546E982877DEECF72E33F533 /* PCClient.swift */,
+				79C9BD53DFB9DFF3238E80D8 /* PCView.swift */,
+			);
+			path = PC;
 			sourceTree = "<group>";
 		};
 		D93FFFC0033E056B6A89CA21 /* Services */ = {
@@ -1062,6 +1080,7 @@
 				669DE02F9381489144BAADDF /* Hug.swift in Sources */,
 				F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */,
 				DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */,
+				A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */,
 				E01DA781781C62D9F85A219D /* LaunchGate.swift in Sources */,
 				F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */,
 				623E64AFF025111C49695B04 /* LiveActivityController.swift in Sources */,
@@ -1121,6 +1140,8 @@
 				7930AF457083499037988843 /* AppsView.swift in Sources */,
 				AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */,
 				AB06264988421B3AB01E26B9 /* Look.swift in Sources */,
+				04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */,
+				03EBB2C2CBF4E703ECB256BC /* PCView.swift in Sources */,
 				2BB69615245B34B7F063673A /* RemoteView.swift in Sources */,
 				452B55C6051B0156C2215E46 /* SetupView.swift in Sources */,
 				53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */,
@@ -1150,6 +1171,7 @@
 				DE7E3A6375DCED01F97D33FD /* Format.swift in Sources */,
 				C96BF9E1D03B04026D1EF494 /* HealthService.swift in Sources */,
 				AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */,
+				7ED0930BBFC58AC2942739F5 /* LaneChangeDetector.swift in Sources */,
 				6244A61CEBB8FEB86A0C8DA5 /* LaunchGate.swift in Sources */,
 				105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */,
 				7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */,
