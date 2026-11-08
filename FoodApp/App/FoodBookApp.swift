@@ -4,17 +4,54 @@ import SwiftData
 @main
 struct FoodBookApp: App {
     let container: ModelContainer = {
-        let schema = Schema([FoodEntry.self])
+        let schema = Schema([FoodEntry.self, Supplement.self, SuppDose.self])
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         return try! ModelContainer(for: schema, configurations: config)
     }()
 
     var body: some Scene {
         WindowGroup {
-            Splash { TodayView() }
+            Splash { RootTabs() }
                 .onAppear { LegacyImport.runOnce(into: container.mainContext); DemoFood.seedIfNeeded(container.mainContext) }
         }
         .modelContainer(container)
+    }
+}
+
+/// Food and Supplements, switched with a floating pill at the bottom.
+struct RootTabs: View {
+    @State private var tab = ProcessInfo.processInfo.arguments.contains("-supps") ? 1 : 0
+    @Namespace private var ns
+    var body: some View {
+        ZStack(alignment: .bottomLeading) {
+            Group {
+                if tab == 0 { TodayView().transition(.opacity) } else { SuppsView().transition(.opacity) }
+            }
+            HStack(spacing: 4) {
+                pill(0, "Food", "fork.knife")
+                pill(1, "Stack", "pills.fill")
+            }
+            .padding(5)
+            .background(.ultraThinMaterial, in: Capsule())
+            .overlay(Capsule().strokeBorder(Ember.line))
+            .shadow(color: .black.opacity(0.4), radius: 14, y: 6)
+            .padding(.leading, 20)
+            .padding(.bottom, 30)
+        }
+        .preferredColorScheme(.dark)
+    }
+    private func pill(_ i: Int, _ title: String, _ symbol: String) -> some View {
+        Button {
+            withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) { tab = i }
+            UISelectionFeedbackGenerator().selectionChanged()
+        } label: {
+            Label(title, systemImage: symbol)
+                .font(Ember.font(15, .bold))
+                .foregroundStyle(tab == i ? .white : Ember.dim)
+                .padding(.horizontal, 16).padding(.vertical, 11)
+                .background { if tab == i { Capsule().fill(Ember.fire).matchedGeometryEffect(id: "pill", in: ns) } }
+        }
+        .buttonStyle(Squish())
     }
 }
 
@@ -58,6 +95,10 @@ enum DemoFood {
         for (n, cal, p, c, f, m) in items {
             context.insert(FoodEntry(name: n, cal: cal, protein: p, carbs: c, fat: f, meal: m, day: today))
         }
+        let stack: [(String, String, String, SuppTime)] = [("Vitamin D3", "5000 IU", "☀️", .morning), ("Omega-3", "2 softgels", "🐟", .morning),
+            ("Creatine", "5 g", "💪", .anytime), ("Protein powder", "1 scoop", "🥤", .anytime), ("Magnesium", "400 mg", "🌙", .night)]
+        for (i, (n, d, e, t)) in stack.enumerated() { context.insert(Supplement(name: n, dose: d, emoji: e, time: t, order: i)) }
+        if let first = try? context.fetch(FetchDescriptor<Supplement>()).first { context.insert(SuppDose(suppID: first.id, day: today)) }
         try? context.save()
     }
 }

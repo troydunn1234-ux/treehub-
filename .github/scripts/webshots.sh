@@ -16,6 +16,15 @@ for pair in FoodBook:com.troydunn.foodbook NatalOrbit:com.troydunn.natalorbit Ri
   xcrun simctl terminate "$UDID" "$B" 2>/dev/null || true
 done
 
+# Food Book supplements tab (demo stack)
+APPF=build/Build/Products/Debug-iphonesimulator/FoodBook.app
+if [ -d "$APPF" ]; then
+  xcrun simctl terminate "$UDID" com.troydunn.foodbook 2>/dev/null || true
+  xcrun simctl launch "$UDID" com.troydunn.foodbook -supps > /dev/null; sleep 5
+  xcrun simctl io "$UDID" screenshot shots/food-2-supps.png > /dev/null 2>&1
+  xcrun simctl terminate "$UDID" com.troydunn.foodbook 2>/dev/null || true
+fi
+
 # Roamr test drive on I-280 at ~80 mph: truck avatar, chase cam, speed limit HUD, colored route.
 APP=build/Build/Products/Debug-iphonesimulator/Roamr.app
 if [ -d "$APP" ]; then

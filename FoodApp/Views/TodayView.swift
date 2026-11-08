@@ -25,7 +25,7 @@ struct TodayView: View {
     }
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        ZStack(alignment: .bottomTrailing) {
             EmberBackground()
             ScrollView {
                 VStack(spacing: 22) {
@@ -123,17 +123,16 @@ struct TodayView: View {
 
     private var addButton: some View {
         Button { adding = true } label: {
-            HStack(spacing: 8) {
-                Image(systemName: "plus").font(.system(size: 20, weight: .black))
-                Text("Add food").font(Ember.font(18, .heavy))
-            }
-            .foregroundStyle(.white)
-            .padding(.horizontal, 28).padding(.vertical, 17)
-            .background(Ember.fire, in: Capsule())
-            .shadow(color: Ember.pink.opacity(0.55), radius: 18, y: 6)
+            Image(systemName: "plus").font(.system(size: 26, weight: .black))
+                .foregroundStyle(.white)
+                .frame(width: 64, height: 64)
+                .background(Ember.fire, in: Circle())
+                .shadow(color: Ember.pink.opacity(0.55), radius: 18, y: 6)
         }
         .buttonStyle(Squish())
-        .padding(.bottom, 26)
+        .accessibilityLabel("Add food")
+        .padding(.trailing, 22)
+        .padding(.bottom, 24)
     }
 
     private var daySwipe: some Gesture {
