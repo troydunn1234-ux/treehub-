@@ -54,13 +54,14 @@ class Status:
     def start(self) -> None:
         if CONSOLE:
             print(self.text)
+            print("This PC's IP:", lan_ip())
             return
         import tkinter as tk
 
         self.root = tk.Tk()
         self.root.title("Clankerr PC")
         self.root.configure(bg="#09081a")
-        self.root.geometry("360x150")
+        self.root.geometry("360x180")
         self.root.attributes("-topmost", True)
         self.root.resizable(False, False)
         tk.Label(self.root, text="CLANKERR PC", fg="#ff3d9e", bg="#09081a",
@@ -71,6 +72,8 @@ class Status:
         self.code_label = tk.Label(self.root, text="", fg="#40e0ff", bg="#09081a",
                                    font=("Segoe UI", 26, "bold"))
         self.code_label.pack(pady=6)
+        tk.Label(self.root, text=f"This PC's IP: {lan_ip()}", fg="#8c54ff", bg="#09081a",
+                 font=("Segoe UI", 10, "bold")).pack(pady=(0, 8))
         self.root.protocol("WM_DELETE_WINDOW", lambda: os._exit(0))
 
     def mainloop(self) -> None:
@@ -384,6 +387,18 @@ async def handle(ws) -> None:
         connected.discard(ws)
         if not connected:
             status.set("Clankerr PC is running · waiting for your phone")
+
+
+def lan_ip() -> str:
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            s.connect(("8.8.8.8", 80))  # no packets sent; just picks the LAN interface
+            return s.getsockname()[0]
+        finally:
+            s.close()
+    except Exception:
+        return socket.gethostbyname(socket.gethostname())
 
 
 def advertise():
