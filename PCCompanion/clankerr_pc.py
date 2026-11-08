@@ -57,17 +57,27 @@ class Status:
             print("This PC's IP:", lan_ip())
             return
         import tkinter as tk
+        try:  # crisp, correctly sized window on 4K / scaled displays
+            import ctypes
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except Exception:
+            pass
 
         self.root = tk.Tk()
         self.root.title("Clankerr PC")
         self.root.configure(bg="#09081a")
-        self.root.geometry("360x180")
+        scale = max(1.0, self.root.winfo_fpixels("1i") / 96.0)
+        w, h = int(420 * scale), int(230 * scale)
+        x = (self.root.winfo_screenwidth() - w) // 2
+        y = (self.root.winfo_screenheight() - h) // 3
+        self.root.geometry(f"{w}x{h}+{x}+{y}")
+        self.root.minsize(w, h)
         self.root.attributes("-topmost", True)
         self.root.resizable(False, False)
         tk.Label(self.root, text="CLANKERR PC", fg="#ff3d9e", bg="#09081a",
                  font=("Segoe UI", 11, "bold")).pack(pady=(14, 2))
         self.label = tk.Label(self.root, text=self.text, fg="#e8e6f5", bg="#09081a",
-                              font=("Segoe UI", 10), wraplength=330)
+                              font=("Segoe UI", 10), wraplength=380)
         self.label.pack()
         self.code_label = tk.Label(self.root, text="", fg="#40e0ff", bg="#09081a",
                                    font=("Segoe UI", 26, "bold"))
