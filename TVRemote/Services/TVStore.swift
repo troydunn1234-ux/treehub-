@@ -99,7 +99,29 @@ final class TVStore {
     }
 
     /// Simulator screenshots: pretend a TV is paired and never touch the network.
-    static let demo = ProcessInfo.processInfo.arguments.contains("-demo")
+    static var demo: Bool { ProcessInfo.processInfo.arguments.contains("-demo") || UserDefaults.standard.bool(forKey: "demoMode") }
+    /// Demo started from the setup screen (not from screenshots), so it can be exited.
+    var inAppDemo: Bool { UserDefaults.standard.bool(forKey: "demoMode") }
+
+    /// "Try the demo": explore the whole app with two pretend TVs, no network.
+    func startDemo() {
+        UserDefaults.standard.set(true, forKey: "demoMode")
+        tvs = [VizioClient.TVInfo(host: "192.168.1.40", port: 7345, name: "Living Room TV", model: "V-Series 65", tokenKey: "demo.1"),
+               VizioClient.TVInfo(host: "192.168.1.41", port: 7345, name: "Bedroom TV", model: "M-Series 50", tokenKey: "demo.2")]
+        activeID = "demo.1"
+        nowPlaying = "HBO Max"
+        updatePaired()
+        show("Demo mode: nothing is sent to a TV")
+    }
+
+    func endDemo() {
+        UserDefaults.standard.set(false, forKey: "demoMode")
+        tvs = []
+        if let d = UserDefaults.standard.data(forKey: "tvs"), let list = try? JSONDecoder().decode([VizioClient.TVInfo].self, from: d) { tvs = list }
+        activeID = tvs.first?.id
+        nowPlaying = nil
+        updatePaired()
+    }
 
     private func loadCatalog() {
         struct Raw: Decodable { let name: String; let config: [VizioClient.AppConfig]? }

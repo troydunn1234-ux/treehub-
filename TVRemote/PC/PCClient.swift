@@ -12,7 +12,7 @@ final class PCClient {
     struct PCApp: Codable, Identifiable, Hashable { var id: String; var name: String }
 
     static let port = 47815
-    static let demo = ProcessInfo.processInfo.arguments.contains("-demo")
+    static var demo: Bool { ProcessInfo.processInfo.arguments.contains("-demo") || UserDefaults.standard.bool(forKey: "demoMode") }
 
     private(set) var state: State = .disconnected
     private(set) var pc: PC?

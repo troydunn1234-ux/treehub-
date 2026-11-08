@@ -124,6 +124,16 @@ struct SetupView: View {
             }
             .tint(Look.dim)
             .padding(.top, Look.S.xs)
+
+            Button { store.startDemo() } label: {
+                Label("No TV handy? Try the demo", systemImage: "sparkles")
+                    .font(Look.font(15, .heavy))
+                    .foregroundStyle(Look.accentH)
+                    .padding(.horizontal, 18).padding(.vertical, 12)
+                    .background(Capsule().stroke(Look.accentH, lineWidth: 1.5))
+            }
+            .padding(.top, Look.S.s)
+            .accessibilityHint("Explore the app with pretend TVs")
         }
     }
 

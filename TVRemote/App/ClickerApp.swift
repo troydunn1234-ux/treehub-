@@ -101,7 +101,11 @@ struct RootView: View {
                 Button { store.press(.inputNext) } label: { Label("Switch input", systemImage: "rectangle.on.rectangle") }
                 Divider()
                 Button { showAbout = true } label: { Label("About Clankerr", systemImage: "info.circle") }
-                Button(role: .destructive) { confirmForget = true } label: { Label("Forget \(store.tv?.name ?? "this TV")", systemImage: "tv.slash") }
+                if store.inAppDemo {
+                    Button(role: .destructive) { store.endDemo() } label: { Label("Exit demo", systemImage: "xmark.circle") }
+                } else {
+                    Button(role: .destructive) { confirmForget = true } label: { Label("Forget \(store.tv?.name ?? "this TV")", systemImage: "tv.slash") }
+                }
             } label: {
                 Image(systemName: "ellipsis").font(.system(size: 16, weight: .heavy)).foregroundStyle(.white)
                     .frame(width: 40, height: 40).glassCircle()
