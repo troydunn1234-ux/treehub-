@@ -15,6 +15,10 @@ final class SpeedLimitService {
         var mps: Double
         var estimated: Bool
         var road: String
+        /// Lanes going your way (from the map, or a guess for the road type).
+        var lanes: Int? = nil
+        /// True when `lanes` is a guess rather than tagged in the map.
+        var lanesEstimated = true
     }
 
     // MARK: Tiles
@@ -27,6 +31,10 @@ final class SpeedLimitService {
         let oneway: Bool
         let lat: [Double]
         let lng: [Double]
+        // Lane tags (absent in tiles cached before lanes were kept → nil).
+        var lanes: Int? = nil
+        var lanesF: Int? = nil
+        var lanesB: Int? = nil
     }
 
     private struct TileKey: Hashable, Sendable {
@@ -120,7 +128,7 @@ final class SpeedLimitService {
         let c = loc.coordinate
         let k = TileKey(c)
         let course = loc.course >= 0 && speed > 3 ? loc.course : -1
-        var best: (score: Double, road: Road)?
+        var best: (score: Double, road: Road, forward: Bool)?
         let mPerLat = 111_320.0, mPerLng = 111_320.0 * cos(c.latitude * .pi / 180)
         for ty in (k.y - 1)...(k.y + 1) {
             for tx in (k.x - 1)...(k.x + 1) {
@@ -141,22 +149,42 @@ final class SpeedLimitService {
                         let d = (px * px + py * py).squareRoot()
                         guard d < 35 else { continue }
                         var score = d
+                        var forward = true
                         if course >= 0 {
                             let segBearing = atan2(vx, vy) * 180 / .pi   // 0 = north
                             var diff = abs((segBearing - course).truncatingRemainder(dividingBy: 360))
                             if diff > 180 { diff = 360 - diff }
+                            forward = diff <= 90   // traveling along the way's node order
                             if !r.oneway { diff = min(diff, 180 - diff) }
                             score += diff > 40 ? 60 : diff * 0.3
                         }
                         // Fast → favor bigger roads; slow → don't.
                         if speed > 22 && (r.hw == "residential" || r.hw == "service") { score += 25 }
-                        if best == nil || score < best!.score { best = (score, r) }
+                        if best == nil || score < best!.score { best = (score, r, forward) }
                     }
                 }
             }
         }
-        guard let b = best?.road else { return nil }
-        return Limit(mps: b.mps, estimated: b.est, road: b.name)
+        guard let hit = best else { return nil }
+        let b = hit.road
+        let (lanes, guessed) = Self.lanesYourWay(b, forward: hit.forward)
+        return Limit(mps: b.mps, estimated: b.est, road: b.name, lanes: lanes, lanesEstimated: guessed)
+    }
+
+    /// Lanes in your direction: lanes:forward/backward when tagged, else half of a two-way
+    /// road's total, else a sensible default for the road type.
+    private static func lanesYourWay(_ r: Road, forward: Bool) -> (Int, Bool) {
+        if let n = forward ? r.lanesF : r.lanesB, n > 0 { return (min(n, 8), false) }
+        if let total = r.lanes, total > 0 {
+            if r.oneway { return (min(total, 8), false) }
+            return (max(1, min(total / 2, 8)), false)
+        }
+        switch r.hw {
+        case "motorway", "trunk": return (3, true)
+        case "primary", "secondary": return (2, true)
+        case "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link", "living_street": return (1, true)
+        default: return (1, true)
+        }
     }
 
     // MARK: Download
@@ -208,8 +236,10 @@ final class SpeedLimitService {
             if let raw = tags["maxspeed"], let v = parse(raw) { mps = v; est = false }
             else if let mph = defaultMph[hw] { mps = mph * 0.44704; est = true }
             else { return nil }
+            func lanesTag(_ k: String) -> Int? { tags[k].flatMap { Int($0.split(separator: ";").first.map(String.init) ?? $0) } }
             return Road(hw: hw, name: name, mps: mps, est: est, oneway: oneway,
-                        lat: geom.compactMap { $0["lat"] }, lng: geom.compactMap { $0["lon"] })
+                        lat: geom.compactMap { $0["lat"] }, lng: geom.compactMap { $0["lon"] },
+                        lanes: lanesTag("lanes"), lanesF: lanesTag("lanes:forward"), lanesB: lanesTag("lanes:backward"))
         }
     }
 

@@ -425,6 +425,16 @@ struct TrackView: View {
                 .padding(.trailing, 14)
                 .padding(.top, 58)
             }
+            .overlay(alignment: .topLeading) {
+                if tracker.kind == .drive && tracker.state != .idle {
+                    LaneHUD(laneCount: tracker.laneCount, laneIndex: tracker.laneIndex, estimated: true,
+                            shift: tracker.lastLaneShift, speed: tracker.state == .recording ? tracker.currentSpeed : 0,
+                            tint: tracker.speedLimit.map { SpeedBand.of(speed: tracker.currentSpeed, limit: $0.mps).color } ?? Theme.glow,
+                            onSetLane: { tracker.setLane($0) })
+                        .padding(.leading, 14).padding(.top, 58)
+                        .transition(.move(edge: .leading).combined(with: .opacity))
+                }
+            }
             .ignoresSafeArea(edges: .top)
 
             VStack(spacing: 14) {

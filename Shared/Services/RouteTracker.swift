@@ -39,6 +39,110 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private let gyro = CMMotionManager()
     @ObservationIgnored private var laneDetector = LaneChangeDetector()
 
+    /// Live lane picture for the lane HUD (drives only). Lane 0 is the leftmost lane going your way.
+    /// GPS can't see lanes, so the starting lane is a guess; lane changes from the motion sensors
+    /// move it, turns re-anchor it, and you can tap the HUD to correct it.
+    struct LaneShift: Equatable { let id = UUID(); let from: Int; let to: Int; let left: Bool; let quick: Bool; let at: Date }
+    private(set) var laneCount = 2
+    private(set) var laneIndex = 1
+    private(set) var laneCountEstimated = true
+    private(set) var lastLaneShift: LaneShift?
+    @ObservationIgnored private var laneCourses: [(t: Double, c: Double)] = []
+    @ObservationIgnored private var laneTurnCooldown = 0.0
+    @ObservationIgnored private var demoLaneTimer: Timer?
+    @ObservationIgnored private var demoLaneStep = 0
+    @ObservationIgnored private var laneAnchored = false
+
+    /// Typical starting lane: second from the right on 3+ lanes, rightmost on 2.
+    private static func anchorLane(_ count: Int) -> Int { count >= 3 ? count - 2 : count - 1 }
+
+    /// You tapped a lane on the HUD: that's where you are.
+    func setLane(_ i: Int) {
+        let to = max(0, min(laneCount - 1, i))
+        laneAnchored = true
+        guard to != laneIndex else { return }
+        lastLaneShift = LaneShift(from: laneIndex, to: to, left: to < laneIndex, quick: false, at: Date())
+        laneIndex = to
+    }
+
+    private func applyLaneChange(left: Bool, quick: Bool) {
+        var to = laneIndex + (left ? -1 : 1)
+        if to < 0 || to >= laneCount {
+            // Motion says you changed lanes but we thought you were at the edge: the lane count
+            // (or our guess of your lane) was off. Grow the road if it's a guess, else shift.
+            if laneCountEstimated && laneCount < 6 {
+                laneCount += 1
+                if to < 0 { laneIndex += 1; to = 0 }
+            } else {
+                to = max(0, min(laneCount - 1, to))
+            }
+        }
+        guard to != laneIndex else { return }
+        lastLaneShift = LaneShift(from: laneIndex, to: to, left: left, quick: quick, at: Date())
+        laneIndex = to
+    }
+
+    private func updateLaneCount(_ n: Int?, estimated: Bool) {
+        guard let n, n > 0, demoLaneTimer == nil else { return }
+        let n = min(n, 8)
+        laneCountEstimated = estimated
+        if !laneAnchored {
+            // First real road of the drive: start in the usual lane for that many lanes.
+            laneAnchored = true
+            laneCount = n
+            laneIndex = Self.anchorLane(n)
+            return
+        }
+        guard n != laneCount else { return }
+        // Keep your distance from the right edge (merges usually drop the left or right lane;
+        // right-relative is the better guess for exits/on-ramps).
+        let fromRight = laneCount - 1 - laneIndex
+        laneCount = n
+        laneIndex = max(0, min(n - 1, n - 1 - fromRight))
+    }
+
+    /// A real turn (not a curve) puts you in the outside lane you turned into.
+    private func checkTurnForLanes(_ c: Double) {
+        let t = Date().timeIntervalSince1970
+        laneCourses.append((t, c))
+        laneCourses.removeAll { t - $0.t > 8 }
+        guard t > laneTurnCooldown, let old = laneCourses.first, t - old.t > 2 else { return }
+        var d = (c - old.c).truncatingRemainder(dividingBy: 360)
+        if d > 180 { d -= 360 } else if d < -180 { d += 360 }
+        guard abs(d) > 60 else { return }
+        laneTurnCooldown = t + 8
+        laneCourses.removeAll()
+        laneIndex = d > 0 ? laneCount - 1 : 0   // right turn → right lane, left turn → left lane
+    }
+
+    private func resetLanes() {
+        laneCount = 2; laneIndex = 1; laneCountEstimated = true; lastLaneShift = nil
+        laneCourses = []; laneTurnCooldown = 0; laneAnchored = false
+        demoLaneTimer?.invalidate(); demoLaneTimer = nil
+    }
+
+    /// Screenshots (-demo -autodrive): the simulator has no gyro, so wiggle lanes every ~4 s.
+    private func startDemoLanes() {
+        let args = ProcessInfo.processInfo.arguments
+        guard args.contains("-demo"), args.contains("-autodrive"), demoLaneTimer == nil else { return }
+        if laneCount < 4 { laneCount = 4; laneIndex = 2; laneAnchored = true }
+        demoLaneStep = 0
+        demoLaneTimer = Timer.scheduledTimer(withTimeInterval: 4, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.state == .recording, self.kind == .drive else { return }
+                self.demoLaneStep += 1
+                let step = self.demoLaneStep
+                let left = (step / 2) % 2 == 0
+                let quick = step % 3 == 0
+                self.applyLaneChange(left: left, quick: quick)
+                if let here = self.points.last {
+                    self.laneChanges.append(LaneChange(t: Date().timeIntervalSince1970, lat: here.lat, lng: here.lng,
+                                                       left: left, speed: self.currentSpeed, quick: quick))
+                }
+            }
+        }
+    }
+
     /// More than 3 mph over a known limit right now.
     var isOverLimit: Bool {
         guard kind == .drive, state == .recording, let l = speedLimit else { return false }
@@ -347,11 +451,13 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         limits.reset()
         laneChanges = []
         laneDetector = LaneChangeDetector()
+        resetLanes()
     }
 
     // MARK: Lane changes (drives only)
 
     private func startLaneWatch() {
+        startDemoLanes()
         guard gyro.isDeviceMotionAvailable, !gyro.isDeviceMotionActive else { return }
         gyro.deviceMotionUpdateInterval = 1.0 / 20
         gyro.startDeviceMotionUpdates(to: .main) { [weak self] m, _ in
@@ -368,12 +474,14 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
             if let e = self.laneDetector.add(t: t, yawRate: yaw, speed: self.currentSpeed, course: self.course),
                let here = self.points.last {
                 self.laneChanges.append(LaneChange(t: e.t, lat: here.lat, lng: here.lng, left: e.left, speed: e.speed, quick: e.quick))
+                self.applyLaneChange(left: e.left, quick: e.quick)
                 if e.quick { UIImpactFeedbackGenerator(style: .rigid).impactOccurred(intensity: 0.6) }
             }
         }
     }
 
     private func stopLaneWatch() {
+        demoLaneTimer?.invalidate(); demoLaneTimer = nil
         if gyro.isDeviceMotionActive { gyro.stopDeviceMotionUpdates() }
     }
 
@@ -431,9 +539,11 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
         if loc.course >= 0 && currentSpeed > 1 { course = loc.course }
         if kind == .drive {
+            if loc.course >= 0 && currentSpeed > 4 { checkTurnForLanes(loc.course) }
             limits.update(for: loc, speed: currentSpeed) { [weak self] l in
                 guard let self, self.kind == .drive, self.state != .idle else { return }
                 self.speedLimit = l
+                if let l { self.updateLaneCount(l.lanes, estimated: l.lanesEstimated) }
             }
         }
         lastAccepted = loc
