@@ -6,6 +6,9 @@ struct TrackSettingsView: View {
     @AppStorage("useMetric") private var useMetric = false
     @AppStorage(TrackPrefs.announceSplitsKey) private var announceSplits = TrackPrefs.defaultOn
     @AppStorage(TrackPrefs.autoPauseKey) private var autoPause = TrackPrefs.defaultOn
+    @AppStorage(DriveDetector.enabledKey) private var autoDrive = true
+    @AppStorage(DriveDetector.thresholdKey) private var autoDriveMph = DriveDetector.defaultMph
+    @State private var detector = DriveDetector.shared
     @Query(sort: \Activity.start) private var activities: [Activity]
     @State private var healthStatus = ""
     @State private var healthConnecting = false
@@ -39,6 +42,10 @@ struct TrackSettingsView: View {
                     recordingCard.cardAppear()
                     footnote("Auto-pause never kicks in while driving. A pause you tap yourself always waits for you.")
 
+                    sectionLabel("Auto-detect drives")
+                    autoDriveCard.cardAppear()
+                    footnote("When you're moving faster than \(Int(autoDriveMph)) mph and not recording, \(AppInfo.name) asks \"Start drive?\". It uses motion and a quick GPS check, never constant GPS, so it's easy on battery.")
+
                     sectionLabel("Garmin · Whoop")
                     healthCard.cardAppear()
                     footnote("In Garmin Connect: More → Settings → Connected Apps → Apple Health. \(AppInfo.name) then lists those workouts so you can add them with one tap.")
@@ -64,6 +71,11 @@ struct TrackSettingsView: View {
             .sensoryFeedback(.selection, trigger: useMetric)
             .sensoryFeedback(.selection, trigger: announceSplits)
             .sensoryFeedback(.selection, trigger: autoPause)
+            .sensoryFeedback(.selection, trigger: autoDrive)
+            .onChange(of: autoDrive) { _, on in
+                if on { Task { await detector.enable() } } else { detector.refresh() }
+            }
+            .onChange(of: autoDriveMph) { _, _ in detector.refresh() }
         }
     }
 
@@ -130,6 +142,61 @@ struct TrackSettingsView: View {
                 }
             }
         }
+    }
+
+    // MARK: Auto-detect drives
+
+    private var autoDriveCard: some View {
+        GlassCard(padding: 0) {
+            VStack(spacing: 0) {
+                row(symbol: "car.fill", tint: Theme.leaf,
+                    title: "Ask to start drives",
+                    subtitle: autoDrive ? "Notifies you when you start driving" : "Off") {
+                    Toggle("Ask to start drives", isOn: $autoDrive.animation(Self.spring))
+                        .labelsHidden()
+                        .tint(Theme.glow)
+                }
+                if autoDrive {
+                    divider
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Trigger speed")
+                                .font(Theme.rounded(15, .bold))
+                                .foregroundStyle(.white)
+                            Spacer()
+                            Text("\(Int(autoDriveMph)) mph")
+                                .font(Theme.rounded(15, .heavy))
+                                .monospacedDigit()
+                                .foregroundStyle(Theme.glow)
+                                .contentTransition(.numericText())
+                        }
+                        Slider(value: $autoDriveMph, in: 10...40, step: 5)
+                            .tint(Theme.glow)
+                            .accessibilityLabel("Trigger speed")
+                            .accessibilityValue("\(Int(autoDriveMph)) miles per hour")
+                    }
+                    .padding(16)
+                    .transition(.opacity)
+                    if !detector.hasAlways || !detector.notificationsAllowed {
+                        divider
+                        row(symbol: "exclamationmark.triangle.fill", tint: Theme.gold,
+                            title: detector.hasAlways ? "Notifications are off" : "Location isn't \"Always\"",
+                            subtitle: detector.hasAlways ? "Turn them on to get \"Start drive?\"" : "Needed to catch drives with Roamr closed") {
+                            Button("Open Settings") {
+                                if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                            }
+                            .font(Theme.rounded(13, .heavy))
+                            .foregroundStyle(Theme.forestDeep)
+                            .padding(.horizontal, 12).padding(.vertical, 8)
+                            .background(Theme.goldGradient, in: Capsule())
+                            .buttonStyle(.plain)
+                        }
+                        .transition(.opacity)
+                    }
+                }
+            }
+        }
+        .onAppear { detector.refresh() }
     }
 
     // MARK: Apple Health

@@ -1,6 +1,7 @@
 import SwiftUI
 import UIKit
 import SwiftData
+import UserNotifications
 
 @main
 struct TrackHubApp: App {
@@ -21,7 +22,9 @@ struct TrackHubApp: App {
     }()
 
     init() {
-        UserDefaults.standard.register(defaults: ["useMetric": false])
+        UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true])
+        UNUserNotificationCenter.current().delegate = DriveNotificationRouter.shared
+        DriveDetector.registerCategory()
     }
 
     var body: some Scene {
@@ -41,6 +44,7 @@ struct TrackRootView: View {
     @Environment(\.modelContext) private var context
     /// "track", "history", "stats" or "settings".
     @State private var tab: String = "track"
+    @State private var detector = DriveDetector.shared
 
     private var tabItems: [TabBarItem] {
         [
@@ -68,11 +72,44 @@ struct TrackRootView: View {
 
             FloatingTabBar(items: tabItems, selection: $tab)
         }
+        .overlay(alignment: .top) {
+            if detector.showBanner && !tracker.isActive {
+                DriveBanner(onStart: startDriveFromPrompt, onDismiss: { detector.dismissBanner() })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .overlay(alignment: .top) {
+            if detector.showAlwaysCard && !detector.showBanner && !tracker.isActive {
+                AlwaysLocationCard(onDismiss: { detector.dismissAlwaysCard() })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.45, dampingFraction: 0.8), value: detector.showBanner)
+        .animation(.spring(response: 0.45, dampingFraction: 0.8), value: detector.showAlwaysCard)
+        .onReceive(NotificationCenter.default.publisher(for: DriveDetector.startDriveNote)) { _ in
+            consumePendingStart()
+        }
+        .onChange(of: tracker.isActive) { _, active in
+            if !active { detector.trackingEnded() } else { detector.showBanner = false }
+        }
         .animation(.spring(response: 0.38, dampingFraction: 0.85), value: tab)
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
+            if phase == .active { consumePendingStart(); detector.refresh() }
         }
         .onAppear {
+            detector.isTracking = { [tracker] in tracker.isActive }
+            detector.refresh()
+            consumePendingStart()
+            // Once after this update: ask for what auto-detect needs (Always location, motion, notifications).
+            if !TrackDemo.isOn, detector.enabled, !UserDefaults.standard.bool(forKey: DriveDetector.permsAskedKey) {
+                UserDefaults.standard.set(true, forKey: DriveDetector.permsAskedKey)
+                Task { await detector.enable() }
+            }
             if tracker.recoveredFromCrash { tab = "track" }
             if TrackDemo.isOn {
                 TrackDemo.seed(context)
@@ -86,5 +123,112 @@ struct TrackRootView: View {
                 if ProcessInfo.processInfo.arguments.contains("-autodrive") { tracker.start(kind: .drive) }
             }
         }
+    }
+
+    private func consumePendingStart() {
+        guard UserDefaults.standard.bool(forKey: DriveDetector.pendingStartKey) else { return }
+        UserDefaults.standard.set(false, forKey: DriveDetector.pendingStartKey)
+        startDriveFromPrompt()
+    }
+
+    private func startDriveFromPrompt() {
+        detector.showBanner = false
+        tab = "track"
+        guard !tracker.isActive else { return }
+        if !tracker.canTrack { tracker.requestPermission(); return }
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        tracker.start(kind: .drive)
+    }
+}
+
+/// "Driving? Start drive" banner shown in the app when you're moving fast and not recording.
+struct DriveBanner: View {
+    var onStart: () -> Void
+    var onDismiss: () -> Void
+    @State private var pulse = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle().fill(Theme.leafGradient).frame(width: 46, height: 46)
+                    .shadow(color: Theme.leaf.opacity(0.6), radius: pulse ? 14 : 6)
+                Image(systemName: "car.fill").font(.system(size: 18, weight: .black)).foregroundStyle(Theme.forestDeep)
+            }
+            .scaleEffect(pulse ? 1.06 : 1)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Driving?").font(Theme.rounded(17, .heavy)).foregroundStyle(.white)
+                Text("Looks like you're moving fast").font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+            }
+            Spacer(minLength: 6)
+            Button(action: onStart) {
+                Text("Start drive")
+                    .font(Theme.rounded(14, .heavy))
+                    .foregroundStyle(Theme.forestDeep)
+                    .padding(.horizontal, 14).padding(.vertical, 10)
+                    .background(Theme.leafGradient, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            Button(action: onDismiss) {
+                Image(systemName: "xmark").font(.system(size: 12, weight: .heavy)).foregroundStyle(Theme.textDim)
+                    .frame(width: 30, height: 30).background(Color.white.opacity(0.08), in: Circle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Not now")
+        }
+        .padding(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.glow.opacity(0.5), lineWidth: 1.2))
+        .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { pulse = true }
+        }
+        .accessibilityElement(children: .contain)
+    }
+}
+
+/// One-time nudge: auto-detect only catches drives with Roamr closed if Location is "Always".
+struct AlwaysLocationCard: View {
+    var onDismiss: () -> Void
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 10) {
+                Image(systemName: "location.fill.viewfinder")
+                    .font(.system(size: 18, weight: .black))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(width: 40, height: 40)
+                    .background(Theme.goldGradient, in: Circle())
+                Text("Catch every drive").font(Theme.rounded(17, .heavy)).foregroundStyle(.white)
+                Spacer()
+                Button(action: onDismiss) {
+                    Image(systemName: "xmark").font(.system(size: 12, weight: .heavy)).foregroundStyle(Theme.textDim)
+                        .frame(width: 30, height: 30).background(Color.white.opacity(0.08), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Close")
+            }
+            Text("Set Location to Always so Roamr can catch drives when it's closed. It only takes a quick GPS check when you're moving, so it's easy on battery.")
+                .font(Theme.rounded(13, .medium))
+                .foregroundStyle(Theme.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+            Button {
+                if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                onDismiss()
+            } label: {
+                Text("Open Settings")
+                    .font(Theme.rounded(14, .heavy))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 11)
+                    .background(Theme.goldGradient, in: Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(14)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.gold.opacity(0.5), lineWidth: 1.2))
+        .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
     }
 }
