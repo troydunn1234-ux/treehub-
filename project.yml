@@ -268,6 +268,77 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.pulselab
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1"
+  # Still Point: meditation & breath guide (Apple Watch first, iPhone companion)
+  StillPoint:
+    type: application
+    platform: iOS
+    sources:
+      - path: StillPoint
+    dependencies:
+      - target: StillPointWatch
+        embed: true
+        copy:
+          destination: productsDirectory
+          subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
+    entitlements:
+      path: StillPoint/StillPoint.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    info:
+      path: StillPoint/Info.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Still Point
+        NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.
+        NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes.
+        UIRequiresFullScreen: true
+        UIStatusBarStyle: UIStatusBarStyleLightContent
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.stillpoint
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        TARGETED_DEVICE_FAMILY: "1"
+
+  StillPointWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: StillPointWatch
+      - path: StillPoint/Shared
+    entitlements:
+      path: StillPointWatch/StillPointWatch.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
+    info:
+      path: StillPointWatch/Info.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Still Point
+        WKApplication: true
+        WKCompanionAppBundleIdentifier: com.troydunn.stillpoint
+        WKBackgroundModes:
+          - mindfulness
+          - workout-processing
+        NSHealthShareUsageDescription: Still Point reads your heart rate and HRV during sessions to show how you settle.
+        NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes.
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.stillpoint.watchkitapp
+        TARGETED_DEVICE_FAMILY: "4"
+        SKIP_INSTALL: YES
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
   # Natal Orbit: bundled web app in a native shell
   NatalOrbit:
     type: application
@@ -484,3 +555,7 @@ schemes:
     build:
       targets:
         PulseLab: all
+  StillPoint:
+    build:
+      targets:
+        StillPoint: all

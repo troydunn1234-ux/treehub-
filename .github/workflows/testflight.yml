@@ -12,7 +12,7 @@ on:
       app:
         description: Which app to ship
         type: choice
-        options: [Rootbound, Roamr, FoodBook, NatalOrbit, RideQuest, Clicker, PulseLab]
+        options: [Rootbound, Roamr, FoodBook, NatalOrbit, RideQuest, Clicker, PulseLab, StillPoint]
         default: Rootbound
 
 jobs:

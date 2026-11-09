@@ -1,0 +1,2169 @@
+{
+ "version": 1,
+ "traditions": [
+  {
+   "id": "zen",
+   "name": "Zen",
+   "region": "Japan",
+   "origin": "Chan Buddhism reached Japan from China in the 12th–13th centuries (Rinzai, Sōtō).",
+   "summary": "Zen centres practice on zazen, seated meditation in an upright, alert posture. Sōtō emphasises 'just sitting'; Rinzai adds kōan study. Breath counting is a classic starting point for beginners in both.",
+   "color": "#C9B79C"
+  },
+  {
+   "id": "theravada",
+   "name": "Theravāda & Forest",
+   "region": "Sri Lanka · Thailand · Myanmar",
+   "origin": "The oldest surviving Buddhist school, based on the Pāli Canon; Thai and Burmese forest and insight lineages revived intensive meditation in the 20th century.",
+   "summary": "Theravāda meditation pairs calm (samatha) with insight (vipassanā). Mindfulness of breathing, body scanning and loving-kindness are its best-known practices.",
+   "color": "#E0A458"
+  },
+  {
+   "id": "tibetan",
+   "name": "Tibetan",
+   "region": "Tibet · Himalaya",
+   "origin": "Vajrayāna Buddhism and the Bön tradition of the Tibetan plateau, now taught worldwide.",
+   "summary": "Tibetan practice blends calm abiding, visualisation and compassion training. Breath practices like the nine purification breaths prepare the mind for meditation.",
+   "color": "#C0392B"
+  },
+  {
+   "id": "yoga",
+   "name": "Yoga & Prāṇāyāma",
+   "region": "India",
+   "origin": "Hindu and yogic traditions recorded in the Upaniṣads, Yoga Sūtras and medieval haṭha texts such as the Haṭha Yoga Pradīpikā.",
+   "summary": "Prāṇāyāma means extending or regulating the breath. Nostril, rhythm and sound techniques are used to settle the body before meditation and mantra.",
+   "color": "#F39C12"
+  },
+  {
+   "id": "sufi",
+   "name": "Sufi",
+   "region": "Persia · Turkey · North Africa · South Asia",
+   "origin": "The contemplative tradition within Islam, carried by orders such as the Naqshbandi, Mevlevi and Chishti.",
+   "summary": "Sufi practice centres on dhikr, remembrance, often paired with the breath and the heart. Awareness of each breath (hush dar dam) is a core Naqshbandi principle.",
+   "color": "#2E8B57"
+  },
+  {
+   "id": "christian",
+   "name": "Christian Contemplative",
+   "region": "Mount Athos · Egypt · Europe",
+   "origin": "Desert fathers and mothers, Eastern Orthodox hesychasm and Western monastic prayer.",
+   "summary": "Contemplative Christianity uses short prayer words, sacred reading and silence to rest attention. Centering prayer and the Jesus Prayer are its most practiced forms today.",
+   "color": "#5B7DB1"
+  },
+  {
+   "id": "taoist",
+   "name": "Taoist",
+   "region": "China",
+   "origin": "Daoist inner cultivation (neidan, daoyin, qigong) developed over two thousand years.",
+   "summary": "Taoist practice works with breath, posture and the circulation of qi. Slow, quiet breathing and standing meditation build calm and steadiness.",
+   "color": "#16A085"
+  },
+  {
+   "id": "japan-nature",
+   "name": "Shinrin-yoku",
+   "region": "Japan",
+   "origin": "A 1980s Japanese public-health practice rooted in Shinto reverence for nature.",
+   "summary": "Forest bathing means slowly taking in the forest through all the senses. It is walking without a destination.",
+   "color": "#4F9D69"
+  },
+  {
+   "id": "modern",
+   "name": "Modern Breathwork",
+   "region": "Labs & clinics worldwide",
+   "origin": "Techniques studied or popularised by physiologists, clinicians and military trainers.",
+   "summary": "Simple paced-breathing patterns that research has looked at for stress, focus and sleep. Good for quick, structured sessions.",
+   "color": "#00BCD4"
+  },
+  {
+   "id": "thai",
+   "name": "Thai Traditional Medicine",
+   "region": "Thailand",
+   "origin": "Thai healing arts (nuad thai, ruesi dat ton) shaped by Buddhist, Ayurvedic and local traditions.",
+   "summary": "Thai traditional medicine joins massage, herbal care and self-stretching. The hermit exercises are its self-care practice, preserved in the statues of Wat Pho.",
+   "color": "#B5651D"
+  },
+  {
+   "id": "japan",
+   "name": "Japanese Body Arts",
+   "region": "Japan",
+   "origin": "Everyday Japanese health practices from Buddhist bowing, East Asian medicine and 20th-century public health.",
+   "summary": "Japan blends meditative movement into daily life, from morning radio exercises to floor stretches and self-massage. These short routines prepare the body for sitting.",
+   "color": "#D96C75"
+  }
+ ],
+ "practices": [
+  {
+   "id": "zazen-count",
+   "title": "Breath Counting (Susokukan)",
+   "traditionId": "zen",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "Susokukan, counting the breath, is the first practice given to new students in both Sōtō and Rinzai Zen; Dōgen's Fukanzazengi sets out the posture. Sit upright on a cushion, hands in the cosmic mudrā, eyes lowered and half-open. Count each out-breath from one to ten, then begin again. When you lose count or pass ten, return to one without comment.",
+   "why": "Counting gives a busy mind something simple to do, and noticing when the count is lost trains attention. Reviews of slow, attentive breathing link it with calmer arousal.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Sit tall. Count each exhale, one to ten."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Count the exhale."
+    },
+    {
+     "at": "minute:5",
+     "text": "Lost count? Gently start again at one."
+    },
+    {
+     "at": "end",
+     "text": "Let the counting go. Rest a moment."
+    }
+   ],
+   "sources": [
+    "zen-susokukan",
+    "dogen-fukanzazengi",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "shikantaza",
+   "title": "Just Sitting (Shikantaza)",
+   "traditionId": "zen",
+   "kind": "open",
+   "minutes": [
+    10,
+    20,
+    30
+   ],
+   "level": "deep",
+   "about": "Shikantaza, 'just sitting', is the heart of Sōtō Zen as taught by Dōgen (1200–1253) and, in the West, by Shunryu Suzuki. There is no object and no counting: sit upright, breathe naturally, and let thoughts arise and pass without following or pushing them away. Dōgen called it 'thinking not-thinking'; the posture itself is the practice.",
+   "why": "Open-awareness meditation is studied for how it shifts attention away from mind-wandering. Practitioners describe a growing ease with whatever arises.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Upright posture. Nothing to do but sit."
+    },
+    {
+     "at": "minute:10",
+     "text": "Thoughts come and go like clouds."
+    },
+    {
+     "at": "end",
+     "text": "Bow, and carry the stillness with you."
+    }
+   ],
+   "sources": [
+    "dogen-fukanzazengi",
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "kinhin",
+   "title": "Walking Zen (Kinhin)",
+   "traditionId": "zen",
+   "kind": "walking",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Kinhin is the walking meditation done between periods of zazen. In the Sōtō form the left hand makes a loose fist at the chest, covered by the right (shashu). Take a half-step forward with each full breath, moving slowly clockwise; Rinzai temples walk briskly instead. Attention stays with the soles, the breath and the posture.",
+   "why": "Walking meditation keeps practice going when sitting feels heavy. It brings mindfulness into movement and daily life.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Hands at the chest. Half a step per breath."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Step."
+    },
+    {
+     "at": "end",
+     "text": "Stop, stand still, notice the whole body."
+    }
+   ],
+   "sources": [
+    "kinhin"
+   ]
+  },
+  {
+   "id": "anapanasati",
+   "title": "Mindfulness of Breathing (Ānāpānasati)",
+   "traditionId": "theravada",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20,
+    30
+   ],
+   "level": "easy",
+   "about": "Ānāpānasati is the breath meditation taught by the Buddha in the Ānāpānasati Sutta (MN 118). Sit comfortably and feel the breath at the nostrils or belly, knowing a long breath as long and a short breath as short. The sutta's next steps widen awareness to the whole body and let it calm. Ajahn Buddhadāsa and Thich Nhat Hanh are among its best-known modern teachers.",
+   "why": "It is the foundation practice of almost every Buddhist school. Reviews of slow, attentive breathing link it with calmer physiology and better mood, though effects vary between people.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Breathing in, know you're breathing in."
+    },
+    {
+     "at": "minute:3",
+     "text": "Long breath, short breath. Just know it."
+    },
+    {
+     "at": "minute:8",
+     "text": "Feel the whole body breathing."
+    },
+    {
+     "at": "end",
+     "text": "Let the breath be as it is."
+    }
+   ],
+   "sources": [
+    "anapanasati-sutta",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "vipassana-scan",
+   "title": "Body Sweep (Vipassanā)",
+   "traditionId": "theravada",
+   "kind": "body",
+   "minutes": [
+    10,
+    20,
+    30
+   ],
+   "level": "medium",
+   "about": "This body-sweeping method comes from the Burmese lineage of Ledi Sayadaw and Sayagyi U Ba Khin, made global by S. N. Goenka's ten-day courses. Attention moves part by part from the top of the head to the toes and back up, observing any sensation — warmth, tingling, pressure, or nothing. The key instruction is equanimity: notice without craving or aversion, and see that every sensation changes.",
+   "why": "Body-scanning practices train non-reactive awareness. Many people find they relax deeply and notice tension they had missed.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Begin at the top of the head."
+    },
+    {
+     "at": "minute:3",
+     "text": "Move down through face, neck and shoulders."
+    },
+    {
+     "at": "minute:6",
+     "text": "Arms, chest, belly, back."
+    },
+    {
+     "at": "minute:9",
+     "text": "Hips, legs, feet. Then sweep back up."
+    },
+    {
+     "at": "end",
+     "text": "Feel the whole body at once."
+    }
+   ],
+   "sources": [
+    "goenka",
+    "satipatthana-sutta"
+   ]
+  },
+  {
+   "id": "metta",
+   "title": "Loving-Kindness (Mettā)",
+   "traditionId": "theravada",
+   "kind": "loving",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "Mettā practice comes from the Karaṇīya Mettā Sutta and Buddhaghosa's Visuddhimagga; Sharon Salzberg popularised it in the West. Silently repeat simple wishes — may I be safe, happy, healthy, at ease — first for yourself, then a benefactor or loved one, a neutral person, a difficult person, and finally all beings. If the phrases feel dry, keep going gently; the intention matters more than the feeling.",
+   "why": "Loving-kindness meditation has been studied for increasing positive emotion and feelings of social connection. Traditionally it is the antidote to ill-will and fear.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "May I be safe. May I be happy."
+    },
+    {
+     "at": "minute:2",
+     "text": "Picture someone you love. Wish them well."
+    },
+    {
+     "at": "minute:4",
+     "text": "Now someone neutral. May they be happy."
+    },
+    {
+     "at": "minute:6",
+     "text": "Someone difficult. May they be at ease."
+    },
+    {
+     "at": "minute:8",
+     "text": "All beings, everywhere. May all be well."
+    },
+    {
+     "at": "end",
+     "text": "Rest in that warmth."
+    }
+   ],
+   "sources": [
+    "metta-sutta",
+    "hofmann-2011-metta"
+   ]
+  },
+  {
+   "id": "buddho",
+   "title": "Buddho",
+   "traditionId": "theravada",
+   "kind": "mantra",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "Ajahn Mun and his student Ajahn Chah, founders of the modern Thai Forest tradition, taught pairing the breath with 'Buddho' — 'the one who knows', 'awake'. Silently say 'Bud-' on the in-breath and '-dho' on the out-breath. Once the mind is settled and knowing clearly, the word can be let go. Ajahn Chah's monasteries in Thailand and the UK still teach it as a first practice.",
+   "why": "A breath-paired word keeps attention anchored and is easy to return to. It is one of the most widely taught Thai forest practices.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In-breath: Bud. Out-breath: dho."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Bud… dho."
+    },
+    {
+     "at": "end",
+     "text": "Let the word fall away."
+    }
+   ],
+   "sources": [
+    "ajahn-chah"
+   ]
+  },
+  {
+   "id": "tonglen",
+   "title": "Tonglen (Giving & Taking)",
+   "traditionId": "tibetan",
+   "kind": "loving",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "Tonglen, 'sending and taking', is a Tibetan lojong (mind-training) practice from Atiśa's 11th-century teachings, taught widely today by Pema Chödrön. On the in-breath imagine taking in suffering as hot, dark heaviness; on the out-breath send relief as cool, bright light. Chödrön teaches it in four stages: a flash of openness, the texture, a specific person, then widening to all who suffer the same way.",
+   "why": "Tradition holds that tonglen dissolves self-centredness and builds courage around suffering. It is a core compassion practice.",
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Breathe in their pain. Breathe out relief."
+    },
+    {
+     "at": "everyCycle",
+     "text": "In: take. Out: give."
+    },
+    {
+     "at": "end",
+     "text": "Rest. Widen to all who feel this."
+    }
+   ],
+   "sources": [
+    "chodron-tonglen"
+   ]
+  },
+  {
+   "id": "nine-breaths",
+   "title": "Nine Breaths of Purification",
+   "traditionId": "tibetan",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "A preliminary purification breath from Tibetan Bön and Buddhist yoga, taught by Tenzin Wangyal Rinpoche in Awakening the Sacred Body. Three rounds of three breaths: in through one nostril and out through the other, then the reverse, then in and out through both. Each exhale imagines releasing an obstacle — traditionally anger, attachment and ignorance. Teachers differ on which nostril begins; follow your teacher if you have one.",
+   "why": "It's used to clear the mind before longer meditation. The slow nostril breathing also steadies the breath.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": 9,
+    "nostril": "alternate",
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Three rounds of three breaths."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Release on the out-breath."
+    },
+    {
+     "at": "end",
+     "text": "Rest in a clear, open mind."
+    }
+   ],
+   "sources": [
+    "nine-breaths"
+   ]
+  },
+  {
+   "id": "shamatha",
+   "title": "Calm Abiding (Shamatha)",
+   "traditionId": "tibetan",
+   "kind": "focus",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "Shamatha, calm abiding, rests attention on one object — a small stone, an image of the Buddha, or the breath. When the mind wanders you notice and return, balancing relaxation with clarity. Kamalaśīla and Asaṅga describe nine stages of settling; B. Alan Wallace teaches it in The Attention Revolution.",
+   "why": "Single-point focus training is the classic base for all deeper meditation. Studies of focused attention suggest it can improve sustained concentration.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Choose an object. Rest your attention there."
+    },
+    {
+     "at": "minute:5",
+     "text": "Wandered? Notice, and gently return."
+    },
+    {
+     "at": "end",
+     "text": "Relax the focus. Stay present."
+    }
+   ],
+   "sources": [
+    "shamatha",
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "nadi-shodhana",
+   "title": "Alternate Nostril (Nāḍī Śodhana)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Nāḍī śodhana, 'channel cleansing', is taught in the Haṭha Yoga Pradīpikā and by B. K. S. Iyengar. With the right hand in Viṣṇu mudrā, close the right nostril and inhale left, close the left and exhale right, inhale right, then exhale left — one round. Keep every breath slow, smooth and silent; beginners skip any hold.",
+   "why": "Yoga traditions use it to balance and calm before meditation. Small studies report lower heart rate and blood pressure after slow alternate-nostril breathing.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": "alternate",
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Right thumb closes the right nostril."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Switch sides."
+    },
+    {
+     "at": "end",
+     "text": "Release the hand. Breathe through both."
+    }
+   ],
+   "sources": [
+    "hatha-yoga-pradipika",
+    "light-on-pranayama",
+    "telles-nadi"
+   ]
+  },
+  {
+   "id": "bhramari",
+   "title": "Bee Breath (Bhrāmarī)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Bhrāmarī, the bee breath, is one of the eight classical kumbhakas in the Haṭha Yoga Pradīpikā. Inhale through the nose, then exhale slowly with lips closed and teeth slightly apart, making a steady, high 'mmm' like a bee. Many teachers add ṣaṇmukhī mudrā: thumbs gently close the ears and fingers rest over the eyes.",
+   "why": "The long humming exhale tends to feel deeply calming. Humming has been shown to raise nasal nitric oxide sharply compared with quiet breathing.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": true,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Inhale. Then hum like a bee as you exhale."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Mmm…"
+    },
+    {
+     "at": "end",
+     "text": "Sit in the quiet after the hum."
+    }
+   ],
+   "sources": [
+    "hatha-yoga-pradipika",
+    "weitzberg-2002"
+   ]
+  },
+  {
+   "id": "ujjayi",
+   "title": "Ocean Breath (Ujjāyī)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Ujjāyī, the 'victorious' breath, is listed among the kumbhakas of the Haṭha Yoga Pradīpikā and is central to Iyengar and Ashtanga yoga. Gently narrow the back of the throat (glottis) so each nasal breath makes a soft, ocean-like whisper. Keep the face and jaw relaxed and make inhale and exhale smooth and even.",
+   "why": "The sound gives the mind a steady anchor and naturally slows breathing. It is often used to steady attention during practice.",
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Softly narrow the throat. Hear the ocean."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Slow and even."
+    },
+    {
+     "at": "end",
+     "text": "Let the breath return to normal."
+    }
+   ],
+   "sources": [
+    "hatha-yoga-pradipika",
+    "light-on-pranayama"
+   ]
+  },
+  {
+   "id": "sama-vritti",
+   "title": "Equal Breath (Sama Vṛtti)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Sama vṛtti, 'equal movement', makes the in-breath and out-breath the same length; Iyengar's Light on Prāṇāyāma treats it as the base of rhythmic breathing. Start at four counts each, then lengthen gradually without strain. It is the gentlest prāṇāyāma to learn first.",
+   "why": "Even breathing settles the rhythm of the breath and is used as a base for other techniques.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In for four. Out for four."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Equal and smooth."
+    },
+    {
+     "at": "end",
+     "text": "Let go of counting."
+    }
+   ],
+   "sources": [
+    "light-on-pranayama"
+   ]
+  },
+  {
+   "id": "so-hum",
+   "title": "So Hum Mantra",
+   "traditionId": "yoga",
+   "kind": "mantra",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "So'ham, 'I am That', is the natural mantra of the breath described in the Vijñāna Bhairava Tantra and taught as ajapa japa — repetition that happens by itself. Silently hear 'so' as you breathe in and 'hum' as you breathe out. Swami Muktananda and the Bihar School both teach it as a gateway to meditation.",
+   "why": "Breath-linked mantra keeps attention gentle and continuous. Many find it an easy entry into meditation.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In-breath: so. Out-breath: hum."
+    },
+    {
+     "at": "everyCycle",
+     "text": "So… hum."
+    },
+    {
+     "at": "end",
+     "text": "Rest in silence."
+    }
+   ],
+   "sources": [
+    "so-hum"
+   ]
+  },
+  {
+   "id": "trataka",
+   "title": "Candle Gazing (Trāṭaka)",
+   "traditionId": "yoga",
+   "kind": "visual",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "medium",
+   "about": "Trāṭaka, steady gazing, is one of the six cleansing practices (ṣaṭkarma) of the Haṭha Yoga Pradīpikā. Place a candle at eye level an arm's length away. Gaze softly at the flame without blinking for as long as is comfortable, then close the eyes and watch the after-image at the brow. Repeat a few rounds; never force the eyes.",
+   "why": "It's traditionally used to build concentration. Never stare to the point of strain.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Gaze softly at the flame."
+    },
+    {
+     "at": "minute:1",
+     "text": "Close the eyes. Watch the afterimage."
+    },
+    {
+     "at": "minute:2",
+     "text": "Open and gaze again."
+    },
+    {
+     "at": "end",
+     "text": "Palm the eyes. Rest."
+    }
+   ],
+   "sources": [
+    "hatha-yoga-pradipika"
+   ],
+   "safety": "Stop if your eyes hurt or water a lot. Not for people with epilepsy or eye conditions — use a dot instead of a flame."
+  },
+  {
+   "id": "yoga-nidra",
+   "title": "Yoga Nidra (Short)",
+   "traditionId": "yoga",
+   "kind": "body",
+   "minutes": [
+    10,
+    20,
+    30
+   ],
+   "level": "easy",
+   "about": "Yoga nidra, 'yogic sleep', was systematised in the 1960s by Swami Satyananda Saraswati of the Bihar School of Yoga; Richard Miller's iRest adapts it for clinical use. Lying in śavāsana, you set a saṅkalpa (short intention), rotate awareness quickly through the body, count breaths and feel pairs of opposites like heavy and light. You stay aware while the body rests deeply.",
+   "why": "It's widely used for deep relaxation and before sleep. Many people find it easier than seated meditation.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Lie down. Set a simple intention."
+    },
+    {
+     "at": "minute:2",
+     "text": "Right hand thumb, fingers, palm, wrist…"
+    },
+    {
+     "at": "minute:5",
+     "text": "Feel the whole body heavy… then light."
+    },
+    {
+     "at": "minute:8",
+     "text": "Count breaths backwards from twenty-seven."
+    },
+    {
+     "at": "end",
+     "text": "Repeat your intention. Slowly return."
+    }
+   ],
+   "sources": [
+    "yoga-nidra"
+   ]
+  },
+  {
+   "id": "dhikr-breath",
+   "title": "Dhikr Breath Rhythm",
+   "traditionId": "sufi",
+   "kind": "mantra",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "Dhikr, remembrance, is the core practice of Sufism. The Naqshbandi order's principle of 'hush dar dam' — awareness in every breath — pairs a word or phrase with each breath, often silently in the heart (dhikr khafi). You can use a traditional phrase or a neutral word such as 'peace'. Keep the rhythm soft and steady rather than forced.",
+   "why": "Rhythmic repetition with the breath focuses the heart and mind. Practitioners describe it as returning to presence again and again.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Choose your word. Breathe it in, breathe it out."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Remember."
+    },
+    {
+     "at": "end",
+     "text": "Rest the word in the heart."
+    }
+   ],
+   "sources": [
+    "sufi-dhikr"
+   ]
+  },
+  {
+   "id": "heart-breath",
+   "title": "Heart-Centred Breathing",
+   "traditionId": "sufi",
+   "kind": "focus",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Hazrat Inayat Khan, who brought Sufism to the West in 1910, taught breath practices centred on the heart. Breathe slowly as if through the centre of the chest, and let warmth, love or gratitude gather there with each breath. It is close in spirit to modern heart-focused coherence breathing.",
+   "why": "Pairing slow breathing with a warm feeling is a gentle way to settle. It's similar to modern heart-focused breathing exercises.",
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Breathe through the heart."
+    },
+    {
+     "at": "minute:2",
+     "text": "Let warmth grow with each breath."
+    },
+    {
+     "at": "end",
+     "text": "Keep a little of this warmth with you."
+    }
+   ],
+   "sources": [
+    "heart-breath",
+    "lehrer-2014"
+   ]
+  },
+  {
+   "id": "centering-prayer",
+   "title": "Centering Prayer",
+   "traditionId": "christian",
+   "kind": "mantra",
+   "minutes": [
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "Centering prayer was developed in the 1970s by Trappist monks Thomas Keating, William Meninger and Basil Pennington at St Joseph's Abbey, Massachusetts, drawing on The Cloud of Unknowing. Choose a short sacred word as a symbol of consent to God's presence. Sit with eyes closed; when you notice you're engaged with a thought, return ever so gently to the word. Twenty minutes, twice a day, is the traditional practice.",
+   "why": "It's practiced as consent to God's presence rather than a technique. Practitioners report deeper stillness and acceptance.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Gently introduce your sacred word."
+    },
+    {
+     "at": "minute:10",
+     "text": "Engaged with a thought? Return to the word."
+    },
+    {
+     "at": "end",
+     "text": "Remain in silence a couple of minutes."
+    }
+   ],
+   "sources": [
+    "keating-centering"
+   ]
+  },
+  {
+   "id": "jesus-prayer",
+   "title": "Jesus Prayer (Hesychast)",
+   "traditionId": "christian",
+   "kind": "mantra",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "The Jesus Prayer is the heart of Eastern Orthodox hesychasm, defended by St Gregory Palamas and preserved on Mount Athos and in the Philokalia. 'Lord Jesus Christ, Son of God' is prayed on the in-breath and 'have mercy on me' on the out-breath, slowly and attentively, often with a prayer rope (komboskini). The Way of a Pilgrim made it famous worldwide.",
+   "why": "Hesychasts describe it as bringing the mind into the heart. The slow breath rhythm also naturally calms.",
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Breathe in the first half, out the second."
+    },
+    {
+     "at": "everyCycle",
+     "text": "One breath, one prayer."
+    },
+    {
+     "at": "end",
+     "text": "Rest in stillness."
+    }
+   ],
+   "sources": [
+    "philokalia"
+   ]
+  },
+  {
+   "id": "lectio",
+   "title": "Lectio Reflection",
+   "traditionId": "christian",
+   "kind": "focus",
+   "minutes": [
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "Lectio divina is the Benedictine practice of sacred reading, framed by Guigo II the Carthusian in four rungs: lectio, meditatio, oratio, contemplatio. Read a short passage slowly twice, notice the word or phrase that stands out, reflect on it, respond in your own words, then rest in silence. Scripture is traditional; any meaningful text can be used.",
+   "why": "It turns reading into contemplation. Any meaningful text can be used.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Read slowly. Notice a word that stands out."
+    },
+    {
+     "at": "minute:3",
+     "text": "Reflect: why this word, today?"
+    },
+    {
+     "at": "minute:6",
+     "text": "Respond in your own words."
+    },
+    {
+     "at": "minute:8",
+     "text": "Now simply rest."
+    },
+    {
+     "at": "end",
+     "text": "Carry the word into your day."
+    }
+   ],
+   "sources": [
+    "lectio"
+   ]
+  },
+  {
+   "id": "microcosmic-orbit",
+   "title": "Microcosmic Orbit",
+   "traditionId": "taoist",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "deep",
+   "about": "The microcosmic orbit (xiao zhoutian) is a foundational practice of Daoist inner alchemy, taught widely by Mantak Chia. With the tongue touching the roof of the mouth, imagine warmth rising up the spine (the Du channel) on the in-breath and flowing down the front of the body (the Ren channel) to the lower dantian on the out-breath. Keep it light; if it feels uncomfortable, simply rest attention in the lower belly.",
+   "why": "Daoist practitioners use it to circulate and gather energy. It also gives the attention a smooth, continuous path to follow.",
+   "pattern": {
+    "inhale": 6,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Tongue to the roof of the mouth."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Up the back… down the front."
+    },
+    {
+     "at": "end",
+     "text": "Gather the warmth in the lower belly."
+    }
+   ],
+   "sources": [
+    "daoyin-orbit"
+   ]
+  },
+  {
+   "id": "embryonic-breath",
+   "title": "Embryonic Breathing",
+   "traditionId": "taoist",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "about": "Taixi, embryonic breathing, appears in Daoist texts from the Tang dynasty onward: the breath becomes so soft and slow that a feather under the nose wouldn't stir. Breathe into the lower belly, with the exhale longer than the inhale, until the breath seems to almost disappear. Never hold or strain.",
+   "why": "Long, quiet exhales are associated with relaxation. Daoists saw it as a return to the effortless breathing of the womb.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Breathe into the lower belly. Softer."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Slow and silent."
+    },
+    {
+     "at": "end",
+     "text": "Let the breath almost disappear."
+    }
+   ],
+   "sources": [
+    "embryonic-breath",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "zhan-zhuang",
+   "title": "Standing Like a Tree (Zhan Zhuang)",
+   "traditionId": "taoist",
+   "kind": "body",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "medium",
+   "about": "Zhan zhuang, 'standing like a post', was made famous by Wang Xiangzhai (1885–1963), founder of Yiquan, and is a pillar of qigong. Stand with feet shoulder-width apart, knees soft, arms rounded at chest height as if hugging a tree. Breathe naturally and release every muscle you don't need; let stillness do the work.",
+   "why": "Standing meditation builds steadiness and body awareness. It can be surprisingly demanding — start short.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Feet wide, knees soft, hug the tree."
+    },
+    {
+     "at": "minute:2",
+     "text": "Relax the shoulders. Sink."
+    },
+    {
+     "at": "end",
+     "text": "Lower the arms slowly."
+    }
+   ],
+   "sources": [
+    "zhan-zhuang"
+   ]
+  },
+  {
+   "id": "forest-bathing",
+   "title": "Forest Bathing Senses Walk",
+   "traditionId": "japan-nature",
+   "kind": "walking",
+   "minutes": [
+    10,
+    20,
+    30
+   ],
+   "level": "easy",
+   "about": "Shinrin-yoku, forest bathing, was named by Japan's Forestry Agency in 1982, and Dr Qing Li's research made it famous. Walk slowly in nature with no destination, pausing to notice five things you see, four you hear, three you can touch, two you smell and one you taste or feel. A park or a single tree works too.",
+   "why": "Studies from Japan report lower stress markers after time in forests. Even a park can work.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Slow down. Nowhere to go."
+    },
+    {
+     "at": "minute:3",
+     "text": "Five things you can see."
+    },
+    {
+     "at": "minute:6",
+     "text": "Four things you can hear."
+    },
+    {
+     "at": "minute:9",
+     "text": "Three things you can touch."
+    },
+    {
+     "at": "end",
+     "text": "Breathe the air in deeply."
+    }
+   ],
+   "sources": [
+    "shinrin-yoku"
+   ]
+  },
+  {
+   "id": "box",
+   "title": "Box Breathing 4·4·4·4",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Box breathing — inhale 4, hold 4, exhale 4, hold 4 — is taught to military, police and first-responder teams as 'tactical breathing' for staying steady under pressure. Keep the holds relaxed rather than clenched. Shorten to three counts if four feels like strain.",
+   "why": "It gives structure when the mind is racing. A 2021 trial in soldiers found both tactical breathing and simple prolonged exhalation helped with stress.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 4,
+    "exhale": 4,
+    "holdOut": 4,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In four, hold four, out four, hold four."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Square."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally."
+    }
+   ],
+   "sources": [
+    "box-breathing"
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water."
+  },
+  {
+   "id": "478",
+   "title": "4·7·8 Relaxing Breath",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Dr Andrew Weil adapted the 4-7-8 breath from prāṇāyāma. Rest the tongue behind the upper teeth, exhale fully, then inhale quietly through the nose for 4, hold for 7, and exhale through the mouth with a whoosh for 8. Weil recommends four cycles at first.",
+   "why": "The long exhale and hold are used as a wind-down before sleep. Start with four cycles.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 7,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": 4,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In for four, hold seven, whoosh out eight."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Out slow."
+    },
+    {
+     "at": "end",
+     "text": "Notice how your body feels."
+    }
+   ],
+   "sources": [
+    "weil-478"
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water."
+  },
+  {
+   "id": "resonance",
+   "title": "Resonance Breathing 5.5",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "about": "Resonance or coherent breathing slows the breath to about 5.5–6 breaths per minute — roughly 5.5 seconds in and 5.5 out. Paul Lehrer and Evgeny Vaschillo developed it for heart-rate-variability biofeedback. Breathe through the nose, gently into the belly.",
+   "why": "Breathing near six breaths a minute tends to maximise heart rate variability. Research on HRV biofeedback links this rhythm with calmer, more flexible stress responses.",
+   "pattern": {
+    "inhale": 5.5,
+    "holdIn": 0,
+    "exhale": 5.5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In and out, slow as a wave."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Smooth."
+    },
+    {
+     "at": "end",
+     "text": "Let it go."
+    }
+   ],
+   "sources": [
+    "lehrer-2014",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "sigh",
+   "title": "Physiological Sigh",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    1,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "The physiological sigh is a double inhale through the nose — a full breath, then a short top-up sip — followed by a long, slow exhale through the mouth. Repeated for a few minutes it is called cyclic sighing, studied by Stanford's Huberman and Spiegel labs.",
+   "why": "In a 2023 Stanford study, five minutes a day of cyclic sighing improved mood and lowered breathing rate more than mindfulness meditation did. It's one of the fastest ways to calm down.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": true
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Two sniffs in. One long sigh out."
+    },
+    {
+     "at": "everyCycle",
+     "text": "In, in… out."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally."
+    }
+   ],
+   "sources": [
+    "balban-2023"
+   ]
+  },
+  {
+   "id": "long-exhale",
+   "title": "Extended Exhale 4·6 / 4·8",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Simply make the exhale longer than the inhale: 4 in and 6 out, building to 4 in and 8 out. No holds, so it's safe almost anywhere.",
+   "why": "Longer exhales are linked with slowing the heart and relaxing. It's a gentle option for anxiety or before sleep.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In for four. Out for six."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Lengthen the out-breath."
+    },
+    {
+     "at": "end",
+     "text": "Rest."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "baduanjin",
+   "title": "Eight Pieces of Brocade (Baduanjin)",
+   "traditionId": "taoist",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    8,
+    10
+   ],
+   "level": "easy",
+   "about": "Baduanjin is one of China's oldest qigong sets, recorded by the 12th century; the Chinese Health Qigong Association standardised today's form in 2003. Eight slow movements are each repeated several times, coordinated with calm breathing. It is practiced daily in parks across China.",
+   "why": "It's gentle, needs no space or equipment, and is among the most-researched qigong forms. Studies suggest benefits for balance, flexibility and well-being.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 480,
+   "steps": [
+    {
+     "name": "Ready stance",
+     "seconds": 20,
+     "how": "Feet hip-width, knees soft, arms rounded low. Settle the breath.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Hold up the heavens",
+     "seconds": 55,
+     "how": "Interlace fingers, press palms skyward, stretch tall, then float down.",
+     "breath": "in",
+     "side": "both"
+    },
+    {
+     "name": "Draw the bow",
+     "seconds": 55,
+     "how": "Horse stance; one hand draws the bowstring, the other points. Alternate sides.",
+     "breath": "in",
+     "side": "both"
+    },
+    {
+     "name": "Separate heaven and earth",
+     "seconds": 55,
+     "how": "One palm presses up, the other down. Alternate.",
+     "breath": "in",
+     "side": "both"
+    },
+    {
+     "name": "Look back",
+     "seconds": 55,
+     "how": "Turn the head slowly to look behind, shoulders still. Alternate.",
+     "breath": "in",
+     "side": "both"
+    },
+    {
+     "name": "Sway head and tail",
+     "seconds": 55,
+     "how": "Wide stance; lean and circle the torso low, side to side. Small range.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Touch the toes",
+     "seconds": 55,
+     "how": "Hands slide down the back and legs toward the feet; rise slowly.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Punch with angry eyes",
+     "seconds": 55,
+     "how": "Horse stance; slow punches forward with a focused gaze. Alternate.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Bounce on the heels",
+     "seconds": 55,
+     "how": "Rise onto the toes, then drop gently onto the heels.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Close",
+     "seconds": 20,
+     "how": "Hands rest on the lower belly. Breathe quietly.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "baduanjin"
+   ]
+  },
+  {
+   "id": "taichi-cloud",
+   "title": "Tai Chi: Opening & Cloud Hands",
+   "traditionId": "taoist",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Tai chi grew from Chen-village martial arts into a moving meditation; the Yang-style 24-form (1956) is the world's most practiced version. This short session uses its opening (Commencing Form) and Cloud Hands, a slow side-stepping movement with the hands circling past the face. Movements are continuous, rooted and unhurried.",
+   "why": "Research on tai chi points to better balance and reduced stress, especially in older adults. Cloud Hands alone is a complete practice.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Wuji standing",
+     "seconds": 30,
+     "how": "Stand still, feet together, arms relaxed. Sink the weight.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Commencing form",
+     "seconds": 60,
+     "how": "Step left, float arms to shoulder height on in-breath, lower on out-breath.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Cloud hands left",
+     "seconds": 75,
+     "how": "Hands circle like clouds as you shift and step left.",
+     "breath": "natural",
+     "side": "left"
+    },
+    {
+     "name": "Cloud hands right",
+     "seconds": 75,
+     "how": "Same flowing circles, stepping back to the right.",
+     "breath": "natural",
+     "side": "right"
+    },
+    {
+     "name": "Closing form",
+     "seconds": 60,
+     "how": "Arms cross and lower slowly. Bring the feet together.",
+     "breath": "out",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "taichi",
+    "wayne-taichi"
+   ]
+  },
+  {
+   "id": "rajio-taiso",
+   "title": "Radio Calisthenics (Rajio Taisō No. 1)",
+   "traditionId": "japan",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Rajio Taisō began in 1928 as a public-health broadcast by Japan's postal insurance bureau and NHK. Millions still do the three-minute Exercise No. 1 each morning at schools, workplaces and parks. It's 13 quick moves in a fixed order, done briskly to a count.",
+   "why": "A fast, full-body wake-up that touches every major joint. Its long history in Japan makes it a beloved morning ritual.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Ichi, ni, san, shi! Let's go."
+    },
+    {
+     "at": "end",
+     "text": "Deep breath. Ready for the day."
+    }
+   ],
+   "baseSeconds": 180,
+   "steps": [
+    {
+     "name": "Stretch up",
+     "seconds": 14,
+     "how": "Arms sweep forward and up; rise tall.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Arm swing & knee bend",
+     "seconds": 14,
+     "how": "Swing arms, bounce the knees gently.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Arm circles",
+     "seconds": 14,
+     "how": "Big circles out and in.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Chest opener",
+     "seconds": 14,
+     "how": "Arms out and back, lift the chest.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Side bend",
+     "seconds": 14,
+     "how": "Arm overhead, bend sideways. Alternate.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Forward & back bend",
+     "seconds": 14,
+     "how": "Bend forward with bounces, then lean back gently.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Body twist",
+     "seconds": 14,
+     "how": "Swing arms and twist the torso side to side.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Arms up & down",
+     "seconds": 14,
+     "how": "Hands to shoulders, punch up, back, down.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Diagonal bend & chest",
+     "seconds": 14,
+     "how": "Reach diagonally down, then open the chest.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Body circles",
+     "seconds": 14,
+     "how": "Big circle with the torso each way.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Hops",
+     "seconds": 12,
+     "how": "Light hops — or heel raises for a gentle version.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Arm swing & knee bend",
+     "seconds": 14,
+     "how": "Repeat the easy bounce.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Deep breath",
+     "seconds": 14,
+     "how": "Arms rise on the inhale, lower on the exhale.",
+     "breath": "in",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "rajio-taiso"
+   ]
+  },
+  {
+   "id": "makko-ho",
+   "title": "Makkō-hō Stretches",
+   "traditionId": "japan",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "Makkō-hō is a set of four floor stretches popularised in 1930s Japan by Wataru Nagai, said to have regained mobility after a stroke through Buddhist bowing practice. Each stretch is done by bending forward on the out-breath and releasing on the in-breath, rhythmically, never forcing. It is still practiced by Makkō-hō societies across Japan.",
+   "why": "A short, systematic opening for the hips, hamstrings and spine. The rhythmic exhale-and-fold gives it a meditative feel.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Butterfly bow",
+     "seconds": 75,
+     "how": "Sit, soles together, knees wide. Fold forward on each exhale.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Straight-leg bow",
+     "seconds": 75,
+     "how": "Legs straight ahead, toes up. Fold on the exhale.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Wide-leg bow",
+     "seconds": 75,
+     "how": "Legs wide apart. Fold forward from the hips.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Kneeling recline",
+     "seconds": 75,
+     "how": "Kneel, feet beside hips; lean back on hands or elbows only.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Skip the kneeling recline if your knees or lower back object.",
+   "sources": [
+    "makko-ho"
+   ]
+  },
+  {
+   "id": "surya-gentle",
+   "title": "Slow Sun Salutation (Sūrya Namaskār)",
+   "traditionId": "yoga",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Sūrya Namaskār, the salutation to the sun, was popularised in the 20th century by the Raja of Aundh and Krishnamacharya; this follows the Bihar School's 12-position sequence. Each position is linked to one breath and held a few breaths in this slow version. Lead with the right leg on odd rounds and the left on even rounds; drop the knees in plank whenever needed.",
+   "why": "A complete warm-up for spine, hips and shoulders that also steadies the breath. Slowing it down turns it from cardio into moving meditation.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Prayer pose",
+     "seconds": 25,
+     "how": "Stand tall, palms together at the heart.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Raised arms",
+     "seconds": 25,
+     "how": "Sweep arms overhead, gentle backbend.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Forward fold",
+     "seconds": 25,
+     "how": "Fold forward, knees bent as needed.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Low lunge",
+     "seconds": 25,
+     "how": "Step one leg back, knee down, lift the chest.",
+     "breath": "in",
+     "side": "right"
+    },
+    {
+     "name": "Mountain / downward dog",
+     "seconds": 25,
+     "how": "Step back, hips high, heels toward the floor.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Eight-point bow",
+     "seconds": 25,
+     "how": "Knees, chest, chin down; hips lifted.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Cobra",
+     "seconds": 25,
+     "how": "Slide forward, lift the chest, elbows soft.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Mountain / downward dog",
+     "seconds": 25,
+     "how": "Tuck the toes and lift the hips back.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Low lunge",
+     "seconds": 25,
+     "how": "Step the same leg forward between the hands.",
+     "breath": "in",
+     "side": "right"
+    },
+    {
+     "name": "Forward fold",
+     "seconds": 25,
+     "how": "Bring the back foot forward, fold.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Raised arms",
+     "seconds": 25,
+     "how": "Rise slowly with a long spine, arms up.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Prayer pose",
+     "seconds": 25,
+     "how": "Palms to the heart. Feel the pulse.",
+     "breath": "out",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Skip the backbends with low-back pain; avoid head-down positions with uncontrolled high blood pressure or glaucoma.",
+   "sources": [
+    "surya",
+    "hatha-yoga-pradipika"
+   ]
+  },
+  {
+   "id": "ruesi-dat-ton",
+   "title": "Thai Hermit Stretches (Ruesi Dat Ton)",
+   "traditionId": "thai",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "Ruesi Dat Ton, the 'hermit's self-stretching', is a Thai tradition linked to ascetic rishis. In 1836 King Rama III had about 80 statues of hermits in these postures placed at Wat Pho in Bangkok, the home of Thai massage. Each posture combines a stretch, self-massage and a slow breath, held briefly then released.",
+   "why": "It's the self-care side of Thai traditional medicine and pairs well with sitting meditation. Movements are slow and suitable for most bodies.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Face & eye massage",
+     "seconds": 40,
+     "how": "Rub palms warm; press over eyes, stroke the brow and cheeks.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Neck stretch",
+     "seconds": 45,
+     "how": "Ear toward shoulder, opposite hand reaches down. Switch.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Shoulder & arm pull",
+     "seconds": 45,
+     "how": "Interlace fingers, push palms forward then overhead.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Twisting hermit",
+     "seconds": 50,
+     "how": "Seated, cross one leg and twist toward it. Switch.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Forward-reaching hermit",
+     "seconds": 50,
+     "how": "Seated legs out, reach toward the feet.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Knee-hug",
+     "seconds": 40,
+     "how": "Hug one knee to the chest, then the other.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Rest",
+     "seconds": 30,
+     "how": "Sit tall, hands on knees, breathe slowly.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "ruesi",
+    "ruesi-watpho"
+   ]
+  },
+  {
+   "id": "do-in",
+   "title": "Do-in Self-Massage",
+   "traditionId": "japan",
+   "kind": "movement",
+   "minutes": [
+    2,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "Do-in is a Japanese and Chinese tradition of self-massage and tapping along the meridians, taught in macrobiotic circles and by Jacques de Langre in the West. Using loose fists or fingertips, you tap and rub from head to feet, waking up the skin and muscles. Breathe out as you tap.",
+   "why": "A quick, energising wake-up that needs no space. It's an easy bridge from sleep or a desk into meditation.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Scalp tapping",
+     "seconds": 30,
+     "how": "Fingertips drum lightly all over the head.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Face & ears",
+     "seconds": 40,
+     "how": "Rub cheeks, jaw and brow; knead the ears.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Neck & shoulders",
+     "seconds": 40,
+     "how": "Squeeze and tap each shoulder with the opposite hand.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Arms",
+     "seconds": 50,
+     "how": "Tap down the inside of each arm, up the outside.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Chest & belly",
+     "seconds": 40,
+     "how": "Tap the chest with fists; circle the belly clockwise.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Lower back",
+     "seconds": 30,
+     "how": "Rub the kidneys briskly with the backs of the hands.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Legs & feet",
+     "seconds": 70,
+     "how": "Tap down the outside of the legs, up the inside; rub the feet.",
+     "breath": "out",
+     "side": "both"
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Tap lightly; skip the belly if pregnant.",
+   "sources": [
+    "do-in"
+   ]
+  },
+  {
+   "id": "lujong-warmup",
+   "title": "Tibetan Joint Warm-up (Lu Jong-style)",
+   "traditionId": "tibetan",
+   "kind": "movement",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "Lu Jong, 'body training', is a Tibetan Buddhist and Bön healing-movement system taught worldwide by Tulku Lobsang Rinpoche. Its key pattern is to move into a position on the out-breath, hold briefly, and release. This short routine applies that pattern to gentle joint warming; it is inspired by Lu Jong, not its official sequence.",
+   "why": "Warming the joints with slow, breath-led movement is a gentle way to begin the day or a sitting. The hold-and-release rhythm brings attention into the body.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "baseSeconds": 300,
+   "steps": [
+    {
+     "name": "Settle",
+     "seconds": 20,
+     "how": "Stand, feet hip-width. Three slow breaths.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Neck",
+     "seconds": 40,
+     "how": "Exhale, chin to chest; hold; inhale up. Then ear to shoulder.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Shoulders",
+     "seconds": 40,
+     "how": "Exhale, roll shoulders back and down; release.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Wrists & hands",
+     "seconds": 30,
+     "how": "Circle wrists, open and close the fingers.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Spine",
+     "seconds": 50,
+     "how": "Exhale, round forward; hold; inhale, rise and open.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Hips",
+     "seconds": 50,
+     "how": "Hands on hips, slow circles each way.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Knees & ankles",
+     "seconds": 40,
+     "how": "Soft knee circles, then lift and circle each ankle.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Shake out",
+     "seconds": 30,
+     "how": "Shake the whole body loosely, then stand still.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "lu-jong"
+   ]
+  }
+ ],
+ "intentions": [
+  {
+   "id": "sleep",
+   "name": "Sleep",
+   "practiceIds": [
+    "478",
+    "yoga-nidra",
+    "bhramari",
+    "embryonic-breath",
+    "long-exhale",
+    "resonance"
+   ]
+  },
+  {
+   "id": "calm",
+   "name": "Calm",
+   "practiceIds": [
+    "sigh",
+    "resonance",
+    "anapanasati",
+    "bhramari",
+    "nadi-shodhana",
+    "heart-breath",
+    "box"
+   ]
+  },
+  {
+   "id": "focus",
+   "name": "Focus",
+   "practiceIds": [
+    "zazen-count",
+    "shamatha",
+    "trataka",
+    "box",
+    "buddho",
+    "ujjayi"
+   ]
+  },
+  {
+   "id": "energy",
+   "name": "Energy",
+   "practiceIds": [
+    "zhan-zhuang",
+    "ujjayi",
+    "sama-vritti",
+    "kinhin",
+    "microcosmic-orbit",
+    "rajio-taiso",
+    "do-in",
+    "baduanjin"
+   ]
+  },
+  {
+   "id": "gratitude",
+   "name": "Gratitude",
+   "practiceIds": [
+    "heart-breath",
+    "lectio",
+    "forest-bathing",
+    "dhikr-breath"
+   ]
+  },
+  {
+   "id": "grief",
+   "name": "Grief",
+   "practiceIds": [
+    "tonglen",
+    "centering-prayer",
+    "metta",
+    "jesus-prayer",
+    "long-exhale"
+   ]
+  },
+  {
+   "id": "compassion",
+   "name": "Compassion",
+   "practiceIds": [
+    "metta",
+    "tonglen",
+    "heart-breath",
+    "jesus-prayer"
+   ]
+  },
+  {
+   "id": "warm-up",
+   "name": "Warm-up",
+   "practiceIds": [
+    "baduanjin",
+    "taichi-cloud",
+    "rajio-taiso",
+    "makko-ho",
+    "surya-gentle",
+    "ruesi-dat-ton",
+    "do-in",
+    "lujong-warmup"
+   ]
+  },
+  {
+   "id": "morning",
+   "name": "Morning",
+   "practiceIds": [
+    "rajio-taiso",
+    "surya-gentle",
+    "baduanjin",
+    "lujong-warmup",
+    "do-in",
+    "zhan-zhuang",
+    "ujjayi",
+    "sigh"
+   ]
+  }
+ ]
+}

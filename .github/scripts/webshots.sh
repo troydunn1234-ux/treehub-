@@ -119,4 +119,21 @@ if [ -d "$APP" ]; then
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.pulselab; then echo "OK    pulselab"; else echo "CRASH pulselab"; FAIL=1; fi
   xcrun simctl terminate "$UDID" com.troydunn.pulselab 2>/dev/null || true
 fi
+
+# Still Point (meditation) in demo mode: Today, Traditions, Journey, and a breathing session.
+APP=build/Build/Products/Debug-iphonesimulator/StillPoint.app
+booted
+if [ -d "$APP" ]; then
+  xcrun simctl install "$UDID" "$APP"
+  for T in today traditions journey; do
+    xcrun simctl terminate "$UDID" com.troydunn.stillpoint 2>/dev/null || true
+    xcrun simctl launch "$UDID" com.troydunn.stillpoint -demo -tab $T > /dev/null; sleep 5
+    xcrun simctl io "$UDID" screenshot "shots/still-$T.png" > /dev/null 2>&1
+  done
+  xcrun simctl terminate "$UDID" com.troydunn.stillpoint 2>/dev/null || true
+  xcrun simctl launch "$UDID" com.troydunn.stillpoint -demo -session resonance > /dev/null; sleep 7
+  xcrun simctl io "$UDID" screenshot "shots/still-session.png" > /dev/null 2>&1
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.stillpoint; then echo "OK    stillpoint"; else echo "CRASH stillpoint"; FAIL=1; fi
+  xcrun simctl terminate "$UDID" com.troydunn.stillpoint 2>/dev/null || true
+fi
 exit $FAIL
