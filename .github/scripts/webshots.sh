@@ -4,6 +4,15 @@ set -u
 mkdir -p shots
 UDID=$(xcrun simctl list devices booted -j | python3 -c 'import json,sys;d=json.load(sys.stdin)["devices"];print(next(dv["udid"] for rt in d for dv in d[rt]))')
 FAIL=0
+# The CI simulator sometimes shuts itself down mid-run; boot it again before each app.
+booted() {
+  if ! xcrun simctl list devices booted | grep -q "$UDID"; then
+    echo "(simulator was shut down; booting again)"
+    xcrun simctl boot "$UDID" || true
+    xcrun simctl bootstatus "$UDID" -b > /dev/null 2>&1 || true
+    xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 > /dev/null 2>&1 || true
+  fi
+}
 for pair in FoodBook:com.troydunn.foodbook NatalOrbit:com.troydunn.natalorbit RideQuest:com.troydunn.ridequest; do
   T=${pair%%:*}; B=${pair##*:}
   APP=build/Build/Products/Debug-iphonesimulator/$T.app
@@ -18,6 +27,7 @@ done
 
 # Food Book supplements tab (demo stack)
 APPF=build/Build/Products/Debug-iphonesimulator/FoodBook.app
+booted
 if [ -d "$APPF" ]; then
   xcrun simctl terminate "$UDID" com.troydunn.foodbook 2>/dev/null || true
   xcrun simctl launch "$UDID" com.troydunn.foodbook -supps > /dev/null; sleep 5
@@ -31,6 +41,7 @@ fi
 
 # Roamr test drive on I-280 at ~80 mph: truck avatar, chase cam, speed limit HUD, colored route.
 APP=build/Build/Products/Debug-iphonesimulator/Roamr.app
+booted
 if [ -d "$APP" ]; then
   xcrun simctl install "$UDID" "$APP"
   for svc in location location-always motion; do xcrun simctl privacy "$UDID" grant $svc com.troydunn.roamr || true; done
@@ -60,6 +71,7 @@ if ways:
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; FAIL=1; fi
   xcrun simctl terminate "$UDID" com.troydunn.roamr || true
   # Same drive with turn-by-turn directions on
+  booted
   xcrun simctl launch "$UDID" com.troydunn.roamr -demo -autodrive -nav > /dev/null
   sleep 4
   xcrun simctl location "$UDID" start --speed=36 --interval=1 $ROUTE || true
@@ -70,6 +82,7 @@ fi
 
 # Clicker in demo mode (pretend-paired TV): apps grid and remote.
 APP=build/Build/Products/Debug-iphonesimulator/Clicker.app
+booted
 if [ -d "$APP" ]; then
   xcrun simctl install "$UDID" "$APP"
   xcrun simctl launch "$UDID" com.troydunn.clicker -demo > /dev/null; sleep 5
@@ -95,6 +108,7 @@ fi
 
 # Pulse Lab in demo mode (fake Apple Health + WHOOP data): Today, Sleep, Compare.
 APP=build/Build/Products/Debug-iphonesimulator/PulseLab.app
+booted
 if [ -d "$APP" ]; then
   xcrun simctl install "$UDID" "$APP"
   for T in today sleep heart compare; do
