@@ -149,6 +149,7 @@
 		F1D3B2A4DC706DD0D8091E2F /* HugDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46C8DC3149619497B1BCE67E /* HugDetailView.swift */; };
 		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		F5E75A4754328A8867116941 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
+		F607084704345551F974EB1A /* FoodEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B654538773ECEA01889CF8 /* FoodEstimator.swift */; };
 		F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		F7703AC7E6D97541E5889F04 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		F82117E4DD96DD24C8EE1D41 /* CompatibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AECFA1A94F497D848E305C /* CompatibilityView.swift */; };
@@ -375,6 +376,7 @@
 		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		B3B654538773ECEA01889CF8 /* FoodEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEstimator.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
 		B97EF2596A61FB7C47D91DDF /* Navigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = NatalOrbit.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -500,6 +502,7 @@
 			children = (
 				89AB83B63312836096D3E476 /* Camera.swift */,
 				56B2A6670639240E7A7152A6 /* FoodAI.swift */,
+				B3B654538773ECEA01889CF8 /* FoodEstimator.swift */,
 				63C5A2F2435EAC0C4C16ABFD /* FoodVision.swift */,
 				8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */,
 				C5282B10CF508CE08565DA73 /* SnapView.swift */,
@@ -1463,6 +1466,7 @@
 				38ED399CE64159D47A5C263C /* FoodAI.swift in Sources */,
 				E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */,
 				B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */,
+				F607084704345551F974EB1A /* FoodEstimator.swift in Sources */,
 				D6A539157CB944634005F61D /* FoodVision.swift in Sources */,
 				D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */,
 				0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */,
