@@ -1979,7 +1979,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     (res.accounts || []).forEach(function (a) {
       if (isCredit(a) || a.balance === undefined || a.balance === null || !isFinite(+a.balance)) return;
       /* pending charges are in the log now, so match the balance that already counts them (available), when the bank gives it */
-      var b = (a.available !== undefined && a.available !== null && isFinite(+a.available)) ? +a.available : +a.balance;
+      /* some banks report available-balance as 0 when they don't support it, so only trust it when it's a real number */
+      var av = (a.available !== undefined && a.available !== null && a.available !== "") ? +a.available : NaN;
+      var b = (isFinite(av) && av !== 0) ? av : +a.balance;
       var w = walletFor(a); sums[w] = r2((sums[w] || 0) + b); any = true;
     });
     if (!any) return false;
@@ -2097,7 +2099,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     } else {
       var accs = st.accounts || [];
       body = (accs.length ? accs.map(function (a) {
-        return '<div class="bankacc"><span>' + esc(a.name) + "<small>" + esc(a.org) + '</small></span><b class="num">' + fmt(+a.balance || 0) + "</b></div>";
+        var to = isCredit(a) ? "card · tracked as spending" : ("→ " + (walletFor(a) === "savings" ? "Car Savings" : walletFor(a) === "cash" ? "Cash" : "Checking"));
+        return '<div class="bankacc"><span>' + esc(a.name) + "<small>" + esc(a.org) + " · " + esc(to) + '</small></span><b class="num">' + fmt(+a.balance || 0) + "</b></div>";
       }).join("") : '<p class="note">Connected. Tap Sync now to pull your accounts.</p>') +
         '<p class="note">' + (st.lastSync ? "Last synced " + new Date(st.lastSync * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ". " : "") +
         "Syncs on its own every few hours when you open the app. Banks update about once a day. Fix a category once and it remembers that store.</p>" +
