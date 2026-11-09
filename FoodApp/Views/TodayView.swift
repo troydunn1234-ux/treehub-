@@ -317,12 +317,14 @@ struct GoalSheet: View {
 struct SmartPhotoSettings: View {
     @State private var hasKey = FoodAI.hasKey
     @State private var message: String?
+    @State private var hasUSDA = USDAKey.hasKey
+    @State private var usdaMessage: String?
 
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             Label("Smart photo (AI)", systemImage: "sparkles").font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
             Text(hasKey
-                 ? "On. Meal photos are read by Claude, which lists each item on your plate with portions. About 1¢ per photo, billed to your Anthropic account."
+                 ? "On. Claude identifies each item, sizes it against things in the photo (container, plate, hand), then each one is checked against USDA. About 1¢ per photo, billed to your Anthropic account."
                  : "Optional. Paste an Anthropic API key and meal photos get read by Claude: every item on the plate, with portions. About 1¢ per photo, billed to your Anthropic account. Without it, Food Book guesses on your phone for free.")
                 .font(Ember.font(13, .medium)).foregroundStyle(Ember.dim)
                 .fixedSize(horizontal: false, vertical: true)
@@ -355,6 +357,42 @@ struct SmartPhotoSettings: View {
                 }
             }
             if let message { Text(message).font(Ember.font(12, .semibold)).foregroundStyle(Ember.orange) }
+
+            Divider().overlay(Ember.line).padding(.vertical, 4)
+            Label("USDA nutrition check", systemImage: "checkmark.seal.fill").font(Ember.font(15, .heavy)).foregroundStyle(Ember.cream)
+            Text(hasUSDA
+                 ? "Using your own USDA FoodData Central key. Every item is matched against USDA data and scaled to its estimated weight."
+                 : "Every item is matched against USDA FoodData Central and scaled to its estimated weight. Works now with the shared demo key; for heavy use, get a free key at fdc.nal.usda.gov and paste it here.")
+                .font(Ember.font(13, .medium)).foregroundStyle(Ember.dim)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                Button {
+                    if USDAKey.save(key: UIPasteboard.general.string ?? "") {
+                        hasUSDA = true; usdaMessage = "USDA key saved on this phone."
+                        UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    } else {
+                        usdaMessage = "Copy your USDA key (letters and numbers) first, then tap Paste."
+                        UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                    }
+                } label: {
+                    Label(hasUSDA ? "Replace USDA key" : "Paste USDA key", systemImage: "doc.on.clipboard")
+                        .font(Ember.font(14, .heavy)).foregroundStyle(Ember.cream)
+                        .padding(.horizontal, 14).frame(height: 40)
+                        .background(Ember.bg.opacity(0.6), in: Capsule())
+                }
+                .buttonStyle(Squish())
+                if hasUSDA {
+                    Button(role: .destructive) {
+                        USDAKey.remove(); hasUSDA = false; usdaMessage = "Back to the shared demo key."
+                    } label: {
+                        Text("Remove").font(Ember.font(14, .heavy)).foregroundStyle(Ember.pink)
+                            .padding(.horizontal, 14).frame(height: 40)
+                            .background(Ember.bg.opacity(0.6), in: Capsule())
+                    }
+                    .buttonStyle(Squish())
+                }
+            }
+            if let usdaMessage { Text(usdaMessage).font(Ember.font(12, .semibold)).foregroundStyle(Ember.orange) }
         }
         .padding(16)
         .frame(maxWidth: .infinity, alignment: .leading)

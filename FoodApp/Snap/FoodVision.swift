@@ -14,6 +14,14 @@ struct FoodGuess: Identifiable, Hashable {
     var f: Double
     var caf: Double = 0
     var source: Source = .photo
+    /// Estimated weight of `serving` in grams (from the photo estimate), with a plausible range.
+    var grams: Double? = nil
+    var gramsLow: Double? = nil
+    var gramsHigh: Double? = nil
+    /// Where the numbers came from, e.g. "USDA: Beef, top sirloin, steak, cooked, grilled".
+    var sourceNote: String? = nil
+    /// What the size was judged against, e.g. "sized from your meal-prep container".
+    var sizedFrom: String? = nil
 }
 
 extension FoodGuess {

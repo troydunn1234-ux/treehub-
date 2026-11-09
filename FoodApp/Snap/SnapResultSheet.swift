@@ -50,7 +50,8 @@ struct SnapResultSheet: View {
             VStack(alignment: .leading, spacing: 18) {
                 photo
                 if let note = result.note {
-                    Label(note, systemImage: "wifi.exclamationmark").font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim)
+                    Label(note, systemImage: result.ai ? "text.bubble" : "wifi.exclamationmark")
+                        .font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim)
                 }
                 if plate.isEmpty {
                     Text("Couldn't tell what that is. Add what's on your plate:")
@@ -184,8 +185,17 @@ struct SnapResultSheet: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityHint("Swap for a different food")
-                    Text("\(it.food.serving)\(it.servings == 1 ? "" : " × \(label(it.servings))") · P \(Int((it.food.p * it.servings).rounded())) C \(Int((it.food.c * it.servings).rounded())) F \(Int((it.food.f * it.servings).rounded()))")
+                    Text("\(amount(it)) · P \(Int((it.food.p * it.servings).rounded())) C \(Int((it.food.c * it.servings).rounded())) F \(Int((it.food.f * it.servings).rounded()))")
                         .font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim).lineLimit(2)
+                    if let src = it.food.sourceNote {
+                        Label(src, systemImage: src.hasPrefix("USDA") ? "checkmark.seal.fill" : "sparkles")
+                            .font(Ember.font(11, .bold)).foregroundStyle(src.hasPrefix("USDA") ? Ember.protein : Ember.gold)
+                            .lineLimit(2)
+                    }
+                    if let ref = it.food.sizedFrom {
+                        Label(ref.prefix(1).uppercased() + ref.dropFirst(), systemImage: "ruler")
+                            .font(Ember.font(11, .semibold)).foregroundStyle(Ember.dim).lineLimit(1)
+                    }
                 }
                 Spacer(minLength: 4)
                 VStack(alignment: .trailing, spacing: 6) {
@@ -221,13 +231,66 @@ struct SnapResultSheet: View {
                     .accessibilityAddTraits(on ? .isSelected : [])
                 }
             }
+            if let base = it.food.grams, base > 0 { gramsControl(item, base: base) }
         }
         .padding(14)
         .background(Ember.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(Ember.line))
     }
 
-    private func label(_ s: Double) -> String { portions.first { $0.0 == s }?.1 ?? s.formatted() }
+    private func label(_ s: Double) -> String { portions.first { $0.0 == s }?.1 ?? s.formatted(.number.precision(.fractionLength(0...2))) }
+
+    /// "170 g" when the weight is known, else "6 oz × 1½".
+    private func amount(_ it: PlateItem) -> String {
+        if let g = it.food.grams, g > 0 { return "\(Int((g * it.servings).rounded())) g" }
+        return "\(it.food.serving)\(it.servings == 1 ? "" : " × \(label(it.servings))")"
+    }
+
+    /// Fine-tune the weight: −25 g, a slider across the estimate's likely range, +25 g. Macros follow live.
+    private func gramsControl(_ item: Binding<PlateItem>, base: Double) -> some View {
+        let it = item.wrappedValue
+        let now = base * it.servings
+        let lo = min(it.food.gramsLow ?? base * 0.7, now)
+        let hi = max(it.food.gramsHigh ?? base * 1.35, now, lo + 10)
+        let grams = Binding<Double>(
+            get: { base * item.wrappedValue.servings },
+            set: { v in item.wrappedValue.servings = max(5, (v / 5).rounded() * 5) / base })
+        return HStack(spacing: 10) {
+            stepButton("minus", label: "25 grams less") {
+                item.wrappedValue.servings = max(5, base * item.wrappedValue.servings - 25) / base
+            }
+            VStack(spacing: 2) {
+                Slider(value: grams, in: lo...hi, step: 5)
+                    .tint(Ember.orange)
+                    .accessibilityLabel("Weight")
+                    .accessibilityValue("\(Int(now.rounded())) grams")
+                HStack {
+                    Text("\(Int(lo)) g").font(Ember.font(10, .bold)).foregroundStyle(Ember.dim)
+                    Spacer()
+                    Text("\(Int(now.rounded())) g").font(Ember.font(13, .black)).foregroundStyle(Ember.cream)
+                        .contentTransition(.numericText(value: now))
+                    Spacer()
+                    Text("\(Int(hi)) g").font(Ember.font(10, .bold)).foregroundStyle(Ember.dim)
+                }
+            }
+            stepButton("plus", label: "25 grams more") {
+                item.wrappedValue.servings = (base * item.wrappedValue.servings + 25) / base
+            }
+        }
+        .padding(.top, 2)
+    }
+
+    private func stepButton(_ icon: String, label: String, action: @escaping () -> Void) -> some View {
+        Button {
+            UISelectionFeedbackGenerator().selectionChanged()
+            action()
+        } label: {
+            Image(systemName: icon).font(.system(size: 14, weight: .black)).foregroundStyle(Ember.cream)
+                .frame(width: 38, height: 38).background(Ember.bg.opacity(0.6), in: Circle())
+        }
+        .buttonStyle(Squish())
+        .accessibilityLabel(label)
+    }
 
     private var addButton: some View {
         Button { swapping = nil; picking = true } label: {
@@ -446,9 +509,21 @@ struct FoodPicker: View {
 enum DemoSnap {
     static var result: SnapResult {
         func g(_ n: String) -> FoodGuess? { QuickFood.all.first { $0.name == n }.map { FoodGuess($0) } }
-        let plate = ["Steak", "Roasted potatoes", "Roasted asparagus"].compactMap(g)
+        let ref = "sized from your meal-prep container"
+        let plate = [
+            FoodGuess(name: "Grilled sirloin steak", serving: "170 g", cal: 330, p: 51.7, c: 0, f: 12.4, source: .photo,
+                      grams: 170, gramsLow: 140, gramsHigh: 210,
+                      sourceNote: "USDA: Beef, top sirloin, steak, lean, cooked, grilled", sizedFrom: ref),
+            FoodGuess(name: "Roasted potatoes", serving: "180 g", cal: 238, p: 3.8, c: 34.6, f: 9.9, source: .photo,
+                      grams: 180, gramsLow: 130, gramsHigh: 230,
+                      sourceNote: "USDA: Potato, roasted + ~1 tsp oil", sizedFrom: ref),
+            FoodGuess(name: "Roasted asparagus", serving: "110 g", cal: 64, p: 2.6, c: 4.6, f: 4.7, source: .photo,
+                      grams: 110, gramsLow: 80, gramsHigh: 150,
+                      sourceNote: "USDA: Asparagus, cooked + ~1 tsp oil", sizedFrom: ref),
+        ]
         let alts = ["Ribeye steak", "Sirloin steak", "Baked potato", "Green beans"].compactMap(g)
-        return SnapResult(image: image(), mode: .meal, guesses: alts, topLabel: nil, plate: plate)
+        return SnapResult(image: image(), mode: .meal, guesses: alts, topLabel: nil, plate: plate, ai: true,
+                          note: "Steak, potatoes and asparagus in a glass meal-prep container.")
     }
 
     static func image() -> UIImage {

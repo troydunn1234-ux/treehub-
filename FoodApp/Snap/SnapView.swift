@@ -15,6 +15,8 @@ struct SnapView: View {
     @State private var frozen: UIImage?
     @State private var analyzing = false
     @State private var status = ""
+    /// Which step of the meal estimate is running (nil outside meal mode).
+    @State private var stage: FoodEstimator.Stage?
     @State private var flash = false
     @State private var result: SnapResult?
     @State private var pickItem: PhotosPickerItem?
@@ -38,7 +40,11 @@ struct SnapView: View {
             VStack(spacing: 0) {
                 topBar
                 Spacer()
-                if analyzing {
+                if analyzing, let stage {
+                    StageSteps(current: stage)
+                        .transition(.scale.combined(with: .opacity))
+                        .padding(.bottom, 20)
+                } else if analyzing {
                     Label(status, systemImage: "sparkles")
                         .font(Ember.font(16, .heavy)).foregroundStyle(.white)
                         .padding(.horizontal, 18).padding(.vertical, 12)
@@ -214,19 +220,24 @@ struct SnapView: View {
         case .meal:
             var note: String?
             if FoodAI.hasKey {
-                status = "AI is reading your plate…"
-                if let items = try? await FoodAI.readPlate(img), !items.isEmpty {
+                if let r = try? await FoodEstimator.estimate(img, stage: { st in setStage(st) }), !r.plate.isEmpty {
                     let local = await FoodVision.recognizeMeal(img)
                     next = SnapResult(image: img, mode: .meal, guesses: local.alternatives, topLabel: nil,
-                                      plate: items, ai: true)
+                                      plate: r.plate, ai: true, note: r.notes)
                 } else {
                     note = "AI unavailable, guessed on your phone"
                 }
             }
             if next == nil {
+                await setStage(.looking)
                 let r = await FoodVision.recognizeMeal(img)
+                var plate = r.plate
+                if !plate.isEmpty {
+                    await setStage(.usda)
+                    plate = await FoodEstimator.enrich(plate)
+                }
                 next = SnapResult(image: img, mode: .meal, guesses: r.alternatives, topLabel: r.topLabel,
-                                  plate: r.plate, note: note)
+                                  plate: plate, note: note)
             }
         case .label:
             if let facts = await FoodVision.readLabel(img) {
@@ -251,7 +262,7 @@ struct SnapView: View {
         // Let the shimmer breathe a moment so it doesn't flash.
         let wait = 0.7 - Date().timeIntervalSince(started)
         if wait > 0 { try? await Task.sleep(nanoseconds: UInt64(wait * 1_000_000_000)) }
-        withAnimation(.easeOut(duration: 0.2)) { analyzing = false }
+        withAnimation(.easeOut(duration: 0.2)) { analyzing = false; stage = nil }
         if let next {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             logged = false
@@ -261,6 +272,11 @@ struct SnapView: View {
             show(failure ?? "Something went wrong.")
             if mode == .barcode, failure?.contains("Nutrition Facts") == true { withAnimation { mode = .label } }
         }
+    }
+
+    @MainActor private func setStage(_ st: FoodEstimator.Stage) {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.8)) { stage = st }
+        status = st.title + "…"
     }
 
     private func lookUp(_ code: String) async {
@@ -288,6 +304,45 @@ struct SnapView: View {
         DispatchQueue.main.asyncAfter(deadline: .now() + 3.5) {
             if toast == text { withAnimation { toast = nil } }
         }
+    }
+}
+
+/// "Looking at your plate → Sizing portions → Checking USDA" with the current step glowing.
+private struct StageSteps: View {
+    let current: FoodEstimator.Stage
+    @Environment(\.accessibilityReduceMotion) private var reduce
+    @State private var pulse = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            ForEach(FoodEstimator.Stage.allCases, id: \.self) { st in
+                let done = st.rawValue < current.rawValue
+                let now = st == current
+                HStack(spacing: 10) {
+                    ZStack {
+                        Circle().fill(done ? AnyShapeStyle(Ember.fire) : AnyShapeStyle(Color.white.opacity(now ? 0.25 : 0.1)))
+                            .frame(width: 24, height: 24)
+                        if done {
+                            Image(systemName: "checkmark").font(.system(size: 11, weight: .black)).foregroundStyle(.white)
+                        } else if now {
+                            Circle().fill(Ember.gold).frame(width: 9, height: 9)
+                                .scaleEffect(pulse ? 1.3 : 0.7).opacity(pulse ? 1 : 0.6)
+                        }
+                    }
+                    Text(st.title).font(Ember.font(15, now ? .heavy : .semibold))
+                        .foregroundStyle(now || done ? Color.white : Color.white.opacity(0.5))
+                }
+            }
+        }
+        .padding(.horizontal, 20).padding(.vertical, 16)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+        .animation(.spring(response: 0.35, dampingFraction: 0.8), value: current)
+        .onAppear {
+            guard !reduce else { return }
+            withAnimation(.easeInOut(duration: 0.7).repeatForever(autoreverses: true)) { pulse = true }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(current.title)
     }
 }
 
