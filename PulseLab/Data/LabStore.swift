@@ -16,6 +16,20 @@ final class LabStore {
     private(set) var loading = false
     private(set) var lastPull: Date?
     private(set) var healthAsked = UserDefaults.standard.bool(forKey: "healthAsked")
+    /// True once the first pull has finished (so screens can tell "loading" from "empty").
+    private(set) var loadedOnce = false
+
+    // Navigation & UI state shared by every screen.
+    /// Set to jump to another tab (Lab notes use this).
+    var jump: LabTab?
+    /// Metric the Compare screen should focus on next time it appears.
+    var focusCompare: String?
+    /// Metric detail sheet currently shown.
+    var detail: MetricKey?
+    /// Short message shown as a toast at the top (errors, confirmations).
+    var toast: String?
+
+    var hasAnyData: Bool { !watchDays.isEmpty || !whoopDays.isEmpty || !sleeps.isEmpty || !workouts.isEmpty }
 
     static let isDemo = ProcessInfo.processInfo.arguments.contains("-demo")
 
@@ -29,18 +43,30 @@ final class LabStore {
     var recoveryToday: Double? { whoopDays.last(where: { $0.recovery != nil })?.recovery }
 
     func connectHealth() async {
-        _ = await HealthPull.shared.requestAccess()
+        let ok = await HealthPull.shared.requestAccess()
         healthAsked = true
+        UserDefaults.standard.set(true, forKey: "healthAsked")
+        if !ok { toast = "Apple Health isn't available on this device." }
         await refresh()
+    }
+
+    /// Open a tab, optionally focusing a metric (detail sheet or Compare focus).
+    func go(_ tab: LabTab, metric: MetricKey? = nil) {
+        if tab == .compare, let m = metric?.compareName { focusCompare = m }
+        jump = tab
+        if let metric, tab != .compare { detail = metric }
     }
 
     func refresh() async {
         if Self.isDemo { loadDemo(); return }
         guard !loading else { return }
         loading = true
-        defer { loading = false }
+        defer { loading = false; loadedOnce = true }
         async let health = HealthPull.shared.pull(days: 90)
-        if WhoopAdapter.connected { await WhoopAdapter.sync(days: 90) }
+        if WhoopAdapter.connected {
+            await WhoopAdapter.sync(days: 90)
+            if let e = WhoopAdapter.client.lastError { toast = "WHOOP: \(e)" }
+        }
         let h = await health
         merge(health: h)
         lastPull = Date()
@@ -124,5 +150,6 @@ final class LabStore {
         watchDays = wd
         healthAsked = true
         lastPull = Date()
+        loadedOnce = true
     }
 }

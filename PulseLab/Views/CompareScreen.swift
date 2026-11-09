@@ -14,11 +14,45 @@ struct CompareScreen: View {
         let list = agreements
         LabScroll(kicker: "Lab results", title: "Compare") {
             RangePicker(days: $days)
-            scoreboard(list)
-            if let a = list.first(where: { $0.metric == focus }) { detail(a) }
-            ForEach(list.filter { $0.n > 0 }) { a in row(a) }
+            if list.allSatisfy({ $0.n == 0 }) {
+                noOverlap
+            } else {
+                scoreboard(list)
+                if let a = list.first(where: { $0.metric == focus }) { detail(a) }
+                ForEach(list.filter { $0.n > 0 }) { a in row(a) }
+            }
             method
         }
+        .onAppear(perform: takeFocus)
+        .onChange(of: store.focusCompare) { _, _ in takeFocus() }
+    }
+
+    private func takeFocus() {
+        guard let f = store.focusCompare else { return }
+        withAnimation(.snappy) { focus = f }
+        store.focusCompare = nil
+    }
+
+    /// Both trackers haven't measured the same days yet.
+    @ViewBuilder private var noOverlap: some View {
+        if !store.whoopConnected && store.whoopDays.isEmpty {
+            LabEmptyState(icon: "bolt.heart.fill", title: "WHOOP isn't connected",
+                          message: "Compare needs both trackers. Connect WHOOP (or turn on WHOOP's Apple Health integration) to start the duel.",
+                          button: "Connect WHOOP", tint: Lab.whoop) { store.go(.settings) }
+        } else {
+            LabEmptyState(icon: "hourglass", title: "Not enough overlap yet",
+                          message: "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.",
+                          button: nil, tint: Lab.violet, action: nil)
+        }
+    }
+
+    /// Who "wins" a metric: higher reader for absolute metrics, else the steadier (less noisy) tracker.
+    private func winner(_ a: Agreement) -> (Source, String)? {
+        guard a.n >= 3 else { return nil }
+        if let h = a.higher { return (h, "HIGHER") }
+        guard let sw = Stats.sd(a.pairs.map(\.watch)), let sh = Stats.sd(a.pairs.map(\.whoop)), sw > 0, sh > 0,
+              abs(sw - sh) / max(sw, sh) > 0.1 else { return nil }
+        return (sw < sh ? .watch : .whoop, "STEADIER")
     }
 
     /// Overall: how many metrics agree, and who reads higher where.
@@ -48,11 +82,15 @@ struct CompareScreen: View {
     }
 
     private func row(_ a: Agreement) -> some View {
-        Button { withAnimation(.snappy) { focus = a.metric } } label: {
+        Button {
+            UISelectionFeedbackGenerator().selectionChanged()
+            withAnimation(.snappy) { focus = a.metric }
+        } label: {
             LabPanel(tint: focus == a.metric ? Lab.watch : Lab.violet) {
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack {
+                    HStack(spacing: 8) {
                         Text(a.metric).font(Lab.display(17, .heavy)).foregroundStyle(Lab.text)
+                        if let w = winner(a) { CrownChip(source: w.0, label: w.1) }
                         Spacer()
                         Text(a.agreePercent.map { "\(Int($0))%" } ?? "––").font(Lab.mono(18, .heavy))
                             .foregroundStyle(a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad)
@@ -108,6 +146,8 @@ struct CompareScreen: View {
                     .chartXAxis { LabAxis.xDays }
                     .chartYAxis { LabAxis.y }
                     .frame(height: 180)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(a.metric) trend for both trackers, correlation \(String(format: "%.2f", a.correlation ?? 0)).")
                     Text("Each line is scaled to its own average, so you can see if they rise and fall together. Correlation r = \(String(format: "%.2f", a.correlation ?? 0)).")
                         .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
                 } else {
@@ -137,6 +177,8 @@ struct CompareScreen: View {
                     .chartYAxis { LabAxis.y }
                     .frame(height: 200)
                     .shadow(color: Lab.watch.opacity(0.25), radius: 6)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Difference plot for \(a.metric). On average Apple Watch reads \(String(format: "%+.1f", b)) \(a.unit) versus WHOOP across \(a.n) days.")
                     Text("Dots above the line: Watch read higher (cyan). Below: WHOOP read higher (amber). The shaded band is where 95% of days fall.")
                         .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
                 }

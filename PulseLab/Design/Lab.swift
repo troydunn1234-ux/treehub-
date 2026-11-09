@@ -193,7 +193,13 @@ struct GaugeRing: View {
     private func draw() {
         let v = min(100, max(0, value ?? 0))
         if Lab.reduceMotion { drawn = v; return }
-        withAnimation(.easeOut(duration: 1.1)) { drawn = v }
+        drawn = 0   // always sweep up from empty, on every appearance
+        DispatchQueue.main.async { withAnimation(.easeOut(duration: 1.1)) { drawn = v } }
+        guard value != nil else { return }
+        // Small tap when the ring lands.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.05) {
+            UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.6)
+        }
     }
 }
 

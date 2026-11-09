@@ -5,11 +5,16 @@ struct TodayScreen: View {
     @Environment(LabStore.self) private var store
 
     var body: some View {
+        let notes = Insights.build(store)
+        let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
+            if streak >= 2 { StreakChip(days: streak) }
             gauges
+            LabNotesCard(insights: notes)
             hero
             sleepDuel
             sparkCard
+            ShareVSButton()
             if !store.whoopConnected { whoopNudge }
         }
     }
@@ -61,22 +66,45 @@ struct TodayScreen: View {
                     Spacer()
                     SourceChip(source: .whoop)
                 }
-                VSRow(title: "Resting HR", unit: "bpm", watch: w?.rhr, whoop: h?.rhr)
+                tap(.rhr) { VSRow(title: "Resting HR", unit: "bpm", watch: w?.rhr, whoop: h?.rhr) }
                 Divider().overlay(Lab.line)
-                VSRow(title: "HRV", unit: "ms", watch: w?.hrv, whoop: h?.hrv, note: "SDNN vs RMSSD")
+                tap(.hrv) { VSRow(title: "HRV", unit: "ms", watch: w?.hrv, whoop: h?.hrv, note: "SDNN vs RMSSD") }
                 Divider().overlay(Lab.line)
-                VSRow(title: "Respiratory", unit: "br/min", watch: w?.resp, whoop: h?.resp, decimals: 1)
+                tap(.resp) { VSRow(title: "Respiratory", unit: "br/min", watch: w?.resp, whoop: h?.resp, decimals: 1) }
                 Divider().overlay(Lab.line)
-                VSRow(title: "Calories", unit: "kcal", watch: w?.totalKcal, whoop: h?.totalKcal)
+                tap(.calories) { VSRow(title: "Calories", unit: "kcal", watch: w?.totalKcal, whoop: h?.totalKcal) }
+                Text("Tap a row for the full chart").font(Lab.label(9)).foregroundStyle(Lab.faint)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
         }
+        .breathingGlow([Lab.watch, Lab.violet, Lab.whoop])
+        .visualEffect { [still = Lab.reduceMotion] content, proxy in
+            // Gentle depth: the card eases back a touch as it scrolls under the top edge (off with Reduce Motion).
+            let y = proxy.frame(in: .scrollView).minY
+            return content.scaleEffect(still || y >= 0 ? 1 : max(0.94, 1 + y / 3000))
+        }
+    }
+
+    private func tap<V: View>(_ m: MetricKey, @ViewBuilder _ v: () -> V) -> some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            store.detail = m
+        } label: { v().contentShape(Rectangle()) }
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens the \(m.title.lowercased()) chart")
     }
 
     private var sleepDuel: some View {
         let w = store.lastNight(.watch), h = store.lastNight(.whoop)
         return LabPanel(tint: Lab.violet) {
             VStack(alignment: .leading, spacing: 12) {
-                SectionTag("Last night")
+                HStack {
+                    SectionTag("Last night")
+                    Spacer()
+                    Button { store.detail = .sleep } label: {
+                        Text("DETAILS").font(Lab.label(9)).foregroundStyle(Lab.watch)
+                    }
+                }
                 HStack(alignment: .top) {
                     sleepColumn(w, .watch)
                     Rectangle().fill(Lab.line).frame(width: 1, height: 70)
@@ -128,8 +156,18 @@ struct TodayScreen: View {
                 .chartYAxis { LabAxis.y }
                 .frame(height: 120)
                 .shadow(color: Lab.watch.opacity(0.25), radius: 6)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel(rhrSummary)
             }
         }
+        .onTapGesture { store.detail = .rhr }
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private var rhrSummary: String {
+        let w = Stats.mean(store.days(.watch).recent(14).compactMap(\.rhr)), h = Stats.mean(store.days(.whoop).recent(14).compactMap(\.rhr))
+        func f(_ v: Double?) -> String { v.map { "\(Int($0.rounded())) bpm" } ?? "no data" }
+        return "Resting heart rate, last 14 days. Apple Watch average \(f(w)), WHOOP average \(f(h))."
     }
 
     private var whoopNudge: some View {

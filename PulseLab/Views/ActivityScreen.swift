@@ -49,7 +49,14 @@ struct ActivityScreen: View {
         let w = store.days(.watch).recent(days), h = store.days(.whoop).recent(days)
         return LabPanel(tint: Lab.whoop) {
             VStack(alignment: .leading, spacing: 10) {
-                SectionTag("Total calories burned")
+                HStack {
+                    SectionTag("Total calories burned")
+                    Spacer()
+                    Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.watch)
+                }
+                if w.allSatisfy({ $0.totalKcal == nil }) && h.allSatisfy({ $0.totalKcal == nil }) {
+                    EmptyNote(text: "No calorie data in this range.")
+                } else {
                 Chart {
                     ForEach(w.filter { $0.totalKcal != nil }) { d in
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("kcal", d.totalKcal ?? 0), width: .ratio(0.38))
@@ -67,10 +74,20 @@ struct ActivityScreen: View {
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
                 .frame(height: 180)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Daily calories over \(days) days. Apple Watch averages \(avgText(w)), WHOOP averages \(avgText(h)).")
+                }
                 Text("Apple counts active + resting energy; WHOOP reports one total per cycle (converted from kJ).")
                     .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture { store.detail = .calories }
+        .accessibilityAddTraits(.isButton)
+    }
+
+    private func avgText(_ d: [DayStat]) -> String {
+        Stats.mean(d.compactMap(\.totalKcal)).map { "\(Int($0.rounded())) kcal" } ?? "no data"
     }
 
     private var steps: some View {
@@ -79,6 +96,9 @@ struct ActivityScreen: View {
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack { SectionTag("Steps"); Spacer(); SourceChip(source: .watch) }
+                if w.isEmpty {
+                    EmptyNote(text: "No steps in this range. WHOOP doesn't count steps, so this is Watch/iPhone only.")
+                } else {
                 Chart {
                     ForEach(w) { d in
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("Steps", d.steps ?? 0))
@@ -95,8 +115,14 @@ struct ActivityScreen: View {
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
                 .frame(height: 150)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Steps over \(days) days, average \(avg.map { Int($0).formatted() } ?? "unknown") a day.")
+                }
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture { store.detail = .steps }
+        .accessibilityAddTraits(.isButton)
     }
 
     private var workouts: some View {

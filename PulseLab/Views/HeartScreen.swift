@@ -8,12 +8,13 @@ struct HeartScreen: View {
     var body: some View {
         LabScroll(kicker: "Engine room", title: "Heart") {
             RangePicker(days: $days)
-            trend("Resting heart rate", unit: "bpm", lowerIsBetter: true) { $0.rhr }
-            trend("Heart rate variability", unit: "ms", lowerIsBetter: false, note: "Apple Watch measures SDNN, WHOOP measures RMSSD, so WHOOP usually reads higher. Compare the shape of the lines, not the gap.") { $0.hrv }
+            trend("Resting heart rate", unit: "bpm", lowerIsBetter: true, metric: .rhr) { $0.rhr }
+            trend("Heart rate variability", unit: "ms", lowerIsBetter: false, note: "Apple Watch measures SDNN, WHOOP measures RMSSD, so WHOOP usually reads higher. Compare the shape of the lines, not the gap.", metric: .hrv) { $0.hrv }
             readinessChart
-            trend("Respiratory rate", unit: "br/min", lowerIsBetter: true, decimals: 1) { $0.resp }
-            trend("Blood oxygen", unit: "%", lowerIsBetter: false, decimals: 1) { $0.spo2 }
-            trend("Temperature deviation", unit: "°C", lowerIsBetter: true, decimals: 2, note: "Change from your own baseline (Watch: wrist while asleep · WHOOP: skin).") { $0.tempDev }
+            trend("Respiratory rate", unit: "br/min", lowerIsBetter: true, decimals: 1, metric: .resp) { $0.resp }
+            trend("Blood oxygen", unit: "%", lowerIsBetter: false, decimals: 1, metric: .spo2) { $0.spo2 }
+            trend("Temperature deviation", unit: Units.fahrenheit ? "°F" : "°C", lowerIsBetter: true, decimals: 2,
+                  note: "Change from your own baseline (Watch: wrist while asleep · WHOOP: skin).", metric: .temp) { Units.tempDelta($0.tempDev).0 }
             fitness
         }
     }
@@ -23,7 +24,7 @@ struct HeartScreen: View {
     }
 
     private func trend(_ title: String, unit: String, lowerIsBetter: Bool, decimals: Int = 0, note: String? = nil,
-                       _ f: @escaping (DayStat) -> Double?) -> some View {
+                       metric: MetricKey? = nil, _ f: @escaping (DayStat) -> Double?) -> some View {
         let w = series(.watch, f), h = series(.whoop, f)
         let wAvg = Stats.mean(w.map(\.1)), hAvg = Stats.mean(h.map(\.1))
         return LabPanel(tint: Lab.watch) {
@@ -32,6 +33,9 @@ struct HeartScreen: View {
                     SectionTag(title)
                     Spacer()
                     Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
+                    if metric != nil {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.watch)
+                    }
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 18) {
                     avgBlock(wAvg, .watch, decimals)
@@ -69,10 +73,23 @@ struct HeartScreen: View {
                     .chartYAxis { LabAxis.y }
                     .frame(height: 170)
                     .shadow(color: Lab.watch.opacity(0.3), radius: 6)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(title) over \(days) days. Apple Watch average \(fmtA(wAvg, decimals, unit)), WHOOP average \(fmtA(hAvg, decimals, unit)).")
                 }
                 if let note { Text(note).font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint) }
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            guard let metric else { return }
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            store.detail = metric
+        }
+        .accessibilityAddTraits(metric != nil ? .isButton : [])
+    }
+
+    private func fmtA(_ v: Double?, _ d: Int, _ u: String) -> String {
+        v.map { "\($0.formatted(.number.precision(.fractionLength(d)))) \(u)" } ?? "no data"
     }
 
     private func avgBlock(_ v: Double?, _ s: Source, _ decimals: Int) -> some View {
@@ -117,6 +134,9 @@ struct HeartScreen: View {
                 .font(Lab.label(9))
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture { store.detail = .recovery }
+        .accessibilityAddTraits(.isButton)
     }
 
     private var fitness: some View {

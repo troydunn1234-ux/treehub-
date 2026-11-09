@@ -71,8 +71,21 @@ struct RootView: View {
                     }
                 }
                 .tint(Lab.watch)
+                .onChange(of: tab) { _, _ in UISelectionFeedbackGenerator().selectionChanged() }
+                .onChange(of: store.jump) { _, t in
+                    guard let t else { return }
+                    withAnimation(.snappy) { tab = t }
+                    store.jump = nil
+                }
+                .sheet(item: Binding(get: { store.detail }, set: { store.detail = $0 })) { m in
+                    MetricDetailSheet(metric: m)
+                        .environment(store)
+                        .presentationDetents([.large])
+                        .presentationBackground(Lab.bg)
+                }
             }
         }
+        .overlay(alignment: .top) { ToastView() }
         .task { if !showOnboarding { await store.refresh() } }
         .onChange(of: phase) { _, p in if p == .active && !showOnboarding { Task { await store.refresh() } } }
     }
@@ -96,6 +109,8 @@ struct RootView: View {
 struct LabScroll<Content: View>: View {
     let kicker: String
     let title: String
+    /// Settings always shows its content; data tabs swap in loading / empty states.
+    var showsStates = true
     @ViewBuilder var content: Content
     @Environment(LabStore.self) private var store
 
@@ -104,9 +119,17 @@ struct LabScroll<Content: View>: View {
             VStack(alignment: .leading, spacing: 16) {
                 HStack(alignment: .bottom) {
                     ScreenTitle(kicker: kicker, title: title)
-                    if store.loading { ProgressView().tint(Lab.watch) }
+                    SyncPill()
                 }
-                content
+                if showsStates && !store.hasAnyData {
+                    if store.loading || (!store.loadedOnce && store.healthAsked) {
+                        SkeletonStack()
+                    } else {
+                        LabEmptyState.forStore(store)
+                    }
+                } else {
+                    content
+                }
             }
             .padding(.horizontal, 16)
             .padding(.top, 8)

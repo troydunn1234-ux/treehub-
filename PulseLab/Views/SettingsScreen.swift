@@ -7,7 +7,7 @@ struct SettingsScreen: View {
     @State private var exportURL: URL?
 
     var body: some View {
-        LabScroll(kicker: "Calibration", title: "Settings") {
+        LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
             health
             LabPanel(tint: Lab.whoop) {
                 WhoopConnectView(accent: Lab.whoop)

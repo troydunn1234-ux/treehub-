@@ -103,6 +103,8 @@ struct SleepScreen: View {
                     .chartXAxis { LabAxis.xDays }
                     .chartYAxis { LabAxis.y }
                     .frame(height: 200)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(source.name) sleep stages for \(list.count) nights, averaging \(fmtHM(Stats.mean(list.map(\.asleepMin)))) asleep.")
                 }
             }
         }
@@ -111,18 +113,30 @@ struct SleepScreen: View {
     private var averages: some View {
         LabPanel(tint: Lab.whoop) {
             VStack(alignment: .leading, spacing: 14) {
-                SectionTag("\(days)-night average")
+                HStack {
+                    SectionTag("\(days)-night average")
+                    Spacer()
+                    Button { store.detail = .sleep } label: {
+                        Text("TREND").font(Lab.label(9)).foregroundStyle(Lab.watch)
+                    }
+                    .accessibilityLabel("Open sleep trend")
+                }
                 VSRow(title: "Asleep", unit: "h", watch: avg(.watch) { $0.asleepMin / 60 }, whoop: avg(.whoop) { $0.asleepMin / 60 }, decimals: 1)
                 Divider().overlay(Lab.line)
                 VSRow(title: "Deep", unit: "min", watch: avg(.watch) { $0.deepMin }, whoop: avg(.whoop) { $0.deepMin })
                 Divider().overlay(Lab.line)
                 VSRow(title: "REM", unit: "min", watch: avg(.watch) { $0.remMin }, whoop: avg(.whoop) { $0.remMin })
                 Divider().overlay(Lab.line)
-                VSRow(title: "Efficiency", unit: "%", watch: avg(.watch) { $0.efficiency ?? 0 }, whoop: avg(.whoop) { $0.efficiency ?? 0 })
+                VSRow(title: "Efficiency", unit: "%", watch: effAvg(.watch), whoop: effAvg(.whoop))
                 Text("Trackers split light vs deep sleep differently, so deep and REM minutes rarely match exactly. Watch the trend, not the single night.")
                     .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
             }
         }
+    }
+
+    /// Nights without an in-bed/awake record have no efficiency; leave them out instead of counting them as 0%.
+    private func effAvg(_ s: Source) -> Double? {
+        Stats.mean(nights.filter { $0.source == s && $0.asleepMin > 0 }.compactMap(\.efficiency))
     }
 
     private func avg(_ s: Source, _ f: (SleepNight) -> Double) -> Double? {
