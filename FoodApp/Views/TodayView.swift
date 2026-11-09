@@ -8,6 +8,7 @@ struct TodayView: View {
     @State private var day = Day.key(Date())
     @State private var adding = false
     @State private var editingGoal = false
+    @State private var settingsDetent: PresentationDetent = .height(320)
     @State private var dragX: CGFloat = 0
     @State private var snapping = false
     @State private var celebrate = 0
@@ -44,7 +45,7 @@ struct TodayView: View {
                     header
                     CalorieRing(eaten: ringNet && active > 0 ? eaten - active : eaten, goal: dayGoal,
                                 subtitle: ringNet && active > 0 ? "\(Int(eaten)) eaten − \(Int(active)) burned" : nil)
-                        .onTapGesture { editingGoal = true }
+                        .onTapGesture { settingsDetent = .height(320); editingGoal = true }
                         .accessibilityHint("Double tap to change your daily goal")
                     if isToday {
                         if health.showing {
@@ -88,7 +89,9 @@ struct TodayView: View {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { demoSnap = DemoSnap.result }
             }
         }
-        .sheet(isPresented: $editingGoal) { GoalSheet(goal: $goal).presentationDetents([.height(320), .large]) }
+        .sheet(isPresented: $editingGoal, onDismiss: { settingsDetent = .height(320) }) {
+            GoalSheet(goal: $goal).presentationDetents([.height(320), .large], selection: $settingsDetent)
+        }
         .preferredColorScheme(.dark)
     }
 
@@ -115,6 +118,13 @@ struct TodayView: View {
                 }
                 .accessibilityLabel("\(streak) day streak")
             }
+            Button { settingsDetent = .large; editingGoal = true } label: {
+                Image(systemName: "gearshape.fill").font(.system(size: 17, weight: .bold))
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Color.white.opacity(0.08)))
+            }
+            .padding(.leading, 10)
+            .accessibilityLabel("Settings: goal, Apple Health, Smart photo")
         }
         .foregroundStyle(Ember.cream)
         .padding(.top, 6)

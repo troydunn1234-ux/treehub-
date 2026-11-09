@@ -53,6 +53,10 @@ struct SnapResultSheet: View {
                     Label(note, systemImage: result.ai ? "text.bubble" : "wifi.exclamationmark")
                         .font(Ember.font(12, .semibold)).foregroundStyle(Ember.dim)
                 }
+                if !result.ai && !FoodAI.hasKey && result.mode == .meal {
+                    Label("Quick guess on your phone. For AI that sizes each item, tap ⚙︎ on Today → Smart photo.", systemImage: "sparkles")
+                        .font(Ember.font(12, .semibold)).foregroundStyle(Ember.orange)
+                }
                 if plate.isEmpty {
                     Text("Couldn't tell what that is. Add what's on your plate:")
                         .font(Ember.font(17, .heavy)).foregroundStyle(Ember.cream)
