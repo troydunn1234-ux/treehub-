@@ -1,0 +1,37 @@
+name: StillPoint Build
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15-intel
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Select Xcode and check the watchOS SDK
+        run: |
+          XCODE=$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)
+          sudo xcode-select -s "$XCODE"
+          xcodebuild -version
+          xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          for app in FoodBook QuestApp; do
+            [ -f "WebApps/$app/seed.json" ] || echo '{}' > "WebApps/$app/seed.json"
+          done
+          xcodegen generate
+
+      - name: Build StillPoint and its Watch companion
+        run: |
+          xcodebuild build \
+            -project TreeHub.xcodeproj \
+            -scheme StillPoint \
+            -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug \
+            CODE_SIGNING_ALLOWED=NO
