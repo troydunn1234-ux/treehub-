@@ -5,6 +5,10 @@ on:
     branches: [main]
     paths-ignore: ['**.md']
   workflow_dispatch:
+    inputs:
+      schemes:
+        description: Space-separated schemes to build (blank = all)
+        default: ''
 
 permissions:
   contents: write
@@ -35,7 +39,25 @@ jobs:
       - name: Build both apps for iOS Simulator (no signing)
         run: |
           set -o pipefail
-          for SCHEME in Rootbound Roamr FoodBook NatalOrbit RideQuest Clicker PulseLab StillPoint; do
+          ALL="Rootbound Roamr FoodBook NatalOrbit RideQuest Clicker PulseLab StillPoint"
+          PICK="${{ github.event.inputs.schemes }}"
+          if [ -z "$PICK" ] && [ "${{ github.event_name }}" = "push" ]; then
+            # Only build the apps touched by this push (GitHub kills macOS jobs at ~15 min).
+            CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null || echo all)
+            PICK=""
+            echo "$CHANGED" | grep -qE '^(TreeHub|RootboundTests)/|^Shared/' && PICK="$PICK Rootbound"
+            echo "$CHANGED" | grep -qE '^(TrackApp|RoamrWatch)/|^Shared/' && PICK="$PICK Roamr"
+            echo "$CHANGED" | grep -qE '^(FoodApp|FoodBookWatch)/' && PICK="$PICK FoodBook"
+            echo "$CHANGED" | grep -qE '^WebApps/(Shell|NatalOrbit)/' && PICK="$PICK NatalOrbit"
+            echo "$CHANGED" | grep -qE '^WebApps/(Shell|QuestApp)/' && PICK="$PICK RideQuest"
+            echo "$CHANGED" | grep -qE '^(TVRemote|ClankerrWatch)/' && PICK="$PICK Clicker"
+            echo "$CHANGED" | grep -qE '^PulseLab/' && PICK="$PICK PulseLab"
+            echo "$CHANGED" | grep -qE '^(StillPoint|StillPointWatch)/' && PICK="$PICK StillPoint"
+            echo "$CHANGED" | grep -qE '^project.yml|^.github/|^all$' && PICK="$ALL"
+          fi
+          [ -z "$PICK" ] && PICK="$ALL"
+          echo "Building: $PICK"
+          for SCHEME in $PICK; do
             echo "=== $SCHEME ==="
             xcodebuild build \
               -project TreeHub.xcodeproj \
@@ -46,7 +68,8 @@ jobs:
               CODE_SIGNING_ALLOWED=NO \
               | tee -a build.log | grep -E "error:|warning: |BUILD (SUCCEEDED|FAILED)" || true
           done
-          [ "$(grep -c 'BUILD SUCCEEDED' build.log)" -eq 8 ]
+          WANT=$(echo $PICK | wc -w | tr -d ' ')
+          [ "$(grep -c 'BUILD SUCCEEDED' build.log)" -eq "$WANT" ]
 
       - name: Show errors
         if: failure()
