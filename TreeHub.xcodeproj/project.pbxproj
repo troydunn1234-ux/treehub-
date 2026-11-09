@@ -29,6 +29,7 @@
 		1FA66182A2E82790776C71F3 /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		2028F8406ABA834033BB2236 /* SnapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5282B10CF508CE08565DA73 /* SnapView.swift */; };
+		216DA2C8A550981259403AE5 /* DuelChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672F2D6098BF33CFC476062C /* DuelChart.swift */; };
 		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
 		29467D912B072530A65EEF83 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		2A5630A00F43CE3CA00038B1 /* WhoopModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 29B382470FC9580A96CDB365 /* WhoopModels.swift */; };
@@ -106,6 +107,7 @@
 		8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
 		8F0D4E1477121671784B6FFB /* DriveDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84020FAF6BBD9C477A647FFD /* DriveDetector.swift */; };
 		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		91C909DBC35A2DEBEFEA2C60 /* NightSky.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD15365FDC5014307C125C /* NightSky.swift */; };
 		9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE36C7584CE358A1400B2C5 /* Assets.xcassets */; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		965C96BD74C27CFBF48A9A00 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
@@ -113,6 +115,7 @@
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		A3133445F911E31569ECED60 /* Supplement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46113FE710889BDCB1BC002 /* Supplement.swift */; };
+		A4478CB880C4B9551EB11560 /* FightViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F39B4CE24618D01D0EC8BB /* FightViews.swift */; };
 		A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
 		A9DBD03062265E21DD18E839 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A186561ACF78467CEB0D6F58 /* SettingsScreen.swift */; };
 		AA6053336E838465C7AFBD0D /* ClankerrWatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F03C5F359F200B03FE2A5F /* ClankerrWatchBridge.swift */; };
@@ -156,6 +159,7 @@
 		D83E2FAD990E00783FF59E4D /* DriveEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */; };
 		D934B55D13476E521593D35E /* ClankerrWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = A28DDBC93021FD58B540B885 /* ClankerrWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		DA29BFCF877EA0EEF94A2E5A /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEEE19C6AEF9A9B6F1EE06AD /* OnboardingView.swift */; };
+		DAAF5AE18985EF7676B6FDBA /* Rivalry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116D3B6C50051F3A22CDB1C0 /* Rivalry.swift */; };
 		DAF31E6E973FCA23657571DB /* ActivityScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2961FC930B94333CCFB933A5 /* ActivityScreen.swift */; };
 		DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
 		DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
@@ -184,6 +188,7 @@
 		F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */; };
 		FB6357FCC3BC32008D7D2770 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */; };
 		FB90DA692EBD344592F2764D /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
+		FC273B748ADADC2A9961878C /* Dock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4918FC2F6D210C5907AFF2C5 /* Dock.swift */; };
 		FE65BC285F6F0C4A2B6DC347 /* FoodBookWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 0B43234A9F5073F9BE227887 /* FoodBookWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		FF30618CD569AF92BE3DF1E4 /* RoamrWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2C57C585284DA2C7DA4FBC35 /* RoamrWidgets.swift */; };
 /* End PBXBuildFile section */
@@ -318,6 +323,7 @@
 		0C18055774998E68B0A2D16D /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeHubApp.swift; sourceTree = "<group>"; };
 		0DD1ECF2E31333D7CF669198 /* PulseLab.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PulseLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		116D3B6C50051F3A22CDB1C0 /* Rivalry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rivalry.swift; sourceTree = "<group>"; };
 		1466841354823062CD97D858 /* TrackDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDemo.swift; sourceTree = "<group>"; };
 		1494B33D010A8083375A49B6 /* HeartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartScreen.swift; sourceTree = "<group>"; };
 		14EA827DC7590876A4C29524 /* RootboundWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RootboundWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -338,6 +344,7 @@
 		2F96E3000485DBDD5DB27D6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		30BBEF4A28F1394B9276CB9A /* HealthPull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthPull.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		32CD15365FDC5014307C125C /* NightSky.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightSky.swift; sourceTree = "<group>"; };
 		32DA9DFEEDD192CB3A30525C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		3D88A27861C5705606A776DF /* GTVIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVIdentity.swift; sourceTree = "<group>"; };
@@ -354,7 +361,9 @@
 		44F00360DF850821B3293EA2 /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
 		463C0E94D514A99089BCC322 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
+		46F39B4CE24618D01D0EC8BB /* FightViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightViews.swift; sourceTree = "<group>"; };
 		47680793EF666456AB107D20 /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
+		4918FC2F6D210C5907AFF2C5 /* Dock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dock.swift; sourceTree = "<group>"; };
 		4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSettingsView.swift; sourceTree = "<group>"; };
 		5119CE38DDFCF14659B1A83A /* SleepScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepScreen.swift; sourceTree = "<group>"; };
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -376,6 +385,7 @@
 		654224256546BBEC27F74485 /* Ember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ember.swift; sourceTree = "<group>"; };
 		6554FB137C7B3FFF343F602C /* TVBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBrand.swift; sourceTree = "<group>"; };
 		66BA8BF14F1F84113B27F6ED /* GTVProto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVProto.swift; sourceTree = "<group>"; };
+		672F2D6098BF33CFC476062C /* DuelChart.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DuelChart.swift; sourceTree = "<group>"; };
 		685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootboundWidgets.swift; sourceTree = "<group>"; };
 		68CA977CF56EAADE45A4D8DE /* WebScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebScreen.swift; sourceTree = "<group>"; };
 		69AECFA1A94F497D848E305C /* CompatibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityView.swift; sourceTree = "<group>"; };
@@ -771,7 +781,11 @@
 		96436F361C78AC62328BDC27 /* Design */ = {
 			isa = PBXGroup;
 			children = (
+				4918FC2F6D210C5907AFF2C5 /* Dock.swift */,
+				672F2D6098BF33CFC476062C /* DuelChart.swift */,
 				C7AA8CFD0F0A3339F71DE301 /* Lab.swift */,
+				32CD15365FDC5014307C125C /* NightSky.swift */,
+				116D3B6C50051F3A22CDB1C0 /* Rivalry.swift */,
 			);
 			path = Design;
 			sourceTree = "<group>";
@@ -926,6 +940,7 @@
 			children = (
 				2961FC930B94333CCFB933A5 /* ActivityScreen.swift */,
 				AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */,
+				46F39B4CE24618D01D0EC8BB /* FightViews.swift */,
 				1494B33D010A8083375A49B6 /* HeartScreen.swift */,
 				A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */,
 				EEEE19C6AEF9A9B6F1EE06AD /* OnboardingView.swift */,
@@ -1624,6 +1639,9 @@
 				C8872ADC80FB540A52407EB7 /* Compare.swift in Sources */,
 				6F36EE85A25B87E69D5B5040 /* CompareScreen.swift in Sources */,
 				03002C1C1C111C63091FAB89 /* DemoData.swift in Sources */,
+				FC273B748ADADC2A9961878C /* Dock.swift in Sources */,
+				216DA2C8A550981259403AE5 /* DuelChart.swift in Sources */,
+				A4478CB880C4B9551EB11560 /* FightViews.swift in Sources */,
 				D72E536D305A4D6135EC7F15 /* HealthPull.swift in Sources */,
 				7E76CFFE8FB521FF05D2AA21 /* HeartScreen.swift in Sources */,
 				0E978221744286F7C75D399D /* Insights.swift in Sources */,
@@ -1632,9 +1650,11 @@
 				5745960DF9162C73CD34E917 /* MetricDetailSheet.swift in Sources */,
 				2E74D537F45C1987DE9FC895 /* MetricKey.swift in Sources */,
 				ADCB5C71FDA1E0034F39EF03 /* Metrics.swift in Sources */,
+				91C909DBC35A2DEBEFEA2C60 /* NightSky.swift in Sources */,
 				DA29BFCF877EA0EEF94A2E5A /* OnboardingView.swift in Sources */,
 				BDFEE9365C64C4A18E6FBE88 /* Polish.swift in Sources */,
 				6212E6316D92D56F384ACC78 /* PulseLabApp.swift in Sources */,
+				DAAF5AE18985EF7676B6FDBA /* Rivalry.swift in Sources */,
 				A9DBD03062265E21DD18E839 /* SettingsScreen.swift in Sources */,
 				36D2D9DF633BB28EC536B8B0 /* ShareCard.swift in Sources */,
 				C26A278D203E844DF094C0BD /* SleepScreen.swift in Sources */,
