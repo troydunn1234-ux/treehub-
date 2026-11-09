@@ -89,11 +89,12 @@ struct BreathPattern: Codable, Hashable {
     var breathsPerMinute: Double { cycleLength > 0 ? 60 / cycleLength : 0 }
 
     /// "4 · 7 · 8" style summary.
-    var shortLabel: String {
-        [inhale, holdIn, exhale, holdOut].enumerated()
-            .filter { $0.offset == 0 || $0.offset == 2 || $0.element > 0 }
-            .map { Self.fmt($0.element) }
-            .joined(separator: " · ")
+       var shortLabel: String {
+        var parts = [Self.fmt(inhale)]
+        if holdIn > 0 { parts.append(Self.fmt(holdIn)) }
+        parts.append(Self.fmt(exhale))
+        if holdOut > 0 { parts.append(Self.fmt(holdOut)) }
+        return parts.joined(separator: " · ")
     }
 
     static func fmt(_ v: Double) -> String {
