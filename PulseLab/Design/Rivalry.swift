@@ -187,7 +187,7 @@ struct HeroBackdrop: View {
             }
             Canvas { ctx, size in
                 // Fixed speckle "noise".
-                var rng = SeededRandom(seed: 7)
+                var rng = DecoRandom(seed: 7)
                 for _ in 0..<160 {
                     let x = rng.next() * size.width, y = rng.next() * size.height
                     ctx.fill(Path(CGRect(x: x, y: y, width: 1, height: 1)), with: .color(Color.white.opacity(0.05 + rng.next() * 0.06)))
@@ -225,7 +225,7 @@ enum GridFloor {
 }
 
 /// Tiny deterministic random generator so decorative noise doesn't flicker between redraws.
-struct SeededRandom {
+struct DecoRandom {
     private var state: UInt64
     init(seed: UInt64) { state = seed &* 0x9E3779B97F4A7C15 | 1 }
     mutating func next() -> CGFloat {

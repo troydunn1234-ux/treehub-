@@ -90,7 +90,7 @@ struct NightSkyHypnogram: View {
     }
 
     private func drawStars(_ ctx: GraphicsContext, _ size: CGSize, t: TimeInterval) {
-        var rng = SeededRandom(seed: 42)
+        var rng = DecoRandom(seed: 42)
         for i in 0..<46 {
             let px = rng.next() * size.width, py = rng.next() * size.height * 0.85
             let base = 0.25 + rng.next() * 0.5
