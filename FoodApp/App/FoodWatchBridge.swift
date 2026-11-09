@@ -91,8 +91,12 @@ final class FoodWatchBridge: NSObject {
             last = d
         }
 
-        let goal = UserDefaults.standard.object(forKey: "goal") as? Double ?? 2200
-        var state: [String: Any] = ["day": today, "cal": total(\.cal), "goal": goal,
+        // Burned today from Apple Health (Whoop + Apple Watch); the goal grows by the eat-back share you chose.
+        let health = FoodHealth.shared
+        let burn = health.showing ? health.active : 0
+        let eatBack = Double(UserDefaults.standard.integer(forKey: "eatBackPct"))
+        let goal = (UserDefaults.standard.object(forKey: "goal") as? Double ?? 2200) + burn * eatBack / 100
+        var state: [String: Any] = ["day": today, "cal": total(\.cal), "goal": goal, "burn": burn,
                                     "p": total(\.protein), "c": total(\.carbs), "f": total(\.fat), "caf": total(\.caffeine),
                                     "quick": quick, "supps": suppList]
         if let last { state["last"] = last }

@@ -12,6 +12,8 @@ struct FoodBookApp: App {
     init() {
         // Apple Watch: today's numbers out, quick logs and check-offs in.
         FoodWatchBridge.shared.attach(container: container)
+        // Apple Health (Whoop + Apple Watch arrive through Health): meals out, burned calories in.
+        FoodHealth.shared.attach(container: container)
     }
 
     var body: some Scene {

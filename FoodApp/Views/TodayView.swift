@@ -12,9 +12,18 @@ struct TodayView: View {
     @State private var snapping = false
     @State private var celebrate = 0
     @State private var demoSnap: SnapResult?
+    @State private var health = FoodHealth.shared
+    @AppStorage("eatBackPct") private var eatBack: Int = 0
+    @AppStorage("ringNet") private var ringNet = false
+    @Environment(\.scenePhase) private var phase
 
     private var entries: [FoodEntry] { all.filter { $0.day == day } }
     private var eaten: Double { entries.reduce(0) { $0 + $1.cal * $1.servings } }
+    private var isToday: Bool { day == Day.key(Date()) }
+    /// Burned numbers only make sense for today.
+    private var active: Double { isToday && health.showing ? health.active : 0 }
+    /// Goal plus the share of active calories you chose to eat back.
+    private var dayGoal: Double { goal + active * Double(eatBack) / 100 }
     private func total(_ k: KeyPath<FoodEntry, Double>) -> Double { entries.reduce(0) { $0 + $1[keyPath: k] * $1.servings } }
 
     /// Days in a row (ending today or yesterday) with something logged.
@@ -33,9 +42,25 @@ struct TodayView: View {
             ScrollView {
                 VStack(spacing: 22) {
                     header
-                    CalorieRing(eaten: eaten, goal: goal)
+                    CalorieRing(eaten: ringNet && active > 0 ? eaten - active : eaten, goal: dayGoal,
+                                subtitle: ringNet && active > 0 ? "\(Int(eaten)) eaten − \(Int(active)) burned" : nil)
                         .onTapGesture { editingGoal = true }
                         .accessibilityHint("Double tap to change your daily goal")
+                    if isToday {
+                        if health.showing {
+                            BurnedStrip(health: health, net: $ringNet, eatBack: eatBack)
+                        } else if health.available {
+                            Button { Task { await health.connect() } } label: {
+                                Label("Sync with Apple Health", systemImage: "heart.fill")
+                                    .font(Ember.font(14, .bold)).foregroundStyle(Ember.cream)
+                                    .padding(.horizontal, 16).padding(.vertical, 10)
+                                    .background(Ember.card, in: Capsule())
+                                    .overlay(Capsule().strokeBorder(Ember.line))
+                            }
+                            .buttonStyle(Squish())
+                            .accessibilityHint("Saves meals to Health and shows calories burned from Whoop and Apple Watch")
+                        }
+                    }
                     macros
                     ForEach(Meal.allCases) { meal in mealSection(meal) }
                     if entries.isEmpty { emptyState }
@@ -55,6 +80,8 @@ struct TodayView: View {
         .sheet(item: $demoSnap) { r in
             SnapResultSheet(result: r, day: day) { celebrate += 1 }.presentationDetents([.large])
         }
+        .task { await health.refreshBurned() }
+        .onChange(of: phase) { _, p in if p == .active { Task { await health.refreshBurned() } } }
         .onAppear {
             let args = ProcessInfo.processInfo.arguments
             if args.contains("-demo") && args.contains("-snap") && demoSnap == nil {
@@ -189,6 +216,7 @@ struct TodayView: View {
 struct CalorieRing: View {
     let eaten: Double
     let goal: Double
+    var subtitle: String? = nil
     @State private var shown: Double = 0
 
     private var left: Int { Int((goal - eaten).rounded()) }
@@ -216,7 +244,9 @@ struct CalorieRing: View {
                     .contentTransition(.numericText(value: Double(left)))
                 Text(left >= 0 ? "CALORIES LEFT" : "OVER GOAL").font(Ember.font(12, .heavy)).tracking(1.5)
                     .foregroundStyle(left >= 0 ? Ember.dim : Ember.pink)
-                Text("\(Int(eaten)) of \(Int(goal))").font(Ember.font(14, .bold)).foregroundStyle(Ember.dim).padding(.top, 4)
+                Text(subtitle ?? "\(Int(eaten)) of \(Int(goal))").font(Ember.font(subtitle == nil ? 14 : 12, .bold))
+                    .foregroundStyle(Ember.dim).padding(.top, 4)
+                    .lineLimit(1).minimumScaleFactor(0.7).frame(maxWidth: 180)
             }
         }
         .frame(width: 240, height: 240)
@@ -297,6 +327,7 @@ struct GoalSheet: View {
     @Binding var goal: Double
     @Environment(\.dismiss) private var dismiss
     var body: some View {
+        ScrollView {
         VStack(spacing: 18) {
             Text("Daily goal").font(Ember.font(22, .heavy)).foregroundStyle(Ember.cream)
             Text("\(Int(goal)) cal").font(.system(size: 48, weight: .black, design: .rounded)).foregroundStyle(Ember.fire)
@@ -304,9 +335,12 @@ struct GoalSheet: View {
             Slider(value: $goal, in: 1200...4500, step: 50).tint(Ember.orange)
                 .onChange(of: goal) { _, _ in UISelectionFeedbackGenerator().selectionChanged() }
             Button("Done") { dismiss() }.font(Ember.font(17, .bold)).foregroundStyle(Ember.orange)
-            SmartPhotoSettings().padding(.top, 24)
+            HealthSettings().padding(.top, 24)
+            SmartPhotoSettings().padding(.top, 8)
         }
         .padding(28)
+        }
+        .scrollIndicators(.hidden)
         .frame(maxHeight: .infinity, alignment: .top)
         .presentationBackground(Ember.bg)
         .animation(.snappy, value: goal)

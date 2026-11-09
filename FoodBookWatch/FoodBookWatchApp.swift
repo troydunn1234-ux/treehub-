@@ -36,6 +36,7 @@ struct FoodState: Equatable {
     struct Supp: Identifiable, Equatable { var id: String; var name: String; var dose: String; var emoji: String; var time: String; var taken: Bool }
 
     var cal: Double = 0, goal: Double = 2200, p: Double = 0, c: Double = 0, f: Double = 0
+    var burn: Double = 0
     var quick: [Quick] = []
     var supps: [Supp] = []
     var last: Last?
@@ -45,6 +46,7 @@ struct FoodState: Equatable {
         cal = d["cal"] as? Double ?? 0
         goal = max(1, d["goal"] as? Double ?? 2200)
         p = d["p"] as? Double ?? 0; c = d["c"] as? Double ?? 0; f = d["f"] as? Double ?? 0
+        burn = d["burn"] as? Double ?? 0
         quick = (d["quick"] as? [[String: Any]] ?? []).map {
             Quick(id: $0["id"] as? String ?? "", name: $0["name"] as? String ?? "", cal: $0["cal"] as? Double ?? 0,
                   thumb: $0["thumb"] as? Data)
@@ -126,7 +128,7 @@ final class FoodLink: NSObject {
 
     static let demoState: FoodState = {
         var s = FoodState()
-        s.cal = 1_340; s.goal = 2_200; s.p = 96; s.c = 140; s.f = 44
+        s.cal = 1_340; s.goal = 2_200; s.p = 96; s.c = 140; s.f = 44; s.burn = 540
         s.last = .init(name: "Chicken burrito bowl", cal: 680, thumb: nil, at: Date())
         s.quick = [.init(id: "1", name: "Iced latte", cal: 190), .init(id: "2", name: "Chicken burrito bowl", cal: 680),
                    .init(id: "3", name: "Protein shake", cal: 160), .init(id: "4", name: "Banana", cal: 105)]
@@ -197,11 +199,16 @@ struct TodayPage: View {
                     Text(s.left < 0 ? "OVER" : "LEFT").font(FW.font(10, .heavy)).foregroundStyle(.secondary)
                 }
             }
-            .frame(width: s.last == nil ? 108 : 94, height: s.last == nil ? 108 : 94)
+            .frame(width: ringSide(s), height: ringSide(s))
             HStack(spacing: 6) {
                 macro("P", s.p, FW.protein)
                 macro("C", s.c, FW.carbs)
                 macro("F", s.f, FW.fat)
+            }
+            if s.burn > 0 {
+                Label("\(Int(s.burn)) burned", systemImage: "flame.fill")
+                    .font(FW.font(10, .bold)).foregroundStyle(FW.orange).labelStyle(.titleAndIcon)
+                    .accessibilityLabel("\(Int(s.burn)) active calories burned today")
             }
             if let last = s.last {
                 HStack(spacing: 7) {
@@ -223,6 +230,11 @@ struct TodayPage: View {
         .navigationTitle { Text("\(Int(s.cal)) cal").font(FW.font(15, .heavy)).foregroundStyle(FW.orange) }
         .onAppear { link.refresh() }
         .accessibilityElement(children: .combine)
+    }
+
+    /// Shrink the ring as more rows (burned, just logged) share the screen.
+    private func ringSide(_ s: FoodState) -> CGFloat {
+        108 - (s.last == nil ? 0 : 14) - (s.burn > 0 ? 10 : 0)
     }
 
     private func macro(_ l: String, _ v: Double, _ c: Color) -> some View {

@@ -208,6 +208,11 @@ targets:
         copy:
           destination: productsDirectory
           subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
+    entitlements:
+      path: FoodApp/FoodBook.entitlements
+      properties:
+        com.apple.developer.healthkit: true
+        com.apple.developer.healthkit.access: []
     info:
       path: WebApps/FoodBook/Info.plist
       properties:
@@ -216,6 +221,8 @@ targets:
         CFBundleDisplayName: Food Book
         NSCameraUsageDescription: Snap your food and Food Book fills in the calories and macros.
         NSPhotoLibraryUsageDescription: Pick a food photo and Food Book fills in the calories and macros.
+        NSHealthShareUsageDescription: Food Book reads your active calories and workouts from Apple Health (including Whoop and Apple Watch) to show what you've burned.
+        NSHealthUpdateUsageDescription: Food Book saves the meals you log to Apple Health.
         UIRequiresFullScreen: true
         UILaunchScreen:
           UIColorName: LaunchBackground
