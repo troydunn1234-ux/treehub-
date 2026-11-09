@@ -23,7 +23,7 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Roamr reads the workouts and heart rate that your Garmin and Whoop save to Apple Health.</string>
+	<string>Roamr reads the workouts and heart rate that your Apple Watch and WHOOP save to Apple Health.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Roamr does not write to Apple Health; it only reads your workouts and heart data.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>

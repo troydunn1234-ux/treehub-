@@ -35,6 +35,8 @@
 	<false/>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Pulse Lab only reads your health data and never writes to Apple Health.</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

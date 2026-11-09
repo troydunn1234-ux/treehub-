@@ -25,7 +25,7 @@
 	<key>NSCameraUsageDescription</key>
 	<string>Rootbound uses the camera to snap your tree and your tree selfie.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Rootbound reads heart rate, breathing rate and mindful minutes that your Garmin and Whoop save to Apple Health.</string>
+	<string>Rootbound reads heart rate, breathing rate and mindful minutes that your Apple Watch and WHOOP save to Apple Health.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Rootbound does not write to Apple Health; it only reads your workouts and heart data.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
