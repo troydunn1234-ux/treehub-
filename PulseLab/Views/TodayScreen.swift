@@ -8,41 +8,17 @@ struct TodayScreen: View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
+            RivalryHero(rounds: Rivalry.rounds(store),
+                        watchBPM: store.today(.watch)?.rhr, whoopBPM: store.today(.whoop)?.rhr,
+                        readiness: store.readinessToday, recovery: store.recoveryToday,
+                        note: gaugeNote)
             if streak >= 2 { StreakChip(days: streak) }
-            gauges
             LabNotesCard(insights: notes)
             hero
             sleepDuel
             sparkCard
             ShareVSButton()
             if !store.whoopConnected { whoopNudge }
-        }
-    }
-
-    // Two gauges: WHOOP recovery vs Pulse Lab's Watch readiness.
-    private var gauges: some View {
-        LabPanel(tint: Lab.violet) {
-            VStack(spacing: 14) {
-                HStack {
-                    SectionTag("Ready check")
-                    Spacer()
-                    Text("VS").font(Lab.display(13)).foregroundStyle(Lab.faint)
-                }
-                HStack {
-                    VStack(spacing: 8) {
-                        GaugeRing(value: store.readinessToday, label: "Readiness", color: Lab.watch, size: 128)
-                        SourceChip(source: .watch)
-                    }
-                    .frame(maxWidth: .infinity)
-                    VStack(spacing: 8) {
-                        GaugeRing(value: store.recoveryToday, label: "Recovery", color: store.recoveryToday.map(Lab.band) ?? Lab.whoop, size: 128)
-                        SourceChip(source: .whoop)
-                    }
-                    .frame(maxWidth: .infinity)
-                }
-                Text(gaugeNote).font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(Lab.dim)
-                    .multilineTextAlignment(.center).frame(maxWidth: .infinity)
-            }
         }
     }
 
@@ -138,30 +114,24 @@ struct TodayScreen: View {
     private var sparkCard: some View {
         LabPanel(tint: Lab.whoop) {
             VStack(alignment: .leading, spacing: 10) {
-                SectionTag("Resting HR · 14 days")
-                Chart {
-                    ForEach(Source.allCases) { s in
-                        ForEach(store.days(s).recent(14).filter { $0.rhr != nil }) { d in
-                            LineMark(x: .value("Day", d.day, unit: .day), y: .value("bpm", d.rhr ?? 0))
-                                .foregroundStyle(by: .value("Source", s.name))
-                                .interpolationMethod(.catmullRom)
-                                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                        }
+                HStack {
+                    SectionTag("Resting HR · 14 days")
+                    Spacer()
+                    Button { store.detail = .rhr } label: {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.watch)
+                            .frame(width: 30, height: 30)
                     }
+                    .accessibilityLabel("Open resting heart rate details")
                 }
-                .chartForegroundStyleScale([Source.watch.name: Lab.watch, Source.whoop.name: Lab.whoop])
-                .chartLegend(.hidden)
-                .chartYScale(domain: .automatic(includesZero: false))
-                .chartXAxis(.hidden)
-                .chartYAxis { LabAxis.y }
-                .frame(height: 120)
-                .shadow(color: Lab.watch.opacity(0.25), radius: 6)
+                DuelChart(watch: spark(.watch), whoop: spark(.whoop), unit: "bpm", height: 130, showAverages: false)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel(rhrSummary)
             }
         }
-        .onTapGesture { store.detail = .rhr }
-        .accessibilityAddTraits(.isButton)
+    }
+
+    private func spark(_ s: Source) -> [DuelPoint] {
+        store.days(s).recent(14).compactMap { d in d.rhr.map { DuelPoint(day: d.day, value: $0, source: s) } }
     }
 
     private var rhrSummary: String {

@@ -66,33 +66,13 @@ struct MetricDetailSheet: View {
     private func chart(_ pts: [Point]) -> some View {
         LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                HStack {
-                    SourceChip(source: .watch)
-                    SourceChip(source: .whoop)
-                    Spacer()
-                    Text(metric.unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
-                }
+                DuelLegend()
                 if pts.isEmpty {
                     EmptyNote(text: "No \(metric.title.lowercased()) in the last \(days) days.")
                 } else {
-                    Chart(pts) { p in
-                        LineMark(x: .value("Day", p.day, unit: .day), y: .value(metric.unit, p.value))
-                            .foregroundStyle(by: .value("Source", p.source.name))
-                            .interpolationMethod(.catmullRom)
-                            .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                        if days <= 30 {
-                            PointMark(x: .value("Day", p.day, unit: .day), y: .value(metric.unit, p.value))
-                                .foregroundStyle(by: .value("Source", p.source.name))
-                                .symbolSize(18)
-                        }
-                    }
-                    .chartForegroundStyleScale([Source.watch.name: Lab.watch, Source.whoop.name: Lab.whoop])
-                    .chartLegend(.hidden)
-                    .chartYScale(domain: .automatic(includesZero: false))
-                    .chartXAxis { LabAxis.xDays }
-                    .chartYAxis { LabAxis.y }
-                    .frame(height: 220)
-                    .shadow(color: Lab.watch.opacity(0.25), radius: 6)
+                    DuelChart(watch: pts.filter { $0.source == .watch }.map { DuelPoint(day: $0.day, value: $0.value, source: .watch) },
+                              whoop: pts.filter { $0.source == .whoop }.map { DuelPoint(day: $0.day, value: $0.value, source: .whoop) },
+                              unit: metric.unit, decimals: metric.decimals, height: 240, showPoints: days <= 30)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(summary(pts))
                 }
@@ -134,7 +114,7 @@ struct MetricDetailSheet: View {
     private func agreementCard(_ a: Agreement) -> some View {
         LabPanel(tint: Lab.good) {
             HStack(spacing: 16) {
-                GaugeRing(value: a.score, label: "Agree", color: a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad, size: 92)
+                ArcGauge(value: a.score, label: "Agree", color: a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad, size: 92)
                 VStack(alignment: .leading, spacing: 6) {
                     Text(a.verdict).font(.system(size: 15, weight: .bold, design: .rounded)).foregroundStyle(Lab.text)
                     Text("\(a.n) \(metric.usesNights ? "nights" : "days") measured by both").font(Lab.mono(11)).foregroundStyle(Lab.dim)

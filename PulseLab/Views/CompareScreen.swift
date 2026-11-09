@@ -12,14 +12,22 @@ struct CompareScreen: View {
 
     var body: some View {
         let list = agreements
-        LabScroll(kicker: "Lab results", title: "Compare") {
+        LabScroll(kicker: "Lab results", title: "VS") {
+            VSSlam()
             RangePicker(days: $days)
             if list.allSatisfy({ $0.n == 0 }) {
                 noOverlap
             } else {
                 scoreboard(list)
-                if let a = list.first(where: { $0.metric == focus }) { detail(a) }
-                ForEach(list.filter { $0.n > 0 }) { a in row(a) }
+                ForEach(Array(list.filter { $0.n > 0 }.enumerated()), id: \.element.id) { i, a in
+                    FightRow(round: i + 1, agreement: a, winner: winner(a), selected: focus == a.metric) {
+                        UISelectionFeedbackGenerator().selectionChanged()
+                        withAnimation(.snappy) { focus = a.metric }
+                    }
+                    if focus == a.metric {
+                        detail(a).transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+                }
             }
             method
         }
@@ -55,64 +63,33 @@ struct CompareScreen: View {
         return (sw < sh ? .watch : .whoop, "STEADIER")
     }
 
-    /// Overall: how many metrics agree, and who reads higher where.
+    /// Overall: agreement gauge in the middle, rounds "won" (reads higher / steadier) on each side.
     private func scoreboard(_ list: [Agreement]) -> some View {
         let scored = list.filter { $0.n >= 3 }
         let overall = Stats.mean(scored.map(\.score))
-        let watchHigher = scored.filter { $0.higher == .watch }.map(\.metric)
-        let whoopHigher = scored.filter { $0.higher == .whoop }.map(\.metric)
+        let wins = scored.compactMap { winner($0)?.0 }
+        let w = wins.filter { $0 == .watch }.count, h = wins.filter { $0 == .whoop }.count
         return LabPanel(tint: Lab.violet) {
-            HStack(spacing: 18) {
-                GaugeRing(value: overall, label: "Agreement", color: overall.map { $0 >= 70 ? Lab.good : $0 >= 45 ? Lab.warn : Lab.bad } ?? Lab.violet, size: 116)
-                VStack(alignment: .leading, spacing: 10) {
-                    Text("\(scored.count) metrics measured by both").font(Lab.mono(11)).foregroundStyle(Lab.dim)
-                    higherLine(.watch, watchHigher)
-                    higherLine(.whoop, whoopHigher)
+            VStack(spacing: 12) {
+                HStack(alignment: .center) {
+                    tally(.watch, w)
+                    ArcGauge(value: overall, label: "Agree", color: overall.map { $0 >= 70 ? Lab.good : $0 >= 45 ? Lab.warn : Lab.bad } ?? Lab.violet, size: 116)
+                    tally(.whoop, h)
                 }
+                Text("\(scored.count) metrics measured by both · crowns go to the tracker that reads higher, or steadier when they match.")
+                    .font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(Lab.faint)
+                    .multilineTextAlignment(.center)
             }
         }
     }
 
-    private func higherLine(_ s: Source, _ metrics: [String]) -> some View {
-        VStack(alignment: .leading, spacing: 3) {
-            Text("\(s.short) READS HIGHER").font(Lab.label(9)).tracking(1.2).foregroundStyle(Lab.color(s))
-            Text(metrics.isEmpty ? "Nothing notable" : metrics.joined(separator: " · "))
-                .font(.system(size: 12, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
+    private func tally(_ s: Source, _ n: Int) -> some View {
+        VStack(spacing: 2) {
+            Text(s.short).font(Lab.label(10)).tracking(2).foregroundStyle(Lab.color(s))
+            CountUp(value: Double(n), size: 40, color: Lab.color(s))
+            Text("CROWNS").font(Lab.label(7)).tracking(1.4).foregroundStyle(Lab.faint)
         }
-    }
-
-    private func row(_ a: Agreement) -> some View {
-        Button {
-            UISelectionFeedbackGenerator().selectionChanged()
-            withAnimation(.snappy) { focus = a.metric }
-        } label: {
-            LabPanel(tint: focus == a.metric ? Lab.watch : Lab.violet) {
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack(spacing: 8) {
-                        Text(a.metric).font(Lab.display(17, .heavy)).foregroundStyle(Lab.text)
-                        if let w = winner(a) { CrownChip(source: w.0, label: w.1) }
-                        Spacer()
-                        Text(a.agreePercent.map { "\(Int($0))%" } ?? "––").font(Lab.mono(18, .heavy))
-                            .foregroundStyle(a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad)
-                    }
-                    GeometryReader { geo in
-                        ZStack(alignment: .leading) {
-                            Capsule().fill(Color.white.opacity(0.06))
-                            Capsule().fill(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing))
-                                .frame(width: geo.size.width * min(1, a.score / 100))
-                        }
-                    }
-                    .frame(height: 6)
-                    HStack(spacing: 12) {
-                        stat("WATCH AVG", a.meanWatch, a.unit, Lab.watch)
-                        stat("WHOOP AVG", a.meanWhoop, a.unit, Lab.whoop)
-                        stat(a.trendOnly ? "CORREL." : "AVG GAP", a.trendOnly ? a.correlation : a.bias, a.trendOnly ? "r" : a.unit, Lab.text)
-                    }
-                    Text(a.verdict + " · \(a.n) days").font(.system(size: 12, weight: .medium, design: .rounded)).foregroundStyle(Lab.dim)
-                }
-            }
-        }
-        .buttonStyle(.plain)
+        .frame(maxWidth: .infinity)
     }
 
     private func stat(_ l: String, _ v: Double?, _ u: String, _ c: Color) -> some View {
@@ -155,7 +132,7 @@ struct CompareScreen: View {
                     Chart {
                         RectangleMark(xStart: .value("lo", minMean(a)), xEnd: .value("hi", maxMean(a)),
                                       yStart: .value("l", b - 1.96 * sd), yEnd: .value("u", b + 1.96 * sd))
-                            .foregroundStyle(Lab.violet.opacity(0.12))
+                            .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.16), Lab.violet.opacity(0.10), Lab.whoop.opacity(0.16)], startPoint: .top, endPoint: .bottom))
                         RuleMark(y: .value("bias", b)).foregroundStyle(Lab.text.opacity(0.7))
                             .annotation(position: .top, alignment: .trailing) {
                                 Text("AVG GAP \(String(format: "%+.1f", b))").font(Lab.label(8)).foregroundStyle(Lab.dim)
@@ -163,8 +140,11 @@ struct CompareScreen: View {
                         RuleMark(y: .value("zero", 0)).foregroundStyle(Lab.faint).lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
                         ForEach(a.pairs) { p in
                             PointMark(x: .value("Average", (p.watch + p.whoop) / 2), y: .value("Watch − WHOOP", p.watch - p.whoop))
+                                .foregroundStyle((p.watch >= p.whoop ? Lab.watch : Lab.whoop).opacity(0.25))
+                                .symbolSize(160)
+                            PointMark(x: .value("Average", (p.watch + p.whoop) / 2), y: .value("Watch − WHOOP", p.watch - p.whoop))
                                 .foregroundStyle(p.watch >= p.whoop ? Lab.watch : Lab.whoop)
-                                .symbolSize(46)
+                                .symbolSize(40)
                         }
                     }
                     .chartXScale(domain: .automatic(includesZero: false))

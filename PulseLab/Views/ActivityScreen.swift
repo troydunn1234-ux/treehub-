@@ -6,7 +6,7 @@ struct ActivityScreen: View {
     @State private var days = 7
 
     var body: some View {
-        LabScroll(kicker: "Output", title: "Activity") {
+        LabScroll(kicker: "Output", title: "Moves") {
             todayTiles
             RangePicker(days: $days)
             energy

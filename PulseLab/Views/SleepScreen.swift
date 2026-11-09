@@ -6,14 +6,7 @@ struct SleepScreen: View {
     @State private var days = 7
     @State private var source: Source = .watch
 
-    private func stageColor(_ s: SleepStage) -> Color {
-        switch s {
-        case .awake: Color(red: 1, green: 0.42, blue: 0.42)
-        case .rem: Lab.violet
-        case .core: Lab.watch.opacity(0.75)
-        case .deep: Color(red: 0.16, green: 0.36, blue: 1)
-        }
-    }
+    private func stageColor(_ s: SleepStage) -> Color { NightSkyHypnogram.color(s) }
 
     var body: some View {
         LabScroll(kicker: "Night shift", title: "Sleep") {
@@ -40,30 +33,7 @@ struct SleepScreen: View {
                 if store.hypnogram.isEmpty {
                     EmptyNote(text: "Wear your Apple Watch to bed with Sleep turned on to see stages here.")
                 } else {
-                    Chart(store.hypnogram) { seg in
-                        RectangleMark(xStart: .value("Start", seg.start), xEnd: .value("End", seg.end),
-                                      yStart: .value("Lo", Double(seg.stage.level) - 0.38), yEnd: .value("Hi", Double(seg.stage.level) + 0.38))
-                            .foregroundStyle(stageColor(seg.stage))
-                            .cornerRadius(3)
-                    }
-                    .chartYScale(domain: -0.6...3.6)
-                    .chartYAxis {
-                        AxisMarks(values: [0, 1, 2, 3]) { v in
-                            AxisValueLabel {
-                                let l = v.as(Int.self) ?? 0
-                                Text(SleepStage.allCases.first { $0.level == l }?.title.uppercased() ?? "")
-                                    .font(Lab.label(8)).foregroundStyle(Lab.faint)
-                            }
-                        }
-                    }
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 5)) { _ in
-                            AxisGridLine().foregroundStyle(Lab.line)
-                            AxisValueLabel(format: .dateTime.hour()).foregroundStyle(Lab.faint).font(Lab.mono(9, .medium))
-                        }
-                    }
-                    .frame(height: 150)
-                    .shadow(color: Lab.violet.opacity(0.4), radius: 8)
+                    NightSkyHypnogram(segments: store.hypnogram)
                 }
             }
         }
@@ -90,13 +60,16 @@ struct SleepScreen: View {
                             ForEach([SleepStage.deep, .core, .rem, .awake]) { st in
                                 BarMark(x: .value("Night", n.night, unit: .day), y: .value("Hours", n.minutes(st) / 60))
                                     .foregroundStyle(by: .value("Stage", st.title))
-                                    .cornerRadius(2)
+                                    .cornerRadius(st == .awake ? 5 : 1)
                             }
                         }
                         RuleMark(y: .value("Goal", 8))
-                            .foregroundStyle(Lab.faint)
+                            .foregroundStyle(Lab.warn.opacity(0.18))
+                            .lineStyle(StrokeStyle(lineWidth: 6))
+                        RuleMark(y: .value("Goal", 8))
+                            .foregroundStyle(Lab.warn.opacity(0.8))
                             .lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                            .annotation(position: .top, alignment: .trailing) { Text("8H").font(Lab.label(8)).foregroundStyle(Lab.faint) }
+                            .annotation(position: .top, alignment: .trailing) { Text("8H GOAL").font(Lab.label(8)).foregroundStyle(Lab.warn) }
                     }
                     .chartForegroundStyleScale(["Deep": stageColor(.deep), "Light": stageColor(.core), "REM": stageColor(.rem), "Awake": stageColor(.awake)])
                     .chartLegend(position: .bottom, spacing: 8)

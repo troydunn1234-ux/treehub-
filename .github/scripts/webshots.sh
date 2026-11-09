@@ -106,12 +106,12 @@ if [ -d "$APP" ]; then
   if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.clicker; then echo "OK    clicker-setup"; else echo "CRASH clicker-setup"; FAIL=1; fi
 fi
 
-# Pulse Lab in demo mode (fake Apple Health + WHOOP data): Today, Sleep, Compare.
+# Pulse Lab in demo mode (fake Apple Health + WHOOP data): Today, Sleep, Heart, Moves, VS.
 APP=build/Build/Products/Debug-iphonesimulator/PulseLab.app
 booted
 if [ -d "$APP" ]; then
   xcrun simctl install "$UDID" "$APP"
-  for T in today sleep heart compare; do
+  for T in today sleep heart moves vs; do
     xcrun simctl terminate "$UDID" com.troydunn.pulselab 2>/dev/null || true
     xcrun simctl launch "$UDID" com.troydunn.pulselab -demo -tab $T > /dev/null; sleep 5
     xcrun simctl io "$UDID" screenshot "shots/pulse-$T.png" > /dev/null 2>&1

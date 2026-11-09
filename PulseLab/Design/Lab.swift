@@ -20,6 +20,12 @@ enum Lab {
     static func display(_ size: CGFloat, _ weight: Font.Weight = .black) -> Font { .system(size: size, weight: weight, design: .rounded) }
     static func mono(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: size, weight: weight, design: .monospaced) }
     static func label(_ size: CGFloat = 10) -> Font { .system(size: size, weight: .heavy, design: .monospaced) }
+    /// Big scoreboard numbers: heavy rounded, condensed, monospaced digits.
+    static func number(_ size: CGFloat, _ weight: Font.Weight = .heavy) -> Font {
+        .system(size: size, weight: weight, design: .rounded).width(.condensed).monospacedDigit()
+    }
+    /// Signature gradient: Watch cyan → violet → WHOOP amber.
+    static let duel = LinearGradient(colors: [watch, violet, whoop], startPoint: .leading, endPoint: .trailing)
 
     static func color(_ s: Source) -> Color { s == .watch ? watch : whoop }
 
@@ -80,10 +86,16 @@ struct LabPanel<Content: View>: View {
                     .fill(LinearGradient(colors: [Lab.panel.opacity(0.95), Lab.panel.opacity(0.75)], startPoint: .top, endPoint: .bottom))
             )
             .overlay(
+                // Inner highlight along the top edge, like light catching glass.
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(LinearGradient(colors: [tint.opacity(0.45), Color.white.opacity(0.06)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+                    .strokeBorder(LinearGradient(colors: [Color.white.opacity(0.10), .clear], startPoint: .top, endPoint: .center), lineWidth: 1)
+                    .padding(1)
             )
-            .shadow(color: tint.opacity(0.12), radius: 18, y: 6)
+            .overlay(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .strokeBorder(LinearGradient(colors: [tint.opacity(0.7), Color.white.opacity(0.05), tint.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
+            )
+            .shadow(color: tint.opacity(0.14), radius: 18, y: 6)
     }
 }
 
@@ -92,7 +104,30 @@ struct SectionTag: View {
     var color: Color = Lab.dim
     init(_ text: String, color: Color = Lab.dim) { self.text = text; self.color = color }
     var body: some View {
-        Text(text.uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
+        HStack(spacing: 7) {
+            LiveDot(color: color == Lab.dim ? Lab.watch : color, size: 5)
+            Text(text.uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
+        }
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// A tiny dot that softly pulses (still under Reduce Motion).
+struct LiveDot: View {
+    var color: Color = Lab.watch
+    var size: CGFloat = 6
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var on = false
+    var body: some View {
+        Circle().fill(color)
+            .frame(width: size, height: size)
+            .shadow(color: color.opacity(on ? 0.9 : 0.3), radius: on ? 5 : 2)
+            .opacity(on ? 1 : 0.55)
+            .onAppear {
+                guard !reduceMotion else { on = true; return }
+                withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) { on = true }
+            }
+            .accessibilityHidden(true)
     }
 }
 
@@ -106,7 +141,9 @@ struct ScreenTitle: View {
                 Circle().fill(Lab.whoop).frame(width: 6, height: 6)
                 Text(kicker.uppercased()).font(Lab.label(11)).tracking(2.6).foregroundStyle(Lab.dim)
             }
-            Text(title).font(Lab.display(34)).foregroundStyle(Lab.text)
+            Text(title).font(Lab.display(36)).foregroundStyle(Lab.text)
+                .shadow(color: Lab.violet.opacity(0.35), radius: 12)
+            Capsule().fill(Lab.duel).frame(width: 46, height: 3).opacity(0.9)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
@@ -147,10 +184,9 @@ struct CountUp: View {
                 Text("––")
             }
         }
-        .font(Lab.mono(size, .heavy))
+        .font(Lab.number(size * 1.12, .black))
         .foregroundStyle(color)
-        .shadow(color: color.opacity(0.45), radius: 8)
-        .monospacedDigit()
+        .shadow(color: color.opacity(0.5), radius: 9)
     }
 
     private func animate(to v: Double) {

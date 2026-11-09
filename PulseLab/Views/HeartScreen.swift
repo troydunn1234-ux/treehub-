@@ -33,8 +33,15 @@ struct HeartScreen: View {
                     SectionTag(title)
                     Spacer()
                     Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
-                    if metric != nil {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.watch)
+                    if let metric {
+                        Button {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            store.detail = metric
+                        } label: {
+                            Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.watch)
+                                .frame(width: 30, height: 30)
+                        }
+                        .accessibilityLabel("Open \(title.lowercased()) details")
                     }
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 18) {
@@ -45,47 +52,13 @@ struct HeartScreen: View {
                 if w.isEmpty && h.isEmpty {
                     EmptyNote(text: "No data in this range yet.")
                 } else {
-                    Chart {
-                        ForEach(Array(w.enumerated()), id: \.offset) { _, p in
-                            AreaMark(x: .value("Day", p.0, unit: .day), y: .value(unit, p.1), series: .value("S", "w-area"))
-                                .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.25), .clear], startPoint: .top, endPoint: .bottom))
-                                .interpolationMethod(.catmullRom)
-                            LineMark(x: .value("Day", p.0, unit: .day), y: .value(unit, p.1), series: .value("S", "Watch"))
-                                .foregroundStyle(Lab.watch)
-                                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                                .interpolationMethod(.catmullRom)
-                        }
-                        ForEach(Array(h.enumerated()), id: \.offset) { _, p in
-                            LineMark(x: .value("Day", p.0, unit: .day), y: .value(unit, p.1), series: .value("S", "WHOOP"))
-                                .foregroundStyle(Lab.whoop)
-                                .lineStyle(StrokeStyle(lineWidth: 2.5, lineCap: .round))
-                                .interpolationMethod(.catmullRom)
-                        }
-                        if let wAvg {
-                            RuleMark(y: .value("Avg", wAvg)).foregroundStyle(Lab.watch.opacity(0.35)).lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
-                        }
-                        if let hAvg {
-                            RuleMark(y: .value("Avg", hAvg)).foregroundStyle(Lab.whoop.opacity(0.35)).lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
-                        }
-                    }
-                    .chartYScale(domain: .automatic(includesZero: false))
-                    .chartXAxis { LabAxis.xDays }
-                    .chartYAxis { LabAxis.y }
-                    .frame(height: 170)
-                    .shadow(color: Lab.watch.opacity(0.3), radius: 6)
+                    DuelChart(watch: .from(w, .watch), whoop: .from(h, .whoop), unit: unit, decimals: decimals, height: 180)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(title) over \(days) days. Apple Watch average \(fmtA(wAvg, decimals, unit)), WHOOP average \(fmtA(hAvg, decimals, unit)).")
                 }
                 if let note { Text(note).font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint) }
             }
         }
-        .contentShape(Rectangle())
-        .onTapGesture {
-            guard let metric else { return }
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            store.detail = metric
-        }
-        .accessibilityAddTraits(metric != nil ? .isButton : [])
     }
 
     private func fmtA(_ v: Double?, _ d: Int, _ u: String) -> String {
