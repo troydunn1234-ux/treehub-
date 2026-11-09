@@ -16,6 +16,7 @@
 		0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
 		0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */; };
 		0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
+		0E978221744286F7C75D399D /* Insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47680793EF666456AB107D20 /* Insights.swift */; };
 		105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
 		10C349711E25FB05FCEFDCFA /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CA977CF56EAADE45A4D8DE /* WebScreen.swift */; };
 		1305E466AF8A4CA4155AAA79 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB1240C67112B2502AB76F1D /* DemoData.swift */; };
@@ -35,11 +36,13 @@
 		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
 		2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */; };
 		2D8BF8BA7E9B6AC1F80C7BA9 /* FoodBookWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A93A146F95A24090BFD1768 /* FoodBookWatchApp.swift */; };
+		2E74D537F45C1987DE9FC895 /* MetricKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0155BE8703899297CCFB1D44 /* MetricKey.swift */; };
 		2F1DA5BD1801B22EF757A989 /* WhoopAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E4F9AD0CA6F2DBDE1760ED /* WhoopAdapter.swift */; };
 		2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
 		33915995BD91B0966C5FDA38 /* RoamrWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 9688171361BB285C9680BE48 /* RoamrWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		34903B18BC206AE96DF01EB4 /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		3526B968FE781B917D7B88E8 /* LabStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DC1EBA4772527EB4B2D724 /* LabStore.swift */; };
+		36D2D9DF633BB28EC536B8B0 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */; };
 		38ED399CE64159D47A5C263C /* FoodAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B2A6670639240E7A7152A6 /* FoodAI.swift */; };
 		3A6C8E11BD2AA96AC7728B96 /* RokuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC350677FD1B20FA0A0874F /* RokuController.swift */; };
 		3CA071227539AF5947DEF5F7 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
@@ -57,6 +60,7 @@
 		52E2B93970342FD0E3A37C4C /* TVBrand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6554FB137C7B3FFF343F602C /* TVBrand.swift */; };
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
 		53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE617454CF624295615806D /* TVDiscovery.swift */; };
+		5745960DF9162C73CD34E917 /* MetricDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */; };
 		5843362A054EB4DED1466857 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7602D94C88BBCEBD16741BBC /* Assets.xcassets */; };
 		59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6338EB695CED8F5839461B32 /* SuppsView.swift */; };
 		5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
@@ -126,6 +130,7 @@
 		B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01750639F52088FDDAA89CB /* FoodEntry.swift */; };
 		BB054BC9F7175CD6F38639F3 /* vizio_apps.json in Resources */ = {isa = PBXBuildFile; fileRef = ACC631B71309791C55329B7D /* vizio_apps.json */; };
 		BB0805FC79DF1916168CCE9F /* RoamrWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */; };
+		BDFEE9365C64C4A18E6FBE88 /* Polish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD2C44AF205D8D728DC7D92 /* Polish.swift */; };
 		BF967698B37620A33C1C44F4 /* HealthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */; };
 		C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
 		C26A278D203E844DF094C0BD /* SleepScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5119CE38DDFCF14659B1A83A /* SleepScreen.swift */; };
@@ -301,6 +306,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		0155BE8703899297CCFB1D44 /* MetricKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricKey.swift; sourceTree = "<group>"; };
 		01A7383F3E50B876ECE6A78C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		01D854BA14681BFCF2190CE5 /* ClickerApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerApp.swift; sourceTree = "<group>"; };
 		01F345C9AD9E3A1079859D83 /* RoamrWatchBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchBridge.swift; sourceTree = "<group>"; };
@@ -348,6 +354,7 @@
 		44F00360DF850821B3293EA2 /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
 		463C0E94D514A99089BCC322 /* Activity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
+		47680793EF666456AB107D20 /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
 		4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSettingsView.swift; sourceTree = "<group>"; };
 		5119CE38DDFCF14659B1A83A /* SleepScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepScreen.swift; sourceTree = "<group>"; };
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -361,6 +368,7 @@
 		5A870D9A1F43A4D08DC2F855 /* NavViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavViews.swift; sourceTree = "<group>"; };
 		5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebShellApp.swift; sourceTree = "<group>"; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
+		5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
 		5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchApp.swift; sourceTree = "<group>"; };
 		5F5D7F6A26846A82824D69E1 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
 		6338EB695CED8F5839461B32 /* SuppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppsView.swift; sourceTree = "<group>"; };
@@ -373,6 +381,7 @@
 		69AECFA1A94F497D848E305C /* CompatibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityView.swift; sourceTree = "<group>"; };
 		6AB6F40618E7D146443B85E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScripts.swift; sourceTree = "<group>"; };
+		6BD2C44AF205D8D728DC7D92 /* Polish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polish.swift; sourceTree = "<group>"; };
 		6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViews.swift; sourceTree = "<group>"; };
 		6F5189A52DDC1654714EC861 /* TVSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSwitcher.swift; sourceTree = "<group>"; };
 		70DD3A650F0E6C1FCD0A1133 /* LGController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LGController.swift; sourceTree = "<group>"; };
@@ -413,6 +422,7 @@
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
 		A6D1895159EA264D0659FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A8941F8309AEBE4A083DE0DD /* BankSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankSync.swift; sourceTree = "<group>"; };
+		A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricDetailSheet.swift; sourceTree = "<group>"; };
 		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareScreen.swift; sourceTree = "<group>"; };
@@ -679,7 +689,9 @@
 				F30BF93D2329261FAE4B8293 /* Compare.swift */,
 				E601B018A945FF7D453D7BB5 /* DemoData.swift */,
 				30BBEF4A28F1394B9276CB9A /* HealthPull.swift */,
+				47680793EF666456AB107D20 /* Insights.swift */,
 				74DC1EBA4772527EB4B2D724 /* LabStore.swift */,
+				0155BE8703899297CCFB1D44 /* MetricKey.swift */,
 				E2CD4EAE449E445C94FC7058 /* Metrics.swift */,
 				C2E4F9AD0CA6F2DBDE1760ED /* WhoopAdapter.swift */,
 			);
@@ -915,8 +927,11 @@
 				2961FC930B94333CCFB933A5 /* ActivityScreen.swift */,
 				AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */,
 				1494B33D010A8083375A49B6 /* HeartScreen.swift */,
+				A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */,
 				EEEE19C6AEF9A9B6F1EE06AD /* OnboardingView.swift */,
+				6BD2C44AF205D8D728DC7D92 /* Polish.swift */,
 				A186561ACF78467CEB0D6F58 /* SettingsScreen.swift */,
+				5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */,
 				5119CE38DDFCF14659B1A83A /* SleepScreen.swift */,
 				B9AC6637F5427D56F37EE792 /* TodayScreen.swift */,
 			);
@@ -1611,12 +1626,17 @@
 				03002C1C1C111C63091FAB89 /* DemoData.swift in Sources */,
 				D72E536D305A4D6135EC7F15 /* HealthPull.swift in Sources */,
 				7E76CFFE8FB521FF05D2AA21 /* HeartScreen.swift in Sources */,
+				0E978221744286F7C75D399D /* Insights.swift in Sources */,
 				C60B8650E61089314E9F722A /* Lab.swift in Sources */,
 				3526B968FE781B917D7B88E8 /* LabStore.swift in Sources */,
+				5745960DF9162C73CD34E917 /* MetricDetailSheet.swift in Sources */,
+				2E74D537F45C1987DE9FC895 /* MetricKey.swift in Sources */,
 				ADCB5C71FDA1E0034F39EF03 /* Metrics.swift in Sources */,
 				DA29BFCF877EA0EEF94A2E5A /* OnboardingView.swift in Sources */,
+				BDFEE9365C64C4A18E6FBE88 /* Polish.swift in Sources */,
 				6212E6316D92D56F384ACC78 /* PulseLabApp.swift in Sources */,
 				A9DBD03062265E21DD18E839 /* SettingsScreen.swift in Sources */,
+				36D2D9DF633BB28EC536B8B0 /* ShareCard.swift in Sources */,
 				C26A278D203E844DF094C0BD /* SleepScreen.swift in Sources */,
 				96AA1437C7FC27B7E96B74E1 /* TodayScreen.swift in Sources */,
 				2F1DA5BD1801B22EF757A989 /* WhoopAdapter.swift in Sources */,
