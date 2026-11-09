@@ -26,7 +26,7 @@ struct SetupView: View {
                     .multilineTextAlignment(.center).frame(maxWidth: .infinity)
 
                 Button(action: begin) {
-                    Text("Begin")
+                    Text("Begin"
                         .font(SP.serif(18))
                         .foregroundStyle(Color.black.opacity(0.85))
                         .frame(maxWidth: .infinity).padding(.vertical, 10)
@@ -70,7 +70,37 @@ struct SetupView: View {
                                 Stepper("Hold \(BreathPattern.fmt(holdIn))s", value: $holdIn, in: 0...20, step: 0.5)
                                 Stepper("Out \(BreathPattern.fmt(exhale))s", value: $exhale, in: 1...16, step: 0.5)
                                 Stepper("Rest \(BreathPattern.fmt(holdOut))s", value: $holdOut, in: 0...20, step: 0.5)
-                            }
+                            }private struct WatchDisclosureGroup<Content: View>: View {
+    let title: String
+    let content: Content
+    @State private var expanded = false
+
+    init(_ title: String, @ViewBuilder content: () -> Content) {
+        self.title = title
+        self.content = content()
+    }
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Button {
+                withAnimation { expanded.toggle() }
+            } label: {
+                HStack {
+                    Text(title)
+                    Spacer()
+                    Image(systemName: expanded ? "chevron.down" : "chevron.right")
+                        .accessibilityHidden(true)
+                }
+            }
+            .accessibilityValue(expanded ? "Expanded" : "Collapsed")
+
+            if expanded {
+                content
+            }
+        }
+    }
+}
+                            
                             Picker("Length", selection: $prefs.settings.mode) {
                                 ForEach(SessionMode.allCases) { m in Text(m.label).tag(m) }
                             }
