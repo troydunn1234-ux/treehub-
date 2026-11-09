@@ -88,6 +88,7 @@
 		84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		87CCA73B8401912B96483744 /* BankSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8941F8309AEBE4A083DE0DD /* BankSync.swift */; };
 		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
+		8E36B0FD1CDAAD622490DED5 /* KeyboardBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D35136AAD84A17099192A /* KeyboardBar.swift */; };
 		8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
 		8F0D4E1477121671784B6FFB /* DriveDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84020FAF6BBD9C477A647FFD /* DriveDetector.swift */; };
 		903AF62A1F4A9360C426AD34 /* RoamrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -315,6 +316,7 @@
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
 		4092F9F19F8B0C343F2B3471 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		40ECC54940AA2F6838B4759D /* LaunchSplash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplash.swift; sourceTree = "<group>"; };
+		429D35136AAD84A17099192A /* KeyboardBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardBar.swift; sourceTree = "<group>"; };
 		4307BE1856AAD8B00961B3DF /* TreeFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeFacts.swift; sourceTree = "<group>"; };
 		444B042C895F841A544269AC /* SamsungController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SamsungController.swift; sourceTree = "<group>"; };
 		44F00360DF850821B3293EA2 /* RouteTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouteTracker.swift; sourceTree = "<group>"; };
@@ -794,6 +796,7 @@
 				9FA5CF9C647040BB4EC568E4 /* AppPicker.swift */,
 				9A56120F979883274950676C /* AppsView.swift */,
 				69AECFA1A94F497D848E305C /* CompatibilityView.swift */,
+				429D35136AAD84A17099192A /* KeyboardBar.swift */,
 				17C64D37B318F75453FE1CCF /* RemoteView.swift */,
 				C62D8F1DE137F76D14BFBA78 /* SetupView.swift */,
 				6F5189A52DDC1654714EC861 /* TVSwitcher.swift */,
@@ -1527,6 +1530,7 @@
 				6C649E02624AA526A50F78DC /* GTVLink.swift in Sources */,
 				768F3EBB4B9217E5FA0F2BDB /* GTVProto.swift in Sources */,
 				485B0E71DC6DAE61FD52E610 /* GoogleTVController.swift in Sources */,
+				8E36B0FD1CDAAD622490DED5 /* KeyboardBar.swift in Sources */,
 				B5A38F91BF4E6708EE8860B6 /* LGController.swift in Sources */,
 				AB06264988421B3AB01E26B9 /* Look.swift in Sources */,
 				04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */,
