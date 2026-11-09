@@ -112,6 +112,7 @@
 		B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = C01750639F52088FDDAA89CB /* FoodEntry.swift */; };
 		BB054BC9F7175CD6F38639F3 /* vizio_apps.json in Resources */ = {isa = PBXBuildFile; fileRef = ACC631B71309791C55329B7D /* vizio_apps.json */; };
 		BB0805FC79DF1916168CCE9F /* RoamrWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */; };
+		BF967698B37620A33C1C44F4 /* HealthViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */; };
 		C15A02B73CB0ABAA6EEF4713 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */; };
 		C437CC238D3E3E6FBF9C35F7 /* WebScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 68CA977CF56EAADE45A4D8DE /* WebScreen.swift */; };
 		C5808D4C5DE8FBD43020790C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 52E3D277EF6186E89CD7A080 /* Assets.xcassets */; };
@@ -121,6 +122,7 @@
 		CA227AEF0A3BF84D8AA37DE4 /* TrackHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */; };
 		CAED1284BA559F4B0C7CF9A8 /* seed.json in Resources */ = {isa = PBXBuildFile; fileRef = 80ACEC3C05F648903A54E16B /* seed.json */; };
 		CC51BC84ABDC12B49D256A53 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A6D1895159EA264D0659FAC0 /* Assets.xcassets */; };
+		CCA35AA3B8DADADFDFC8FFA1 /* FoodHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E5BAF54B89C7E3E6D948D3A /* FoodHealth.swift */; };
 		CD311C4159C7D9BB383C5476 /* BridgeScripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */; };
 		D04D349EB3E6F2233F141934 /* VizioController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE4084D298272631FD28332D /* VizioController.swift */; };
 		D351BF789B84FF07B0C7D443 /* SpeciesGuesser.swift in Sources */ = {isa = PBXBuildFile; fileRef = A292986DB816FF0C1B43154A /* SpeciesGuesser.swift */; };
@@ -295,6 +297,7 @@
 		17C64D37B318F75453FE1CCF /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
 		1C1E9F1FDB7C2DA8347EB134 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		1C829C76FB92D53E3E90E395 /* AppInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppInfo.swift; sourceTree = "<group>"; };
+		265F06FA38FB2C13111C3E50 /* FoodBook.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FoodBook.entitlements; sourceTree = "<group>"; };
 		29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = "pyvizio-LICENSE.txt"; sourceTree = "<group>"; };
 		2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppEditSheet.swift; sourceTree = "<group>"; };
 		2AAA987D1340DD344CF0E569 /* TreesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreesView.swift; sourceTree = "<group>"; };
@@ -306,6 +309,7 @@
 		32DA9DFEEDD192CB3A30525C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		3D88A27861C5705606A776DF /* GTVIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVIdentity.swift; sourceTree = "<group>"; };
+		3E5BAF54B89C7E3E6D948D3A /* FoodHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHealth.swift; sourceTree = "<group>"; };
 		3F1E693EC526B4FBB5F067C9 /* GTVLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVLink.swift; sourceTree = "<group>"; };
 		3FC8FA044D7503651EA2DC32 /* VizioClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizioClient.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
@@ -340,6 +344,7 @@
 		69AECFA1A94F497D848E305C /* CompatibilityView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatibilityView.swift; sourceTree = "<group>"; };
 		6AB6F40618E7D146443B85E7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B02F6B7D551953FBAF4CC3C /* BridgeScripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BridgeScripts.swift; sourceTree = "<group>"; };
+		6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViews.swift; sourceTree = "<group>"; };
 		6F5189A52DDC1654714EC861 /* TVSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSwitcher.swift; sourceTree = "<group>"; };
 		70DD3A650F0E6C1FCD0A1133 /* LGController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LGController.swift; sourceTree = "<group>"; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
@@ -558,10 +563,12 @@
 		521D4F5891FDA029AEDE57E2 /* FoodApp */ = {
 			isa = PBXGroup;
 			children = (
+				265F06FA38FB2C13111C3E50 /* FoodBook.entitlements */,
 				993876CA699192D7A485F601 /* App */,
 				44C46A53ECE9701E86E77CEA /* Design */,
 				05FC2B481E6166D2EEC1F906 /* Models */,
 				E0BC4BC2A20D509EE3AD0A5C /* Resources */,
+				D75C028E7839ADFCCDD14F8C /* Services */,
 				42ACC7696771E67669212B9A /* Snap */,
 				6004107CC2559F7F1759AD3D /* Views */,
 			);
@@ -598,6 +605,7 @@
 			isa = PBXGroup;
 			children = (
 				D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */,
+				6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */,
 				2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */,
 				6338EB695CED8F5839461B32 /* SuppsView.swift */,
 				58B86A832B9932FA9DF012C5 /* TodayView.swift */,
@@ -859,6 +867,14 @@
 				4092F9F19F8B0C343F2B3471 /* Info.plist */,
 			);
 			path = FoodBookWatch;
+			sourceTree = "<group>";
+		};
+		D75C028E7839ADFCCDD14F8C /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				3E5BAF54B89C7E3E6D948D3A /* FoodHealth.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		D7B1257FF6791C0143B3C1C6 /* PC */ = {
@@ -1467,8 +1483,10 @@
 				E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */,
 				B8735CD95C7823F27DE6AB65 /* FoodEntry.swift in Sources */,
 				F607084704345551F974EB1A /* FoodEstimator.swift in Sources */,
+				CCA35AA3B8DADADFDFC8FFA1 /* FoodHealth.swift in Sources */,
 				D6A539157CB944634005F61D /* FoodVision.swift in Sources */,
 				D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */,
+				BF967698B37620A33C1C44F4 /* HealthViews.swift in Sources */,
 				0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */,
 				2028F8406ABA834033BB2236 /* SnapView.swift in Sources */,
 				F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */,
@@ -1756,6 +1774,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FoodApp/FoodBook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = WebApps/FoodBook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -2120,6 +2139,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = FoodApp/FoodBook.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				INFOPLIST_FILE = WebApps/FoodBook/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (

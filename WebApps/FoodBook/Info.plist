@@ -24,6 +24,10 @@
 	<false/>
 	<key>NSCameraUsageDescription</key>
 	<string>Snap your food and Food Book fills in the calories and macros.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>Food Book reads your active calories and workouts from Apple Health (including Whoop and Apple Watch) to show what you've burned.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>Food Book saves the meals you log to Apple Health.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Pick a food photo and Food Book fills in the calories and macros.</string>
 	<key>UILaunchScreen</key>
