@@ -76,11 +76,22 @@ struct RootView: View {
                 .transition(.move(edge: .bottom).combined(with: .scale(scale: 0.85)).combined(with: .opacity))
                 .accessibilityElement(children: .combine)
             }
+            if store.typing && store.isPaired && tab != 2 {
+                // Tap outside to close; the bar rides up on top of the phone keyboard.
+                Color.black.opacity(0.35).ignoresSafeArea()
+                    .onTapGesture { store.closeKeyboard() }
+                    .transition(.opacity)
+                KeyboardBar()
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
         }
+        .animation(.spring(response: 0.42, dampingFraction: 0.86), value: store.typing)
+        .onChange(of: tab) { _, _ in if store.typing { store.closeKeyboard() } }
         .animation(.spring(response: 0.5, dampingFraction: 0.85), value: store.isPaired)
         .task(id: phase) {
             // Keep "now playing" fresh while the app is open.
             guard phase == .active else { return }
+            store.watchKeyboard()   // sockets may have dropped while the app was in the background
             while !Task.isCancelled {
                 await store.refresh()
                 try? await Task.sleep(nanoseconds: 4_000_000_000)

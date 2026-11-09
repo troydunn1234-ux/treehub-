@@ -310,6 +310,32 @@ final class GoogleTVController: TVController, @unchecked Sendable {
         try await withSession(tv) { s in try await s.typeText(text) }
     }
 
+    /// The IME batch edit sets the whole field, so the phone sends the full text each time.
+    var textMode: TVTextMode { .replace }
+
+    func backspace(_ tv: DiscoveredTV, count: Int) async throws {
+        for _ in 0..<max(0, count) { try await withSession(tv) { s in try await s.key(67) } }  // KEYCODE_DEL
+    }
+
+    func submitText(_ tv: DiscoveredTV) async throws {
+        try await withSession(tv) { s in try await s.key(66) }  // KEYCODE_ENTER
+    }
+
+    func openSearch(_ tv: DiscoveredTV) async throws {
+        try await withSession(tv) { s in try await s.key(84) }  // KEYCODE_SEARCH
+    }
+
+    func keyboardEvents(_ tv: DiscoveredTV) -> AsyncStream<Bool> {
+        AsyncStream { cont in
+            let job = Task { [weak self] in
+                guard let self, let s = try? await self.session(tv) else { cont.finish(); return }
+                let token = s.addKeyboardListener { open in cont.yield(open) }
+                cont.onTermination = { _ in s.removeKeyboardListener(token) }
+            }
+            _ = job
+        }
+    }
+
     // MARK: Pinned TV certificate (Keychain)
 
     private static func account(_ tv: DiscoveredTV) -> String { "tv.googleTV.\(tv.serial ?? tv.host)" }
@@ -359,6 +385,15 @@ final class GTVRemoteSession: @unchecked Sendable {
     private var fieldCounter: Int?
     private var _currentPackage: String?
     private var _isOn: Bool?
+    private var keyboardListeners: [UUID: (Bool) -> Void] = [:]
+
+    /// Called (on the link queue) with true when the TV opens a text field's keyboard.
+    func addKeyboardListener(_ f: @escaping (Bool) -> Void) -> UUID {
+        let id = UUID()
+        link.queue.async { [self] in keyboardListeners[id] = f }
+        return id
+    }
+    func removeKeyboardListener(_ id: UUID) { link.queue.async { [self] in keyboardListeners[id] = nil } }
 
     var currentPackage: String? { link.queue.sync { _currentPackage } }
     var isOn: Bool? { link.queue.sync { _isOn } }
@@ -402,8 +437,8 @@ final class GTVRemoteSession: @unchecked Sendable {
 
     func typeText(_ text: String) async throws {
         let counters = link.queue.sync { (imeCounter, fieldCounter) }
-        guard let ime = counters.0, let field = counters.1, !text.isEmpty else { throw TVControlError.unsupported }
-        let pos = text.count - 1
+        guard let ime = counters.0, let field = counters.1 else { throw TVControlError.unsupported }
+        let pos = max(0, text.count - 1)
         var w = PBWriter()
         w.message(21) { b in                       // remote_ime_batch_edit
             b.int(1, ime)
@@ -460,8 +495,9 @@ final class GTVRemoteSession: @unchecked Sendable {
             }
             if let status = ime.message(2), let c = status.int(1) { fieldCounter = c }
         }
-        if let show = msg.message(22), let field = show.message(2), let c = field.int(1) {
-            fieldCounter = c  // remote_ime_show_request
+        if let show = msg.message(22) {  // remote_ime_show_request: a text field wants the keyboard
+            if let field = show.message(2), let c = field.int(1) { fieldCounter = c }
+            keyboardListeners.values.forEach { $0(true) }
         }
         if let start = msg.message(40) {  // remote_start: TV turned on / off
             _isOn = (start.int(1) ?? 0) != 0

@@ -27,6 +27,7 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
     private var playing: [String: Bool] = [:]
     private var installed: [String: [String: String]] = [:]   // tv.id → name → appId
     private var pairingTasks: [String: URLSessionWebSocketTask] = [:]
+    private var keyboardWatchers: [String: [UUID: AsyncStream<Bool>.Continuation]] = [:]   // tv.id → listeners
 
     private func locked<T>(_ body: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return body() }
 
@@ -211,7 +212,12 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
         task.receive { [weak self] result in
             guard let self else { return }
             switch result {
-            case .success:
+            case .success(let msg):
+                // The TV announces its on-screen keyboard opening / closing on this channel.
+                if let obj = Self.parse(msg), let event = obj["event"] as? String {
+                    if event == "ms.remote.imeStart" { self.notifyKeyboard(id, true) }
+                    if event == "ms.remote.imeEnd" || event == "ms.remote.imeDone" { self.notifyKeyboard(id, false) }
+                }
                 self.drain(task, id: id)
             case .failure:
                 self.locked { if self.sockets[id] === task { self.sockets[id] = nil } }
@@ -381,8 +387,31 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
         let b64 = Data(text.utf8).base64EncodedString()
         try await send(tv, ["method": "ms.remote.control",
                             "params": ["Cmd": b64, "DataOfCmd": "base64", "TypeOfRemote": "SendInputString"]])
-        try? await send(tv, ["method": "ms.remote.control",
-                             "params": ["TypeOfRemote": "SendInputEnd"]])
+    }
+
+    /// SendInputString replaces what's in the TV's text box, so the phone sends the whole field each time.
+    var textMode: TVTextMode { .replace }
+
+    func submitText(_ tv: DiscoveredTV) async throws {
+        try await send(tv, ["method": "ms.remote.control", "params": ["TypeOfRemote": "SendInputEnd"]])
+    }
+
+    func keyboardEvents(_ tv: DiscoveredTV) -> AsyncStream<Bool> {
+        AsyncStream { cont in
+            let token = UUID()
+            locked { keyboardWatchers[tv.id, default: [:]][token] = cont }
+            cont.onTermination = { [weak self] _ in
+                guard let self else { return }
+                _ = self.locked { self.keyboardWatchers[tv.id]?[token] = nil }
+            }
+            // Make sure the channel is open so the TV's IME events reach us.
+            Task { [weak self] in _ = try? await self?.channel(tv) }
+        }
+    }
+
+    private func notifyKeyboard(_ id: String, _ open: Bool) {
+        let conts = locked { Array((keyboardWatchers[id] ?? [:]).values) }
+        conts.forEach { $0.yield(open) }
     }
 
     // MARK: Helpers

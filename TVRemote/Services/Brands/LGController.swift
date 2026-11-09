@@ -456,6 +456,32 @@ final class LGController: NSObject, TVController, URLSessionDelegate, @unchecked
         _ = try await request(tv, "ssap://com.webos.service.ime/insertText", ["text": text, "replace": 0])
     }
 
+    func backspace(_ tv: DiscoveredTV, count: Int) async throws {
+        guard count > 0 else { return }
+        _ = try await request(tv, "ssap://com.webos.service.ime/deleteCharacters", ["count": count])
+    }
+
+    func submitText(_ tv: DiscoveredTV) async throws {
+        _ = try await request(tv, "ssap://com.webos.service.ime/sendEnterKey")
+    }
+
+    /// webOS tells a registered remote keyboard when a text field gets or loses focus.
+    func keyboardEvents(_ tv: DiscoveredTV) -> AsyncStream<Bool> {
+        AsyncStream { cont in
+            let job = Task { [weak self] in
+                guard let self, let conn = try? await self.connection(tv) else { cont.finish(); return }
+                do {
+                    try await conn.subscribe("ssap://com.webos.service.ime/registerRemoteKeyboard") { payload in
+                        if let w = payload["currentWidget"] as? [String: Any], let focus = w["focus"] as? Bool {
+                            cont.yield(focus)
+                        }
+                    }
+                } catch { cont.finish() }
+            }
+            cont.onTermination = { _ in job.cancel() }
+        }
+    }
+
     // MARK: - Pairing manifest (the widely used LG remote-app manifest)
 
     private static let manifest: [String: Any] = [
@@ -496,6 +522,7 @@ private final class LGConnection: @unchecked Sendable {
     let task: URLSessionWebSocketTask
     private let lock = NSLock()
     private var pending: [String: CheckedContinuation<LGReply, Error>] = [:]
+    private var subscribers: [String: ([String: Any]) -> Void] = [:]
     private var counter = 0
     private var alive = true
     private var _pointer: LGPointer?
@@ -544,6 +571,8 @@ private final class LGConnection: @unchecked Sendable {
         guard let id = obj["id"] as? String else { return }
         let type = obj["type"] as? String ?? ""
         let payload = obj["payload"] as? [String: Any] ?? [:]
+        // Subscriptions keep answering on the same id.
+        if let sub = lock.withLock({ subscribers[id] }) { sub(payload); return }
         // The first answer to "register" only says the Allow prompt is showing; keep waiting.
         if type == "response", payload["pairingType"] != nil { return }
         guard let cont = take(id) else { return }
@@ -575,6 +604,7 @@ private final class LGConnection: @unchecked Sendable {
     private func failAll(_ error: Error) {
         let all: [CheckedContinuation<LGReply, Error>] = lock.withLock {
             alive = false
+            subscribers.removeAll()
             let a = Array(pending.values); pending.removeAll(); return a
         }
         all.forEach { $0.resume(throwing: error) }
@@ -615,6 +645,15 @@ private final class LGConnection: @unchecked Sendable {
         var msg: [String: Any] = ["type": "request", "id": id, "uri": uri]
         if let payload { msg["payload"] = payload }
         return try await send(msg, id: id, timeout: timeout, timeoutError: .unreachable)
+    }
+
+    /// Subscribe to a URI; `onEvent` gets every payload the TV pushes for it (on a background queue).
+    func subscribe(_ uri: String, onEvent: @escaping ([String: Any]) -> Void) async throws {
+        guard isAlive else { throw TVControlError.unreachable }
+        let id = nextID("sub")
+        lock.withLock { subscribers[id] = onEvent }
+        let data = try JSONSerialization.data(withJSONObject: ["type": "subscribe", "id": id, "uri": uri])
+        try await task.send(.string(String(decoding: data, as: UTF8.self)))
     }
 
     func close() {

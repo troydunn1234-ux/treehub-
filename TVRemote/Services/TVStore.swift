@@ -104,6 +104,7 @@ final class TVStore {
             UserDefaults.standard.set(activeID, forKey: "activeDevice")
         }
         updatePaired()
+        watchKeyboard()
     }
 
     private static func loadSaved() -> [DiscoveredTV] {
@@ -189,6 +190,7 @@ final class TVStore {
         nowPlaying = nil
         pairingTV = nil
         updatePaired()
+        watchKeyboard()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
     }
 
@@ -218,6 +220,8 @@ final class TVStore {
         }
         failures = 0
         updatePaired()
+        closeKeyboard()
+        watchKeyboard()
         Task { await refresh() }
     }
 
@@ -308,6 +312,132 @@ final class TVStore {
         if Self.demo { show("Typed on your TV"); return }
         guard let t = tv else { return }
         do { try await controller(for: t.brand).sendText(t, text) } catch { handle(error) }
+    }
+
+    // MARK: Phone keyboard ("Type on TV")
+
+    /// The keyboard bar is showing.
+    var typing = false
+    /// The TV said a text field is focused (LG, Samsung, Google TV report this).
+    private(set) var tvWantsKeyboard = false
+    /// What we believe is in the TV's text field right now.
+    @ObservationIgnored private var sentText = ""
+    @ObservationIgnored private var pendingText: String?
+    @ObservationIgnored private var typeTask: Task<Void, Never>?
+    @ObservationIgnored private var keyboardWatch: Task<Void, Never>?
+
+    /// Can the active TV take typing at all?
+    var canType: Bool {
+        guard let t = tv else { return false }
+        return Self.demo || controller(for: t.brand).textMode != .none
+    }
+
+    func openKeyboard() {
+        sentText = ""
+        pendingText = nil
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { typing = true }
+    }
+
+    func closeKeyboard() {
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.9)) { typing = false }
+        tvWantsKeyboard = false
+    }
+
+    /// Called on every edit in the phone's text field; sends only what changed, ~150 ms after typing pauses.
+    func typed(_ text: String) {
+        pendingText = text
+        typeTask?.cancel()
+        typeTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: 150_000_000)
+            guard !Task.isCancelled else { return }
+            await self?.flushTyping()
+        }
+    }
+
+    private func flushTyping() async {
+        guard let new = pendingText else { return }
+        pendingText = nil
+        let old = sentText
+        guard new != old else { return }
+        if Self.demo { sentText = new; return }
+        guard let t = tv else { return }
+        let c = controller(for: t.brand)
+        do {
+            switch c.textMode {
+            case .none:
+                return
+            case .replace:
+                // Clearing the box: delete keys where the TV has them, else send the empty field.
+                if new.isEmpty, (try? await c.backspace(t, count: old.count)) != nil {
+                } else {
+                    try await c.sendText(t, new)
+                }
+            case .append:
+                // Common prefix, then delete the rest of the old text and type the rest of the new.
+                let common = zip(old, new).prefix { $0.0 == $0.1 }.count
+                let deletes = old.count - common
+                let insert = String(new.dropFirst(common))
+                if deletes > 0 { try await c.backspace(t, count: deletes) }
+                if !insert.isEmpty { try await c.sendText(t, insert) }
+            }
+            sentText = new
+            reachable = true
+        } catch TVControlError.unsupported {
+            // e.g. no backspace on this TV: fall back to typing just the new characters
+            if new.count > old.count, new.hasPrefix(old) {
+                try? await c.sendText(t, String(new.dropFirst(old.count)))
+                sentText = new
+            }
+        } catch {
+            handle(error)
+        }
+    }
+
+    /// The keyboard's Return key: send what's left, then submit.
+    func submitTyping() {
+        typeTask?.cancel()
+        Task {
+            await flushTyping()
+            if Self.demo { show("Typed \"\(sentText)\" on your TV"); closeKeyboard(); return }
+            guard let t = tv else { return }
+            do { try await controller(for: t.brand).submitText(t) } catch { handle(error) }
+            closeKeyboard()
+        }
+    }
+
+    /// Open the TV's search, then the phone keyboard. Brands without a search key just open the keyboard.
+    func searchOnTV() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        if Self.demo { show("Search opened on your TV"); openKeyboard(); return }
+        guard let t = tv else { return }
+        let c = controller(for: t.brand)
+        Task {
+            do { try await c.openSearch(t) } catch TVControlError.unsupported { } catch { handle(error); return }
+            if c.textMode != .none { openKeyboard() } else {
+                show("Search is open. VIZIO TVs don't take typing from phones, so use the TV remote's voice button or arrows.")
+            }
+        }
+    }
+
+    /// Listen for the active TV's on-screen keyboard and pop the phone keyboard to match.
+    func watchKeyboard() {
+        keyboardWatch?.cancel()
+        guard !Self.demo, let t = tv else { return }
+        let c = controller(for: t.brand)
+        guard c.textMode != .none else { return }
+        keyboardWatch = Task { [weak self] in
+            while !Task.isCancelled {
+                for await open in c.keyboardEvents(t) {
+                    guard let self, self.tv?.id == t.id else { return }
+                    self.tvWantsKeyboard = open
+                    if open, !self.typing { self.openKeyboard() }
+                    if !open, self.typing { self.closeKeyboard() }
+                }
+                // Stream ended (socket dropped or brand can't report): try again later.
+                try? await Task.sleep(nanoseconds: 15_000_000_000)
+                guard let self, self.tv?.id == t.id else { return }
+            }
+        }
     }
 
     func refresh() async {

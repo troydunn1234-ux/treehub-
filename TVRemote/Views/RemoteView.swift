@@ -77,7 +77,10 @@ struct RemoteView: View {
 
             Spacer(minLength: 0)
 
-            KeyButton(symbol: "rectangle.on.rectangle", label: "Input", size: 48) { send(.inputNext) }
+            HStack(spacing: Look.S.s) {
+                KeyboardButton(size: 48)
+                KeyButton(symbol: "rectangle.on.rectangle", label: "Input", size: 48) { send(.inputNext) }
+            }
         }
     }
 
@@ -89,6 +92,8 @@ struct RemoteView: View {
             segment("house.fill", "Home") { send(.home) }
             divider
             segment("line.3.horizontal", "Menu") { send(.menu) }
+            divider
+            segment("magnifyingglass", "Search") { store.searchOnTV() }
         }
         .frame(height: 54)
         .glassCapsule()
@@ -100,9 +105,9 @@ struct RemoteView: View {
 
     private func segment(_ symbol: String, _ label: String, _ run: @escaping () -> Void) -> some View {
         Button(action: run) {
-            HStack(spacing: 7) {
-                Image(systemName: symbol).font(.system(size: 15, weight: .bold))
-                Text(label).font(Look.font(14, .heavy))
+            HStack(spacing: 5) {
+                Image(systemName: symbol).font(.system(size: 14, weight: .bold))
+                Text(label).font(Look.font(13, .heavy)).lineLimit(1).minimumScaleFactor(0.75)
             }
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity)

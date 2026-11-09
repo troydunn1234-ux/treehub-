@@ -225,6 +225,9 @@ final class VizioController: TVController, @unchecked Sendable {
     }
 
     func sendText(_ tv: DiscoveredTV, _ text: String) async throws { throw TVControlError.unsupported }
+    /// SmartCast's local API has no text-entry command (pyvizio and the SmartCast app protocol only
+    /// expose key presses, app launch and settings), so typing from the phone isn't possible.
+    var textMode: TVTextMode { .none }
 
     // MARK: Migration from the Vizio-only app
 

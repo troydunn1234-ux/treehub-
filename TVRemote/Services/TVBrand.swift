@@ -84,7 +84,39 @@ protocol TVController: AnyObject, Sendable {
     func availableApps(_ tv: DiscoveredTV) async -> [String]
     func nowPlaying(_ tv: DiscoveredTV) async -> TVNowPlaying?
     /// Optional: type text into the focused field (search boxes). Throw .unsupported if not possible.
+    /// In `.append` mode this inserts `text` at the cursor; in `.replace` mode `text` is the whole field.
     func sendText(_ tv: DiscoveredTV, _ text: String) async throws
+
+    // Phone keyboard ("Type on TV"). All have defaults below, so brands opt in.
+    /// How this TV takes typing from the phone.
+    var textMode: TVTextMode { get }
+    /// Delete `count` characters before the cursor (only used in `.append` mode).
+    func backspace(_ tv: DiscoveredTV, count: Int) async throws
+    /// Submit the text field (the keyboard's Return key).
+    func submitText(_ tv: DiscoveredTV) async throws
+    /// Open the TV's own search screen. Throws .unsupported where there's no reliable way.
+    func openSearch(_ tv: DiscoveredTV) async throws
+    /// true when a text field on the TV gets focus (its on-screen keyboard opens), false when it closes.
+    /// Brands that can't tell return a stream that finishes immediately.
+    func keyboardEvents(_ tv: DiscoveredTV) -> AsyncStream<Bool>
+}
+
+/// How a TV accepts typed text.
+enum TVTextMode {
+    /// Send only what's new (sendText inserts), deletions via backspace.
+    case append
+    /// Send the whole field every time (sendText replaces what's there).
+    case replace
+    /// The TV can't take typing from a phone.
+    case none
+}
+
+extension TVController {
+    var textMode: TVTextMode { .append }
+    func backspace(_ tv: DiscoveredTV, count: Int) async throws { throw TVControlError.unsupported }
+    func submitText(_ tv: DiscoveredTV) async throws { try await press(tv, .ok) }
+    func openSearch(_ tv: DiscoveredTV) async throws { throw TVControlError.unsupported }
+    func keyboardEvents(_ tv: DiscoveredTV) -> AsyncStream<Bool> { AsyncStream { $0.finish() } }
 }
 
 enum TVControlError: LocalizedError {

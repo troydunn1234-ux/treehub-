@@ -38,7 +38,7 @@ struct AppsView: View {
                     .animation(.spring(response: 0.5, dampingFraction: 0.85), value: store.nowPlaying)
 
                     VStack(alignment: .leading, spacing: Look.S.m) {
-                        SectionHeader("Quick actions")
+                        SectionHeader(title: "Quick actions") { SearchChip() }
                         HStack(spacing: Look.S.s) {
                             action("Power", "power", tint: Look.red) { store.press(.powerToggle) }
                             action("Input", "rectangle.on.rectangle", tint: Look.cyan) { store.press(.inputNext) }
@@ -129,6 +129,7 @@ struct AppsView: View {
             HStack(spacing: Look.S.s) {
                 TVSwitcherPill(action: { sheet = .switcher })
                 Spacer(minLength: Look.S.s)
+                KeyboardButton(size: 36)
                 statusPill
             }
             VStack(alignment: .leading, spacing: 2) {

@@ -174,6 +174,14 @@ final class RokuController: TVController, @unchecked Sendable {
         }
     }
 
+    func backspace(_ tv: DiscoveredTV, count: Int) async throws {
+        for _ in 0..<max(0, count) { try await send("POST", url(tv, "/keypress/Backspace")) }
+    }
+
+    func submitText(_ tv: DiscoveredTV) async throws { try await send("POST", url(tv, "/keypress/Enter")) }
+
+    func openSearch(_ tv: DiscoveredTV) async throws { try await send("POST", url(tv, "/keypress/Search")) }
+
     // MARK: - Apps
 
     private func apps(_ tv: DiscoveredTV) async -> [(id: String, name: String)] {
