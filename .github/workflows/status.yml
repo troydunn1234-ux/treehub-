@@ -1,0 +1,11 @@
+name: App Store status
+on: { workflow_dispatch: {} }
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env: { P8: "${{ secrets.ASC_KEY_P8 }}", KID: "${{ secrets.ASC_KEY_ID }}", ISS: "${{ secrets.ASC_ISSUER_ID }}" }
+        run: |
+          pip install --quiet "pyjwt[crypto]"; printf '%s\n' "$P8" > /tmp/k.p8
+          KEY_PATH=/tmp/k.p8 python3 .github/scripts/asc_status.py; rm -f /tmp/k.p8
