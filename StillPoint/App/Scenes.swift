@@ -118,10 +118,12 @@ struct PaintedScene: View {
             let steps = 24
             for s in 0...steps {
                 let x = w * CGFloat(s) / CGFloat(steps)
-                                let progress: Double = Double(s) / Double(steps)
+                let progress: Double = Double(s) / Double(steps)
                 let angle: Double = progress * Double.pi * 2.2 + Double(y) * 10
                 let wave: CGFloat = CGFloat(sin(angle))
                 let yy: CGFloat = h * (y - amp * wave)
+                p.addLine(to: CGPoint(x: x, y: yy))
+            }
             p.addLine(to: CGPoint(x: w, y: h))
             p.closeSubpath()
         }
