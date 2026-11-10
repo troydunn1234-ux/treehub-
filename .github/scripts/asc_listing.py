@@ -91,4 +91,19 @@ for f in files:
     done = call(f"/appScreenshots/{sid}", "PATCH", {"data": {"type": "appScreenshots", "id": sid,
                 "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
     print("Uploaded screenshot", f if done else f + " (commit failed)")
+
+# Wait until Apple has actually processed every screenshot; a shot stuck in UPLOAD_COMPLETE/FAILED blocks "Add for Review".
+import time as _t
+for attempt in range(12):
+    states = [(x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"]["state"])
+              for x in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]]
+    print("screenshot states:", states)
+    if all(st == "COMPLETE" for _, st in states): break
+    if any(st == "FAILED" for _, st in states):
+        for x in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]:
+            if x["attributes"]["assetDeliveryState"]["state"] == "FAILED":
+                print("  FAILED:", x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"].get("errors"))
+                call(f"/appScreenshots/{x['id']}", "DELETE")
+        break
+    _t.sleep(20)
 print("Listing updated. Nothing was submitted for review.")
