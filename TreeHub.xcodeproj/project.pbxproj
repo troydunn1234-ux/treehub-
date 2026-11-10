@@ -124,6 +124,7 @@
 		84D7980260A7C450604490E3 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		867D120EDF75FE7001FE7536 /* WhoopClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02921A710F5DB50A483DC3 /* WhoopClient.swift */; };
 		87CCA73B8401912B96483744 /* BankSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8941F8309AEBE4A083DE0DD /* BankSync.swift */; };
+		87DC39C02AB3EA7603ACFEE4 /* PoseFigure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326498B01CEDF16C928066E2 /* PoseFigure.swift */; };
 		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		8DD2F56880FF3BDA26D57E22 /* WatchRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC778BC5E9C40A4FD081BF1 /* WatchRuntime.swift */; };
 		8E36B0FD1CDAAD622490DED5 /* KeyboardBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 429D35136AAD84A17099192A /* KeyboardBar.swift */; };
@@ -150,6 +151,7 @@
 		AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58B86A832B9932FA9DF012C5 /* TodayView.swift */; };
 		AB06264988421B3AB01E26B9 /* Look.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EF9FA8F8D82A9B59632D6F3 /* Look.swift */; };
 		AB81EC30FAF77AD4ED02F5BD /* ClickerApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01D854BA14681BFCF2190CE5 /* ClickerApp.swift */; };
+		ABF9D98902F0FF0231E1A6CA /* PoseFigure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326498B01CEDF16C928066E2 /* PoseFigure.swift */; };
 		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
 		AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
 		ADCB5C71FDA1E0034F39EF03 /* Metrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CD4EAE449E445C94FC7058 /* Metrics.swift */; };
@@ -404,6 +406,7 @@
 		30BBEF4A28F1394B9276CB9A /* HealthPull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthPull.swift; sourceTree = "<group>"; };
 		315ADAA3C087D1308BC3FF36 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		326498B01CEDF16C928066E2 /* PoseFigure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseFigure.swift; sourceTree = "<group>"; };
 		32CD15365FDC5014307C125C /* NightSky.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightSky.swift; sourceTree = "<group>"; };
 		32DA9DFEEDD192CB3A30525C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		33C2297B665507DA57AEEC00 /* SessionLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLog.swift; sourceTree = "<group>"; };
@@ -673,6 +676,7 @@
 				9402C3386278DF81C3762F63 /* MindfulHealth.swift */,
 				52FB02D845BA8E73B5FDE30B /* MovementEngine.swift */,
 				A9A837FD17A5F7706AAADB8F /* OrbView.swift */,
+				326498B01CEDF16C928066E2 /* PoseFigure.swift */,
 				33C2297B665507DA57AEEC00 /* SessionLog.swift */,
 				8017F15EA6A7DAB6862C1959 /* Settings.swift */,
 				315ADAA3C087D1308BC3FF36 /* Theme.swift */,
@@ -1955,6 +1959,7 @@
 				AFAC42A70CCB7C2587A2F129 /* MindfulHealth.swift in Sources */,
 				901F33C9D878930DC2D56A95 /* MovementEngine.swift in Sources */,
 				4BD79C061DD68D412F611B20 /* OrbView.swift in Sources */,
+				ABF9D98902F0FF0231E1A6CA /* PoseFigure.swift in Sources */,
 				C12FD41254D869B93266AAD1 /* RunView.swift in Sources */,
 				283D0D791A1304A5A18AE4CA /* SessionLog.swift in Sources */,
 				3C41E9FECE104998848C859C /* Settings.swift in Sources */,
@@ -1990,6 +1995,7 @@
 				A3AF9F09E8245168EC86A7F1 /* PhoneHaptics.swift in Sources */,
 				A9A576DC88C344308181DF6C /* PhoneLink.swift in Sources */,
 				EACA2F2C3BD45108C4CF438F /* PhoneRunView.swift in Sources */,
+				87DC39C02AB3EA7603ACFEE4 /* PoseFigure.swift in Sources */,
 				266A967AA77415155E696771 /* PracticeViews.swift in Sources */,
 				8490BE5F5E99BDB5549C0CD8 /* Scenes.swift in Sources */,
 				785DADA8E4DD37F2DB90F8A6 /* SessionLog.swift in Sources */,
