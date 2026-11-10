@@ -174,12 +174,17 @@ struct MealPhotoEditor: View {
     private func save() {
         let oldPhoto = entry.photo
         if let draft {
-            guard let jpeg = normalized(draft).jpegData(compressionQuality: 0.84),
-                  UIImage(data: jpeg) != nil else {
+            let image = normalized(draft)
+            let factor = min(1, 1800 / max(image.size.width, image.size.height))
+            let outputSize = CGSize(width: (image.size.width * factor).rounded(), height: (image.size.height * factor).rounded())
+            let jpeg = UIGraphicsImageRenderer(size: outputSize).jpegData(withCompressionQuality: 0.84) { _ in
+                image.draw(in: CGRect(origin: .zero, size: outputSize))
+            }
+            guard UIImage(data: jpeg) != nil else {
                 errorMessage = "The edited photo could not be saved. Your original is unchanged."
                 return
             }
-            entry.photo = ImageTools.compressed(jpeg)
+            entry.photo = jpeg
         } else {
             entry.photo = nil
         }
