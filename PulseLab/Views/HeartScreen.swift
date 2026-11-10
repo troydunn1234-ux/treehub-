@@ -4,10 +4,15 @@ import Charts
 struct HeartScreen: View {
     @Environment(LabStore.self) private var store
     @State private var days = 30
+    @State private var solo: Source?
 
     var body: some View {
         LabScroll(kicker: "Engine room", title: "Heart") {
-            RangePicker(days: $days)
+            HStack {
+                RangePicker(days: $days)
+                Spacer()
+                DuelLegend(solo: $solo, compact: true)
+            }
             trend("Resting heart rate", unit: "bpm", lowerIsBetter: true, metric: .rhr) { $0.rhr }
             trend("Heart rate variability", unit: "ms", lowerIsBetter: false, note: "Apple Watch measures SDNN, WHOOP measures RMSSD, so WHOOP usually reads higher. Compare the shape of the lines, not the gap.", metric: .hrv) { $0.hrv }
             readinessChart
@@ -52,7 +57,7 @@ struct HeartScreen: View {
                 if w.isEmpty && h.isEmpty {
                     EmptyNote(text: "No data in this range yet.")
                 } else {
-                    DuelChart(watch: .from(w, .watch), whoop: .from(h, .whoop), unit: unit, decimals: decimals, height: 180)
+                    DuelChart(watch: .from(w, .watch), whoop: .from(h, .whoop), unit: unit, decimals: decimals, height: 180, solo: solo)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("\(title) over \(days) days. Apple Watch average \(fmtA(wAvg, decimals, unit)), WHOOP average \(fmtA(hAvg, decimals, unit)).")
                 }

@@ -7,6 +7,7 @@ struct MetricDetailSheet: View {
     @Environment(LabStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var days = 30
+    @State private var solo: Source?
 
     private struct Point: Identifiable { let day: Date; let value: Double; let source: Source; var id: String { "\(source.rawValue)\(day.timeIntervalSince1970)" } }
 
@@ -66,13 +67,13 @@ struct MetricDetailSheet: View {
     private func chart(_ pts: [Point]) -> some View {
         LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                DuelLegend()
+                DuelLegend(solo: $solo)
                 if pts.isEmpty {
                     EmptyNote(text: "No \(metric.title.lowercased()) in the last \(days) days.")
                 } else {
                     DuelChart(watch: pts.filter { $0.source == .watch }.map { DuelPoint(day: $0.day, value: $0.value, source: .watch) },
                               whoop: pts.filter { $0.source == .whoop }.map { DuelPoint(day: $0.day, value: $0.value, source: .whoop) },
-                              unit: metric.unit, decimals: metric.decimals, height: 240, showPoints: days <= 30)
+                              unit: metric.unit, decimals: metric.decimals, height: 240, showPoints: days <= 30, solo: solo)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel(summary(pts))
                 }

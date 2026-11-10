@@ -113,7 +113,12 @@ struct RootView: View {
         }
         .tint(Lab.watch)
         .overlay(alignment: .top) { ToastView() }
-        .task { if !showOnboarding { await store.refresh() } }
+        .task {
+            #if DEBUG
+            Stats.selfCheck()
+            #endif
+            if !showOnboarding { await store.refresh() }
+        }
         .onChange(of: phase) { _, p in if p == .active && !showOnboarding { Task { await store.refresh() } } }
     }
 

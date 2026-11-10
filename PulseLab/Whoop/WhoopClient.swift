@@ -22,6 +22,19 @@ final class WhoopClient {
     private(set) var sleeps: [WhoopSleep] = []
     private(set) var workouts: [WhoopWorkout] = []
 
+    /// One line per request, newest first (last 20), so Settings → Data check can show what the API said.
+    struct SyncEntry: Identifiable {
+        let id = UUID()
+        let time: Date
+        let path: String
+        let status: Int      // HTTP status, 0 = no response (network)
+        var count: Int?      // records in this page, when it was a collection page
+        var note: String = ""
+        var ok: Bool { status == 200 }
+    }
+    private(set) var log: [SyncEntry] = []
+    private func record(_ e: SyncEntry) { log.insert(e, at: 0); if log.count > 20 { log.removeLast(log.count - 20) } }
+
     @ObservationIgnored private let base = "https://api.prod.whoop.com/developer"
     private var auth: WhoopAuth { WhoopAuth.shared }
 
@@ -105,6 +118,7 @@ final class WhoopClient {
         case http(Int, String)
         var errorDescription: String? {
             switch self {
+            case .http(0, let m): return m.isEmpty ? "WHOOP: no connection." : m
             case .http(401, _): return "WHOOP sign-in expired. Connect again."
             case .http(let c, let m): return "WHOOP error \(c)" + (m.isEmpty ? "" : ": \(m)")
             }
@@ -121,6 +135,7 @@ final class WhoopClient {
                      URLQueryItem(name: "end", value: WhoopJSON.isoString(end))]
             if let next { q.append(URLQueryItem(name: "nextToken", value: next)) }
             let page = try await get(path, query: q, as: WhoopPage<T>.self)
+            if !log.isEmpty { log[0].count = page.records.count }
             out += page.records
             next = (page.nextToken?.isEmpty == false) ? page.nextToken : nil
             pages += 1
@@ -141,12 +156,26 @@ final class WhoopClient {
             req.timeoutInterval = 30
             req.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
             req.setValue("application/json", forHTTPHeaderField: "Accept")
-            let (data, resp) = try await URLSession.shared.data(for: req)
-            let http = resp as? HTTPURLResponse
+            let result: (Data, URLResponse)
+            do {
+                result = try await URLSession.shared.data(for: req)
+            } catch {
+                record(SyncEntry(time: Date(), path: path, status: 0, note: error.localizedDescription))
+                throw APIError.http(0, "No connection: \(error.localizedDescription)")
+            }
+            let data = result.0
+            let http = result.1 as? HTTPURLResponse
             let code = http?.statusCode ?? 0
             switch code {
             case 200:
-                return try WhoopJSON.decoder.decode(T.self, from: data)
+                do {
+                    let value = try WhoopJSON.decoder.decode(T.self, from: data)
+                    record(SyncEntry(time: Date(), path: path, status: 200))
+                    return value
+                } catch {
+                    record(SyncEntry(time: Date(), path: path, status: 200, note: "Couldn't read reply: \(error.localizedDescription)"))
+                    throw APIError.http(200, "Unexpected reply shape for \(path)")
+                }
             case 401 where !refreshed:
                 refreshed = true
                 try await auth.refresh()
@@ -160,6 +189,7 @@ final class WhoopClient {
             default:
                 if code == 401 { auth.disconnect(); isConnected = false }
                 let msg = String(decoding: data.prefix(160), as: UTF8.self)
+                record(SyncEntry(time: Date(), path: path, status: code, note: msg))
                 throw APIError.http(code, msg)
             }
         }

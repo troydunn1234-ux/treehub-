@@ -18,6 +18,7 @@ struct CompareScreen: View {
             if list.allSatisfy({ $0.n == 0 }) {
                 noOverlap
             } else {
+                verdictCard(list)
                 scoreboard(list)
                 ForEach(Array(list.filter { $0.n > 0 }.enumerated()), id: \.element.id) { i, a in
                     FightRow(round: i + 1, agreement: a, winner: winner(a), selected: focus == a.metric) {
@@ -52,6 +53,38 @@ struct CompareScreen: View {
                           message: "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.",
                           button: nil, tint: Lab.violet, action: nil)
         }
+    }
+
+    /// One-paragraph verdict: who reads higher on how many metrics, and where the two agree best.
+    private func verdictCard(_ list: [Agreement]) -> some View {
+        let scored = list.filter { $0.n >= 3 }
+        let whoopHigher = scored.filter { $0.higher == .whoop }.count
+        let watchHigher = scored.filter { $0.higher == .watch }.count
+        let best = scored.filter { !$0.trendOnly }.max { ($0.agreePercent ?? 0) < ($1.agreePercent ?? 0) }
+        let bestR = scored.compactMap { a in a.correlation.map { (a, $0) } }.max { $0.1 < $1.1 }
+        var lines: [String] = []
+        if whoopHigher > watchHigher { lines.append("WHOOP reads higher on \(whoopHigher) of \(scored.count) metrics") }
+        else if watchHigher > whoopHigher { lines.append("Apple Watch reads higher on \(watchHigher) of \(scored.count) metrics") }
+        else if !scored.isEmpty { lines.append("Neither tracker reads consistently higher") }
+        if let best, let p = best.agreePercent { lines.append("Strongest agreement: \(best.metric) (\(Int(p.rounded()))% of days within \(best.tolerance.formatted()) \(best.unit))") }
+        if let bestR { lines.append("Best trend match: \(bestR.0.metric), r = \(bestR.1.formatted(.number.precision(.fractionLength(2))))") }
+        return LabPanel(tint: Lab.violet) {
+            VStack(alignment: .leading, spacing: Lab.S.s) {
+                SectionTag("Verdict · \(days) days")
+                if lines.isEmpty {
+                    Text("A few more days where both trackers measured the same thing and the verdict fills in.")
+                        .font(Lab.body(14)).foregroundStyle(Lab.dim)
+                } else {
+                    ForEach(lines, id: \.self) { l in
+                        HStack(alignment: .top, spacing: Lab.S.s) {
+                            Circle().fill(Lab.violet).frame(width: 5, height: 5).padding(.top, 7)
+                            Text(l).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
+                        }
+                    }
+                }
+            }
+        }
+        .accessibilityElement(children: .combine)
     }
 
     /// Who "wins" a metric: higher reader for absolute metrics, else the steadier (less noisy) tracker.

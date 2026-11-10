@@ -142,36 +142,64 @@ struct ActivityScreen: View {
     }
 
     private func pairRow(_ p: Compare.WorkoutPair) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: Lab.S.s) {
             HStack {
                 Image(systemName: p.watch.symbol).foregroundStyle(Lab.text)
-                Text(p.watch.name).font(Lab.display(16, .heavy)).foregroundStyle(Lab.text)
+                Text(p.watch.name).font(Lab.title(16)).foregroundStyle(Lab.text)
                 Spacer()
                 Text(p.watch.start.formatted(.dateTime.weekday(.abbreviated).hour().minute())).font(Lab.mono(10)).foregroundStyle(Lab.faint)
             }
-            HStack {
-                metric("KCAL", p.watch.kcal, p.whoop.kcal)
-                metric("AVG HR", p.watch.avgHR, p.whoop.avgHR)
-                metric("MAX HR", p.watch.maxHR, p.whoop.maxHR)
-                VStack(spacing: 2) {
-                    Text("STRAIN").font(Lab.label(8)).foregroundStyle(Lab.faint)
-                    Text(p.whoop.strain.map { String(format: "%.1f", $0) } ?? "––").font(Lab.mono(14, .heavy)).foregroundStyle(Lab.whoop)
+            HStack(alignment: .top, spacing: Lab.S.s) {
+                pairColumn(p.watch, .watch)
+                VStack(spacing: Lab.S.xs) {
+                    deltaChip("KCAL", p.watch.kcal, p.whoop.kcal, decimals: 0)
+                    deltaChip("AVG", p.watch.avgHR, p.whoop.avgHR, decimals: 0)
+                    deltaChip("MAX", p.watch.maxHR, p.whoop.maxHR, decimals: 0)
                 }
-                .frame(maxWidth: .infinity)
+                .frame(width: 66)
+                pairColumn(p.whoop, .whoop)
             }
         }
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.04)))
-        .overlay(RoundedRectangle(cornerRadius: 16).strokeBorder(LinearGradient(colors: [Lab.watch.opacity(0.5), Lab.whoop.opacity(0.5)], startPoint: .leading, endPoint: .trailing), lineWidth: 1))
+        .padding(Lab.S.m - 4)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.white.opacity(0.04)))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(LinearGradient(colors: [Lab.watch.opacity(0.5), Lab.whoop.opacity(0.5)], startPoint: .leading, endPoint: .trailing), lineWidth: 1))
+        .accessibilityElement(children: .combine)
     }
 
-    private func metric(_ l: String, _ a: Double?, _ b: Double?) -> some View {
-        VStack(spacing: 2) {
-            Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint)
-            Text(a.map { "\(Int($0))" } ?? "––").font(Lab.mono(14, .heavy)).foregroundStyle(Lab.watch)
-            Text(b.map { "\(Int($0))" } ?? "––").font(Lab.mono(14, .heavy)).foregroundStyle(Lab.whoop)
+    private func pairColumn(_ w: WorkoutRec, _ s: Source) -> some View {
+        VStack(alignment: s == .watch ? .leading : .trailing, spacing: 3) {
+            SourceChip(source: s)
+            stat("KCAL", w.kcal, s)
+            stat("AVG HR", w.avgHR, s)
+            stat("MAX HR", w.maxHR, s)
+            if s == .whoop, let st = w.strain { stat("STRAIN", st, s, decimals: 1) }
+            else { stat("MIN", w.minutes, s) }
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: s == .watch ? .leading : .trailing)
+    }
+
+    private func stat(_ l: String, _ v: Double?, _ s: Source, decimals: Int = 0) -> some View {
+        HStack(spacing: 5) {
+            if s == .whoop { Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint) }
+            Text(v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "—").font(Lab.mono(14, .heavy)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s))
+            if s == .watch { Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint) }
+        }
+    }
+
+    /// Watch − WHOOP, tinted toward whoever read higher.
+    private func deltaChip(_ l: String, _ a: Double?, _ b: Double?, decimals: Int) -> some View {
+        VStack(spacing: 0) {
+            if let a, let b {
+                let d = a - b
+                Text((d >= 0 ? "+" : "−") + abs(d).formatted(.number.precision(.fractionLength(decimals))))
+                    .font(Lab.mono(11, .heavy)).foregroundStyle(abs(d) < 0.5 ? Lab.dim : d > 0 ? Lab.watch : Lab.whoop)
+            } else {
+                Text("—").font(Lab.mono(11, .heavy)).foregroundStyle(Lab.faint)
+            }
+            Text(l).font(Lab.label(7)).foregroundStyle(Lab.faint)
+        }
+        .frame(maxWidth: .infinity).padding(.vertical, 3)
+        .background(Capsule().fill(Color.white.opacity(0.05)))
     }
 
     private func singleRow(_ w: WorkoutRec) -> some View {

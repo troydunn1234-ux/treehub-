@@ -39,6 +39,7 @@ struct NightSkyHypnogram: View {
                     drawMoonArc(ctx, size)
                     drawBands(ctx, size)
                     drawPath(ctx, size)
+                    drawTicks(ctx, size)
                 }
             }
             .frame(height: 190)
@@ -150,6 +151,28 @@ struct NightSkyHypnogram: View {
                 l.stroke(p, with: .color(c.opacity(0.9)), style: StrokeStyle(lineWidth: 8, lineCap: .round))
             }
             ctx.stroke(p, with: .color(c), style: StrokeStyle(lineWidth: 4, lineCap: .round))
+        }
+    }
+
+    /// Whole-hour ticks and labels along the bottom, on the same x scale as the stages.
+    private func drawTicks(_ ctx: GraphicsContext, _ size: CGSize) {
+        let cal = Calendar.current
+        guard var h = cal.date(bySetting: .minute, value: 0, of: start).flatMap({ cal.date(bySetting: .second, value: 0, of: $0) }) else { return }
+        if h < start { h = cal.date(byAdding: .hour, value: 1, to: h) ?? h }
+        let f = DateFormatter(); f.dateFormat = "ha"
+        var n = 0
+        while h <= end && n < 16 {
+            let xx = x(h, size)
+            var tick = Path()
+            tick.move(to: CGPoint(x: xx, y: size.height - 14))
+            tick.addLine(to: CGPoint(x: xx, y: size.height - 9))
+            ctx.stroke(tick, with: .color(Color.white.opacity(0.35)), lineWidth: 1)
+            if n % 2 == 0 || end.timeIntervalSince(start) < 5 * 3600 {
+                let label = Text(f.string(from: h).lowercased()).font(.system(size: 8, weight: .heavy, design: .monospaced)).foregroundColor(.white.opacity(0.45))
+                ctx.draw(label, at: CGPoint(x: xx, y: size.height - 4), anchor: .center)
+            }
+            h = cal.date(byAdding: .hour, value: 1, to: h) ?? end.addingTimeInterval(1)
+            n += 1
         }
     }
 

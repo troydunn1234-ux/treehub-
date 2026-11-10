@@ -13,12 +13,53 @@ struct TodayScreen: View {
                         readiness: store.readinessToday, recovery: store.recoveryToday,
                         note: gaugeNote)
             if streak >= 2 { StreakChip(days: streak) }
+            quickTiles
             LabNotesCard(insights: notes)
             hero
             sleepDuel
             sparkCard
             ShareVSButton()
             if !store.whoopConnected { whoopNudge }
+        }
+    }
+
+    /// Three compact tiles under the hero: the numbers people check first, with "—" explained.
+    private var quickTiles: some View {
+        let w = store.today(.watch), h = store.today(.whoop)
+        let wn = store.lastNight(.watch), hn = store.lastNight(.whoop)
+        return HStack(spacing: Lab.S.s) {
+            tile("Resting HR", "bpm", w?.rhr, h?.rhr, .rhr)
+            tile("HRV", "ms", w?.hrv, h?.hrv, .hrv)
+            tile("Sleep", "h", wn.map { $0.asleepMin / 60 }, hn.map { $0.asleepMin / 60 }, .sleep, decimals: 1)
+        }
+    }
+
+    private func tile(_ title: String, _ unit: String, _ a: Double?, _ b: Double?, _ m: MetricKey, decimals: Int = 0) -> some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            store.detail = m
+        } label: {
+            VStack(alignment: .leading, spacing: Lab.S.xs) {
+                Text(title.uppercased()).font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.dim)
+                tileValue(a, .watch, decimals)
+                tileValue(b, .whoop, decimals)
+                Text(unit).font(Lab.label(8)).foregroundStyle(Lab.faint)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(Lab.S.m - 2)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.08)))
+        }
+        .buttonStyle(PressScale())
+        .accessibilityLabel("\(title): Apple Watch \(a.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit), WHOOP \(b.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit)")
+        .accessibilityHint("Opens the \(title.lowercased()) chart")
+    }
+
+    private func tileValue(_ v: Double?, _ s: Source, _ decimals: Int) -> some View {
+        HStack(spacing: 5) {
+            Circle().fill(Lab.color(s)).frame(width: 5, height: 5)
+            Text(v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "—")
+                .font(Lab.number(20, .black)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s))
         }
     }
 
@@ -49,11 +90,19 @@ struct TodayScreen: View {
                 tap(.resp) { VSRow(title: "Respiratory", unit: "br/min", watch: w?.resp, whoop: h?.resp, decimals: 1) }
                 Divider().overlay(Lab.line)
                 tap(.calories) { VSRow(title: "Calories", unit: "kcal", watch: w?.totalKcal, whoop: h?.totalKcal) }
-                Text("Tap a row for the full chart").font(Lab.label(9)).foregroundStyle(Lab.faint)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                if store.reason(.watch) == nil && store.reason(.whoop) == nil {
+                    Text("Tap a row for the full chart").font(Lab.label(9)).foregroundStyle(Lab.faint)
+                        .frame(maxWidth: .infinity, alignment: .center)
+                } else {
+                    HStack(spacing: Lab.S.s) {
+                        ForEach(Source.allCases) { s in
+                            if let r = store.reason(s) { ReasonChip(source: s, text: r) }
+                        }
+                        Spacer()
+                    }
+                }
             }
         }
-        .breathingGlow([Lab.watch, Lab.violet, Lab.whoop])
         .visualEffect { [still = Lab.reduceMotion] content, proxy in
             // Gentle depth: the card eases back a touch as it scrolls under the top edge (off with Reduce Motion).
             let y = proxy.frame(in: .scrollView).minY
@@ -66,7 +115,7 @@ struct TodayScreen: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             store.detail = m
         } label: { v().contentShape(Rectangle()) }
-        .buttonStyle(.plain)
+        .buttonStyle(PressScale())
         .accessibilityHint("Opens the \(m.title.lowercased()) chart")
     }
 

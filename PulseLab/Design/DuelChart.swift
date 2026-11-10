@@ -26,11 +26,15 @@ struct DuelChart: View {
     /// Force the y-axis to start at 0 (only for metrics where 0 is meaningful).
     var includeZero = false
     var showPoints = false
+    /// When set, only this source is drawn (tap a legend chip to isolate).
+    var solo: Source? = nil
 
     @State private var rawSelection: Date?
     @State private var selectedDay: Date?
 
-    private var all: [DuelPoint] { watch + whoop }
+    private var watchShown: [DuelPoint] { solo == .whoop ? [] : watch }
+    private var whoopShown: [DuelPoint] { solo == .watch ? [] : whoop }
+    private var all: [DuelPoint] { watchShown + whoopShown }
 
     private var domain: ClosedRange<Double> {
         let v = all.map(\.value)
@@ -40,12 +44,13 @@ struct DuelChart: View {
         return low...(hi + pad)
     }
 
-    private var areaPoints: [DuelPoint] { watch.isEmpty ? whoop : watch }
-    private var areaColor: Color { watch.isEmpty ? Lab.whoop : Lab.watch }
+    private var areaPoints: [DuelPoint] { watchShown.isEmpty ? whoopShown : watchShown }
+    private var areaColor: Color { watchShown.isEmpty ? Lab.whoop : Lab.watch }
 
     var body: some View {
         let d = domain
-        let wAvg = Stats.mean(watch.map(\.value)), hAvg = Stats.mean(whoop.map(\.value))
+        let wAvg = Stats.mean(watchShown.map(\.value)), hAvg = Stats.mean(whoopShown.map(\.value))
+        let watch = watchShown, whoop = whoopShown
         Chart {
             ForEach(areaPoints) { p in
                 AreaMark(x: .value("Day", p.day, unit: .day),
@@ -56,8 +61,8 @@ struct DuelChart: View {
             }
             ForEach(watch) { p in
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "Watch glow"))
-                    .foregroundStyle(Lab.watch.opacity(0.22))
-                    .lineStyle(StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
+                    .foregroundStyle(Lab.watch.opacity(0.16))
+                    .lineStyle(StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
                     .interpolationMethod(.catmullRom)
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "Watch"))
                     .foregroundStyle(Lab.watch)
@@ -66,8 +71,8 @@ struct DuelChart: View {
             }
             ForEach(whoop) { p in
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "WHOOP glow"))
-                    .foregroundStyle(Lab.whoop.opacity(0.22))
-                    .lineStyle(StrokeStyle(lineWidth: 9, lineCap: .round, lineJoin: .round))
+                    .foregroundStyle(Lab.whoop.opacity(0.16))
+                    .lineStyle(StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
                     .interpolationMethod(.catmullRom)
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "WHOOP"))
                     .foregroundStyle(Lab.whoop)
@@ -107,6 +112,9 @@ struct DuelChart: View {
             }
         }
         .chartYScale(domain: d)
+        .chartYAxisLabel(position: .topLeading, alignment: .leading) {
+            Text(unit.uppercased()).font(Lab.label(7)).tracking(1).foregroundStyle(Lab.faint)
+        }
         .chartXSelection(value: $rawSelection)
         .chartXAxis { LabAxis.xDays }
         .chartYAxis { LabAxis.y }
@@ -157,14 +165,38 @@ struct DuelChart: View {
     }
 }
 
-/// "● WATCH  ● WHOOP" legend chips under a chart.
+/// "● WATCH  ● WHOOP" legend chips under a chart. Pass `solo` to make the chips tappable:
+/// tapping one isolates that source, tapping again shows both.
 struct DuelLegend: View {
+    var solo: Binding<Source?>? = nil
+    /// Chips only (no hint text), for tight headers.
+    var compact = false
     var body: some View {
         HStack(spacing: 8) {
-            SourceChip(source: .watch)
-            SourceChip(source: .whoop)
-            Spacer()
-            Text("PRESS & DRAG TO SCRUB").font(Lab.label(7)).tracking(1).foregroundStyle(Lab.faint)
+            chip(.watch)
+            chip(.whoop)
+            if !compact {
+                Spacer()
+                Text(solo == nil ? "PRESS & DRAG TO SCRUB" : "TAP A CHIP TO ISOLATE").font(Lab.label(7)).tracking(1).foregroundStyle(Lab.faint)
+            }
+        }
+    }
+
+    @ViewBuilder private func chip(_ s: Source) -> some View {
+        if let solo {
+            Button {
+                Lab.tick()
+                withAnimation(.snappy) { solo.wrappedValue = solo.wrappedValue == s ? nil : s }
+            } label: {
+                SourceChip(source: s)
+                    .opacity(solo.wrappedValue == nil || solo.wrappedValue == s ? 1 : 0.35)
+                    .overlay(Capsule().strokeBorder(Lab.color(s).opacity(solo.wrappedValue == s ? 0.9 : 0), lineWidth: 1))
+            }
+            .buttonStyle(PressScale())
+            .accessibilityLabel("\(s.name)\(solo.wrappedValue == s ? ", isolated" : "")")
+            .accessibilityHint("Tap to show only this tracker")
+        } else {
+            SourceChip(source: s)
         }
     }
 }

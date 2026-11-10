@@ -36,7 +36,38 @@ final class LabStore {
     var whoopConnected: Bool { Self.isDemo || WhoopAdapter.connected }
 
     func days(_ s: Source) -> [DayStat] { s == .watch ? watchDays : whoopDays }
+    /// Today's numbers, falling back to the newest day we have (see `todayIsStale`).
     func today(_ s: Source) -> DayStat? { days(s).stat(on: Date()) ?? days(s).last }
+    /// True when `today(_:)` had to fall back to an older day.
+    func todayIsStale(_ s: Source) -> Bool { days(s).stat(on: Date()) == nil && days(s).last != nil }
+
+    /// Why a side shows "—": tells "not set up" apart from "nothing arrived today". Nil when there is data.
+    func reason(_ s: Source) -> String? {
+        if Self.isDemo { return nil }
+        switch s {
+        case .watch:
+            if !healthAsked { return "Health not allowed" }
+            if watchDays.isEmpty { return loadedOnce ? "No Health samples" : "Loading" }
+            if todayIsStale(.watch), let d = watchDays.last { return "As of \(d.day.formatted(.dateTime.weekday(.abbreviated)))" }
+        case .whoop:
+            if !whoopConnected && whoopDays.isEmpty { return "WHOOP not connected" }
+            if whoopDays.isEmpty { return loadedOnce ? "No WHOOP data yet" : "Loading" }
+            if todayIsStale(.whoop), let d = whoopDays.last { return "As of \(d.day.formatted(.dateTime.weekday(.abbreviated)))" }
+        }
+        return nil
+    }
+
+    // MARK: - Data check (Settings)
+
+    private(set) var probe: [HealthPull.ProbeRow] = []
+    private(set) var probing = false
+    func runDataCheck() async {
+        guard !probing else { return }
+        probing = true
+        defer { probing = false }
+        if Self.isDemo { probe = []; return }
+        probe = await HealthPull.shared.probe()
+    }
     func lastNight(_ s: Source) -> SleepNight? { sleeps.filter { $0.source == s }.max { $0.night < $1.night } }
 
     var readinessToday: Double? { Compare.readiness(day: Date(), watch: watchDays, sleeps: sleeps) }
@@ -65,7 +96,10 @@ final class LabStore {
         async let health = HealthPull.shared.pull(days: 90)
         if WhoopAdapter.connected {
             await WhoopAdapter.sync(days: 90)
-            if let e = WhoopAdapter.client.lastError { toast = "WHOOP: \(e)" }
+            if let e = WhoopAdapter.client.lastError {
+                let failed = WhoopAdapter.client.log.first { !$0.ok }.map { " (\($0.path.replacingOccurrences(of: "/v2/", with: "")))" } ?? ""
+                toast = "WHOOP: \(e)\(failed) · see Settings → Data check"
+            }
         }
         let h = await health
         merge(health: h)

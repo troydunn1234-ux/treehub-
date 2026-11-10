@@ -75,8 +75,14 @@ final class HealthPull: @unchecked Sendable {
     static func origin(_ src: HKSource) -> Origin {
         let id = src.bundleIdentifier.lowercased(), name = src.name.lowercased()
         if id.contains("whoop") || name.contains("whoop") { return .whoop }
-        if name.contains("watch") { return .watch }
+        // Apple Watch samples come from a per-device source "com.apple.health.<UUID>" — the user may have
+        // renamed the watch, so don't rely on the name alone. The iPhone's own source is "com.apple.health".
+        if id.hasPrefix("com.apple.health.") || name.contains("watch") { return .watch }
         return .other
+    }
+    /// Apple's own iPhone writers (Sleep schedule "in bed", Health app entries).
+    static func isAppleOther(_ sample: HKSample) -> Bool {
+        origin(sample) == .other && sample.sourceRevision.source.bundleIdentifier.lowercased().hasPrefix("com.apple")
     }
     static func origin(_ sample: HKSample) -> Origin {
         let o = origin(sample.sourceRevision.source)
@@ -191,7 +197,7 @@ final class HealthPull: @unchecked Sendable {
         var nights: [String: SleepNight] = [:]
         for s in all {
             let o = Self.origin(s)
-            guard o != .other else { continue }
+            guard o != .other || Self.isAppleOther(s) else { continue }
             let src: Source = o == .whoop ? .whoop : .watch
             let key = Self.nightKey(s.endDate)
             let id = "\(src.rawValue)-\(key.timeIntervalSince1970)"
@@ -249,6 +255,102 @@ final class HealthPull: @unchecked Sendable {
                               maxHR: hr?.maximumQuantity()?.doubleValue(for: bpm),
                               strain: nil,
                               distanceKm: w.statistics(for: distType)?.sumQuantity()?.doubleValue(for: .meterUnit(with: .kilo)))
+        }
+    }
+
+    // MARK: - Data check (diagnostics)
+
+    /// What is actually flowing from Health for one metric: the newest sample and how many arrived in the last 7 days.
+    struct ProbeRow: Identifiable {
+        let id: String
+        let title: String
+        let unit: String
+        var lastValue: Double?
+        var lastDate: Date?
+        var lastSource: String = "—"
+        var lastOrigin: Origin = .other
+        var count7d: Int = 0
+    }
+
+    static let probeTitles: [HKQuantityTypeIdentifier: String] = [
+        .restingHeartRate: "Resting HR", .heartRateVariabilitySDNN: "HRV (SDNN)", .heartRate: "Heart rate",
+        .walkingHeartRateAverage: "Walking HR", .respiratoryRate: "Respiratory rate", .oxygenSaturation: "Blood oxygen",
+        .appleSleepingWristTemperature: "Wrist temperature", .vo2Max: "VO₂ max", .bodyMass: "Weight", .bodyFatPercentage: "Body fat",
+        .heartRateRecoveryOneMinute: "HR recovery", .environmentalAudioExposure: "Noise", .runningSpeed: "Running speed",
+        .runningPower: "Running power", .runningStrideLength: "Stride", .stepCount: "Steps", .distanceWalkingRunning: "Distance",
+        .flightsClimbed: "Flights", .activeEnergyBurned: "Active energy", .basalEnergyBurned: "Resting energy",
+        .appleExerciseTime: "Exercise minutes", .appleStandTime: "Stand minutes", .timeInDaylight: "Daylight",
+    ]
+
+    /// One row per metric we read, plus sleep and workouts. Cheap enough to run on demand from Settings.
+    func probe() async -> [ProbeRow] {
+        guard Self.available else { return [] }
+        let since = Date().dayStart.adding(days: -6)
+        var rows: [ProbeRow] = []
+        for spec in Self.specs {
+            guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { continue }
+            var row = ProbeRow(id: spec.id.rawValue, title: Self.probeTitles[spec.id] ?? spec.id.rawValue, unit: Self.unitLabel(spec))
+            let recent = await samples(type, from: since, limit: 20_000)
+            row.count7d = recent.count
+            var last = recent.last as? HKQuantitySample
+            if last == nil { last = await samples(type, from: .distantPast, limit: 1, newestFirst: true).first as? HKQuantitySample }
+            if let last {
+                row.lastValue = last.quantity.doubleValue(for: spec.unit) * spec.scale
+                row.lastDate = last.endDate
+                row.lastSource = last.sourceRevision.source.name
+                row.lastOrigin = Self.origin(last)
+            }
+            rows.append(row)
+        }
+        if let sleep = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) {
+            var row = ProbeRow(id: "sleep", title: "Sleep samples", unit: "min")
+            let recent = await samples(sleep, from: since, limit: 20_000)
+            row.count7d = recent.count
+            if let last = recent.last {
+                row.lastValue = last.endDate.timeIntervalSince(last.startDate) / 60
+                row.lastDate = last.endDate; row.lastSource = last.sourceRevision.source.name; row.lastOrigin = Self.origin(last)
+            }
+            rows.append(row)
+        }
+        var w = ProbeRow(id: "workouts", title: "Workouts", unit: "min")
+        let ws = await samples(HKObjectType.workoutType(), from: since, limit: 20_000)
+        w.count7d = ws.count
+        if let last = ws.last {
+            w.lastValue = last.endDate.timeIntervalSince(last.startDate) / 60
+            w.lastDate = last.endDate; w.lastSource = last.sourceRevision.source.name; w.lastOrigin = Self.origin(last)
+        }
+        rows.append(w)
+        return rows
+    }
+
+    private func samples(_ type: HKSampleType, from start: Date, limit: Int, newestFirst: Bool = false) async -> [HKSample] {
+        let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: [])
+        return await withCheckedContinuation { cont in
+            let q = HKSampleQuery(sampleType: type, predicate: pred, limit: limit,
+                                  sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: !newestFirst)]) { _, s, _ in
+                cont.resume(returning: s ?? [])
+            }
+            store.execute(q)
+        }
+    }
+
+    static func unitLabel(_ spec: QSpec) -> String {
+        switch spec.id {
+        case .restingHeartRate, .heartRate, .walkingHeartRateAverage, .heartRateRecoveryOneMinute: return "bpm"
+        case .heartRateVariabilitySDNN: return "ms"
+        case .respiratoryRate: return "br/min"
+        case .oxygenSaturation, .bodyFatPercentage: return "%"
+        case .appleSleepingWristTemperature: return "°C"
+        case .vo2Max: return "ml/kg/min"
+        case .bodyMass: return "kg"
+        case .environmentalAudioExposure: return "dB"
+        case .runningSpeed: return "m/s"
+        case .runningPower: return "W"
+        case .runningStrideLength: return "m"
+        case .stepCount, .flightsClimbed: return "count"
+        case .distanceWalkingRunning: return "km"
+        case .activeEnergyBurned, .basalEnergyBurned: return "kcal"
+        default: return "min"
         }
     }
 

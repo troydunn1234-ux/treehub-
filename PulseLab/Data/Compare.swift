@@ -82,6 +82,28 @@ enum Stats {
         guard v.count > 1, let m = mean(v) else { return nil }
         return sqrt(v.map { pow($0 - m, 2) }.reduce(0, +) / Double(v.count - 1))
     }
+
+    #if DEBUG
+    /// Sanity checks on the comparison maths, run once at launch in Debug builds.
+    static func selfCheck() {
+        let x = [50.0, 52, 55, 53, 58, 60], y = x.map { $0 + 2 }
+        assert(abs((pearson(x, y) ?? 0) - 1) < 1e-9, "perfectly shifted series must correlate 1.0")
+        assert(abs((pearson(x, x.map { 100 - $0 }) ?? 0) + 1) < 1e-9, "mirrored series must correlate -1.0")
+        assert(pearson([1, 1, 1], [2, 3, 4]) == nil, "flat series has no correlation")
+        let days = (0..<6).map { Date().dayStart.adding(days: -$0) }
+        let pairs = zip(days, zip(x, y)).map { Agreement.Pair(day: $0.0, watch: $0.1.0, whoop: $0.1.1) }
+        let a = Agreement(metric: "t", unit: "u", tolerance: 3, trendOnly: false, pairs: pairs)
+        assert(abs((a.bias ?? 0) + 2) < 1e-9, "mean difference should be −2")
+        assert(abs((a.meanAbsDiff ?? 0) - 2) < 1e-9, "mean absolute difference should be 2")
+        assert(a.agreePercent == 100, "all pairs within tolerance 3")
+        assert(a.higher == .whoop, "WHOOP reads higher here")
+        let wide = Agreement(metric: "t", unit: "u", tolerance: 1, trendOnly: false, pairs: pairs)
+        assert(wide.agreePercent == 0, "none within tolerance 1")
+        let trend = Agreement(metric: "t", unit: "u", tolerance: 1, trendOnly: true, pairs: pairs)
+        assert(trend.agreePercent == 100, "same direction every day")
+        assert(mean([]) == nil && sd([1]) == nil, "empty stats are nil, not 0")
+    }
+    #endif
 }
 
 enum Compare {

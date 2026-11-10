@@ -5,6 +5,7 @@ struct SettingsScreen: View {
     @AppStorage("unitsImperial") private var imperial = true
     @AppStorage("unitsF") private var fahrenheit = true
     @State private var exportURL: URL?
+    @State private var showDataCheck = false
 
     var body: some View {
         LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
@@ -13,6 +14,7 @@ struct SettingsScreen: View {
                 WhoopConnectView(accent: Lab.whoop)
             }
             sync
+            dataCheck
             units
             export
             about
@@ -65,6 +67,25 @@ struct SettingsScreen: View {
                 .accessibilityLabel("Sync now")
             }
         }
+    }
+
+    private var dataCheck: some View {
+        Button { showDataCheck = true } label: {
+            LabPanel(tint: Lab.violet) {
+                HStack(spacing: Lab.S.m) {
+                    Image(systemName: "stethoscope").font(.title3.weight(.bold)).foregroundStyle(Lab.violet)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Data check").font(Lab.title(16)).foregroundStyle(Lab.text)
+                        Text("See what's arriving from Health and WHOOP, metric by metric, with the WHOOP sync log.")
+                            .font(Lab.body(12)).foregroundStyle(Lab.dim)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                }
+            }
+        }
+        .buttonStyle(PressScale())
+        .sheet(isPresented: $showDataCheck) { DataCheckView().environment(store) }
     }
 
     private var units: some View {

@@ -33,6 +33,30 @@ enum Lab {
     static func band(_ score: Double) -> Color { score >= 67 ? good : score >= 34 ? warn : bad }
 
     static var reduceMotion: Bool { UIAccessibility.isReduceMotionEnabled }
+
+    /// 8-pt spacing grid.
+    enum S {
+        static let xs: CGFloat = 4
+        static let s: CGFloat = 8
+        static let m: CGFloat = 16
+        static let l: CGFloat = 24
+        static let xl: CGFloat = 32
+    }
+    /// Type scale: display 44/34 · title 22 · body 15 · caption 11 (small caps via `label`).
+    static func title(_ size: CGFloat = 22, _ weight: Font.Weight = .heavy) -> Font { .system(size: size, weight: weight, design: .rounded) }
+    static func body(_ size: CGFloat = 15, _ weight: Font.Weight = .medium) -> Font { .system(size: size, weight: weight, design: .rounded) }
+
+    static func tick() { UISelectionFeedbackGenerator().selectionChanged() }
+}
+
+/// Cards and rows press down slightly under the finger.
+struct PressScale: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .opacity(configuration.isPressed ? 0.92 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+    }
 }
 
 // MARK: - Background
@@ -105,7 +129,7 @@ struct SectionTag: View {
     init(_ text: String, color: Color = Lab.dim) { self.text = text; self.color = color }
     var body: some View {
         HStack(spacing: 7) {
-            LiveDot(color: color == Lab.dim ? Lab.watch : color, size: 5)
+            LiveDot(color: color == Lab.dim ? Lab.violet : color, size: 5)
             Text(text.uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
         }
         .accessibilityElement(children: .combine)
@@ -141,7 +165,7 @@ struct ScreenTitle: View {
                 Circle().fill(Lab.whoop).frame(width: 6, height: 6)
                 Text(kicker.uppercased()).font(Lab.label(11)).tracking(2.6).foregroundStyle(Lab.dim)
             }
-            Text(title).font(Lab.display(36)).foregroundStyle(Lab.text)
+            Text(title).font(Lab.display(34)).foregroundStyle(Lab.text)
                 .shadow(color: Lab.violet.opacity(0.35), radius: 12)
             Capsule().fill(Lab.duel).frame(width: 46, height: 3).opacity(0.9)
         }
@@ -298,13 +322,16 @@ struct RangePicker: View {
     var body: some View {
         HStack(spacing: 6) {
             ForEach([7, 30, 90], id: \.self) { d in
-                Button { withAnimation(.snappy) { days = d } } label: {
+                Button {
+                    if days != d { Lab.tick() }
+                    withAnimation(.snappy) { days = d }
+                } label: {
                     Text("\(d)D").font(Lab.mono(12, .heavy))
-                        .foregroundStyle(days == d ? Lab.bg : Lab.dim)
+                        .foregroundStyle(days == d ? Color.white : Lab.dim)
                         .padding(.horizontal, 14).padding(.vertical, 7)
-                        .background(Capsule().fill(days == d ? AnyShapeStyle(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing)) : AnyShapeStyle(Color.white.opacity(0.06))))
+                        .background(Capsule().fill(days == d ? AnyShapeStyle(Lab.violet) : AnyShapeStyle(Color.white.opacity(0.06))))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(PressScale())
                 .accessibilityAddTraits(days == d ? .isSelected : [])
             }
         }
@@ -323,7 +350,7 @@ struct EmptyNote: View {
 /// Shared chart axes: faint grid, mono labels.
 enum LabAxis {
     static var y: some AxisContent {
-        AxisMarks(position: .leading) { _ in
+        AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { _ in
             AxisGridLine().foregroundStyle(Lab.line)
             AxisValueLabel().foregroundStyle(Lab.faint).font(Lab.mono(9, .medium))
         }

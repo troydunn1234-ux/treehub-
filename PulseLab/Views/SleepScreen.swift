@@ -50,6 +50,7 @@ struct SleepScreen: View {
                     }
                     .pickerStyle(.segmented)
                     .frame(width: 160)
+                    .onChange(of: source) { _, _ in Lab.tick() }
                 }
                 let list = nights.filter { $0.source == source }
                 if list.isEmpty {
