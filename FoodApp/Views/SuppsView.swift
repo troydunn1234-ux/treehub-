@@ -81,7 +81,7 @@ struct SuppsView: View {
                     .frame(width: 34, height: 34).background(Ember.card, in: Circle())
             }
             .buttonStyle(Squish()).accessibilityLabel("Previous day")
-            Text(dayTitle).font(Ember.font(15, .heavy)).foregroundStyle(isToday ? Ember.cream : Ember.fire)
+            Text(dayTitle).font(Ember.font(15, .heavy)).foregroundStyle(isToday ? Ember.cream : Ember.orange)
                 .frame(maxWidth: .infinity).contentTransition(.numericText())
             Button { withAnimation(.snappy) { day = Day.shift(day, by: 1) } } label: {
                 Image(systemName: "chevron.right").font(.system(size: 14, weight: .bold))
