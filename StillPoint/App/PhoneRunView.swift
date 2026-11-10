@@ -200,14 +200,22 @@ struct PhoneMovementView: View {
                 }
                 .padding(.top, 30)
                 Spacer()
-                ZStack {
-                    CountdownRing(progress: session.stepProgress, color: SP.teal, lineWidth: 4)
-                    VStack(spacing: 2) {
-                        Text("\(Int(session.stepRemaining.rounded(.up)))").font(SP.numbers(64)).foregroundStyle(SP.ink)
-                        Text("SECONDS").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
+                ZStack(alignment: .topTrailing) {
+                    PoseFigureView(motion: PoseLibrary.motion(for: s), mirrored: PoseLibrary.mirrored(for: s), lineWidth: 3.5)
+                        .id(session.index)
+                        .frame(height: 300)
+                        .frame(maxWidth: .infinity)
+                    ZStack {
+                        CountdownRing(progress: session.stepProgress, color: SP.teal, lineWidth: 3)
+                        VStack(spacing: 0) {
+                            Text("\(Int(session.stepRemaining.rounded(.up)))").font(SP.numbers(30)).foregroundStyle(SP.ink)
+                            Text("SEC").font(SP.rounded(9, .semibold)).tracking(1.4).foregroundStyle(SP.faint)
+                        }
                     }
+                    .frame(width: 84, height: 84)
                 }
-                .frame(width: 230, height: 230)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("\(Int(session.stepRemaining.rounded(.up))) seconds left")
                 VStack(spacing: 10) {
                     Text(s.name).font(SP.serif(34, .light)).foregroundStyle(SP.ink).multilineTextAlignment(.center)
                     if !s.how.isEmpty {

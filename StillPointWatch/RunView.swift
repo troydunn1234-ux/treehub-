@@ -202,16 +202,24 @@ struct MovementRunView: View {
         let s = session.step
         ZStack {
             DuskBackground(glow: SP.teal).opacity(0.85)
-            VStack(spacing: 4) {
-                ZStack {
-                    CountdownRing(progress: session.stepProgress, color: SP.teal, lineWidth: 3)
-                    VStack(spacing: 0) {
-                        Text("\(Int(session.stepRemaining.rounded(.up)))").font(SP.numbers(30)).foregroundStyle(SP.ink)
-                        Text("STEP \(session.index + 1)/\(session.steps.count)").font(SP.rounded(9, .semibold)).tracking(1).foregroundStyle(SP.faint)
+            VStack(spacing: 2) {
+                GeometryReader { g in
+                    HStack(spacing: 6) {
+                        PoseFigureView(motion: PoseLibrary.motion(for: s), mirrored: PoseLibrary.mirrored(for: s), lineWidth: 2.2)
+                            .id(session.index)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        ZStack {
+                            CountdownRing(progress: session.stepProgress, color: SP.teal, lineWidth: 3)
+                            VStack(spacing: 0) {
+                                Text("\(Int(session.stepRemaining.rounded(.up)))").font(SP.numbers(22)).foregroundStyle(SP.ink)
+                                Text("\(session.index + 1)/\(session.steps.count)").font(SP.rounded(9, .semibold)).tracking(1).foregroundStyle(SP.faint)
+                            }
+                        }
+                        .frame(width: min(64, g.size.height), height: min(64, g.size.height))
                     }
                 }
-                .frame(width: 84, height: 84)
-                Text(s.name).font(SP.serif(17)).foregroundStyle(SP.ink).lineLimit(2).multilineTextAlignment(.center)
+                .frame(height: 78)
+                Text(s.name).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2).multilineTextAlignment(.center)
                 if !s.how.isEmpty {
                     Text(s.how).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(2).multilineTextAlignment(.center)
                 }

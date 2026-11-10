@@ -103,8 +103,20 @@ struct PracticeDetailView: View {
                     PaintedScene(kind: tradition?.scene ?? .water, tint: tradition?.tint ?? SP.teal)
                     if !practice.isMovement {
                         BreathOrb(scale: 0.78, phase: .still, accent: tradition?.tint).frame(width: 150, height: 150)
+                    } else if let first = practice.steps.first {
+                        // Hero: the routine's first move, slowly looping
+                        PoseFigureView(motion: PoseLibrary.motion(for: first), mirrored: PoseLibrary.mirrored(for: first), lineWidth: 3)
+                            .frame(width: 190, height: 190)
                     } else {
                         Image(systemName: "figure.cooldown").font(.system(size: 54, weight: .ultraLight)).foregroundStyle(SP.ink.opacity(0.9))
+                    }
+                    if !practice.isMovement && practice.kind != "walking" {
+                        // Posture hint: sit cross-legged or on a chair
+                        PoseThumb(motion: PoseLibrary.seatedCrossLegged)
+                            .frame(width: 44, height: 56)
+                            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottomTrailing)
+                            .padding(18)
+                            .opacity(0.8)
                     }
                 }
                 .frame(height: 280)
@@ -183,6 +195,8 @@ struct PracticeDetailView: View {
                             ForEach(Array(practice.scaledSteps(minutes: minutes).enumerated()), id: \.offset) { i, s in
                                 HStack(alignment: .top, spacing: 12) {
                                     Text("\(i + 1)").font(SP.numbers(15)).foregroundStyle(SP.teal).frame(width: 20)
+                                    PoseThumb(motion: PoseLibrary.motion(for: s), mirrored: PoseLibrary.mirrored(for: s))
+                                        .frame(width: 34, height: 44)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(s.name + (s.sideLetter.map { " · \($0)" } ?? "")).font(SP.serif(16)).foregroundStyle(SP.ink)
                                         if !s.how.isEmpty { Text(s.how).font(SP.rounded(13)).foregroundStyle(SP.dim) }
