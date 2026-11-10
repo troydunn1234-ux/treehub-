@@ -153,6 +153,7 @@
 		AC398B65141BF04CA2AF536B /* StatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A949FB8533987999EAF3557 /* StatsView.swift */; };
 		AC8B87BE4A6856B197F0F0B6 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752CFF19534F6C28C530E163 /* HistoryView.swift */; };
 		ADCB5C71FDA1E0034F39EF03 /* Metrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = E2CD4EAE449E445C94FC7058 /* Metrics.swift */; };
+		AE7C55D0EC4308B9E5B17887 /* DataCheckView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C8840179BE6C1E1155A6EC04 /* DataCheckView.swift */; };
 		AF5D4436E4BAE070350D06F5 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		AFAC42A70CCB7C2587A2F129 /* MindfulHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9402C3386278DF81C3762F63 /* MindfulHealth.swift */; };
 		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
@@ -532,6 +533,7 @@
 		C7AA8CFD0F0A3339F71DE301 /* Lab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Lab.swift; sourceTree = "<group>"; };
 		C81D053EF004338204CA6530 /* RoamrUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RoamrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		C86A93C7C984AD7AE8470297 /* Clicker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Clicker.entitlements; sourceTree = "<group>"; };
+		C8840179BE6C1E1155A6EC04 /* DataCheckView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataCheckView.swift; sourceTree = "<group>"; };
 		CB213271A39B184F8A858EDC /* FoodBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookApp.swift; sourceTree = "<group>"; };
 		CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveEffects.swift; sourceTree = "<group>"; };
 		CE0DD6553C79BBE6E4426229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -1096,6 +1098,7 @@
 			children = (
 				2961FC930B94333CCFB933A5 /* ActivityScreen.swift */,
 				AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */,
+				C8840179BE6C1E1155A6EC04 /* DataCheckView.swift */,
 				46F39B4CE24618D01D0EC8BB /* FightViews.swift */,
 				1494B33D010A8083375A49B6 /* HeartScreen.swift */,
 				A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */,
@@ -1862,6 +1865,7 @@
 				DAF31E6E973FCA23657571DB /* ActivityScreen.swift in Sources */,
 				C8872ADC80FB540A52407EB7 /* Compare.swift in Sources */,
 				6F36EE85A25B87E69D5B5040 /* CompareScreen.swift in Sources */,
+				AE7C55D0EC4308B9E5B17887 /* DataCheckView.swift in Sources */,
 				03002C1C1C111C63091FAB89 /* DemoData.swift in Sources */,
 				FC273B748ADADC2A9961878C /* Dock.swift in Sources */,
 				216DA2C8A550981259403AE5 /* DuelChart.swift in Sources */,
