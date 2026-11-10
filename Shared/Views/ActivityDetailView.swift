@@ -11,6 +11,9 @@ struct ActivityDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var confirmDelete = false
+    #if TRACK_APP
+    @State private var editingDrive = false
+    #endif
     @State private var probe: RoutePoint?
     @State private var gpxURL: URL?
     #if !TRACK_APP
@@ -25,6 +28,17 @@ struct ActivityDetailView: View {
             VStack(alignment: .leading, spacing: Theme.gap + 4) {
                 hero
                 VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                #if TRACK_APP
+                if activity.kind == .drive {
+                    Button { editingDrive = true } label: {
+                        Label("Edit Drive", systemImage: "clock.badge.checkmark")
+                            .font(Theme.rounded(15, .bold))
+                            .frame(maxWidth: .infinity).padding(.vertical, 12)
+                            .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 14))
+                    }
+                    .buttonStyle(.plain)
+                }
+                #endif
                 if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty {
                     GlassCard(padding: 14) {
                         VStack(alignment: .leading, spacing: 10) {
@@ -123,6 +137,10 @@ struct ActivityDetailView: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear { gpxURL = GPX.write(activity) }
         .onDisappear { try? context.save() }
+        .onChange(of: activity.routeData) { _, _ in gpxURL = GPX.write(activity) }
+        #if TRACK_APP
+        .sheet(isPresented: $editingDrive) { DriveEditSheet(activity: activity) }
+        #endif
         .alert("Delete this activity?", isPresented: $confirmDelete) {
             Button("Delete", role: .destructive) {
                 let target = activity

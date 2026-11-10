@@ -101,6 +101,10 @@ struct RoutePoint: Codable, Hashable {
 
     var coordinate: CLLocationCoordinate2D { CLLocationCoordinate2D(latitude: lat, longitude: lng) }
 
+    init(lat: Double, lng: Double, alt: Double = .nan, t: Double, speed: Double = -1, limit: Double = -1) {
+        self.lat = lat; self.lng = lng; self.alt = alt; self.t = t; self.speed = speed; self.limit = limit
+    }
+
     init(_ loc: CLLocation) {
         lat = loc.coordinate.latitude
         lng = loc.coordinate.longitude

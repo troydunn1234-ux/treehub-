@@ -24,7 +24,7 @@ enum Meal: String, CaseIterable, Identifiable, Codable {
 }
 
 @Model
-final class FoodEntry {
+final class FoodEntry: Identifiable {
     var id: UUID = UUID()
     var name: String = ""
     var cal: Double = 0

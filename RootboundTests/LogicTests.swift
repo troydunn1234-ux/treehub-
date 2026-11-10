@@ -36,6 +36,34 @@ final class GeoTests: XCTestCase {
     }
 }
 
+final class DriveCorrectionTests: XCTestCase {
+    func testTrimsTimestampedRouteAndInterpolatesCutBoundaries() {
+        let points = [
+            RoutePoint(lat: 0, lng: 0, alt: 10, t: 100),
+            RoutePoint(lat: 0, lng: 0.001, alt: 12, t: 200),
+            RoutePoint(lat: 0, lng: 0.002, alt: 11, t: 300),
+            RoutePoint(lat: 0, lng: 0.003, alt: 14, t: 400),
+        ]
+        let result = DriveCorrection.trim(points, start: Date(timeIntervalSince1970: 150), end: Date(timeIntervalSince1970: 350))
+        XCTAssertNotNil(result)
+        XCTAssertEqual(result?.route.count, 4)
+        XCTAssertEqual(result?.route.first?.t ?? 0, 150, accuracy: 0.001)
+        XCTAssertEqual(result?.route.last?.t ?? 0, 350, accuracy: 0.001)
+        XCTAssertEqual(result?.distanceM ?? 0, 222, accuracy: 3)
+        XCTAssertEqual(result?.averageSpeedMPS ?? 0, (result?.distanceM ?? 0) / 200, accuracy: 0.001)
+    }
+
+    func testOlderRouteWithoutTimestampsCannotBeTrimmed() {
+        let points = [RoutePoint(lat: 0, lng: 0, t: 0), RoutePoint(lat: 0, lng: 0.001, t: 0)]
+        XCTAssertNil(DriveCorrection.trim(points, start: Date(timeIntervalSince1970: 100), end: Date(timeIntervalSince1970: 200)))
+    }
+
+    func testInvalidTimeRangeCannotBeTrimmed() {
+        let points = [RoutePoint(lat: 0, lng: 0, t: 100), RoutePoint(lat: 0, lng: 0.001, t: 200)]
+        XCTAssertNil(DriveCorrection.trim(points, start: Date(timeIntervalSince1970: 200), end: Date(timeIntervalSince1970: 100)))
+    }
+}
+
 final class GameTests: XCTestCase {
     func testLevelCurve() {
         XCTAssertEqual(GameEngine.level(for: 0).level, 1)

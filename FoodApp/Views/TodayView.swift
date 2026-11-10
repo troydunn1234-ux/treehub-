@@ -13,6 +13,7 @@ struct TodayView: View {
     @State private var snapping = false
     @State private var celebrate = 0
     @State private var demoSnap: SnapResult?
+    @State private var selectedMeal: FoodEntry?
     @State private var health = FoodHealth.shared
     @AppStorage("eatBackPct") private var eatBack: Int = 0
     @AppStorage("ringNet") private var ringNet = false
@@ -80,6 +81,9 @@ struct TodayView: View {
         .fullScreenCover(isPresented: $snapping) { SnapView(day: day) { celebrate += 1 } }
         .sheet(item: $demoSnap) { r in
             SnapResultSheet(result: r, day: day) { celebrate += 1 }.presentationDetents([.large])
+        }
+        .sheet(item: $selectedMeal) { entry in
+            MealEntryPhotoDetail(entry: entry).presentationDetents([.medium, .large])
         }
         .task { await health.refreshBurned() }
         .onChange(of: phase) { _, p in if p == .active { Task { await health.refreshBurned() } } }
@@ -151,7 +155,7 @@ struct TodayView: View {
                 }
                 VStack(spacing: 0) {
                     ForEach(items) { e in
-                        FoodRow(entry: e) { delete(e) }
+                        FoodRow(entry: e, onDelete: { delete(e) }) { selectedMeal = e }
                         if e.id != items.last?.id { Divider().overlay(Ember.line).padding(.leading, 14) }
                     }
                 }
@@ -290,6 +294,7 @@ struct MacroPill: View {
 struct FoodRow: View {
     let entry: FoodEntry
     let onDelete: () -> Void
+    var onTap: () -> Void = {}
     @State private var offset: CGFloat = 0
 
     var body: some View {
@@ -328,7 +333,10 @@ struct FoodRow: View {
                 .onEnded { _ in withAnimation(.spring(response: 0.3, dampingFraction: 0.8)) { offset = offset < -50 ? -70 : 0 } })
         }
         .clipped()
+        .contentShape(Rectangle())
+        .onTapGesture(perform: onTap)
         .accessibilityElement(children: .combine)
+        .accessibilityHint("Open meal details and edit its photo")
         .accessibilityAction(named: "Delete") { onDelete() }
     }
 }
