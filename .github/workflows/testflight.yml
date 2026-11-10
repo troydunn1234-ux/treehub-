@@ -97,7 +97,7 @@ jobs:
           archive
           # Each fresh runner makes a development certificate. Only when Apple's
           # limit is hit, clear the old CI ones (Apple emails once per removal) and retry.
-          if ! grep -q "ARCHIVE SUCCEEDED" archive.log && grep -q "maximum number of certificates" archive.log; then
+          if ! grep -q "ARCHIVE SUCCEEDED" archive.log && grep -qE "maximum number of certificates|private key is not installed" archive.log; then
             pip3 install --quiet --break-system-packages "pyjwt[crypto]" || pip3 install --quiet "pyjwt[crypto]"
             python3 .github/scripts/prune_dev_certs.py
             archive
