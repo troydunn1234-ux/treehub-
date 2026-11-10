@@ -213,7 +213,7 @@ struct CompareScreen: View {
                 SectionTag("How we compare")
                 Text("""
                 Only days (or nights) where both trackers recorded a value are compared. "Agree" means within \
-                3 bpm resting HR, 20 min of sleep, 1 breath/min, 2% SpO₂, 0.3 °C or 250 kcal. HRV is compared by \
+                3 bpm resting HR, 20 min of sleep, 1 breath/min, 2% SpO₂, \(Units.fahrenheit ? "0.5 °F" : "0.3 °C") or 250 kcal. HRV is compared by \
                 trend because Apple Watch logs SDNN and WHOOP logs RMSSD. Readiness is Pulse Lab's own Watch \
                 score, not an Apple metric.
                 """)

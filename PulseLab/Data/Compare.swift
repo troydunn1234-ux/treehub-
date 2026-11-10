@@ -109,14 +109,14 @@ enum Stats {
 enum Compare {
     struct Spec { let metric: String; let unit: String; let tol: Double; let trend: Bool; let get: (DayStat) -> Double? }
 
-    static let dailySpecs: [Spec] = [
+    static var dailySpecs: [Spec] { [
         Spec(metric: "Resting HR", unit: "bpm", tol: 3, trend: false) { $0.rhr },
         Spec(metric: "HRV", unit: "ms", tol: 0, trend: true) { $0.hrv },
         Spec(metric: "Respiratory rate", unit: "br/min", tol: 1, trend: false) { $0.resp },
         Spec(metric: "Blood oxygen", unit: "%", tol: 2, trend: false) { $0.spo2 },
-        Spec(metric: "Temp deviation", unit: "°C", tol: 0.3, trend: false) { $0.tempDev },
+        Spec(metric: "Temp deviation", unit: Units.fahrenheit ? "°F" : "°C", tol: Units.fahrenheit ? 0.5 : 0.3, trend: false) { Units.tempDelta($0.tempDev).0 },
         Spec(metric: "Calories", unit: "kcal", tol: 250, trend: false) { $0.totalKcal },
-    ]
+    ] }
 
     static func agreements(watch: [DayStat], whoop: [DayStat], sleeps: [SleepNight], days: Int) -> [Agreement] {
         let cut = Date().dayStart.adding(days: -(days - 1))

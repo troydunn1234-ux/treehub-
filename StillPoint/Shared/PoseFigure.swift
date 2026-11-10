@@ -301,15 +301,16 @@ enum PoseLibrary {
     static let circleLo = standing { $0.lean = -20; $0.bow = 60; $0.lShoulder = 40; $0.rShoulder = 40 }
     static let hop = standing { $0.lift = 1; $0.lKnee = 12; $0.rKnee = 12; $0.lShoulder = 25; $0.rShoulder = 25 }
     static let butterfly = seated { $0.lHip = 40; $0.rHip = 40; $0.lShoulder = 25; $0.rShoulder = 25 }
-    static let butterflyFold = seated { $0.lHip = 40; $0.rHip = 40; $0.bow = 55; $0.lShoulder = 20; $0.rShoulder = 20 }
+    static let butterflyFold = seated { $0.lHip = 40; $0.rHip = 40; $0.bow = 60; $0.lShoulder = 30; $0.rShoulder = 30; $0.lElbow = 40; $0.rElbow = 40 }
     static let longSit = seated { $0.lHip = -55; $0.rHip = -55; $0.lShoulder = 25; $0.rShoulder = 25 }
-    static let longSitFold = seated { $0.lHip = -55; $0.rHip = -55; $0.bow = 60; $0.lShoulder = 35; $0.rShoulder = 35 }
+    static let longSitFold = seated { $0.lHip = -55; $0.rHip = -55; $0.bow = 70; $0.lShoulder = 60; $0.rShoulder = 60; $0.lElbow = 5; $0.rElbow = 5; $0.hands = .palmDown }
     static let wideSit = seated { $0.lHip = 10; $0.rHip = 10; $0.lShoulder = 25; $0.rShoulder = 25 }
-    static let wideSitFold = seated { $0.lHip = 10; $0.rHip = 10; $0.bow = 55; $0.lShoulder = 35; $0.rShoulder = 35 }
+    static let wideSitFold = seated { $0.lHip = 10; $0.rHip = 10; $0.bow = 65; $0.lShoulder = 55; $0.rShoulder = 55; $0.lElbow = 5; $0.rElbow = 5; $0.hands = .palmDown }
     static let kneelRecline = seated { $0.lHip = -70; $0.rHip = -70; $0.bow = -35; $0.lShoulder = -40; $0.rShoulder = -40; $0.lElbow = -20; $0.rElbow = -20 }
     static let prayer = standing { $0.lShoulder = 25; $0.rShoulder = 25; $0.lElbow = 125; $0.rElbow = 125 }
     static let raisedArmsBack = standing { $0.lShoulder = 172; $0.rShoulder = 172; $0.bow = -18; $0.lift = 0.4 }
-    static let lungeR = standing { $0.rHip = 55; $0.rKnee = 80; $0.lHip = -30; $0.lKnee = 10; $0.crouch = 0.9; $0.lShoulder = 165; $0.rShoulder = 165; $0.bow = -8 }
+    // Front thigh level, shin upright; back knee dropped toward the floor; arms overhead, slight lift of the chest.
+    static let lungeR = standing { $0.rHip = 85; $0.rKnee = 90; $0.lHip = -35; $0.lKnee = 75; $0.crouch = 1.0; $0.lShoulder = 170; $0.rShoulder = 170; $0.lElbow = 5; $0.rElbow = 5; $0.bow = -12 }
     static let downDog: Pose = { var p = Pose(); p.prone = true; p.bow = 50; p.crouch = 1; p.rShoulder = 110; p.rElbow = 0; p.rKnee = 15; p.headTilt = -40; return p }()
     static let eightPoint: Pose = { var p = Pose(); p.prone = true; p.bow = 5; p.crouch = 0.45; p.rShoulder = 40; p.rElbow = 90; p.rKnee = 70; return p }()
     static let cobra: Pose = { var p = Pose(); p.prone = true; p.bow = 50; p.crouch = 0; p.rShoulder = 20; p.rElbow = 60; p.rKnee = 0; p.headTilt = 10; return p }()

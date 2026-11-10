@@ -340,6 +340,12 @@ final class GoogleTVController: TVController, @unchecked Sendable {
 
     private static func account(_ tv: DiscoveredTV) -> String { "tv.googleTV.\(tv.serial ?? tv.host)" }
 
+    func didMove(from old: DiscoveredTV, to new: DiscoveredTV) async {
+        guard Self.account(old) != Self.account(new), let pin = Self.loadPin(for: old) else { return }
+        Self.savePin(pin, for: new)
+        Self.deletePin(for: old)
+    }
+
     private static func savePin(_ fingerprint: String, for tv: DiscoveredTV) {
         deletePin(for: tv)
         let add: [String: Any] = [

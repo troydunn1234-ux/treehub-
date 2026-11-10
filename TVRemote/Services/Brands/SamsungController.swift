@@ -50,6 +50,10 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
     // MARK: Keys and storage
 
     private func tokenKey(_ tv: DiscoveredTV) -> String { "tv.samsung.\(tv.serial ?? tv.host)" }
+    func didMove(from old: DiscoveredTV, to new: DiscoveredTV) async {
+        let a = tokenKey(old), b = tokenKey(new)
+        if a != b, let t = Keychain.get(a) { Keychain.set(t, for: b); Keychain.delete(a) }
+    }
     private static let noToken = "-"   // TV accepted us without handing out a token
     private func macKey(_ tv: DiscoveredTV) -> String { "tv.samsung.mac.\(tv.serial ?? tv.host)" }
     private static func pinKey(_ host: String) -> String { "samsungCertPin.\(host)" }

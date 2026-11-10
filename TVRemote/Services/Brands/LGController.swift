@@ -34,6 +34,14 @@ final class LGController: NSObject, TVController, URLSessionDelegate, @unchecked
 
     private func key(_ tv: DiscoveredTV) -> String { "tv.lg.\(tv.serial ?? tv.host)" }
     private func macKey(_ tv: DiscoveredTV) -> String { "tv.lg.mac.\(tv.serial ?? tv.host)" }
+    func didMove(from old: DiscoveredTV, to new: DiscoveredTV) async {
+        let a = key(old), b = key(new)
+        if a != b, let k = Keychain.get(a) { Keychain.set(k, for: b); Keychain.delete(a) }
+        let ma = macKey(old), mb = macKey(new)
+        if ma != mb, let m = UserDefaults.standard.string(forKey: ma) {
+            UserDefaults.standard.set(m, forKey: mb); UserDefaults.standard.removeObject(forKey: ma)
+        }
+    }
     private static func pinKey(_ host: String) -> String { "lgCertPin.\(host)" }
 
     // MARK: - TLS: trust on first use, private addresses only

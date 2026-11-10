@@ -113,6 +113,9 @@ enum TVTextMode {
 
 extension TVController {
     var textMode: TVTextMode { .append }
+    /// The TV was found again at a new address. Carry pairing credentials over so the
+    /// user does not have to pair twice. Default: nothing to move.
+    func didMove(from old: DiscoveredTV, to new: DiscoveredTV) async {}
     func backspace(_ tv: DiscoveredTV, count: Int) async throws { throw TVControlError.unsupported }
     func submitText(_ tv: DiscoveredTV) async throws { try await press(tv, .ok) }
     func openSearch(_ tv: DiscoveredTV) async throws { throw TVControlError.unsupported }

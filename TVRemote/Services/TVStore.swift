@@ -255,7 +255,7 @@ final class TVStore {
                         moved.port = found.port
                         // Keep the saved id (and its credentials) stable when the TV had none.
                         if moved.serial == nil, let s = found.serial { moved.serial = s }
-                        if let v = controller(for: lost.brand) as? VizioController { await v.didMove(from: lost, to: moved) }
+                        await controller(for: lost.brand).didMove(from: lost, to: moved)
                         tvs[i] = moved
                         if activeID == lost.id { activeID = moved.id }
                     }
