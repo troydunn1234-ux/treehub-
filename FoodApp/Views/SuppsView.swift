@@ -34,6 +34,7 @@ struct SuppsView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     header
+                    dayPicker
                     if supps.isEmpty { emptyState } else {
                         progressCard
                         weekDots
@@ -70,6 +71,42 @@ struct SuppsView: View {
         .padding(.top, 6)
     }
 
+    private var isToday: Bool { day == Day.key(Date()) }
+
+    /// Flip between days so a missed dose can be checked off (or unchecked) after the fact.
+    private var dayPicker: some View {
+        HStack(spacing: 8) {
+            Button { withAnimation(.snappy) { day = Day.shift(day, by: -1) } } label: {
+                Image(systemName: "chevron.left").font(.system(size: 14, weight: .bold))
+                    .frame(width: 34, height: 34).background(Ember.card, in: Circle())
+            }
+            .buttonStyle(Squish()).accessibilityLabel("Previous day")
+            Text(dayTitle).font(Ember.font(15, .heavy)).foregroundStyle(isToday ? Ember.cream : Ember.fire)
+                .frame(maxWidth: .infinity).contentTransition(.numericText())
+            Button { withAnimation(.snappy) { day = Day.shift(day, by: 1) } } label: {
+                Image(systemName: "chevron.right").font(.system(size: 14, weight: .bold))
+                    .frame(width: 34, height: 34).background(Ember.card, in: Circle())
+            }
+            .buttonStyle(Squish()).disabled(isToday).opacity(isToday ? 0.35 : 1).accessibilityLabel("Next day")
+            if !isToday {
+                Button { withAnimation(.snappy) { day = Day.key(Date()) } } label: {
+                    Text("Today").font(Ember.font(13, .bold)).foregroundStyle(Ember.cream)
+                        .padding(.horizontal, 12).padding(.vertical, 8).background(Ember.card, in: Capsule())
+                }
+                .buttonStyle(Squish())
+            }
+        }
+        .foregroundStyle(Ember.cream)
+        .padding(.top, 10)
+    }
+
+    private var dayTitle: String {
+        if isToday { return "Today" }
+        if day == Day.shift(Day.key(Date()), by: -1) { return "Yesterday" }
+        let f = DateFormatter(); f.dateFormat = "EEE, MMM d"
+        return f.string(from: Day.date(day))
+    }
+
     private var progressCard: some View {
         HStack(spacing: 16) {
             ZStack {
@@ -84,7 +121,7 @@ struct SuppsView: View {
             }
             .frame(width: 74, height: 74)
             VStack(alignment: .leading, spacing: 4) {
-                Text(allDone ? "Stack complete" : "\(supps.count - takenCount) left today")
+                Text(allDone ? "Stack complete" : "\(supps.count - takenCount) left \(isToday ? "today" : dayTitle.lowercased())")
                     .font(Ember.font(20, .heavy)).foregroundStyle(Ember.cream)
                 HStack(spacing: 4) {
                     Image(systemName: "flame.fill").foregroundStyle(Ember.fire)
