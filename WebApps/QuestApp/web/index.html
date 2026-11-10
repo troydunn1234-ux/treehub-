@@ -878,7 +878,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var s = bal("savings"), c = bal("checking"), h = bal("cash"), all = r2(s + c + h);
     function card(cls, name, v, a) {
       var f = flow(a, mon);
-      return '<div class="card ' + cls + '"><span class="lbl">' + name + '</span><span class="big num" data-cu="' + cls + '" data-v="' + v + '">' + fmt(v) + '</span>' +
+      return '<div class="card ' + cls + '" onclick="setBalance(\'' + a + '\',\'' + name + '\')" title="Tap to set the balance"><span class="lbl">' + name + ' <small style="opacity:.55">tap to set</small></span><span class="big num" data-cu="' + cls + '" data-v="' + v + '">' + fmt(v) + '</span>' +
         '<span class="sub num"><span class="in">+' + fmt(f.i) + '</span><span class="out">-' + fmt(f.o) + '</span><span>' + monShort(mon) + "</span></span></div>";
     }
     $("wallets").innerHTML =
@@ -1974,6 +1974,17 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   /* Make each wallet's balance equal what the bank says right now (SoFi Checking -> Checking, SoFi Savings -> Savings).
      Credit cards aren't wallets, so they're left out. */
+  /* Manual override: type what the bank app shows right now; the log stays as is and the starting balance absorbs the difference. */
+  function setBalance(acct, name) {
+    var cur = bal(acct);
+    var v = prompt("What does your bank show for " + name + " right now?", cur.toFixed(2));
+    if (v === null) return;
+    var n = parseFloat(String(v).replace(/[^0-9.\-]/g, ""));
+    if (!isFinite(n)) return;
+    S.start[acct] = r2(n - (cur - (S.start[acct] || 0)));
+    touch(); renderAll(); toast(name + " set to " + fmt(n));
+  }
+  window.setBalance = setBalance;
   function bankReconcile(res) {
     var sums = {}, any = false;
     (res.accounts || []).forEach(function (a) {
@@ -1982,6 +1993,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       /* some banks report available-balance as 0 when they don't support it, so only trust it when it's a real number */
       var av = (a.available !== undefined && a.available !== null && a.available !== "") ? +a.available : NaN;
       var b = (isFinite(av) && av !== 0) ? av : +a.balance;
+      /* a checking account with activity and exactly $0.00 almost always means the bank didn't send a balance */
+      if (b === 0 && (a.transactions || []).length) return;
       var w = walletFor(a); sums[w] = r2((sums[w] || 0) + b); any = true;
     });
     if (!any) return false;
