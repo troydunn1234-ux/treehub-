@@ -101,10 +101,13 @@ struct SetupView: View {
                 .font(SP.rounded(14))
                 .tint(SP.amber)
 
-                if !practice.about.isEmpty {
-                    Text(practice.about).font(SP.rounded(12)).foregroundStyle(SP.dim)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                NavigationLink { WatchPracticeInfoView(practice: practice) } label: {
+                    Label("About this practice", systemImage: "info.circle")
+                        .font(SP.rounded(13)).foregroundStyle(SP.teal)
+                        .frame(maxWidth: .infinity).padding(.vertical, 8)
+                        .background(Capsule().fill(Color.white.opacity(0.06)))
                 }
+                .buttonStyle(.plain)
                 if let s = practice.safety, !s.isEmpty {
                     Label(s, systemImage: "heart.text.square").font(SP.rounded(11)).foregroundStyle(SP.rose.opacity(0.9))
                         .frame(maxWidth: .infinity, alignment: .leading)

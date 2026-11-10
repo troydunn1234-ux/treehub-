@@ -58,7 +58,9 @@ struct PhoneRunView: View {
         let m = MovementSession(practice: p, minutes: minutes, settings: s)
         m.feedback = haptics
         m.onFinish = { ms in
-            log(ms.record(device: "iPhone"), mindful: s.logMovementAsMindful)
+            var r = ms.record(device: "iPhone")
+            r.kind = "movement"; r.minutesPlanned = minutes
+            log(r, mindful: s.logMovementAsMindful)
             DispatchQueue.main.async { next() }
         }
         movement = m
@@ -71,7 +73,9 @@ struct PhoneRunView: View {
                               patternOverride: plan.patternOverride)
         b.feedback = haptics
         b.onFinish = { bs in
-            log(bs.record(device: "iPhone"), mindful: true)
+            var r = bs.record(device: "iPhone")
+            r.kind = plan.practice.kind; r.minutesPlanned = plan.minutes; r.warmUpId = plan.warmUp?.id
+            log(r, mindful: true)
             DispatchQueue.main.async { complete() }
         }
         breath = b

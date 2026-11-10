@@ -1,0 +1,314 @@
+{
+ "version": 1,
+ "terms": [
+  {
+   "term": "prāṇāyāma",
+   "definition": "Yogic breath regulation. Prāṇa is the vital breath, āyāma its extension or restraint. The classic practices come from Haṭha yoga texts.",
+   "aliases": [
+    "pranayama"
+   ]
+  },
+  {
+   "term": "vagus nerve",
+   "definition": "The long cranial nerve carrying calming, 'rest and digest' signals between brain, heart, lungs and gut. Slow exhales are thought to nudge it toward calm.",
+   "aliases": [
+    "vagal",
+    "vagal tone"
+   ]
+  },
+  {
+   "term": "HRV",
+   "definition": "Heart rate variability: the natural beat-to-beat variation in heart rhythm. Higher resting HRV usually goes with better recovery and a calmer nervous system.",
+   "aliases": [
+    "heart rate variability",
+    "SDNN"
+   ]
+  },
+  {
+   "term": "zazen",
+   "definition": "Seated meditation in Zen: upright, alert, eyes lowered. Sōtō emphasises just sitting; Rinzai pairs it with kōan study.",
+   "aliases": []
+  },
+  {
+   "term": "mettā",
+   "definition": "Pāli for loving-kindness: a warm, unconditional wish for well-being, cultivated toward oneself and outward to all beings.",
+   "aliases": [
+    "metta",
+    "loving-kindness"
+   ]
+  },
+  {
+   "term": "dhikr",
+   "definition": "Remembrance of God in Sufi practice: repeating sacred names or phrases, often in rhythm with the breath.",
+   "aliases": [
+    "zikr"
+   ]
+  },
+  {
+   "term": "hesychasm",
+   "definition": "Eastern Christian contemplative tradition of inner stillness (hesychia), known for the Jesus Prayer paired with the breath.",
+   "aliases": [
+    "hesychast"
+   ]
+  },
+  {
+   "term": "qi",
+   "definition": "In Chinese thought, the vital energy or breath that moves through the body; cultivated in qigong, tai chi and Daoist meditation.",
+   "aliases": [
+    "chi",
+    "qigong"
+   ]
+  },
+  {
+   "term": "dantian",
+   "definition": "'Elixir field': energy centres in Daoist practice. The lower dantian sits a few finger-widths below the navel and is a common resting place for attention.",
+   "aliases": [
+    "dan tian"
+   ]
+  },
+  {
+   "term": "kumbhaka",
+   "definition": "Breath retention in prāṇāyāma, after the inhale (antara) or the exhale (bāhya).",
+   "aliases": [
+    "retention",
+    "breath hold"
+   ]
+  },
+  {
+   "term": "coherent breathing",
+   "definition": "Breathing at around five to six breaths a minute, where heart rhythm and breath fall into step. Also called resonance breathing.",
+   "aliases": [
+    "resonance breathing",
+    "resonance"
+   ]
+  },
+  {
+   "term": "CO₂ tolerance",
+   "definition": "How comfortable the body is with a rising carbon-dioxide level. Gentle holds and slow exhales can raise it, which tends to ease the urge to over-breathe.",
+   "aliases": [
+    "CO2 tolerance",
+    "carbon dioxide"
+   ]
+  },
+  {
+   "term": "parasympathetic",
+   "definition": "The branch of the autonomic nervous system that slows the heart and settles the body. Long exhales lean this way.",
+   "aliases": [
+    "rest and digest"
+   ]
+  },
+  {
+   "term": "sympathetic",
+   "definition": "The 'fight or flight' branch of the nervous system: faster heart, sharper alertness. Useful in bursts, tiring when it stays on.",
+   "aliases": [
+    "fight or flight"
+   ]
+  },
+  {
+   "term": "baroreflex",
+   "definition": "A reflex that steadies blood pressure by adjusting heart rate. Slow breathing is thought to strengthen it, part of why resonance breathing feels calming.",
+   "aliases": []
+  },
+  {
+   "term": "nitric oxide",
+   "definition": "A gas made in the nasal passages that helps open airways and blood vessels. Humming greatly increases its release.",
+   "aliases": []
+  },
+  {
+   "term": "diaphragmatic breathing",
+   "definition": "Breathing that lets the belly rise on the inhale, using the diaphragm rather than lifting the shoulders.",
+   "aliases": [
+    "belly breathing",
+    "diaphragm"
+   ]
+  },
+  {
+   "term": "nāḍī śodhana",
+   "definition": "Alternate-nostril breathing; literally 'channel cleansing'. Thumb and ring finger close one nostril at a time.",
+   "aliases": [
+    "nadi shodhana",
+    "alternate nostril"
+   ]
+  },
+  {
+   "term": "ujjāyī",
+   "definition": "'Victorious' breath: a soft ocean sound made by slightly narrowing the throat on each breath.",
+   "aliases": [
+    "ujjayi",
+    "ocean breath"
+   ]
+  },
+  {
+   "term": "bhrāmarī",
+   "definition": "'Bee' breath: a long hum on the exhale, often with ears gently covered.",
+   "aliases": [
+    "bhramari",
+    "bee breath"
+   ]
+  },
+  {
+   "term": "mudrā",
+   "definition": "A hand or body gesture used in meditation, such as the cosmic mudrā of zazen (hands cupped, thumbs lightly touching).",
+   "aliases": [
+    "mudra"
+   ]
+  },
+  {
+   "term": "mantra",
+   "definition": "A word or phrase repeated silently or aloud to steady attention — Buddho, So Hum, a sacred name.",
+   "aliases": [
+    "japa"
+   ]
+  },
+  {
+   "term": "ajapa japa",
+   "definition": "'Repetition without repeating': letting a mantra such as So Hum ride on the natural breath rather than being spoken.",
+   "aliases": []
+  },
+  {
+   "term": "ānāpānasati",
+   "definition": "Mindfulness of breathing, the Buddha's sixteen-step instruction in the Ānāpānasati Sutta.",
+   "aliases": [
+    "anapanasati"
+   ]
+  },
+  {
+   "term": "vipassanā",
+   "definition": "Insight meditation: clear, moment-to-moment observation of sensations and the mind, as taught in the Theravāda tradition.",
+   "aliases": [
+    "vipassana",
+    "insight"
+   ]
+  },
+  {
+   "term": "samatha",
+   "definition": "Calm abiding: steadying the mind on one object (often the breath) until it settles. Also spelled shamatha.",
+   "aliases": [
+    "shamatha",
+    "calm abiding"
+   ]
+  },
+  {
+   "term": "tonglen",
+   "definition": "Tibetan 'giving and taking': breathing in another's difficulty, breathing out relief. A practice of compassion.",
+   "aliases": []
+  },
+  {
+   "term": "kōan",
+   "definition": "A Zen question or story that cannot be solved by ordinary reasoning, used in Rinzai training to exhaust the thinking mind.",
+   "aliases": [
+    "koan"
+   ]
+  },
+  {
+   "term": "kinhin",
+   "definition": "Walking meditation in Zen, slow and in step with the breath, done between periods of sitting.",
+   "aliases": []
+  },
+  {
+   "term": "yoga nidra",
+   "definition": "'Yogic sleep': a guided rest lying down, moving attention through the body while staying awake at the edge of sleep.",
+   "aliases": []
+  },
+  {
+   "term": "trāṭaka",
+   "definition": "Steady gazing at a single point, often a candle flame, to gather attention; one of the Haṭha yoga cleansing practices.",
+   "aliases": [
+    "trataka",
+    "candle gazing"
+   ]
+  },
+  {
+   "term": "centering prayer",
+   "definition": "A Christian silent prayer method: return gently to a chosen sacred word whenever thoughts arise.",
+   "aliases": []
+  },
+  {
+   "term": "lectio divina",
+   "definition": "'Divine reading': a slow, prayerful way of reading a short text — read, reflect, respond, rest.",
+   "aliases": [
+    "lectio"
+   ]
+  },
+  {
+   "term": "microcosmic orbit",
+   "definition": "A Daoist practice of guiding attention (and qi) in a loop up the spine and down the front of the body.",
+   "aliases": [
+    "small heavenly circuit"
+   ]
+  },
+  {
+   "term": "zhan zhuang",
+   "definition": "'Standing like a post': a still standing posture from Chinese internal arts, building quiet strength and settled attention.",
+   "aliases": [
+    "standing meditation"
+   ]
+  },
+  {
+   "term": "shinrin-yoku",
+   "definition": "Forest bathing: unhurried time among trees, taking in the forest through the senses. Term coined in Japan in 1982.",
+   "aliases": [
+    "forest bathing"
+   ]
+  },
+  {
+   "term": "physiological sigh",
+   "definition": "Two inhales through the nose (the second a small top-up) followed by a long exhale; a fast way to offload CO₂ and settle.",
+   "aliases": [
+    "double inhale",
+    "cyclic sighing"
+   ]
+  },
+  {
+   "term": "box breathing",
+   "definition": "Equal inhale, hold, exhale, hold — classically four counts each. Simple, steadying, widely used for composure under pressure.",
+   "aliases": [
+    "square breathing"
+   ]
+  },
+  {
+   "term": "4-7-8",
+   "definition": "Inhale four, hold seven, exhale eight: a slow pattern popularised by Dr Andrew Weil, often used before sleep.",
+   "aliases": [
+    "478"
+   ]
+  },
+  {
+   "term": "interoception",
+   "definition": "Sensing the body's inner state — heartbeat, breath, warmth, tension. Many practices train it by returning attention inward.",
+   "aliases": [
+    "interoceptive"
+   ]
+  },
+  {
+   "term": "default mode network",
+   "definition": "Brain regions active during mind-wandering and self-referential thought. Focused attention practices tend to quiet it.",
+   "aliases": [
+    "DMN",
+    "mind-wandering"
+   ]
+  },
+  {
+   "term": "Haṭha Yoga Pradīpikā",
+   "definition": "A 15th-century yoga manual by Svātmārāma describing postures, prāṇāyāma and cleansing practices.",
+   "aliases": [
+    "Hatha Yoga Pradipika"
+   ]
+  },
+  {
+   "term": "Pāli Canon",
+   "definition": "The earliest complete collection of Buddhist scriptures, preserved in the Pāli language by the Theravāda school.",
+   "aliases": [
+    "Pali Canon",
+    "sutta"
+   ]
+  },
+  {
+   "term": "baduanjin",
+   "definition": "'Eight Pieces of Brocade': a classical qigong set of eight gentle movements, often done as a morning routine.",
+   "aliases": [
+    "eight brocades"
+   ]
+  }
+ ]
+}

@@ -216,6 +216,7 @@ struct PracticeCardRow: View {
             }
             Spacer()
             if let p = practice.pattern { Text(p.shortLabel).font(SP.rounded(12)).foregroundStyle(SP.dim) }
+            PracticeInfoButton(practice: practice, size: 16)
             Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
         }
         .padding(14)

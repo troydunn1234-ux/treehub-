@@ -76,12 +76,21 @@ struct WatchRoot: View {
                         }
                     }
 
-                    NavigationLink(value: "more") {
-                        Text("More").font(SP.rounded(14)).foregroundStyle(SP.amber)
-                            .frame(maxWidth: .infinity).padding(.vertical, 8)
-                            .background(Capsule().fill(Color.white.opacity(0.06)))
+                    HStack(spacing: 8) {
+                        NavigationLink(value: "more") {
+                            Text("More").font(SP.rounded(14)).foregroundStyle(SP.amber)
+                                .frame(maxWidth: .infinity).padding(.vertical, 8)
+                                .background(Capsule().fill(Color.white.opacity(0.06)))
+                        }
+                        .buttonStyle(.plain)
+                        NavigationLink(value: "journey") {
+                            Label("Journey", systemImage: "waveform.path.ecg")
+                                .font(SP.rounded(14)).foregroundStyle(SP.teal)
+                                .frame(maxWidth: .infinity).padding(.vertical, 8)
+                                .background(Capsule().fill(Color.white.opacity(0.06)))
+                        }
+                        .buttonStyle(.plain)
                     }
-                    .buttonStyle(.plain)
                 }
                 .padding(.horizontal, 4)
             }
@@ -90,7 +99,9 @@ struct WatchRoot: View {
             .navigationDestination(for: Intention.self) { i in
                 PracticeList(title: i.name, practices: lib.practices(for: i), onStart: start)
             }
-            .navigationDestination(for: String.self) { _ in MoreView(onStart: start) }
+            .navigationDestination(for: String.self) { key in
+                if key == "journey" { WatchJourneyView() } else { MoreView(onStart: start) }
+            }
             .navigationDestination(for: Practice.self) { p in SetupView(practice: p, onStart: startPlan) }
         }
         .fullScreenCover(item: $running) { plan in

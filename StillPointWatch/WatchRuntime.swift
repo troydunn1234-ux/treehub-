@@ -67,6 +67,13 @@ final class WatchRuntime: NSObject, ObservableObject {
     @Published private(set) var heartRate: Double? = nil
     @Published private(set) var startHR: Double? = nil
     @Published private(set) var minHR: Double? = nil
+    /// One reading every ~5 s while heart rate is on (time offset from `sessionStart`, bpm).
+    @Published private(set) var samples: [HRSample] = []
+
+    private(set) var sessionStart = Date()
+    private var sumHR = 0.0
+    private var countHR = 0
+    private var sampler: Timer?
 
     private let store = MindfulHealth.shared.store
     private var workout: HKWorkoutSession?
@@ -75,19 +82,47 @@ final class WatchRuntime: NSObject, ObservableObject {
     private var saveWorkout = false
     private var isDemo: Bool { ProcessInfo.processInfo.arguments.contains("-demo") }
 
+    /// Mean of every reading so far.
+    var avgHR: Double? { countHR > 0 ? sumHR / Double(countHR) : nil }
+
     func begin(trackHeartRate: Bool, saveWorkout: Bool) {
         end(discard: true)
         heartRate = nil; startHR = nil; minHR = nil
+        samples = []; sumHR = 0; countHR = 0
+        sessionStart = Date()
         self.saveWorkout = saveWorkout
         if isDemo {
             heartRate = 68; startHR = 68; minHR = 68
+            startSampler(demo: true)
             return
         }
-        if trackHeartRate, HKHealthStore.isHealthDataAvailable(), startWorkout() { return }
+        if trackHeartRate, HKHealthStore.isHealthDataAvailable(), startWorkout() {
+            startSampler(demo: false)
+            return
+        }
         let r = WKExtendedRuntimeSession()
         r.delegate = self
         r.start()
         runtime = r
+    }
+
+    private func startSampler(demo: Bool) {
+        sampler?.invalidate()
+        let t = Timer(timeInterval: 5, repeats: true) { [weak self] _ in
+            guard let self else { return }
+            if demo {
+                // A slow, slightly wobbly settle for screenshots.
+                let elapsed = Date().timeIntervalSince(self.sessionStart)
+                let v = 68 - min(8, elapsed / 30) + sin(elapsed / 7) * 1.2
+                self.gotHeartRate(v)
+            }
+            guard let hr = self.heartRate else { return }
+            let offset = Date().timeIntervalSince(self.sessionStart)
+            self.samples.append(HRSample(t: (offset * 10).rounded() / 10, bpm: hr.rounded()))
+            if self.samples.count > 2000 { self.samples.removeFirst(self.samples.count - 2000) }
+        }
+        RunLoop.main.add(t, forMode: .common)
+        sampler = t
     }
 
     private func startWorkout() -> Bool {
@@ -113,6 +148,8 @@ final class WatchRuntime: NSObject, ObservableObject {
 
     /// Stops everything. `discard` throws the workout away even if saving was on.
     func end(discard: Bool = false) {
+        sampler?.invalidate()
+        sampler = nil
         if let r = runtime {
             if r.state == .running || r.state == .scheduled { r.invalidate() }
             runtime = nil
@@ -136,6 +173,8 @@ final class WatchRuntime: NSObject, ObservableObject {
             self.heartRate = v
             if self.startHR == nil { self.startHR = v }
             self.minHR = min(self.minHR ?? v, v)
+            self.sumHR += v
+            self.countHR += 1
         }
     }
 }

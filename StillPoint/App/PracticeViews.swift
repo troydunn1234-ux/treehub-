@@ -127,6 +127,8 @@ struct PracticeDetailView: View {
                             if let t = tradition { SPChip(text: t.name, color: t.tint) }
                             SPChip(text: practice.level, color: SP.ink.opacity(0.75))
                             if practice.isMovement { SPChip(text: "Warm up", color: SP.teal) }
+                            Spacer()
+                            PracticeInfoButton(practice: practice, size: 20)
                         }
                         Text(practice.title).font(SP.serif(34, .light)).foregroundStyle(SP.ink)
                         if let p = practice.pattern { PatternStrip(pattern: p).padding(.top, 4) }

@@ -13,6 +13,7 @@ struct RunView: View {
     @State private var breath: BreathSession? = nil
     @State private var records: [SessionRecord] = []
     @State private var hrv: Double? = nil
+    @State private var detail: SessionRecord? = nil
     @StateObject private var runtime = WatchRuntime.shared
     @State private var haptics = WatchHaptics()
     @State private var started = false
@@ -26,8 +27,10 @@ struct RunView: View {
             case .practice:
                 if let b = breath { BreathRunView(session: b, heartRate: runtime.heartRate, onEnd: { b.finish() }) }
             case .done:
-                SummaryView(records: records, startHR: runtime.startHR, endHR: runtime.heartRate, minHR: runtime.minHR,
-                            hrv: hrv, onDone: onClose)
+                NavigationStack {
+                    SummaryView(records: records, startHR: runtime.startHR, endHR: runtime.heartRate, minHR: runtime.minHR,
+                                hrv: hrv, detail: detail, onDone: onClose)
+                }
             }
         }
         .onAppear(perform: setUp)
@@ -50,7 +53,8 @@ struct RunView: View {
             let m = MovementSession(practice: w, minutes: plan.warmUpMinutes, settings: s)
             m.feedback = haptics
             m.onFinish = { ms in
-                let r = ms.record(device: "Watch")
+                var r = ms.record(device: "Watch")
+                r.kind = "movement"; r.minutesPlanned = plan.warmUpMinutes
                 logRecord(r, mindful: s.logMovementAsMindful)
                 DispatchQueue.main.async { startPractice() }
             }
@@ -61,7 +65,10 @@ struct RunView: View {
             let m = MovementSession(practice: plan.practice, minutes: plan.minutes, settings: s)
             m.feedback = haptics
             m.onFinish = { ms in
-                logRecord(ms.record(device: "Watch"), mindful: s.logMovementAsMindful)
+                var r = ms.record(device: "Watch")
+                r.kind = "movement"; r.minutesPlanned = plan.minutes
+                enrich(&r)
+                logRecord(r, mindful: s.logMovementAsMindful)
                 DispatchQueue.main.async { complete() }
             }
             movement = m
@@ -82,7 +89,11 @@ struct RunView: View {
                               patternOverride: plan.patternOverride)
         b.feedback = haptics
         b.onFinish = { bs in
-            let r = bs.record(device: "Watch", hrStart: runtime.startHR, hrEnd: runtime.heartRate)
+            var r = bs.record(device: "Watch", hrStart: runtime.startHR, hrEnd: runtime.heartRate)
+            r.kind = plan.practice.kind
+            r.minutesPlanned = plan.minutes
+            r.warmUpId = plan.warmUp?.id
+            enrich(&r)
             logRecord(r, mindful: true)
             DispatchQueue.main.async { complete() }
         }
@@ -91,11 +102,42 @@ struct RunView: View {
         b.start()
     }
 
+    /// Fold the live heart-rate capture into a record (start, lowest, average, every ~5 s sample).
+    private func enrich(_ r: inout SessionRecord) {
+        guard let s = runtime.startHR else { return }
+        r.hrStart = s
+        r.hrEnd = runtime.heartRate
+        r.hrMin = runtime.minHR
+        r.hrAvg = runtime.avgHR
+        let offset = r.start.timeIntervalSince(runtime.sessionStart)
+        // Samples are timed from when the Watch started measuring; re-base them on this record's own start.
+        let mine = runtime.samples.filter { $0.t >= offset - 1 }.map { HRSample(t: max(0, $0.t - offset), bpm: $0.bpm) }
+        r.hrSamples = mine.isEmpty ? nil : mine
+    }
+
     private func complete() {
         runtime.end(discard: false)
-        let since = records.first?.start ?? Date().addingTimeInterval(-600)
-        MindfulHealth.shared.latestHRV(since: since) { v in hrv = v }
+        let main = records.last ?? records.first
+        detail = main
         withAnimation(.easeInOut(duration: 1.6)) { stage = .done }
+        guard let m = main else { return }
+        // HRV and breathing rate land in Health a little after the session; fetch, patch, and re-send.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+            MindfulHealth.shared.sessionHRV(start: m.start, end: m.end) { v in
+                let value = v ?? (ProcessInfo.processInfo.arguments.contains("-demo") ? 52 : nil)
+                hrv = value
+                guard let value else { return }
+                SessionLog.shared.update(m.id) { $0.hrv = value }
+                detail = SessionLog.shared.record(m.id)
+                if let updated = detail { WatchLink.shared.send(updated) }
+            }
+            MindfulHealth.shared.respiratoryRate(start: m.start, end: m.end) { v in
+                guard let v else { return }
+                SessionLog.shared.update(m.id) { $0.respiratoryRate = v }
+                detail = SessionLog.shared.record(m.id)
+                if let updated = detail { WatchLink.shared.send(updated) }
+            }
+        }
     }
 
     private func logRecord(_ r: SessionRecord, mindful: Bool) {
@@ -250,6 +292,7 @@ struct SummaryView: View {
     let endHR: Double?
     let minHR: Double?
     let hrv: Double?
+    var detail: SessionRecord? = nil
     let onDone: () -> Void
     @State private var bloom = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -279,6 +322,17 @@ struct SummaryView: View {
                 if let h = hrv { stat("\(Int(h)) ms", "HRV") }
                 let streak = SessionLog.shared.streak
                 if streak > 1 { Text("\(streak) days in a row").font(SP.rounded(12)).foregroundStyle(SP.amber) }
+                if let d = detail {
+                    NavigationLink {
+                        WatchSessionDetailView(record: d)
+                    } label: {
+                        Label("Details", systemImage: "waveform.path.ecg")
+                            .font(SP.rounded(13)).foregroundStyle(SP.teal)
+                            .frame(maxWidth: .infinity).padding(.vertical, 8)
+                            .background(Capsule().fill(Color.white.opacity(0.06)))
+                    }
+                    .buttonStyle(.plain)
+                }
                 Button("Done", action: onDone)
                     .tint(SP.amber)
                     .padding(.top, 4)
