@@ -27,6 +27,13 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var motionCounts: [ActivityKind: Int] = [:]
     /// Paused by the app because you stopped moving (GPS keeps running so it can resume itself).
     private(set) var autoPaused = false
+    /// When you last stopped moving while recording (nil while moving). Drives auto-finish from this.
+    private(set) var idleSince: Date?
+    /// Set when you've been stopped longer than the auto-finish setting; the app asks, then finishes.
+    private(set) var autoFinishDue = false
+    /// Idle seconds dropped from the end of the last finished recording (shown once in the summary).
+    private(set) var lastTrimmedSec: Double = 0
+    @ObservationIgnored private var lastMovingAt: Date?
     /// Direction of travel in degrees from north, -1 when unknown.
     private(set) var course: Double = -1
     /// Posted limit for the road you're on (drives only).
@@ -369,7 +376,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     /// Stops recording and returns a filled-in Activity (not yet inserted into the database).
-    func finish() -> Activity? {
+    /// With `trimIdle`, a stationary tail of 2+ minutes is cut off so it doesn't count as time or distance.
+    func finish(trimIdle: Bool = TrackPrefs.trimIdle, auto: Bool = false) -> Activity? {
         guard state != .idle, let startDate else { return nil }
         if state == .recording, let resumedAt { accumulated += Date().timeIntervalSince(resumedAt) }
         stopUpdates()
@@ -384,9 +392,71 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         a.maxSpeed = maxSpeed
         a.route = Self.simplify(points, maxCount: 4000)
         a.laneChanges = laneChanges
+        a.autoFinished = auto
+        var trimmed = 0.0
+        if trimIdle, let cut = Self.idleTailStart(points, kind: kind) {
+            let tail = a.end.timeIntervalSince1970 - cut
+            if tail >= 120 {
+                a.trim(endT: cut)
+                a.elevGainM = elevGain
+                trimmed = tail
+            }
+        }
         reset()
+        lastTrimmedSec = trimmed
         LiveActivityController.shared.end()
         return a
+    }
+
+    /// Time (seconds since 1970) when the final stationary stretch began, or nil if you were still moving.
+    static func idleTailStart(_ pts: [RoutePoint], kind: ActivityKind) -> Double? {
+        guard pts.count > 2 else { return nil }
+        let still = kind == .drive ? 0.9 : 0.3   // m/s: ~2 mph for drives, ~0.7 mph on foot
+        var i = pts.count - 1
+        var cut: Double? = nil
+        while i > 0 {
+            let a = pts[i - 1], b = pts[i]
+            let dt = b.t - a.t
+            guard dt > 0 else { i -= 1; continue }
+            let d = CLLocation(latitude: a.lat, longitude: a.lng).distance(from: CLLocation(latitude: b.lat, longitude: b.lng))
+            let v = b.speed >= 0 ? max(b.speed, d / dt) : d / dt
+            if v > still { break }
+            cut = a.t
+            i -= 1
+        }
+        return cut
+    }
+
+    /// Minutes of standing still before a recording finishes itself (per kind; 0 = never).
+    private var autoFinishAfter: TimeInterval {
+        let m = TrackPrefs.autoFinishMinutes
+        guard m > 0 else { return 0 }
+        return Double(m) * 60
+    }
+
+    /// Call every few seconds while recording: tracks how long you've been stopped.
+    private func idleCheck() {
+        guard state == .recording || (state == .paused && autoPaused) else { idleSince = nil; return }
+        let still = kind == .drive ? 0.9 : 0.25
+        let now = Date()
+        let lastFixAge = lastRaw.map { now.timeIntervalSince($0.timestamp) } ?? 0
+        let moving = currentSpeed > still && lastFixAge < 20
+        if moving {
+            lastMovingAt = now
+            if idleSince != nil { idleSince = nil; autoFinishDue = false }
+            return
+        }
+        if idleSince == nil { idleSince = lastRaw?.timestamp ?? now }
+        if autoFinishAfter > 0, let since = idleSince, !autoFinishDue,
+           now.timeIntervalSince(since) >= autoFinishAfter {
+            autoFinishDue = true
+        }
+    }
+
+    /// "Keep going" on the auto-finish prompt: don't ask again until you've moved and stopped again.
+    func dismissAutoFinish() {
+        autoFinishDue = false
+        idleSince = Date()
     }
 
     /// Change the activity type while recording (e.g. a walk that became a hike).
@@ -429,6 +499,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     }
 
     private func stillCheck() {
+        idleCheck()
         // Wait for a first GPS fix, so a slow start doesn't look like a stop.
         guard state == .recording, autoPauseEnabled, let resumedAt, let raw = lastRaw else { return }
         let lastFix = max(raw.timestamp, resumedAt)
@@ -480,6 +551,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         motionCounts = [:]
         recoveredFromCrash = false
         autoPaused = false
+        idleSince = nil
+        autoFinishDue = false
+        lastMovingAt = nil
         slowSince = nil
         fastFixes = 0
         lastRaw = nil

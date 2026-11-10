@@ -49,6 +49,7 @@ struct TrackRootView: View {
     /// "track", "history", "stats" or "settings".
     @State private var tab: String = "track"
     @State private var detector = DriveDetector.shared
+    @State private var autoFinish = AutoFinish.shared
 
     private var tabItems: [TabBarItem] {
         [
@@ -92,8 +93,21 @@ struct TrackRootView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
         }
+        .overlay(alignment: .top) {
+            if let left = autoFinish.secondsLeft, tracker.isActive {
+                AutoFinishBanner(kind: tracker.kind, secondsLeft: left,
+                                 onFinish: { autoFinish.finishNow() }, onKeep: { autoFinish.keepGoing() })
+                    .padding(.horizontal, 16)
+                    .padding(.top, 8)
+                    .transition(.move(edge: .top).combined(with: .opacity))
+            }
+        }
         .animation(.spring(response: 0.45, dampingFraction: 0.8), value: detector.showBanner)
         .animation(.spring(response: 0.45, dampingFraction: 0.8), value: detector.showAlwaysCard)
+        .animation(.spring(response: 0.45, dampingFraction: 0.8), value: autoFinish.secondsLeft == nil)
+        .onChange(of: tracker.autoFinishDue) { _, due in
+            if due { autoFinish.ask() }
+        }
         .onReceive(NotificationCenter.default.publisher(for: DriveDetector.startDriveNote)) { _ in
             consumePendingStart()
         }
@@ -106,6 +120,7 @@ struct TrackRootView: View {
             if phase == .active { consumePendingStart(); detector.refresh() }
         }
         .onAppear {
+            autoFinish.attach(tracker)
             detector.isTracking = { [tracker] in tracker.isActive }
             detector.refresh()
             consumePendingStart()
@@ -142,6 +157,44 @@ struct TrackRootView: View {
         if !tracker.canTrack { tracker.requestPermission(); return }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         tracker.start(kind: .drive)
+    }
+}
+
+/// "Looks like your drive ended" banner with a countdown; finishes on its own unless you say keep going.
+struct AutoFinishBanner: View {
+    let kind: ActivityKind
+    let secondsLeft: Int
+    var onFinish: () -> Void
+    var onKeep: () -> Void
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle().fill(Theme.goldGradient).frame(width: 46, height: 46)
+                Text("\(secondsLeft)").font(Theme.rounded(16, .black)).foregroundStyle(Theme.forestDeep).monospacedDigit()
+                    .contentTransition(.numericText())
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                Text("\(kind.title) over?").font(Theme.rounded(17, .heavy)).foregroundStyle(.white)
+                Text("You've been stopped a while. Finishing in \(secondsLeft)s.").font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+            }
+            Spacer(minLength: 6)
+            Button(action: onFinish) {
+                Text("Finish").font(Theme.rounded(14, .heavy)).foregroundStyle(Theme.forestDeep)
+                    .padding(.horizontal, 14).padding(.vertical, 10).background(Theme.goldGradient, in: Capsule())
+            }
+            .buttonStyle(.plain)
+            Button(action: onKeep) {
+                Text("Keep going").font(Theme.rounded(13, .bold)).foregroundStyle(.white)
+                    .padding(.horizontal, 10).padding(.vertical, 10).background(Color.white.opacity(0.1), in: Capsule())
+            }
+            .buttonStyle(.plain)
+        }
+        .padding(12)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(Theme.gold.opacity(0.5), lineWidth: 1.2))
+        .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
+        .animation(.snappy, value: secondsLeft)
     }
 }
 

@@ -29,6 +29,10 @@ struct ActivityRow: View {
                     if activity.kind.isOnFoot && activity.elevGainM > 5 {
                         Label(Format.elevation(activity.elevGainM), systemImage: "arrow.up.right")
                     }
+                    if activity.trimmedSec >= 60 || activity.autoFinished {
+                        Label(activity.autoFinished ? "Auto" : "Trimmed", systemImage: "scissors")
+                            .foregroundStyle(Theme.gold)
+                    }
                 }
                 .labelStyle(CompactLabelStyle())
                 .font(Theme.rounded(12, .bold))

@@ -62,8 +62,53 @@ final class Activity {
     @Attribute(.externalStorage) var routeData: Data?
     /// Lane changes spotted during a drive (JSON of [LaneChange]).
     var laneChangesData: Data? = nil
+    /// Idle seconds cut off the end (or start) of this recording, by auto-finish or by hand.
+    var trimmedSec: Double = 0
+    /// The app finished this one on its own after you stopped moving.
+    var autoFinished: Bool = false
 
     init() {}
+
+    /// Cuts the recording to the points between two times (seconds since 1970) and recomputes
+    /// distance, moving time, top speed and lane changes from what's left. Elevation gain is kept.
+    func trim(startT: Double? = nil, endT: Double? = nil) {
+        let pts = route
+        guard pts.count > 1 else { return }
+        let lo = startT ?? pts.first!.t
+        let hi = endT ?? pts.last!.t
+        let kept = pts.filter { $0.t >= lo && $0.t <= hi }
+        guard kept.count > 1 else { return }
+        let cutHead = max(0, kept.first!.t - pts.first!.t)
+        let cutTail = max(0, pts.last!.t - kept.last!.t)
+        trimmedSec += cutHead + cutTail
+        route = kept
+        laneChanges = laneChanges.filter { $0.t >= lo && $0.t <= hi }
+        let s = Self.stats(kept)
+        distanceM = s.distance
+        movingSec = s.moving
+        maxSpeed = s.maxSpeed
+        if cutHead > 0 { start = Date(timeIntervalSince1970: kept.first!.t) }
+        end = Date(timeIntervalSince1970: kept.last!.t)
+        if end <= start { end = start.addingTimeInterval(1) }
+    }
+
+    /// Distance, moving time and top speed from a run of points, the same way the tracker counts them.
+    static func stats(_ pts: [RoutePoint]) -> (distance: Double, moving: Double, maxSpeed: Double) {
+        var d = 0.0, moving = 0.0, top = 0.0
+        for i in 1..<max(1, pts.count) {
+            let a = pts[i - 1], b = pts[i]
+            let dt = b.t - a.t
+            guard dt > 0 else { continue }
+            let step = CLLocation(latitude: a.lat, longitude: a.lng).distance(from: CLLocation(latitude: b.lat, longitude: b.lng))
+            let v = step / dt
+            if v > 95 { continue }
+            d += step
+            if v > 0.5 && dt < 300 { moving += dt }
+            let sp = b.speed >= 0 ? b.speed : v
+            if sp < 95 { top = max(top, sp) }
+        }
+        return (d, moving, top)
+    }
 
     var laneChanges: [LaneChange] {
         get { laneChangesData.flatMap { try? JSONDecoder().decode([LaneChange].self, from: $0) } ?? [] }

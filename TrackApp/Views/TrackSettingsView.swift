@@ -6,6 +6,8 @@ struct TrackSettingsView: View {
     @AppStorage("useMetric") private var useMetric = false
     @AppStorage(TrackPrefs.announceSplitsKey) private var announceSplits = TrackPrefs.defaultOn
     @AppStorage(TrackPrefs.autoPauseKey) private var autoPause = TrackPrefs.defaultOn
+    @AppStorage(TrackPrefs.autoFinishKey) private var autoFinishMinutes = 5
+    @AppStorage(TrackPrefs.trimIdleKey) private var trimIdle = true
     @AppStorage(DriveDetector.enabledKey) private var autoDrive = true
     @AppStorage(DriveDetector.thresholdKey) private var autoDriveMph = DriveDetector.defaultMph
     @State private var detector = DriveDetector.shared
@@ -137,6 +139,28 @@ struct TrackSettingsView: View {
                     title: "Auto-pause",
                     subtitle: autoPause ? "Pauses when you stop, resumes when you move" : "Off") {
                     Toggle("Auto-pause", isOn: $autoPause.animation(Self.spring))
+                        .labelsHidden()
+                        .tint(Theme.glow)
+                }
+                divider
+                row(symbol: "flag.checkered.circle.fill", tint: Theme.leaf,
+                    title: "Auto-finish after stopping",
+                    subtitle: autoFinishMinutes > 0 ? "Asks after \(autoFinishMinutes) min still, then finishes for you" : "Off") {
+                    Picker("Auto-finish", selection: $autoFinishMinutes) {
+                        Text("Off").tag(0)
+                        Text("3 min").tag(3)
+                        Text("5 min").tag(5)
+                        Text("10 min").tag(10)
+                    }
+                    .pickerStyle(.menu)
+                    .tint(Theme.glow)
+                    .labelsHidden()
+                }
+                divider
+                row(symbol: "scissors", tint: Theme.gold,
+                    title: "Trim idle time at the end",
+                    subtitle: trimIdle ? "Minutes sitting still before Finish don't count" : "Off") {
+                    Toggle("Trim idle time", isOn: $trimIdle.animation(Self.spring))
                         .labelsHidden()
                         .tint(Theme.glow)
                 }

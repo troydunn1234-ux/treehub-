@@ -43,6 +43,9 @@ struct TrackView: View {
             .sheet(item: $justFinished) { a in
                 NavigationStack { ActivityDetailView(activity: a, isNew: true) }
             }
+            .onReceive(NotificationCenter.default.publisher(for: Notification.Name("roamr.autoFinish"))) { _ in
+                if tracker.isActive { finish(auto: true) }
+            }
             .sheet(isPresented: $showDirections) {
                 DirectionsSheet(nav: nav, origin: tracker.points.last?.coordinate, onGo: startNavigation)
                     .presentationDragIndicator(.visible)
@@ -603,10 +606,10 @@ struct TrackView: View {
         #endif
     }
 
-    private func finish() {
+    private func finish(auto: Bool = false) {
         let suggestion = tracker.suggestedKind
         let originalKind = tracker.kind
-        guard let a = tracker.finish() else { return }
+        guard let a = tracker.finish(auto: auto) else { return }
         // If the motion chip strongly disagrees (e.g. you picked Walk but drove), switch it; you can change it back.
         if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
             && ActivityKind.available.contains(suggestion) { a.kind = suggestion }

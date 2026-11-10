@@ -6,6 +6,10 @@ import UIKit
 enum TrackPrefs {
     static let announceSplitsKey = "announceSplits"
     static let autoPauseKey = "autoPause"
+    /// Minutes of standing still before a drive finishes itself (0 = off).
+    static let autoFinishKey = "autoFinishMinutes"
+    /// Drop the idle minutes at the end when a recording is finished.
+    static let trimIdleKey = "trimIdleEnd"
 
     #if TRACK_APP
     static let defaultOn = true
@@ -14,8 +18,12 @@ enum TrackPrefs {
     #endif
 
     static func register() {
-        UserDefaults.standard.register(defaults: [announceSplitsKey: defaultOn, autoPauseKey: defaultOn])
+        UserDefaults.standard.register(defaults: [announceSplitsKey: defaultOn, autoPauseKey: defaultOn,
+                                                  autoFinishKey: defaultOn ? 5 : 0, trimIdleKey: true])
     }
+
+    static var autoFinishMinutes: Int { register(); return UserDefaults.standard.integer(forKey: autoFinishKey) }
+    static var trimIdle: Bool { register(); return UserDefaults.standard.bool(forKey: trimIdleKey) }
 
     static var announceSplits: Bool { register(); return UserDefaults.standard.bool(forKey: announceSplitsKey) }
     static var autoPause: Bool { register(); return UserDefaults.standard.bool(forKey: autoPauseKey) }

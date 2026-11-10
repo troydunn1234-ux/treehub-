@@ -11,6 +11,7 @@ struct ActivityDetailView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @State private var confirmDelete = false
+    @State private var showTrim = false
     @State private var probe: RoutePoint?
     @State private var gpxURL: URL?
     #if !TRACK_APP
@@ -121,6 +122,27 @@ struct ActivityDetailView: View {
         .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if coords.count > 2 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button { showTrim = true } label: { Label("Trim start or end", systemImage: "scissors") }
+                    } label: {
+                        Image(systemName: "pencil.circle.fill").font(.system(size: 22)).foregroundStyle(.white)
+                    }
+                    .accessibilityLabel("Edit")
+                }
+            }
+        }
+        .sheet(isPresented: $showTrim) {
+            TrimSheet(activity: activity) { startT, endT in
+                activity.trim(startT: startT, endT: endT)
+                try? context.save()
+                gpxURL = GPX.write(activity)
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
         .onAppear { gpxURL = GPX.write(activity) }
         .onDisappear { try? context.save() }
         .alert("Delete this activity?", isPresented: $confirmDelete) {
@@ -166,6 +188,7 @@ struct ActivityDetailView: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 if isNew { savedBadge }
+                if activity.trimmedSec >= 60 || activity.autoFinished { trimBadge }
                 HStack(spacing: 8) {
                     Image(systemName: activity.kind.symbol)
                         .font(.system(size: 13, weight: .bold))
@@ -184,6 +207,19 @@ struct ActivityDetailView: View {
             .padding(.horizontal, Theme.pad)
             .padding(.bottom, 4)
         }
+    }
+
+    /// "Trimmed 8 idle minutes at the end" / "Finished automatically".
+    private var trimBadge: some View {
+        let mins = Int((activity.trimmedSec / 60).rounded())
+        let text = mins >= 1
+            ? "Trimmed \(mins) idle minute\(mins == 1 ? "" : "s")\(activity.autoFinished ? " · finished automatically" : "")"
+            : "Finished automatically after you stopped"
+        return Label(text, systemImage: "scissors")
+            .font(Theme.rounded(12, .bold))
+            .foregroundStyle(.white.opacity(0.9))
+            .padding(.horizontal, 10).padding(.vertical, 5)
+            .background(.ultraThinMaterial, in: Capsule())
     }
 
     private var savedBadge: some View {
@@ -354,5 +390,114 @@ enum GPX {
 
     private static func escape(_ s: String) -> String {
         s.replacingOccurrences(of: "&", with: "&amp;").replacingOccurrences(of: "<", with: "&lt;").replacingOccurrences(of: ">", with: "&gt;")
+    }
+}
+
+
+/// Drag the handles to cut idle time (or a wrong-turn start) off a saved recording.
+/// The map and numbers update as you drag; nothing changes until you tap Trim.
+@MainActor
+struct TrimSheet: View {
+    let activity: Activity
+    var onTrim: (Double, Double) -> Void
+    @Environment(\.dismiss) private var dismiss
+    @State private var startT: Double = 0
+    @State private var endT: Double = 1
+    @State private var loaded = false
+    private let pts: [RoutePoint]
+
+    init(activity: Activity, onTrim: @escaping (Double, Double) -> Void) {
+        self.activity = activity
+        self.onTrim = onTrim
+        self.pts = activity.route
+    }
+
+    private var lo: Double { pts.first?.t ?? 0 }
+    private var hi: Double { pts.last?.t ?? 1 }
+    private var kept: [RoutePoint] { pts.filter { $0.t >= startT && $0.t <= endT } }
+    private var keptCoords: [CLLocationCoordinate2D] { kept.map(\.coordinate) }
+    private var cut: Double { max(0, (startT - lo) + (hi - endT)) }
+
+    var body: some View {
+        let s = Activity.stats(kept)
+        NavigationStack {
+            VStack(spacing: 16) {
+                Map(initialPosition: .automatic) {
+                    MapPolyline(coordinates: pts.map(\.coordinate))
+                        .stroke(Color.white.opacity(0.18), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
+                    if keptCoords.count > 1 {
+                        MapPolyline(coordinates: keptCoords)
+                            .stroke(Theme.leafGradient, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                    }
+                    if let a = keptCoords.first {
+                        Annotation("", coordinate: a) { Circle().fill(.white).frame(width: 12, height: 12).overlay(Circle().stroke(Theme.forestDeep, lineWidth: 2)) }
+                    }
+                    if let b = keptCoords.last {
+                        Annotation("", coordinate: b) { Image(systemName: "flag.checkered.circle.fill").font(.system(size: 22)).foregroundStyle(Theme.gold, .white) }
+                    }
+                }
+                .mapStyle(.standard(elevation: .flat, pointsOfInterest: .excludingAll))
+                .frame(height: 260)
+                .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+
+                VStack(alignment: .leading, spacing: 14) {
+                    handle("Start", value: $startT, range: lo...max(lo + 1, endT - 1), tint: .white)
+                    handle("End", value: $endT, range: min(hi - 1, startT + 1)...hi, tint: Theme.gold)
+                }
+                .padding(.horizontal, 4)
+
+                HStack(spacing: 10) {
+                    stat(Format.duration(max(0, endT - startT)), "Time")
+                    stat(Format.distance(s.distance), "Distance")
+                    stat(cut >= 60 ? "−\(Int((cut / 60).rounded())) min" : "—", "Cut")
+                }
+
+                Spacer(minLength: 0)
+                Button {
+                    onTrim(startT, endT)
+                    UINotificationFeedbackGenerator().notificationOccurred(.success)
+                    dismiss()
+                } label: {
+                    Text(cut >= 1 ? "Trim" : "Nothing to trim").frame(maxWidth: .infinity)
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .disabled(cut < 1 || kept.count < 2)
+            }
+            .padding(Theme.pad)
+            .forestScreen()
+            .navigationTitle("Trim recording")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } } }
+            .onAppear {
+                guard !loaded else { return }
+                loaded = true
+                startT = lo
+                // Suggest cutting the idle tail if there is one.
+                endT = RouteTracker.idleTailStart(pts, kind: activity.kind).map { max(lo + 1, $0) } ?? hi
+            }
+        }
+    }
+
+    private func handle(_ label: String, value: Binding<Double>, range: ClosedRange<Double>, tint: Color) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(label).font(Theme.rounded(13, .heavy)).foregroundStyle(Theme.textDim)
+                Spacer()
+                Text(Date(timeIntervalSince1970: value.wrappedValue), style: .time)
+                    .font(Theme.rounded(14, .heavy)).foregroundStyle(tint).monospacedDigit()
+            }
+            Slider(value: value, in: range).tint(tint)
+                .accessibilityLabel("\(label) time")
+        }
+    }
+
+    private func stat(_ v: String, _ l: String) -> some View {
+        VStack(spacing: 2) {
+            Text(v).font(Theme.rounded(18, .black)).foregroundStyle(.white).monospacedDigit().contentTransition(.numericText())
+            Text(l.uppercased()).font(Theme.rounded(10, .heavy)).foregroundStyle(Theme.textDim)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
     }
 }

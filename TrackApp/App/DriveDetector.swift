@@ -90,7 +90,10 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         let start = UNNotificationAction(identifier: startActionID, title: "Start Drive", options: [.foreground])
         let later = UNNotificationAction(identifier: laterActionID, title: "Not now", options: [])
         let cat = UNNotificationCategory(identifier: categoryID, actions: [start, later], intentIdentifiers: [], options: [])
-        UNUserNotificationCenter.current().setNotificationCategories([cat])
+        let finishNow = UNNotificationAction(identifier: AutoFinish.finishActionID, title: "Finish now", options: [])
+        let keep = UNNotificationAction(identifier: AutoFinish.keepActionID, title: "Keep going", options: [])
+        let fin = UNNotificationCategory(identifier: AutoFinish.categoryID, actions: [finishNow, keep], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([cat, fin])
     }
 
     /// Called when the toggle turns on: asks for notifications, Always location and motion.
@@ -277,6 +280,14 @@ final class DriveNotificationRouter: NSObject, UNUserNotificationCenterDelegate 
         if id == DriveDetector.categoryID && response.actionIdentifier != DriveDetector.laterActionID
             && response.actionIdentifier != UNNotificationDismissActionIdentifier {
             DispatchQueue.main.async { DriveDetector.requestStartDrive() }
+        } else if id == AutoFinish.categoryID {
+            let action = response.actionIdentifier
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated {
+                    if action == AutoFinish.keepActionID { AutoFinish.shared.keepGoing() }
+                    else { AutoFinish.shared.finishNow() }   // "Finish now" or a tap on the banner
+                }
+            }
         }
         completionHandler()
     }
@@ -284,5 +295,73 @@ final class DriveNotificationRouter: NSObject, UNUserNotificationCenterDelegate 
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification,
                                 withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
         completionHandler([.banner, .sound])
+    }
+}
+
+
+/// Finishes a recording on its own after you've been stopped for a while: asks first
+/// (banner in the app, or a notification with "Finish now" / "Keep going"), then finishes
+/// 60 s later if you don't answer. The idle tail is trimmed off either way.
+@MainActor
+@Observable
+final class AutoFinish {
+    static let shared = AutoFinish()
+    nonisolated static let categoryID = "AUTO_FINISH"
+    nonisolated static let finishActionID = "FINISH_NOW"
+    nonisolated static let keepActionID = "KEEP_GOING"
+    nonisolated static let requestID = "auto-finish"
+    /// Posted when the recording should be finished (the Track screen does the saving).
+    nonisolated static let finishNote = Notification.Name("roamr.autoFinish")
+
+    /// Countdown shown in the in-app banner (nil = not asking).
+    private(set) var secondsLeft: Int?
+    @ObservationIgnored private var timer: Timer?
+    @ObservationIgnored private var tracker: RouteTracker?
+
+    func attach(_ t: RouteTracker) { tracker = t }
+
+    /// Call whenever the tracker's `autoFinishDue` flips to true.
+    func ask() {
+        guard secondsLeft == nil else { return }
+        secondsLeft = 60
+        if UIApplication.shared.applicationState != .active {
+            let content = UNMutableNotificationContent()
+            content.title = "Looks like your \(tracker?.kind.title.lowercased() ?? "drive") ended"
+            content.body = "Finishing in 60s. Tap Keep going if you're not done."
+            content.sound = .default
+            content.categoryIdentifier = Self.categoryID
+            content.interruptionLevel = .timeSensitive
+            UNUserNotificationCenter.current().add(UNNotificationRequest(identifier: Self.requestID, content: content, trigger: nil))
+        } else {
+            UINotificationFeedbackGenerator().notificationOccurred(.warning)
+        }
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated { self?.tick() }
+        }
+    }
+
+    private func tick() {
+        guard let s = secondsLeft else { stop(); return }
+        guard let t = tracker, t.isActive else { stop(); return }
+        if !t.autoFinishDue { stop(); return }   // started moving again
+        if s <= 1 { finishNow() } else { secondsLeft = s - 1 }
+    }
+
+    func keepGoing() {
+        tracker?.dismissAutoFinish()
+        stop()
+    }
+
+    func finishNow() {
+        stop()
+        NotificationCenter.default.post(name: Self.finishNote, object: nil)
+    }
+
+    private func stop() {
+        timer?.invalidate(); timer = nil
+        secondsLeft = nil
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [Self.requestID])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.requestID])
     }
 }
