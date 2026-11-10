@@ -40,7 +40,14 @@ struct WebScreen: UIViewRepresentable {
             web?.evaluateJavaScript("window.__shellConfetti && window.__shellConfetti()")
         }
         bridge.web = web
-        web.load(URLRequest(url: URL(string: "app://local/index.html")!))
+        // Launch flags for screenshots reach the page through the hash: -demo [-section today]
+        var page = "app://local/index.html"
+        let args = ProcessInfo.processInfo.arguments
+        if args.contains("-demo") {
+            page += "#demo"
+            if let i = args.firstIndex(of: "-section"), i + 1 < args.count { page += "&sec=" + args[i + 1] }
+        }
+        web.load(URLRequest(url: URL(string: page)!))
         return web
     }
 

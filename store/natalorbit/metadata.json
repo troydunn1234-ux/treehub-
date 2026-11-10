@@ -1,0 +1,69 @@
+{
+  "name": "Natal Orbit",
+  "subtitle": "Your birth sky, in 3D",
+  "promotionalText": "Enter your birth date, time and city and watch the sky you were born under spin in 3D. Big Three, planets, aspects, transits. Pay once: no ads, no subscription.",
+  "description": "Natal Orbit draws the exact sky you were born under as a living 3D orrery, then reads it to you in plain English. Pay once, keep it forever. No ads, no subscription, no account.\n\nYOUR SKY, SPINNING\nEnter your birth date, time and city. Natal Orbit places the Sun, Moon and every planet exactly where they were at that moment, lit by a real ephemeris, and lets you spin, pinch and fly through it.\n\nYOUR BIG THREE\nSun, Moon and Rising, explained in a few warm lines each: who you are, what you need, how you come across. Don't know your birth time? Say so and Natal Orbit skips the Rising instead of guessing.\n\nEVERY PLANET, EVERY ASPECT\nMercury to Pluto, each with its sign, house and degree. Conjunctions, trines, squares and oppositions drawn on a classic chart wheel, with tight orbs and a one-line read for each.\n\nHOUSES YOUR WAY\nPlacidus by default, Whole Sign with one tap.\n\nTODAY, FROM REAL TRANSITS\nSee where the planets are right now against your chart. The Moon's phase and sign, and the transits that actually touch you today.\n\nYOUR YEAR AHEAD\nThe slow planets' moves over the next twelve months, month by month, with what each one tends to bring.\n\nCOMPARE TWO CHARTS\nAdd a friend or partner and see where your skies meet: shared signs, cross aspects, the easy spots and the sparks.\n\nSHARE IT\nMake a share card of your Big Three or your chart wheel, sized for stories, posts or your lock screen.\n\nPRIVATE BY DESIGN\nYour birth data stays on your iPhone. No account, no servers, no analytics. Works fully offline.\n\nNatal Orbit is for reflection and fun; it does not predict events or replace professional advice.",
+  "keywords": "astrology,birth chart,natal chart,horoscope,zodiac,rising sign,moon sign,transits,aspects,synastry",
+  "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/PRIVACY.md",
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/SUPPORT.md",
+  "primaryCategory": "LIFESTYLE",
+  "secondaryCategory": "ENTERTAINMENT",
+  "price": "0.99",
+  "shots": [
+    {
+      "file": "natal-1-chart.png",
+      "eyebrow": "Your birth sky",
+      "line1": "Born under",
+      "line2": "this sky.",
+      "sub": "A real ephemeris, drawn in 3D. Spin it, fly through it.",
+      "chips": [
+        "Every planet, exact degree",
+        "Pinch, spin, orbit"
+      ]
+    },
+    {
+      "file": "natal-2-today.png",
+      "eyebrow": "Today",
+      "line1": "Today, from",
+      "line2": "real skies.",
+      "sub": "Where the planets are right now, against your chart.",
+      "chips": [
+        "Moon phase + sign",
+        "Year ahead"
+      ]
+    },
+    {
+      "file": "natal-3-three.png",
+      "eyebrow": "Big Three",
+      "line1": "Sun. Moon.",
+      "line2": "Rising.",
+      "sub": "Who you are, what you need, how you come across.",
+      "chips": [
+        "Plain-English reads",
+        "Placidus or Whole Sign"
+      ]
+    },
+    {
+      "file": "natal-4-compare.png",
+      "eyebrow": "Compare",
+      "line1": "Where your",
+      "line2": "skies meet.",
+      "sub": "Add a friend or partner and see the sparks.",
+      "chips": [
+        "Cross aspects",
+        "Shared signs"
+      ]
+    },
+    {
+      "file": "natal-5-share.png",
+      "eyebrow": "Share it",
+      "line1": "Your chart,",
+      "line2": "made to post.",
+      "sub": "Story, square or wallpaper. Private by design.",
+      "chips": [
+        "Works offline",
+        "Pay once, own it"
+      ]
+    }
+  ]
+}

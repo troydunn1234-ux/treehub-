@@ -8,7 +8,7 @@ on:
       app:
         description: Which app
         type: choice
-        options: [Clicker]
+        options: [Clicker, NatalOrbit]
         default: Clicker
 
 permissions:
@@ -36,6 +36,7 @@ jobs:
         run: |
           case "${{ inputs.app }}" in
             Clicker) echo "BUNDLE=com.troydunn.clicker" >> $GITHUB_ENV; echo "STORE=store/clicker" >> $GITHUB_ENV ;;
+            NatalOrbit) echo "BUNDLE=com.troydunn.natalorbit" >> $GITHUB_ENV; echo "STORE=store/natalorbit" >> $GITHUB_ENV ;;
           esac
 
       - name: Build for the simulator
@@ -65,23 +66,44 @@ jobs:
           xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 --operatorName ""
           xcrun simctl install "$UDID" build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app
           mkdir -p raw
-          xcrun simctl launch "$UDID" $BUNDLE -demo > /dev/null; sleep 6
-          xcrun simctl io "$UDID" screenshot raw/clicker-1-apps.png
-          xcrun simctl terminate "$UDID" $BUNDLE
-          xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
-          xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
-          xcrun simctl terminate "$UDID" $BUNDLE
-          xcrun simctl launch "$UDID" $BUNDLE -demo -picker > /dev/null; sleep 7
-          xcrun simctl io "$UDID" screenshot raw/clicker-5-picker.png
-          xcrun simctl terminate "$UDID" $BUNDLE
-          xcrun simctl launch "$UDID" $BUNDLE -demo -pc > /dev/null; sleep 6
-          xcrun simctl io "$UDID" screenshot raw/clicker-3-pc.png
-          xcrun simctl terminate "$UDID" $BUNDLE
-          xcrun simctl launch "$UDID" $BUNDLE -demo -switcher > /dev/null; sleep 7
-          xcrun simctl io "$UDID" screenshot raw/clicker-4-switcher.png
-          xcrun simctl terminate "$UDID" $BUNDLE
-          xcrun simctl launch "$UDID" $BUNDLE > /dev/null; sleep 6
-          xcrun simctl io "$UDID" screenshot raw/clicker-0-setup.png
+          case "${{ inputs.app }}" in
+          Clicker)
+            xcrun simctl launch "$UDID" $BUNDLE -demo > /dev/null; sleep 6
+            xcrun simctl io "$UDID" screenshot raw/clicker-1-apps.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
+            xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -picker > /dev/null; sleep 7
+            xcrun simctl io "$UDID" screenshot raw/clicker-5-picker.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -pc > /dev/null; sleep 6
+            xcrun simctl io "$UDID" screenshot raw/clicker-3-pc.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -switcher > /dev/null; sleep 7
+            xcrun simctl io "$UDID" screenshot raw/clicker-4-switcher.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE > /dev/null; sleep 6
+            xcrun simctl io "$UDID" screenshot raw/clicker-0-setup.png
+          ;;
+          NatalOrbit)
+            xcrun simctl launch "$UDID" $BUNDLE -demo -section chart > /dev/null; sleep 8
+            xcrun simctl io "$UDID" screenshot raw/natal-1-chart.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -section today > /dev/null; sleep 7
+            xcrun simctl io "$UDID" screenshot raw/natal-2-today.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -section three > /dev/null; sleep 7
+            xcrun simctl io "$UDID" screenshot raw/natal-3-three.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -section compare > /dev/null; sleep 7
+            xcrun simctl io "$UDID" screenshot raw/natal-4-compare.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+            xcrun simctl launch "$UDID" $BUNDLE -demo -section share > /dev/null; sleep 9
+            xcrun simctl io "$UDID" screenshot raw/natal-5-share.png
+            xcrun simctl terminate "$UDID" $BUNDLE
+          ;;
+          esac
 
       - name: Caption the screenshots
         run: |
