@@ -1969,6 +1969,13 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   function looksLikeTransfer(t) {
     return /transfer|xfer|payment.*thank|autopay|online payment|card payment|pymt|zelle to troy|to savings|from savings|from checking|to checking|discover.*payment|sofi.*(transfer|savings)/i.test((t.description || "") + " " + (t.payee || ""));
   }
+  /* Accounts you've turned off (an old bank you no longer use). Discover starts off. */
+  function bankIgnored(a) {
+    S.bankIgnore = S.bankIgnore || {};
+    if (S.bankIgnore[a.id] === undefined) S.bankIgnore[a.id] = /discover/i.test((a.name || "") + " " + (a.org || ""));
+    return !!S.bankIgnore[a.id];
+  }
+  function liveAccounts(res) { return (res.accounts || []).filter(function (a) { return !bankIgnored(a); }); }
   function isCredit(a) {
     return /discover|credit|card|visa|mastercard|amex|apple card/i.test((a.name || "") + " " + (a.org || "")) || (+a.balance || 0) < 0;
   }
@@ -1987,7 +1994,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   window.setBalance = setBalance;
   function bankReconcile(res) {
     var sums = {}, any = false;
-    (res.accounts || []).forEach(function (a) {
+    liveAccounts(res).forEach(function (a) {
       if (isCredit(a) || a.balance === undefined || a.balance === null || !isFinite(+a.balance)) return;
       /* pending charges are in the log now, so match the balance that already counts them (available), when the bank gives it */
       /* some banks report available-balance as 0 when they don't support it, so only trust it when it's a real number */
@@ -2008,7 +2015,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     S.moves.forEach(function (m) { if (m.bank && m.bank.id) seen[m.bank.id] = m; });
     (S.bankSkip || []).forEach(function (id) { seen[id] = true; });
     var all = [];
-    (res.accounts || []).forEach(function (a) { (a.transactions || []).forEach(function (t) { all.push({ a: a, t: t }); }); });
+    liveAccounts(res).forEach(function (a) { (a.transactions || []).forEach(function (t) { all.push({ a: a, t: t }); }); });
     /* transfers between your own accounts: same amount, opposite sign, different account, within 4 days */
     var mirror = {};
     all.forEach(function (x, i) {
@@ -2106,14 +2113,15 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (!BANK.on) return;
     var st = BANK.st || {}, body = "";
     if (!st.connected) {
-      body = '<ol class="banksteps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and connect SoFi and Discover there.</li>' +
+      body = '<ol class="banksteps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and connect SoFi there.</li>' +
         "<li>In SimpleFIN Bridge, make a new <b>setup token</b> and copy it.</li><li>Come back here and tap the button. Purchases then show up on their own.</li></ol>" +
         '<div class="row"><button class="btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting..." : "Paste setup token") + "</button></div>";
     } else {
       var accs = st.accounts || [];
       body = (accs.length ? accs.map(function (a) {
-        var to = isCredit(a) ? "card · tracked as spending" : ("→ " + (walletFor(a) === "savings" ? "Car Savings" : walletFor(a) === "cash" ? "Cash" : "Checking"));
-        return '<div class="bankacc"><span>' + esc(a.name) + "<small>" + esc(a.org) + " · " + esc(to) + '</small></span><b class="num">' + fmt(+a.balance || 0) + "</b></div>";
+        var off = bankIgnored(a);
+        var to = off ? "off · not synced" : isCredit(a) ? "card · tracked as spending" : ("→ " + (walletFor(a) === "savings" ? "Car Savings" : walletFor(a) === "cash" ? "Cash" : "Checking"));
+        return '<div class="bankacc"' + (off ? ' style="opacity:.45"' : "") + '><span>' + esc(a.name) + "<small>" + esc(a.org) + " · " + esc(to) + '</small></span><span class="row" style="align-items:center;gap:8px"><b class="num">' + (off ? "—" : fmt(+a.balance || 0)) + '</b><button class="btn ghost" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '" style="padding:4px 8px;font-size:11px">' + (off ? "Use" : "Stop") + "</button></span></div>";
       }).join("") : '<p class="note">Connected. Tap Sync now to pull your accounts.</p>') +
         '<p class="note">' + (st.lastSync ? "Last synced " + new Date(st.lastSync * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ". " : "") +
         "Syncs on its own every few hours when you open the app. Banks update about once a day. Fix a category once and it remembers that store.</p>" +
@@ -2201,6 +2209,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "resetall") arm(t, function () { S.tx = []; S.moves = []; touch(); renderAll(); });
     else if (a === "bankpaste") bankPaste();
     else if (a === "banksync") bankSync(true);
+    else if (a === "banktoggle") { S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[t.dataset.id] = !S.bankIgnore[t.dataset.id]; touch(); renderBank(); if (!S.bankIgnore[t.dataset.id]) bankSync(true); }
     else if (a === "bankoff") arm(t, function () { bankNative({ op: "simplefin", action: "disconnect" }).then(function () { BANK.msg = "Disconnected. Imported entries stay."; bankStatus(); }); });
   }
   function setTab(n) {

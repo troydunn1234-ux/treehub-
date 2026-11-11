@@ -100,6 +100,8 @@ final class HealthPull: @unchecked Sendable {
         var sleeps: [SleepNight] = []
         var hypnogram: [HypnoSegment] = []
         var workouts: [WorkoutRec] = []
+        /// Steps per day per device ("iPhone", "Apple Watch Ultra 3"…), before de-duplication.
+        var stepsByDevice: [Date: [String: Double]] = [:]
     }
 
     func pull(days: Int = 90) async -> Result {
@@ -122,13 +124,36 @@ final class HealthPull: @unchecked Sendable {
         }
 
         let mindful = await mindfulMinutes(from: start)
+        let stepsByDevice = await stepsByDevice(from: start)
         for (day, m) in mindful { watch[day, default: DayStat(day: day)].mindfulMin = m }
 
         let (sleeps, hypno) = await sleepNights(from: start.adding(days: -1))
         let workouts = await workouts(from: start)
         return Result(watch: watch.values.sorted { $0.day < $1.day },
                       whoop: whoop.values.sorted { $0.day < $1.day },
-                      sleeps: sleeps, hypnogram: hypno, workouts: workouts)
+                      sleeps: sleeps, hypnogram: hypno, workouts: workouts, stepsByDevice: stepsByDevice)
+    }
+
+    /// Steps counted by each device separately (the Watch and the iPhone both count; Health merges them for the total).
+    private func stepsByDevice(from start: Date) async -> [Date: [String: Double]] {
+        guard let type = HKQuantityType.quantityType(forIdentifier: .stepCount) else { return [:] }
+        let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: .strictStartDate)
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: pred, options: [.cumulativeSum, .separateBySource],
+                                                anchorDate: start, intervalComponents: DateComponents(day: 1))
+            q.initialResultsHandler = { _, collection, _ in
+                var out: [Date: [String: Double]] = [:]
+                collection?.enumerateStatistics(from: start, to: Date()) { stat, _ in
+                    for src in stat.sources ?? [] {
+                        guard Self.origin(src) != .whoop, let v = stat.sumQuantity(for: src)?.doubleValue(for: .count()), v > 0 else { continue }
+                        let name = src.bundleIdentifier.lowercased() == "com.apple.health" ? "iPhone" : src.name
+                        out[stat.startDate.dayStart, default: [:]][name, default: 0] += v
+                    }
+                }
+                cont.resume(returning: out)
+            }
+            store.execute(q)
+        }
     }
 
     /// Per-day value for each origin. Cumulative metrics: the Watch side falls back to Health's merged,
@@ -155,9 +180,12 @@ final class HealthPull: @unchecked Sendable {
                     }
                     var watchV: Double? = w.isEmpty ? nil : (spec.cumulative ? w.reduce(0, +) : w.reduce(0, +) / Double(w.count))
                     let whoopV: Double? = wh.isEmpty ? nil : (spec.cumulative ? wh.reduce(0, +) : wh.reduce(0, +) / Double(wh.count))
-                    if watchV == nil, spec.cumulative, let merged = stat.sumQuantity()?.doubleValue(for: spec.unit) {
-                        watchV = max(0, merged - (whoopV ?? 0))
-                        if watchV == 0 { watchV = nil }
+                    // Cumulative metrics (steps, energy, distance…): Health's merged total already removes the
+                    // overlap between iPhone and Watch (and between two Watches). Summing per source double-counts,
+                    // so the Apple side is always merged − WHOOP's share.
+                    if spec.cumulative, let merged = stat.sumQuantity()?.doubleValue(for: spec.unit) {
+                        let v = max(0, merged - (whoopV ?? 0))
+                        watchV = v > 0 ? v : nil
                     }
                     if watchV != nil || whoopV != nil { out[stat.startDate.dayStart] = [watchV, whoopV] }
                 }

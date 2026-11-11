@@ -112,6 +112,7 @@ struct WorkoutRec: Identifiable, Equatable {
 
 extension Date {
     var dayStart: Date { Calendar.current.startOfDay(for: self) }
+    var isToday: Bool { Calendar.current.isDateInToday(self) }
     func adding(days: Int) -> Date { Calendar.current.date(byAdding: .day, value: days, to: self) ?? self }
 }
 

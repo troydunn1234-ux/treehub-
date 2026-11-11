@@ -46,6 +46,30 @@ struct Agreement: Identifiable {
         guard !trendOnly, let b = bias, abs(b) > tolerance * 0.25 else { return nil }
         return b > 0 ? .watch : .whoop
     }
+    /// Why the two trackers differ on this metric, in one or two sentences.
+    var why: String { Compare.why[metric] ?? "" }
+
+    /// The whole comparison in plain words: averages, who's higher, by how much, how often they agree.
+    var plain: String {
+        guard n >= 3, let mw = meanWatch, let mh = meanWhoop else {
+            return n == 0 ? "Neither tracker has this yet." : "Only \(n) day\(n == 1 ? "" : "s") so far where both measured this — the verdict needs 3."
+        }
+        let f: (Double) -> String = { abs($0) < 10 ? String(format: "%.1f", $0) : String(format: "%.0f", $0) }
+        if trendOnly {
+            let r = correlation ?? 0
+            let how = r > 0.6 ? "rise and fall together almost every day" : r > 0.3 ? "usually move the same way" : "often move in different directions"
+            return "Over \(n) days your Watch averaged \(f(mw)) \(unit) and WHOOP \(f(mh)) \(unit). The numbers aren't the same scale, so look at direction: they \(how)."
+        }
+        let b = bias ?? 0
+        let higherDays = pairs.filter { $0.watch > $0.whoop }.count
+        let within = pairs.filter { abs($0.watch - $0.whoop) <= tolerance }.count
+        var who: String
+        if abs(b) <= tolerance * 0.25 { who = "They land on about the same number." }
+        else if b > 0 { who = "Your Watch reads higher on \(higherDays) of \(n) days, by about \(f(abs(b))) \(unit)." }
+        else { who = "WHOOP reads higher on \(n - higherDays) of \(n) days, by about \(f(abs(b))) \(unit)." }
+        return "Over \(n) days your Watch averaged \(f(mw)) \(unit) and WHOOP \(f(mh)) \(unit). \(who) They're within \(tolerance.formatted()) \(unit) of each other on \(within) of \(n) days."
+    }
+
     /// Plain-English verdict.
     var verdict: String {
         guard n >= 3 else { return "Need a few more days where both measured this." }
@@ -107,6 +131,17 @@ enum Stats {
 }
 
 enum Compare {
+    /// Known reasons each pair disagrees — so a gap reads as "expected", not "broken".
+    static let why: [String: String] = [
+        "Resting HR": "WHOOP takes resting HR during your deepest sleep. Apple takes it from calm moments across the whole day, which runs a few beats higher. A 2–5 bpm gap is normal.",
+        "HRV": "Apple reports SDNN, WHOOP reports RMSSD — different formulas on different windows (Apple: short daytime samples; WHOOP: last slow-wave sleep). Compare the trend, never the number.",
+        "Respiratory rate": "Both measure overnight. The Watch samples less often, so a 1 br/min gap is noise.",
+        "Blood oxygen": "Both read overnight from the wrist. Watch readings are spot checks; WHOOP averages the night. Within 2% is the same number.",
+        "Temp deviation": "Both show change from your own baseline, not a thermometer reading. Apple measures wrist temperature in sleep; WHOOP measures skin temperature on the strap, which sits tighter.",
+        "Calories": "Apple = active + resting energy from Watch motion and HR. WHOOP = one total per cycle from HR alone, converted from kJ. WHOOP usually comes in lower on active days. A 250 kcal gap is normal.",
+        "Sleep": "WHOOP's night is strap-based and ends at wake; Apple's comes from the Watch and the Sleep schedule. 20 minutes apart is normal; big gaps are usually one side missing a nap or a late bedtime.",
+    ]
+
     struct Spec { let metric: String; let unit: String; let tol: Double; let trend: Bool; let get: (DayStat) -> Double? }
 
     static var dailySpecs: [Spec] { [

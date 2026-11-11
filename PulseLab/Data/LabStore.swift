@@ -13,6 +13,8 @@ final class LabStore {
     private(set) var sleeps: [SleepNight] = []
     private(set) var hypnogram: [HypnoSegment] = []
     private(set) var workouts: [WorkoutRec] = []
+    /// Steps per device per day (iPhone vs each Watch), straight from Health, not de-duplicated.
+    private(set) var stepsByDevice: [Date: [String: Double]] = [:]
     private(set) var loading = false
     private(set) var lastPull: Date?
     private(set) var healthAsked = UserDefaults.standard.bool(forKey: "healthAsked")
@@ -113,6 +115,7 @@ final class LabStore {
         let temps = wdays.compactMap(\.tempDev)
         if let base = Stats.mean(temps) { for i in wdays.indices { wdays[i].tempDev = wdays[i].tempDev.map { $0 - base } } }
         watchDays = wdays
+        stepsByDevice = h.stepsByDevice
         if !wdays.isEmpty { Reviews.noteWin() }
         var whoop = Dictionary(h.whoop.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
         for api in WhoopAdapter.days() {

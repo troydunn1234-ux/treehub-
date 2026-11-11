@@ -18,22 +18,35 @@ struct ActivityScreen: View {
     private var todayTiles: some View {
         let w = store.today(.watch), h = store.today(.whoop)
         let (dist, du) = Units.distance(w?.distanceKm)
+        // WHOOP's cycle usually hasn't closed this early; show the latest one and say so.
+        let lastWhoop = store.days(.whoop).last { $0.strain != nil }
+        let strain = h?.strain ?? lastWhoop?.strain
+        let strainUnit = h?.strain != nil ? "/ 21" : (lastWhoop != nil ? "/ 21 · last cycle" : "/ 21")
+        let has = w != nil
+        let z: (Double?) -> Double? = { $0 ?? (has ? 0 : nil) }
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 12) {
                 SectionTag("Today")
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible()), count: 3), spacing: 14) {
-                    tile("STEPS", w?.steps, "", 0, Lab.watch)
+                    tile("STEPS", w?.steps, stepsToday, 0, Lab.watch)
                     tile("ACTIVE", w?.activeKcal, "kcal", 0, Lab.watch)
                     tile("EXERCISE", w?.exerciseMin, "min", 0, Lab.watch)
                     tile("DISTANCE", dist, du, 1, Lab.watch)
-                    tile("FLIGHTS", w?.flights, "", 0, Lab.watch)
-                    tile("STRAIN", h?.strain, "/ 21", 1, Lab.whoop)
-                    tile("DAYLIGHT", w?.daylightMin, "min", 0, Lab.watch)
-                    tile("STAND", w?.standMin.map { $0 / 60 }, "h", 1, Lab.watch)
-                    tile("MINDFUL", w?.mindfulMin, "min", 0, Lab.watch)
+                    tile("FLIGHTS", z(w?.flights), "", 0, Lab.watch)
+                    tile("STRAIN", strain, strainUnit, 1, Lab.whoop)
+                    tile("DAYLIGHT", z(w?.daylightMin), "min", 0, Lab.watch)
+                    tile("STAND", z(w?.standMin.map { $0 / 60 }), "h", 1, Lab.watch)
+                    tile("MINDFUL", z(w?.mindfulMin), "min", 0, Lab.watch)
                 }
             }
         }
+    }
+
+    /// "Watch 412 · iPhone 204" under today's steps.
+    private var stepsToday: String {
+        let m = store.stepsByDevice[Date().dayStart] ?? [:]
+        guard m.count > 1 else { return "" }
+        return m.sorted { $0.value > $1.value }.map { "\($0.key.replacingOccurrences(of: "Apple ", with: "")) \(Int($0.value).formatted())" }.joined(separator: " · ")
     }
 
     private func tile(_ l: String, _ v: Double?, _ u: String, _ d: Int, _ c: Color) -> some View {
@@ -62,12 +75,14 @@ struct ActivityScreen: View {
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("kcal", d.totalKcal ?? 0), width: .ratio(0.38))
                             .position(by: .value("Source", "Watch"))
                             .foregroundStyle(Lab.watch.gradient)
+                            .opacity(d.day.isToday ? 0.4 : 1)
                             .cornerRadius(3)
                     }
                     ForEach(h.filter { $0.totalKcal != nil }) { d in
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("kcal", d.totalKcal ?? 0), width: .ratio(0.38))
                             .position(by: .value("Source", "WHOOP"))
                             .foregroundStyle(Lab.whoop.gradient)
+                            .opacity(d.day >= Date().dayStart.adding(days: -1) && d.day == (h.last?.day ?? .distantPast) ? 0.4 : 1)
                             .cornerRadius(3)
                     }
                 }
@@ -77,7 +92,7 @@ struct ActivityScreen: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Daily calories over \(days) days. Apple Watch averages \(avgText(w)), WHOOP averages \(avgText(h)).")
                 }
-                Text("Apple counts active + resting energy; WHOOP reports one total per cycle (converted from kJ).")
+                Text("Apple counts active + resting energy; WHOOP reports one total per cycle (converted from kJ). Faded bars are still counting — today on Apple, the open cycle on WHOOP — so don't compare those yet.")
                     .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
             }
         }
@@ -92,18 +107,32 @@ struct ActivityScreen: View {
 
     private var steps: some View {
         let w = store.days(.watch).recent(days).filter { $0.steps != nil }
-        let avg = Stats.mean(w.compactMap(\.steps))
+        let avg = Stats.mean(w.filter { !$0.day.isToday }.compactMap(\.steps))
+        let cut = Date().dayStart.adding(days: -(days - 1))
+        let byDevice = store.stepsByDevice.filter { $0.key >= cut }
+        let devices = Array(Set(byDevice.values.flatMap(\.keys))).sorted { a, b in
+            if a == "iPhone" { return false }; if b == "iPhone" { return true }; return a < b
+        }
+        let palette: [Color] = [Lab.watch, Lab.violet, Lab.good, Lab.warn]
+        let colorOf: (String) -> Color = { $0 == "iPhone" ? Lab.dim : palette[(devices.firstIndex(of: $0) ?? 0) % palette.count] }
+        let rows: [(day: Date, device: String, v: Double)] = byDevice.flatMap { day, m in m.map { (day, $0.key, $0.value) } }.sorted { $0.day < $1.day }
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                HStack { SectionTag("Steps"); Spacer(); SourceChip(source: .watch) }
-                if w.isEmpty {
+                HStack { SectionTag("Steps · by device"); Spacer(); SourceChip(source: .watch) }
+                if w.isEmpty && rows.isEmpty {
                     EmptyNote(text: "No steps in this range. WHOOP doesn't count steps, so this is Watch/iPhone only.")
                 } else {
                 Chart {
-                    ForEach(w) { d in
-                        BarMark(x: .value("Day", d.day, unit: .day), y: .value("Steps", d.steps ?? 0))
-                            .foregroundStyle(LinearGradient(colors: [Lab.watch, Lab.violet], startPoint: .top, endPoint: .bottom))
+                    ForEach(Array(rows.enumerated()), id: \.offset) { _, r in
+                        BarMark(x: .value("Day", r.day, unit: .day), y: .value("Steps", r.v))
+                            .foregroundStyle(by: .value("Device", r.device))
+                            .opacity(r.day.isToday ? 0.45 : 1)
                             .cornerRadius(3)
+                    }
+                    ForEach(w) { d in
+                        // Health's de-duplicated total — what the Health app shows.
+                        PointMark(x: .value("Day", d.day, unit: .day), y: .value("Total", d.steps ?? 0))
+                            .foregroundStyle(Lab.text).symbol(.diamond).symbolSize(28)
                     }
                     if let avg {
                         RuleMark(y: .value("Avg", avg)).foregroundStyle(Lab.text.opacity(0.5)).lineStyle(StrokeStyle(lineWidth: 1, dash: [4, 4]))
@@ -112,11 +141,15 @@ struct ActivityScreen: View {
                             }
                     }
                 }
+                .chartForegroundStyleScale(domain: devices, range: devices.map(colorOf))
+                .chartLegend(position: .bottom, alignment: .leading, spacing: 6)
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
-                .frame(height: 150)
+                .frame(height: 170)
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("Steps over \(days) days, average \(avg.map { Int($0).formatted() } ?? "unknown") a day.")
+                .accessibilityLabel("Steps by device over \(days) days, average \(avg.map { Int($0).formatted() } ?? "unknown") a day.")
+                Text("Each bar is one device's own count; the diamond is Health's de-duplicated total (what the Health app shows). Today is faded: it's still counting.")
+                    .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                 }
             }
         }

@@ -138,7 +138,17 @@ struct CompareScreen: View {
     private func detail(_ a: Agreement) -> some View {
         LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                SectionTag("\(a.metric) · \(a.trendOnly ? "day by day" : "difference plot")")
+                SectionTag("\(a.metric) · in plain words")
+                Text(a.plain).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
+                if !a.why.isEmpty {
+                    HStack(alignment: .top, spacing: 8) {
+                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.violet).font(.system(size: 13)).padding(.top, 2)
+                        Text(a.why).font(.system(size: 13, design: .rounded)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(10)
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.violet.opacity(0.08)))
+                }
+                SectionTag(a.trendOnly ? "Day by day" : "Difference plot").padding(.top, 4)
                 if a.n < 3 {
                     EmptyNote(text: "Needs at least 3 days where both trackers measured \(a.metric.lowercased()).")
                 } else if a.trendOnly {
