@@ -12,7 +12,7 @@ crashinfo() {
   [ -n "$f" ] || f=$(find ~/Library/Logs/DiagnosticReports -name "*.ips" -newer shots/drive-1.png 2>/dev/null | head -1)
   ls -t ~/Library/Logs/DiagnosticReports 2>/dev/null | head -5
   echo "  --- unified log (Roamr, last 3 min) ---"
-  xcrun simctl spawn "$UDID" log show --last 3m --style compact --predicate 'process == "Roamr" OR eventMessage CONTAINS "Roamr" OR eventMessage CONTAINS "com.troydunn.roamr"' 2>/dev/null | grep -iE "fatal|error|crash|exception|terminat|exit|signal|abort" | grep -v "no such" | tail -40
+  perl -e 'alarm 90; exec @ARGV' xcrun simctl spawn "$UDID" log show --last 2m --style compact --predicate 'process == "Roamr" OR eventMessage CONTAINS "Roamr" OR eventMessage CONTAINS "com.troydunn.roamr"' 2>/dev/null | grep -iE "fatal|error|crash|exception|terminat|exit|signal|abort" | grep -v "no such" | tail -40
   [ -n "$f" ] || { echo "  (no crash report found)"; return; }
   echo "  crash report: $f"
   python3 - "$f" <<'PY' || head -c 3000 "$f"
