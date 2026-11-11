@@ -1,0 +1,43 @@
+  reports dir:
+total 0
+drwxr-xr-x@ 13 runner  staff            416 Nov 11 21:39 ..
+drwxrwx---   3 runner  staff             96 Aug 24 04:33 .
+drwxrwx---   2 runner  _analyticsusers   64 Aug 24 04:33 Retired
+Retired
+  --- unified log (Roamr, last 3 min) ---
+2026-11-11 22:14:58.002 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE signal 8
+2026-11-11 22:14:58.030 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 0   Roamr.debug.dylib                   0x000000010a545d2f $s5Roamr10CrashTraceO7installyyFZys5Int32VcfU_ + 223
+2026-11-11 22:14:58.030 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 1   Roamr.debug.dylib                   0x000000010a545f29 $s5Roamr10CrashTraceO7installyyFZys5Int32VcfU_To + 9
+2026-11-11 22:14:58.030 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 2   libsystem_platform.dylib            0x00000001086b431d _sigtramp + 29
+2026-11-11 22:14:58.031 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 3   ???                                 0x0000000000000000 0x0 + 0
+2026-11-11 22:14:58.031 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 4   VectorKit                           0x00007ff81dfe953c _ZN2md28CartographicTiledRenderLayerINS_25ElevatedPolygonRenderableEE20updateVisibleMapDataERKNS_13LayoutContextE + 416
+2026-11-11 22:14:58.031 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 5   VectorKit                           0x00007ff81d861f1d _ZN2md20CartographicRenderer6updateERNS_13LayoutContextE + 103
+2026-11-11 22:14:58.031 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 6   VectorKit                           0x00007ff81df196c9 _ZN2md9MapEngine14runUpdatePhaseEdb + 7041
+2026-11-11 22:14:58.033 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 7   VectorKit                           0x00007ff81df1b643 _ZN2md9MapEngine15renderSceneSyncEd + 293
+2026-11-11 22:14:58.033 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 8   VectorKit                           0x00007ff81df1afdc _ZN2md9MapEngine11renderSceneEdNSt3__18functionIFvvEEES4_ + 224
+2026-11-11 22:14:58.034 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 9   VectorKit                           0x00007ff81df1a812 _ZN2md9MapEngine18onRenderTimerFiredEdNSt3__18functionIFvvEEE + 616
+2026-11-11 22:14:58.034 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 10  VectorKit                           0x00007ff81df1a43d _ZN2md9MapEngine18onDisplayLinkFiredEd + 137
+2026-11-11 22:14:58.034 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 11  VectorKit                           0x00007ff81e3cf464 _ZN3ggl11DisplayLink12onTimerFiredEd + 32
+2026-11-11 22:14:58.036 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 12  VectorKit                           0x00007ff81e3cf326 -[_GGLDisplayLinkTarget displayLinkFired:] + 81
+2026-11-11 22:14:58.036 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 13  QuartzCore                          0x00007ff8100281ec _ZN2CA7Display15DisplayLinkItem9dispatch_ERNS_8SignPost8IntervalILNS2_11CAEventCodeE835322056EEE + 100
+2026-11-11 22:14:58.037 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 14  QuartzCore                          0x00007ff810023634 _ZN2CA7Display11DisplayLink14dispatch_itemsEyyy + 1056
+2026-11-11 22:14:58.037 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 15  QuartzCore                          0x00007ff81002b2c0 _ZN2CA7Display11DisplayLink31dispatch_deferred_display_linksEj + 368
+2026-11-11 22:14:58.038 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 16  UIKitCore                           0x00007ff8083dedc1 _UIUpdateSequenceRunNext + 95
+2026-11-11 22:14:58.039 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 17  UIKitCore                           0x00007ff8091d9cc5 schedulerStepScheduledMainSectionContinue + 57
+2026-11-11 22:14:58.040 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 18  UpdateCycle                         0x00007ffc1ec2d2fe _ZN2UC10DriverCore18continueProcessingEv + 68
+2026-11-11 22:14:58.040 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 19  CoreFoundation                      0x00007ff8028ff42b __CFMachPortPerform + 157
+2026-11-11 22:14:58.041 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 20  CoreFoundation                      0x00007ff80293ca55 __CFRUNLOOP_IS_CALLING_OUT_TO_A_SOURCE1_PERFORM_FUNCTION__ + 41
+2026-11-11 22:14:58.041 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 21  CoreFoundation                      0x00007ff80293c023 __CFRunLoopDoSource1 + 541
+2026-11-11 22:14:58.042 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 22  CoreFoundation                      0x00007ff80293b20a __CFRunLoopRun + 2627
+2026-11-11 22:14:58.043 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 23  CoreFoundation                      0x00007ff802935aa7 _CFRunLoopRunSpecificWithOptions + 496
+2026-11-11 22:14:58.043 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 24  GraphicsServices                    0x00007ff816b8d918 GSEventRunModal + 94
+2026-11-11 22:14:58.044 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 25  UIKitCore                           0x00007ff80930cf4a -[UIApplication _run] + 842
+2026-11-11 22:14:58.045 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 26  UIKitCore                           0x00007ff809311f29 UIApplicationMain + 123
+2026-11-11 22:14:58.045 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 27  SwiftUI                             0x00007ffb05050d77 $s7SwiftUI17KitRendererCommon33_ACC2C5639A7D76F611E170E831FCA491LLys5NeverOyXlXpFAESpySpys4Int8VGSgGXEfU_ + 183
+2026-11-11 22:14:58.046 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 28  SwiftUI                             0x00007ffb05050ab6 $s7SwiftUI6runAppys5NeverOxAA0D0RzlF + 166
+2026-11-11 22:14:58.047 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 29  SwiftUI                             0x00007ffb04dd8259 $s7SwiftUI3AppPAAE4mainyyFZ + 137
+2026-11-11 22:14:58.048 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 30  Roamr.debug.dylib                   0x000000010a531b6e $s5Roamr11TrackHubAppV5$mainyyFZ + 30
+2026-11-11 22:14:58.049 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 31  Roamr.debug.dylib                   0x000000010a550b79 __debug_main_executable_dylib_entry_point + 9
+2026-11-11 22:14:58.049 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 32  dyld                                0x00000001087923dc start_sim + 10
+2026-11-11 22:14:58.050 Df Roamr[40699:1c4bd] (Foundation) CRASHTRACE 33  ???                                 0x000000010b365530 0x0 + 4483077424
+  (no crash report found)
