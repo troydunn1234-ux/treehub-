@@ -172,6 +172,9 @@ struct MiniCard: View {
         let t = PracticeLibrary.shared.tradition(practice.traditionId)
         VStack(alignment: .leading, spacing: 0) {
             PaintedScene(kind: t?.scene ?? .mist, tint: t?.tint ?? SP.teal).frame(height: 90)
+                .overlay(alignment: .topTrailing) {
+                    if PracticeLibrary.shared.isLocked(practice) { ProLockBadge(tint: SP.gold).padding(8) }
+                }
             VStack(alignment: .leading, spacing: 4) {
                 Text(practice.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2)
                 Text("\(practice.minutes.map { String($0) }.joined(separator: " / ")) min")
@@ -216,6 +219,7 @@ struct PracticeCardRow: View {
             }
             Spacer()
             if let p = practice.pattern { Text(p.shortLabel).font(SP.rounded(12)).foregroundStyle(SP.dim) }
+            if PracticeLibrary.shared.isLocked(practice) { ProLockBadge(tint: SP.gold) }
             PracticeInfoButton(practice: practice, size: 16)
             Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
         }

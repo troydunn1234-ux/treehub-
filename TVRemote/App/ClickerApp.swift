@@ -98,6 +98,7 @@ struct RootView: View {
             }
         }
         .sheet(isPresented: $showAbout) { AboutView() }
+        .paywallHost(spec: CouchRemotePro.spec)
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { store.forgetTV() }
         } message: { Text("You'll need to pair it again to use it.") }
@@ -239,4 +240,22 @@ private struct ShiftingPill: View {
                                           endPoint: UnitPoint(x: 0.5 - 0.5 * cos(t * 0.6), y: 0.5 - 0.5 * sin(t * 0.6))))
         }
     }
+}
+
+
+/// Couch Remote Pro: what the one-time unlock contains.
+enum CouchRemotePro {
+    static let spec = PaywallSpec(
+        appName: "Couch Remote",
+        headline: "Every screen in the house.",
+        tagline: "Add all your TVs, type searches from your phone and drive your PC from the couch. One payment, no subscription.",
+        tint: Look.cyan, tint2: Look.magenta,
+        features: [
+            .init(icon: "tv.and.mediabox", title: "Unlimited TVs", detail: "Vizio, Roku, Samsung, LG and Google TV — save every set and switch rooms with one tap."),
+            .init(icon: "keyboard", title: "Type on your TV", detail: "Search Netflix or YouTube with your phone's keyboard instead of pecking at an on-screen grid."),
+            .init(icon: "desktopcomputer", title: "PC remote", detail: "Trackpad, media keys, volume, sleep and lock for your Windows PC over Wi-Fi or Tailscale."),
+        ],
+        freeNote: "The full remote and app launcher for one TV stays free. Bought Couch Remote when it was a paid app? Pro is already yours — tap Restore.",
+        privacyURL: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/PRIVACY.md")
+    )
 }

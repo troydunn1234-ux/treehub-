@@ -22,7 +22,7 @@ final class WatchLink: NSObject, ObservableObject, WCSessionDelegate {
     private func handle(_ dict: [String: Any]) {
         DispatchQueue.main.async {
             if let s = SessionSettings.from(dict) {
-                Prefs.shared.applyRemote(s, favorites: dict[SyncKey.favorites] as? [String])
+                Prefs.shared.applyRemote(s, favorites: dict[SyncKey.favorites] as? [String], pro: dict[SyncKey.pro] as? Bool)
             }
             if dict[SyncKey.command] as? String == SyncKey.start, let id = dict[SyncKey.practiceId] as? String {
                 let mins = dict[SyncKey.minutes] as? Int ?? Prefs.shared.settings.defaultMinutes

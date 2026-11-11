@@ -6,6 +6,7 @@ struct StillPointApp: App {
     @StateObject private var log = SessionLog.shared
     @StateObject private var link = PhoneLink.shared
     @StateObject private var router = Router()
+    @StateObject private var unlock = Unlock.shared
 
     init() {
         PhoneLink.shared.activate()
@@ -20,6 +21,7 @@ struct StillPointApp: App {
                 .environmentObject(router)
                 .preferredColorScheme(.dark)
                 .tint(SP.amber)
+                .onReceive(unlock.$isPro) { Prefs.shared.setPro($0) }
         }
     }
 }
@@ -104,4 +106,23 @@ struct Motes: View {
         .allowsHitTesting(false)
         .accessibilityHidden(true)
     }
+}
+
+
+/// Still Point Pro: what the one-time unlock contains.
+enum StillPointPro {
+    static let spec = PaywallSpec(
+        appName: "Still Point",
+        headline: "Every practice, for good.",
+        tagline: "Open all 39 practices from 11 traditions, plus every warm-up and movement routine. One payment, no subscription.",
+        tint: SP.gold, tint2: SP.amber,
+        features: [
+            .init(icon: "books.vertical.fill", title: "All 39 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
+            .init(icon: "figure.cooldown", title: "Every warm-up routine", detail: "Makkō-hō, Sūrya Namaskār, Ruesi Dat Ton, Ba Duan Jin and the rest, 2–10 minutes, with figures for each step."),
+            .init(icon: "applewatch", title: "Everything on your Watch", detail: "Haptic breathing for the full library, straight from your wrist."),
+            .init(icon: "heart.text.square.fill", title: "Journey with heart data", detail: "Every session kept with your heart-rate stats and Mindful Minutes in Apple Health."),
+        ],
+        freeNote: "The starter set — one practice from each tradition and two routines — stays free forever.",
+        privacyURL: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/PRIVACY.md")
+    )
 }

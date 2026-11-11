@@ -93,6 +93,7 @@ final class PCClient {
     // MARK: Connection
 
     func choose(_ p: PC) {
+        guard Unlock.shared.gate("PC remote") else { return }
         pc = p
         if let d = try? JSONEncoder().encode(p) { UserDefaults.standard.set(d, forKey: "pc") }
         connect()

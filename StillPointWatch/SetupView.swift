@@ -25,6 +25,16 @@ struct SetupView: View {
                 Text(practice.title).font(SP.serif(18)).foregroundStyle(SP.ink)
                     .multilineTextAlignment(.center).frame(maxWidth: .infinity)
 
+                if lib.isLocked(practice) {
+                    VStack(spacing: 6) {
+                        Image(systemName: "lock.fill").font(.system(size: 16)).foregroundStyle(SP.gold)
+                        Text("Part of Still Point Pro").font(SP.serif(15)).foregroundStyle(SP.ink)
+                        Text("Unlock once on your iPhone and it appears here.").font(SP.rounded(11)).foregroundStyle(SP.faint)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity).padding(.vertical, 10)
+                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+                } else {
                 Button(action: begin) {
                     Text("Begin")
                         .font(SP.serif(18))
@@ -33,6 +43,7 @@ struct SetupView: View {
                         .background(Capsule().fill(SP.goldGlow))
                 }
                 .buttonStyle(.plain)
+                }
 
                 // Duration: turn the Digital Crown.
                 VStack(spacing: 2) {

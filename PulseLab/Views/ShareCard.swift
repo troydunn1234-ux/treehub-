@@ -93,9 +93,9 @@ struct ShareVSButton: View {
 
     var body: some View {
         Button {
-            render()
+            if Unlock.shared.gate("Sharing VS cards") { render() }
         } label: {
-            Label("Share VS card", systemImage: "square.and.arrow.up")
+            Label("Share VS card", systemImage: Unlock.shared.isPro ? "square.and.arrow.up" : "lock.fill")
                 .font(Lab.display(15, .heavy))
                 .frame(maxWidth: .infinity).padding(.vertical, 13)
                 .background(Capsule().fill(LinearGradient(colors: [Lab.watch.opacity(0.22), Lab.whoop.opacity(0.22)], startPoint: .leading, endPoint: .trailing)))

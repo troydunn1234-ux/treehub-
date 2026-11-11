@@ -112,8 +112,8 @@ struct SettingsScreen: View {
                             .background(Capsule().fill(Lab.whoop.opacity(0.18))).foregroundStyle(Lab.whoop)
                     }
                 } else {
-                    Button { exportURL = store.exportFile() } label: {
-                        Label("Build export", systemImage: "tablecells")
+                    Button { if Unlock.shared.gate("CSV export") { exportURL = store.exportFile() } } label: {
+                        Label("Build export", systemImage: Unlock.shared.isPro ? "tablecells" : "lock.fill")
                             .font(Lab.display(15, .heavy)).frame(maxWidth: .infinity).padding(.vertical, 12)
                             .background(Capsule().fill(Color.white.opacity(0.06))).foregroundStyle(Lab.text)
                     }

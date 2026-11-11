@@ -239,6 +239,7 @@ targets:
     platform: iOS
     sources:
       - path: PulseLab
+      - path: Shared/Store
     entitlements:
       path: PulseLab/PulseLab.entitlements
       properties:
@@ -250,6 +251,8 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Pulse Lab
+        ProProductID: com.troydunn.pulselab.pro
+        PaidUntilBuild: 0
         NSHealthShareUsageDescription: Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.
         NSHealthUpdateUsageDescription: Pulse Lab only reads your health data and never writes to Apple Health.
         CFBundleURLTypes:
@@ -274,6 +277,7 @@ targets:
     platform: iOS
     sources:
       - path: StillPoint
+      - path: Shared/Store
     dependencies:
       - target: StillPointWatch
         embed: true
@@ -291,6 +295,8 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Still Point
+        ProProductID: com.troydunn.stillpoint.pro
+        PaidUntilBuild: 0
         NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.
         NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes.
         UIRequiresFullScreen: true
@@ -324,6 +330,8 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Still Point
+        ProProductID: com.troydunn.stillpoint.pro
+        PaidUntilBuild: 0
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.troydunn.stillpoint
         WKBackgroundModes:
@@ -413,6 +421,7 @@ targets:
     platform: iOS
     sources:
       - path: TVRemote
+      - path: Shared/Store
     dependencies:
       - target: ClankerrWatch
         embed: true
@@ -429,6 +438,9 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Couch Remote
+        ProProductID: com.troydunn.clicker.pro
+        # Anyone whose first download was build 73 or earlier bought Couch Remote while it was a paid app: Pro is theirs.
+        PaidUntilBuild: 73
         UIRequiresFullScreen: true
         UILaunchScreen:
           UIColorName: LaunchBackground
@@ -507,6 +519,9 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Couch Remote
+        ProProductID: com.troydunn.clicker.pro
+        # Anyone whose first download was build 73 or earlier bought Couch Remote while it was a paid app: Pro is theirs.
+        PaidUntilBuild: 73
         WKApplication: true
         WKCompanionAppBundleIdentifier: com.troydunn.clicker
         ITSAppUsesNonExemptEncryption: false

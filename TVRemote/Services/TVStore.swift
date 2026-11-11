@@ -157,6 +157,8 @@ final class TVStore {
     /// For Roku it just connects. Returns true when the step succeeded.
     func beginPairing(with t: DiscoveredTV) async -> Bool {
         errorText = nil
+        // Free: one TV. A second TV (that isn't the same set moving IPs) is Pro.
+        if !tvs.isEmpty, !tvs.contains(where: { sameTV($0, t) }), !Unlock.shared.gate("A second TV") { return false }
         let c = controller(for: t.brand)
         do {
             try await c.beginPairing(t, phoneName: phoneName)
@@ -294,6 +296,7 @@ final class TVStore {
             nowPlaying = app.name
             reachable = true
             failures = 0
+            Reviews.noteWin()
         } catch {
             handle(error)
         }
@@ -333,6 +336,7 @@ final class TVStore {
     }
 
     func openKeyboard() {
+        guard Unlock.shared.gate("Typing on your TV") else { return }
         sentText = ""
         pendingText = nil
         withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { typing = true }

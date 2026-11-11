@@ -113,6 +113,7 @@ final class LabStore {
         let temps = wdays.compactMap(\.tempDev)
         if let base = Stats.mean(temps) { for i in wdays.indices { wdays[i].tempDev = wdays[i].tempDev.map { $0 - base } } }
         watchDays = wdays
+        if !wdays.isEmpty { Reviews.noteWin() }
         var whoop = Dictionary(h.whoop.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
         for api in WhoopAdapter.days() {
             var d = whoop[api.day] ?? DayStat(day: api.day)

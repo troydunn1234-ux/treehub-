@@ -88,7 +88,9 @@ struct PracticeDetailView: View {
     @State private var minutes = 5
     @State private var warmUpId = ""
     @State private var sentToWatch = false
+    @State private var showPaywall = false
     private let lib = PracticeLibrary.shared
+    private var locked: Bool { lib.isLocked(practice) }
 
     private var tradition: Tradition? { lib.tradition(practice.traditionId) }
     private var plan: SessionPlan {
@@ -97,6 +99,10 @@ struct PracticeDetailView: View {
     }
 
     var body: some View {
+        content.paywall(isPresented: $showPaywall, spec: StillPointPro.spec, context: practice.title)
+    }
+
+    private var content: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 ZStack {
@@ -168,14 +174,14 @@ struct PracticeDetailView: View {
                     }
 
                     VStack(spacing: 10) {
-                        Button { router.run(plan) } label: {
-                            Label("Practice on iPhone", systemImage: "iphone")
+                        Button { if locked { showPaywall = true } else { router.run(plan) } } label: {
+                            Label(locked ? "Unlock to practice" : "Practice on iPhone", systemImage: locked ? "lock.fill" : "iphone")
                                 .font(SP.rounded(17, .medium)).foregroundStyle(Color.black.opacity(0.85))
                                 .frame(maxWidth: .infinity).padding(.vertical, 15)
                                 .background(Capsule().fill(SP.goldGlow))
                         }
                         Button {
-                            link.startOnWatch(plan) { ok in sentToWatch = ok }
+                            if locked { showPaywall = true } else { link.startOnWatch(plan) { ok in sentToWatch = ok } }
                         } label: {
                             Label(sentToWatch ? "Starting on your Watch…" : "Start on Apple Watch", systemImage: "applewatch")
                                 .font(SP.rounded(17)).foregroundStyle(link.canUseWatch ? SP.ink : SP.faint)

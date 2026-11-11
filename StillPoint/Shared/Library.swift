@@ -352,6 +352,18 @@ final class PracticeLibrary {
     }
 
     func practice(_ id: String) -> Practice? { practices.first { $0.id == id } }
+
+    /// The free starter set: the first practice of every tradition, plus the first two
+    /// movement routines. Everything else is part of Still Point Pro.
+    lazy var freeIDs: Set<String> = {
+        var ids = Set<String>()
+        for t in traditions { if let first = practices.first(where: { $0.traditionId == t.id && !$0.isMovement }) { ids.insert(first.id) } }
+        for m in practices.filter(\.isMovement).prefix(2) { ids.insert(m.id) }
+        return ids
+    }()
+    func isFree(_ p: Practice) -> Bool { freeIDs.contains(p.id) }
+    /// Locked for this person right now (not free and not unlocked).
+    func isLocked(_ p: Practice) -> Bool { !isFree(p) && !Prefs.shared.pro }
     func tradition(_ id: String) -> Tradition? { traditions.first { $0.id == id } }
     func practices(in tradition: Tradition) -> [Practice] { practices.filter { $0.traditionId == tradition.id } }
     func practices(for intention: Intention) -> [Practice] { intention.practiceIds.compactMap { practice($0) } }

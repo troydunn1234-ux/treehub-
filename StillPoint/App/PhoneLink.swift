@@ -23,6 +23,7 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         guard WCSession.isSupported(), WCSession.default.activationState == .activated, canUseWatch else { return }
         var ctx = Prefs.shared.settings.asDictionary()
         ctx[SyncKey.favorites] = Prefs.shared.favorites
+        ctx[SyncKey.pro] = Prefs.shared.pro
         try? WCSession.default.updateApplicationContext(ctx)
     }
 

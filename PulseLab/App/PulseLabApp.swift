@@ -54,6 +54,7 @@ enum LabTab: String, CaseIterable, Identifiable {
 
 struct RootView: View {
     @Environment(LabStore.self) private var store
+    @ObservedObject private var unlock = Unlock.shared
     @Environment(\.scenePhase) private var phase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @AppStorage("onboarded") private var onboarded = false
@@ -112,6 +113,7 @@ struct RootView: View {
             }
         }
         .tint(Lab.watch)
+        .paywallHost(spec: PulseLabPro.spec)
         .overlay(alignment: .top) { ToastView() }
         .task {
             #if DEBUG
@@ -128,7 +130,7 @@ struct RootView: View {
         case .sleep: SleepScreen()
         case .heart: HeartScreen()
         case .activity: ActivityScreen()
-        case .compare: CompareScreen()
+        case .compare: if unlock.isPro { CompareScreen() } else { ProTeaser() }
         case .settings: SettingsScreen()
         }
     }
@@ -174,5 +176,47 @@ struct LabScroll<Content: View>: View {
         }
         .scrollIndicators(.hidden)
         .refreshable { await store.refresh() }
+    }
+}
+
+
+/// Pulse Lab Pro: what the one-time unlock contains.
+enum PulseLabPro {
+    static let spec = PaywallSpec(
+        appName: "Pulse Lab",
+        headline: "Settle it: Watch vs WHOOP.",
+        tagline: "The full head-to-head lab, 90 days of history and shareable results. One payment, no subscription.",
+        tint: Lab.watch, tint2: Lab.violet,
+        features: [
+            .init(icon: "bolt.horizontal.fill", title: "The VS tab", detail: "Day-by-day agreement scores for resting HR, HRV, sleep, SpO₂, respiratory rate, temperature and calories — and who's winning."),
+            .init(icon: "calendar", title: "90-day history", detail: "Trends over three months instead of one, on every screen."),
+            .init(icon: "square.and.arrow.up", title: "Share VS cards", detail: "Post the scoreboard as a clean image."),
+            .init(icon: "tablecells", title: "CSV export", detail: "Every number Pulse Lab pulled, for your own spreadsheet."),
+        ],
+        freeNote: "Today, Sleep, Heart and Moves — with Watch and WHOOP side by side for 30 days — stay free.",
+        privacyURL: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/pulselab/PRIVACY.md")
+    )
+}
+
+/// The VS tab, blurred, with the unlock on top.
+struct ProTeaser: View {
+    var body: some View {
+        ZStack {
+            CompareScreen().blur(radius: 14).allowsHitTesting(false).accessibilityHidden(true)
+            LinearGradient(colors: [Lab.bg.opacity(0.2), Lab.bg.opacity(0.9)], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
+            VStack(spacing: 14) {
+                Image(systemName: "bolt.horizontal.fill").font(.system(size: 34, weight: .black)).foregroundStyle(Lab.watch)
+                Text("VS is Pro").font(Lab.display(28, .heavy)).foregroundStyle(Lab.text)
+                Text("The full Watch-vs-WHOOP scoreboard: which tracker agrees, where they split, and by how much.")
+                    .font(.system(size: 15, design: .rounded)).foregroundStyle(Lab.dim).multilineTextAlignment(.center)
+                Button { Unlock.shared.gate("The VS lab") } label: {
+                    Text("See what's inside").font(Lab.display(16, .heavy)).foregroundStyle(.black)
+                        .padding(.horizontal, 22).padding(.vertical, 13)
+                        .background(Capsule().fill(Lab.watch))
+                }
+                .buttonStyle(PressScale())
+            }
+            .padding(28)
+        }
     }
 }

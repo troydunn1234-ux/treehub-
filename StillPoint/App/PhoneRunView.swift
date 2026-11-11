@@ -92,6 +92,7 @@ struct PhoneRunView: View {
         guard r.seconds >= 10 else { return }
         records.append(r)
         SessionLog.shared.add(r)
+        Reviews.noteWin()
         if mindful { MindfulHealth.shared.saveMindful(start: r.start, end: r.end) }
     }
 }

@@ -323,10 +323,11 @@ struct RangePicker: View {
         HStack(spacing: 6) {
             ForEach([7, 30, 90], id: \.self) { d in
                 Button {
+                    if d == 90 && !Unlock.shared.gate("90-day history") { return }
                     if days != d { Lab.tick() }
                     withAnimation(.snappy) { days = d }
                 } label: {
-                    Text("\(d)D").font(Lab.mono(12, .heavy))
+                    Text(d == 90 && !Unlock.shared.isPro ? "90D 🔒" : "\(d)D").font(Lab.mono(12, .heavy))
                         .foregroundStyle(days == d ? Color.white : Lab.dim)
                         .padding(.horizontal, 14).padding(.vertical, 7)
                         .background(Capsule().fill(days == d ? AnyShapeStyle(Lab.violet) : AnyShapeStyle(Color.white.opacity(0.06))))

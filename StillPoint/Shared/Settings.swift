@@ -95,6 +95,8 @@ final class Prefs: ObservableObject {
     @Published var settings: SessionSettings { didSet { settings.save(); onChange?() } }
     @Published private(set) var favorites: [String]
     @Published private(set) var recents: [String]
+    /// Still Point Pro is unlocked (on iPhone: from the App Store; on Watch: mirrored from the phone).
+    @Published private(set) var pro: Bool
 
     /// Called after settings or favorites change (used to sync to the other device).
     var onChange: (() -> Void)?
@@ -103,6 +105,14 @@ final class Prefs: ObservableObject {
         settings = SessionSettings.load()
         favorites = UserDefaults.standard.stringArray(forKey: "sp.favorites") ?? []
         recents = UserDefaults.standard.stringArray(forKey: "sp.recents") ?? []
+        pro = UserDefaults.standard.bool(forKey: "sp.pro")
+    }
+
+    func setPro(_ on: Bool) {
+        guard on != pro else { return }
+        pro = on
+        UserDefaults.standard.set(on, forKey: "sp.pro")
+        onChange?()
     }
 
     func isFavorite(_ id: String) -> Bool { favorites.contains(id) }
@@ -127,11 +137,12 @@ final class Prefs: ObservableObject {
     }
 
     /// Apply settings received from the other device without echoing them back.
-    func applyRemote(_ s: SessionSettings, favorites fav: [String]?) {
+    func applyRemote(_ s: SessionSettings, favorites fav: [String]?, pro: Bool? = nil) {
         let saved = onChange
         onChange = nil
         if s != settings { settings = s }
         if let fav { setFavorites(fav) }
+        if let pro { setPro(pro) }
         onChange = saved
     }
 }
@@ -143,5 +154,6 @@ enum SyncKey {
     static let practiceId = "practiceId"
     static let minutes = "minutes"
     static let favorites = "favorites"
+    static let pro = "pro"
     static let session = "session"
 }
