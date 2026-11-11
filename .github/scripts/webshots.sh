@@ -4,6 +4,30 @@ set -u
 mkdir -p shots
 UDID=$(xcrun simctl list devices booted -j | python3 -c 'import json,sys;d=json.load(sys.stdin)["devices"];print(next(dv["udid"] for rt in d for dv in d[rt]))')
 FAIL=0
+
+# On a crash, show why: newest simulator crash report for the app (Swift fatal error text lives in "asi"/"exception").
+crashinfo() {
+  f=$(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -1)
+  [ -n "$f" ] || { echo "  (no crash report found)"; return; }
+  echo "  crash report: $f"
+  python3 - "$f" <<'PY' || head -c 3000 "$f"
+import json,sys
+raw=open(sys.argv[1]).read().split("\n",1)
+hdr=json.loads(raw[0]); body=json.loads(raw[1]) if len(raw)>1 else {}
+print("  app:",hdr.get("app_name"),"| exception:",json.dumps(body.get("exception")))
+print("  termination:",json.dumps(body.get("termination")))
+for k in ("asi","lastExceptionBacktrace"):
+    if body.get(k): print(" ",k,":",json.dumps(body[k])[:1500])
+t=body.get("threads",[])
+for th in t:
+    if th.get("triggered"):
+        frames=th.get("frames",[])[:25]
+        imgs=body.get("usedImages",[])
+        for fr in frames:
+            img=imgs[fr.get("imageIndex",0)].get("name","?") if fr.get("imageIndex",0)<len(imgs) else "?"
+            print("   ",img,fr.get("symbol",""),"+",fr.get("imageOffset",0),fr.get("sourceFile",""),fr.get("sourceLine",""))
+PY
+}
 # The CI simulator sometimes shuts itself down mid-run; boot it again before each app.
 booted() {
   if ! xcrun simctl list devices booted | grep -q "$UDID"; then
@@ -68,7 +92,7 @@ if ways:
   xcrun simctl location "$UDID" start --speed=36 --interval=1 $ROUTE || true
   sleep 30; xcrun simctl io "$UDID" screenshot "shots/drive-1.png" > /dev/null 2>&1
   sleep 20; xcrun simctl io "$UDID" screenshot "shots/drive-2.png" > /dev/null 2>&1
-  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; FAIL=1; fi
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-drive"; else echo "CRASH roamr-drive"; crashinfo; FAIL=1; fi
   xcrun simctl terminate "$UDID" com.troydunn.roamr || true
   # Same drive with turn-by-turn directions on
   booted
@@ -76,7 +100,7 @@ if ways:
   sleep 4
   xcrun simctl location "$UDID" start --speed=36 --interval=1 $ROUTE || true
   sleep 25; xcrun simctl io "$UDID" screenshot "shots/drive-3-nav.png" > /dev/null 2>&1
-  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-nav"; else echo "CRASH roamr-nav"; FAIL=1; fi
+  if xcrun simctl spawn "$UDID" launchctl list | grep -q com.troydunn.roamr; then echo "OK    roamr-nav"; else echo "CRASH roamr-nav"; crashinfo; FAIL=1; fi
   xcrun simctl location "$UDID" clear || true
 fi
 
