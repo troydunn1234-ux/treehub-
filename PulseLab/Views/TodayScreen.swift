@@ -39,7 +39,7 @@ struct TodayScreen: View {
             tile("Sleep", "h", wn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, hn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, .sleep, decimals: 1)
             tile("Resp rate", "br/min", store.latest(.watch, \.resp), store.latest(.whoop, \.resp), .resp, decimals: 1)
             tile("Blood O₂", "%", store.latest(.watch, \.spo2), store.latest(.whoop, \.spo2), .spo2)
-            tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0, $0.1) }, .temp, decimals: 1, signed: true)
+            tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, .temp, decimals: 1, signed: true)
             tile("Calories", "kcal", kcalW, kcalH, .calories)
             tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), .recovery, decimals: 1, only: .whoop)
             tile("Steps", "steps", store.latest(.watch, \.steps), nil, .steps, only: .watch)
