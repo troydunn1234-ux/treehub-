@@ -26,6 +26,9 @@ struct TrackHubApp: App {
         UNUserNotificationCenter.current().delegate = DriveNotificationRouter.shared
         DriveDetector.registerCategory()
         DriveFinishedNotifier.shared.start()
+        #if DEBUG
+        if TrackDemo.isOn { CrashTrace.install() }
+        #endif
         let t = RouteTracker()
         _tracker = State(initialValue: t)
         // Apple Watch: live stats out, start/stop in.
@@ -297,3 +300,19 @@ struct AlwaysLocationCard: View {
         .shadow(color: .black.opacity(0.4), radius: 18, y: 8)
     }
 }
+
+
+#if DEBUG
+/// CI simulators don't write crash reports, so in demo mode a fatal signal prints its own backtrace to the log.
+enum CrashTrace {
+    static func install() {
+        for sig in [SIGFPE, SIGILL, SIGTRAP, SIGSEGV, SIGBUS, SIGABRT] {
+            signal(sig) { s in
+                NSLog("CRASHTRACE signal %d", s)
+                for line in Thread.callStackSymbols { NSLog("CRASHTRACE %@", line) }
+                exit(128 + s)
+            }
+        }
+    }
+}
+#endif
