@@ -208,14 +208,14 @@ targets:
         copy:
           destination: productsDirectory
           subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
-      - target: FoodBookWidgets
-        embed: true
+      # - target: FoodBookWidgets   # TODO re-enable once App Groups are registered (see docs/WIDGETS.md)
+      #   embed: true
     entitlements:
       path: FoodApp/FoodBook.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
-        com.apple.security.application-groups: [group.com.troydunn.foodbook]
+        # com.apple.security.application-groups: [group.com.troydunn.foodbook]   # TODO re-enable once App Groups are registered
     info:
       path: WebApps/FoodBook/Info.plist
       properties:
@@ -246,15 +246,15 @@ targets:
     sources:
       - path: PulseLab
       - path: Shared/Store
-    dependencies:
-      - target: PulseLabWidgets
-        embed: true
+    # dependencies:
+      # - target: PulseLabWidgets   # TODO re-enable once App Groups are registered (see docs/WIDGETS.md)
+      #   embed: true
     entitlements:
       path: PulseLab/PulseLab.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
-        com.apple.security.application-groups: [group.com.troydunn.pulselab]
+        # com.apple.security.application-groups: [group.com.troydunn.pulselab]   # TODO re-enable once App Groups are registered
     info:
       path: PulseLab/Info.plist
       properties:
@@ -294,14 +294,14 @@ targets:
         copy:
           destination: productsDirectory
           subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
-      - target: StillPointWidgets
-        embed: true
+      # - target: StillPointWidgets   # TODO re-enable once App Groups are registered (see docs/WIDGETS.md)
+      #   embed: true
     entitlements:
       path: StillPoint/StillPoint.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
-        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+        # com.apple.security.application-groups: [group.com.troydunn.stillpoint]   # TODO re-enable once App Groups are registered
     info:
       path: StillPoint/Info.plist
       properties:
@@ -335,15 +335,15 @@ targets:
     sources:
       - path: StillPointWatch
       - path: StillPoint/Shared
-    dependencies:
-      - target: StillPointWatchWidgets
-        embed: true
+    # dependencies:
+      # - target: StillPointWatchWidgets   # TODO re-enable once App Groups are registered (see docs/WIDGETS.md)
+      #   embed: true
     entitlements:
       path: StillPointWatch/StillPointWatch.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
-        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+        # com.apple.security.application-groups: [group.com.troydunn.stillpoint]   # TODO re-enable once App Groups are registered
     info:
       path: StillPointWatch/Info.plist
       properties:
@@ -455,7 +455,7 @@ targets:
       path: TVRemote/Clicker.entitlements
       properties:
         com.apple.developer.game-center: true
-        com.apple.security.application-groups: [group.com.troydunn.clicker]
+        # com.apple.security.application-groups: [group.com.troydunn.clicker]   # TODO re-enable once App Groups are registered
     info:
       path: TVRemote/Info.plist
       properties:
@@ -540,13 +540,13 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: ClankerrWatch
-    dependencies:
-      - target: ClankerrWidgets
-        embed: true
+    # dependencies:
+      # - target: ClankerrWidgets   # TODO re-enable once App Groups are registered (see docs/WIDGETS.md)
+      #   embed: true
     entitlements:
       path: ClankerrWatch/ClankerrWatch.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.clicker]
+        # com.apple.security.application-groups: [group.com.troydunn.clicker]   # TODO re-enable once App Groups are registered
     info:
       path: ClankerrWatch/Info.plist
       properties:
@@ -577,7 +577,7 @@ targets:
     entitlements:
       path: StillPointWidgets/StillPointWidgets.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+        # com.apple.security.application-groups: [group.com.troydunn.stillpoint]   # TODO re-enable once App Groups are registered
     info:
       path: StillPointWidgets/StillPointWidgets.plist
       properties:
@@ -600,7 +600,7 @@ targets:
     entitlements:
       path: StillPointWidgets/StillPointWatchWidgets.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+        # com.apple.security.application-groups: [group.com.troydunn.stillpoint]   # TODO re-enable once App Groups are registered
     info:
       path: StillPointWidgets/StillPointWatchWidgets.plist
       properties:
@@ -622,7 +622,7 @@ targets:
     entitlements:
       path: PulseLabWidgets/PulseLabWidgets.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.pulselab]
+        # com.apple.security.application-groups: [group.com.troydunn.pulselab]   # TODO re-enable once App Groups are registered
     info:
       path: PulseLabWidgets/PulseLabWidgets.plist
       properties:
@@ -645,7 +645,7 @@ targets:
     entitlements:
       path: ClankerrWidgets/ClankerrWidgets.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.clicker]
+        # com.apple.security.application-groups: [group.com.troydunn.clicker]   # TODO re-enable once App Groups are registered
     info:
       path: ClankerrWidgets/ClankerrWidgets.plist
       properties:
@@ -667,7 +667,7 @@ targets:
     entitlements:
       path: FoodBookWidgets/FoodBookWidgets.entitlements
       properties:
-        com.apple.security.application-groups: [group.com.troydunn.foodbook]
+        # com.apple.security.application-groups: [group.com.troydunn.foodbook]   # TODO re-enable once App Groups are registered
     info:
       path: FoodBookWidgets/FoodBookWidgets.plist
       properties:
