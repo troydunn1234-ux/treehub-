@@ -1,0 +1,30 @@
+name: App Store IAP (Pro unlock)
+on:
+  workflow_dispatch:
+    inputs:
+      app:
+        description: Which app
+        type: choice
+        options: [StillPoint, PulseLab, Clicker]
+        default: StillPoint
+jobs:
+  iap:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - env:
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip install --quiet "pyjwt[crypto]"
+          printf '%s\n' "$P8" > /tmp/key.p8
+          case "${{ inputs.app }}" in
+            StillPoint) B=com.troydunn.stillpoint; P=1.99; N="Still Point Pro"; D="All 39 practices from 11 traditions, every warm-up and movement routine, and the full library on Apple Watch. One payment, forever." ;;
+            PulseLab)   B=com.troydunn.pulselab;   P=2.99; N="Pulse Lab Pro";   D="The full Watch-vs-WHOOP VS lab, 90 days of history, shareable VS cards and CSV export. One payment, forever." ;;
+            Clicker)    B=com.troydunn.clicker;    P=2.99; N="Couch Remote Pro"; D="Unlimited TVs, typing on your TV from your phone's keyboard, and the PC remote. One payment, forever." ;;
+          esac
+          SHOT=store/$(echo ${{ inputs.app }} | tr A-Z a-z)/iap-review.png
+          [ -f "$SHOT" ] || SHOT=""
+          KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_iap.py "$B" "$B.pro" "$P" "$N" "$D" $SHOT
+          rm -f /tmp/key.p8
