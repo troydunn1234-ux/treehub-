@@ -106,6 +106,16 @@ final class LabStore {
         let h = await health
         merge(health: h)
         lastPull = Date()
+        afterRefresh()
+    }
+
+    /// Agreement scores over the last 30 days (what Today, the weekly summary and Trust all read).
+    var agreements30: [Agreement] { Compare.agreements(watch: watchDays, whoop: whoopDays, sleeps: sleeps, days: 30) }
+
+    /// Push fresh numbers to the widget and refresh the weekly notification text.
+    private func afterRefresh() {
+        WidgetBridge.publish(self)
+        Notify.reschedule(agreements: agreements30)
     }
 
     /// WHOOP API wins where it has data; WHOOP samples found in Apple Health fill the gaps.
@@ -189,5 +199,6 @@ final class LabStore {
         healthAsked = true
         lastPull = Date()
         loadedOnce = true
+        afterRefresh()
     }
 }

@@ -2,22 +2,34 @@ import SwiftUI
 
 @main
 struct ClickerApp: App {
-    @State private var store: TVStore
-    @State private var pc = PCClient()
+    @State private var store = TVStore.shared
+    @State private var pc = PCClient.shared
+    @State private var scenes = SceneStore.shared
 
     init() {
-        let s = TVStore()
-        _store = State(initialValue: s)
+        let s = TVStore.shared
         // Apple Watch remote: presses from the watch go to the TV through this phone.
         ClankerrWatchBridge.shared.attach(s)
+        // Watch complication: keep the current TV name in the App Group.
+        WidgetBridge.shared.attach(s)
+        // Scenes (macros) drive the TV and the PC.
+        SceneStore.shared.attach(store: s, pc: PCClient.shared)
     }
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(store)
                 .environment(pc)
+                .environment(scenes)
                 .preferredColorScheme(.dark)
                 .tint(Look.cyan)
+                .onOpenURL { url in
+                    // couchremote://remote (Watch complication, Shortcuts) just opens the app.
+                    if url.host == "scene", let name = url.pathComponents.dropFirst().first,
+                       let scene = SceneStore.shared.scenes.first(where: { $0.name.caseInsensitiveCompare(name) == .orderedSame }) {
+                        Task { await SceneStore.shared.run(scene) }
+                    }
+                }
         }
     }
 }

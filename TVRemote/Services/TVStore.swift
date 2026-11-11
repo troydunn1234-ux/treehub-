@@ -41,6 +41,9 @@ extension Color {
 @MainActor
 @Observable
 final class TVStore {
+    /// The one store the app, Siri (App Intents), Scenes and the Watch bridge all share.
+    static let shared = TVStore()
+
     // One controller per brand. Each speaks its TV's own local-network protocol.
     @ObservationIgnored let vizio = VizioController()
     @ObservationIgnored private(set) lazy var controllers: [TVBrand: TVController] = [

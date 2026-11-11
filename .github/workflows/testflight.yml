@@ -71,6 +71,12 @@ jobs:
           if grep -q "$BUNDLE.watchkitapp;" TreeHub.xcodeproj/project.pbxproj; then
             python3 .github/scripts/ensure_bundle_id.py "$BUNDLE.watchkitapp" "${{ inputs.app }} Watch" || true
           fi
+          # Widget / complication extensions get their own IDs too.
+          for EXT in widgets watchkitapp.widgets; do
+            if grep -q "$BUNDLE.$EXT;" TreeHub.xcodeproj/project.pbxproj; then
+              python3 .github/scripts/ensure_bundle_id.py "$BUNDLE.$EXT" "${{ inputs.app }} $EXT" || true
+            fi
+          done
 
       - name: Archive (signed in the cloud)
         env:

@@ -8,6 +8,9 @@ import UIKit
 final class PCClient {
     enum State: Equatable { case disconnected, connecting, needsCode, connected }
 
+    /// The one PC client the app, Scenes and Siri share.
+    static let shared = PCClient()
+
     struct PC: Codable, Equatable, Hashable { var host: String; var name: String }
     struct PCApp: Codable, Identifiable, Hashable { var id: String; var name: String }
 
@@ -251,4 +254,21 @@ final class PCClient {
     func setVolume(_ v: Double) { volume = v; send(["t": "volume", "set": Int(v.rounded())]) }
     func launch(_ app: PCApp) { send(["t": "launch", "id": app.id]) }
     func screen(_ action: String) { send(["t": "screen", "action": action]) }
+
+    /// A PC is saved (paired) on this phone.
+    var isPaired: Bool { pc != nil && (hasToken || Self.demo) }
+
+    /// Scenes: put the PC to sleep (no confirmation; the scene is the confirmation).
+    func sleep() {
+        guard isPaired else { return }
+        if state != .connected { connect() }
+        screen("sleep")
+    }
+
+    /// Scenes: wake the PC's display. Reconnects first if the socket dropped while the phone was idle.
+    func wake() {
+        guard isPaired else { return }
+        if state != .connected { connect() }
+        screen("wake")
+    }
 }

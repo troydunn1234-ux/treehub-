@@ -154,6 +154,93 @@ final class SessionLog: ObservableObject {
 
     private func persist() {
         if let d = try? JSONEncoder().encode(records) { UserDefaults.standard.set(d, forKey: key) }
+        WidgetBridge.publish()
+    }
+
+    // MARK: - Streak & weekly goal
+
+    static let defaultWeeklyGoal: Double = 30
+    private static let goalKey = "sp.weekGoal"
+
+    /// Minutes of practice the person aims for each calendar week. Default 30; editable in Settings.
+    @Published var weeklyGoal: Double = {
+        let v = UserDefaults.standard.double(forKey: SessionLog.goalKey)
+        return v > 0 ? v : SessionLog.defaultWeeklyGoal
+    }() {
+        didSet {
+            guard weeklyGoal != oldValue else { return }
+            UserDefaults.standard.set(weeklyGoal, forKey: Self.goalKey)
+            WidgetBridge.publish()
+            onGoalChange?()
+        }
+    }
+
+    /// Called after the goal changes locally (used to sync it to the other device).
+    var onGoalChange: (() -> Void)?
+
+    /// Apply a goal received from the other device without echoing it back.
+    func applyRemoteGoal(_ minutes: Double) {
+        guard minutes > 0, minutes != weeklyGoal else { return }
+        let saved = onGoalChange
+        onGoalChange = nil
+        weeklyGoal = minutes
+        onGoalChange = saved
+    }
+
+    /// Start of the current calendar week (follows the locale's first weekday).
+    var weekStartDate: Date {
+        let cal = Calendar.current
+        return cal.dateInterval(of: .weekOfYear, for: Date())?.start ?? cal.startOfDay(for: Date())
+    }
+
+    /// Minutes since the start of this calendar week: what counts toward the weekly goal.
+    var calendarWeekMinutes: Double {
+        let start = weekStartDate
+        return records.filter { $0.start >= start }.reduce(0.0) { $0 + $1.minutes }
+    }
+
+    /// 0…1 progress toward the weekly goal.
+    var weekProgress: Double {
+        guard weeklyGoal > 0 else { return 0 }
+        return min(1, calendarWeekMinutes / weeklyGoal)
+    }
+
+    var goalReached: Bool { weeklyGoal > 0 && calendarWeekMinutes >= weeklyGoal }
+
+    /// Minutes still to go this week (0 once the goal is met).
+    var minutesToGoal: Double { max(0, weeklyGoal - calendarWeekMinutes) }
+
+    /// At least one session today, so the streak is safe for another day.
+    var practicedToday: Bool {
+        let cal = Calendar.current
+        return records.contains { cal.isDateInToday($0.start) }
+    }
+
+    /// Longest run of consecutive days ever.
+    var bestStreak: Int {
+        let cal = Calendar.current
+        let days = Set(records.map { cal.startOfDay(for: $0.start) }).sorted()
+        var best = 0, run = 0
+        var prev: Date? = nil
+        for d in days {
+            if let p = prev, let next = cal.date(byAdding: .day, value: 1, to: p), cal.isDate(next, inSameDayAs: d) {
+                run += 1
+            } else {
+                run = 1
+            }
+            best = max(best, run)
+            prev = d
+        }
+        return max(best, streak)
+    }
+
+    /// A short, warm line for the streak card.
+    var streakLine: String {
+        switch streak {
+        case 0: return practicedToday ? "A fresh start." : "Begin a streak today."
+        case 1: return practicedToday ? "One day. Come back tomorrow." : "Practice today to keep it going."
+        default: return practicedToday ? "\(streak) days in a row." : "\(streak) days. Keep it alive today."
+        }
     }
 
     /// Consecutive days (ending today or yesterday) with at least one session.

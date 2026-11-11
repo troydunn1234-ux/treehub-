@@ -8,6 +8,11 @@ struct TodayScreen: View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
+            ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
+                          sleepHours: lastNightHours) {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
+            }
             RivalryHero(rounds: Rivalry.rounds(store),
                         watchBPM: store.today(.watch)?.rhr, whoopBPM: store.today(.whoop)?.rhr,
                         readiness: store.readinessToday, recovery: store.recoveryToday,
@@ -61,6 +66,12 @@ struct TodayScreen: View {
             Text(v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "—")
                 .font(Lab.number(20, .black)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s))
         }
+    }
+
+    /// Last night's hours asleep, preferring whichever tracker has it (mean when both do).
+    private var lastNightHours: Double? {
+        let v = Source.allCases.compactMap { store.lastNight($0) }.filter { $0.night >= Date().dayStart.adding(days: -1) }.map { $0.asleepMin / 60 }
+        return Stats.mean(v)
     }
 
     private var gaugeNote: String {
@@ -199,5 +210,157 @@ struct TodayScreen: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - Recovery vs Readiness
+
+/// Head-to-head at the top of Today: WHOOP recovery (latest cycle) and Pulse Lab's Watch readiness
+/// as two half-arcs facing each other, with a one-line verdict. Tapping opens the VS tab (Pro).
+struct ReadyDuelCard: View {
+    let readiness: Double?
+    let recovery: Double?
+    /// Last night's hours asleep, used as the tie-breaker when the two scores disagree.
+    let sleepHours: Double?
+    let action: () -> Void
+    @ObservedObject private var unlock = Unlock.shared
+
+    var body: some View {
+        Button(action: action) {
+            LabPanel(tint: Lab.violet) {
+                VStack(spacing: 12) {
+                    HStack {
+                        SectionTag("Recovery vs Readiness")
+                        Spacer()
+                        HStack(spacing: 4) {
+                            if !unlock.isPro { Image(systemName: "lock.fill").font(.system(size: 9, weight: .heavy)) }
+                            Text("VS").font(Lab.label(9)).tracking(1.5)
+                            Image(systemName: "chevron.right").font(.system(size: 9, weight: .heavy))
+                        }
+                        .foregroundStyle(Lab.watch)
+                    }
+                    HStack(spacing: 0) {
+                        FacingArc(value: readiness, label: "Readiness", source: .watch, color: Lab.watch, opensRight: true)
+                        VStack(spacing: 2) {
+                            Text("VS").font(Lab.display(22)).foregroundStyle(Lab.duel)
+                            Text(gapText).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.faint)
+                        }
+                        .frame(width: 72)
+                        FacingArc(value: recovery, label: "Recovery", source: .whoop, color: recovery.map(Lab.band) ?? Lab.whoop, opensRight: false)
+                    }
+                    Text(read)
+                        .font(Lab.body(13, .semibold)).foregroundStyle(Lab.dim)
+                        .multilineTextAlignment(.center).frame(maxWidth: .infinity)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PressScale())
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Recovery versus readiness. Apple Watch readiness \(fmt(readiness)), WHOOP recovery \(fmt(recovery)). \(read)")
+        .accessibilityHint(unlock.isPro ? "Opens the VS tab" : "Opens the Pro unlock")
+    }
+
+    private func fmt(_ v: Double?) -> String { v.map { "\(Int($0.rounded())) percent" } ?? "no score" }
+
+    private var gapText: String {
+        guard let a = readiness, let b = recovery else { return "TODAY" }
+        let d = Int((a - b).rounded())
+        return d == 0 ? "EVEN" : String(format: "%+d PTS", d)
+    }
+
+    /// One line in plain English. When the two split, last night's sleep breaks the tie.
+    var read: String {
+        switch (readiness, recovery) {
+        case (nil, nil): return "Connect Apple Health and WHOOP to see both scores here."
+        case (nil, .some(let r)): return "Only WHOOP has a score today: \(Int(r.rounded()))% recovered. Watch readiness needs HRV or resting HR from today."
+        case (.some(let a), nil): return "Only your Watch has a score today: \(Int(a.rounded()))% ready. WHOOP recovery lands after your next cycle."
+        case (.some(let a), .some(let r)):
+            let aGo = a >= 67, rGo = r >= 67, aRest = a < 34, rRest = r < 34
+            if aGo && rGo { return "Both say you're ready. Go." }
+            if aRest && rRest { return "Both say rest. Keep today easy." }
+            if abs(a - r) <= 10 { return "Both land in the same zone today — a middle day: train, but don't chase a record." }
+            let whoopSays = rGo ? "go" : rRest ? "rest" : "take it easy"
+            let watchSays = aGo ? "go" : aRest ? "rest" : "take it easy"
+            let base = "WHOOP says \(whoopSays), Watch says \(watchSays)"
+            guard let h = sleepHours else { return base + " — they split today. No sleep logged to break the tie." }
+            let hm = fmtHM(h * 60)
+            if h >= 7 { return base + " — trust sleep: \(hm) last night, lean toward go." }
+            if h >= 6 { return base + " — trust sleep: \(hm) last night, a middle day." }
+            return base + " — trust sleep: only \(hm) last night, lean toward rest."
+        }
+    }
+}
+
+/// A 180° arc on one side (the open side faces the opponent), filled top → bottom.
+struct FacingArc: View {
+    let value: Double?
+    let label: String
+    let source: Source
+    let color: Color
+    /// True for the left-hand arc (bulges left, opens to the right).
+    let opensRight: Bool
+    var size: CGFloat = 112
+    @State private var drawn: Double = 0
+
+    var body: some View {
+        let line = size * 0.10
+        ZStack {
+            HalfArc(progress: 1, leftSide: opensRight)
+                .stroke(Color.white.opacity(0.07), style: StrokeStyle(lineWidth: line, lineCap: .round))
+                .padding(line / 2)
+            HalfArc(progress: drawn / 100, leftSide: opensRight)
+                .stroke(LinearGradient(colors: [color.opacity(0.45), color], startPoint: .top, endPoint: .bottom),
+                        style: StrokeStyle(lineWidth: line, lineCap: .round))
+                .padding(line / 2)
+                .shadow(color: color.opacity(0.7), radius: 8)
+            VStack(spacing: 2) {
+                CountUp(value: value, size: size * 0.26, color: Lab.text)
+                Text(label.uppercased()).font(Lab.label(8)).tracking(1.3).foregroundStyle(color)
+                SourceChip(source: source).scaleEffect(0.85)
+            }
+            .offset(x: opensRight ? size * 0.06 : -size * 0.06)
+        }
+        .frame(width: size, height: size)
+        .frame(maxWidth: .infinity)
+        .onAppear { sweep() }
+        .onChange(of: value) { _, _ in sweep() }
+        .accessibilityHidden(true)
+    }
+
+    private func sweep() {
+        let v = min(100, max(0, value ?? 0))
+        if Lab.reduceMotion { drawn = v; return }
+        drawn = 0
+        DispatchQueue.main.async { withAnimation(.easeOut(duration: 1.0)) { drawn = v } }
+    }
+}
+
+/// Half circle: the left side runs from 12 o'clock down through 9 to 6; the right side mirrors it. Animatable.
+struct HalfArc: Shape {
+    var progress: Double
+    var leftSide: Bool
+    var animatableData: Double {
+        get { progress }
+        set { progress = newValue }
+    }
+
+    func path(in r: CGRect) -> Path {
+        var p = Path()
+        let c = CGPoint(x: r.midX, y: r.midY), radius = min(r.width, r.height) / 2
+        let part = min(1, max(0, progress))
+        guard part > 0 else { return p }
+        // SwiftUI angles: 0° = 3 o'clock, 90° = 6 o'clock, 270° = 12 o'clock.
+        if leftSide {
+            // 270° → 180° → 90°, i.e. counter-clockwise on screen from the top down the left side.
+            let start = Angle.degrees(270), end = Angle.degrees(270 - 180 * part)
+            p.addArc(center: c, radius: radius, startAngle: start, endAngle: end, clockwise: true)
+        } else {
+            // 270° → 360° → 450°, clockwise on screen from the top down the right side.
+            let start = Angle.degrees(270), end = Angle.degrees(270 + 180 * part)
+            p.addArc(center: c, radius: radius, startAngle: start, endAngle: end, clockwise: false)
+        }
+        return p
     }
 }

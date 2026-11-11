@@ -15,6 +15,7 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.delegate = self
         WCSession.default.activate()
         Prefs.shared.onChange = { [weak self] in self?.pushSettings() }
+        SessionLog.shared.onGoalChange = { [weak self] in self?.pushSettings() }
     }
 
     var canUseWatch: Bool { watchPaired && watchAppInstalled }
@@ -24,6 +25,7 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         var ctx = Prefs.shared.settings.asDictionary()
         ctx[SyncKey.favorites] = Prefs.shared.favorites
         ctx[SyncKey.pro] = Prefs.shared.pro
+        ctx[SyncKey.weekGoal] = SessionLog.shared.weeklyGoal
         try? WCSession.default.updateApplicationContext(ctx)
     }
 

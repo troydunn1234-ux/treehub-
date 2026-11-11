@@ -160,4 +160,5 @@ enum SyncKey {
     static let favorites = "favorites"
     static let pro = "pro"
     static let session = "session"
+    static let weekGoal = "weekGoal"
 }
