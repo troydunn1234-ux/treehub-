@@ -20,10 +20,10 @@ struct OnboardingSpec {
 
 extension View {
     /// Shows the onboarding once per `spec.version`.
-    func onboarding(_ spec: OnboardingSpec) -> some View { modifier(OnboardingHost(spec: spec)) }
+    func onboarding(_ spec: OnboardingSpec) -> some View { modifier(ProOnboardingHost(spec: spec)) }
 }
 
-private struct OnboardingHost: ViewModifier {
+private struct ProOnboardingHost: ViewModifier {
     let spec: OnboardingSpec
     @State private var show = false
     private var key: String { "onboarding.seen.v\(spec.version)" }
@@ -31,7 +31,7 @@ private struct OnboardingHost: ViewModifier {
         content
             .onAppear { if !UserDefaults.standard.bool(forKey: key) { show = true } }
             .fullScreenCover(isPresented: $show) {
-                OnboardingView(spec: spec) {
+                ProOnboardingView(spec: spec) {
                     UserDefaults.standard.set(true, forKey: key)
                     show = false
                 }
@@ -39,7 +39,7 @@ private struct OnboardingHost: ViewModifier {
     }
 }
 
-struct OnboardingView: View {
+struct ProOnboardingView: View {
     let spec: OnboardingSpec
     let done: () -> Void
     @State private var page = 0

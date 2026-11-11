@@ -40,6 +40,11 @@ final class LabStore {
     func days(_ s: Source) -> [DayStat] { s == .watch ? watchDays : whoopDays }
     /// Today's numbers, falling back to the newest day we have (see `todayIsStale`).
     func today(_ s: Source) -> DayStat? { days(s).stat(on: Date()) ?? days(s).last }
+    /// The newest value a tracker has for a metric, and whether it's from today.
+    func latest(_ s: Source, _ kp: KeyPath<DayStat, Double?>) -> (Double, Bool)? {
+        guard let d = days(s).last(where: { $0[keyPath: kp] != nil }), let v = d[keyPath: kp] else { return nil }
+        return (v, d.day.isToday)
+    }
     /// True when `today(_:)` had to fall back to an older day.
     func todayIsStale(_ s: Source) -> Bool { days(s).stat(on: Date()) == nil && days(s).last != nil }
 

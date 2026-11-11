@@ -114,7 +114,6 @@ struct RootView: View {
         }
         .tint(Lab.watch)
         .paywallHost(spec: PulseLabPro.spec)
-        .onboarding(PulseLabOnboard.spec)
         .overlay(alignment: .top) { ToastView() }
         .task {
             #if DEBUG

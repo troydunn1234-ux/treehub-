@@ -28,43 +28,75 @@ struct TodayScreen: View {
         }
     }
 
-    /// Three compact tiles under the hero: the numbers people check first, with "—" explained.
+    /// Every number people check, Watch over WHOOP, in one scannable grid. A value from an
+    /// earlier day (today's isn't in yet) is shown dimmer with a "yday"-style tag instead of a dash.
     private var quickTiles: some View {
-        let w = store.today(.watch), h = store.today(.whoop)
         let wn = store.lastNight(.watch), hn = store.lastNight(.whoop)
-        return HStack(spacing: Lab.S.s) {
-            tile("Resting HR", "bpm", w?.rhr, h?.rhr, .rhr)
-            tile("HRV", "ms", w?.hrv, h?.hrv, .hrv)
-            tile("Sleep", "h", wn.map { $0.asleepMin / 60 }, hn.map { $0.asleepMin / 60 }, .sleep, decimals: 1)
+        let kcalW = store.latest(.watch, \.totalKcal), kcalH = store.latest(.whoop, \.totalKcal)
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s), count: 3), spacing: Lab.S.s) {
+            tile("Resting HR", "bpm", store.latest(.watch, \.rhr), store.latest(.whoop, \.rhr), .rhr)
+            tile("HRV", "ms", store.latest(.watch, \.hrv), store.latest(.whoop, \.hrv), .hrv, note: "SDNN · RMSSD")
+            tile("Sleep", "h", wn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, hn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, .sleep, decimals: 1)
+            tile("Resp rate", "br/min", store.latest(.watch, \.resp), store.latest(.whoop, \.resp), .resp, decimals: 1)
+            tile("Blood O₂", "%", store.latest(.watch, \.spo2), store.latest(.whoop, \.spo2), .spo2)
+            tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0, $0.1) }, .temp, decimals: 1, signed: true)
+            tile("Calories", "kcal", kcalW, kcalH, .calories)
+            tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), .recovery, decimals: 1, only: .whoop)
+            tile("Steps", "steps", store.latest(.watch, \.steps), nil, .steps, only: .watch)
         }
     }
 
-    private func tile(_ title: String, _ unit: String, _ a: Double?, _ b: Double?, _ m: MetricKey, decimals: Int = 0) -> some View {
+    /// `a` / `b` are (value, isToday). `only` = the other tracker doesn't measure this at all.
+    private func tile(_ title: String, _ unit: String, _ a: (Double, Bool)?, _ b: (Double, Bool)?, _ m: MetricKey,
+                      decimals: Int = 0, signed: Bool = false, note: String? = nil, only: Source? = nil) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             store.detail = m
         } label: {
             VStack(alignment: .leading, spacing: Lab.S.xs) {
-                Text(title.uppercased()).font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.dim)
-                tileValue(a, .watch, decimals)
-                tileValue(b, .whoop, decimals)
-                Text(unit).font(Lab.label(8)).foregroundStyle(Lab.faint)
+                HStack(spacing: 4) {
+                    Text(title.uppercased()).font(Lab.label(9)).tracking(1.2).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
+                    Spacer(minLength: 0)
+                    if let a, let b, a.1 || b.1 { gapChip(a.0 - b.0, decimals: decimals) }
+                }
+                if only == .whoop { notMeasured(.watch) } else { tileValue(a, .watch, decimals, signed: signed) }
+                if only == .watch { notMeasured(.whoop) } else { tileValue(b, .whoop, decimals, signed: signed) }
+                Text(note ?? unit).font(Lab.label(8)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Lab.S.m - 2)
+            .padding(Lab.S.m - 4)
             .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.08)))
         }
         .buttonStyle(PressScale())
-        .accessibilityLabel("\(title): Apple Watch \(a.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit), WHOOP \(b.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit)")
+        .accessibilityLabel("\(title): Apple Watch \(a.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit), WHOOP \(b.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit)")
         .accessibilityHint("Opens the \(title.lowercased()) chart")
     }
 
-    private func tileValue(_ v: Double?, _ s: Source, _ decimals: Int) -> some View {
+    /// Watch − WHOOP, coloured by who reads higher. Small on purpose.
+    private func gapChip(_ d: Double, decimals: Int) -> some View {
+        let txt = (d >= 0 ? "+" : "−") + abs(d).formatted(.number.precision(.fractionLength(decimals)))
+        return Text(txt).font(Lab.mono(8, .heavy)).foregroundStyle(abs(d) < 0.05 ? Lab.faint : (d > 0 ? Lab.watch : Lab.whoop))
+            .padding(.horizontal, 4).padding(.vertical, 2)
+            .background(Capsule().fill(Color.white.opacity(0.06)))
+    }
+
+    private func notMeasured(_ s: Source) -> some View {
+        HStack(spacing: 5) {
+            Circle().fill(Lab.color(s).opacity(0.35)).frame(width: 5, height: 5)
+            Text(s == .watch ? "not on Watch" : "not on WHOOP").font(Lab.label(8)).foregroundStyle(Lab.faint)
+        }
+        .frame(height: 24)
+    }
+
+    private func tileValue(_ v: (Double, Bool)?, _ s: Source, _ decimals: Int, signed: Bool = false) -> some View {
         HStack(spacing: 5) {
             Circle().fill(Lab.color(s)).frame(width: 5, height: 5)
-            Text(v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "—")
-                .font(Lab.number(20, .black)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s))
+            let f = v.map { (signed && $0.0 > 0 ? "+" : "") + $0.0.formatted(.number.precision(.fractionLength(decimals))) }
+            Text(f ?? "—")
+                .font(Lab.number(20, .black)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s).opacity(v?.1 == false ? 0.6 : 1))
+                .lineLimit(1).minimumScaleFactor(0.6)
+            if let v, !v.1 { Text("prev").font(Lab.label(7)).foregroundStyle(Lab.faint) }
         }
     }
 
