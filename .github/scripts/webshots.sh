@@ -8,6 +8,9 @@ FAIL=0
 # On a crash, show why: newest simulator crash report for the app (Swift fatal error text lives in "asi"/"exception").
 crashinfo() {
   f=$(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -1)
+  ls -t ~/Library/Logs/DiagnosticReports 2>/dev/null | head -5
+  echo "  --- unified log (Roamr, last 3 min) ---"
+  xcrun simctl spawn "$UDID" log show --last 3m --style compact --predicate 'process == "Roamr" OR eventMessage CONTAINS "Roamr" OR eventMessage CONTAINS "com.troydunn.roamr"' 2>/dev/null | grep -iE "fatal|error|crash|exception|terminat|exit|signal|abort" | grep -v "no such" | tail -40
   [ -n "$f" ] || { echo "  (no crash report found)"; return; }
   echo "  crash report: $f"
   python3 - "$f" <<'PY' || head -c 3000 "$f"
@@ -70,7 +73,7 @@ if [ -d "$APP" ]; then
   xcrun simctl install "$UDID" "$APP"
   for svc in location location-always motion; do xcrun simctl privacy "$UDID" grant $svc com.troydunn.roamr || true; done
   xcrun simctl location "$UDID" set 37.3229,-122.0322 || true
-  xcrun simctl launch "$UDID" com.troydunn.roamr -demo -autodrive > /dev/null
+  xcrun simctl launch "$UDID" com.troydunn.roamr -demo -autodrive || echo "launch failed"
   sleep 4
   # Follow a real stretch of I-280 from OpenStreetMap so the speed-limit lookup has a road to find.
   ROUTE=$(curl -s -m 25 -G https://overpass-api.de/api/interpreter --data-urlencode \
