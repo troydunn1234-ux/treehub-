@@ -85,10 +85,12 @@ jobs:
 
       - name: Run in simulator and screenshot
         if: github.event_name == 'workflow_dispatch'
+        timeout-minutes: 15
         run: bash .github/scripts/screenshots.sh
 
       - name: Run the web apps and screenshot
         if: always() && github.event_name == 'workflow_dispatch'
+        timeout-minutes: 25
         run: bash .github/scripts/webshots.sh
 
       - name: Upload screenshots

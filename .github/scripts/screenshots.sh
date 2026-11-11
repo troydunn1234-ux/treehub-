@@ -4,6 +4,8 @@ set -u
 APP=build/Build/Products/Debug-iphonesimulator/Rootbound.app
 BUNDLE=com.troydunn.rootbound
 mkdir -p shots
+# Only when Rootbound was built this run.
+[ -d "$APP" ] || { echo "Rootbound not built; skipping"; exit 0; }
 
 UDID=$(xcrun simctl list devices available -j | python3 -c '
 import json,sys,re
