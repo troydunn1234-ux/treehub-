@@ -149,6 +149,7 @@
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		965C96BD74C27CFBF48A9A00 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		96AA1437C7FC27B7E96B74E1 /* TodayScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC6637F5427D56F37EE792 /* TodayScreen.swift */; };
+		983DEFCCEC064BE657C0835B /* Sparkle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF021BA53A779C9D22AA171 /* Sparkle.swift */; };
 		9AFA46552134B3F6CFD2C1D5 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B916C82AA75F8627BDE5A7 /* Unlock.swift */; };
 		9D670B63D38C84DBBC827E9D /* SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = BD44C2BDEBC5085A5349E970 /* SOURCES.md */; };
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
@@ -603,6 +604,7 @@
 		FB1240C67112B2502AB76F1D /* DemoData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DemoData.swift; sourceTree = "<group>"; };
 		FB23CD916A03A5E29B876B21 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.cfbundle; path = RootboundUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		FBF021BA53A779C9D22AA171 /* Sparkle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sparkle.swift; sourceTree = "<group>"; };
 		FBF7885A2BB3642014A408F5 /* PracticeInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeInfo.swift; sourceTree = "<group>"; };
 		FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityController.swift; sourceTree = "<group>"; };
 		FD533F40BAA6F6D9454E5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -895,6 +897,7 @@
 				4E36CC16D213588D0432C222 /* PracticeViews.swift */,
 				7F57D47A19D76BA41A16BFCA /* Scenes.swift */,
 				AEC92D777F335C9EBAE58D40 /* SessionDetailView.swift */,
+				FBF021BA53A779C9D22AA171 /* Sparkle.swift */,
 				9AF1DFC84C2511B806BD91B1 /* StillPointApp.swift */,
 			);
 			path = App;
@@ -2067,6 +2070,7 @@
 				69590DFD6BB991FFA3170676 /* SessionDetailView.swift in Sources */,
 				785DADA8E4DD37F2DB90F8A6 /* SessionLog.swift in Sources */,
 				F1E0202CAFBC208E0EB9FAA2 /* Settings.swift in Sources */,
+				983DEFCCEC064BE657C0835B /* Sparkle.swift in Sources */,
 				801EF3F1296D07EC03DCD55E /* StillPointApp.swift in Sources */,
 				553ACB6A7724EAB403232D96 /* Theme.swift in Sources */,
 				286B00D2A96D581E3CDBDEAD /* Unlock.swift in Sources */,
