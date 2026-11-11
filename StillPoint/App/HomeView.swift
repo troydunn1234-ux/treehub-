@@ -5,6 +5,7 @@ struct HomeView: View {
     @EnvironmentObject var router: Router
     @EnvironmentObject var log: SessionLog
     private let lib = PracticeLibrary.shared
+    @State private var appeared = false
 
     private var greeting: String {
         let h = Calendar.current.component(.hour, from: Date())
@@ -29,8 +30,15 @@ struct HomeView: View {
                         Text(greeting).font(SP.serif(34, .light)).foregroundStyle(SP.ink)
                         Text(log.streak > 1 ? "\(log.streak) days of stillness in a row." : "Take a few slow breaths with me.")
                             .font(SP.rounded(15)).foregroundStyle(SP.dim)
+                        Text(DailyThought.today)
+                            .font(SP.serif(15).italic()).foregroundStyle(SP.gold.opacity(0.85))
+                            .padding(.top, 6)
+                        WeekDots(days: log.lastWeek())
+                            .padding(.top, 10)
                     }
                     .padding(.top, 8)
+                    .opacity(appeared ? 1 : 0)
+                    .offset(y: appeared ? 0 : 10)
 
                     FeaturedCard(practice: featured)
 
@@ -39,7 +47,7 @@ struct HomeView: View {
                         HStack(spacing: 14) {
                             ForEach(lib.intentions) { i in
                                 NavigationLink(value: i) { IntentionBubble(intention: i) }
-                                    .buttonStyle(.plain)
+                                    .buttonStyle(SoftPress())
                             }
                         }
                         .padding(.horizontal, 2)
@@ -50,7 +58,7 @@ struct HomeView: View {
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 14) {
                                 ForEach(lib.warmUps) { p in
-                                    NavigationLink(value: p) { MiniCard(practice: p) }.buttonStyle(.plain)
+                                    NavigationLink(value: p) { MiniCard(practice: p) }.buttonStyle(SoftPress())
                                 }
                             }
                         }
@@ -70,7 +78,8 @@ struct HomeView: View {
                 .padding(.horizontal, 22)
                 .padding(.bottom, 40)
             }
-            .background(DuskBackground())
+            .background(ZStack { DuskBackground(); Fireflies() })
+            .onAppear { withAnimation(.easeOut(duration: 0.9)) { appeared = true } }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button { router.showSettings = true } label: { Image(systemName: "slider.horizontal.3") }
@@ -103,6 +112,7 @@ struct FeaturedCard: View {
     @EnvironmentObject var router: Router
     @EnvironmentObject var prefs: Prefs
     @EnvironmentObject var link: PhoneLink
+    @State private var beginTaps = 0
 
     var body: some View {
         let t = PracticeLibrary.shared.tradition(practice.traditionId)
@@ -119,6 +129,7 @@ struct FeaturedCard: View {
                 Text(practice.title).font(SP.serif(30, .light)).foregroundStyle(SP.ink)
                 HStack(spacing: 10) {
                     Button {
+                        beginTaps += 1
                         router.run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: practice, minutes: mins))
                     } label: {
                         Label("Begin · \(mins) min", systemImage: "circle.circle")
@@ -126,7 +137,10 @@ struct FeaturedCard: View {
                             .foregroundStyle(Color.black.opacity(0.85))
                             .padding(.horizontal, 18).padding(.vertical, 12)
                             .background(Capsule().fill(SP.goldGlow))
+                            .shadow(color: SP.gold.opacity(0.45), radius: 14, y: 4)
                     }
+                    .buttonStyle(SoftPress())
+                    .sensoryFeedback(.impact(weight: .light), trigger: beginTaps)
                     if link.canUseWatch {
                         Button {
                             link.startOnWatch(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: practice, minutes: mins)) { _ in }
@@ -195,7 +209,7 @@ struct PracticeStack: View {
     var body: some View {
         VStack(spacing: 10) {
             ForEach(practices) { p in
-                NavigationLink(value: p) { PracticeCardRow(practice: p) }.buttonStyle(.plain)
+                NavigationLink(value: p) { PracticeCardRow(practice: p) }.buttonStyle(SoftPress())
             }
         }
     }
