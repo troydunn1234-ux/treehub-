@@ -20,9 +20,9 @@ jobs:
           pip install --quiet "pyjwt[crypto]"
           printf '%s\n' "$P8" > /tmp/key.p8
           case "${{ inputs.app }}" in
-            StillPoint) B=com.troydunn.stillpoint; P=1.99; N="Still Point Pro"; D="All 39 practices from 11 traditions, every warm-up and movement routine, and the full library on Apple Watch. One payment, forever." ;;
-            PulseLab)   B=com.troydunn.pulselab;   P=2.99; N="Pulse Lab Pro";   D="The full Watch-vs-WHOOP VS lab, 90 days of history, shareable VS cards and CSV export. One payment, forever." ;;
-            Clicker)    B=com.troydunn.clicker;    P=2.99; N="Couch Remote Pro"; D="Unlimited TVs, typing on your TV from your phone's keyboard, and the PC remote. One payment, forever." ;;
+            StillPoint) B=com.troydunn.stillpoint; P=1.99; N="Still Point Pro"; D="All practices, routines and Watch library." ;;
+            PulseLab)   B=com.troydunn.pulselab;   P=2.99; N="Pulse Lab Pro";   D="VS lab, 90-day history, share + CSV export." ;;
+            Clicker)    B=com.troydunn.clicker;    P=2.99; N="Couch Remote Pro"; D="Unlimited TVs, TV keyboard and PC remote." ;;
           esac
           SHOT=store/$(echo ${{ inputs.app }} | tr A-Z a-z)/iap-review.png
           [ -f "$SHOT" ] || SHOT=""
