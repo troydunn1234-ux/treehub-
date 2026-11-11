@@ -6,6 +6,9 @@ struct SettingsScreen: View {
     @AppStorage("unitsF") private var fahrenheit = true
     @State private var exportURL: URL?
     @State private var showDataCheck = false
+    @State private var showTrust = false
+    @State private var weekly = Notify.enabled
+    @State private var notifyDenied = false
 
     var body: some View {
         LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
@@ -14,7 +17,9 @@ struct SettingsScreen: View {
                 WhoopConnectView(accent: Lab.whoop)
             }
             sync
+            trust
             dataCheck
+            weeklySummary
             units
             export
             about
@@ -86,6 +91,55 @@ struct SettingsScreen: View {
         }
         .buttonStyle(PressScale())
         .sheet(isPresented: $showDataCheck) { DataCheckView().environment(store) }
+    }
+
+    private var trust: some View {
+        Button { showTrust = true } label: {
+            LabPanel(tint: Lab.violet) {
+                HStack(spacing: Lab.S.m) {
+                    Image(systemName: "checkmark.shield.fill").font(.title3.weight(.bold)).foregroundStyle(Lab.violet)
+                    VStack(alignment: .leading, spacing: 2) {
+                        HStack(spacing: 6) {
+                            Text("Who to trust").font(Lab.title(16)).foregroundStyle(Lab.text)
+                            if !Unlock.shared.isPro { Text("PRO").font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.watch) }
+                        }
+                        Text("Metric by metric: which tracker to believe, why they differ, and how often yours agree.")
+                            .font(Lab.body(12)).foregroundStyle(Lab.dim)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                }
+            }
+        }
+        .buttonStyle(PressScale())
+        .sheet(isPresented: $showTrust) { TrustScreen().environment(store).presentationBackground(Lab.bg) }
+    }
+
+    /// Sunday 6 pm local: "WHOOP vs Watch this week" with one line of stats. Off by default.
+    private var weeklySummary: some View {
+        LabPanel(tint: Lab.violet) {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionTag("Weekly summary")
+                Toggle("Sunday 6 pm notification", isOn: $weekly).tint(Lab.watch)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
+                    .onChange(of: weekly) { _, on in
+                        if on {
+                            Task {
+                                let ok = await Notify.enable(agreements: store.agreements30)
+                                if !ok { weekly = false; notifyDenied = true }
+                            }
+                        } else {
+                            Notify.disable()
+                        }
+                    }
+                Text(weekly ? "Next one reads: “\(Notify.line(store.agreements30))”" : "One line every Sunday: how many metrics agreed this week and the resting HR gap.")
+                    .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
+                if notifyDenied {
+                    Text("Notifications are off for Pulse Lab. Turn them on in Settings → Notifications → Pulse Lab.")
+                        .font(.system(size: 11, design: .rounded)).foregroundStyle(Lab.warn)
+                }
+            }
+        }
     }
 
     private var units: some View {

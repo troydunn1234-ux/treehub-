@@ -10,6 +10,7 @@ struct TrackSettingsView: View {
     @AppStorage(TrackPrefs.trimIdleKey) private var trimIdle = true
     @AppStorage(DriveDetector.enabledKey) private var autoDrive = true
     @AppStorage(DriveDetector.thresholdKey) private var autoDriveMph = DriveDetector.defaultMph
+    @AppStorage(DriveFinishedNotifier.enabledKey) private var notifyFinished = true
     @State private var detector = DriveDetector.shared
     @Query(sort: \Activity.start) private var activities: [Activity]
     @State private var healthStatus = ""
@@ -74,6 +75,7 @@ struct TrackSettingsView: View {
             .sensoryFeedback(.selection, trigger: announceSplits)
             .sensoryFeedback(.selection, trigger: autoPause)
             .sensoryFeedback(.selection, trigger: autoDrive)
+            .sensoryFeedback(.selection, trigger: notifyFinished)
             .onChange(of: autoDrive) { _, on in
                 if on { Task { await detector.enable() } } else { detector.refresh() }
             }
@@ -155,6 +157,14 @@ struct TrackSettingsView: View {
                     .pickerStyle(.menu)
                     .tint(Theme.glow)
                     .labelsHidden()
+                }
+                divider
+                row(symbol: "bell.badge.fill", tint: Theme.sky,
+                    title: "\"Drive finished\" alert",
+                    subtitle: notifyFinished ? "Distance and time when auto-finish saves a drive" : "Off") {
+                    Toggle("Drive finished alert", isOn: $notifyFinished.animation(Self.spring))
+                        .labelsHidden()
+                        .tint(Theme.glow)
                 }
                 divider
                 row(symbol: "scissors", tint: Theme.gold,

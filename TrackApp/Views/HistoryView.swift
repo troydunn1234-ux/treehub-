@@ -10,6 +10,7 @@ struct HistoryView: View {
 
     /// nil means "All".
     @State private var filter: ActivityKind? = nil
+    @State private var path = NavigationPath()
 
     private struct MonthGroup: Identifiable {
         let month: Date
@@ -52,7 +53,7 @@ struct HistoryView: View {
 
     var body: some View {
         let groupList = groups
-        return NavigationStack {
+        return NavigationStack(path: $path) {
             ScrollView {
                 VStack(alignment: .leading, spacing: Theme.gap) {
                     header
@@ -83,20 +84,55 @@ struct HistoryView: View {
             .navigationDestination(for: UUID.self) { id in
                 if let a = activities.first(where: { $0.id == id }) { ActivityDetailView(activity: a) }
             }
+            .navigationDestination(for: String.self) { route in
+                if route == "monthly" { MonthlyStatsView() }
+            }
+            .onAppear { openPendingActivity() }
+            .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
+                openPendingActivity()
+            }
         }
+    }
+
+    /// Opens the activity a "Drive finished" notification pointed at, if there is one waiting.
+    private func openPendingActivity() {
+        guard let raw = UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey),
+              let id = UUID(uuidString: raw) else { return }
+        guard activities.contains(where: { $0.id == id }) else { return }
+        UserDefaults.standard.removeObject(forKey: DriveFinishedNotifier.pendingOpenKey)
+        path = NavigationPath()
+        path.append(id)
     }
 
     // MARK: Header
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("History")
-                .font(Theme.title(34))
-                .foregroundStyle(.white)
-            Text(subtitle)
-                .font(Theme.rounded(14, .semibold))
-                .foregroundStyle(Theme.textDim)
-                .contentTransition(.numericText())
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("History")
+                    .font(Theme.title(34))
+                    .foregroundStyle(.white)
+                Text(subtitle)
+                    .font(Theme.rounded(14, .semibold))
+                    .foregroundStyle(Theme.textDim)
+                    .contentTransition(.numericText())
+            }
+            Spacer(minLength: 8)
+            NavigationLink(value: "monthly") {
+                HStack(spacing: 6) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 12, weight: .bold))
+                    Text("Monthly")
+                        .font(Theme.rounded(13, .bold))
+                }
+                .foregroundStyle(Theme.glow)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .background(Theme.glow.opacity(0.14), in: Capsule())
+            }
+            .buttonStyle(.plain)
+            .padding(.top, 8)
+            .accessibilityLabel("Monthly driving stats")
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

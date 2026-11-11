@@ -123,6 +123,14 @@ struct ActivityDetailView: View {
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            if coords.count > 1, let gpxURL {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: gpxURL, preview: SharePreview(activity.displayTitle, image: Image(systemName: activity.kind.symbol))) {
+                        Image(systemName: "square.and.arrow.up.circle.fill").font(.system(size: 22)).foregroundStyle(.white)
+                    }
+                    .accessibilityLabel("Share GPX")
+                }
+            }
             if coords.count > 2 {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
@@ -374,6 +382,7 @@ enum GPX {
         var s = """
         <?xml version="1.0" encoding="UTF-8"?>
         <gpx version="1.1" creator="\(AppInfo.name)" xmlns="http://www.topografix.com/GPX/1/1">
+        <metadata><time>\(iso.string(from: a.start))</time></metadata>
         <trk><name>\(escape(a.displayTitle))</name><type>\(a.kind.rawValue)</type><trkseg>
 
         """

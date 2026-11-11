@@ -114,6 +114,7 @@ struct RootView: View {
         }
         .tint(Lab.watch)
         .paywallHost(spec: PulseLabPro.spec)
+        .onboarding(PulseLabOnboard.spec)
         .overlay(alignment: .top) { ToastView() }
         .task {
             #if DEBUG
@@ -122,6 +123,15 @@ struct RootView: View {
             if !showOnboarding { await store.refresh() }
         }
         .onChange(of: phase) { _, p in if p == .active && !showOnboarding { Task { await store.refresh() } } }
+        .onOpenURL(perform: open)
+    }
+
+    /// `pulselab://today` (widget tap) jumps to Today. `pulselab://whoop` is the WHOOP OAuth
+    /// callback, consumed by ASWebAuthenticationSession, so anything else is ignored here.
+    private func open(_ url: URL) {
+        guard url.scheme?.lowercased() == "pulselab", let host = url.host?.lowercased() else { return }
+        guard host != "whoop", let t = LabTab.named(host) else { return }
+        withAnimation(.snappy) { tab = t }
     }
 
     @ViewBuilder private func screen(_ t: LabTab) -> some View {
@@ -198,18 +208,24 @@ enum PulseLabPro {
     )
 }
 
-/// The VS tab, blurred, with the unlock on top.
-struct ProTeaser: View {
+/// A Pro screen, blurred, with the unlock on top. Defaults to the VS tab; `TrustScreen` reuses it.
+struct ProTeaser<Content: View>: View {
+    var symbol = "bolt.horizontal.fill"
+    var title = "VS is Pro"
+    var message = "The full Watch-vs-WHOOP scoreboard: which tracker agrees, where they split, and by how much."
+    var context = "The VS lab"
+    @ViewBuilder var content: Content
+
     var body: some View {
         ZStack {
-            CompareScreen().blur(radius: 14).allowsHitTesting(false).accessibilityHidden(true)
+            content.blur(radius: 14).allowsHitTesting(false).accessibilityHidden(true)
             LinearGradient(colors: [Lab.bg.opacity(0.2), Lab.bg.opacity(0.9)], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
             VStack(spacing: 14) {
-                Image(systemName: "bolt.horizontal.fill").font(.system(size: 34, weight: .black)).foregroundStyle(Lab.watch)
-                Text("VS is Pro").font(Lab.display(28, .heavy)).foregroundStyle(Lab.text)
-                Text("The full Watch-vs-WHOOP scoreboard: which tracker agrees, where they split, and by how much.")
+                Image(systemName: symbol).font(.system(size: 34, weight: .black)).foregroundStyle(Lab.watch)
+                Text(title).font(Lab.display(28, .heavy)).foregroundStyle(Lab.text)
+                Text(message)
                     .font(.system(size: 15, design: .rounded)).foregroundStyle(Lab.dim).multilineTextAlignment(.center)
-                Button { Unlock.shared.gate("The VS lab") } label: {
+                Button { Unlock.shared.gate(context) } label: {
                     Text("See what's inside").font(Lab.display(16, .heavy)).foregroundStyle(.black)
                         .padding(.horizontal, 22).padding(.vertical, 13)
                         .background(Capsule().fill(Lab.watch))
@@ -219,4 +235,9 @@ struct ProTeaser: View {
             .padding(28)
         }
     }
+}
+
+extension ProTeaser where Content == CompareScreen {
+    /// The original VS-tab teaser.
+    init() { self.init(content: { CompareScreen() }) }
 }

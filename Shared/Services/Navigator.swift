@@ -171,6 +171,8 @@ final class Navigator {
     private(set) var recents: [NavPlace] = (Navigator.load("navRecents") as [NavPlace]?) ?? []
     private(set) var home: NavPlace? = Navigator.load("navHome") as NavPlace?
     private(set) var work: NavPlace? = Navigator.load("navWork") as NavPlace?
+    /// Starred destinations, shown as chips above the search (after Home and Work).
+    private(set) var favorites: [NavPlace] = (Navigator.load("navFavorites") as [NavPlace]?) ?? []
 
     var isNavigating: Bool { phase == .navigating || phase == .arrived }
     var currentStep: NavStep? { active.flatMap { $0.steps.indices.contains(stepIndex) ? $0.steps[stepIndex] : nil } }
@@ -351,6 +353,24 @@ final class Navigator {
     func setHome(_ p: NavPlace) { home = p; Self.save(p, "navHome") }
     func setWork(_ p: NavPlace) { work = p; Self.save(p, "navWork") }
     func removeRecent(_ p: NavPlace) { recents.removeAll { $0.id == p.id }; Self.save(recents, "navRecents") }
+
+    func isFavorite(_ p: NavPlace) -> Bool { favorites.contains { $0.id == p.id } }
+
+    /// Stars a place, or un-stars it if it was starred already.
+    func toggleFavorite(_ p: NavPlace) {
+        if isFavorite(p) {
+            favorites.removeAll { $0.id == p.id }
+        } else {
+            favorites.append(p)
+            favorites = Array(favorites.prefix(20))
+        }
+        Self.save(favorites, "navFavorites")
+    }
+
+    func removeFavorite(_ p: NavPlace) {
+        favorites.removeAll { $0.id == p.id }
+        Self.save(favorites, "navFavorites")
+    }
 
     private func remember(_ p: NavPlace) {
         recents.removeAll { $0.id == p.id }

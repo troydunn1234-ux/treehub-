@@ -72,7 +72,7 @@ final class FoodHealth {
 
     private var writeTypes: Set<HKSampleType> {
         [HKQuantityType(.dietaryEnergyConsumed), HKQuantityType(.dietaryProtein), HKQuantityType(.dietaryCarbohydrates),
-         HKQuantityType(.dietaryFatTotal), HKQuantityType(.dietaryCaffeine)]
+         HKQuantityType(.dietaryFatTotal), HKQuantityType(.dietaryCaffeine), HKQuantityType(.dietaryWater)]
     }
     private var readTypes: Set<HKObjectType> {
         [HKQuantityType(.activeEnergyBurned), HKQuantityType(.basalEnergyBurned), HKQuantityType(.appleExerciseTime),
@@ -257,6 +257,37 @@ final class FoodHealth {
         meta[HKMetadataKeySyncIdentifier] = id
         meta[HKMetadataKeySyncVersion] = version
         return HKCorrelation(type: HKCorrelationType(.food), start: when, end: when, objects: parts, metadata: meta)
+    }
+
+    // MARK: Quick log (water + coffee taps)
+
+    private static let quickKey = "FoodBookQuickLog"
+
+    /// Make Health match the day's water / caffeine tap counters: one water sample (ml) and one caffeine
+    /// sample (mg) per day, replaced whenever the counters change. Same permission gate as meals.
+    func syncQuickLog(day: String, waterML: Double, caffeineMG: Double) async {
+        guard connected, !Self.demo, HKHealthStore.isHealthDataAvailable() else { return }
+        // Water was added after the first release: people who connected earlier get asked once more.
+        if store.authorizationStatus(for: HKQuantityType(.dietaryWater)) == .notDetermined {
+            try? await store.requestAuthorization(toShare: [HKQuantityType(.dietaryWater)], read: [])
+        }
+        let when = Calendar.current.isDateInToday(Day.date(day)) ? Date() : Day.date(day).addingTimeInterval(12 * 3600)
+        await replaceQuick(.dietaryWater, tag: "water." + day, value: waterML, unit: .literUnit(with: .milli), when: when)
+        await replaceQuick(.dietaryCaffeine, tag: "coffee." + day, value: caffeineMG, unit: .gramUnit(with: .milli), when: when)
+    }
+
+    private func replaceQuick(_ id: HKQuantityTypeIdentifier, tag: String, value: Double, unit: HKUnit, when: Date) async {
+        let type = HKQuantityType(id)
+        guard store.authorizationStatus(for: type) == .sharingAuthorized else { return }
+        let pred = HKQuery.predicateForObjects(withMetadataKey: Self.quickKey, allowedValues: [tag])
+        let store = self.store
+        _ = await withCheckedContinuation { (cont: CheckedContinuation<Bool, Never>) in
+            store.deleteObjects(of: type, predicate: pred) { success, _, error in cont.resume(returning: success || error == nil) }
+        }
+        guard value > 0 else { return }
+        let sample = HKQuantitySample(type: type, quantity: HKQuantity(unit: unit, doubleValue: value), start: when, end: when,
+                                      metadata: [Self.quickKey: tag])
+        do { try await store.save(sample) } catch { problem = "Couldn't save to Health: \(error.localizedDescription)" }
     }
 
     /// Remove a Food Book entry (the food correlation and every nutrient in it) from Health.

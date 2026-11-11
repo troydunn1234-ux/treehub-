@@ -105,6 +105,23 @@ label.f{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transfo
 .goodfor .easy li::marker{color:var(--hard)}
 .goodfor .good li::marker{color:var(--soft)}
 .mooninfo{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:13.5px;color:var(--dim)}
+.skynow{margin-top:16px}
+.skynow .shead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.skynow h3{font-family:var(--display);font-size:17px;margin:0}
+.skynow .shead .m{font-family:var(--mono);font-size:12px;color:var(--gold)}
+.skynow .pos{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 4px}
+.skynow .pos .tag{color:var(--ink)}
+.skynow .pos .tag i{font-style:normal;color:var(--dim);margin-left:4px}
+.skynow .transits{margin-top:10px}
+.skynow .transits li.empty{color:var(--dim);border-style:dashed}
+.people{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.people .pp{display:inline-flex;align-items:center;gap:2px}
+.people .pp button{border-radius:999px 0 0 999px}
+.people .pp button.rm{border-radius:0 999px 999px 0;padding-inline:8px}
+.people .pp button[aria-pressed="true"]{border-color:var(--gold);color:var(--gold)}
+.sbreak{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px;width:100%}
+.sbreak div{border:1px solid var(--line);border-radius:10px;padding:6px 4px;font-family:var(--mono);font-size:11px;color:var(--dim)}
+.sbreak b{display:block;font-family:var(--display);font-size:16px;color:var(--ink)}
 .mooninfo canvas{flex:none}
 
 .three{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
@@ -324,6 +341,7 @@ footer{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.7}
         <div class="mooninfo" id="h-moon"></div>
       </div>
     </div>
+    <div class="panel skynow" id="h-sky"></div>
   </section>
 
   <section>
@@ -389,6 +407,7 @@ footer{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.7}
       <button type="submit" class="cta">Compare</button>
       <p class="err" id="m-err" hidden></p>
     </form>
+    <div class="people" id="people"></div>
     <div id="match-out"><p class="mempty">Pick a birthday to get a match score, a breakdown of where you click and where you clash, and their planets shown inside your 3D chart.</p></div>
   </section>
 
@@ -1102,7 +1121,23 @@ function renderToday(){
   $('h-lists').innerHTML=`<h4>Good day for</h4><ul class="good">${good.map(x=>`<li>${esc(cap(x))}</li>`).join('')}</ul><h4>Go easy on</h4><ul class="easy">${easy.map(x=>`<li>${esc(cap(x))}</li>`).join('')}</ul>`;
   const ph=moonPhase(L.sun,L.moon);
   $('h-moon').innerHTML=`<canvas id="today-moon" aria-hidden="true"></canvas><span><b style="color:var(--ink)">${ph.name}</b>, ${Math.round(ph.illum*100)}% lit: ${PHASE_NOW[ph.ix]}.</span>`;
-  moonIcon($('today-moon'),ph.elong,40);}
+  moonIcon($('today-moon'),ph.elong,40);
+  renderSkyNow(L,ms,ph);}
+/* Today's sky: where the planets are right now, and every tight contact to your chart. Orbs: 3° for conjunctions and oppositions, 2° squares and trines, 1° sextiles. */
+const SKY_BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn'];
+const SKY_ORB={conjunction:3,opposition:3,square:2,trine:2,sextile:1};
+function renderSkyNow(L,ms,ph){
+  const box=$('h-sky');if(!box)return;
+  const N2=lonsAt(new Date(ms+DAY));
+  const pos=SKY_BODIES.map(k=>{const rx=k!=='sun'&&k!=='moon'&&norm(N2[k]-L[k]+180)-180<0;return `<span class="tag"><span style="color:${BK[k].c}">${BK[k].g}</span> ${signOf(L[k])}<i>${fmtDeg(L[k])}${rx?' ℞':''}</i></span>`;}).join('');
+  const nm=n=>n==='asc'?'Ascendant':n==='mc'?'Midheaven':n==='node'?'North Node':BK[n].n;
+  const list=contactsFor(L,3,null,SKY_BODIES).filter(c=>c.o<=SKY_ORB[c.a]);
+  const lasts=k=>k==='moon'?'a few hours':T_LAST[k];
+  const when=dayOff===0?'today':'that day';
+  box.innerHTML=`<div class="shead"><h3>${dayOff===0?"Today's sky":'The sky that day'}</h3><span class="m">☽ Moon in ${signOf(L.moon)} · ${ph.name}, ${Math.round(ph.illum*100)}% lit</span></div>
+   <div class="pos">${pos}</div>
+   <ul class="transits">${list.length?list.map(c=>`<li><div class="th"><span><span style="color:${BK[c.t].c}">${BK[c.t].g}</span> ${BK[c.t].n} ${c.sym} your ${nm(c.n)}</span><span class="o">${c.o.toFixed(1)}°</span></div><p>${BK[c.t].n} ${T_DO[c.t]} ${T_AREA[c.n]||'that part of your chart'}, ${T_MOD[c.a]}. Lasts ${lasts(c.t)}.</p></li>`).join('')
+     :`<li class="empty">No tight contacts from the Sun through Saturn to your chart ${when}. The Moon in ${signOf(L.moon)} sets the mood.</li>`}</ul>`;}
 $('day-prev').onclick=()=>{dayOff--;renderToday();};$('day-next').onclick=()=>{dayOff++;renderToday();};$('day-now').onclick=()=>{dayOff=0;renderToday();};
 
 /* ================= year ahead ================= */
@@ -1373,19 +1408,47 @@ const PAIRS=[['sun','sun','Core vibe','Your Sun and their Sun'],['moon','moon','
 const PTS=[4,1,4,1,5,1.5,3];
 const SAY=['Same sign. You get each other instantly.','Neighbor signs. Different styles that take some translating.','Friendly signs. Easy, supportive energy.','A square. Some friction, and it pushes you both to grow.','Same element. Things flow naturally.','An awkward angle. It works with some adjusting.','Opposite signs. Strong pull and good balance.'];
 let FRIEND=null;
-$('match-form').addEventListener('submit',e=>{e.preventDefault();const err=$('m-err');err.hidden=true;
+/* people you have compared with, kept on this device */
+function people(){try{const p=JSON.parse(localStorage.getItem('natal-orbit-people')||'[]');return Array.isArray(p)?p.filter(x=>x&&x.date):[];}catch(e){return [];}}
+function savePerson(sp){try{const key=x=>`${x.name}|${x.date}|${x.time}|${x.city}`;const r=people().filter(x=>key(x)!==key(sp));r.unshift(sp);localStorage.setItem('natal-orbit-people',JSON.stringify(r.slice(0,8)));}catch(e){}}
+function removePerson(i){try{const r=people();r.splice(i,1);localStorage.setItem('natal-orbit-people',JSON.stringify(r));}catch(e){}}
+let PERSON_IX=-1;
+function renderPeople(){const box=$('people');if(!box)return;const r=people();
+  box.innerHTML=r.length?`<span class="tag" style="align-self:center">People</span>`+r.map((p,i)=>`<span class="pp"><button type="button" data-p="${i}" aria-pressed="${String(i===PERSON_IX)}">${esc(p.name||'Friend')}<small> · ${esc(p.date)}</small></button><button type="button" class="rm" data-rm="${i}" aria-label="Remove ${esc(p.name||'Friend')}">×</button></span>`).join(''):'';
+  box.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{const p=people()[+b.dataset.p];if(!p)return;$('m-name').value=p.name||'';$('m-date').value=p.date;$('m-time').value=p.time||'';$('m-city').value=p.city||'';PERSON_IX=+b.dataset.p;runMatch(false);});
+  box.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{removePerson(+b.dataset.rm);if(PERSON_IX===+b.dataset.rm)PERSON_IX=-1;renderPeople();});}
+/* element + modality balance of a set of planet longitudes */
+function mixOf(lons){const el={fire:0,earth:0,air:0,water:0},md={cardinal:0,fixed:0,mutable:0};
+  Object.keys(lons).forEach(k=>{if(k==='node'||lons[k]==null)return;const w=['sun','moon','asc'].includes(k)?2:1;el[ELEM[signIx(lons[k])%4]]+=w;md[MODE[signIx(lons[k])%3]]+=w;});return {el,md};}
+function balanceScore(a,b){
+  const ea=mixOf(a),eb=mixOf(b);
+  const top=o=>Object.keys(o).sort((x,y)=>o[y]-o[x])[0];
+  // dominant elements: fire-air and earth-water get along; same element is easy; the rest takes work
+  const EA=top(ea.el),EB=top(eb.el);const pair=[EA,EB].sort().join('-');
+  const elHarm=EA===EB?80:(pair==='air-fire'||pair==='earth-water')?90:(pair==='air-earth'||pair==='fire-water')?45:60;
+  // does the pair fill in what each other lacks? (combined spread across the four elements)
+  const comb={};ELEM.forEach(e=>comb[e]=ea.el[e]+eb.el[e]);const tot=ELEM.reduce((s,e)=>s+comb[e],0)||1;
+  const dev=ELEM.reduce((s,e)=>s+Math.abs(comb[e]/tot-.25),0);const spread=Math.round((1-dev/1.5)*100);
+  const MA=top(ea.md),MB=top(eb.md);const mdHarm=MA===MB?(MA==='fixed'?55:70):85;
+  return {score:Math.round(elHarm*.45+spread*.3+mdHarm*.25),EA,EB,MA,MB,elHarm,spread,mdHarm};}
+function aspectScore(syn){
+  // soft contacts between personal planets lift the score, hard ones pull it down a little; too few contacts means little spark
+  let soft=0,hard=0;syn.forEach(s=>{if(s.hard)hard+=s.w;else soft+=s.w;});
+  const raw=50+soft*9-hard*5+Math.min(syn.length,8)*1.5;return Math.max(10,Math.min(98,Math.round(raw)));}
+function runMatch(remember){const err=$('m-err');err.hidden=true;
   const out=$('match-out');if(!HAS_ASTRO){out.innerHTML='<p class="mempty">The comparison needs the astronomy library, which did not load. Refresh the page and try again.</p>';return;}
   const val=$('m-date').value;if(!val)return;const [y,mo,d]=val.split('-').map(Number);
   const name=($('m-name').value||'Your friend').trim();const tv=$('m-time').value;const cv=$('m-city').value.trim();
   let ci=-1;if(cv){ci=findCity(cv);if(ci<0){err.textContent="That city isn't in the list. Pick the closest big city from the suggestions.";err.hidden=false;return;}}
+  if(remember){savePerson({name:$('m-name').value.trim(),date:val,time:tv,city:ci>=0?CITIES[ci][0]:''});PERSON_IX=0;}
+  renderPeople();
   const city=ci>=0?cityOf(ci):{place:'',lat:0,lon:0,tz:VIEW_TZ};
   const full=!!tv&&ci>=0;const [h,mi]=tv?tv.split(':').map(Number):[12,0];
   const F=computeChart({y,mo,d,h,mi,timeKnown:full,...city,name});FRIEND=F;
   const fl=Object.fromEntries(F.planets.map(p=>[p.k,p.lon]));const mine=Object.fromEntries(CH.planets.map(p=>[p.k,p.lon]));
   let tot=0;const rows=PAIRS.map(([a,b,lab,desc])=>{const sa=signIx(mine[a]),sb=signIx(fl[b]);let dd=Math.abs(sa-sb);dd=Math.min(dd,12-dd);const pts=PTS[dd];tot+=pts;
     return `<li><span class="lab">${lab}<span class="pips" role="img" aria-label="${pts} of 5">${[1,2,3,4,5].map(n=>`<i class="${n<=Math.round(pts)?'on':''}"></i>`).join('')}</span></span><span class="sg">${SIGNS[sa]} · ${SIGNS[sb]}</span><p>${desc}: ${SAY[dd]}</p></li>`;});
-  const pct=Math.round(tot/(5*PAIRS.length)*100);
-  const verdict=pct>=75?'Cosmic match':pct>=60?'Strong connection':pct>=45?'A good mix of easy and challenging':'Opposites with a lot to teach each other';
+  const pairPct=Math.round(tot/(5*PAIRS.length)*100);
   const moonTxt=F.moonUnsure?`${signOf(F.moonRange[0])} or ${signOf(F.moonRange[1])}`:signOf(fl.moon);
   const fc=[['☉',signOf(fl.sun)],['☽',moonTxt],['♀',signOf(fl.venus)],['♂',signOf(fl.mars)],...(F.asc!=null?[['↑',signOf(F.asc)]]:[])];
   // inter-aspects
@@ -1395,14 +1458,25 @@ $('match-form').addEventListener('submit',e=>{e.preventDefault();const err=$('m-
   theirs.forEach(t=>minePts.forEach(m=>{if(t.k==='asc'&&m.k==='asc')return;const dd=sep(t.lon,m.lon);ASPECTS.forEach(A=>{const o=Math.abs(dd-A.a);const lights=['sun','moon'].includes(t.k)||['sun','moon'].includes(m.k);
     if(o<=ORB[A.n]+(lights?1:0)){const per=['sun','moon','mercury','venus','mars','asc'];const w=(per.includes(t.k)?1:.5)*(per.includes(m.k)?1:.5)*(1-o/8);syn.push({t,m,A,o,w,hard:A.hard===null?CONJ_HARD.has(t.k)||CONJ_HARD.has(m.k):A.hard});}});}));
   syn.sort((a,b)=>b.w-a.w);
+  // score: sign pairs + element/modality balance + weighted aspects
+  const mineMix={...mine};if(CH.asc!=null)mineMix.asc=CH.asc;const theirMix={...fl};if(F.asc!=null)theirMix.asc=F.asc;
+  const bal=balanceScore(mineMix,theirMix),asp=aspectScore(syn);
+  const pct=Math.max(0,Math.min(100,Math.round(pairPct*.4+bal.score*.25+asp*.35)));
+  const verdict=pct>=75?'Cosmic match':pct>=60?'Strong connection':pct>=45?'A good mix of easy and challenging':'Opposites with a lot to teach each other';
+  const WHY={conjunction:'the strongest kind of contact: these two parts of you act as one',trine:'an easy, natural flow that neither of you has to work at',sextile:'a friendly opening that rewards a little effort',square:'friction that creates chemistry, and arguments, in equal measure',opposition:'a magnetic pull: you balance each other, or you tug'};
   const overlays=CH.cusps?['sun','moon','venus','mars'].map(k=>{const h=houseOf(fl[k],CH.cusps);return `<li><b>${BK[k].g} Their ${BK[k].n} → your ${ord(h)} house</b><p>They light up your ${HOUSE_TXT[h].s}: their ${PFN[k]} ${k==='moon'?'show':'shows'} up in ${HOUSE_TXT[h].a}.</p></li>`;}).join(''):'';
-  out.innerHTML=`<div class="mres"><div class="score"><div class="ring" style="--v:${pct}"><div><span>${pct}<small>%</small></span></div></div><div class="verdict">${verdict}</div><div class="fchips">${fc.map(([g,s])=>`<span class="tag">${g} ${s}</span>`).join('')}</div><button class="cta" id="m-3d">See ${esc(name)} in 3D</button></div>
-   <div><h2 style="font-size:17px;margin-top:0">You and ${esc(name)}</h2><ul class="pairs">${rows.join('')}</ul></div></div>
-   <div class="syn"><h3>Chart-to-chart connections</h3><ul>${syn.slice(0,12).map(s=>`<li><span class="o">${s.o.toFixed(1)}°</span><b><span style="color:var(--pink)">${s.t.g}</span> Their ${s.t.n} ${s.A.s} <span style="color:var(--gold)">${s.m.g}</span> your ${s.m.n}</b><p>Their ${PFN[s.t.k]} and your ${PFN[s.m.k]} ${SYN_TXT[s.A.n]}.</p></li>`).join('')||'<li><p>No tight connections between your charts.</p></li>'}</ul></div>
+  out.innerHTML=`<div class="mres"><div class="score"><div class="ring" style="--v:${pct}"><div><span>${pct}<small>%</small></span></div></div><div class="verdict">${verdict}</div><div class="fchips">${fc.map(([g,s])=>`<span class="tag">${g} ${s}</span>`).join('')}</div>
+     <div class="sbreak" role="list"><div role="listitem"><b>${pairPct}</b>signs</div><div role="listitem"><b>${bal.score}</b>elements</div><div role="listitem"><b>${asp}</b>aspects</div></div>
+     <button class="cta" id="m-3d">See ${esc(name)} in 3D</button></div>
+   <div><h2 style="font-size:17px;margin-top:0">You and ${esc(name)}</h2><ul class="pairs">${rows.join('')}</ul>
+     <p class="note" style="margin-top:12px">Elements: you lead with ${bal.EA}, they lead with ${bal.EB}${bal.EA===bal.EB?', so you speak the same language':bal.elHarm>=90?', which feed each other':bal.elHarm<=45?', which takes some translating':', an easy mix'}. Together you cover the four elements ${bal.spread>=70?'well':bal.spread>=50?'fairly evenly':'unevenly'}. You are mostly ${bal.MA}, they are mostly ${bal.MB}${bal.MA===bal.MB?(bal.MA==='fixed'?': two anchors, so expect standoffs':': a shared pace'):': different paces that round each other out'}.</p></div></div>
+   <div class="syn"><h3>Top ${Math.min(6,syn.length)||''} chart-to-chart connections</h3><ul>${syn.slice(0,6).map(s=>`<li><span class="o">${s.o.toFixed(1)}°</span><b><span style="color:var(--pink)">${s.t.g}</span> Their ${s.t.n} ${s.A.s} <span style="color:var(--gold)">${s.m.g}</span> your ${s.m.n}</b><p>Their ${PFN[s.t.k]} and your ${PFN[s.m.k]} ${SYN_TXT[s.A.n]}: ${WHY[s.A.n]}.${s.hard?' Tense, but it keeps things alive.':' A built-in strength.'}</p></li>`).join('')||'<li><p>No tight connections between your charts.</p></li>'}</ul></div>
    ${overlays?`<div class="syn"><h3>Where they land in your chart</h3><ul>${overlays}</ul></div>`:''}
-   <p class="note">${full?'Using their exact birth time and city, so the Moon, rising sign and connections are precise.':'Based on a birthday alone, so their Moon and rising sign are approximate. Add a time and city for the full reading.'}</p>`;
+   <p class="note">${full?'Using their exact birth time and city, so the Moon, rising sign and connections are precise.':'Based on a birthday alone, so their Moon and rising sign are approximate. Add a time and city for the full reading.'} Score = 40% sign pairs + 25% element and modality balance + 35% weighted aspects.</p>`;
   $('m-3d').onclick=()=>{stopTour();if(viewMode==='sky')exitSky();skyOn=false;placeGhosts(fl,css('pink'),syn.slice(0,8).filter(s=>s.m.k!=='asc').map(s=>({t:s.t.k,n:s.m.k})),F.asc);setOverlay('friend',`${name}'s planets`,css('pink'));
-    document.querySelector('.stage').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});};});
+    document.querySelector('.stage').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});};}
+$('match-form').addEventListener('submit',e=>{e.preventDefault();runMatch(true);});
+renderPeople();
 
 /* ================= make your own ================= */
 const $unk=$('o-unk');$unk.onchange=()=>{$('o-time').disabled=$unk.checked;};
@@ -1464,6 +1538,7 @@ function loadChart(spec){
   renderToday();renderYear();setupSlider();updateSky(true);renderRecent();
   $('share-url').value=shareUrl();
   $('match-out').innerHTML='<p class="mempty">Pick a birthday to get a match score, a breakdown of where you click and where you clash, and their planets shown inside your 3D chart.</p>';
+  PERSON_IX=-1;renderPeople();
   select('sun');home(true);
   if(soundOn&&AC){stopDrone();startDrone();}}
 

@@ -44,6 +44,12 @@ enum ActivityKind: String, CaseIterable, Identifiable, Codable {
     }
 }
 
+extension Notification.Name {
+    /// Posted after a recording is saved. userInfo: "id" (UUID string), "auto" (Bool), "kind" (raw value),
+    /// "distanceM" (Double), "seconds" (Double).
+    static let activitySaved = Notification.Name("roamr.activitySaved")
+}
+
 @Model
 final class Activity {
     var id: UUID = UUID()

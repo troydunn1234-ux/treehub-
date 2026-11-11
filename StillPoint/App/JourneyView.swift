@@ -15,6 +15,8 @@ struct JourneyView: View {
                 VStack(alignment: .leading, spacing: 24) {
                     Text("Journey").font(SP.serif(34, .light)).foregroundStyle(SP.ink).padding(.top, 8)
 
+                    StreakGoalCard()
+
                     HStack(spacing: 12) {
                         tile(String(format: "%.0f", max(healthWeek ?? 0, log.weekMinutes)), "mindful minutes\nthis week")
                         tile("\(log.streak)", log.streak == 1 ? "day\nin a row" : "days\nin a row")
@@ -129,11 +131,30 @@ struct JourneyView: View {
 struct SettingsView: View {
     @EnvironmentObject var prefs: Prefs
     @EnvironmentObject var link: PhoneLink
+    @EnvironmentObject var log: SessionLog
+    @StateObject private var reminders = Reminders.shared
     @Environment(\.dismiss) private var dismiss
+
+    private let goalChoices: [Double] = [15, 30, 45, 60, 90, 120, 150, 210]
 
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Picker("Weekly goal", selection: $log.weeklyGoal) {
+                        ForEach(goalOptions, id: \.self) { m in Text(goalLabel(m)).tag(m) }
+                    }
+                    Toggle("Daily reminder", isOn: $reminders.enabled)
+                    if reminders.enabled {
+                        DatePicker("Time", selection: $reminders.time, displayedComponents: .hourAndMinute)
+                    }
+                } header: { Text("Rhythm") } footer: {
+                    if reminders.enabled && reminders.denied {
+                        Text("Notifications are off for Still Point. Turn them on in the Settings app to get the reminder.")
+                    } else {
+                        Text("A quiet nudge once a day, at a time you choose. Nothing else, ever.")
+                    }
+                }
                 Section("Feel") {
                     Picker("Haptics", selection: $prefs.settings.haptics) {
                         ForEach(HapticStyle.allCases) { h in Text(h.label).tag(h) }
@@ -180,6 +201,82 @@ struct SettingsView: View {
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
         .presentationBackground(.ultraThinMaterial)
+    }
+
+    /// The fixed choices, plus the current goal if it came from elsewhere (e.g. synced) so the picker always shows it.
+    private var goalOptions: [Double] {
+        goalChoices.contains(log.weeklyGoal) ? goalChoices : (goalChoices + [log.weeklyGoal]).sorted()
+    }
+
+    private func goalLabel(_ m: Double) -> String {
+        let mins = Int(m)
+        if mins % 60 == 0 { return mins == 60 ? "1 hour a week" : "\(mins / 60) hours a week" }
+        if mins > 60 { return String(format: "%.1f hours a week", m / 60) }
+        return "\(mins) min a week"
+    }
+}
+
+/// Streak flame beside a weekly-goal ring: the two numbers that keep a practice going.
+struct StreakGoalCard: View {
+    @EnvironmentObject var log: SessionLog
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var appeared = false
+
+    private var progress: Double { appeared ? log.weekProgress : 0 }
+    private var alive: Bool { log.streak > 0 && log.practicedToday }
+
+    var body: some View {
+        HStack(spacing: 18) {
+            // Streak
+            VStack(alignment: .leading, spacing: 6) {
+                HStack(alignment: .firstTextBaseline, spacing: 8) {
+                    Image(systemName: log.streak > 0 ? "flame.fill" : "flame")
+                        .font(.system(size: 26, weight: .light))
+                        .foregroundStyle(log.streak > 0 ? SP.goldGlow : LinearGradient(colors: [SP.faint, SP.faint], startPoint: .top, endPoint: .bottom))
+                        .symbolEffect(.pulse, options: .repeating.speed(0.4), isActive: alive && !reduceMotion)
+                        .shadow(color: log.streak > 0 ? SP.amber.opacity(0.45) : .clear, radius: 10)
+                        .accessibilityHidden(true)
+                    Text("\(log.streak)").font(SP.numbers(40)).foregroundStyle(SP.ink)
+                    Text(log.streak == 1 ? "day" : "days").font(SP.rounded(14)).foregroundStyle(SP.dim)
+                }
+                Text(log.streakLine).font(SP.rounded(12)).foregroundStyle(SP.faint)
+                    .fixedSize(horizontal: false, vertical: true)
+                if log.bestStreak > log.streak {
+                    Text("Best: \(log.bestStreak) days").font(SP.rounded(11)).foregroundStyle(SP.faint.opacity(0.8))
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .accessibilityElement(children: .combine)
+            .accessibilityLabel("\(log.streak) day streak. \(log.streakLine)")
+
+            // Weekly goal ring
+            ZStack {
+                Circle().stroke(Color.white.opacity(0.08), lineWidth: 7)
+                Circle()
+                    .trim(from: 0, to: progress)
+                    .stroke(log.goalReached ? SP.goldGlow : LinearGradient(colors: [SP.teal, SP.indigo], startPoint: .top, endPoint: .bottom),
+                            style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                    .shadow(color: (log.goalReached ? SP.gold : SP.teal).opacity(0.35), radius: 6)
+                    .animation(reduceMotion ? nil : .easeOut(duration: 1.1), value: progress)
+                VStack(spacing: 1) {
+                    Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(22)).foregroundStyle(SP.ink)
+                    Text("of \(Int(log.weeklyGoal)) min").font(SP.rounded(9, .semibold)).tracking(0.6).foregroundStyle(SP.faint)
+                }
+            }
+            .frame(width: 84, height: 84)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Weekly goal: \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week")
+        }
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .overlay(alignment: .bottomTrailing) {
+            if log.goalReached {
+                SPChip(text: "Goal met", color: SP.gold).padding(10)
+            }
+        }
+        .onAppear { withAnimation { appeared = true } }
     }
 }
 

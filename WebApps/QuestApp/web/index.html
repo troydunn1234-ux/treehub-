@@ -297,6 +297,24 @@ svg.tl .ghost { opacity: .6; filter: var(--imgf); }
 .legend span.l5::before { width: 18px; background: repeating-linear-gradient(90deg, var(--green) 0 5px, transparent 5px 8px); height: 3px; vertical-align: 2px; }
 .legend span.l3::before { background: var(--cyan); }
 .legend span.l4::before { background: var(--gold); }
+.legend span.l6::before { background: var(--mute); }
+.legend span.lr::before { background: var(--red); }
+.rv { display: grid; grid-template-columns: minmax(110px, 1fr) minmax(0, 2fr) minmax(120px, .9fr); gap: 6px 12px; align-items: center; padding-block: 8px; border-bottom: 1px dashed var(--line); }
+.rv:last-child { border-bottom: 0; }
+.rv .nm { font-weight: 600; overflow-wrap: anywhere; }
+.rv .nm small { display: block; color: var(--mute); font-size: 12px; font-weight: 400; }
+.rv .bars { display: flex; flex-direction: column; gap: 3px; }
+.rv .bars .bar { height: 9px; }
+.rv .bars .bar.last { --c: var(--mute); }
+.rv .amt { text-align: right; font-size: 13px; }
+.rv .amt small { display: block; color: var(--mute); font-size: 11px; }
+.rv .amt .up { color: var(--red); } .rv .amt .down { color: var(--pos); }
+.rvbill { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.rvbill:last-child { border-bottom: 0; }
+.rvbill small { display: block; color: var(--mute); font-size: 12px; }
+.rvbill .soon { font-family: var(--font-display); font-size: 7px; color: var(--gold); margin-right: 6px; }
+.rvbill .btn { padding: 8px 10px; font-size: 8px; }
+@media (max-width: 520px) { .rv { grid-template-columns: minmax(0, 1fr) minmax(110px, auto); } .rv .bars { grid-column: 1 / -1; } }
 svg.garage { width: 100%; max-width: 460px; height: auto; display: block; margin-inline: auto; shape-rendering: crispEdges; }
 .parts { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; }
 .part { border: 2px solid var(--line); padding: 8px 10px; display: flex; flex-direction: column; gap: 3px; opacity: .6; }
@@ -537,6 +555,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
 
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button class="tab" role="tab" id="t-budgets" data-tab="budgets" aria-selected="true">Budgets</button>
+    <button class="tab" role="tab" id="t-review" data-tab="review" aria-selected="false">Review</button>
     <button class="tab" role="tab" id="t-arcade" data-tab="arcade" aria-selected="false">Arcade</button>
     <button class="tab" role="tab" id="t-log" data-tab="log" aria-selected="false">Money log</button>
     <button class="tab" role="tab" id="t-moves" data-tab="moves" aria-selected="false">Transfers</button>
@@ -564,6 +583,27 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     <div class="box"><h2>Last 6 months</h2><div id="chart"></div>
       <div class="legend"><span>Spent</span><span class="l2">Total budget</span></div></div>
     <div class="box"><h2>Achievements</h2><div class="badges" id="badges"></div></div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="panel" id="p-review" hidden>
+    <div class="box">
+      <div class="mnav">
+        <button class="sq" data-act="prev" aria-label="Previous month">&lsaquo;</button>
+        <span class="mon" id="monLbl4">---</span>
+        <button class="sq" data-act="next" aria-label="Next month">&rsaquo;</button>
+        <button class="btn ghost" data-act="today">This month</button>
+      </div>
+      <div class="tiles" id="rvTiles"></div>
+    </div>
+    <div class="box"><h2>This month vs last month</h2><div id="rvCats"></div>
+      <div class="legend"><span>This month</span><span class="l6">Last month</span></div></div>
+    <div class="box"><h2>Income vs spend</h2><div id="rvFlow"></div></div>
+    <div class="box"><h2>Savings pace</h2><div id="rvPace"></div></div>
+    <div class="box"><h2>Top 5 merchants</h2><div id="rvTop"></div></div>
+    <div class="box"><h2>Upcoming bills</h2>
+      <p class="note">Spotted on their own: purchases that come back at a steady rhythm for about the same amount. Bank imports count too.</p>
+      <div id="rvBills"></div></div>
   </section>
 
   <!-- ARCADE -->
@@ -679,7 +719,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   var LS = "lexus-quest-v1";
   var DEF = {
     start: { savings: 6351, checking: 0, cash: 0 },
-    goal: { name: "Dream car", amount: 20000 },
+    goal: { name: "Dream car", amount: 20000, by: "" },
     weekGoal: 1400, weekStart: 4, weekAdj: {}, rev: 0, boot: 1, crt: 1, spins: 0, bonus: 0, freeDay: "", bestReact: 0, reactDay: "", loot: {}, theme: "neon", quests: {}, bills: [], sound: 1, rateTarget: 30,
     budgets: [
       { n: "Wants", l: 150 },
@@ -694,7 +734,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       { n: "Insurance", l: 468 },
       { n: "Gym", l: 211 }
     ],
-    tx: [], moves: []
+    tx: [], moves: [], billSkip: []
   };
   var S = JSON.parse(JSON.stringify(DEF));
   var loaded = false, dirty = false, db = null, editId = null, wkEdit = false;
@@ -725,7 +765,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (!s || typeof s !== "object") return o;
     s = JSON.parse(JSON.stringify(s)); /* saved records arrive locked; work on an editable copy */
     if (s.start) { ["savings", "checking", "cash"].forEach(function (k) { if (typeof s.start[k] === "number") o.start[k] = s.start[k]; }); }
-    if (s.goal) { if (typeof s.goal.amount === "number") o.goal.amount = s.goal.amount; if (typeof s.goal.name === "string") o.goal.name = s.goal.name; }
+    if (s.goal) { if (typeof s.goal.amount === "number") o.goal.amount = s.goal.amount; if (typeof s.goal.name === "string") o.goal.name = s.goal.name; if (typeof s.goal.by === "string" && /^\d{4}-\d{2}$/.test(s.goal.by)) o.goal.by = s.goal.by; }
     if (typeof s.weekGoal === "number") o.weekGoal = s.weekGoal;
     if (typeof s.weekStart === "number") o.weekStart = s.weekStart;
     if (typeof s.rev === "number") o.rev = s.rev;
@@ -745,6 +785,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (s.bankWallet && typeof s.bankWallet === "object" && !Array.isArray(s.bankWallet)) o.bankWallet = s.bankWallet;
     if (typeof s.bankMatchedAt === "number") o.bankMatchedAt = s.bankMatchedAt;
     if (Array.isArray(s.bankSkip)) o.bankSkip = s.bankSkip.filter(function (x) { return typeof x === "string"; }).slice(-800);
+    if (Array.isArray(s.billSkip)) o.billSkip = s.billSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     return o;
   }
   function bal(a) {
@@ -1081,7 +1122,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function renderSetup() {
     function num(label, key, v) { return '<label class="f"><span class="lbl">' + label + '</span><input type="number" step="0.01" inputmode="decimal" data-set="' + key + '" value="' + v + '"></label>'; }
-    $("goalSet").innerHTML = '<label class="f"><span class="lbl">Goal name</span><input type="text" data-set="goal.name" value="' + esc(S.goal.name) + '"></label>' + num("Goal amount", "goal.amount", S.goal.amount) + num("Weekly savings goal", "weekGoal", S.weekGoal) + num("Savings-rate target (%)", "rateTarget", S.rateTarget) +
+    $("goalSet").innerHTML = '<label class="f"><span class="lbl">Goal name</span><input type="text" data-set="goal.name" value="' + esc(S.goal.name) + '"></label>' + num("Goal amount", "goal.amount", S.goal.amount) + '<label class="f"><span class="lbl">Goal by (month, optional)</span><input type="month" data-set="goal.by" value="' + esc(S.goal.by || "") + '"></label>' + num("Weekly savings goal", "weekGoal", S.weekGoal) + num("Savings-rate target (%)", "rateTarget", S.rateTarget) +
       '<label class="f"><span class="lbl">Theme</span><select data-set="theme">' + THEMES.map(function (x) { var ok = themeOpen(x[0]); return '<option value="' + x[0] + '"' + (x[0] === curTheme() ? " selected" : "") + (ok ? "" : " disabled") + ">" + x[1] + (ok ? "" : " (unlocks at $15K)") + "</option>"; }).join("") + "</select></label>" +
       '<label class="f"><span class="lbl">Scanlines</span><select data-set="crt" data-int="1"><option value="1"' + (S.crt === 0 ? "" : " selected") + '>On</option><option value="0"' + (S.crt === 0 ? " selected" : "") + '>Off</option></select></label>' +
       '<label class="f"><span class="lbl">Startup animation</span><select data-set="boot" data-int="1"><option value="1"' + (S.boot === 0 ? "" : " selected") + '>On</option><option value="0"' + (S.boot === 0 ? " selected" : "") + '>Off</option></select></label>' +
@@ -1724,6 +1765,148 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       (cur && d < 5 ? '<p class="note">Early in the month, so this guess is rough.</p>' : "") +
       (risky.length ? '<div class="achips">' + risky.map(function (r) { return '<span class="ach red">' + esc(r.n.toUpperCase()) + " PACE " + fmt(r.p) + " / " + fmt(r.l) + "</span>"; }).join("") + "</div>" : (cur ? '<p class="note">No category is on pace to go over its limit.</p>' : ""));
   }
+  /* ---------- monthly review + recurring bills ---------- */
+  function merchantName(t) { return String(t.what || (t.bank && t.bank.name) || "").trim(); }
+  function merchantKey(t) { return payeeKey(merchantName(t)); }
+  function median(arr) { var a = arr.slice().sort(function (x, y) { return x - y; }); return a.length ? (a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2) : 0; }
+  function catSpend(m) {
+    var o = {};
+    monthTx(m).forEach(function (t) { o[t.cat || "Other"] = r2((o[t.cat || "Other"] || 0) + t.amt); });
+    return o;
+  }
+  function topMerchants(m, n) {
+    var g = {};
+    monthTx(m).forEach(function (t) {
+      if (!(t.amt > 0)) return;
+      var k = merchantKey(t) || ("cat:" + (t.cat || "Other"));
+      if (!g[k]) g[k] = { k: k, sum: 0, n: 0, names: {}, cat: t.cat || "" };
+      g[k].sum = r2(g[k].sum + t.amt); g[k].n++;
+      var nm = merchantName(t) || (t.cat || "Uncategorized"); g[k].names[nm] = (g[k].names[nm] || 0) + 1;
+    });
+    return Object.keys(g).map(function (k) {
+      var x = g[k], best = "", bc = 0;
+      Object.keys(x.names).forEach(function (nm) { if (x.names[nm] > bc) { bc = x.names[nm]; best = nm; } });
+      x.name = best; return x;
+    }).sort(function (a, b) { return b.sum - a.sum; }).slice(0, n || 5);
+  }
+  /* payees that repeat at a steady interval (weekly / every 2 weeks / monthly) for about the same amount */
+  function detectBills() {
+    var g = {}, skip = S.billSkip || [], t0 = today(), out = [];
+    S.tx.forEach(function (t) {
+      if (!(t.amt > 0)) return;
+      var k = merchantKey(t); if (!k || k.length < 3) return;
+      (g[k] = g[k] || []).push(t);
+    });
+    var manual = (S.bills || []).map(function (b) { return payeeKey(b.n); });
+    Object.keys(g).forEach(function (k) {
+      if (skip.indexOf(k) >= 0 || manual.indexOf(k) >= 0) return;
+      var list = g[k].slice().sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; });
+      /* one charge per day at most (a pending + posted pair should not look like a weekly bill) */
+      var byDay = [], seenDay = {};
+      list.forEach(function (t) { if (!seenDay[t.d]) { seenDay[t.d] = 1; byDay.push(t); } });
+      if (byDay.length < 3) return;
+      var recent = byDay.slice(-8), gaps = [], amts = recent.map(function (t) { return t.amt; });
+      for (var i = 1; i < recent.length; i++) gaps.push(daysBetween(recent[i - 1].d, recent[i].d));
+      var md = median(gaps), period = null, tol = 0;
+      if (md >= 26 && md <= 35) { period = "monthly"; tol = 6; }
+      else if (md >= 12 && md <= 16) { period = "every 2 weeks"; tol = 3; }
+      else if (md >= 6 && md <= 8) { period = "weekly"; tol = 2; }
+      if (!period) return;
+      var steady = gaps.filter(function (x) { return Math.abs(x - md) <= tol; }).length / gaps.length;
+      if (steady < 0.7) return;
+      var ma = median(amts), close = amts.filter(function (x) { return Math.abs(x - ma) <= Math.max(5, ma * 0.15); }).length / amts.length;
+      if (close < 0.7) return;
+      var last = recent[recent.length - 1], since = daysBetween(last.d, t0);
+      if (since > md * 2 + tol) return; /* stopped coming, so not upcoming */
+      var step = Math.round(md), next = addDays(last.d, step);
+      while (daysBetween(t0, next) < 0) next = addDays(next, step);
+      var names = {}, best = "", bc = 0;
+      recent.forEach(function (t) { var nm = merchantName(t); names[nm] = (names[nm] || 0) + 1; });
+      Object.keys(names).forEach(function (nm) { if (names[nm] > bc) { bc = names[nm]; best = nm; } });
+      out.push({ k: k, name: best, amt: r2(ma), period: period, next: next, days: daysBetween(t0, next), cat: last.cat || "", day: +last.d.slice(8, 10), n: byDay.length, bank: !!(last.bank) });
+    });
+    return out.sort(function (a, b) { return a.days - b.days; });
+  }
+  function renderReview() {
+    var pm = shift(mon, -1), cur = catSpend(mon), prev = catSpend(pm);
+    var sp = sumTx(monthTx(mon)), spPrev = sumTx(monthTx(pm)), ri = rateInfo(mon), rp = rateInfo(pm);
+    var d = r2(sp - spPrev), dp = spPrev > 0 ? Math.round(d / spPrev * 100) : null;
+    $("monLbl4").textContent = monLabel(mon);
+    $("rvTiles").innerHTML =
+      '<div class="tile"><span class="lbl">Spent</span><b class="num">' + fmt(sp) + "</b></div>" +
+      '<div class="tile"><span class="lbl">Last month</span><b class="num">' + fmt(spPrev) + "</b></div>" +
+      '<div class="tile"><span class="lbl">Change</span><b class="num ' + (d > 0 ? "neg" : d < 0 ? "pos" : "") + '">' + (d > 0 ? "+" : d < 0 ? "-" : "") + fmt(Math.abs(d)) + (dp === null ? "" : '<span class="of"> ' + (dp > 0 ? "+" : "") + dp + "%</span>") + "</b></div>" +
+      '<div class="tile"><span class="lbl">Income</span><b class="num">' + fmt(ri.inc) + "</b></div>" +
+      '<div class="tile"><span class="lbl">To savings</span><b class="num ' + (ri.net > 0 ? "pos" : ri.net < 0 ? "neg" : "") + '">' + fmt(ri.net) + "</b></div>";
+
+    /* categories */
+    var names = {}; Object.keys(cur).forEach(function (k) { names[k] = 1; }); Object.keys(prev).forEach(function (k) { names[k] = 1; });
+    var rows = Object.keys(names).map(function (k) { return { n: k, a: cur[k] || 0, b: prev[k] || 0 }; }).filter(function (r) { return r.a > 0 || r.b > 0; });
+    rows.sort(function (x, y) { return y.a - x.a || y.b - x.b; });
+    var mx = rows.reduce(function (m, r) { return Math.max(m, r.a, r.b); }, 0) || 1;
+    $("rvCats").innerHTML = rows.length ? rows.map(function (r) {
+      var df = r2(r.a - r.b), pc = r.b > 0 ? Math.round(df / r.b * 100) : null;
+      return '<div class="rv"><div class="nm">' + ico(r.n) + esc(r.n) + "</div>" +
+        '<div class="bars"><div class="bar thin"><i style="width:' + Math.round(r.a / mx * 100) + '%"></i></div><div class="bar thin last"><i style="width:' + Math.round(r.b / mx * 100) + '%"></i></div></div>' +
+        '<div class="amt num">' + fmt(r.a) + ' <span class="mut">vs ' + fmt(r.b) + "</span><small>" + (df === 0 ? "same" : '<span class="' + (df > 0 ? "up" : "down") + '">' + (df > 0 ? "+" : "-") + fmt(Math.abs(df)) + (pc === null ? "" : " (" + (pc > 0 ? "+" : "") + pc + "%)") + "</span>") + "</small></div></div>";
+    }).join("") : '<div class="empty">Nothing logged in ' + monLabel(mon) + " or " + monLabel(pm) + " yet.</div>";
+
+    /* income vs spend */
+    var fmax = Math.max(ri.inc, sp, rp.inc, spPrev, 1);
+    function flowRow(label, inc, out, net) {
+      var kept = r2(inc - out);
+      return '<div class="rv"><div class="nm">' + label + "<small>" + (inc > 0 ? Math.round(out / inc * 100) + "% of income spent" : "no income logged") + "</small></div>" +
+        '<div class="bars"><div class="bar thin" style="--c:var(--cyan)"><i style="width:' + Math.round(inc / fmax * 100) + '%"></i></div><div class="bar thin" style="--c:var(--red)"><i style="width:' + Math.round(out / fmax * 100) + '%"></i></div></div>' +
+        '<div class="amt num"><span class="' + (kept >= 0 ? "pos" : "neg") + '">' + (kept >= 0 ? "+" : "-") + fmt(Math.abs(kept)) + "</span><small>in " + fmt(inc) + " &middot; out " + fmt(out) + " &middot; saved " + fmt(net) + "</small></div></div>";
+    }
+    $("rvFlow").innerHTML = flowRow(monLabel(mon), ri.inc, sp, ri.net) + flowRow(monLabel(pm), rp.inc, spPrev, rp.net) +
+      '<div class="legend"><span class="l3">Income</span><span style="--c:var(--red)" class="lr">Spent</span></div>';
+
+    /* savings pace */
+    var goal = S.goal.amount || 0, sav = bal("savings"), left = Math.max(0, r2(goal - sav));
+    var hist = [], k;
+    for (k = 1; k <= 3; k++) { var m = shift(monthOf(today()), -k); if (monthTx(m).length || rateInfo(m).inc > 0 || rateInfo(m).net !== 0) hist.push(rateInfo(m).net); }
+    var avg = hist.length ? r2(hist.reduce(function (a, b) { return a + b; }, 0) / hist.length) : 0;
+    var pace = "";
+    if (goal <= 0) pace = '<div class="empty">Set a goal amount in Setup to see your pace.</div>';
+    else if (left === 0) pace = '<div class="fchead pos">Goal reached. ' + fmt(sav) + " saved.</div>";
+    else {
+      var eta = avg > 0 ? Math.ceil(left / avg) : null, etaM = eta ? shift(monthOf(today()), eta) : null;
+      var line = '<div class="fchead">' + fmt(left) + " to go &middot; averaging " + fmt(avg) + "/month" + (hist.length ? " over the last " + hist.length + (hist.length === 1 ? " month" : " months") : "") + "</div>";
+      var bars = '<div class="bar"><i style="width:' + Math.min(100, Math.round(sav / goal * 100)) + '%"></i></div>';
+      var txt;
+      if (S.goal.by) {
+        var monthsLeft = Math.max(0, (+S.goal.by.slice(0, 4) - +monthOf(today()).slice(0, 4)) * 12 + (+S.goal.by.slice(5, 7) - +monthOf(today()).slice(5, 7)));
+        var need = monthsLeft > 0 ? r2(left / monthsLeft) : left;
+        var ok = avg >= need;
+        txt = '<div class="achips"><span class="ach ' + (ok ? "ok" : "red") + '">' + (ok ? "ON PACE" : "BEHIND PACE") + " FOR " + monLabel(S.goal.by) + "</span></div>" +
+          '<p class="note">Need ' + fmt(need) + "/month for " + (monthsLeft || 1) + (monthsLeft === 1 ? " month" : " months") + ". " + (ok ? "Keep it up." : "That is " + fmt(r2(need - avg)) + "/month more than your average.") + (etaM ? " At your average you get there around " + monLabel(etaM) + "." : "") + "</p>";
+      } else {
+        txt = '<p class="note">' + (etaM ? "At this average you reach " + fmt(goal) + " around " + monLabel(etaM) + " (" + eta + (eta === 1 ? " month" : " months") + "). Set a target month in Setup to track on/behind pace." : "Move money to Savings in a few months and the forecast shows up here.") + "</p>";
+      }
+      pace = line + bars + txt;
+    }
+    $("rvPace").innerHTML = pace;
+
+    /* top merchants */
+    var tm = topMerchants(mon, 5), tmx = tm.length ? tm[0].sum : 1;
+    $("rvTop").innerHTML = tm.length ? tm.map(function (x, i) {
+      return '<div class="rv"><div class="nm">' + (i + 1) + ". " + esc(x.name) + "<small>" + x.n + (x.n === 1 ? " purchase" : " purchases") + (x.cat ? " &middot; " + esc(x.cat) : "") + "</small></div>" +
+        '<div class="bars"><div class="bar thin" style="--c:var(--gold)"><i style="width:' + Math.round(x.sum / tmx * 100) + '%"></i></div></div>' +
+        '<div class="amt num">' + fmt(x.sum) + "<small>" + (sp > 0 ? Math.round(x.sum / sp * 100) + "% of the month" : "") + "</small></div></div>";
+    }).join("") : '<div class="empty">No purchases in ' + monLabel(mon) + " yet.</div>";
+
+    /* upcoming bills */
+    var bills = detectBills(), tot = r2(bills.filter(function (b) { return b.period === "monthly"; }).reduce(function (a, b) { return a + b.amt; }, 0));
+    $("rvBills").innerHTML = bills.length ?
+      '<div class="tiles"><div class="tile"><span class="lbl">Due next 7 days</span><b class="num">' + fmt(r2(bills.filter(function (b) { return b.days <= 7; }).reduce(function (a, b) { return a + b.amt; }, 0))) + '</b></div><div class="tile"><span class="lbl">Monthly bills spotted</span><b class="num">' + fmt(tot) + "</b></div></div>" +
+      bills.map(function (b) {
+        return '<div class="rvbill"><div><b>' + esc(b.name) + "</b><small>" + (b.days <= 7 ? '<span class="soon">SOON</span>' : "") + dayLbl(b.next) + " &middot; " + (b.days === 0 ? "today" : b.days === 1 ? "tomorrow" : "in " + b.days + " days") + " &middot; " + b.period + " &middot; " + fmt(b.amt) + (b.bank ? " &middot; bank" : "") + "</small></div>" +
+          '<button class="btn ghost" type="button" data-act="rvadd" data-k="' + esc(b.k) + '" data-n="' + esc(b.name) + '" data-amt="' + b.amt + '" data-day="' + b.day + '">Add to bills</button>' +
+          '<button class="btn ghost" type="button" data-act="rvskip" data-k="' + esc(b.k) + '" data-n="' + esc(b.name) + '">Not a bill</button></div>';
+      }).join("") : '<div class="empty">No repeating payees yet. After three charges from the same place at a steady rhythm, they show up here.</div>';
+  }
+
   /* ---------- dash boot, fx, banners, road map ---------- */
   var lastXY = { x: window.innerWidth / 2, y: window.innerHeight * .6 }, bootGone = false;
   document.addEventListener("pointerdown", function (e) { lastXY = { x: e.clientX, y: e.clientY }; }, true);
@@ -1911,6 +2094,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     syncQuests();
     renderQuest(); renderWallets(); renderBudgets(); renderLog(); renderMoves(); renderSetup(); updSnd(); applyTheme(); bootData();
     if (tab === "arcade") renderArcade();
+    if (tab === "review") renderReview();
     checkLevel(); checkRank();
   }
 
@@ -2192,6 +2376,13 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       var q = QPOOL.filter(function (x) { return x.id === t.dataset.q; })[0], td = today(), cl = S.quests[td] || [];
       if (q && q.ok() && cl.indexOf(q.id) < 0) { cl.push(q.id); S.quests[td] = cl; touch(); beep("chime"); pop("+25 XP", "xp"); toast("Quest complete +25 XP"); renderAll(); }
     }
+    else if (a === "rvskip") { S.billSkip = (S.billSkip || []).filter(function (k) { return k !== t.dataset.k; }).concat([t.dataset.k]).slice(-200); touch(); renderReview(); toast("Not a bill: " + t.dataset.n); }
+    else if (a === "rvadd") {
+      var dd = parseInt(t.dataset.day, 10) || 1, nm = t.dataset.n, am = r2(parseFloat(t.dataset.amt) || 0);
+      if (!S.bills.some(function (b) { return b.n.toLowerCase() === nm.toLowerCase(); })) S.bills.push({ id: uid(), n: nm, amt: am, day: Math.min(31, Math.max(1, dd)) });
+      S.billSkip = (S.billSkip || []).concat([t.dataset.k]).slice(-200);
+      touch(); renderAll(); renderReview(); beep("coin"); toast("Added to Bills: " + nm);
+    }
     else if (a === "delbill") arm(t, function () { S.bills = S.bills.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderAll(); });
     else if (a === "wkedit") { wkEdit = true; renderBudgets(); }
     else if (a === "wkcancel") { wkEdit = false; renderBudgets(); }
@@ -2214,11 +2405,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function setTab(n) {
     tab = n;
-    ["budgets", "arcade", "log", "moves", "setup"].forEach(function (k) {
+    ["budgets", "review", "arcade", "log", "moves", "setup"].forEach(function (k) {
       $("p-" + k).hidden = k !== n;
       $("t-" + k).setAttribute("aria-selected", k === n ? "true" : "false");
     });
     if (n === "arcade") renderArcade();
+    if (n === "review") renderReview();
   }
   $("txForm").addEventListener("submit", function (e) {
     e.preventDefault();

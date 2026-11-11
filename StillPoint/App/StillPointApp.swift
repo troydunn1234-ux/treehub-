@@ -8,8 +8,12 @@ struct StillPointApp: App {
     @StateObject private var router = Router()
     @StateObject private var unlock = Unlock.shared
 
+    @Environment(\.scenePhase) private var scenePhase
+
     init() {
         PhoneLink.shared.activate()
+        Reminders.shared.activate()
+        WidgetBridge.publish()
     }
 
     var body: some Scene {
@@ -22,6 +26,17 @@ struct StillPointApp: App {
                 .preferredColorScheme(.dark)
                 .tint(SP.amber)
                 .onReceive(unlock.$isPro) { Prefs.shared.setPro($0) }
+                .onboarding(StillPointOnboard.spec)
+                // Widget / complication taps: stillpoint://practice/<id>
+                .onOpenURL { url in
+                    if let id = WidgetBridge.practiceId(from: url) { router.handle(practiceId: id) }
+                }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            if phase == .active {
+                router.consumePending()
+                WidgetBridge.publish()
+            }
         }
     }
 }
@@ -31,10 +46,49 @@ final class Router: ObservableObject {
     @Published var tab = 0
     @Published var running: SessionPlan? = nil
     @Published var showSettings = false
+    /// Navigation inside the Today tab, so deep links can push a practice page.
+    @Published var homePath = NavigationPath()
+
+    /// Where Siri / Shortcuts leave the practice they want started; picked up on launch and foreground.
+    static let pendingKey = "sp.pendingPractice"
+    static let pendingNote = Notification.Name("sp.pendingPractice")
 
     func run(_ plan: SessionPlan) {
         Prefs.shared.markRecent(plan.practice.id)
         running = plan
+    }
+
+    /// Show a practice's page (Today tab).
+    func show(_ p: Practice) {
+        showSettings = false
+        tab = 0
+        homePath = NavigationPath()
+        homePath.append(p)
+    }
+
+    /// Start a practice straight away at the usual length; locked ones go to their page instead.
+    /// Does nothing while a session is already running, so a stray link never cuts one short.
+    func handle(practiceId id: String) {
+        guard let p = PracticeLibrary.shared.practice(id) else { return }
+        if PracticeLibrary.shared.isLocked(p) { show(p); return }
+        guard running == nil else { return }
+        showSettings = false
+        tab = 0
+        let usual = Prefs.shared.settings.defaultMinutes
+        let mins = p.minutes.contains(usual) ? usual : p.defaultMinutes
+        run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: mins))
+    }
+
+    /// Queue a practice to start (from an App Intent); the app picks it up when it is in front.
+    static func queue(practiceId id: String) {
+        UserDefaults.standard.set(id, forKey: pendingKey)
+        NotificationCenter.default.post(name: pendingNote, object: nil)
+    }
+
+    func consumePending() {
+        guard let id = UserDefaults.standard.string(forKey: Self.pendingKey), !id.isEmpty else { return }
+        UserDefaults.standard.removeObject(forKey: Self.pendingKey)
+        handle(practiceId: id)
     }
 }
 
@@ -63,9 +117,12 @@ struct RootView: View {
                 .environmentObject(prefs)
         }
         .sheet(isPresented: $router.showSettings) {
-            SettingsView().environmentObject(prefs).environmentObject(link)
+            SettingsView().environmentObject(prefs).environmentObject(link).environmentObject(log)
         }
+        .onReceive(NotificationCenter.default.publisher(for: Router.pendingNote)) { _ in router.consumePending() }
         .onAppear {
+            Reminders.onOpen = { router.tab = 0 }
+            router.consumePending()
             let args = ProcessInfo.processInfo.arguments
             if let i = args.firstIndex(of: "-tab"), i + 1 < args.count {
                 router.tab = ["today": 0, "traditions": 1, "journey": 2][args[i + 1]] ?? 0
@@ -114,10 +171,10 @@ enum StillPointPro {
     static let spec = PaywallSpec(
         appName: "Still Point",
         headline: "Every practice, for good.",
-        tagline: "Open all 39 practices from 11 traditions, plus every warm-up and movement routine. One payment, no subscription.",
+        tagline: "Open all 43 practices from 12 traditions, plus every warm-up and movement routine. One payment, no subscription.",
         tint: SP.gold, tint2: SP.amber,
         features: [
-            .init(icon: "books.vertical.fill", title: "All 39 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
+            .init(icon: "books.vertical.fill", title: "All 43 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
             .init(icon: "figure.cooldown", title: "Every warm-up routine", detail: "Makkō-hō, Sūrya Namaskār, Ruesi Dat Ton, Ba Duan Jin and the rest, 2–10 minutes, with figures for each step."),
             .init(icon: "applewatch", title: "Everything on your Watch", detail: "Haptic breathing for the full library, straight from your wrist."),
             .init(icon: "heart.text.square.fill", title: "Journey with heart data", detail: "Every session kept with your heart-rate stats and Mindful Minutes in Apple Health."),

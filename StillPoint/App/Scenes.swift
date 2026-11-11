@@ -6,6 +6,7 @@ enum SceneKind: CaseIterable { case mountains, mist, water, moon, dunes, forest 
 extension Tradition {
     var scene: SceneKind {
         let k = (id + " " + name + " " + region + " " + origin).lowercased()
+        if k.contains("wind-down") || k.contains("sleep") || k.contains("night") { return .moon }
         if k.contains("tibet") || k.contains("himalaya") || k.contains("bön") || k.contains("bon") { return .mountains }
         if k.contains("zen") || k.contains("japan") || k.contains("forest bathing") || k.contains("shinrin") { return .mist }
         if k.contains("sufi") || k.contains("islam") || k.contains("persia") || k.contains("arab") { return .dunes }

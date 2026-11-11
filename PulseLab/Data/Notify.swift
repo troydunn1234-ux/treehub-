@@ -45,7 +45,7 @@ enum Notify {
         comps.hour = 18
         comps.minute = 0
         let trigger = UNCalendarNotificationTrigger(dateMatching: comps, repeats: true)
-        center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger))
+        center.add(UNNotificationRequest(identifier: identifier, content: content, trigger: trigger), withCompletionHandler: nil)
     }
 
     /// "Agreed on 5 of 6 metrics · RHR gap 3 bpm" — built from whatever has at least 3 days of overlap.

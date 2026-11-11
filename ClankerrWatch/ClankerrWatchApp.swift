@@ -2,6 +2,9 @@ import SwiftUI
 import Observation
 import WatchConnectivity
 import WatchKit
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 
 @main
 struct ClankerrWatchApp: App {
@@ -11,7 +14,28 @@ struct ClankerrWatchApp: App {
             ClankerrWatchRoot()
                 .environment(link)
                 .onAppear { link.activate() }
+                // couchremote://remote from the complication: the app is already the remote, just refresh.
+                .onOpenURL { url in
+                    guard url.scheme == "couchremote" else { return }
+                    link.activate()
+                    link.refresh()
+                }
         }
+    }
+}
+
+/// The watch face complication reads the TV name from the App Group (shared with the watch app only;
+/// App Group defaults don't sync from the iPhone, so the watch writes it itself whenever the phone updates it).
+enum WatchWidgetBridge {
+    static let appGroup = "group.com.troydunn.clicker"
+    static func write(tvName: String) {
+        guard let d = UserDefaults(suiteName: appGroup) else { return }
+        if d.string(forKey: "tvName") == tvName { return }
+        d.set(tvName, forKey: "tvName")
+        d.set(Date().timeIntervalSince1970, forKey: "updatedAt")
+        #if canImport(WidgetKit)
+        WidgetCenter.shared.reloadAllTimelines()
+        #endif
     }
 }
 
@@ -102,6 +126,7 @@ final class RemoteLink: NSObject {
     fileprivate func apply(_ d: [String: Any]) {
         guard d["paired"] != nil else { return }
         state = RemoteState(d)
+        WatchWidgetBridge.write(tvName: state.tv)
     }
 
     fileprivate func setReachable(_ r: Bool) { phoneReachable = r }

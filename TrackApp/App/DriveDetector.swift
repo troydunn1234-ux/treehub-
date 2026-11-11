@@ -93,7 +93,8 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         let finishNow = UNNotificationAction(identifier: AutoFinish.finishActionID, title: "Finish now", options: [])
         let keep = UNNotificationAction(identifier: AutoFinish.keepActionID, title: "Keep going", options: [])
         let fin = UNNotificationCategory(identifier: AutoFinish.categoryID, actions: [finishNow, keep], intentIdentifiers: [], options: [])
-        UNUserNotificationCenter.current().setNotificationCategories([cat, fin])
+        let done = UNNotificationCategory(identifier: DriveFinishedNotifier.categoryID, actions: [], intentIdentifiers: [], options: [])
+        UNUserNotificationCenter.current().setNotificationCategories([cat, fin, done])
     }
 
     /// Called when the toggle turns on: asks for notifications, Always location and motion.
@@ -280,6 +281,10 @@ final class DriveNotificationRouter: NSObject, UNUserNotificationCenterDelegate 
         if id == DriveDetector.categoryID && response.actionIdentifier != DriveDetector.laterActionID
             && response.actionIdentifier != UNNotificationDismissActionIdentifier {
             DispatchQueue.main.async { DriveDetector.requestStartDrive() }
+        } else if id == DriveFinishedNotifier.categoryID {
+            if let raw = response.notification.request.content.userInfo[DriveFinishedNotifier.activityKey] as? String {
+                DispatchQueue.main.async { DriveFinishedNotifier.requestOpen(raw) }
+            }
         } else if id == AutoFinish.categoryID {
             let action = response.actionIdentifier
             DispatchQueue.main.async {
@@ -363,5 +368,56 @@ final class AutoFinish {
         secondsLeft = nil
         UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [Self.requestID])
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [Self.requestID])
+    }
+}
+
+
+/// "Drive finished" notification after auto-finish saves a drive on its own. Tapping it opens that drive.
+/// Off/on from Settings (on by default).
+final class DriveFinishedNotifier {
+    static let shared = DriveFinishedNotifier()
+    static let enabledKey = "notifyDriveFinished"
+    static let categoryID = "DRIVE_FINISHED"
+    static let activityKey = "activityID"
+    static let pendingOpenKey = "pendingOpenActivity"
+    static let requestID = "drive-finished"
+    /// Posted when the app should show the activity saved under `pendingOpenKey`.
+    static let openActivityNote = Notification.Name("RoamrOpenActivity")
+
+    private var token: NSObjectProtocol?
+
+    /// Starts listening for saved recordings. Safe to call more than once.
+    func start() {
+        guard token == nil else { return }
+        token = NotificationCenter.default.addObserver(forName: .activitySaved, object: nil, queue: .main) { note in
+            guard let info = note.userInfo,
+                  let auto = info["auto"] as? Bool, auto,
+                  let id = info["id"] as? String,
+                  let kind = info["kind"] as? String,
+                  let distance = info["distanceM"] as? Double,
+                  let seconds = info["seconds"] as? Double else { return }
+            DriveFinishedNotifier.notify(id: id, kind: kind, distanceM: distance, seconds: seconds)
+        }
+    }
+
+    static var enabled: Bool { UserDefaults.standard.bool(forKey: enabledKey) }
+
+    static func notify(id: String, kind: String, distanceM: Double, seconds: Double) {
+        guard enabled, !TrackDemo.isOn else { return }
+        let title = (ActivityKind(rawValue: kind) ?? .drive).title
+        let content = UNMutableNotificationContent()
+        content.title = "\(title) finished"
+        content.body = "\(Format.distance(distanceM)) in \(Format.duration(seconds)). Tap to see the route."
+        content.sound = .default
+        content.categoryIdentifier = categoryID
+        content.userInfo = [activityKey: id]
+        let req = UNNotificationRequest(identifier: requestID, content: content, trigger: nil)
+        UNUserNotificationCenter.current().add(req)
+    }
+
+    /// Asks the app to show an activity (from a tap on the notification).
+    static func requestOpen(_ id: String) {
+        UserDefaults.standard.set(id, forKey: pendingOpenKey)
+        NotificationCenter.default.post(name: openActivityNote, object: nil)
     }
 }

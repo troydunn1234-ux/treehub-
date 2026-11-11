@@ -16,9 +16,18 @@ struct TodayView: View {
     @State private var health = FoodHealth.shared
     @AppStorage("eatBackPct") private var eatBack: Int = 0
     @AppStorage("ringNet") private var ringNet = false
+    @AppStorage("proteinGoal") private var proteinGoal: Double = 150
     @Environment(\.scenePhase) private var phase
+    @Query private var logs: [DayLog]
+    @State private var showHistory = false
+    @State private var deepLink = FoodDeepLink.shared
+    /// Entries just copied by "Repeat yesterday", so Undo can remove them.
+    @State private var repeated: [FoodEntry] = []
+    @State private var undoTask: Task<Void, Never>?
 
     private var entries: [FoodEntry] { all.filter { $0.day == day } }
+    private var yesterdays: [FoodEntry] { let y = Day.shift(day, by: -1); return all.filter { $0.day == y } }
+    private var log: DayLog? { logs.first { $0.day == day } }
     private var eaten: Double { entries.reduce(0) { $0 + $1.cal * $1.servings } }
     private var isToday: Bool { day == Day.key(Date()) }
     /// Burned numbers only make sense for today.
@@ -63,6 +72,7 @@ struct TodayView: View {
                         }
                     }
                     macros
+                    quickLog
                     ForEach(Meal.allCases) { meal in mealSection(meal) }
                     if entries.isEmpty { emptyState }
                 }
@@ -75,6 +85,14 @@ struct TodayView: View {
 
             addButtons
             Confetti(trigger: celebrate)
+            if !repeated.isEmpty { undoToast }
+        }
+        .animation(.spring(response: 0.4, dampingFraction: 0.8), value: repeated.isEmpty)
+        .sheet(isPresented: $showHistory) { HistoryView().presentationDetents([.large]) }
+        .onChange(of: deepLink.snapRequests) { _, _ in
+            if day != Day.key(Date()) { day = Day.key(Date()) }
+            adding = false; editingGoal = false; showHistory = false
+            snapping = true
         }
         .sheet(isPresented: $adding) { AddFoodSheet(day: day).presentationDetents([.large]) }
         .fullScreenCover(isPresented: $snapping) { SnapView(day: day) { celebrate += 1 } }
@@ -118,12 +136,19 @@ struct TodayView: View {
                 }
                 .accessibilityLabel("\(streak) day streak")
             }
+            Button { showHistory = true } label: {
+                Image(systemName: "calendar").font(.system(size: 16, weight: .bold))
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(Color.white.opacity(0.08)))
+            }
+            .padding(.leading, 10)
+            .accessibilityLabel("History and weekly report")
             Button { settingsDetent = .large; editingGoal = true } label: {
                 Image(systemName: "gearshape.fill").font(.system(size: 17, weight: .bold))
                     .frame(width: 36, height: 36)
                     .background(Circle().fill(Color.white.opacity(0.08)))
             }
-            .padding(.leading, 10)
+            .padding(.leading, 6)
             .accessibilityLabel("Settings: goal, Apple Health, Smart photo")
         }
         .foregroundStyle(Ember.cream)
@@ -138,6 +163,92 @@ struct TodayView: View {
             let caf = total(\.caffeine)
             if caf > 0 { MacroPill(label: "Caffeine", grams: caf, color: Ember.cream, unit: "mg") }
         }
+    }
+
+    /// Water and coffee tap counters, plus "Repeat yesterday" when today is empty-ish and yesterday wasn't.
+    private var quickLog: some View {
+        VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                TapCounter(symbol: "drop.fill", label: "Water", count: log?.water ?? 0,
+                           detail: "\(Int((log?.waterML ?? 0)))ml", color: Ember.protein,
+                           onTap: { bump(water: 1) }, onMinus: { bump(water: -1) })
+                TapCounter(symbol: "cup.and.saucer.fill", label: "Coffee", count: log?.coffees ?? 0,
+                           detail: "\(Int((log?.caffeineMG ?? 0)))mg", color: Ember.carbs,
+                           onTap: { bump(coffee: 1) }, onMinus: { bump(coffee: -1) })
+            }
+            if isToday, !yesterdays.isEmpty {
+                Button { repeatYesterday() } label: {
+                    Label("Repeat yesterday (\(yesterdays.count) items, \(Int(yesterdays.reduce(0) { $0 + $1.cal * $1.servings })) cal)",
+                          systemImage: "arrow.counterclockwise")
+                        .font(Ember.font(14, .bold)).foregroundStyle(Ember.cream)
+                        .lineLimit(1).minimumScaleFactor(0.8)
+                        .padding(.horizontal, 16).padding(.vertical, 10)
+                        .frame(maxWidth: .infinity)
+                        .background(Ember.card, in: Capsule())
+                        .overlay(Capsule().strokeBorder(Ember.line))
+                }
+                .buttonStyle(Squish())
+                .accessibilityHint("Copies yesterday's meals into today")
+            }
+        }
+    }
+
+    private var undoToast: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "checkmark.circle.fill").foregroundStyle(Ember.gold)
+            Text("Copied \(repeated.count) from yesterday").font(Ember.font(14, .bold)).foregroundStyle(Ember.cream)
+            Spacer()
+            Button("Undo") { undoRepeat() }.font(Ember.font(15, .heavy)).foregroundStyle(Ember.orange)
+        }
+        .padding(.horizontal, 16).padding(.vertical, 12)
+        .background(.ultraThinMaterial, in: Capsule())
+        .overlay(Capsule().strokeBorder(Ember.line))
+        .shadow(color: .black.opacity(0.4), radius: 14, y: 6)
+        .padding(.horizontal, 20)
+        .padding(.bottom, 110)
+        .frame(maxWidth: .infinity)
+        .transition(.move(edge: .bottom).combined(with: .opacity))
+        .accessibilityElement(children: .contain)
+    }
+
+    private func bump(water: Int = 0, coffee: Int = 0) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        let l = DayLog.fetchOrCreate(day, in: context)
+        withAnimation(.snappy) {
+            l.water = max(0, l.water + water)
+            l.coffees = max(0, l.coffees + coffee)
+        }
+        l.updatedAt = Date()
+        try? context.save()
+        let d = day, w = l.waterML, c = l.caffeineMG
+        Task { await FoodHealth.shared.syncQuickLog(day: d, waterML: w, caffeineMG: c) }
+    }
+
+    /// Copy yesterday's meals into today as new entries, timestamped now; Undo removes just those.
+    private func repeatYesterday() {
+        let copies = yesterdays.map { e in
+            FoodEntry(name: e.name, cal: e.cal, protein: e.protein, carbs: e.carbs, fat: e.fat, caffeine: e.caffeine,
+                      servings: e.servings, meal: e.meal, day: day, createdAt: Date(), photo: e.photo)
+        }
+        guard !copies.isEmpty else { return }
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        withAnimation(.spring(response: 0.4, dampingFraction: 0.8)) { for c in copies { context.insert(c) } }
+        try? context.save()
+        FoodWatchBridge.shared.pushNow()
+        repeated = copies
+        undoTask?.cancel()
+        undoTask = Task {
+            try? await Task.sleep(nanoseconds: 6_000_000_000)
+            if !Task.isCancelled { repeated = [] }
+        }
+    }
+
+    private func undoRepeat() {
+        undoTask?.cancel()
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        withAnimation(.spring(response: 0.35, dampingFraction: 0.85)) { for e in repeated { context.delete(e) } }
+        try? context.save()
+        repeated = []
     }
 
     @ViewBuilder private func mealSection(_ meal: Meal) -> some View {
@@ -335,6 +446,7 @@ struct FoodRow: View {
 
 struct GoalSheet: View {
     @Binding var goal: Double
+    @AppStorage("proteinGoal") private var proteinGoal: Double = 150
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         ScrollView {
@@ -344,6 +456,14 @@ struct GoalSheet: View {
                 .contentTransition(.numericText(value: goal))
             Slider(value: $goal, in: 1200...4500, step: 50).tint(Ember.orange)
                 .onChange(of: goal) { _, _ in UISelectionFeedbackGenerator().selectionChanged() }
+            HStack {
+                Text("Protein goal").font(Ember.font(15, .bold)).foregroundStyle(Ember.dim)
+                Spacer()
+                Text("\(Int(proteinGoal))g").font(Ember.font(17, .heavy)).foregroundStyle(Ember.protein)
+                    .contentTransition(.numericText(value: proteinGoal))
+            }
+            Slider(value: $proteinGoal, in: 40...300, step: 5).tint(Ember.protein)
+                .accessibilityLabel("Protein goal")
             Button("Done") { dismiss() }.font(Ember.font(17, .bold)).foregroundStyle(Ember.orange)
             HealthSettings().padding(.top, 24)
             SmartPhotoSettings().padding(.top, 8)
@@ -462,5 +582,55 @@ struct SnapButtonFace: View {
             guard !reduce else { return }
             withAnimation(.easeInOut(duration: 1.8).repeatForever(autoreverses: true)) { breathe = true }
         }
+    }
+}
+
+
+/// A tap counter for quick logs (water, coffee): tap to add one, long-press or the minus to take one back.
+struct TapCounter: View {
+    let symbol: String
+    let label: String
+    let count: Int
+    let detail: String
+    let color: Color
+    let onTap: () -> Void
+    let onMinus: () -> Void
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Button(action: onTap) {
+                HStack(spacing: 10) {
+                    Image(systemName: symbol).font(.system(size: 18, weight: .bold)).foregroundStyle(color)
+                        .frame(width: 36, height: 36)
+                        .background(color.opacity(0.15), in: Circle())
+                    VStack(alignment: .leading, spacing: 1) {
+                        HStack(alignment: .firstTextBaseline, spacing: 4) {
+                            Text("\(count)").font(Ember.font(20, .heavy)).foregroundStyle(Ember.cream)
+                                .contentTransition(.numericText(value: Double(count)))
+                            Text(label.uppercased()).font(Ember.font(9, .heavy)).tracking(1).foregroundStyle(color)
+                        }
+                        Text(detail).font(Ember.font(11, .semibold)).foregroundStyle(Ember.dim)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(Squish())
+            .accessibilityLabel("\(label): \(count). Add one")
+            if count > 0 {
+                Button(action: onMinus) {
+                    Image(systemName: "minus").font(.system(size: 12, weight: .black)).foregroundStyle(Ember.dim)
+                        .frame(width: 28, height: 28)
+                        .background(Color.white.opacity(0.08), in: Circle())
+                }
+                .buttonStyle(Squish())
+                .accessibilityLabel("Remove one \(label.lowercased())")
+            }
+        }
+        .padding(.horizontal, 12).padding(.vertical, 10)
+        .frame(maxWidth: .infinity)
+        .background(Ember.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Ember.line))
+        .animation(.snappy, value: count)
     }
 }

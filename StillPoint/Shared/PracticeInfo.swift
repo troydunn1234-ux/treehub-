@@ -181,7 +181,8 @@ struct PracticeInfo {
         "japan-nature": "Term coined in Japan, 1982",
         "modern": "Lab-studied, 20th–21st c.",
         "thai": "Thai traditional medicine, centuries old",
-        "japan": "Japan, 20th c. routines"
+        "japan": "Japan, 20th c. routines",
+        "wind-down": "Evening practices, drawn from several traditions"
     ]
 
     struct Extra { let purpose: String; let mechanism: String; let feel: String; let fact: String? }
@@ -344,7 +345,23 @@ struct PracticeInfo {
             mechanism: "Circling each joint in turn lubricates it and releases held tension, so sitting is easier and longer.",
             feel: "Clicks and release, then a looser, lighter frame.",
             fact: "Lu Jong, 'body training', comes from Tibetan monastic and medical traditions.")
-            default: return nil
+        case "wind-down-nidra": return Extra(purpose: "To let the body go to sleep while attention drifts gently behind it.",
+            mechanism: "Rotating attention quickly through the body occupies the mind with something simple and physical; lying still with slow breath lowers arousal. Small trials of yoga nidra report faster sleep onset.",
+            feel: "Heaviness spreading limb by limb; the voice of the cues getting further away. Falling asleep is allowed.",
+            fact: "In the Bihar School method, awareness travels the body in a fixed order, always starting with the right thumb.")
+        case "wind-down-478": return Extra(purpose: "To slow the breath and the heart in the last minutes before sleep.",
+            mechanism: "A long exhale with a soft hold leans the nervous system toward its parasympathetic side; done nightly, the pattern itself becomes a cue for sleep.",
+            feel: "A slight dreaminess after a few rounds; the room going quiet. Keep the hold easy.",
+            fact: "Weil suggests never doing more than eight rounds, and doing it at the same time each night.")
+        case "wind-down-countdown": return Extra(purpose: "To give a racing mind one boring job: count the out-breath down from ten.",
+            mechanism: "Counting occupies the verbal mind; counting downward adds a sense of settling. The longer exhale slows the heart.",
+            feel: "The numbers going soft and losing their edges; losing count and not minding.",
+            fact: "Zen students count up to ten; counting down is a bedtime variation, since nobody minds not reaching one.")
+        case "wind-down-metta": return Extra(purpose: "To set the day down with kindness, ending with yourself.",
+            mechanism: "Deliberate goodwill appears to lower rumination and raise positive emotion; the evening is when the day gets replayed, so the wishes give it a different ending.",
+            feel: "Warmth around the chest, or nothing much, which is also fine. The last wish is for you.",
+            fact: "Traditional mettā starts with yourself; this version saves you for last, so it is the final thought before sleep.")
+        default: return nil
         }
     }
 }

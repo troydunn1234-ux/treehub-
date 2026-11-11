@@ -5,6 +5,7 @@ struct CompareScreen: View {
     @Environment(LabStore.self) private var store
     @State private var days = 30
     @State private var focus: String = "Resting HR"
+    @State private var showTrust = false
 
     private var agreements: [Agreement] {
         Compare.agreements(watch: store.watchDays, whoop: store.whoopDays, sleeps: store.sleeps, days: days)
@@ -14,7 +15,11 @@ struct CompareScreen: View {
         let list = agreements
         LabScroll(kicker: "Lab results", title: "VS") {
             VSSlam()
-            RangePicker(days: $days)
+            HStack {
+                RangePicker(days: $days)
+                Spacer()
+                trustButton
+            }
             if list.allSatisfy({ $0.n == 0 }) {
                 noOverlap
             } else {
@@ -34,6 +39,29 @@ struct CompareScreen: View {
         }
         .onAppear(perform: takeFocus)
         .onChange(of: store.focusCompare) { _, _ in takeFocus() }
+        .sheet(isPresented: $showTrust) {
+            TrustScreen().environment(store).presentationBackground(Lab.bg)
+        }
+    }
+
+    /// Header button → "Who to trust" (metric-by-metric guidance).
+    private var trustButton: some View {
+        Button {
+            Lab.tick()
+            showTrust = true
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: "checkmark.shield.fill").font(.system(size: 11, weight: .heavy))
+                Text("WHO TO TRUST").font(Lab.label(9)).tracking(1.2)
+            }
+            .foregroundStyle(Lab.violet)
+            .padding(.horizontal, 12).padding(.vertical, 8)
+            .background(Capsule().fill(Lab.violet.opacity(0.14)))
+            .overlay(Capsule().strokeBorder(Lab.violet.opacity(0.35)))
+        }
+        .buttonStyle(PressScale())
+        .accessibilityLabel("Who to trust")
+        .accessibilityHint("Opens guidance on which tracker to believe for each metric")
     }
 
     private func takeFocus() {

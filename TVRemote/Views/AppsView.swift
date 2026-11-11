@@ -47,6 +47,8 @@ struct AppsView: View {
                         }
                     }
 
+                    ScenesRow()
+
                     VStack(alignment: .leading, spacing: Look.S.m) {
                         SectionHeader(title: "Your apps") {
                             Button { editing = true } label: {

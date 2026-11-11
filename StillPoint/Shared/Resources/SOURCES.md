@@ -19,6 +19,7 @@ Short reference list behind the practice descriptions in `practices.json`. Descr
 - **light-on-pranayama** — B. K. S. Iyengar, *Light on Prāṇāyāma* (nāḍī śodhana, ujjāyī, sama vṛtti).
 - **so-hum** — "Soham / Haṁsa" ajapa japa, the breath-paired mantra (e.g. Swami Muktananda, *I Am That*).
 - **yoga-nidra** — Swami Satyananda Saraswati, *Yoga Nidra* (Bihar School of Yoga); also iRest (Richard Miller).
+- **yoga-nidra-sleep** — Datta K, Tripathi M, Mallick HN (2017). Yoga Nidra: an innovative approach for management of chronic insomnia — a case report. *Sleep Science and Practice* 1:7. https://doi.org/10.1186/s41606-017-0009-4
 - **sufi-dhikr** — Annemarie Schimmel, *Mystical Dimensions of Islam* (dhikr, breath awareness "hush dar dam" in the Naqshbandi order).
 - **heart-breath** — Hazrat Inayat Khan, *The Mysticism of Sound and Music* / Sufi heart-centred breathing practices (Inayatiyya).
 - **keating-centering** — Thomas Keating, *Open Mind, Open Heart*; Contemplative Outreach centering-prayer guidelines. https://www.contemplativeoutreach.org/centering-prayer-method/

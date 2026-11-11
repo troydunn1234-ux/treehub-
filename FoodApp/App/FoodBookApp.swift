@@ -4,7 +4,7 @@ import SwiftData
 @main
 struct FoodBookApp: App {
     let container: ModelContainer = {
-        let schema = Schema([FoodEntry.self, Supplement.self, SuppDose.self])
+        let schema = Schema([FoodEntry.self, Supplement.self, SuppDose.self, DayLog.self])
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         return try! ModelContainer(for: schema, configurations: config)
     }()
@@ -14,20 +14,37 @@ struct FoodBookApp: App {
         FoodWatchBridge.shared.attach(container: container)
         // Apple Health (Whoop + Apple Watch arrive through Health): meals out, burned calories in.
         FoodHealth.shared.attach(container: container)
+        // Home Screen widget: today's numbers in the App Group.
+        WidgetBridge.shared.attach(container: container)
     }
 
     var body: some Scene {
         WindowGroup {
             Splash { RootTabs() }
                 .onAppear { LegacyImport.runOnce(into: container.mainContext); DemoFood.seedIfNeeded(container.mainContext) }
+                .onOpenURL { url in
+                    // foodbook://snap (widget) opens the camera on Today.
+                    guard url.scheme == "foodbook" else { return }
+                    if url.host == "snap" { FoodDeepLink.shared.snapRequests += 1 }
+                }
         }
         .modelContainer(container)
     }
 }
 
+/// Requests that arrive by URL (widget taps) and are acted on by whichever view is showing.
+@MainActor
+@Observable
+final class FoodDeepLink {
+    static let shared = FoodDeepLink()
+    /// Bumped for every foodbook://snap; Today opens the camera when it changes.
+    var snapRequests = 0
+}
+
 /// Food and Supplements, switched with a floating pill at the bottom.
 struct RootTabs: View {
     @State private var tab = ProcessInfo.processInfo.arguments.contains("-supps") ? 1 : 0
+    @State private var deepLink = FoodDeepLink.shared
     @Namespace private var ns
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -46,6 +63,7 @@ struct RootTabs: View {
             .padding(.bottom, 30)
         }
         .preferredColorScheme(.dark)
+        .onChange(of: deepLink.snapRequests) { _, _ in withAnimation { tab = 0 } }
     }
     private func pill(_ i: Int, _ title: String, _ symbol: String) -> some View {
         Button {

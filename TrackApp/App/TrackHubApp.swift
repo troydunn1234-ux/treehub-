@@ -22,9 +22,10 @@ struct TrackHubApp: App {
     }()
 
     init() {
-        UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true])
+        UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true, DriveFinishedNotifier.enabledKey: true])
         UNUserNotificationCenter.current().delegate = DriveNotificationRouter.shared
         DriveDetector.registerCategory()
+        DriveFinishedNotifier.shared.start()
         let t = RouteTracker()
         _tracker = State(initialValue: t)
         // Apple Watch: live stats out, start/stop in.
@@ -111,13 +112,20 @@ struct TrackRootView: View {
         .onReceive(NotificationCenter.default.publisher(for: DriveDetector.startDriveNote)) { _ in
             consumePendingStart()
         }
+        .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
+            // History picks up the saved id and pushes the activity.
+            tab = "history"
+        }
         .onChange(of: tracker.isActive) { _, active in
             if !active { detector.trackingEnded() } else { detector.showBanner = false }
         }
         .animation(.spring(response: 0.38, dampingFraction: 0.85), value: tab)
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
-            if phase == .active { consumePendingStart(); detector.refresh() }
+            if phase == .active {
+                consumePendingStart(); detector.refresh()
+                if UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) != nil { tab = "history" }
+            }
         }
         .onAppear {
             autoFinish.attach(tracker)

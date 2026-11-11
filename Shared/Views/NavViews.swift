@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 import MapKit
 import CoreLocation
 
@@ -132,10 +133,7 @@ struct DirectionsSheet: View {
 
             modePicker
 
-            HStack(spacing: 10) {
-                pinChip("Home", "house.fill", nav.home)
-                pinChip("Work", "briefcase.fill", nav.work)
-            }
+            favoritesRow
 
             if let e = nav.error {
                 Label(e, systemImage: "exclamationmark.triangle.fill").font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.gold)
@@ -163,6 +161,7 @@ struct DirectionsSheet: View {
                                 Task { if let p = await search.resolve(c) { go(p) } }
                             }
                             .contextMenu {
+                                Button { Task { if let p = await search.resolve(c) { nav.toggleFavorite(p) } } } label: { Label("Add to Favorites", systemImage: "star") }
                                 Button { Task { if let p = await search.resolve(c) { nav.setHome(p) } } } label: { Label("Set as Home", systemImage: "house") }
                                 Button { Task { if let p = await search.resolve(c) { nav.setWork(p) } } } label: { Label("Set as Work", systemImage: "briefcase") }
                             }
@@ -192,6 +191,20 @@ struct DirectionsSheet: View {
         .sensoryFeedback(.selection, trigger: nav.mode)
     }
 
+    /// Home, Work and every starred place, side by side above the results.
+    private var favoritesRow: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 10) {
+                pinChip("Home", "house.fill", nav.home)
+                pinChip("Work", "briefcase.fill", nav.work)
+                ForEach(nav.favorites) { p in
+                    favoriteChip(p)
+                }
+            }
+        }
+        .scrollClipDisabled()
+    }
+
     private func pinChip(_ title: String, _ icon: String, _ place: NavPlace?) -> some View {
         Button { if let place { go(place) } } label: {
             HStack(spacing: 8) {
@@ -202,14 +215,38 @@ struct DirectionsSheet: View {
                 }
                 Spacer(minLength: 0)
             }
-            .padding(.horizontal, 12).frame(height: 52).frame(maxWidth: .infinity)
+            .padding(.horizontal, 12).frame(height: 52).frame(width: 160)
             .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
         .buttonStyle(.plain)
         .opacity(place == nil ? 0.6 : 1)
     }
 
+    private func favoriteChip(_ p: NavPlace) -> some View {
+        Button { go(p) } label: {
+            HStack(spacing: 8) {
+                Image(systemName: "star.fill").foregroundStyle(Theme.gold)
+                VStack(alignment: .leading, spacing: 0) {
+                    Text(p.name).font(Theme.rounded(14, .bold)).foregroundStyle(.white).lineLimit(1)
+                    Text(p.subtitle.isEmpty ? "Favorite" : p.subtitle).font(Theme.rounded(11, .medium)).foregroundStyle(Theme.textDim).lineLimit(1)
+                }
+                Spacer(minLength: 0)
+            }
+            .padding(.horizontal, 12).frame(height: 52).frame(width: 160)
+            .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            pinMenu(p)
+            Button("Remove from Favorites", role: .destructive) { nav.removeFavorite(p) }
+        }
+        .accessibilityLabel("Favorite: \(p.name)")
+    }
+
     @ViewBuilder private func pinMenu(_ p: NavPlace) -> some View {
+        Button { nav.toggleFavorite(p) } label: {
+            Label(nav.isFavorite(p) ? "Remove from Favorites" : "Add to Favorites", systemImage: nav.isFavorite(p) ? "star.slash" : "star")
+        }
         Button { nav.setHome(p) } label: { Label("Set as Home", systemImage: "house") }
         Button { nav.setWork(p) } label: { Label("Set as Work", systemImage: "briefcase") }
     }
@@ -275,9 +312,24 @@ struct DirectionsSheet: View {
                 }
             }
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(dest.name).font(Theme.rounded(20, .heavy)).foregroundStyle(.white).lineLimit(1)
-                if !dest.subtitle.isEmpty { Text(dest.subtitle).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim).lineLimit(1) }
+            HStack(spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(dest.name).font(Theme.rounded(20, .heavy)).foregroundStyle(.white).lineLimit(1)
+                    if !dest.subtitle.isEmpty { Text(dest.subtitle).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim).lineLimit(1) }
+                }
+                Spacer(minLength: 0)
+                Button {
+                    withAnimation(.snappy) { nav.toggleFavorite(dest) }
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                } label: {
+                    Image(systemName: nav.isFavorite(dest) ? "star.fill" : "star")
+                        .font(.system(size: 17, weight: .bold))
+                        .foregroundStyle(nav.isFavorite(dest) ? Theme.gold : .white)
+                        .frame(width: 40, height: 40)
+                        .background(Color.white.opacity(0.08), in: Circle())
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(nav.isFavorite(dest) ? "Remove from Favorites" : "Add to Favorites")
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 

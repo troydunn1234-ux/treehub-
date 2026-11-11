@@ -88,6 +88,14 @@
    "origin": "Everyday Japanese health practices from Buddhist bowing, East Asian medicine and 20th-century public health.",
    "summary": "Japan blends meditative movement into daily life, from morning radio exercises to floor stretches and self-massage. These short routines prepare the body for sitting.",
    "color": "#D96C75"
+  },
+  {
+   "id": "wind-down",
+   "name": "Wind-down",
+   "region": "For the end of the day",
+   "origin": "Evening practices gathered from yoga nidra, prāṇāyāma, Zen and the mettā tradition, chosen for the hour before sleep.",
+   "summary": "Slow, low-effort practices for the last hour of the day: a lying-down body scan, a long-exhale breath, a counting-down breath and a loving-kindness that ends with you. Dim the lights; nothing here needs effort.",
+   "color": "#7B6FB0"
   }
  ],
  "practices": [
@@ -1333,6 +1341,188 @@
    ]
   },
   {
+   "id": "wind-down-nidra",
+   "title": "Night Body Scan (Yoga Nidra)",
+   "traditionId": "wind-down",
+   "kind": "body",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "about": "A short yoga nidra for bed, in the style of Swami Satyananda's rotation of consciousness. Lie on your back, arms a little away from the body, palms up. Awareness moves quickly through the body — right hand, arm, shoulder, side, leg; then the left; then back, head and face — resting a breath on each part. There is nothing to fix or relax on purpose; naming each part is enough. If you fall asleep partway, that is the practice working.",
+   "why": "Yoga nidra is widely used for deep rest and before sleep; small trials report less time to fall asleep and better sleep quality. Moving attention through the body also pulls it out of the day's thinking.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Lie down. Let the bed hold your whole weight."
+    },
+    {
+     "at": "minute:1",
+     "text": "Right hand… arm… shoulder… down the right side."
+    },
+    {
+     "at": "minute:3",
+     "text": "Left hand… arm… shoulder… down the left side."
+    },
+    {
+     "at": "minute:5",
+     "text": "Back of the body. Back of the head. The face softens."
+    },
+    {
+     "at": "minute:8",
+     "text": "The whole body, heavy and warm."
+    },
+    {
+     "at": "end",
+     "text": "Stay here. Sleep is welcome."
+    }
+   ],
+   "sources": [
+    "yoga-nidra",
+    "yoga-nidra-sleep"
+   ]
+  },
+  {
+   "id": "wind-down-478",
+   "title": "4·7·8 for Sleep",
+   "traditionId": "wind-down",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Dr Andrew Weil's 4-7-8 breath, paced for bed. Lying down, rest the tip of the tongue behind the upper front teeth. Breathe in quietly through the nose for 4, hold softly for 7, and let the breath out through the mouth for a slow 8. Four rounds is plenty at first; the hold should feel easy, never strained. Keep the eyes closed and let the count get vaguer as you go.",
+   "why": "A long exhale with a gentle hold leans the nervous system toward rest, which tends to slow the heart. Weil describes it as a natural tranquiliser for the nervous system; it works best as a nightly habit.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 7,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": 4,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Tongue behind the teeth. In four, hold seven, out eight."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Let the out-breath be slow."
+    },
+    {
+     "at": "minute:2",
+     "text": "Soften the hold. Nothing to force."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally. Let the room fade."
+    }
+   ],
+   "sources": [
+    "weil-478",
+    "zaccaro-2018"
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Keep the hold gentle; this is not a breath-holding contest."
+  },
+  {
+   "id": "wind-down-countdown",
+   "title": "Counting Down (Zen)",
+   "traditionId": "wind-down",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "about": "A bedtime turn on Zen breath counting (susokukan). Instead of counting up to ten, count the out-breaths down from ten to one, then start again at ten. Each exhale is a little longer than the inhale. When you lose the count — and you will — simply pick it up again at ten, without comment. In bed, lying on your back or side, the numbers slowly lose their edges.",
+   "why": "Counting gives a racing mind one simple, boring job, and counting downward carries a feeling of settling. The longer out-breath is linked with calmer arousal in reviews of slow breathing.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 7,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Ten on this out-breath. Then nine…"
+    },
+    {
+     "at": "everyCycle",
+     "text": "Count the exhale, down."
+    },
+    {
+     "at": "minute:4",
+     "text": "Lost the count? Begin again at ten."
+    },
+    {
+     "at": "minute:8",
+     "text": "Let the numbers blur. Just the out-breath."
+    },
+    {
+     "at": "end",
+     "text": "Let the counting go."
+    }
+   ],
+   "sources": [
+    "zen-susokukan",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "wind-down-metta",
+   "title": "Loving-Kindness for Sleep",
+   "traditionId": "wind-down",
+   "kind": "loving",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "about": "Mettā turned toward the end of the day. Lying down, bring to mind one person who was kind to you today and silently wish them well: may you rest, may you be at ease. Then someone you love, then whoever you crossed paths with, and finally yourself — may I rest, may I be at ease. There is no striving for a feeling; the wishes do the work, and the day is set down with them.",
+   "why": "Loving-kindness practice is associated with more positive emotion and less rumination, and the evening is when the mind replays the day. Ending with yourself gives the last thought before sleep a kind tone.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Someone kind today. May you rest easy."
+    },
+    {
+     "at": "minute:2",
+     "text": "Someone you love. May you be at ease."
+    },
+    {
+     "at": "minute:4",
+     "text": "Everyone you met today. May they sleep well."
+    },
+    {
+     "at": "minute:6",
+     "text": "And you. May I rest. May I be at ease."
+    },
+    {
+     "at": "end",
+     "text": "Set the day down. Goodnight."
+    }
+   ],
+   "sources": [
+    "metta-sutta",
+    "hofmann-2011-metta"
+   ]
+  },
+  {
    "id": "baduanjin",
    "title": "Eight Pieces of Brocade (Baduanjin)",
    "traditionId": "taoist",
@@ -2059,6 +2249,10 @@
    "id": "sleep",
    "name": "Sleep",
    "practiceIds": [
+    "wind-down-nidra",
+    "wind-down-478",
+    "wind-down-countdown",
+    "wind-down-metta",
     "478",
     "yoga-nidra",
     "bhramari",

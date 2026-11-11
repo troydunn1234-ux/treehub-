@@ -208,17 +208,23 @@ targets:
         copy:
           destination: productsDirectory
           subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
+      - target: FoodBookWidgets
+        embed: true
     entitlements:
       path: FoodApp/FoodBook.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups: [group.com.troydunn.foodbook]
     info:
       path: WebApps/FoodBook/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Food Book
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.foodbook
+            CFBundleURLSchemes: [foodbook]
         NSCameraUsageDescription: Snap your food and Food Book fills in the calories and macros.
         NSPhotoLibraryUsageDescription: Pick a food photo and Food Book fills in the calories and macros.
         NSHealthShareUsageDescription: Food Book reads your active calories and workouts from Apple Health (including Whoop and Apple Watch) to show what you've burned.
@@ -240,11 +246,15 @@ targets:
     sources:
       - path: PulseLab
       - path: Shared/Store
+    dependencies:
+      - target: PulseLabWidgets
+        embed: true
     entitlements:
       path: PulseLab/PulseLab.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups: [group.com.troydunn.pulselab]
     info:
       path: PulseLab/Info.plist
       properties:
@@ -284,17 +294,23 @@ targets:
         copy:
           destination: productsDirectory
           subpath: "$(CONTENTS_FOLDER_PATH)/Watch"
+      - target: StillPointWidgets
+        embed: true
     entitlements:
       path: StillPoint/StillPoint.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
     info:
       path: StillPoint/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Still Point
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.stillpoint
+            CFBundleURLSchemes: [stillpoint]
         ProProductID: com.troydunn.stillpoint.pro
         PaidUntilBuild: 0
         NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.
@@ -319,17 +335,24 @@ targets:
     sources:
       - path: StillPointWatch
       - path: StillPoint/Shared
+    dependencies:
+      - target: StillPointWatchWidgets
+        embed: true
     entitlements:
       path: StillPointWatch/StillPointWatch.entitlements
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
     info:
       path: StillPointWatch/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Still Point
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.stillpoint.watchkitapp
+            CFBundleURLSchemes: [stillpoint]
         ProProductID: com.troydunn.stillpoint.pro
         PaidUntilBuild: 0
         WKApplication: true
@@ -432,12 +455,16 @@ targets:
       path: TVRemote/Clicker.entitlements
       properties:
         com.apple.developer.game-center: true
+        com.apple.security.application-groups: [group.com.troydunn.clicker]
     info:
       path: TVRemote/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Couch Remote
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.clicker
+            CFBundleURLSchemes: [couchremote]
         ProProductID: com.troydunn.clicker.pro
         # Anyone whose first download was build 73 or earlier bought Couch Remote while it was a paid app: Pro is theirs.
         PaidUntilBuild: 73
@@ -513,12 +540,22 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: ClankerrWatch
+    dependencies:
+      - target: ClankerrWidgets
+        embed: true
+    entitlements:
+      path: ClankerrWatch/ClankerrWatch.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.clicker]
     info:
       path: ClankerrWatch/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Couch Remote
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.clicker.watchkitapp
+            CFBundleURLSchemes: [couchremote]
         ProProductID: com.troydunn.clicker.pro
         # Anyone whose first download was build 73 or earlier bought Couch Remote while it was a paid app: Pro is theirs.
         PaidUntilBuild: 73
@@ -531,6 +568,118 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         SKIP_INSTALL: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  StillPointWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: StillPointWidgets
+    entitlements:
+      path: StillPointWidgets/StillPointWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+    info:
+      path: StillPointWidgets/StillPointWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Still Point
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.stillpoint.widgets
+        SKIP_INSTALL: YES
+
+  StillPointWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: StillPointWidgets
+    entitlements:
+      path: StillPointWidgets/StillPointWatchWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.stillpoint]
+    info:
+      path: StillPointWidgets/StillPointWatchWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Still Point
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.stillpoint.watchkitapp.widgets
+        SKIP_INSTALL: YES
+
+  PulseLabWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: PulseLabWidgets
+    entitlements:
+      path: PulseLabWidgets/PulseLabWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.pulselab]
+    info:
+      path: PulseLabWidgets/PulseLabWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Pulse Lab
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.pulselab.widgets
+        SKIP_INSTALL: YES
+
+  ClankerrWidgets:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: ClankerrWidgets
+    entitlements:
+      path: ClankerrWidgets/ClankerrWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.clicker]
+    info:
+      path: ClankerrWidgets/ClankerrWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Couch Remote
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.clicker.watchkitapp.widgets
+        SKIP_INSTALL: YES
+
+  FoodBookWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: FoodBookWidgets
+    entitlements:
+      path: FoodBookWidgets/FoodBookWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.foodbook]
+    info:
+      path: FoodBookWidgets/FoodBookWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Food Book
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.foodbook.widgets
+        SKIP_INSTALL: YES
 
 schemes:
   Rootbound:

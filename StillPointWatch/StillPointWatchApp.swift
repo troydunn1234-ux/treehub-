@@ -9,6 +9,7 @@ struct StillPointWatchApp: App {
     init() {
         WatchLink.shared.activate()
         MindfulHealth.shared.requestAuthorization()
+        WidgetBridge.publish()
     }
 
     var body: some Scene {
@@ -26,6 +27,7 @@ struct WatchRoot: View {
     @EnvironmentObject var prefs: Prefs
     @EnvironmentObject var link: WatchLink
     @State private var running: SessionPlan? = nil
+    @State private var path = NavigationPath()
     private let lib = PracticeLibrary.shared
 
     private var beginPractice: Practice {
@@ -41,7 +43,7 @@ struct WatchRoot: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 12) {
                     Button { start(beginPractice, minutes: preferredMinutes(beginPractice)) } label: {
@@ -109,6 +111,16 @@ struct WatchRoot: View {
                 .environmentObject(prefs)
         }
         .onChange(of: link.pendingStart?.practiceId) { _, _ in consumePending() }
+        // Complication tap: stillpoint://practice/<id>. Locked practices open their page instead.
+        .onOpenURL { url in
+            guard let id = WidgetBridge.practiceId(from: url), let p = lib.practice(id), running == nil else { return }
+            if lib.isLocked(p) {
+                path = NavigationPath()
+                path.append(p)
+            } else {
+                start(p, minutes: preferredMinutes(p))
+            }
+        }
         .onAppear {
             consumePending()
             let args = ProcessInfo.processInfo.arguments

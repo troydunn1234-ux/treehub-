@@ -111,6 +111,7 @@ struct RootView: View {
         }
         .sheet(isPresented: $showAbout) { AboutView() }
         .paywallHost(spec: CouchRemotePro.spec)
+        .onboarding(CouchRemoteOnboard.spec)
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { store.forgetTV() }
         } message: { Text("You'll need to pair it again to use it.") }

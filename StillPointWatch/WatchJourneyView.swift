@@ -6,6 +6,10 @@ struct WatchJourneyView: View {
 
     var body: some View {
         List {
+            Section {
+                WatchStreakGoalRow()
+                    .listRowBackground(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.05)))
+            }
             if log.records.isEmpty {
                 Text("Your sessions will gather here.").font(SP.serif(15, .light)).foregroundStyle(SP.dim)
                     .listRowBackground(Color.clear)
@@ -50,6 +54,39 @@ struct WatchJourneyView: View {
             .font(SP.rounded(11)).foregroundStyle(SP.faint)
         }
         .padding(.vertical, 2)
+    }
+}
+
+/// Compact streak flame + weekly-goal ring for the wrist.
+struct WatchStreakGoalRow: View {
+    @EnvironmentObject var log: SessionLog
+
+    var body: some View {
+        HStack(spacing: 10) {
+            ZStack {
+                Circle().stroke(Color.white.opacity(0.10), lineWidth: 4)
+                Circle()
+                    .trim(from: 0, to: log.weekProgress)
+                    .stroke(log.goalReached ? SP.gold : SP.teal, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .rotationEffect(.degrees(-90))
+                Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(13)).foregroundStyle(SP.ink)
+            }
+            .frame(width: 38, height: 38)
+            VStack(alignment: .leading, spacing: 1) {
+                HStack(spacing: 4) {
+                    Image(systemName: log.streak > 0 ? "flame.fill" : "flame")
+                        .font(.system(size: 12, weight: .regular))
+                        .foregroundStyle(log.streak > 0 ? SP.amber : SP.faint)
+                    Text("\(log.streak) \(log.streak == 1 ? "day" : "days")").font(SP.rounded(13, .semibold)).foregroundStyle(SP.ink)
+                }
+                Text(log.goalReached ? "Weekly goal met" : "\(Int(log.minutesToGoal.rounded())) min to goal")
+                    .font(SP.rounded(10)).foregroundStyle(SP.faint).lineLimit(1)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.vertical, 2)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(log.streak) day streak. \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week.")
     }
 }
 

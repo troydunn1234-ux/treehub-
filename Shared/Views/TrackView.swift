@@ -617,6 +617,10 @@ struct TrackView: View {
         try? context.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         justFinished = a
+        NotificationCenter.default.post(name: .activitySaved, object: nil, userInfo: [
+            "id": a.id.uuidString, "auto": auto, "kind": a.kind.rawValue,
+            "distanceM": a.distanceM, "seconds": a.elapsedSec,
+        ])
         let pts = a.route
         Task {
             if let s = pts.first { a.startPlace = await Geo.placeName(for: s.coordinate) }
