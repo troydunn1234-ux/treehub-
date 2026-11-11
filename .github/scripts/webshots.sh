@@ -7,7 +7,9 @@ FAIL=0
 
 # On a crash, show why: newest simulator crash report for the app (Swift fatal error text lives in "asi"/"exception").
 crashinfo() {
-  f=$(ls -t ~/Library/Logs/DiagnosticReports/*.ips 2>/dev/null | head -1)
+  sleep 10
+  f=$(find ~/Library/Logs/DiagnosticReports ~/Library/Logs/CrashReporter -name "Roamr*.ips" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
+  [ -n "$f" ] || f=$(find ~/Library/Logs/DiagnosticReports -name "*.ips" -newer shots/drive-1.png 2>/dev/null | head -1)
   ls -t ~/Library/Logs/DiagnosticReports 2>/dev/null | head -5
   echo "  --- unified log (Roamr, last 3 min) ---"
   xcrun simctl spawn "$UDID" log show --last 3m --style compact --predicate 'process == "Roamr" OR eventMessage CONTAINS "Roamr" OR eventMessage CONTAINS "com.troydunn.roamr"' 2>/dev/null | grep -iE "fatal|error|crash|exception|terminat|exit|signal|abort" | grep -v "no such" | tail -40
