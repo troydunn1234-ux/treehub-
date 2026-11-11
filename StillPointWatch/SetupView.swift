@@ -93,6 +93,7 @@ struct SetupView: View {
                         Picker("Haptics", selection: $prefs.settings.haptics) {
                             ForEach(HapticStyle.allCases) { h in Text(h.label).tag(h) }
                         }
+                        Toggle("Vibration only (no sound)", isOn: $prefs.settings.silentHaptics)
                         Toggle("Count the out-breath", isOn: $prefs.settings.exhaleTicks)
                         Toggle("Start & end bells", isOn: $prefs.settings.bells)
                         Picker("Interval bell", selection: $prefs.settings.intervalMinutes) {

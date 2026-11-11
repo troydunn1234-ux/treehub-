@@ -25,6 +25,9 @@ struct SessionSettings: Codable, Equatable {
     /// Interval bell every N minutes; 0 = off.
     var intervalMinutes: Int = 0
     var sound: Bool = false
+    /// Watch: vibration only. Uses only the silent tap haptic, in patterns, so nothing
+    /// ever makes a sound even with the Watch unmuted. Off = Apple's richer haptics (which chime).
+    var silentHaptics: Bool = true
     /// After a few seconds the screen fades to near-black with only the orb.
     var dimScreen: Bool = true
     var showNumbers: Bool = true
@@ -71,6 +74,7 @@ struct SessionSettings: Codable, Equatable {
         bells = (try? c.decode(Bool.self, forKey: .bells)) ?? d.bells
         intervalMinutes = (try? c.decode(Int.self, forKey: .intervalMinutes)) ?? d.intervalMinutes
         sound = (try? c.decode(Bool.self, forKey: .sound)) ?? d.sound
+        silentHaptics = (try? c.decode(Bool.self, forKey: .silentHaptics)) ?? true
         dimScreen = (try? c.decode(Bool.self, forKey: .dimScreen)) ?? d.dimScreen
         showNumbers = (try? c.decode(Bool.self, forKey: .showNumbers)) ?? d.showNumbers
         mode = (try? c.decode(SessionMode.self, forKey: .mode)) ?? d.mode

@@ -46,6 +46,7 @@ struct RunView: View {
         started = true
         let s = prefs.settings
         haptics.sound = s.sound
+        haptics.silent = s.silentHaptics
         runtime.begin(trackHeartRate: s.trackHeartRate, saveWorkout: s.saveAsWorkout)
 
         let mainIsMovement = plan.practice.isMovement

@@ -6,8 +6,27 @@ import HealthKit
 final class WatchHaptics: BreathFeedback {
     private let device = WKInterfaceDevice.current()
     var sound = false
+    /// Vibration only: every cue is built from the silent `.click` tap. Patterns keep
+    /// the phases distinct — 1 tap in, 2 taps out, 3 quick taps for a hold.
+    var silent = true
+
+    private func taps(_ n: Int, gap: Double = 0.16) {
+        for i in 0..<n {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * gap) { [device] in device.play(.click) }
+        }
+    }
 
     func phaseBegan(_ phase: BreathPhase, duration: Double, style: HapticStyle) {
+        if silent {
+            guard style != .off else { return }
+            switch phase {
+            case .inhale: taps(1)
+            case .exhale: taps(2, gap: style == .subtle ? 0.14 : 0.2)
+            case .holdIn, .holdOut: taps(style == .subtle ? 1 : 3, gap: 0.1)
+            case .still: break
+            }
+            return
+        }
         switch style {
         case .off: return
         case .subtle:
@@ -37,6 +56,14 @@ final class WatchHaptics: BreathFeedback {
     }
 
     func bell(_ kind: BellKind) {
+        if silent {
+            switch kind {
+            case .start: taps(3, gap: 0.22)
+            case .interval: taps(2, gap: 0.22)
+            case .end: taps(4, gap: 0.22)
+            }
+            return
+        }
         switch kind {
         case .start: device.play(.start)
         case .interval: device.play(.notification)
@@ -46,6 +73,7 @@ final class WatchHaptics: BreathFeedback {
 
     func stepBegan(style: HapticStyle) {
         guard style != .off else { return }
+        if silent { taps(2, gap: 0.12); return }
         device.play(.directionUp)
     }
 
