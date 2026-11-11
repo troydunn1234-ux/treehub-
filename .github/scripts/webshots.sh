@@ -7,7 +7,9 @@ FAIL=0
 
 # On a crash, show why: newest simulator crash report for the app (Swift fatal error text lives in "asi"/"exception").
 crashinfo() {
-  sleep 10
+  sleep 45
+  echo "  reports dir:"; ls -lat ~/Library/Logs/DiagnosticReports 2>/dev/null | head -8
+  find ~/Library/Logs -iname "*roamr*" 2>/dev/null | head -5
   f=$(find ~/Library/Logs/DiagnosticReports ~/Library/Logs/CrashReporter -name "Roamr*.ips" 2>/dev/null | xargs ls -t 2>/dev/null | head -1)
   [ -n "$f" ] || f=$(find ~/Library/Logs/DiagnosticReports -name "*.ips" -newer shots/drive-1.png 2>/dev/null | head -1)
   ls -t ~/Library/Logs/DiagnosticReports 2>/dev/null | head -5
