@@ -7,6 +7,9 @@ FAIL=0
 
 # On a crash, show why: newest simulator crash report for the app (Swift fatal error text lives in "asi"/"exception").
 crashinfo() {
+  { _crashinfo; } 2>&1 | tee "shots/crash-$(date +%s).txt"
+}
+_crashinfo() {
   sleep 45
   echo "  reports dir:"; ls -lat ~/Library/Logs/DiagnosticReports 2>/dev/null | head -8
   find ~/Library/Logs -iname "*roamr*" 2>/dev/null | head -5
