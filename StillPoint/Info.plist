@@ -26,6 +26,10 @@
 	<string>Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Still Point saves your sessions to Apple Health as Mindful Minutes.</string>
+	<key>PaidUntilBuild</key>
+	<integer>0</integer>
+	<key>ProProductID</key>
+	<string>com.troydunn.stillpoint.pro</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

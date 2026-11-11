@@ -35,6 +35,10 @@
 	</array>
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>Couch Remote finds and controls your TV (and your PC, if you want) on your Wi-Fi.</string>
+	<key>PaidUntilBuild</key>
+	<integer>73</integer>
+	<key>ProProductID</key>
+	<string>com.troydunn.clicker.pro</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

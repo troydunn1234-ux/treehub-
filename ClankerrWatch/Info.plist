@@ -22,6 +22,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>PaidUntilBuild</key>
+	<integer>73</integer>
+	<key>ProProductID</key>
+	<string>com.troydunn.clicker.pro</string>
 	<key>WKApplication</key>
 	<true/>
 	<key>WKCompanionAppBundleIdentifier</key>
