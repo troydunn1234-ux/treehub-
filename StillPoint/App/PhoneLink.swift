@@ -64,6 +64,10 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
     func sessionReachabilityDidChange(_ session: WCSession) { refresh(session) }
 
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        if let s = userInfo["deleteSession"] as? String, let id = UUID(uuidString: s) {
+            DispatchQueue.main.async { SessionLog.shared.remove(id) }
+            return
+        }
         if let r = SessionLog.record(from: userInfo) {
             DispatchQueue.main.async { SessionLog.shared.add(r) }
         }

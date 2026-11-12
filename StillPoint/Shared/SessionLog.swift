@@ -125,7 +125,22 @@ final class SessionLog: ObservableObject {
         if ProcessInfo.processInfo.arguments.contains("-demo") && records.isEmpty { records = Self.demo() }
     }
 
+    /// Sessions the person discarded; ignored if the other device sends them again.
+    private let deletedKey = "sp.sessions.deleted"
+    private lazy var deleted: Set<String> = Set(UserDefaults.standard.stringArray(forKey: deletedKey) ?? [])
+
+    /// Throw a session away (and its Mindful Minutes in Apple Health, if this device saved them).
+    func remove(_ id: UUID) {
+        guard let r = record(id) else { return }
+        records.removeAll { $0.id == id }
+        deleted.insert(id.uuidString)
+        UserDefaults.standard.set(Array(deleted.suffix(300)), forKey: deletedKey)
+        MindfulHealth.shared.deleteMindful(start: r.start, end: r.end)
+        persist()
+    }
+
     func add(_ r: SessionRecord) {
+        guard !deleted.contains(r.id.uuidString) else { return }
         if let i = records.firstIndex(where: { $0.id == r.id }) {
             // Same session arriving again (e.g. the Watch re-sent it with HRV filled in): keep the fuller one.
             var merged = r

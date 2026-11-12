@@ -2361,7 +2361,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
 
   /* ---------- bank sync (SimpleFIN Bridge, through the phone) ---------- */
   var BANK = { on: false, st: null, busy: false, msg: "" };
-  var BANK_EVERY = 6 * 3600 * 1000;
+  /* hourly at most: SimpleFIN Bridge allows about 24 requests a day */
+  var BANK_EVERY = 3600 * 1000;
   function bankNative(msg) {
     try {
       var h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native;
@@ -2438,18 +2439,26 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   window.setBalance = setBalance;
   function bankReconcile(res) {
-    var sums = {}, any = false;
+    var sums = {}, any = false, pend = {}, asOf = 0;
     liveAccounts(res).forEach(function (a) {
       if (isCredit(a) || a.balance === undefined || a.balance === null || !isFinite(+a.balance)) return;
-      /* pending charges are in the log now, so match the balance that already counts them (available), when the bank gives it */
-      /* some banks report available-balance as 0 when they don't support it, so only trust it when it's a real number */
+      /* Pending charges are in the log, so the balance has to count them too.
+         Best: the bank's available balance, when it sends a real one that differs from the posted balance.
+         Otherwise: posted balance + the pending items in the feed (charges are negative), which is what your bank app shows as available. */
+      var p = 0;
+      (a.transactions || []).forEach(function (t) { if (t.pending) p += (+t.amount || 0); });
+      p = r2(p);
       var av = (a.available !== undefined && a.available !== null && a.available !== "") ? +a.available : NaN;
-      var b = (isFinite(av) && av !== 0) ? av : +a.balance;
+      var realAv = isFinite(av) && av !== 0 && Math.abs(av - (+a.balance)) > 0.004;
+      var b = realAv ? av : r2(+a.balance + p);
       /* a checking account with activity and exactly $0.00 almost always means the bank didn't send a balance */
       if (b === 0 && (a.transactions || []).length) return;
       var w = walletFor(a); sums[w] = r2((sums[w] || 0) + b); any = true;
+      pend[w] = r2((pend[w] || 0) + p);
+      if (+a.balanceDate > 0) asOf = asOf ? Math.min(asOf, +a.balanceDate) : +a.balanceDate;
     });
     if (!any) return false;
+    S.bankPending = pend; S.bankAsOf = asOf;
     Object.keys(sums).forEach(function (w) { S.start[w] = r2(sums[w] - (bal(w) - (S.start[w] || 0))); });
     S.bankMatchedAt = Date.now();
     return true;
@@ -2569,11 +2578,21 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         return '<div class="bankacc"' + (off ? ' style="opacity:.45"' : "") + '><span>' + esc(a.name) + "<small>" + esc(a.org) + " · " + esc(to) + '</small></span><span class="row" style="align-items:center;gap:8px"><b class="num">' + (off ? "—" : fmt(+a.balance || 0)) + '</b><button class="btn ghost" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '" style="padding:4px 8px;font-size:11px">' + (off ? "Use" : "Stop") + "</button></span></div>";
       }).join("") : '<p class="note">Connected. Tap Sync now to pull your accounts.</p>') +
         '<p class="note">' + (st.lastSync ? "Last synced " + new Date(st.lastSync * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ". " : "") +
-        "Syncs on its own every few hours when you open the app. Banks update about once a day. Fix a category once and it remembers that store.</p>" +
+        bankPendingNote() +
+        "Syncs on its own each hour you open the app (pull Sync now any time). Your bank's data reaches SimpleFIN a few times a day, so a brand-new charge can take a while to appear. Fix a category once and it remembers that store.</p>" +
         '<div class="row"><button class="btn" type="button" data-act="banksync">' + (BANK.busy ? "Syncing..." : "Sync now") + '</button><button class="btn ghost" type="button" data-act="bankoff">Disconnect</button></div>';
     }
     $("bankBody").innerHTML = body;
     $("bankMsg").textContent = BANK.msg || "";
+  }
+  /* "Includes $42.10 pending · bank balance as of 3:10 PM." */
+  function bankPendingNote() {
+    var p = S.bankPending || {}, tot = 0;
+    Object.keys(p).forEach(function (w) { tot += +p[w] || 0; });
+    var s = "";
+    if (Math.abs(tot) >= 0.01) s += "Balances include " + fmt(Math.abs(tot)) + (tot < 0 ? " in pending charges" : " in pending deposits") + ". ";
+    if (S.bankAsOf) s += "Bank balance as of " + new Date(S.bankAsOf * 1000).toLocaleString("en-US", { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + ". ";
+    return s;
   }
   function bankPaste() {
     if (BANK.busy) return;

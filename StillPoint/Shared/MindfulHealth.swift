@@ -43,6 +43,16 @@ final class MindfulHealth {
         store.save(sample) { _, _ in }
     }
 
+    /// Remove the Mindful Minutes this app saved for a session that was discarded.
+    func deleteMindful(start: Date, end: Date) {
+        guard isAvailable, !ProcessInfo.processInfo.arguments.contains("-demo") else { return }
+        let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            HKQuery.predicateForSamples(withStart: start.addingTimeInterval(-5), end: end.addingTimeInterval(5), options: []),
+            HKQuery.predicateForObjects(from: HKSource.default()),
+        ])
+        store.deleteObjects(of: mindful, predicate: pred) { _, _, _ in }
+    }
+
     /// Mindful minutes recorded in Health since `since` (all apps).
     func mindfulMinutes(since: Date, _ done: @escaping (Double) -> Void) {
         guard isAvailable else { done(0); return }

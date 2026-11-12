@@ -143,7 +143,8 @@ enum BankSync {
             }
             return ["id": a["id"] as? String ?? "", "name": a["name"] as? String ?? "",
                     "org": (org?["name"] as? String) ?? (org?["domain"] as? String) ?? "",
-                    "balance": num(a["balance"]), "available": (a["available-balance"] == nil ? NSNull() as Any : num(a["available-balance"]) as Any), "currency": a["currency"] as? String ?? "USD", "transactions": txs]
+                    "balance": num(a["balance"]), "available": (a["available-balance"] == nil ? NSNull() as Any : num(a["available-balance"]) as Any), "currency": a["currency"] as? String ?? "USD",
+                    "balanceDate": num(a["balance-date"]), "transactions": txs]
         }
         let errors = (obj["errors"] as? [Any] ?? []).map { "\($0)" }
         return ["accounts": accounts, "errors": errors]

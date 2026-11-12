@@ -263,6 +263,14 @@ struct PhoneSummaryView: View {
     let records: [SessionRecord]
     let onDone: () -> Void
     @State private var bloom = false
+    @State private var confirmDiscard = false
+    /// Under a minute usually means a false start, so ask instead of just saving.
+    private var short: Bool { records.reduce(0) { $0 + $1.seconds } < 60 }
+
+    private func discard() {
+        for r in records { SessionLog.shared.remove(r.id) }
+        onDone()
+    }
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var minutes: Double { records.reduce(0) { $0 + $1.minutes } }
@@ -290,15 +298,32 @@ struct PhoneSummaryView: View {
                     if streak > 0 { stat("\(streak)", streak == 1 ? "day" : "days in a row") }
                 }
                 Spacer()
+                if short && !records.isEmpty {
+                    Text("That was under a minute. Keep it in your journey?")
+                        .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.8))
+                        .multilineTextAlignment(.center).padding(.horizontal, 30)
+                }
                 Button(action: onDone) {
-                    Text("Return").font(SP.rounded(17, .medium)).foregroundStyle(SP.ink)
+                    Text(short && !records.isEmpty ? "Keep it" : "Return").font(SP.rounded(17, .medium)).foregroundStyle(SP.ink)
                         .frame(maxWidth: .infinity).padding(.vertical, 15)
                         .background(Capsule().fill(.ultraThinMaterial))
                 }
-                .padding(.horizontal, 40).padding(.bottom, 30)
+                .padding(.horizontal, 40)
+                if !records.isEmpty {
+                    Button {
+                        if short { discard() } else { confirmDiscard = true }
+                    } label: {
+                        Text("Discard this session").font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.7))
+                            .padding(.vertical, 8)
+                    }
+                }
+                Spacer().frame(height: 20)
             }
         }
         .onAppear { withAnimation(reduceMotion ? nil : Animation.easeOut(duration: 3.2)) { bloom = true } }
+        .confirmationDialog("Discard this session?", isPresented: $confirmDiscard, titleVisibility: .visible) {
+            Button("Discard", role: .destructive) { discard() }
+        } message: { Text("It's removed from your journey and from Mindful Minutes in Apple Health.") }
     }
 
     private func stat(_ v: String, _ l: String) -> some View {

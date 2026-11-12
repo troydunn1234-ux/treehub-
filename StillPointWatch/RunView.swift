@@ -336,9 +336,22 @@ struct SummaryView: View {
                     }
                     .buttonStyle(.plain)
                 }
-                Button("Done", action: onDone)
+                Button(minutes < 1 ? "Keep" : "Done", action: onDone)
                     .tint(SP.amber)
                     .padding(.top, 4)
+                if !records.isEmpty {
+                    Button(role: .destructive) {
+                        for r in records {
+                            SessionLog.shared.remove(r.id)
+                            WatchLink.shared.sendDelete(r.id)
+                        }
+                        onDone()
+                    } label: {
+                        Text("Discard").font(SP.rounded(13))
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(SP.dim)
+                }
             }
             .padding(.horizontal, 6)
         }

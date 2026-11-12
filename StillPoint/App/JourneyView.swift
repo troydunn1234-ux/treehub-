@@ -32,6 +32,11 @@ struct JourneyView: View {
                                 switch item {
                                 case .mine(let r):
                                     NavigationLink(value: r.id) { row(r) }.buttonStyle(.plain)
+                                        .contextMenu {
+                                            Button(role: .destructive) { withAnimation { log.remove(r.id) } } label: {
+                                                Label("Delete session", systemImage: "trash")
+                                            }
+                                        }
                                 case .other(let e):
                                     externalRow(e)
                                 }

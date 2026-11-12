@@ -5,6 +5,9 @@ import Charts
 struct SessionDetailView: View {
     let recordId: UUID
     @EnvironmentObject var log: SessionLog
+    @State private var editing = false
+    @State private var confirmDelete = false
+    @Environment(\.dismiss) private var dismiss
     @State private var notes = ""
     @State private var showInfo = false
     @State private var shareImage: Image? = nil
@@ -23,6 +26,15 @@ struct SessionDetailView: View {
         .background(DuskBackground())
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
+            if record != nil {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button { editing = true } label: { Label("Edit time & length", systemImage: "pencil") }
+                        Button(role: .destructive) { confirmDelete = true } label: { Label("Delete session", systemImage: "trash") }
+                    } label: { Image(systemName: "ellipsis.circle") }
+                    .accessibilityLabel("Session options")
+                }
+            }
             if let r = record, let img = shareImage {
                 ToolbarItem(placement: .topBarTrailing) {
                     ShareLink(item: img, preview: SharePreview(r.title, image: img)) {
@@ -35,6 +47,15 @@ struct SessionDetailView: View {
             notes = record?.notes ?? ""
             if let r = record { shareImage = SessionShareCard(record: r, tint: tint(r)).rendered() }
         }
+        .sheet(isPresented: $editing) {
+            if let r = record { SessionEditSheet(record: r).environmentObject(log) }
+        }
+        .confirmationDialog("Delete this session?", isPresented: $confirmDelete, titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let r = record { log.remove(r.id) }
+                dismiss()
+            }
+        } message: { Text("It's removed from your journey and from Mindful Minutes in Apple Health.") }
         .sheet(isPresented: $showInfo) {
             if let r = record, let p = lib.practice(r.practiceId) {
                 PracticeInfoView(practice: p)
@@ -335,5 +356,50 @@ struct SessionShareCard: View {
         r.scale = 2
         if let ui = r.uiImage { return Image(uiImage: ui) }
         return Image(systemName: "heart")
+    }
+}
+
+/// Fix a session's start time or length (say you stopped the timer late).
+struct SessionEditSheet: View {
+    let record: SessionRecord
+    @EnvironmentObject var log: SessionLog
+    @Environment(\.dismiss) private var dismiss
+    @State private var start = Date()
+    @State private var minutes = 1
+
+    var body: some View {
+        NavigationStack {
+            Form {
+                Section {
+                    DatePicker("Started", selection: $start, in: ...Date())
+                    Stepper(value: $minutes, in: 1...240) {
+                        HStack { Text("Length"); Spacer(); Text("\(minutes) min").foregroundStyle(.secondary) }
+                    }
+                } footer: {
+                    Text("Changes your journey and streak. Apple Health keeps the original Mindful Minutes.")
+                }
+            }
+            .navigationTitle(record.title)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        let secs = Double(minutes * 60)
+                        let changedLength = abs(secs - record.seconds) >= 30
+                        log.update(record.id) { r in
+                            r.start = start
+                            if changedLength { r.seconds = secs }
+                        }
+                        dismiss()
+                    }
+                }
+            }
+            .onAppear {
+                start = record.start
+                minutes = max(1, Int((record.seconds / 60).rounded()))
+            }
+        }
+        .presentationDetents([.medium])
     }
 }

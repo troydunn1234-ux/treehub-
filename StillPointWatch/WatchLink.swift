@@ -14,6 +14,12 @@ final class WatchLink: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.activate()
     }
 
+    /// Tell the iPhone a session was discarded on the Watch.
+    func sendDelete(_ id: UUID) {
+        guard WCSession.isSupported() else { return }
+        WCSession.default.transferUserInfo(["deleteSession": id.uuidString])
+    }
+
     func send(_ record: SessionRecord) {
         guard WCSession.isSupported(), WCSession.default.activationState == .activated else { return }
         WCSession.default.transferUserInfo(SessionLog.shared.toDictionary(record))
