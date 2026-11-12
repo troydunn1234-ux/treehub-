@@ -206,6 +206,7 @@ struct AddFoodSheet: View {
         context.insert(e)
         try? context.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        ReviewNudge.noteWin()
         withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) { added.append(pick.id) }
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) { withAnimation { added.removeAll { $0 == pick.id } } }
     }

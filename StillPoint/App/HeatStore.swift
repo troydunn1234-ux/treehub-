@@ -73,6 +73,7 @@ final class HeatStore: ObservableObject {
         guard s.seconds >= 60 else { save(); return }
         history.insert(s, at: 0)
         save()
+        Reviews.noteWin()
         lookUpHeart(s.id)
         // WHOOP often syncs a few minutes late; ask again shortly.
         DispatchQueue.main.asyncAfter(deadline: .now() + 180) { [weak self] in self?.lookUpHeart(s.id) }

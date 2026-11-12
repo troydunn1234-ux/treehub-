@@ -21,6 +21,15 @@ final class Unlock: ObservableObject {
     @Published var requested: PaywallRequest?
 
     let productID: String
+    /// Free 7-day trial: a $0 non-consumable ("7-day Trial"), the way Apple asks one-time-unlock apps to do trials.
+    let trialProductID: String
+    static let trialDays = 7
+    @Published private(set) var trialProduct: Product?
+    /// When the trial runs out, once one has been started on this Apple ID.
+    @Published private(set) var trialEnds: Date?
+    /// Bought Pro (or bought the app back when it was paid upfront).
+    @Published private(set) var owned = false
+    private var expiryTask: Task<Void, Never>?
     private let paidUntilBuild: Int
     private var updates: Task<Void, Never>?
     private static let cacheKey = "unlock.pro"
@@ -28,6 +37,7 @@ final class Unlock: ObservableObject {
     private init() {
         let bundle = Bundle.main.bundleIdentifier ?? "app"
         productID = (Bundle.main.object(forInfoDictionaryKey: "ProProductID") as? String) ?? bundle + ".pro"
+        trialProductID = (Bundle.main.object(forInfoDictionaryKey: "TrialProductID") as? String) ?? bundle + ".trial"
         paidUntilBuild = (Bundle.main.object(forInfoDictionaryKey: "PaidUntilBuild") as? NSNumber)?.intValue ?? 0
         isPro = UserDefaults.standard.bool(forKey: Self.cacheKey)
         #if DEBUG
@@ -45,9 +55,18 @@ final class Unlock: ObservableObject {
         Task { await load(); await refresh() }
     }
 
-    deinit { updates?.cancel() }
+    deinit { updates?.cancel(); expiryTask?.cancel() }
 
     var priceText: String { product?.displayPrice ?? "" }
+
+    /// Everything is open right now because of the free trial (not a purchase).
+    var inTrial: Bool { !owned && (trialEnds.map { $0 > Date() } ?? false) }
+    /// The trial can still be started: never used on this Apple ID and the product exists.
+    var trialAvailable: Bool { !owned && trialEnds == nil && trialProduct != nil }
+    var trialDaysLeft: Int {
+        guard let end = trialEnds else { return 0 }
+        return max(0, Int((end.timeIntervalSinceNow / 86_400).rounded(.up)))
+    }
 
     /// Show the paywall for a locked feature. Returns true if the feature is already unlocked.
     @discardableResult
@@ -59,21 +78,62 @@ final class Unlock: ObservableObject {
 
     /// Fetch the product so the paywall can show the localized price.
     func load() async {
-        guard product == nil else { return }
-        product = try? await Product.products(for: [productID]).first
+        guard product == nil || trialProduct == nil else { return }
+        let found = (try? await Product.products(for: [productID, trialProductID])) ?? []
+        if product == nil { product = found.first { $0.id == productID } }
+        if trialProduct == nil { trialProduct = found.first { $0.id == trialProductID } }
     }
 
     /// Re-check entitlements: current purchases, then the paid-upfront grandfather clause.
     func refresh() async {
         var pro = false
+        var trialStart: Date?
         for await result in Transaction.currentEntitlements {
-            if case .verified(let t) = result, t.productID == productID, t.revocationDate == nil { pro = true }
+            guard case .verified(let t) = result, t.revocationDate == nil else { continue }
+            if t.productID == productID { pro = true }
+            if t.productID == trialProductID { trialStart = t.originalPurchaseDate }
         }
+        trialEnds = trialStart.map { $0.addingTimeInterval(Double(Self.trialDays) * 86_400) }
         if !pro, paidUntilBuild > 0, let shared = try? await AppTransaction.shared, case .verified(let at) = shared {
             let original = Int(at.originalAppVersion.split(separator: ".").first ?? "") ?? Int.max
             if original <= paidUntilBuild { pro = true }
         }
-        set(pro)
+        owned = pro
+        set(pro || inTrial)
+        scheduleTrialExpiry()
+    }
+
+    /// Start the free trial (a $0 purchase, so Apple shows its usual confirm sheet).
+    func startTrial() async {
+        guard !busy else { return }
+        busy = true; defer { busy = false }
+        message = nil
+        if trialProduct == nil { await load() }
+        guard let trialProduct else { message = "The App Store didn't answer. Try again in a moment."; return }
+        do {
+            switch try await trialProduct.purchase() {
+            case .success(let verification):
+                if case .verified(let t) = verification { await t.finish() }
+                await refresh()
+            case .pending: message = "Waiting for approval (Ask to Buy)."
+            case .userCancelled: break
+            @unknown default: break
+            }
+        } catch {
+            message = error.localizedDescription
+        }
+    }
+
+    /// Lock things back up the moment the trial runs out, even if the app stays open.
+    private func scheduleTrialExpiry() {
+        expiryTask?.cancel()
+        guard inTrial, let end = trialEnds else { return }
+        let wait = end.timeIntervalSinceNow
+        expiryTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(max(1, wait) * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await self?.refresh()
+        }
     }
 
     func buy() async {
@@ -87,6 +147,7 @@ final class Unlock: ObservableObject {
             case .success(let verification):
                 if case .verified(let t) = verification {
                     await t.finish()
+                    owned = true
                     set(true)
                 } else {
                     message = "Apple couldn't verify that purchase."
@@ -131,11 +192,12 @@ enum Reviews {
         let wins = d.integer(forKey: winsKey) + 1
         d.set(wins, forKey: winsKey)
         let last = d.object(forKey: lastKey) as? Date ?? .distantPast
-        guard wins == 5 || (wins > 5 && (wins - 5) % 40 == 0) else { return }
-        guard Date().timeIntervalSince(last) > 60 * 60 * 24 * 45 else { return }
+        // First ask after a handful of good moments, then at most every ~2 months.
+        guard wins >= 4 else { return }
+        guard Date().timeIntervalSince(last) > 60 * 60 * 24 * 60 else { return }
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene else { return }
         d.set(Date(), forKey: lastKey)
-        if let scene = UIApplication.shared.connectedScenes.first(where: { $0.activationState == .foregroundActive }) as? UIWindowScene {
-            SKStoreReviewController.requestReview(in: scene)
-        }
+        // A short pause so the prompt lands after the success animation, not on top of it.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.2) { SKStoreReviewController.requestReview(in: scene) }
     }
 }

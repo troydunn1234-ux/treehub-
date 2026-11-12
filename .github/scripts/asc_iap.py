@@ -1,6 +1,6 @@
 """Create (or update) an app's one-time "Pro" in-app purchase in App Store Connect.
 
-usage: asc_iap.py <bundle id> <product id> <price e.g. 2.99> <name> <description> [review screenshot .png]
+usage: asc_iap.py <bundle id> <product id> <price e.g. 2.99, or 0.0 for a free trial> <name> <description> [review screenshot .png]
 
 Idempotent: re-running finds the existing product by product id and only fills in what's missing.
 Needs the Paid Apps agreement active (App Store Connect > Business).
@@ -36,8 +36,9 @@ iap = res["data"][0] if res["data"] else None
 if not iap:
     body = {"data": {"type": "inAppPurchases", "attributes": {
                 "name": name, "productId": product_id, "inAppPurchaseType": "NON_CONSUMABLE",
-                "reviewNote": "One-time unlock of all features. Tap the lock on any Pro feature, or the Unlock button, to see the paywall. "
-                              "Restore purchase is on the same screen."},
+                "reviewNote": os.environ.get("REVIEW_NOTE") or (
+                              "One-time unlock of all features. Tap the lock on any Pro feature, or the Unlock button, to see the paywall. "
+                              "Restore purchase is on the same screen.")},
             "relationships": {"app": {"data": {"type": "apps", "id": app_id}}}}}
     res, err = call("/v2/inAppPurchases", "POST", body)
     if err: sys.exit("Couldn't create IAP " + err)

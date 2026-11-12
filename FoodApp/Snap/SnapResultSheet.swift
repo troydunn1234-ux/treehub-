@@ -413,6 +413,7 @@ struct SnapResultSheet: View {
         try? context.save()
         FoodWatchBridge.shared.pushNow()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        ReviewNudge.noteWin()
         onLogged()
         dismiss()
     }

@@ -54,7 +54,8 @@ struct PaywallView: View {
             }
             .padding(16)
         }
-        .onChange(of: unlock.isPro) { _, pro in if pro { dismiss() } }
+        .onChange(of: unlock.isPro) { _, pro in if pro && !unlock.inTrial { dismiss() } }
+        .onChange(of: unlock.trialEnds) { _, end in if end != nil && unlock.inTrial { dismiss() } }
         .task { await unlock.load() }
         .onAppear { withAnimation(.spring(duration: 0.9, bounce: 0.25)) { appeared = true } }
     }
@@ -123,6 +124,13 @@ struct PaywallView: View {
 
     private var buyBlock: some View {
         VStack(spacing: 12) {
+            if unlock.inTrial {
+                Label("Free trial · \(unlock.trialDaysLeft) day\(unlock.trialDaysLeft == 1 ? "" : "s") left", systemImage: "hourglass")
+                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .foregroundStyle(spec.tint)
+                    .padding(.horizontal, 14).padding(.vertical, 8)
+                    .background(Capsule().fill(spec.tint.opacity(0.14)))
+            }
             Button { Task { await unlock.buy() } } label: {
                 HStack(spacing: 10) {
                     if unlock.busy { ProgressView().tint(.black) }
@@ -137,6 +145,23 @@ struct PaywallView: View {
                 .shadow(color: spec.tint.opacity(0.45), radius: 18, y: 8)
             }
             .disabled(unlock.busy)
+            if unlock.trialAvailable {
+                Button { Task { await unlock.startTrial() } } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "gift.fill")
+                        Text("Try everything free for \(Unlock.trialDays) days")
+                    }
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
+                    .foregroundStyle(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 15)
+                    .background(Capsule().stroke(spec.tint.opacity(0.7), lineWidth: 1.5))
+                }
+                .disabled(unlock.busy)
+                Text("The trial is free and never charges you. After \(Unlock.trialDays) days the free features stay, and you can unlock everything whenever you like.")
+                    .font(.system(size: 12, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                    .multilineTextAlignment(.center)
+            }
             Text("One payment. No subscription. Yours on every device signed in to your Apple ID.")
                 .font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
                 .multilineTextAlignment(.center)

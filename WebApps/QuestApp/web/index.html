@@ -2683,6 +2683,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (n === "review") renderReview();
     if (n === "subs") renderSubs();
   }
+  // Siri / Shortcuts: the app shell calls this with a tab name (budgets, review, subs, arcade, log, moves, setup).
+  window.__shellOpen = function (n) {
+    if (["budgets", "review", "subs", "arcade", "log", "moves", "setup"].indexOf(n) < 0) return;
+    setTab(n);
+    window.scrollTo(0, 0);
+  };
   $("txForm").addEventListener("submit", function (e) {
     e.preventDefault();
     var amt = r2(parseFloat($("txAmt").value)), err = $("txErr");

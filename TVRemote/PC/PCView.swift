@@ -146,11 +146,22 @@ private struct ConnectedPC: View {
     @State private var typed = " "
     @State private var showApps = false
     @State private var confirm: String?
+    @AppStorage("pc.arrowMode") private var arrowMode = false
     @FocusState private var keyboardUp: Bool
 
     var body: some View {
         VStack(spacing: Look.S.m) {
             header
+            Picker("Control", selection: $arrowMode.animation(.spring(response: 0.35, dampingFraction: 0.85))) {
+                Label("Trackpad", systemImage: "hand.point.up.left").tag(false)
+                Label("Arrows", systemImage: "arrow.up.and.down.and.arrow.left.and.right").tag(true)
+            }
+            .pickerStyle(.segmented)
+            if arrowMode {
+                ArrowPad(press: { k in pc.key(k) })
+                    .frame(maxHeight: .infinity)
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
+            } else {
             Trackpad(
                 onMove: { dx, dy in pc.move(dx: dx, dy: dy) },
                 onClick: { b, d in UIImpactFeedbackGenerator(style: .light).impactOccurred(); pc.click(b, double: d) },
@@ -163,6 +174,8 @@ private struct ConnectedPC: View {
                         .accessibilityHidden(true)
                 }
                 .frame(maxHeight: .infinity)
+                .transition(.opacity)
+            }
             keysRow
             mediaDeck
             appsRow
@@ -306,6 +319,120 @@ private struct ConnectedPC: View {
             }
             .scrollClipDisabled()
         }
+    }
+}
+
+// MARK: - Arrow pad
+
+/// Big D-pad for arrow keys, Enter in the middle, plus page and home/end keys.
+/// Hold an arrow to repeat, like holding the key on a keyboard.
+private struct ArrowPad: View {
+    let press: (String) -> Void
+
+    var body: some View {
+        GeometryReader { geo in
+            let side = min(geo.size.width, geo.size.height - 64)
+            let cell = side / 3
+            VStack(spacing: Look.S.m) {
+                ZStack {
+                    Circle().fill(.white.opacity(0.04))
+                        .overlay(Circle().strokeBorder(.white.opacity(0.10), lineWidth: 1))
+                    VStack(spacing: 0) {
+                        RepeatKey(symbol: "chevron.up", label: "Up", size: cell) { press("up") }
+                        HStack(spacing: 0) {
+                            RepeatKey(symbol: "chevron.left", label: "Left", size: cell) { press("left") }
+                            Button {
+                                UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                                press("enter")
+                            } label: {
+                                Text("OK").font(Look.font(18, .black)).foregroundStyle(.white)
+                                    .frame(width: cell * 0.82, height: cell * 0.82)
+                                    .background(Look.accentH, in: Circle())
+                                    .overlay(Circle().strokeBorder(.white.opacity(0.35), lineWidth: 1))
+                                    .shadow(color: Look.magenta.opacity(0.45), radius: 12)
+                            }
+                            .buttonStyle(SquishStyle())
+                            .frame(width: cell, height: cell)
+                            .accessibilityLabel("Enter")
+                            RepeatKey(symbol: "chevron.right", label: "Right", size: cell) { press("right") }
+                        }
+                        RepeatKey(symbol: "chevron.down", label: "Down", size: cell) { press("down") }
+                    }
+                }
+                .frame(width: side, height: side)
+                HStack(spacing: Look.S.s) {
+                    smallKey("Home", "home")
+                    smallKey("Pg Up", "pageup")
+                    smallKey("Pg Dn", "pagedown")
+                    smallKey("End", "end")
+                    smallKey("Tab", "tab")
+                }
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+    }
+
+    private func smallKey(_ title: String, _ k: String) -> some View {
+        Button { UIImpactFeedbackGenerator(style: .light).impactOccurred(); press(k) } label: {
+            Text(title.uppercased()).font(Look.font(10, .black)).tracking(0.6).foregroundStyle(.white)
+                .frame(maxWidth: .infinity).frame(height: 40)
+        }
+        .buttonStyle(KeycapStyle())
+        .accessibilityLabel(title)
+    }
+}
+
+/// An arrow key that fires once on touch, then repeats while held.
+private struct RepeatKey: View {
+    let symbol: String
+    let label: String
+    let size: CGFloat
+    let fire: () -> Void
+    @State private var held = false
+    @State private var timer: Timer?
+
+    var body: some View {
+        Image(systemName: symbol)
+            .font(.system(size: size * 0.32, weight: .heavy))
+            .foregroundStyle(.white.opacity(held ? 1 : 0.85))
+            .frame(width: size, height: size)
+            .background(Circle().fill(.white.opacity(held ? 0.16 : 0.0)).padding(size * 0.08))
+            .scaleEffect(held ? 0.92 : 1)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { _ in if !held { begin() } }
+                    .onEnded { _ in end() }
+            )
+            .onDisappear { end() }
+            .accessibilityElement()
+            .accessibilityLabel(label)
+            .accessibilityAddTraits(.isButton)
+            .accessibilityAction { fire() }
+    }
+
+    private func begin() {
+        held = true
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        fire()
+        // Wait a beat, then repeat quickly, like a keyboard.
+        timer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { _ in
+            Task { @MainActor in
+                guard held else { return }
+                timer = Timer.scheduledTimer(withTimeInterval: 0.09, repeats: true) { _ in
+                    Task { @MainActor in
+                        UISelectionFeedbackGenerator().selectionChanged()
+                        fire()
+                    }
+                }
+            }
+        }
+    }
+
+    private func end() {
+        held = false
+        timer?.invalidate()
+        timer = nil
     }
 }
 

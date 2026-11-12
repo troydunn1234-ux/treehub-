@@ -116,7 +116,22 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
     private let tapper = UIImpactFeedbackGenerator(style: .light)
     private let selector = UISelectionFeedbackGenerator()
 
-    init(onReady: @escaping () -> Void) { self.onReady = onReady }
+    init(onReady: @escaping () -> Void) {
+        self.onReady = onReady
+        super.init()
+        // Siri / Shortcuts sections (ShellLink): when asked while open, and whenever the app comes to the front.
+        NotificationCenter.default.addObserver(self, selector: #selector(openPendingSection), name: ShellLink.note, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(openPendingSection),
+                                               name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    /// Hands a waiting Siri section to the page, once it has loaded.
+    @objc private func openPendingSection() {
+        guard readySent, let web, let section = ShellLink.take() else { return }
+        guard let data = try? JSONSerialization.data(withJSONObject: [section]),
+              let arg = String(data: data, encoding: .utf8) else { return }
+        web.evaluateJavaScript("(function(a){if(window.__shellOpen)window.__shellOpen(a[0]);})(\(arg))")
+    }
 
     // Files: bundle "web" folder, plus saved photos under /_blob/.
     func webView(_ webView: WKWebView, start task: WKURLSchemeTask) {
@@ -182,7 +197,9 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
         switch message.body as? String {
         case "tap": tapper.impactOccurred(intensity: 0.7)
         case "select": selector.selectionChanged()
-        case "success": UINotificationFeedbackGenerator().notificationOccurred(.success)
+        case "success":
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            Task { @MainActor in ReviewNudge.noteWin(threshold: 6) }
         case "heavy": UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         default: break
         }
@@ -220,6 +237,7 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
         guard !readySent else { return }
         readySent = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) { self.onReady() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { self.openPendingSection() }
     }
 
     func webViewWebContentProcessDidTerminate(_ webView: WKWebView) { webView.reload() }

@@ -124,6 +124,7 @@ targets:
     sources:
       - path: RootboundWidgets
       - path: Shared/LiveActivity/TrackingActivityAttributes.swift
+      - path: TreeHub/App/RootboundActions.swift
     info:
       path: RootboundWidgets/Info.plist
       properties:
@@ -144,6 +145,7 @@ targets:
     sources:
       - path: RoamrWidgets
       - path: Shared/LiveActivity/TrackingActivityAttributes.swift
+      - path: TrackApp/App/RoamrActions.swift
     info:
       path: RoamrWidgets/Info.plist
       properties:
@@ -377,6 +379,7 @@ targets:
     sources:
       - path: WebApps/Shell
       - path: WebApps/NatalOrbit/Assets.xcassets
+      - path: WebApps/NatalOrbit/Native
       - path: WebApps/NatalOrbit/web
         type: folder
         buildPhase: resources
@@ -410,6 +413,7 @@ targets:
     sources:
       - path: WebApps/Shell
       - path: WebApps/QuestApp/Assets.xcassets
+      - path: WebApps/QuestApp/Native
       - path: WebApps/QuestApp/web
         type: folder
         buildPhase: resources
@@ -574,6 +578,7 @@ targets:
     platform: iOS
     sources:
       - path: StillPointWidgets
+      - path: StillPoint/App/StillPointActions.swift
     entitlements:
       path: StillPointWidgets/StillPointWidgets.entitlements
       properties:
@@ -619,6 +624,7 @@ targets:
     platform: iOS
     sources:
       - path: PulseLabWidgets
+      - path: PulseLab/App/PulseLabActions.swift
     entitlements:
       path: PulseLabWidgets/PulseLabWidgets.entitlements
       properties:
@@ -664,6 +670,7 @@ targets:
     platform: iOS
     sources:
       - path: FoodBookWidgets
+      - path: FoodApp/App/FoodBookActions.swift
     entitlements:
       path: FoodBookWidgets/FoodBookWidgets.entitlements
       properties:

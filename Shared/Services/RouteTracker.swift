@@ -405,6 +405,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         reset()
         lastTrimmedSec = trimmed
         LiveActivityController.shared.end()
+        if !auto { Reviews.noteWin() }
         return a
     }
 

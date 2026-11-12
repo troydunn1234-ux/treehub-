@@ -8,6 +8,9 @@ import WidgetKit
 struct FoodBookWidgets: WidgetBundle {
     var body: some Widget {
         FoodBookTodayWidget()
+        if #available(iOS 18.0, *) {
+            SnapMealControl()
+        }
     }
 }
 

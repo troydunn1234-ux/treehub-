@@ -115,6 +115,9 @@ struct TrackRootView: View {
         .onReceive(NotificationCenter.default.publisher(for: DriveDetector.startDriveNote)) { _ in
             consumePendingStart()
         }
+        .onReceive(NotificationCenter.default.publisher(for: RoamrPending.note)) { _ in
+            consumePendingAction()
+        }
         .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
             // History picks up the saved id and pushes the activity.
             tab = "history"
@@ -126,7 +129,7 @@ struct TrackRootView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
             if phase == .active {
-                consumePendingStart(); detector.refresh()
+                consumePendingStart(); consumePendingAction(); detector.refresh()
                 if UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) != nil { tab = "history" }
             }
         }
@@ -135,6 +138,7 @@ struct TrackRootView: View {
             detector.isTracking = { [tracker] in tracker.isActive }
             detector.refresh()
             consumePendingStart()
+            consumePendingAction()
             // Once after this update: ask for what auto-detect needs (Always location, motion, notifications).
             if !TrackDemo.isOn, detector.enabled, !UserDefaults.standard.bool(forKey: DriveDetector.permsAskedKey) {
                 UserDefaults.standard.set(true, forKey: DriveDetector.permsAskedKey)
@@ -159,6 +163,27 @@ struct TrackRootView: View {
         guard UserDefaults.standard.bool(forKey: DriveDetector.pendingStartKey) else { return }
         UserDefaults.standard.set(false, forKey: DriveDetector.pendingStartKey)
         startDriveFromPrompt()
+    }
+
+    /// Siri / Shortcuts / Control Center actions (RoamrActions.swift).
+    private func consumePendingAction() {
+        guard let action = RoamrPending.take() else { return }
+        let kind: ActivityKind
+        switch action {
+        case .history: tab = "history"; return
+        case .stats: tab = "stats"; return
+        case .walk: kind = .walk
+        case .run: kind = .run
+        case .hike: kind = .hike
+        case .ride: kind = .bike
+        case .drive: kind = .drive
+        }
+        detector.showBanner = false
+        tab = "track"
+        guard !tracker.isActive else { return }
+        if !tracker.canTrack { tracker.requestPermission(); return }
+        UINotificationFeedbackGenerator().notificationOccurred(.success)
+        tracker.start(kind: kind)
     }
 
     private func startDriveFromPrompt() {

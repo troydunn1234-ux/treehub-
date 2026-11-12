@@ -1529,6 +1529,8 @@ function goSection(sec){const map={chart:null,today:'today-sec',three:'three-h',
   if(sec==='share'){setTimeout(()=>$('act-card').click(),600);return;}
   const id=map[sec];if(id===undefined)return;if(id===null){scrollTo(0,0);return;}
   const el=$(id);if(el)setTimeout(()=>el.scrollIntoView({block:'start',behavior:'auto'}),400);}
+/* Siri / Shortcuts: the app shell calls this with a section name (today, year, sky, compare, chart, share). */
+window.__shellOpen=function(sec){if(typeof sec==='string')goSection(sec);};
 
 /* ================= load a chart ================= */
 function loadChart(spec){

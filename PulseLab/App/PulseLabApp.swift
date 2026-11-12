@@ -121,8 +121,19 @@ struct RootView: View {
             #endif
             if !showOnboarding { await store.refresh() }
         }
-        .onChange(of: phase) { _, p in if p == .active && !showOnboarding { Task { await store.refresh() } } }
+        .onChange(of: phase) { _, p in
+            if p == .active && !showOnboarding { Task { await store.refresh() } }
+            if p == .active { openPendingTab() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: PulseLabPending.note)) { _ in openPendingTab() }
+        .onAppear { openPendingTab() }
         .onOpenURL(perform: open)
+    }
+
+    /// Siri / Shortcuts / Control Center "open a section" (PulseLabActions.swift).
+    private func openPendingTab() {
+        guard let name = PulseLabPending.take(), let t = LabTab.named(name) else { return }
+        withAnimation(.snappy) { tab = t }
     }
 
     /// `pulselab://today` (widget tap) jumps to Today. `pulselab://whoop` is the WHOOP OAuth

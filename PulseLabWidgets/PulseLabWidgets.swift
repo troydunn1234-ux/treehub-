@@ -14,6 +14,9 @@ import WidgetKit
 struct PulseLabWidgets: WidgetBundle {
     var body: some Widget {
         ReadyDuelWidget()
+        if #available(iOS 18.0, *) {
+            PulseLabTodayControl()
+        }
     }
 }
 

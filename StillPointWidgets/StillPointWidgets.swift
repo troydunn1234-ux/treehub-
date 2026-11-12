@@ -13,6 +13,9 @@ struct StillPointWidgets: WidgetBundle {
         #else
         StillPointWidget()
         StillPointComplication()
+        if #available(iOS 18.0, *) {
+            BreatheNowControl()
+        }
         #endif
     }
 }

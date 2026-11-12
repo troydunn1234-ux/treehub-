@@ -1,4 +1,4 @@
-name: App Store IAP (Pro unlock)
+name: App Store IAP (Pro unlock / free trial)
 on:
   workflow_dispatch:
     inputs:
@@ -7,6 +7,11 @@ on:
         type: choice
         options: [StillPoint, PulseLab, Clicker]
         default: StillPoint
+      product:
+        description: Which product
+        type: choice
+        options: [pro, trial]
+        default: pro
 jobs:
   iap:
     runs-on: ubuntu-latest
@@ -26,5 +31,11 @@ jobs:
           esac
           SHOT=store/$(echo ${{ inputs.app }} | tr A-Z a-z)/iap-review.png
           [ -f "$SHOT" ] || SHOT=""
-          KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_iap.py "$B" "$B.pro" "$P" "$N" "$D" $SHOT
+          if [ "${{ inputs.product }}" = trial ]; then
+            # Apple's required pattern for one-time-unlock apps: a $0 non-consumable named "N-day Trial".
+            export REVIEW_NOTE="Free 7-day trial of every Pro feature (guideline 3.1.1). Open the paywall from any lock icon and tap 'Try everything free for 7 days'. It never charges; when it ends the app returns to the free tier and offers the one-time unlock."
+            KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_iap.py "$B" "$B.trial" "0.0" "7-day Trial" "Try every Pro feature free for 7 days. No charge." $SHOT
+          else
+            KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_iap.py "$B" "$B.pro" "$P" "$N" "$D" $SHOT
+          fi
           rm -f /tmp/key.p8

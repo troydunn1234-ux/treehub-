@@ -6,6 +6,10 @@ import WidgetKit
 struct RootboundWidgets: WidgetBundle {
     var body: some Widget {
         TrackingLiveActivity()
+        if #available(iOS 18.0, *) {
+            LogTreeHugControl()
+            StartStrollControl()
+        }
     }
 }
 

@@ -152,15 +152,72 @@ struct RunSceneIntent: AppIntent {
     }
 }
 
+// MARK: - PC media
+
+enum PCMediaAction: String, AppEnum {
+    case playPause, next, previous, mute
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Media key"
+    static var caseDisplayRepresentations: [PCMediaAction: DisplayRepresentation] = [
+        .playPause: "Play / Pause", .next: "Next track", .previous: "Previous track", .mute: "Mute",
+    ]
+
+    /// What PCClient.media(_:) sends (same values as the buttons in the PC tab).
+    var command: String {
+        switch self {
+        case .playPause: return "playpause"
+        case .next: return "next"
+        case .previous: return "prev"
+        case .mute: return "mute"
+        }
+    }
+}
+
+/// Media keys on the paired PC, through the same PCClient the PC tab and Scenes use.
+struct PCMediaIntent: AppIntent {
+    static var title: LocalizedStringResource = "PC Media Control"
+    static var description = IntentDescription("Plays or pauses, skips or mutes what's playing on your paired PC.")
+
+    @Parameter(title: "Key", default: .playPause)
+    var action: PCMediaAction
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Press \(\.$action) on the PC")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let pc = PCClient.shared
+        guard pc.isPaired else { throw CouchRemoteIntentError.noPC }
+        if pc.state != .connected {
+            pc.connect()
+            // Give the socket a moment to come up (the send would queue anyway, but this keeps Siri's answer honest).
+            for _ in 0..<20 where pc.state != .connected {
+                try? await Task.sleep(nanoseconds: 150_000_000)
+            }
+        }
+        pc.media(action.command)
+        // Let the message leave before Siri finishes and the app is suspended.
+        try? await Task.sleep(nanoseconds: 250_000_000)
+        switch action {
+        case .playPause: return .result(dialog: "Done.")
+        case .next: return .result(dialog: "Next track.")
+        case .previous: return .result(dialog: "Previous track.")
+        case .mute: return .result(dialog: "Toggled mute on the PC.")
+        }
+    }
+}
+
 // MARK: - Errors
 
 enum CouchRemoteIntentError: Error, CustomLocalizedStringResourceConvertible {
-    case noTV, noScene
+    case noTV, noScene, noPC
 
     var localizedStringResource: LocalizedStringResource {
         switch self {
         case .noTV: return "Pair a TV in Couch Remote first."
         case .noScene: return "That scene no longer exists."
+        case .noPC: return "Pair your PC in Couch Remote's PC tab first."
         }
     }
 }
@@ -185,5 +242,9 @@ struct CouchRemoteShortcuts: AppShortcutsProvider {
                     phrases: ["Run \(\.$scene) in \(.applicationName)", "Run \(\.$scene) with \(.applicationName)",
                               "Run a scene in \(.applicationName)"],
                     shortTitle: "Run scene", systemImageName: "sparkles")
+        AppShortcut(intent: PCMediaIntent(),
+                    phrases: ["Play or pause the PC with \(.applicationName)", "Pause my PC with \(.applicationName)",
+                              "Press \(\.$action) on the PC with \(.applicationName)"],
+                    shortTitle: "PC media", systemImageName: "playpause.fill")
     }
 }

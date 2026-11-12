@@ -3,11 +3,14 @@ import SwiftData
 
 @main
 struct FoodBookApp: App {
-    let container: ModelContainer = {
+    /// One container for the whole process, so Siri quick logs (Intents.swift) write to the same store the app shows.
+    static let sharedContainer: ModelContainer = {
         let schema = Schema([FoodEntry.self, Supplement.self, SuppDose.self, DayLog.self])
         let config = ModelConfiguration(schema: schema, cloudKitDatabase: .none)
         return try! ModelContainer(for: schema, configurations: config)
     }()
+
+    let container: ModelContainer = FoodBookApp.sharedContainer
 
     init() {
         // Apple Watch: today's numbers out, quick logs and check-offs in.
@@ -39,12 +42,33 @@ final class FoodDeepLink {
     static let shared = FoodDeepLink()
     /// Bumped for every foodbook://snap; Today opens the camera when it changes.
     var snapRequests = 0
+    /// Bumped by Siri / Control Center "open supplement stack"; RootTabs switches to Stack.
+    var stackRequests = 0
+    /// Bumped just before a Siri / Control Center snap, so RootTabs is on Food before Today sees the snap.
+    var foodTabRequests = 0
+
+    /// Siri / Shortcuts / Control Center actions (FoodBookActions.swift). The short wait lets Today be on
+    /// screen first (fresh launch, or coming from Stack), so it sees the snap request change.
+    func consumePending() {
+        guard let action = FoodBookPending.take() else { return }
+        switch action {
+        case .stack:
+            stackRequests += 1
+        case .snap:
+            foodTabRequests += 1
+            Task { @MainActor in
+                try? await Task.sleep(nanoseconds: 450_000_000)
+                self.snapRequests += 1
+            }
+        }
+    }
 }
 
 /// Food and Supplements, switched with a floating pill at the bottom.
 struct RootTabs: View {
     @State private var tab = ProcessInfo.processInfo.arguments.contains("-supps") ? 1 : 0
     @State private var deepLink = FoodDeepLink.shared
+    @Environment(\.scenePhase) private var scenePhase
     @Namespace private var ns
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -64,6 +88,11 @@ struct RootTabs: View {
         }
         .preferredColorScheme(.dark)
         .onChange(of: deepLink.snapRequests) { _, _ in withAnimation { tab = 0 } }
+        .onChange(of: deepLink.stackRequests) { _, _ in withAnimation { tab = 1 } }
+        .onChange(of: deepLink.foodTabRequests) { _, _ in tab = 0 }
+        .onReceive(NotificationCenter.default.publisher(for: FoodBookPending.note)) { _ in deepLink.consumePending() }
+        .onChange(of: scenePhase) { _, phase in if phase == .active { deepLink.consumePending() } }
+        .onAppear { deepLink.consumePending() }
     }
     private func pill(_ i: Int, _ title: String, _ symbol: String) -> some View {
         Button {

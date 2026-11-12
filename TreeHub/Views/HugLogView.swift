@@ -641,6 +641,7 @@ struct HugLogView: View {
             hug.treeID = UUID()   // moved to a brand-new tree while editing
         }
         d.apply(to: hug)
+        if editing == nil { Reviews.noteWin() }
         if hug.treeName.isEmpty {
             hug.treeName = newTree ? "Tree #\(trees.count + 1)" : (trees.first { $0.id == hug.treeID }?.name ?? "Tree")
         }

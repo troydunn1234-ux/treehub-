@@ -78,13 +78,42 @@ struct RootView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
+            if phase == .active { consumePendingAction() }
+        }
+        .onReceive(NotificationCenter.default.publisher(for: RootboundPending.note)) { _ in
+            consumePendingAction()
         }
         .onAppear {
             if tracker.recoveredFromCrash { tab = .track }
             if DemoData.isOn { setUpDemo() }
+            consumePendingAction()
         }
         .fullScreenCover(item: $demoCelebration) { c in
             CelebrationView(data: c) { demoCelebration = nil }
+        }
+    }
+
+    /// Siri / Shortcuts / Control Center actions (RootboundActions.swift).
+    private func consumePendingAction() {
+        guard let action = RootboundPending.take() else { return }
+        switch action {
+        case .logHug:
+            showHugLog = true
+        case .stroll, .hike:
+            tab = .track
+            guard !tracker.isActive else { return }
+            if !tracker.canTrack { tracker.requestPermission(); return }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            tracker.start(kind: action == .hike ? .hike : .walk)
+        case .home:
+            showHugLog = false
+            tab = .home
+        case .grove:
+            showHugLog = false
+            tab = .trees
+        case .collection:
+            showHugLog = false
+            tab = .collection
         }
     }
 
