@@ -119,8 +119,6 @@ final class WatchRuntime: NSObject, ObservableObject {
         samples = []; sumHR = 0; countHR = 0
         sessionStart = Date()
         self.saveWorkout = saveWorkout
-        // Lowering the wrist keeps Still Point in front (dimmed, Always-On) instead of going back to the clock.
-        WKApplication.shared().isFrontmostTimeoutExtended = true
         if isDemo {
             heartRate = 68; startHR = 68; minHR = 68
             startSampler(demo: true)
@@ -178,7 +176,6 @@ final class WatchRuntime: NSObject, ObservableObject {
 
     /// Stops everything. `discard` throws the workout away even if saving was on.
     func end(discard: Bool = false) {
-        WKApplication.shared().isFrontmostTimeoutExtended = false
         sampler?.invalidate()
         sampler = nil
         if let r = runtime {
