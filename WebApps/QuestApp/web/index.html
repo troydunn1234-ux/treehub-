@@ -309,6 +309,22 @@ svg.tl .ghost { opacity: .6; filter: var(--imgf); }
 .rv .amt { text-align: right; font-size: 13px; }
 .rv .amt small { display: block; color: var(--mute); font-size: 11px; }
 .rv .amt .up { color: var(--red); } .rv .amt .down { color: var(--pos); }
+.sbrow { display: grid; grid-template-columns: minmax(0, 1fr) 84px 120px 34px; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
+.sbrow:last-child { border-bottom: 0; }
+.sbrow small { display: block; color: var(--mute); font-size: 12px; }
+.sbrow input, .sbrow select { padding: 6px 8px; font-size: 13px; }
+.sbrow.soonrow { background: rgba(255, 210, 80, .06); }
+.sbrow.off b { text-decoration: line-through; opacity: .6; }
+.sbtools { grid-column: 1 / -1; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.sbtools select { width: auto; }
+.sbtools a { color: var(--green); font-size: 12px; }
+.sbst { font-family: var(--font-display); font-size: 7px; padding: 2px 5px; border: 1px solid currentColor; margin-right: 6px; line-height: 1.4; }
+.sbst.failing { color: var(--red); } .sbst.cancel { color: var(--gold); } .sbst.ended { color: var(--mute); } .sbst.active { color: var(--green); }
+.sbal { padding: 8px 10px; border-left: 3px solid var(--gold); margin: 6px 0; font-size: 13px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.sbal.red { border-left-color: var(--red); }
+.sbal .btn { padding: 6px 8px; font-size: 8px; }
+textarea.sbpaste { background: var(--panel2); border: 2px solid var(--line); padding: 9px 10px; width: 100%; min-height: 110px; color: var(--fg); font: inherit; font-size: 13px; border-radius: 0; }
+@media (max-width: 520px) { .sbrow { grid-template-columns: minmax(0, 1fr) 76px 34px; } .sbrow .sbdate { grid-column: 1 / -1; } }
 .rvbill { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px dashed var(--line); }
 .rvbill:last-child { border-bottom: 0; }
 .rvbill small { display: block; color: var(--mute); font-size: 12px; }
@@ -556,6 +572,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   <nav class="tabs" role="tablist" aria-label="Sections">
     <button class="tab" role="tab" id="t-budgets" data-tab="budgets" aria-selected="true">Budgets</button>
     <button class="tab" role="tab" id="t-review" data-tab="review" aria-selected="false">Review</button>
+    <button class="tab" role="tab" id="t-subs" data-tab="subs" aria-selected="false">Subs</button>
     <button class="tab" role="tab" id="t-arcade" data-tab="arcade" aria-selected="false">Arcade</button>
     <button class="tab" role="tab" id="t-log" data-tab="log" aria-selected="false">Money log</button>
     <button class="tab" role="tab" id="t-moves" data-tab="moves" aria-selected="false">Transfers</button>
@@ -604,6 +621,30 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     <div class="box"><h2>Upcoming bills</h2>
       <p class="note">Spotted on their own: purchases that come back at a steady rhythm for about the same amount. Bank imports count too.</p>
       <div id="rvBills"></div></div>
+  </section>
+
+  <!-- SUBS -->
+  <section class="panel" id="p-subs" hidden>
+    <div class="box"><div class="tiles" id="sbTiles"></div></div>
+    <div class="box" id="sbAlerts"></div>
+    <div class="box"><h2>Subscriptions</h2>
+      <p class="note">Sorted by next renewal. Renewals in the next 7 days are marked. Change the price, date or status right in the row. Bank charges move the dates forward on their own.</p>
+      <div id="sbList"></div></div>
+    <div class="box"><h2>Add one</h2>
+      <form class="row" id="sbForm">
+        <label class="f"><span class="lbl">Name</span><input type="text" id="sbName" autocomplete="off" placeholder="Insurance" required></label>
+        <label class="f"><span class="lbl">Price</span><input type="number" id="sbAmt" step="0.01" min="0" inputmode="decimal" placeholder="0.00" required></label>
+        <label class="f"><span class="lbl">Every</span><select id="sbCyc"><option value="monthly">Month</option><option value="yearly">Year</option></select></label>
+        <label class="f"><span class="lbl">Next renewal</span><input type="date" id="sbNext" required></label>
+        <button class="btn" type="submit">Add</button></form></div>
+    <div class="box"><h2>Paste a list</h2>
+      <p class="note">One per line: <b>Name, price, monthly or yearly, YYYY-MM-DD</b>. A name you already have gets updated instead of added twice.</p>
+      <textarea class="sbpaste" id="sbPaste" placeholder="Car insurance, 142, monthly, 2026-11-18&#10;Gym, 29.99, monthly, 2026-12-01"></textarea>
+      <div class="row"><button class="btn" type="button" data-act="sbimport">Import list</button></div>
+      <p class="note" id="sbPasteMsg" role="status"></p></div>
+    <div class="box"><h2>Spotted at your bank</h2>
+      <p class="note">Charges from the same place, about the same amount, about a month or a year apart, that aren't on your list yet.</p>
+      <div id="sbFound"></div></div>
   </section>
 
   <!-- ARCADE -->
@@ -785,6 +826,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (s.bankWallet && typeof s.bankWallet === "object" && !Array.isArray(s.bankWallet)) o.bankWallet = s.bankWallet;
     if (typeof s.bankMatchedAt === "number") o.bankMatchedAt = s.bankMatchedAt;
     if (Array.isArray(s.bankSkip)) o.bankSkip = s.bankSkip.filter(function (x) { return typeof x === "string"; }).slice(-800);
+    if (Array.isArray(s.subs)) o.subs = s.subs.filter(function (x) { return x && typeof x.n === "string"; }).map(cleanSub);
+    if (Array.isArray(s.subSkip)) o.subSkip = s.subSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     if (Array.isArray(s.billSkip)) o.billSkip = s.billSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     return o;
   }
@@ -2089,12 +2132,230 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     }).join("") + "</div>" +
       '<p class="note">' + (done ? "Garage complete. Time to go get the real one." : nxt ? "Next part: " + esc(nxt[0].toLowerCase()) + " at " + fmt(g * nxt[1]) + " (" + fmt(Math.max(0, r2(g * nxt[1] - sv))) + " to go)." : "") + "</p>";
   }
+  /* ---------- subscriptions (Subs tab) ---------- */
+  var SUB_ST = { active: "Active", failing: "Payment failing", cancel: "To cancel", ended: "Ended" };
+  var APPLE_M = "apple\\.com|itunes|apple com";
+  function cleanSub(x) {
+    var st = SUB_ST[x.st] ? x.st : "active", nx = /^\d{4}-\d{2}-\d{2}$/.test(x.next || "") ? x.next : today();
+    return { id: String(x.id || uid()), n: String(x.n).slice(0, 60), amt: r2(Math.max(0, +x.amt || 0)), cyc: x.cyc === "yearly" ? "yearly" : "monthly", next: nx, st: st,
+      stAt: typeof x.stAt === "string" ? x.stAt : (st === "active" ? "" : today()), note: typeof x.note === "string" ? x.note : "", url: typeof x.url === "string" ? x.url : "",
+      via: x.via === "apple" ? "apple" : "", m: typeof x.m === "string" ? x.m : "", vary: x.vary ? 1 : 0,
+      due: /^\d{4}-\d{2}-\d{2}$/.test(x.due || "") ? x.due : "", dueNote: typeof x.dueNote === "string" ? x.dueNote : "", last: typeof x.last === "string" ? x.last : "" };
+  }
+  function subSeed() {
+    /* starts empty: the repo is public, so personal subscriptions are added in the app with "Paste a list" */
+    return [];
+  }
+  var SUB_LINKS = [
+    [/^x |x premium|x super|\btwitter\b/i, "https://x.com/settings/subscription"],
+    [/grok/i, "https://grok.com"],
+    [/icloud/i, "https://apps.apple.com/account/subscriptions"],
+    [/apple developer/i, "https://developer.apple.com/account"],
+    [/netflix/i, "https://www.netflix.com/account"],
+    [/starlink/i, "https://www.starlink.com/account"],
+    [/whoop/i, "https://app.whoop.com"],
+    [/uber/i, "https://account.uber.com"],
+    [/shopify/i, "https://admin.shopify.com"],
+    [/garmin/i, "https://connect.garmin.com"],
+    [/game pass|xbox|microsoft/i, "https://account.microsoft.com/services"],
+    [/verizon/i, "https://www.verizon.com/my-verizon"],
+    [/digitalocean/i, "https://cloud.digitalocean.com/account/billing"],
+    [/best ?buy/i, "https://www.bestbuy.com/profile"],
+    [/simplefin/i, "https://beta-bridge.simplefin.org"],
+    [/courtreserve|dome/i, "https://app.courtreserve.com"],
+    [/spotify/i, "https://www.spotify.com/account"],
+    [/chatgpt|openai/i, "https://chatgpt.com"],
+    [/youtube/i, "https://www.youtube.com/paid_memberships"],
+    [/hulu/i, "https://secure.hulu.com/account"],
+    [/disney/i, "https://www.disneyplus.com/account"],
+    [/amazon|prime/i, "https://www.amazon.com/mc"]
+  ];
+  function subLink(x) {
+    if (x.url) return x.url;
+    if (x.via === "apple") return "https://apps.apple.com/account/subscriptions";
+    for (var i = 0; i < SUB_LINKS.length; i++) if (SUB_LINKS[i][0].test(x.n)) return SUB_LINKS[i][1];
+    return "";
+  }
+  function subById(id) { return (S.subs || []).filter(function (x) { return x.id === id; })[0]; }
+  function subRe(x) {
+    var src = x.m || (x.via === "apple" ? APPLE_M : "");
+    if (!src) { var w = payeeKey(x.n).split(" ").filter(function (q) { return q.length >= 3 && ["the", "plus", "pro", "premium", "membership", "subscription", "store", "my"].indexOf(q) < 0; })[0]; if (!w) return null; src = w; }
+    if (x.via === "apple" && src.indexOf("apple") < 0) src += "|" + APPLE_M;
+    try { return new RegExp(src, "i"); } catch (e) { return null; }
+  }
+  function addCycle(k, cyc, n) {
+    n = n || 1;
+    var y = +k.slice(0, 4), m = +k.slice(5, 7) - 1, d = +k.slice(8, 10);
+    if (cyc === "yearly") y += n; else m += n;
+    var dt = new Date(y, m, 1), mm = dt.getFullYear() + "-" + p2(dt.getMonth() + 1);
+    return mm + "-" + p2(Math.min(d, dim(mm)));
+  }
+  function subTol(x) { return Math.max(1, x.amt * (x.vary ? 0.6 : 0.25)); }
+  /* give every bank/logged charge to at most one subscription: the closest price among the ones whose name pattern matches */
+  function subCharges() {
+    var out = {}, subs = S.subs || [], res = subs.map(subRe);
+    subs.forEach(function (x) { out[x.id] = []; });
+    S.tx.forEach(function (t) {
+      if (!(t.amt > 0)) return;
+      var text = (t.what || "") + " " + ((t.bank && t.bank.key) || ""), best = null, bd = 1e9, zero = null;
+      subs.forEach(function (x, i) {
+        if (!res[i] || !res[i].test(text)) return;
+        if (x.amt > 0) { var dd = Math.abs(t.amt - x.amt); if (dd <= subTol(x) && dd < bd) { bd = dd; best = x; } }
+        else if (!zero) zero = x;
+      });
+      var hit = best || zero;
+      if (hit) out[hit.id].push(t);
+    });
+    Object.keys(out).forEach(function (k) { out[k].sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }); });
+    return out;
+  }
+  /* seed once, then let bank charges fill unknown prices and roll renewal dates forward */
+  function subsReconcile() {
+    var changed = false;
+    if (!Array.isArray(S.subs)) { S.subs = subSeed(); changed = true; }
+    var ch = subCharges(), t0 = today();
+    S.subs.forEach(function (x) {
+      var list = ch[x.id] || [], last = list[list.length - 1];
+      if (last) {
+        if (!(x.amt > 0)) { x.amt = r2(last.amt); changed = true; }
+        if (x.last !== last.d) { x.last = last.d; changed = true; }
+        if (x.st === "failing" && last.d > (x.stAt || "")) { x.st = "active"; x.stAt = ""; changed = true; }
+        /* the renewal was charged (up to 5 days early or any time after): next one is a cycle later */
+        var guard = 0;
+        while (last.d >= addDays(x.next, -5) && guard++ < 40) { x.next = addCycle(x.next, x.cyc); changed = true; }
+      }
+      if (x.st === "active") {
+        var g2 = 0;
+        while (x.next < t0 && g2++ < 40) { x.next = addCycle(x.next, x.cyc); changed = true; }
+      }
+    });
+    if (changed && loaded) touch();
+    return ch;
+  }
+  function subMonthly(x) { return x.cyc === "yearly" ? x.amt / 12 : x.amt; }
+  function detectSubs() {
+    var g = {}, skip = S.subSkip || [], t0 = today(), out = [], subs = S.subs || [], res = subs.map(subRe);
+    S.tx.forEach(function (t) {
+      if (!(t.amt > 0)) return;
+      var text = (t.what || "") + " " + ((t.bank && t.bank.key) || "");
+      if (subs.some(function (x, i) { return res[i] && res[i].test(text) && (!(x.amt > 0) || Math.abs(t.amt - x.amt) <= subTol(x)); })) return;
+      var k = merchantKey(t); if (!k || k.length < 3) return;
+      (g[k] = g[k] || []).push(t);
+    });
+    Object.keys(g).forEach(function (k) {
+      if (skip.indexOf(k) >= 0) return;
+      var byDay = [], seen = {};
+      g[k].slice().sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : 0; }).forEach(function (t) { if (!seen[t.d]) { seen[t.d] = 1; byDay.push(t); } });
+      if (byDay.length < 2) return;
+      var recent = byDay.slice(-6), gaps = [], amts = recent.map(function (t) { return t.amt; });
+      for (var i = 1; i < recent.length; i++) gaps.push(daysBetween(recent[i - 1].d, recent[i].d));
+      var md = median(gaps), cyc = md >= 26 && md <= 35 ? "monthly" : md >= 350 && md <= 380 ? "yearly" : "";
+      if (!cyc) return;
+      if (gaps.filter(function (x) { return cyc === "monthly" ? Math.abs(x - md) <= 6 : Math.abs(x - md) <= 15; }).length / gaps.length < 0.7) return;
+      var ma = median(amts);
+      if (amts.filter(function (x) { return Math.abs(x - ma) <= Math.max(1, ma * 0.1); }).length / amts.length < 0.7) return;
+      var last = recent[recent.length - 1];
+      if (daysBetween(last.d, t0) > (cyc === "monthly" ? 70 : 400)) return;
+      var next = addCycle(last.d, cyc), gg = 0;
+      while (next < t0 && gg++ < 40) next = addCycle(next, cyc);
+      out.push({ k: k, name: merchantName(last).slice(0, 40), amt: r2(ma), cyc: cyc, next: next, n: byDay.length });
+    });
+    return out;
+  }
+  function subAlerts(ch) {
+    var t0 = today(), al = [];
+    (S.subs || []).forEach(function (x) {
+      var list = ch[x.id] || [], last = list[list.length - 1];
+      if (x.st === "failing") al.push({ red: 1, h: "<b>" + esc(x.n) + "</b>: payment failing. Update the card (SoFi) or cancel it.", x: x });
+      if ((x.st === "cancel" || x.st === "ended") && last && x.stAt && last.d > x.stAt) al.push({ red: 1, h: "<b>" + esc(x.n) + "</b> is still charging: " + fmt(last.amt) + " on " + dayLbl(last.d) + " after you marked it " + SUB_ST[x.st].toLowerCase() + ".", x: x });
+      if (x.st === "active" && last && x.amt > 0 && !x.vary && last.amt > x.amt * 1.02 && last.amt - x.amt >= 0.5) al.push({ h: "<b>" + esc(x.n) + "</b> price went up: " + fmt(x.amt) + " &rarr; " + fmt(last.amt) + ".", x: x, price: last.amt });
+      if (x.due && x.st !== "ended") { var dd = daysBetween(t0, x.due); if (dd >= 0 && dd <= 21) al.push({ red: dd <= 3 ? 1 : 0, h: "<b>" + esc(x.n) + "</b>: " + esc(x.dueNote || "deadline") + " &middot; " + (dd === 0 ? "today" : dd === 1 ? "tomorrow" : "by " + dayLbl(x.due) + " (" + dd + " days)"), x: x }); }
+      if (x.st === "cancel") { var dn = daysBetween(t0, x.next); if (dn >= 0 && dn <= 10) al.push({ h: "<b>" + esc(x.n) + "</b> renews " + (dn === 0 ? "today" : "in " + dn + " day" + (dn === 1 ? "" : "s")) + ". Cancel before then.", x: x }); }
+    });
+    return al;
+  }
+  function renderSubs() {
+    if (!$("sbList")) return;
+    var ch = subsReconcile(), t0 = today(), subs = (S.subs || []).slice();
+    var live = subs.filter(function (x) { return x.st === "active" || x.st === "failing"; }), going = subs.filter(function (x) { return x.st === "cancel"; });
+    var mo = r2(live.reduce(function (a, x) { return a + subMonthly(x); }, 0)), cut = r2(going.reduce(function (a, x) { return a + subMonthly(x); }, 0));
+    var wk = r2(subs.filter(function (x) { var d = daysBetween(t0, x.next); return x.st !== "ended" && d >= 0 && d <= 7; }).reduce(function (a, x) { return a + x.amt; }, 0));
+    var fail = subs.filter(function (x) { return x.st === "failing"; }).length;
+    $("sbTiles").innerHTML = '<div class="tile"><span class="lbl">Per month</span><b class="num">' + fmt(mo) + '</b></div><div class="tile"><span class="lbl">Per year</span><b class="num">' + fmt(r2(mo * 12)) + '</b></div>' +
+      '<div class="tile"><span class="lbl">Renewing next 7 days</span><b class="num ' + (wk > 0 ? "gd" : "") + '">' + fmt(wk) + "</b></div>" +
+      '<div class="tile"><span class="lbl">Payments failing</span><b class="num ' + (fail ? "bad" : "") + '">' + fail + "</b></div>" +
+      (cut > 0 ? '<div class="tile"><span class="lbl">Saved once cancels go through</span><b class="num">' + fmt(cut) + "/mo</b></div>" : "");
+    var al = subAlerts(ch);
+    $("sbAlerts").innerHTML = "<h2>Heads up</h2>" + (al.length ? al.map(function (a) {
+      var lk = subLink(a.x);
+      return '<div class="sbal' + (a.red ? " red" : "") + '"><span>' + a.h + "</span>" + (a.price ? '<button class="btn ghost" type="button" data-act="sbprice" data-id="' + esc(a.x.id) + '" data-amt="' + a.price + '">Use new price</button>' : "") +
+        (lk ? '<a class="btn ghost" href="' + esc(lk) + '" target="_blank" rel="noopener">Open</a>' : "") + "</div>";
+    }).join("") : '<div class="empty">Nothing needs you right now.</div>');
+    subs.sort(function (a, b) { var oa = a.st === "ended" ? 1 : 0, ob = b.st === "ended" ? 1 : 0; return oa - ob || (a.next < b.next ? -1 : a.next > b.next ? 1 : 0); });
+    var missing = [["Insurance", /insur|geico|progressive|state farm|allstate|farmers|usaa|liberty/i], ["Gym", /gym|fitness|crunch|equinox|planet|24 hour|la fitness/i]].filter(function (m) { return !subs.some(function (x) { return m[1].test(x.n); }); });
+    $("sbList").innerHTML = (missing.length ? '<div class="sbal"><span>Still to add: <b>' + missing.map(function (m) { return m[0]; }).join("</b> and <b>") + "</b>. Use Add one or Paste a list below.</span></div>" : "") +
+      (subs.length ? subs.map(function (x) {
+        var d = daysBetween(t0, x.next), soon = x.st !== "ended" && d >= 0 && d <= 7, lk = subLink(x), list = ch[x.id] || [], last = list[list.length - 1];
+        var when = x.st === "ended" ? "ended" : (d === 0 ? "today" : d === 1 ? "tomorrow" : d < 0 ? Math.abs(d) + " days ago" : "in " + d + " days");
+        return '<div class="sbrow' + (soon ? " soonrow" : "") + (x.st === "ended" ? " off" : "") + '"><div><b>' + esc(x.n) + "</b><small>" +
+          (soon ? '<span class="soon">THIS WEEK</span>' : "") + (x.st !== "active" ? '<span class="sbst ' + x.st + '">' + esc(SUB_ST[x.st].toUpperCase()) + "</span>" : "") +
+          dayLbl(x.next) + " &middot; " + when + " &middot; " + (x.amt > 0 ? fmt(x.amt) : "price ?") + "/" + (x.cyc === "yearly" ? "yr" : "mo") + (x.cyc === "yearly" ? " (" + fmt(r2(x.amt / 12)) + "/mo)" : " (" + fmt(r2(x.amt * 12)) + "/yr)") +
+          (last ? " &middot; last charge " + fmt(last.amt) + " " + dayLbl(last.d) : "") + (x.via === "apple" ? " &middot; via Apple" : "") + "</small>" +
+          (x.note ? "<small>" + esc(x.note) + "</small>" : "") + "</div>" +
+          '<input type="number" step="0.01" min="0" inputmode="decimal" data-sid="' + esc(x.id) + '" data-sf="amt" value="' + x.amt + '" aria-label="Price for ' + esc(x.n) + '">' +
+          '<input class="sbdate" type="date" data-sid="' + esc(x.id) + '" data-sf="next" value="' + esc(x.next) + '" aria-label="Next renewal for ' + esc(x.n) + '">' +
+          '<button class="x" data-act="sbdel" data-id="' + esc(x.id) + '" aria-label="Remove ' + esc(x.n) + '">&times;</button>' +
+          '<div class="sbtools"><select data-sid="' + esc(x.id) + '" data-sf="st" aria-label="Status for ' + esc(x.n) + '">' + Object.keys(SUB_ST).map(function (k) { return '<option value="' + k + '"' + (k === x.st ? " selected" : "") + ">" + SUB_ST[k] + "</option>"; }).join("") + "</select>" +
+          '<select data-sid="' + esc(x.id) + '" data-sf="cyc" aria-label="Billing cycle for ' + esc(x.n) + '"><option value="monthly"' + (x.cyc === "monthly" ? " selected" : "") + '>Monthly</option><option value="yearly"' + (x.cyc === "yearly" ? " selected" : "") + ">Yearly</option></select>" +
+          (lk ? '<a href="' + esc(lk) + '" target="_blank" rel="noopener">' + (x.st === "cancel" ? "Cancel it here" : "Manage / cancel") + "</a>" : "") + "</div></div>";
+      }).join("") : '<div class="empty">No subscriptions yet. Add one or paste a list below.</div>');
+    var found = detectSubs();
+    $("sbFound").innerHTML = found.length ? found.map(function (b) {
+      return '<div class="rvbill"><div><b>' + esc(b.name) + "</b><small>" + fmt(b.amt) + " " + b.cyc + " &middot; seen " + b.n + " times &middot; next about " + dayLbl(b.next) + "</small></div>" +
+        '<button class="btn ghost" type="button" data-act="sbadd" data-k="' + esc(b.k) + '" data-n="' + esc(b.name) + '" data-amt="' + b.amt + '" data-cyc="' + b.cyc + '" data-next="' + b.next + '">Add</button>' +
+        '<button class="btn ghost" type="button" data-act="sbskip" data-k="' + esc(b.k) + '">Not a sub</button></div>';
+    }).join("") : '<div class="empty">' + (BANK.st && BANK.st.connected ? "Nothing new. Repeating charges show up here after the second one." : "Connect your bank in Setup and repeating charges show up here.") + "</div>";
+  }
+  function sbField(t) {
+    var x = subById(t.dataset.sid), f = t.dataset.sf, v = t.value;
+    if (!x) return;
+    if (f === "amt") { var a = parseFloat(v); if (isFinite(a) && a >= 0) x.amt = r2(a); }
+    else if (f === "next") { if (/^\d{4}-\d{2}-\d{2}$/.test(v)) x.next = v; }
+    else if (f === "cyc") x.cyc = v === "yearly" ? "yearly" : "monthly";
+    else if (f === "st" && SUB_ST[v]) { x.st = v; x.stAt = v === "active" ? "" : today(); }
+    touch(); renderSubs();
+  }
+  function parseSubLines(txt) {
+    var ok = [], bad = [];
+    String(txt || "").split(/\r?\n/).forEach(function (line) {
+      var raw = line.trim(); if (!raw) return;
+      var p = raw.split(",").map(function (q) { return q.trim(); });
+      if (p.length < 4) { bad.push(raw); return; }
+      var date = p[p.length - 1], cyc = p[p.length - 2].toLowerCase(), price = parseFloat(p[p.length - 3].replace(/[$\s]/g, "")), name = p.slice(0, p.length - 3).join(", ");
+      if (/^(mo|month|monthly)$/.test(cyc)) cyc = "monthly"; else if (/^(yr|year|yearly|annual|annually)$/.test(cyc)) cyc = "yearly"; else cyc = "";
+      if (!name || !isFinite(price) || price < 0 || !cyc || !/^\d{4}-\d{2}-\d{2}$/.test(date)) { bad.push(raw); return; }
+      ok.push({ n: name, amt: r2(price), cyc: cyc, next: date });
+    });
+    return { ok: ok, bad: bad };
+  }
+  function sbImport() {
+    var r = parseSubLines($("sbPaste").value), add = 0, upd = 0;
+    S.subs = S.subs || [];
+    r.ok.forEach(function (y) {
+      var ex = S.subs.filter(function (x) { return x.n.toLowerCase() === y.n.toLowerCase(); })[0];
+      if (ex) { ex.amt = y.amt; ex.cyc = y.cyc; ex.next = y.next; upd++; } else { S.subs.push(cleanSub(y)); add++; }
+    });
+    $("sbPasteMsg").textContent = (add || upd ? "Added " + add + ", updated " + upd + "." : "Nothing imported.") + (r.bad.length ? " Couldn't read " + r.bad.length + " line" + (r.bad.length === 1 ? "" : "s") + ": " + r.bad.slice(0, 3).join(" | ") : "");
+    if (add || upd) { $("sbPaste").value = r.bad.join("\n"); touch(); renderSubs(); beep("coin"); }
+  }
   function renderAll() {
     if (!loaded) return;
+    subsReconcile();
     syncQuests();
     renderQuest(); renderWallets(); renderBudgets(); renderLog(); renderMoves(); renderSetup(); updSnd(); applyTheme(); bootData();
     if (tab === "arcade") renderArcade();
     if (tab === "review") renderReview();
+    if (tab === "subs") renderSubs();
     checkLevel(); checkRank();
   }
 
@@ -2398,6 +2659,15 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "delmv") arm(t, function () { S.moves = S.moves.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderAll(); });
     else if (a === "delcat") arm(t, function () { S.budgets.splice(+t.dataset.i, 1); touch(); renderAll(); });
     else if (a === "resetall") arm(t, function () { S.tx = []; S.moves = []; touch(); renderAll(); });
+    else if (a === "sbimport") sbImport();
+    else if (a === "sbdel") arm(t, function () { S.subs = S.subs.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderSubs(); });
+    else if (a === "sbprice") { var sp1 = subById(t.dataset.id); if (sp1) { sp1.amt = r2(parseFloat(t.dataset.amt) || sp1.amt); touch(); renderSubs(); toast("Price updated: " + sp1.n); } }
+    else if (a === "sbadd") {
+      var nm2 = t.dataset.n;
+      if (!S.subs.some(function (x) { return x.n.toLowerCase() === nm2.toLowerCase(); })) S.subs.push(cleanSub({ n: nm2, amt: parseFloat(t.dataset.amt) || 0, cyc: t.dataset.cyc, next: t.dataset.next, m: t.dataset.k }));
+      S.subSkip = (S.subSkip || []).concat([t.dataset.k]).slice(-200); touch(); renderSubs(); beep("coin"); toast("Added: " + nm2);
+    }
+    else if (a === "sbskip") { S.subSkip = (S.subSkip || []).concat([t.dataset.k]).slice(-200); touch(); renderSubs(); }
     else if (a === "bankpaste") bankPaste();
     else if (a === "banksync") bankSync(true);
     else if (a === "banktoggle") { S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[t.dataset.id] = !S.bankIgnore[t.dataset.id]; touch(); renderBank(); if (!S.bankIgnore[t.dataset.id]) bankSync(true); }
@@ -2405,12 +2675,13 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function setTab(n) {
     tab = n;
-    ["budgets", "review", "arcade", "log", "moves", "setup"].forEach(function (k) {
+    ["budgets", "review", "subs", "arcade", "log", "moves", "setup"].forEach(function (k) {
       $("p-" + k).hidden = k !== n;
       $("t-" + k).setAttribute("aria-selected", k === n ? "true" : "false");
     });
     if (n === "arcade") renderArcade();
     if (n === "review") renderReview();
+    if (n === "subs") renderSubs();
   }
   $("txForm").addEventListener("submit", function (e) {
     e.preventDefault();
@@ -2466,6 +2737,16 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     $("blName").value = ""; $("blAmt").value = ""; $("blDay").value = "";
     touch(); renderAll(); toast("Bill added");
   });
+  $("sbForm").addEventListener("submit", function (e) {
+    e.preventDefault();
+    var n = $("sbName").value.trim(), a = parseFloat($("sbAmt").value), d = $("sbNext").value;
+    if (!n || !isFinite(a) || a < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(d)) { toast("Fill in name, price and the next renewal date.", true); return; }
+    S.subs = S.subs || [];
+    var ex = S.subs.filter(function (x) { return x.n.toLowerCase() === n.toLowerCase(); })[0];
+    if (ex) { ex.amt = r2(a); ex.cyc = $("sbCyc").value; ex.next = d; } else S.subs.push(cleanSub({ n: n, amt: a, cyc: $("sbCyc").value, next: d }));
+    $("sbName").value = ""; $("sbAmt").value = "";
+    touch(); renderSubs(); beep("coin"); toast(ex ? "Updated: " + n : "Added: " + n);
+  });
   $("fCat").addEventListener("change", renderLog);
   var inTimer = null;
   document.addEventListener("input", function (e) {
@@ -2477,6 +2758,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   document.addEventListener("change", function (e) {
     var t = e.target;
     if (t.dataset && t.dataset.e) { onEditField(t, false); return; }
+    if (t.dataset && t.dataset.sid) { sbField(t); return; }
     if (t.dataset && t.dataset.bid) {
       var bb = S.bills.filter(function (x) { return x.id === t.dataset.bid; })[0];
       if (bb) { var bv = parseFloat(t.value); if (t.dataset.bf === "amt" && isFinite(bv) && bv >= 0) bb.amt = r2(bv); else if (t.dataset.bf === "day" && bv >= 1 && bv <= 31) bb.day = Math.round(bv); touch(); renderAll(); }
@@ -2515,7 +2797,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   });
 
   $("carB").src = $("carA").src; setupBoot();
-  $("txDate").value = today(); $("mvDate").value = today();
+  $("txDate").value = today(); $("mvDate").value = today(); $("sbNext").value = today();
   setStatus("load");
   boot();
 })();
