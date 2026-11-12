@@ -77,7 +77,12 @@ final class LabStore {
     }
     func lastNight(_ s: Source) -> SleepNight? { sleeps.filter { $0.source == s }.max { $0.night < $1.night } }
 
-    var readinessToday: Double? { Compare.readiness(day: Date(), watch: watchDays, sleeps: sleeps) }
+    var readinessToday: Double? { readinessDetailToday?.score }
+    /// True when this morning's readiness leans on yesterday's Watch HRV / resting HR.
+    var readinessUsesYesterday: Bool { readinessDetailToday?.usedYesterday ?? false }
+    private var readinessDetailToday: Compare.ReadinessDetail? {
+        Compare.readinessDetail(day: Date(), watch: watchDays, sleeps: sleeps, carryOver: true)
+    }
     var recoveryToday: Double? { whoopDays.last(where: { $0.recovery != nil })?.recovery }
 
     func connectHealth() async {

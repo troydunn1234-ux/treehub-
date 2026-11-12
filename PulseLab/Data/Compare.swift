@@ -207,23 +207,38 @@ enum Compare {
     /// Pulse Lab's own "readiness" for the Apple Watch, built to sit next to WHOOP recovery:
     /// HRV vs your 7-day baseline (biggest weight), resting HR vs baseline, and last night's sleep.
     static func readiness(day: Date, watch: [DayStat], sleeps: [SleepNight]) -> Double? {
+        readinessDetail(day: day, watch: watch, sleeps: sleeps, carryOver: false)?.score
+    }
+
+    struct ReadinessDetail { var score: Double; var usedYesterday: Bool }
+
+    /// `carryOver`: for *today's* score, fall back to yesterday's HRV / resting HR when the Watch hasn't
+    /// recorded any since midnight (it isn't worn to bed, and Apple writes resting HR late in the day).
+    static func readinessDetail(day: Date, watch: [DayStat], sleeps: [SleepNight], carryOver: Bool) -> ReadinessDetail? {
         let sorted = watch.sorted { $0.day < $1.day }
-        guard let today = sorted.last(where: { Calendar.current.isDate($0.day, inSameDayAs: day) }) else { return nil }
-        let prior = sorted.filter { $0.day < today.day && $0.day >= today.day.adding(days: -7) }
+        let todayStat = sorted.last(where: { Calendar.current.isDate($0.day, inSameDayAs: day) })
+        if todayStat == nil && !carryOver { return nil }
+        let yesterday = carryOver ? sorted.last(where: { Calendar.current.isDate($0.day, inSameDayAs: day.adding(days: -1)) }) : nil
+        var hrv = todayStat?.hrv, rhr = todayStat?.rhr, used = false
+        if hrv == nil, let y = yesterday?.hrv { hrv = y; used = true }
+        if rhr == nil, let y = yesterday?.rhr { rhr = y; used = true }
+        guard hrv != nil || rhr != nil else { return nil }
+        // Baseline: the 7 days before the day the readings came from.
+        let anchor = used ? day.dayStart.adding(days: -1) : day.dayStart
+        let prior = sorted.filter { $0.day < anchor && $0.day >= anchor.adding(days: -7) }
         let hrvBase = Stats.mean(prior.compactMap(\.hrv)), hrvSD = Stats.sd(prior.compactMap(\.hrv))
         let rhrBase = Stats.mean(prior.compactMap(\.rhr))
-        guard today.hrv != nil || today.rhr != nil else { return nil }
         var score = 55.0
-        if let v = today.hrv, let b = hrvBase {
+        if let v = hrv, let b = hrvBase {
             let z = (v - b) / max(hrvSD ?? b * 0.15, 1)
             score += 22 * max(-1.6, min(1.6, z))
         }
-        if let r = today.rhr, let b = rhrBase {
+        if let r = rhr, let b = rhrBase {
             score -= 4 * max(-4, min(5, r - b))
         }
         if let s = sleeps.last(where: { $0.source == .watch && Calendar.current.isDate($0.night, inSameDayAs: day) }) {
             score += 10 * max(-1.5, min(1, (s.asleepMin / 60 - 7) / 1.2))
         }
-        return max(1, min(99, score.rounded()))
+        return ReadinessDetail(score: max(1, min(99, score.rounded())), usedYesterday: used)
     }
 }

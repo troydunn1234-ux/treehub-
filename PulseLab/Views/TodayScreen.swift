@@ -9,7 +9,7 @@ struct TodayScreen: View {
         let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
-                          sleepHours: lastNightHours) {
+                          sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday) {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
             }
@@ -254,6 +254,8 @@ struct ReadyDuelCard: View {
     let recovery: Double?
     /// Last night's hours asleep, used as the tie-breaker when the two scores disagree.
     let sleepHours: Double?
+    /// Readiness is using yesterday's Watch readings (nothing recorded since midnight yet).
+    var fromYesterday = false
     let action: () -> Void
     @ObservedObject private var unlock = Unlock.shared
 
@@ -304,9 +306,15 @@ struct ReadyDuelCard: View {
 
     /// One line in plain English. When the two split, last night's sleep breaks the tie.
     var read: String {
+        let line = readLine
+        guard fromYesterday, readiness != nil else { return line }
+        return line + " Watch readiness is using yesterday's HRV; wear the Watch to bed for a fresh one each morning."
+    }
+
+    private var readLine: String {
         switch (readiness, recovery) {
         case (nil, nil): return "Connect Apple Health and WHOOP to see both scores here."
-        case (nil, .some(let r)): return "Only WHOOP has a score today: \(Int(r.rounded()))% recovered. Watch readiness needs HRV or resting HR from today."
+        case (nil, .some(let r)): return "Only WHOOP has a score today: \(Int(r.rounded()))% recovered. Your Watch has no HRV or resting HR from the last day. Wear it a few hours (or to bed) and readiness fills in."
         case (.some(let a), nil): return "Only your Watch has a score today: \(Int(a.rounded()))% ready. WHOOP recovery lands after your next cycle."
         case (.some(let a), .some(let r)):
             let aGo = a >= 67, rGo = r >= 67, aRest = a < 34, rRest = r < 34
