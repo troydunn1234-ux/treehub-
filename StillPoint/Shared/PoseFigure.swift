@@ -69,8 +69,22 @@ struct PoseMotion: Equatable {
     var from: Pose
     var to: Pose
     var cycle: Double = 3.6
+    /// For harder moves: an ordered set of key positions, each with a short caption.
+    /// When set, the figure walks through them in order (pausing on each), and `cycle` is seconds per key.
+    var keys: [Pose] = []
+    var labels: [String] = []
+
+    var isSequence: Bool { keys.count > 2 }
+
     /// `true` for movements that should loop in one direction (circles), drawn as a smooth 0→1→0 anyway.
     static func still(_ p: Pose) -> PoseMotion { PoseMotion(from: p, to: p, cycle: 3.6) }
+
+    /// A step-by-step move. `peak` is the key shown in still thumbnails.
+    static func seq(_ items: [(Pose, String)], beat: Double = 2.0, peak: Int = 1) -> PoseMotion {
+        let ps = items.map { $0.0 }
+        let p = ps.isEmpty ? Pose() : ps[min(max(0, peak), ps.count - 1)]
+        return PoseMotion(from: ps.first ?? p, to: p, cycle: beat, keys: ps, labels: items.map { $0.1 })
+    }
 }
 
 // MARK: - Drawing
@@ -207,10 +221,14 @@ struct PoseFigureView: View {
     var tint: Color = SP.gold
     var glow: Color = SP.teal
     var lineWidth: CGFloat = 3
+    /// Show the key-position caption and progress dots for step-by-step moves.
+    var captions = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
-        if reduceMotion || motion.from == motion.to {
+        if motion.isSequence {
+            sequence
+        } else if reduceMotion || motion.from == motion.to {
             figure(progress: 1)
         } else {
             TimelineView(.animation(minimumInterval: 1.0 / 30)) { tl in
@@ -223,8 +241,78 @@ struct PoseFigureView: View {
         }
     }
 
+    // MARK: Step-by-step
+
+    /// Walks through the key positions: hold on each (so you can see the shape), then flow to the next.
+    /// A faint dashed ghost shows where the body is heading; dots show which part of the move you're on.
+    private var sequence: some View {
+        TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { tl in
+            let fr = frame(at: reduceMotion ? 0 : tl.date.timeIntervalSinceReferenceDate)
+            VStack(spacing: lineWidth * 1.5) {
+                ZStack {
+                    if fr.ghostAlpha > 0.01 { ghost(fr.ghost, visible: fr.ghostAlpha) }
+                    figure(pose: fr.pose)
+                }
+                if captions { captionBlock(shown: fr.shown) }
+            }
+        }
+        .accessibilityElement()
+        .accessibilityLabel(motion.labels.joined(separator: ", then "))
+    }
+
+    private struct SeqFrame { var pose: Pose; var ghost: Pose; var ghostAlpha: Double; var shown: Int }
+
+    /// Where the figure is at time `t`: hold on key i, then ease to key i+1.
+    private func frame(at t: Double) -> SeqFrame {
+        let keys = motion.keys
+        let n = keys.count
+        if reduceMotion {
+            let peak = keys.firstIndex(of: motion.to) ?? 0
+            return SeqFrame(pose: motion.to, ghost: motion.to, ghostAlpha: 0, shown: peak)
+        }
+        let beat = max(0.8, motion.cycle)
+        let pos = t.truncatingRemainder(dividingBy: beat * Double(n)) / beat
+        let i = min(n - 1, Int(pos))
+        let f = pos - Double(i)
+        let next = (i + 1) % n
+        let hold = 0.45
+        let raw = f < hold ? 0 : (f - hold) / (1 - hold)
+        let e = raw * raw * (3 - 2 * raw)
+        let pose = Pose.blend(keys[i], keys[next], e)
+        let alpha = f < hold ? 0.22 : 0.22 * (1 - e)
+        return SeqFrame(pose: pose, ghost: keys[next], ghostAlpha: alpha, shown: e < 0.5 ? i : next)
+    }
+
+    @ViewBuilder
+    private func captionBlock(shown: Int) -> some View {
+        if motion.labels.indices.contains(shown) {
+            Text(motion.labels[shown])
+                .font(.system(size: max(9, lineWidth * 3.6), weight: .semibold, design: .rounded))
+                .foregroundStyle(tint.opacity(0.95))
+                .lineLimit(1).minimumScaleFactor(0.7)
+                .padding(.horizontal, 8).padding(.vertical, 3)
+                .background(Capsule().fill(Color.black.opacity(0.35)))
+        }
+        HStack(spacing: lineWidth * 1.2) {
+            ForEach(0..<motion.keys.count, id: \.self) { k in
+                Circle().fill(k == shown ? tint : tint.opacity(0.25))
+                    .frame(width: lineWidth * 1.8, height: lineWidth * 1.8)
+            }
+        }
+    }
+
+    private func ghost(_ p: Pose, visible: Double) -> some View {
+        PoseShape(pose: mirrored ? p.mirrored() : p)
+            .stroke(tint.opacity(visible), style: StrokeStyle(lineWidth: lineWidth * 0.8, lineCap: .round, lineJoin: .round, dash: [lineWidth * 1.4, lineWidth * 1.6]))
+            .padding(lineWidth * 2)
+    }
+
     private func figure(progress: Double) -> some View {
-        var pose = Pose.blend(motion.from, motion.to, progress)
+        figure(pose: Pose.blend(motion.from, motion.to, progress))
+    }
+
+    private func figure(pose base: Pose) -> some View {
+        var pose = base
         if mirrored { pose = pose.mirrored() }
         let shape = PoseShape(pose: pose)
         let style = StrokeStyle(lineWidth: lineWidth, lineCap: .round, lineJoin: .round)
@@ -256,6 +344,7 @@ struct PoseThumb: View {
 enum PoseLibrary {
     static func motion(for step: MoveStep) -> PoseMotion {
         let name = step.name.lowercased()
+        if let m = sequences[name], m.isSequence { return m }
         if let m = byName[name] { return m }
         let text = name + " " + step.how.lowercased()
         for (keys, m) in rules where keys.contains(where: { text.contains($0) }) { return m }
@@ -352,6 +441,50 @@ enum PoseLibrary {
     static let plank: Pose = { var p = Pose(); p.prone = true; p.crouch = 0.5; p.rShoulder = 90; return p }()
 
     static let fallback = PoseMotion(from: stand, to: armsOut)
+
+    // Extra key positions used by the step-by-step sequences.
+    static let palmsToChest = standing { $0.lShoulder = 55; $0.rShoulder = 55; $0.lElbow = 130; $0.rElbow = 130; $0.hands = .palmUp; $0.lift = 0.3 }
+    static let floatDown = standing { $0.lShoulder = 90; $0.rShoulder = 90; $0.hands = .palmDown }
+    static let horseCross = standing { $0.lHip = 28; $0.rHip = 28; $0.lKnee = 45; $0.rKnee = 45; $0.crouch = 0.8; $0.lShoulder = 60; $0.rShoulder = 60; $0.lElbow = 120; $0.rElbow = 120 }
+    static let horseFists = standing { $0.lHip = 28; $0.rHip = 28; $0.lKnee = 45; $0.rKnee = 45; $0.crouch = 0.8; $0.lShoulder = 15; $0.rShoulder = 15; $0.lElbow = 110; $0.rElbow = 110; $0.hands = .fist }
+    static let swayLow = standing { $0.lHip = 30; $0.rHip = 30; $0.lKnee = 40; $0.rKnee = 40; $0.crouch = 0.8; $0.bow = 45; $0.lShoulder = 40; $0.rShoulder = 40; $0.lElbow = 60; $0.rElbow = 60 }
+    static let rollUp = standing { $0.bow = 30; $0.lKnee = 10; $0.rKnee = 10; $0.lShoulder = 10; $0.rShoulder = 10 }
+    static let cloudMid = standing { $0.lHip = 22; $0.rHip = 22; $0.lKnee = 30; $0.rKnee = 30; $0.crouch = 0.5; $0.lShoulder = 65; $0.rShoulder = 65; $0.lElbow = 65; $0.rElbow = 65 }
+    static let kneelLean = seated { $0.lHip = -70; $0.rHip = -70; $0.bow = -15; $0.lShoulder = -30; $0.rShoulder = -30; $0.lElbow = -10; $0.rElbow = -10 }
+    static let lungeLow = standing { $0.rHip = 85; $0.rKnee = 90; $0.lHip = -35; $0.lKnee = 75; $0.crouch = 1.0; $0.lShoulder = 15; $0.rShoulder = 15; $0.bow = 25 }
+
+    /// Step-by-step breakdowns for the moves that are hard to follow from a two-pose loop.
+    static let sequences: [String: PoseMotion] = [
+        "hold up the heavens": .seq([(handsBelly, "Palms up at the belly"), (palmsToChest, "Lift to the chest"),
+                                     (armsUpPalms, "Turn palms, press up"), (floatDown, "Float arms down")], beat: 2.2, peak: 2),
+        "draw the bow": .seq([(wuji, "Stand tall"), (horse, "Sink into horse"), (horseCross, "Cross wrists"),
+                              (bowDraw, "Draw the bow, look out"), (horse, "Release")], beat: 2.0, peak: 3),
+        "separate heaven and earth": .seq([(handsBelly, "Hands at belly"), (heavenEarth, "Right up, left down"),
+                                           (handsBelly, "Return"), (heavenEarth.mirrored(), "Switch sides")], beat: 2.2),
+        "sway head and tail": .seq([(horse, "Horse stance"), (swayLeft, "Lean left"),
+                                    (swayLow, "Swing through low"), (swayLeft.mirrored(), "Lean right")], beat: 2.0),
+        "touch the toes": .seq([(armsHigh, "Reach up"), (halfFold, "Hinge at hips"), (fold, "Hands to toes"),
+                                (rollUp, "Roll up slowly")], beat: 2.2, peak: 2),
+        "punch with angry eyes": .seq([(horseFists, "Fists at the waist"), (punchR, "Punch right, eyes wide"),
+                                       (horseFists, "Pull back"), (punchR.mirrored(), "Punch left")], beat: 1.4),
+        "cloud hands left": .seq([(cloudR, "Right hand high"), (cloudMid, "Turn through centre"), (cloudL, "Left hand high")], beat: 2.0, peak: 2),
+        "cloud hands right": .seq([(cloudL, "Left hand high"), (cloudMid, "Turn through centre"), (cloudR, "Right hand high")], beat: 2.0, peak: 2),
+        "arm circles": .seq([(armsLow, "Arms down"), (armsOut, "Out wide"), (armsUp, "Overhead"), (armsOut, "Back down wide")], beat: 0.9, peak: 2),
+        "body circles": .seq([(circleHi, "Reach up"), (sideBendR, "Arc to the side"), (circleLo, "Sweep low"),
+                              (sideBendR.mirrored(), "Up the other side")], beat: 1.2),
+        "kneeling recline": .seq([(kneel, "Kneel, sit on heels"), (kneelLean, "Hands behind, lean back"),
+                                  (kneelRecline, "Recline only if easy")], beat: 2.6, peak: 2),
+        "twisting hermit": .seq([(sitTall, "Sit tall"), (twistSitR, "Twist right"), (sitTall, "Back to centre"),
+                                 (twistSitR.mirrored(), "Twist left")], beat: 2.4),
+        "knee-hug": .seq([(stand, "Stand tall"), (kneeHugR, "Hug right knee"), (stand, "Lower"),
+                          (kneeHugR.mirrored(), "Hug left knee")], beat: 2.2),
+        "low lunge": .seq([(fold, "Hands down"), (lungeLow, "Step back, drop the knee"), (lungeR, "Arms overhead")], beat: 2.4, peak: 2),
+        "mountain / downward dog": .seq([(lieFlat, "Hands under shoulders"), (plank, "Plank"), (downDog, "Hips up and back")], beat: 2.4, peak: 2),
+        "eight-point bow": .seq([(downDog, "From down dog"), (plank, "Lower to plank"), (eightPoint, "Knees, chest, chin down")], beat: 2.4, peak: 2),
+        "butterfly bow": .seq([(butterfly, "Soles together"), (sitTall, "Sit tall"), (butterflyFold, "Fold forward on exhale")], beat: 2.4, peak: 2),
+        "straight-leg bow": .seq([(longSit, "Legs long, spine tall"), (longSitFold, "Reach toward the toes")], beat: 2.6),
+        "wide-leg bow": .seq([(wideSit, "Legs wide"), (wideSitFold, "Walk hands forward")], beat: 2.6),
+    ]
 
     /// Exact step names (lowercased) from practices.json.
     static let byName: [String: PoseMotion] = [

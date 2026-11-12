@@ -29,7 +29,7 @@ struct SessionSettings: Codable, Equatable {
     /// ever makes a sound even with the Watch unmuted. Off = Apple's richer haptics (which chime).
     var silentHaptics: Bool = true
     /// After a few seconds the screen fades to near-black with only the orb.
-    var dimScreen: Bool = true
+    var dimScreen: Bool = false
     var showNumbers: Bool = true
     var mode: SessionMode = .timer
     var cycles: Int = 12
@@ -87,7 +87,7 @@ struct SessionSettings: Codable, Equatable {
 
     private struct Defaults {
         let haptics = HapticStyle.strong, exhaleTicks = false, bells = true, intervalMinutes = 0, sound = false
-        let dimScreen = true, showNumbers = true, mode = SessionMode.timer, cycles = 12, defaultMinutes = 5
+        let dimScreen = false, showNumbers = true, mode = SessionMode.timer, cycles = 12, defaultMinutes = 5
         let trackHeartRate = true, saveAsWorkout = false
     }
 }

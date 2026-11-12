@@ -182,11 +182,11 @@ struct BreathRunView: View {
                     }
                 }
                 .frame(maxHeight: .infinity)
+                // The cue stays readable when dimmed or in Always-On, so you can follow along.
+                Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
+                    .font(SP.serif(17, .light)).foregroundStyle(SP.ink.opacity(dimmed || luminanceReduced ? 0.8 : 1))
+                    .lineLimit(2).multilineTextAlignment(.center)
                 if !dimmed && !luminanceReduced {
-                    Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
-                        .font(SP.serif(17, .light)).foregroundStyle(SP.ink)
-                        .lineLimit(2).multilineTextAlignment(.center)
-                        .transition(.opacity)
                     if let n = st.nostril {
                         SideIndicator(left: n == .left, right: n == .right, color: SP.amber)
                     } else if let c = session.cue, session.pattern != nil {
@@ -240,15 +240,16 @@ struct BreathRunView: View {
 struct MovementRunView: View {
     @ObservedObject var session: MovementSession
     let onEnd: () -> Void
+    @Environment(\.isLuminanceReduced) private var luminanceReduced
 
     var body: some View {
         let s = session.step
         ZStack {
-            DuskBackground(glow: SP.teal).opacity(0.85)
+            DuskBackground(glow: SP.teal).opacity(luminanceReduced ? 0 : 0.85)
             VStack(spacing: 2) {
                 GeometryReader { g in
                     HStack(spacing: 6) {
-                        PoseFigureView(motion: PoseLibrary.motion(for: s), mirrored: PoseLibrary.mirrored(for: s), lineWidth: 2.2)
+                        PoseFigureView(motion: PoseLibrary.motion(for: s), mirrored: PoseLibrary.mirrored(for: s), lineWidth: 2.2, captions: false)
                             .id(session.index)
                             .frame(maxWidth: .infinity, maxHeight: .infinity)
                         ZStack {
@@ -277,6 +278,7 @@ struct MovementRunView: View {
                     Button { session.skip() } label: { Image(systemName: "forward.end.fill") }
                     Button(action: onEnd) { Image(systemName: "xmark") }
                 }
+                .opacity(luminanceReduced ? 0 : 1)
                 .buttonStyle(.plain)
                 .font(.system(size: 14))
                 .foregroundStyle(SP.dim)

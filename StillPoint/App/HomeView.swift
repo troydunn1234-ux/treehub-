@@ -41,15 +41,13 @@ struct HomeView: View {
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 10)
 
-                    // A running sauna / steam session jumps to the top so "I'm out" is one tap away.
-                    if heat.active != nil { HeatCard() }
+                    // Sauna / steam sits right under the greeting so it's one tap as you walk in.
+                    HeatCard()
 
                     FeaturedCard(practice: featured)
 
                     SectionHeader("Your body", detail: "Move, release, breathe")
                     FocusGrid()
-
-                    if heat.active == nil { HeatCard() }
 
                     SectionHeader("Intentions")
                     ScrollView(.horizontal, showsIndicators: false) {
