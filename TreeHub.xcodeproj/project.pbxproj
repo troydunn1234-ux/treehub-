@@ -9,12 +9,14 @@
 /* Begin PBXBuildFile section */
 		001D5AF6688CB2CB8FE26CB7 /* WhoopConnectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 968F7FB673B0396E5FC5999A /* WhoopConnectView.swift */; };
 		0076032E5D1446116A75C4B6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = DD6F3E90FDD74C8DE305AEC9 /* Assets.xcassets */; };
+		00AAF3658F803880F2762DE9 /* StillPointWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 82F90F364B5695F3E02F270F /* StillPointWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		03002C1C1C111C63091FAB89 /* DemoData.swift in Sources */ = {isa = PBXBuildFile; fileRef = E601B018A945FF7D453D7BB5 /* DemoData.swift */; };
 		03EBB2C2CBF4E703ECB256BC /* PCView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79C9BD53DFB9DFF3238E80D8 /* PCView.swift */; };
 		04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 546E982877DEECF72E33F533 /* PCClient.swift */; };
 		05B1630F021AD945308FD48A /* GlossaryText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3480C2AABB9DD6F851957A63 /* GlossaryText.swift */; };
 		07106BCF664E4C8E0E3DC501 /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
 		0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
+		0CE05ECC9212C0A54F77E9E7 /* HistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 87EA5604857003E473AC3B8D /* HistoryView.swift */; };
 		0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */; };
 		0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */ = {isa = PBXBuildFile; fileRef = D98D314E35365B34A5FCA998 /* LiveAvatar.swift */; };
 		0E978221744286F7C75D399D /* Insights.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47680793EF666456AB107D20 /* Insights.swift */; };
@@ -30,13 +32,17 @@
 		17652B6477B12D75146F57AB /* VizioClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FC8FA044D7503651EA2DC32 /* VizioClient.swift */; };
 		18A9B1DB492CA2BF61A672F1 /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
 		1ADD95DE854BF3211613DA27 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F9A4FA56F83687B6A72246F1 /* HomeView.swift */; };
+		1B8FDC2508F3D2C1680FA409 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECD951314CF1FE98847837A /* Onboarding.swift */; };
 		1B9DFC673067578DFA6B520F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		1FA66182A2E82790776C71F3 /* SpeedLimitService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D48CB9C236611CA0B300C8B /* SpeedLimitService.swift */; };
 		1FE8CA8DE9A62CFA543E17B3 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0EAD7F3F19A6F03FED7629 /* HomeView.swift */; };
 		2028F8406ABA834033BB2236 /* SnapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C5282B10CF508CE08565DA73 /* SnapView.swift */; };
 		216DA2C8A550981259403AE5 /* DuelChart.swift in Sources */ = {isa = PBXBuildFile; fileRef = 672F2D6098BF33CFC476062C /* DuelChart.swift */; };
+		229B6185B25A3751D61232FF /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECD951314CF1FE98847837A /* Onboarding.swift */; };
+		22C551398FEBC0C1CA7518F7 /* Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B04458D4B97E3EAD401DC3D0 /* Intents.swift */; };
 		266A967AA77415155E696771 /* PracticeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E36CC16D213588D0432C222 /* PracticeViews.swift */; };
 		26A32CE2172EB4534B7C9B6B /* AppInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C829C76FB92D53E3E90E395 /* AppInfo.swift */; };
+		274FE3BDF642D9B933929F3E /* FoodBookWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE11F77364B38533D052BC64 /* FoodBookWidgets.swift */; };
 		283D0D791A1304A5A18AE4CA /* SessionLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2297B665507DA57AEEC00 /* SessionLog.swift */; };
 		286B00D2A96D581E3CDBDEAD /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B916C82AA75F8627BDE5A7 /* Unlock.swift */; };
 		29467D912B072530A65EEF83 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
@@ -44,15 +50,20 @@
 		2BB69615245B34B7F063673A /* RemoteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17C64D37B318F75453FE1CCF /* RemoteView.swift */; };
 		2C836FE1BCB29AD0D334FAB3 /* Format.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9F73AE90E29B0845AB46785E /* Format.swift */; };
 		2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 685C8CB8FD99292AF6800131 /* RootboundWidgets.swift */; };
+		2D49BA15D282C082BE04F602 /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F537F674C9CB89F8249DE28B /* WidgetBridge.swift */; };
 		2D8BF8BA7E9B6AC1F80C7BA9 /* FoodBookWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A93A146F95A24090BFD1768 /* FoodBookWatchApp.swift */; };
 		2E74D537F45C1987DE9FC895 /* MetricKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0155BE8703899297CCFB1D44 /* MetricKey.swift */; };
 		2F1DA5BD1801B22EF757A989 /* WhoopAdapter.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2E4F9AD0CA6F2DBDE1760ED /* WhoopAdapter.swift */; };
 		2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */; };
+		2FC38E14723CD0120E7C3ED7 /* TrustScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = C405D45EFBC6EFC3A6F3EABE /* TrustScreen.swift */; };
+		31540D4A52B80A028F2F17AD /* PulseLabWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 1210963E39CBC6DE13842121 /* PulseLabWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		3198F97588A0903F635D4A7B /* StillPointWidgets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 358886D279A8BA1A07EE22B8 /* StillPointWidgets.plist */; };
 		33915995BD91B0966C5FDA38 /* RoamrWatch.app in Embed Dependencies */ = {isa = PBXBuildFile; fileRef = 9688171361BB285C9680BE48 /* RoamrWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		34903B18BC206AE96DF01EB4 /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
 		3526B968FE781B917D7B88E8 /* LabStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74DC1EBA4772527EB4B2D724 /* LabStore.swift */; };
 		35E523C2D4DDFFB1E141490D /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315ADAA3C087D1308BC3FF36 /* Theme.swift */; };
 		36D2D9DF633BB28EC536B8B0 /* ShareCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */; };
+		380512313A72CEBFA16B89AC /* Notify.swift in Sources */ = {isa = PBXBuildFile; fileRef = 342AF29423DD4DCADDDAA376 /* Notify.swift */; };
 		38ED399CE64159D47A5C263C /* FoodAI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 56B2A6670639240E7A7152A6 /* FoodAI.swift */; };
 		3A6C8E11BD2AA96AC7728B96 /* RokuController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFC350677FD1B20FA0A0874F /* RokuController.swift */; };
 		3A8BFE6503CED3A4BBED0EE4 /* MindfulHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9402C3386278DF81C3762F63 /* MindfulHealth.swift */; };
@@ -67,8 +78,12 @@
 		4393B1E982D3C300512D898C /* SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = BD44C2BDEBC5085A5349E970 /* SOURCES.md */; };
 		439660E157C058142F67DF47 /* WebShellApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */; };
 		4432749F535DE522FB6528BE /* TreeFacts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4307BE1856AAD8B00961B3DF /* TreeFacts.swift */; };
+		444EA6D9EA3585BD499E5239 /* StillPointWatchWidgets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 4E81A3B357B0A2CB0678E1F2 /* StillPointWatchWidgets.plist */; };
 		452B55C6051B0156C2215E46 /* SetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C62D8F1DE137F76D14BFBA78 /* SetupView.swift */; };
+		47FA9ADA8F31DC47B05CBE60 /* Onboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD27E1CB92FE6E9E092E290 /* Onboard.swift */; };
 		485B0E71DC6DAE61FD52E610 /* GoogleTVController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109EE88B005C2649C4B0918 /* GoogleTVController.swift */; };
+		486B7FE066F26D50FEBE20AA /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C7D33700D4FBB929C1B551 /* WidgetBridge.swift */; };
+		486F74AE56ABA95B566A24AB /* DayLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47CADB654B62F22A0EAAD4A6 /* DayLog.swift */; };
 		4AC862D52836E07642D6835D /* PhoneLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D83E689391AF8586E322F4 /* PhoneLink.swift */; };
 		4BD79C061DD68D412F611B20 /* OrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A837FD17A5F7706AAADB8F /* OrbView.swift */; };
 		4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44F00360DF850821B3293EA2 /* RouteTracker.swift */; };
@@ -79,13 +94,16 @@
 		53687AF1B1BBD631518DD8E4 /* Collectibles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */; };
 		53D270FB2C2A3024B554824A /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA1B9E9A43335C30B2AE398 /* PaywallView.swift */; };
 		53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AE617454CF624295615806D /* TVDiscovery.swift */; };
+		53FC69B3CECF39A246641E6B /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 752BC508143D0FD8698E7DE7 /* WidgetBridge.swift */; };
 		553ACB6A7724EAB403232D96 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 315ADAA3C087D1308BC3FF36 /* Theme.swift */; };
 		5686EA2C1A9C68B51067B7FE /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA1B9E9A43335C30B2AE398 /* PaywallView.swift */; };
 		5745960DF9162C73CD34E917 /* MetricDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */; };
 		5843362A054EB4DED1466857 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7602D94C88BBCEBD16741BBC /* Assets.xcassets */; };
 		585E180F0189747D0BC49752 /* StillPointWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3B3AF5B7CE4F2F85A193E089 /* StillPointWatchApp.swift */; };
 		59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6338EB695CED8F5839461B32 /* SuppsView.swift */; };
+		5A17DFB21CF4067CF5F54DA0 /* Scenes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A8558767955D3FC538FF2D /* Scenes.swift */; };
 		5A5B1DA2B538A667EF809D1D /* SplitAnnouncer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E34E19D2DA112977F5B319D8 /* SplitAnnouncer.swift */; };
+		5BC06C9431F16E9340A12537 /* StillPointWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DB62404653B8C748B63A8D /* StillPointWidgets.swift */; };
 		5EF44F0BC4D6DF050075C061 /* WatchJourneyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEA53FB2EDC551DCA64C744C /* WatchJourneyView.swift */; };
 		5F2C61DED6F615C2FB492E86 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B916C82AA75F8627BDE5A7 /* Unlock.swift */; };
 		5F2EC8205682941D80F3EE32 /* ActivityRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */; };
@@ -97,15 +115,19 @@
 		6244A61CEBB8FEB86A0C8DA5 /* LaunchGate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E878AD9A2C77E6FD7E66752B /* LaunchGate.swift */; };
 		65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */; };
 		669DE02F9381489144BAADDF /* Hug.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7D039EE51534C6E9717A31E3 /* Hug.swift */; };
+		6834862DC8B42D6ED0F15495 /* ScenesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14015ADCD5645C29A7212ED9 /* ScenesView.swift */; };
 		69590DFD6BB991FFA3170676 /* SessionDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC92D777F335C9EBAE58D40 /* SessionDetailView.swift */; };
 		699581299FF297492D4CB650 /* LaneHUD.swift in Sources */ = {isa = PBXBuildFile; fileRef = F4501D91E9229D0F700114F2 /* LaneHUD.swift */; };
 		6B5403D2D0B30590A4051BF2 /* Ember.swift in Sources */ = {isa = PBXBuildFile; fileRef = 654224256546BBEC27F74485 /* Ember.swift */; };
 		6BA0EB6F0E19DDD4028F0CF8 /* Navigator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B97EF2596A61FB7C47D91DDF /* Navigator.swift */; };
 		6C649E02624AA526A50F78DC /* GTVLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1E693EC526B4FBB5F067C9 /* GTVLink.swift */; };
 		6C65F686CA73C7A26ECF3223 /* RoamrWatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01F345C9AD9E3A1079859D83 /* RoamrWatchBridge.swift */; };
+		6DF0B2393A49C044F8147872 /* WeekReportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 646B81CB2AC3E688A425A489 /* WeekReportView.swift */; };
 		6EE7D94F280DBE86A1B08393 /* WhoopAuth.swift in Sources */ = {isa = PBXBuildFile; fileRef = EF1FDAE34304445D8FC6C259 /* WhoopAuth.swift */; };
+		6F358B538A49F8B9483106BE /* StillPointWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86DB62404653B8C748B63A8D /* StillPointWidgets.swift */; };
 		6F36EE85A25B87E69D5B5040 /* CompareScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */; };
 		7036C6632A4247739F5EE781 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
+		70EA9C61B3F8375C3D7B86C8 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECD951314CF1FE98847837A /* Onboarding.swift */; };
 		712FB74367AB1ECC10CB7747 /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 463C0E94D514A99089BCC322 /* Activity.swift */; };
 		71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		71D08AC5AED32C92F4E7695E /* pyvizio-LICENSE.txt in Resources */ = {isa = PBXBuildFile; fileRef = 29816AC5FB2EF63F3BE50B79 /* pyvizio-LICENSE.txt */; };
@@ -114,6 +136,7 @@
 		7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */; };
 		781FEE5E6C6CCE9CCC6E846F /* TrackDemo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1466841354823062CD97D858 /* TrackDemo.swift */; };
 		785DADA8E4DD37F2DB90F8A6 /* SessionLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C2297B665507DA57AEEC00 /* SessionLog.swift */; };
+		78E02B3B18F84FF999A0D3C1 /* Onboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A68C28669B465D74FE0BCB56 /* Onboard.swift */; };
 		790CB391480C0BA79E84E262 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FEF4538D4A8B16B0F15F8261 /* Assets.xcassets */; };
 		7930AF457083499037988843 /* AppsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A56120F979883274950676C /* AppsView.swift */; };
 		7B01831BBC9261B80938F4F1 /* TVSwitcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F5189A52DDC1654714EC861 /* TVSwitcher.swift */; };
@@ -135,6 +158,7 @@
 		867D120EDF75FE7001FE7536 /* WhoopClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE02921A710F5DB50A483DC3 /* WhoopClient.swift */; };
 		87CCA73B8401912B96483744 /* BankSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8941F8309AEBE4A083DE0DD /* BankSync.swift */; };
 		87DC39C02AB3EA7603ACFEE4 /* PoseFigure.swift in Sources */ = {isa = PBXBuildFile; fileRef = 326498B01CEDF16C928066E2 /* PoseFigure.swift */; };
+		8CADE3C205A18DC3F3165108 /* PulseLabWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891AD8F594994BFFD12D12FA /* PulseLabWidgets.swift */; };
 		8D09815FF2562EDD5DB1BEF1 /* TrackingActivityAttributes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */; };
 		8D55FDD36C30AFD7A0E5EE4C /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EA1B9E9A43335C30B2AE398 /* PaywallView.swift */; };
 		8DD2F56880FF3BDA26D57E22 /* WatchRuntime.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFC778BC5E9C40A4FD081BF1 /* WatchRuntime.swift */; };
@@ -146,19 +170,27 @@
 		91C909DBC35A2DEBEFEA2C60 /* NightSky.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32CD15365FDC5014307C125C /* NightSky.swift */; };
 		923CCF3CF2A9A19A6A3E6727 /* WatchPracticeInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7BEDA64C475B1983BF0142D /* WatchPracticeInfoView.swift */; };
 		9240DA15469E5F5E1F53987C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AEE36C7584CE358A1400B2C5 /* Assets.xcassets */; };
+		93C5A6259A66777A9C6BBE96 /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 58C3F7547578A686F1D4C587 /* WidgetBridge.swift */; };
 		94F757BEC35B968B1434A84A /* GameEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 934BDCB20C653E5C70F14DE5 /* GameEngine.swift */; };
 		965C96BD74C27CFBF48A9A00 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		96AA1437C7FC27B7E96B74E1 /* TodayScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9AC6637F5427D56F37EE792 /* TodayScreen.swift */; };
 		983DEFCCEC064BE657C0835B /* Sparkle.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBF021BA53A779C9D22AA171 /* Sparkle.swift */; };
+		9914562E0EA95BC9FF824349 /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C7D33700D4FBB929C1B551 /* WidgetBridge.swift */; };
+		9AAA149F1F9DCDAF35283431 /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83D64F1CC85C7352E0E45E4 /* Reminders.swift */; };
 		9AFA46552134B3F6CFD2C1D5 /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B916C82AA75F8627BDE5A7 /* Unlock.swift */; };
+		9BBBCDA657AED57F40C8E02B /* ClankerrWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0D101D969FAD32EC1D1F0A0A /* ClankerrWidgets.swift */; };
 		9D670B63D38C84DBBC827E9D /* SOURCES.md in Resources */ = {isa = PBXBuildFile; fileRef = BD44C2BDEBC5085A5349E970 /* SOURCES.md */; };
 		9FEEB8CD12DFBA877457F288 /* TVStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5F5D7F6A26846A82824D69E1 /* TVStore.swift */; };
 		A07633A89942948AB6C1C798 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94477FDF43FFDFF771343ABE /* Library.swift */; };
 		A1C7CE687B68E4856A40640B /* ActivityDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */; };
+		A2148A02F2F5C33E254834B3 /* MonthlyStatsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5CE341C7C2DA12FACC4D5803 /* MonthlyStatsView.swift */; };
 		A3133445F911E31569ECED60 /* Supplement.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46113FE710889BDCB1BC002 /* Supplement.swift */; };
+		A3312D86414C2F1E057A86F4 /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECD951314CF1FE98847837A /* Onboarding.swift */; };
 		A3AF9F09E8245168EC86A7F1 /* PhoneHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 59CCB92492D41A1B5FA3793C /* PhoneHaptics.swift */; };
 		A4478CB880C4B9551EB11560 /* FightViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 46F39B4CE24618D01D0EC8BB /* FightViews.swift */; };
 		A4546471DD096B17FA23F1CF /* LaneChangeDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */; };
+		A5EA362E5F277CFEEBF577AF /* StillPointWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = FE84B35BE99442729C460043 /* StillPointWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		A6087CBBEFDD96AB40DC525B /* ClankerrWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = A07C825A8BD51B4D58EF540A /* ClankerrWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		A9A576DC88C344308181DF6C /* PhoneLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89A2682809CA69DD3E7F45B3 /* PhoneLink.swift */; };
 		A9DBD03062265E21DD18E839 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = A186561ACF78467CEB0D6F58 /* SettingsScreen.swift */; };
 		AA6053336E838465C7AFBD0D /* ClankerrWatchBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = F6F03C5F359F200B03FE2A5F /* ClankerrWatchBridge.swift */; };
@@ -230,6 +262,7 @@
 		EA3A6B151B0C8E8F676E50AF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7A565CB440DE790AF60B96E9 /* Assets.xcassets */; };
 		EA9552953D01D50611BC5949 /* ClankerrWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A011123681D4298DC5B7D5B1 /* ClankerrWatchApp.swift */; };
 		EACA2F2C3BD45108C4CF438F /* PhoneRunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B63EA75A28560D14137C66E /* PhoneRunView.swift */; };
+		EC5E235F879235A4172C7B93 /* Intents.swift in Sources */ = {isa = PBXBuildFile; fileRef = B79386744AFB368D0AE830EF /* Intents.swift */; };
 		ED1DDC6DAB604700D6A73466 /* DriveEffects.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */; };
 		EDDBAED9DDAB69BE21E36E5E /* web in Resources */ = {isa = PBXBuildFile; fileRef = 597A4F6DE910B32A5C72BD0B /* web */; };
 		EEED7C15D41FD9D68813C185 /* GlossaryText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3480C2AABB9DD6F851957A63 /* GlossaryText.swift */; };
@@ -241,9 +274,11 @@
 		F1E0202CAFBC208E0EB9FAA2 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8017F15EA6A7DAB6862C1959 /* Settings.swift */; };
 		F3D92520189F9377ABC1477F /* Unlock.swift in Sources */ = {isa = PBXBuildFile; fileRef = 71B916C82AA75F8627BDE5A7 /* Unlock.swift */; };
 		F43508AD69C883D8D2BE4C3B /* LaunchSplash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40ECC54940AA2F6838B4759D /* LaunchSplash.swift */; };
+		F4A58AE2BF4C29CFDB1CB9F4 /* FoodBookWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 0942F43ED7FC0E29EECA326C /* FoodBookWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		F4E7EA323633CCA85B776535 /* practices.json in Resources */ = {isa = PBXBuildFile; fileRef = B9A054775255FA13710B3CD5 /* practices.json */; };
 		F5E75A4754328A8867116941 /* SpeedZones.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0280FF1C22E640C6CE99F86D /* SpeedZones.swift */; };
 		F607084704345551F974EB1A /* FoodEstimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3B654538773ECEA01889CF8 /* FoodEstimator.swift */; };
+		F6B9A992CED6F4FC2683C06B /* Onboarding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ECD951314CF1FE98847837A /* Onboarding.swift */; };
 		F7007D4DB310A923846BEC02 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		F7703AC7E6D97541E5889F04 /* LaneMath.swift in Sources */ = {isa = PBXBuildFile; fileRef = 555C0CD0AA455767020BE7B4 /* LaneMath.swift */; };
 		F82117E4DD96DD24C8EE1D41 /* CompatibilityView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 69AECFA1A94F497D848E305C /* CompatibilityView.swift */; };
@@ -263,6 +298,13 @@
 			remoteGlobalIDString = DE6C827C535AA19CE084C612;
 			remoteInfo = StillPointWatch;
 		};
+		17E5CA61B276B2FC5FED6408 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 949FC0CEAF903C20D16C7726;
+			remoteInfo = ClankerrWidgets;
+		};
 		1B5C9DB84A03686FDDB1AA50 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
@@ -270,12 +312,33 @@
 			remoteGlobalIDString = 8A0EE00DD725A91404FABCE3;
 			remoteInfo = Roamr;
 		};
+		39763A0F3B864872F86D8A04 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 51058348CF17E7680BF200C6;
+			remoteInfo = FoodBookWidgets;
+		};
+		39DF4BC8BBD2177B740F4EDF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 35D8F730224F83E06D33DC7B;
+			remoteInfo = PulseLabWidgets;
+		};
 		690EEF602C528C3FA6587603 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 7DAC63D05B83BBE7BD589AA8;
 			remoteInfo = Rootbound;
+		};
+		977D33513C64026F1F43ED76 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 448A8C6F6CE69C516A5CA2DE;
+			remoteInfo = StillPointWidgets;
 		};
 		9D750B1DAFF19630B9E5951D /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -312,6 +375,13 @@
 			remoteGlobalIDString = 51775EDAA09CE7B81C7D8D2C;
 			remoteInfo = RoamrWatch;
 		};
+		EBB34CD5C4A1CDB07FDBDBB3 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 3F3E1E750EEEAD1176236D56;
+			remoteInfo = StillPointWatchWidgets;
+		};
 		F3813E2EE4CF4AE29697BFE6 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AF97C27C5A83ECCCF654170B /* Project object */;
@@ -331,6 +401,17 @@
 				411F6F413D7AA38ED75EEDA2 /* StillPointWatch.app in Embed Dependencies */,
 			);
 			name = "Embed Dependencies";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5FF9248C11FEE24387305E91 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A5EA362E5F277CFEEBF577AF /* StillPointWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6390969537F2BF01F31E5ABF /* Embed Dependencies */ = {
@@ -388,6 +469,50 @@
 			name = "Embed Dependencies";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B5229A1717A731B60964D75B /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				00AAF3658F803880F2762DE9 /* StillPointWatchWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C0BA1D9C115965881BE18F0A /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				31540D4A52B80A028F2F17AD /* PulseLabWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		C2DEDE22D1E57EC5BD9D7785 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				A6087CBBEFDD96AB40DC525B /* ClankerrWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		F036C40FA36515169E59C7F9 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				F4A58AE2BF4C29CFDB1CB9F4 /* FoodBookWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
@@ -400,13 +525,17 @@
 		03D83E689391AF8586E322F4 /* PhoneLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLink.swift; sourceTree = "<group>"; };
 		048942F8C73DC3176111F2AF /* TrackingActivityAttributes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingActivityAttributes.swift; sourceTree = "<group>"; };
 		075353C50C4C91351AA9036A /* WatchLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchLink.swift; sourceTree = "<group>"; };
+		0942F43ED7FC0E29EECA326C /* FoodBookWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FoodBookWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		0AB596DB4A0666E0B36C65BB /* ActivityRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityRow.swift; sourceTree = "<group>"; };
 		0B43234A9F5073F9BE227887 /* FoodBookWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FoodBookWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C18055774998E68B0A2D16D /* CollectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionView.swift; sourceTree = "<group>"; };
 		0C8E1D9FA3EC0FE146787781 /* TreeHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeHubApp.swift; sourceTree = "<group>"; };
+		0D101D969FAD32EC1D1F0A0A /* ClankerrWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClankerrWidgets.swift; sourceTree = "<group>"; };
 		0DD1ECF2E31333D7CF669198 /* PulseLab.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = PulseLab.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		109B2A40F21EEFAE69317B5D /* RunView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunView.swift; sourceTree = "<group>"; };
 		116D3B6C50051F3A22CDB1C0 /* Rivalry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Rivalry.swift; sourceTree = "<group>"; };
+		1210963E39CBC6DE13842121 /* PulseLabWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PulseLabWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		14015ADCD5645C29A7212ED9 /* ScenesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScenesView.swift; sourceTree = "<group>"; };
 		1466841354823062CD97D858 /* TrackDemo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackDemo.swift; sourceTree = "<group>"; };
 		1494B33D010A8083375A49B6 /* HeartScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeartScreen.swift; sourceTree = "<group>"; };
 		14EA827DC7590876A4C29524 /* RootboundWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RootboundWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -428,16 +557,21 @@
 		2F96E3000485DBDD5DB27D6A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		30BBEF4A28F1394B9276CB9A /* HealthPull.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthPull.swift; sourceTree = "<group>"; };
 		315ADAA3C087D1308BC3FF36 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		31A8558767955D3FC538FF2D /* Scenes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scenes.swift; sourceTree = "<group>"; };
 		324FF7E98D47D20089B24E4F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		326498B01CEDF16C928066E2 /* PoseFigure.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PoseFigure.swift; sourceTree = "<group>"; };
 		32CD15365FDC5014307C125C /* NightSky.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightSky.swift; sourceTree = "<group>"; };
 		32DA9DFEEDD192CB3A30525C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		33C2297B665507DA57AEEC00 /* SessionLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLog.swift; sourceTree = "<group>"; };
+		342AF29423DD4DCADDDAA376 /* Notify.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notify.swift; sourceTree = "<group>"; };
 		3480C2AABB9DD6F851957A63 /* GlossaryText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlossaryText.swift; sourceTree = "<group>"; };
+		358886D279A8BA1A07EE22B8 /* StillPointWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = StillPointWidgets.plist; sourceTree = "<group>"; };
 		3A949FB8533987999EAF3557 /* StatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsView.swift; sourceTree = "<group>"; };
 		3B3AF5B7CE4F2F85A193E089 /* StillPointWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillPointWatchApp.swift; sourceTree = "<group>"; };
+		3D0B7E02A88A51C79D7791CB /* PulseLabWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PulseLabWidgets.entitlements; sourceTree = "<group>"; };
 		3D88A27861C5705606A776DF /* GTVIdentity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVIdentity.swift; sourceTree = "<group>"; };
 		3E5BAF54B89C7E3E6D948D3A /* FoodHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodHealth.swift; sourceTree = "<group>"; };
+		3ECD951314CF1FE98847837A /* Onboarding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboarding.swift; sourceTree = "<group>"; };
 		3F1E693EC526B4FBB5F067C9 /* GTVLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GTVLink.swift; sourceTree = "<group>"; };
 		3FB9BB90981E5B893402BEA6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3FC8FA044D7503651EA2DC32 /* VizioClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizioClient.swift; sourceTree = "<group>"; };
@@ -452,28 +586,34 @@
 		46C8DC3149619497B1BCE67E /* HugDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugDetailView.swift; sourceTree = "<group>"; };
 		46F39B4CE24618D01D0EC8BB /* FightViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FightViews.swift; sourceTree = "<group>"; };
 		47680793EF666456AB107D20 /* Insights.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Insights.swift; sourceTree = "<group>"; };
+		47CADB654B62F22A0EAAD4A6 /* DayLog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DayLog.swift; sourceTree = "<group>"; };
 		4918FC2F6D210C5907AFF2C5 /* Dock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dock.swift; sourceTree = "<group>"; };
 		4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackSettingsView.swift; sourceTree = "<group>"; };
 		4E36CC16D213588D0432C222 /* PracticeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeViews.swift; sourceTree = "<group>"; };
+		4E81A3B357B0A2CB0678E1F2 /* StillPointWatchWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = StillPointWatchWidgets.plist; sourceTree = "<group>"; };
 		5119CE38DDFCF14659B1A83A /* SleepScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SleepScreen.swift; sourceTree = "<group>"; };
 		522763F1CEDB54BD89DE68DB /* Rootbound.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Rootbound.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		52E3D277EF6186E89CD7A080 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		52FB02D845BA8E73B5FDE30B /* MovementEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MovementEngine.swift; sourceTree = "<group>"; };
 		546E982877DEECF72E33F533 /* PCClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PCClient.swift; sourceTree = "<group>"; };
+		54E07A745E858C4CEB26D4C1 /* StillPointWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StillPointWidgets.entitlements; sourceTree = "<group>"; };
 		555C0CD0AA455767020BE7B4 /* LaneMath.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneMath.swift; sourceTree = "<group>"; };
 		56B2A6670639240E7A7152A6 /* FoodAI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodAI.swift; sourceTree = "<group>"; };
 		5884433CD32FDD4D160203A6 /* Roamr.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Roamr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		58B86A832B9932FA9DF012C5 /* TodayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayView.swift; sourceTree = "<group>"; };
+		58C3F7547578A686F1D4C587 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		597A4F6DE910B32A5C72BD0B /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/QuestApp/web; sourceTree = SOURCE_ROOT; };
 		59CCB92492D41A1B5FA3793C /* PhoneHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneHaptics.swift; sourceTree = "<group>"; };
 		5A870D9A1F43A4D08DC2F855 /* NavViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NavViews.swift; sourceTree = "<group>"; };
 		5B803FB1DCFA45F7415DF93B /* WebShellApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebShellApp.swift; sourceTree = "<group>"; };
+		5CE341C7C2DA12FACC4D5803 /* MonthlyStatsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyStatsView.swift; sourceTree = "<group>"; };
 		5D129B25920C1A4DEE831F57 /* TrackHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TrackHub.entitlements; sourceTree = "<group>"; };
 		5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCard.swift; sourceTree = "<group>"; };
 		5D755C4B90FCE384E17937F9 /* RoamrWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchApp.swift; sourceTree = "<group>"; };
 		5F5D7F6A26846A82824D69E1 /* TVStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVStore.swift; sourceTree = "<group>"; };
 		6338EB695CED8F5839461B32 /* SuppsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SuppsView.swift; sourceTree = "<group>"; };
 		63C5A2F2435EAC0C4C16ABFD /* FoodVision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodVision.swift; sourceTree = "<group>"; };
+		646B81CB2AC3E688A425A489 /* WeekReportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekReportView.swift; sourceTree = "<group>"; };
 		654224256546BBEC27F74485 /* Ember.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ember.swift; sourceTree = "<group>"; };
 		6554FB137C7B3FFF343F602C /* TVBrand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVBrand.swift; sourceTree = "<group>"; };
 		664E3AC62573E5668EF9D4AD /* glossary.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = glossary.json; sourceTree = "<group>"; };
@@ -488,11 +628,14 @@
 		6BD2C44AF205D8D728DC7D92 /* Polish.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Polish.swift; sourceTree = "<group>"; };
 		6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthViews.swift; sourceTree = "<group>"; };
 		6F5189A52DDC1654714EC861 /* TVSwitcher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TVSwitcher.swift; sourceTree = "<group>"; };
+		70B08178CE53941DBC676CE9 /* ClankerrWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClankerrWatch.entitlements; sourceTree = "<group>"; };
 		70DD3A650F0E6C1FCD0A1133 /* LGController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LGController.swift; sourceTree = "<group>"; };
 		71B916C82AA75F8627BDE5A7 /* Unlock.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Unlock.swift; sourceTree = "<group>"; };
 		74DC1EBA4772527EB4B2D724 /* LabStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabStore.swift; sourceTree = "<group>"; };
+		752BC508143D0FD8698E7DE7 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		752CFF19534F6C28C530E163 /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
 		7602D94C88BBCEBD16741BBC /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		7683BF0D6A7726CC3432DEB4 /* FoodBookWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = FoodBookWidgets.plist; sourceTree = "<group>"; };
 		76A6DEEB94F3850A9278A64B /* TrackHubApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackHubApp.swift; sourceTree = "<group>"; };
 		76D8E2CB5C359BA8ADB1ED3F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		7910A313C83B88F5D9DC443C /* PulseLabApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseLabApp.swift; sourceTree = "<group>"; };
@@ -504,8 +647,12 @@
 		8017F15EA6A7DAB6862C1959 /* Settings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
 		80ACEC3C05F648903A54E16B /* seed.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = seed.json; sourceTree = "<group>"; };
 		82B5B2B41BAA1BF8C6E5D5AC /* PracticeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeInfoView.swift; sourceTree = "<group>"; };
+		82F90F364B5695F3E02F270F /* StillPointWatchWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = StillPointWatchWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		84020FAF6BBD9C477A647FFD /* DriveDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveDetector.swift; sourceTree = "<group>"; };
+		86DB62404653B8C748B63A8D /* StillPointWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillPointWidgets.swift; sourceTree = "<group>"; };
 		8752741130972C49F667C4E3 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		87EA5604857003E473AC3B8D /* HistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HistoryView.swift; sourceTree = "<group>"; };
+		891AD8F594994BFFD12D12FA /* PulseLabWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PulseLabWidgets.swift; sourceTree = "<group>"; };
 		89A2682809CA69DD3E7F45B3 /* PhoneLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLink.swift; sourceTree = "<group>"; };
 		89AB83B63312836096D3E476 /* Camera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Camera.swift; sourceTree = "<group>"; };
 		8A93A146F95A24090BFD1768 /* FoodBookWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookWatchApp.swift; sourceTree = "<group>"; };
@@ -513,9 +660,11 @@
 		8E37F3AD4BE10E9D10299E30 /* SnapResultSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapResultSheet.swift; sourceTree = "<group>"; };
 		8EF9FA8F8D82A9B59632D6F3 /* Look.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Look.swift; sourceTree = "<group>"; };
 		8FB4AA42B14F13AE2510A7FD /* StillPointWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = StillPointWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FC29CE747EEB9D497F7C4DA /* ClankerrWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClankerrWidgets.entitlements; sourceTree = "<group>"; };
 		91E406F646274B983FD866CF /* BreathEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreathEngine.swift; sourceTree = "<group>"; };
 		9232467C1686C678F705B0C5 /* CelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelebrationView.swift; sourceTree = "<group>"; };
 		934BDCB20C653E5C70F14DE5 /* GameEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameEngine.swift; sourceTree = "<group>"; };
+		936C1103E0E740B52B94482F /* PulseLabWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = PulseLabWidgets.plist; sourceTree = "<group>"; };
 		9402C3386278DF81C3762F63 /* MindfulHealth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MindfulHealth.swift; sourceTree = "<group>"; };
 		94477FDF43FFDFF771343ABE /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
 		95627826BBB39644B9BEF65D /* RoamrWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RoamrWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -530,6 +679,7 @@
 		9FA5CF9C647040BB4EC568E4 /* AppPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppPicker.swift; sourceTree = "<group>"; };
 		9FFCEABC9A0E997904C8A2AA /* TourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TourTests.swift; sourceTree = "<group>"; };
 		A011123681D4298DC5B7D5B1 /* ClankerrWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClankerrWatchApp.swift; sourceTree = "<group>"; };
+		A07C825A8BD51B4D58EF540A /* ClankerrWidgets.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClankerrWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		A09CBF1471DEBE898FEC6448 /* PulseLab.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PulseLab.entitlements; sourceTree = "<group>"; };
 		A186561ACF78467CEB0D6F58 /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		A28DDBC93021FD58B540B885 /* ClankerrWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ClankerrWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -537,17 +687,23 @@
 		A2F6E7177A9A752AE4B6BE5C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A46113FE710889BDCB1BC002 /* Supplement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supplement.swift; sourceTree = "<group>"; };
 		A65B6F0F340209ADFCF6788F /* TreeHub.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = TreeHub.entitlements; sourceTree = "<group>"; };
+		A68C28669B465D74FE0BCB56 /* Onboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboard.swift; sourceTree = "<group>"; };
 		A6D1895159EA264D0659FAC0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A83D64F1CC85C7352E0E45E4 /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
 		A8941F8309AEBE4A083DE0DD /* BankSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BankSync.swift; sourceTree = "<group>"; };
 		A8CF658200BD2C4A35FFA662 /* MetricDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricDetailSheet.swift; sourceTree = "<group>"; };
 		A9A837FD17A5F7706AAADB8F /* OrbView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrbView.swift; sourceTree = "<group>"; };
 		ACC631B71309791C55329B7D /* vizio_apps.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = vizio_apps.json; sourceTree = "<group>"; };
+		ADD27E1CB92FE6E9E092E290 /* Onboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Onboard.swift; sourceTree = "<group>"; };
 		AEC92D777F335C9EBAE58D40 /* SessionDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionDetailView.swift; sourceTree = "<group>"; };
 		AEE36C7584CE358A1400B2C5 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AFC9F31545C8F7A023DF8BD9 /* CompareScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompareScreen.swift; sourceTree = "<group>"; };
+		B04458D4B97E3EAD401DC3D0 /* Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intents.swift; sourceTree = "<group>"; };
+		B06748F5CF15D63866C78B5D /* FoodBookWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FoodBookWidgets.entitlements; sourceTree = "<group>"; };
 		B1FBAD8AABB0E885972735B9 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		B3B654538773ECEA01889CF8 /* FoodEstimator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEstimator.swift; sourceTree = "<group>"; };
 		B410839CD36818929B918A1C /* HugLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HugLogView.swift; sourceTree = "<group>"; };
+		B79386744AFB368D0AE830EF /* Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intents.swift; sourceTree = "<group>"; };
 		B97EF2596A61FB7C47D91DDF /* Navigator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Navigator.swift; sourceTree = "<group>"; };
 		B9A054775255FA13710B3CD5 /* practices.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = practices.json; sourceTree = "<group>"; };
 		B9AC6637F5427D56F37EE792 /* TodayScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayScreen.swift; sourceTree = "<group>"; };
@@ -555,10 +711,12 @@
 		B9FB470D73E21C7F253D4FE7 /* FoodBook.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FoodBook.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BD44C2BDEBC5085A5349E970 /* SOURCES.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SOURCES.md; sourceTree = "<group>"; };
 		BEA53FB2EDC551DCA64C744C /* WatchJourneyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchJourneyView.swift; sourceTree = "<group>"; };
+		BF2CD8B92CF01A16EAD75327 /* ClankerrWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = ClankerrWidgets.plist; sourceTree = "<group>"; };
 		BFC350677FD1B20FA0A0874F /* RokuController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RokuController.swift; sourceTree = "<group>"; };
 		C01750639F52088FDDAA89CB /* FoodEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodEntry.swift; sourceTree = "<group>"; };
 		C2E4F9AD0CA6F2DBDE1760ED /* WhoopAdapter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhoopAdapter.swift; sourceTree = "<group>"; };
 		C38C037AE149B0948DFE3983 /* LaneChangeDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneChangeDetector.swift; sourceTree = "<group>"; };
+		C405D45EFBC6EFC3A6F3EABE /* TrustScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrustScreen.swift; sourceTree = "<group>"; };
 		C50E01FE8A1C5654C6FE083F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		C5282B10CF508CE08565DA73 /* SnapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SnapView.swift; sourceTree = "<group>"; };
 		C5BEB3688AC774B44A38DF1D /* StillPoint.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StillPoint.entitlements; sourceTree = "<group>"; };
@@ -570,11 +728,13 @@
 		CB213271A39B184F8A858EDC /* FoodBookApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookApp.swift; sourceTree = "<group>"; };
 		CBA08322BE0892A542B9F9C2 /* DriveEffects.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DriveEffects.swift; sourceTree = "<group>"; };
 		CE0DD6553C79BBE6E4426229 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		CE11F77364B38533D052BC64 /* FoodBookWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodBookWidgets.swift; sourceTree = "<group>"; };
 		D11DBD0989B6A34A4EA014E8 /* TrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackView.swift; sourceTree = "<group>"; };
 		D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddFoodSheet.swift; sourceTree = "<group>"; };
 		D7BA3D260B47B8A0E389F675 /* Clicker.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Clicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		D7BEDA64C475B1983BF0142D /* WatchPracticeInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchPracticeInfoView.swift; sourceTree = "<group>"; };
 		D98D314E35365B34A5FCA998 /* LiveAvatar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveAvatar.swift; sourceTree = "<group>"; };
+		D9C7D33700D4FBB929C1B551 /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		DD6F3E90FDD74C8DE305AEC9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		E109EE88B005C2649C4B0918 /* GoogleTVController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoogleTVController.swift; sourceTree = "<group>"; };
 		E2B4B2002AF716FBD275A725 /* FoodWatchBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodWatchBridge.swift; sourceTree = "<group>"; };
@@ -592,10 +752,12 @@
 		EF1FDAE34304445D8FC6C259 /* WhoopAuth.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WhoopAuth.swift; sourceTree = "<group>"; };
 		F03EB3FF5C4F9C73F7BD5ACB /* ActivityDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityDetailView.swift; sourceTree = "<group>"; };
 		F0B76E44B44AC9A333945C4F /* StillPointWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StillPointWatch.entitlements; sourceTree = "<group>"; };
+		F17B38EE90473F5FE4B0F678 /* StillPointWatchWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = StillPointWatchWidgets.entitlements; sourceTree = "<group>"; };
 		F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopDownTruck.swift; sourceTree = "<group>"; };
 		F30BF93D2329261FAE4B8293 /* Compare.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Compare.swift; sourceTree = "<group>"; };
 		F4501D91E9229D0F700114F2 /* LaneHUD.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaneHUD.swift; sourceTree = "<group>"; };
 		F4970C92A6C2125DEDCD310E /* TrackTourTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackTourTests.swift; sourceTree = "<group>"; };
+		F537F674C9CB89F8249DE28B /* WidgetBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetBridge.swift; sourceTree = "<group>"; };
 		F6ADD0E961A8A829FF411833 /* web */ = {isa = PBXFileReference; lastKnownFileType = folder; name = web; path = WebApps/NatalOrbit/web; sourceTree = SOURCE_ROOT; };
 		F6F03C5F359F200B03FE2A5F /* ClankerrWatchBridge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClankerrWatchBridge.swift; sourceTree = "<group>"; };
 		F74EEDFE1E4F546C9F5233D4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -609,6 +771,7 @@
 		FC2CECB64BAA16791EB8A8E9 /* LiveActivityController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveActivityController.swift; sourceTree = "<group>"; };
 		FD533F40BAA6F6D9454E5913 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FE4084D298272631FD28332D /* VizioController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizioController.swift; sourceTree = "<group>"; };
+		FE84B35BE99442729C460043 /* StillPointWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = StillPointWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEF4538D4A8B16B0F15F8261 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FFC778BC5E9C40A4FD081BF1 /* WatchRuntime.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchRuntime.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -617,6 +780,7 @@
 		05FC2B481E6166D2EEC1F906 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				47CADB654B62F22A0EAAD4A6 /* DayLog.swift */,
 				C01750639F52088FDDAA89CB /* FoodEntry.swift */,
 				A46113FE710889BDCB1BC002 /* Supplement.swift */,
 			);
@@ -696,6 +860,7 @@
 			isa = PBXGroup;
 			children = (
 				7A565CB440DE790AF60B96E9 /* Assets.xcassets */,
+				70B08178CE53941DBC676CE9 /* ClankerrWatch.entitlements */,
 				A011123681D4298DC5B7D5B1 /* ClankerrWatchApp.swift */,
 				A2F6E7177A9A752AE4B6BE5C /* Info.plist */,
 			);
@@ -717,6 +882,7 @@
 				33C2297B665507DA57AEEC00 /* SessionLog.swift */,
 				8017F15EA6A7DAB6862C1959 /* Settings.swift */,
 				315ADAA3C087D1308BC3FF36 /* Theme.swift */,
+				D9C7D33700D4FBB929C1B551 /* WidgetBridge.swift */,
 				68DCA14A6DC7E502BCC4B39E /* Resources */,
 			);
 			path = Shared;
@@ -762,6 +928,7 @@
 		45D9E25985ED23CDE43F8BE5 /* Store */ = {
 			isa = PBXGroup;
 			children = (
+				3ECD951314CF1FE98847837A /* Onboarding.swift */,
 				7EA1B9E9A43335C30B2AE398 /* PaywallView.swift */,
 				71B916C82AA75F8627BDE5A7 /* Unlock.swift */,
 			);
@@ -772,9 +939,12 @@
 			isa = PBXGroup;
 			children = (
 				370747C65F73AF9018FA8324 /* ClankerrWatch */,
+				5BA5C1B497FD83931F967353 /* ClankerrWidgets */,
 				521D4F5891FDA029AEDE57E2 /* FoodApp */,
 				D6EEEBA52AA905FCCF88A08B /* FoodBookWatch */,
+				D3E21558E3767B131021392C /* FoodBookWidgets */,
 				CA6102DC3939D3D726FE391F /* PulseLab */,
+				565B6C0A3A713FDC9C3228FB /* PulseLabWidgets */,
 				CA359F4F5DD97B4768E8D228 /* RoamrWatch */,
 				EE02868A2EE0C783F32AB7BB /* RoamrWidgets */,
 				DC82DFB1DD16B4F987429470 /* RootboundTests */,
@@ -782,6 +952,7 @@
 				9940A62A24413B2102E59F27 /* Shared */,
 				218AA1628F755B74960D5AF8 /* StillPoint */,
 				775CB2CB7CF4DFB9A0CEABA1 /* StillPointWatch */,
+				CEA4C5F4E48C97658DCC0E94 /* StillPointWidgets */,
 				A7156C98667DC49141D2DC60 /* TrackApp */,
 				9A6C2866154D34A621C998DF /* TrackHubUITests */,
 				2535BCD53907184A8980C35F /* TreeHub */,
@@ -819,8 +990,20 @@
 			isa = PBXGroup;
 			children = (
 				01D854BA14681BFCF2190CE5 /* ClickerApp.swift */,
+				B04458D4B97E3EAD401DC3D0 /* Intents.swift */,
+				ADD27E1CB92FE6E9E092E290 /* Onboard.swift */,
 			);
 			path = App;
+			sourceTree = "<group>";
+		};
+		565B6C0A3A713FDC9C3228FB /* PulseLabWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				3D0B7E02A88A51C79D7791CB /* PulseLabWidgets.entitlements */,
+				936C1103E0E740B52B94482F /* PulseLabWidgets.plist */,
+				891AD8F594994BFFD12D12FA /* PulseLabWidgets.swift */,
+			);
+			path = PulseLabWidgets;
 			sourceTree = "<group>";
 		};
 		5A5AD11E7E9A9BE2BA26BE42 /* QuestApp */ = {
@@ -833,14 +1016,26 @@
 			path = QuestApp;
 			sourceTree = "<group>";
 		};
+		5BA5C1B497FD83931F967353 /* ClankerrWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				8FC29CE747EEB9D497F7C4DA /* ClankerrWidgets.entitlements */,
+				BF2CD8B92CF01A16EAD75327 /* ClankerrWidgets.plist */,
+				0D101D969FAD32EC1D1F0A0A /* ClankerrWidgets.swift */,
+			);
+			path = ClankerrWidgets;
+			sourceTree = "<group>";
+		};
 		6004107CC2559F7F1759AD3D /* Views */ = {
 			isa = PBXGroup;
 			children = (
 				D69E2624AB4317C46E4D44FD /* AddFoodSheet.swift */,
 				6C9809BA06B53FDDD59CD2F9 /* HealthViews.swift */,
+				87EA5604857003E473AC3B8D /* HistoryView.swift */,
 				2A439AA5BCA27416587F3C02 /* SuppEditSheet.swift */,
 				6338EB695CED8F5839461B32 /* SuppsView.swift */,
 				58B86A832B9932FA9DF012C5 /* TodayView.swift */,
+				646B81CB2AC3E688A425A489 /* WeekReportView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -869,7 +1064,9 @@
 				74DC1EBA4772527EB4B2D724 /* LabStore.swift */,
 				0155BE8703899297CCFB1D44 /* MetricKey.swift */,
 				E2CD4EAE449E445C94FC7058 /* Metrics.swift */,
+				342AF29423DD4DCADDDAA376 /* Notify.swift */,
 				C2E4F9AD0CA6F2DBDE1760ED /* WhoopAdapter.swift */,
+				F537F674C9CB89F8249DE28B /* WidgetBridge.swift */,
 			);
 			path = Data;
 			sourceTree = "<group>";
@@ -889,12 +1086,15 @@
 			children = (
 				FEF4538D4A8B16B0F15F8261 /* Assets.xcassets */,
 				F9A4FA56F83687B6A72246F1 /* HomeView.swift */,
+				B79386744AFB368D0AE830EF /* Intents.swift */,
 				01E3487A993F2A72A42D3A47 /* JourneyView.swift */,
+				A68C28669B465D74FE0BCB56 /* Onboard.swift */,
 				59CCB92492D41A1B5FA3793C /* PhoneHaptics.swift */,
 				89A2682809CA69DD3E7F45B3 /* PhoneLink.swift */,
 				6B63EA75A28560D14137C66E /* PhoneRunView.swift */,
 				82B5B2B41BAA1BF8C6E5D5AC /* PracticeInfoView.swift */,
 				4E36CC16D213588D0432C222 /* PracticeViews.swift */,
+				A83D64F1CC85C7352E0E45E4 /* Reminders.swift */,
 				7F57D47A19D76BA41A16BFCA /* Scenes.swift */,
 				AEC92D777F335C9EBAE58D40 /* SessionDetailView.swift */,
 				FBF021BA53A779C9D22AA171 /* Sparkle.swift */,
@@ -952,11 +1152,14 @@
 			isa = PBXGroup;
 			children = (
 				A28DDBC93021FD58B540B885 /* ClankerrWatch.app */,
+				A07C825A8BD51B4D58EF540A /* ClankerrWidgets.appex */,
 				D7BA3D260B47B8A0E389F675 /* Clicker.app */,
 				B9FB470D73E21C7F253D4FE7 /* FoodBook.app */,
 				0B43234A9F5073F9BE227887 /* FoodBookWatch.app */,
+				0942F43ED7FC0E29EECA326C /* FoodBookWidgets.appex */,
 				B9F72D4CAAF82107DC3E0588 /* NatalOrbit.app */,
 				0DD1ECF2E31333D7CF669198 /* PulseLab.app */,
+				1210963E39CBC6DE13842121 /* PulseLabWidgets.appex */,
 				E3E091DF3578856789807FDF /* RideQuest.app */,
 				5884433CD32FDD4D160203A6 /* Roamr.app */,
 				C81D053EF004338204CA6530 /* RoamrUITests.xctest */,
@@ -968,6 +1171,8 @@
 				14EA827DC7590876A4C29524 /* RootboundWidgets.appex */,
 				8CE2676C7F70BD4BD5CDA9DF /* StillPoint.app */,
 				8FB4AA42B14F13AE2510A7FD /* StillPointWatch.app */,
+				82F90F364B5695F3E02F270F /* StillPointWatchWidgets.appex */,
+				FE84B35BE99442729C460043 /* StillPointWidgets.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1074,6 +1279,7 @@
 			isa = PBXGroup;
 			children = (
 				752CFF19534F6C28C530E163 /* HistoryView.swift */,
+				5CE341C7C2DA12FACC4D5803 /* MonthlyStatsView.swift */,
 				3A949FB8533987999EAF3557 /* StatsView.swift */,
 				4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */,
 			);
@@ -1124,6 +1330,7 @@
 				69AECFA1A94F497D848E305C /* CompatibilityView.swift */,
 				429D35136AAD84A17099192A /* KeyboardBar.swift */,
 				17C64D37B318F75453FE1CCF /* RemoteView.swift */,
+				14015ADCD5645C29A7212ED9 /* ScenesView.swift */,
 				C62D8F1DE137F76D14BFBA78 /* SetupView.swift */,
 				6F5189A52DDC1654714EC861 /* TVSwitcher.swift */,
 			);
@@ -1165,6 +1372,7 @@
 				5D514EEE0DDC07EC17F9C342 /* ShareCard.swift */,
 				5119CE38DDFCF14659B1A83A /* SleepScreen.swift */,
 				B9AC6637F5427D56F37EE792 /* TodayScreen.swift */,
+				C405D45EFBC6EFC3A6F3EABE /* TrustScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -1205,6 +1413,18 @@
 			path = Game;
 			sourceTree = "<group>";
 		};
+		CEA4C5F4E48C97658DCC0E94 /* StillPointWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				F17B38EE90473F5FE4B0F678 /* StillPointWatchWidgets.entitlements */,
+				4E81A3B357B0A2CB0678E1F2 /* StillPointWatchWidgets.plist */,
+				54E07A745E858C4CEB26D4C1 /* StillPointWidgets.entitlements */,
+				358886D279A8BA1A07EE22B8 /* StillPointWidgets.plist */,
+				86DB62404653B8C748B63A8D /* StillPointWidgets.swift */,
+			);
+			path = StillPointWidgets;
+			sourceTree = "<group>";
+		};
 		D2354D2ED808C4944DA31808 /* NatalOrbit */ = {
 			isa = PBXGroup;
 			children = (
@@ -1212,6 +1432,16 @@
 				F6ADD0E961A8A829FF411833 /* web */,
 			);
 			path = NatalOrbit;
+			sourceTree = "<group>";
+		};
+		D3E21558E3767B131021392C /* FoodBookWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				B06748F5CF15D63866C78B5D /* FoodBookWidgets.entitlements */,
+				7683BF0D6A7726CC3432DEB4 /* FoodBookWidgets.plist */,
+				CE11F77364B38533D052BC64 /* FoodBookWidgets.swift */,
+			);
+			path = FoodBookWidgets;
 			sourceTree = "<group>";
 		};
 		D6A15AD9851995B292B60E11 /* TreeHubUITests */ = {
@@ -1236,6 +1466,7 @@
 			isa = PBXGroup;
 			children = (
 				3E5BAF54B89C7E3E6D948D3A /* FoodHealth.swift */,
+				752BC508143D0FD8698E7DE7 /* WidgetBridge.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1253,10 +1484,12 @@
 			isa = PBXGroup;
 			children = (
 				F6F03C5F359F200B03FE2A5F /* ClankerrWatchBridge.swift */,
+				31A8558767955D3FC538FF2D /* Scenes.swift */,
 				6554FB137C7B3FFF343F602C /* TVBrand.swift */,
 				9AE617454CF624295615806D /* TVDiscovery.swift */,
 				5F5D7F6A26846A82824D69E1 /* TVStore.swift */,
 				3FC8FA044D7503651EA2DC32 /* VizioClient.swift */,
+				58C3F7547578A686F1D4C587 /* WidgetBridge.swift */,
 				2AE2131F84D33E5954E75902 /* Brands */,
 			);
 			path = Services;
@@ -1330,12 +1563,14 @@
 			buildPhases = (
 				6F5541602CC18D807245C2C6 /* Sources */,
 				BE369984E1CEA70725514E99 /* Resources */,
+				5FF9248C11FEE24387305E91 /* Embed Foundation Extensions */,
 				28901002C89D3306DCC51D2C /* Embed Dependencies */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				B120D3A0733A825F077C503F /* PBXTargetDependency */,
+				E295F81B9BA6D0CE08CD9A3C /* PBXTargetDependency */,
 			);
 			name = StillPoint;
 			packageProductDependencies = (
@@ -1343,6 +1578,23 @@
 			productName = StillPoint;
 			productReference = 8CE2676C7F70BD4BD5CDA9DF /* StillPoint.app */;
 			productType = "com.apple.product-type.application";
+		};
+		35D8F730224F83E06D33DC7B /* PulseLabWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1736A0E62505E7449B7D84E5 /* Build configuration list for PBXNativeTarget "PulseLabWidgets" */;
+			buildPhases = (
+				A6C9C341679AE854253E68D1 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = PulseLabWidgets;
+			packageProductDependencies = (
+			);
+			productName = PulseLabWidgets;
+			productReference = 1210963E39CBC6DE13842121 /* PulseLabWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		36AF664DCB7ADFE0ECC78B19 /* RoamrWidgets */ = {
 			isa = PBXNativeTarget;
@@ -1359,6 +1611,24 @@
 			);
 			productName = RoamrWidgets;
 			productReference = 95627826BBB39644B9BEF65D /* RoamrWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+		3F3E1E750EEEAD1176236D56 /* StillPointWatchWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 961358083244D7274D838B34 /* Build configuration list for PBXNativeTarget "StillPointWatchWidgets" */;
+			buildPhases = (
+				1DEDBB8FFD9CC0C1568F8ED3 /* Sources */,
+				B4DEBD519F488BE6ADE1ECAA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StillPointWatchWidgets;
+			packageProductDependencies = (
+			);
+			productName = StillPointWatchWidgets;
+			productReference = 82F90F364B5695F3E02F270F /* StillPointWatchWidgets.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 		3F62CE67F166982972F2D90D /* NatalOrbit */ = {
@@ -1385,10 +1655,12 @@
 			buildPhases = (
 				205DAB264299DFAB99B2D791 /* Sources */,
 				C17EFF0510A62ABA34DA0EB3 /* Resources */,
+				C0BA1D9C115965881BE18F0A /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				10A385C12FF9FE8FC8294137 /* PBXTargetDependency */,
 			);
 			name = PulseLab;
 			packageProductDependencies = (
@@ -1396,6 +1668,24 @@
 			productName = PulseLab;
 			productReference = 0DD1ECF2E31333D7CF669198 /* PulseLab.app */;
 			productType = "com.apple.product-type.application";
+		};
+		448A8C6F6CE69C516A5CA2DE /* StillPointWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EF58E08BC47F2471D1858B16 /* Build configuration list for PBXNativeTarget "StillPointWidgets" */;
+			buildPhases = (
+				A387669E245FCF09644CFB25 /* Sources */,
+				061066EF4F0A2F53C3F2DFBC /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = StillPointWidgets;
+			packageProductDependencies = (
+			);
+			productName = StillPointWidgets;
+			productReference = FE84B35BE99442729C460043 /* StillPointWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		486F032A90B7C2656E79CD80 /* FoodBookWatch */ = {
 			isa = PBXNativeTarget;
@@ -1421,10 +1711,12 @@
 			buildPhases = (
 				9253112D01542A728E0B8E00 /* Sources */,
 				86D4E09096E9CDE500FAD076 /* Resources */,
+				C2DEDE22D1E57EC5BD9D7785 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				7C29A158576E755967DF3ADC /* PBXTargetDependency */,
 			);
 			name = ClankerrWatch;
 			packageProductDependencies = (
@@ -1432,6 +1724,23 @@
 			productName = ClankerrWatch;
 			productReference = A28DDBC93021FD58B540B885 /* ClankerrWatch.app */;
 			productType = "com.apple.product-type.application";
+		};
+		51058348CF17E7680BF200C6 /* FoodBookWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B9B18683D65C421DCE84EC11 /* Build configuration list for PBXNativeTarget "FoodBookWidgets" */;
+			buildPhases = (
+				B88E4BB149E60F47083E6D96 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FoodBookWidgets;
+			packageProductDependencies = (
+			);
+			productName = FoodBookWidgets;
+			productReference = 0942F43ED7FC0E29EECA326C /* FoodBookWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		51775EDAA09CE7B81C7D8D2C /* RoamrWatch */ = {
 			isa = PBXNativeTarget;
@@ -1529,6 +1838,23 @@
 			productReference = FB5E7173A60FD1D146BA1DED /* RootboundUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		949FC0CEAF903C20D16C7726 /* ClankerrWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 10B5A668431DCD71BD470C4E /* Build configuration list for PBXNativeTarget "ClankerrWidgets" */;
+			buildPhases = (
+				240796353BB5E46619C79DD8 /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ClankerrWidgets;
+			packageProductDependencies = (
+			);
+			productName = ClankerrWidgets;
+			productReference = A07C825A8BD51B4D58EF540A /* ClankerrWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		C4BDDADD84DD81FCDB3C3F84 /* Clicker */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 45517D6AB6A1A275217219E7 /* Build configuration list for PBXNativeTarget "Clicker" */;
@@ -1555,12 +1881,14 @@
 			buildPhases = (
 				4855C66847F6159031D34D77 /* Sources */,
 				D67B1E2A978F3538C6E79B07 /* Resources */,
+				F036C40FA36515169E59C7F9 /* Embed Foundation Extensions */,
 				AC8FDAD08A6F3A8B7532AC5F /* Embed Dependencies */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				9A2DB92D45D9094F2BFDD3ED /* PBXTargetDependency */,
+				ADCB650EA44BF415C69563C3 /* PBXTargetDependency */,
 			);
 			name = FoodBook;
 			packageProductDependencies = (
@@ -1593,10 +1921,12 @@
 			buildPhases = (
 				566C7B86FEC29BE06F40E6C9 /* Sources */,
 				1AC98A0F32BCD44DD38320B7 /* Resources */,
+				B5229A1717A731B60964D75B /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EF667231EEEA9B6F6BFA9CD1 /* PBXTargetDependency */,
 			);
 			name = StillPointWatch;
 			packageProductDependencies = (
@@ -1640,7 +1970,15 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					35D8F730224F83E06D33DC7B = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					36AF664DCB7ADFE0ECC78B19 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					3F3E1E750EEEAD1176236D56 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
@@ -1652,11 +1990,19 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
+					448A8C6F6CE69C516A5CA2DE = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
 					486F032A90B7C2656E79CD80 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 					49CDACC6AA587CE6E42F212C = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
+					};
+					51058348CF17E7680BF200C6 = {
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
@@ -1681,6 +2027,10 @@
 						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 						TestTargetID = 7DAC63D05B83BBE7BD589AA8;
+					};
+					949FC0CEAF903C20D16C7726 = {
+						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 					C4BDDADD84DD81FCDB3C3F84 = {
 						DevelopmentTeam = "";
@@ -1735,11 +2085,24 @@
 				51775EDAA09CE7B81C7D8D2C /* RoamrWatch */,
 				486F032A90B7C2656E79CD80 /* FoodBookWatch */,
 				49CDACC6AA587CE6E42F212C /* ClankerrWatch */,
+				448A8C6F6CE69C516A5CA2DE /* StillPointWidgets */,
+				3F3E1E750EEEAD1176236D56 /* StillPointWatchWidgets */,
+				35D8F730224F83E06D33DC7B /* PulseLabWidgets */,
+				949FC0CEAF903C20D16C7726 /* ClankerrWidgets */,
+				51058348CF17E7680BF200C6 /* FoodBookWidgets */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		061066EF4F0A2F53C3F2DFBC /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				444EA6D9EA3585BD499E5239 /* StillPointWatchWidgets.plist in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		113570E57F773783420A9CCF /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1793,6 +2156,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA3A6B151B0C8E8F676E50AF /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B4DEBD519F488BE6ADE1ECAA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3198F97588A0903F635D4A7B /* StillPointWidgets.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1899,6 +2270,7 @@
 				0D4392328898D0EF8954C8BF /* LiveAvatar.swift in Sources */,
 				42291D55AAA46116799F3434 /* NavViews.swift in Sources */,
 				6BA0EB6F0E19DDD4028F0CF8 /* Navigator.swift in Sources */,
+				F6B9A992CED6F4FC2683C06B /* Onboarding.swift in Sources */,
 				65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */,
 				5686EA2C1A9C68B51067B7FE /* PaywallView.swift in Sources */,
 				4C3EC3AF11EF2DD7264A1D3F /* RouteTracker.swift in Sources */,
@@ -1916,6 +2288,14 @@
 				2F72CD4CE1C67898073E4E32 /* TreeHubApp.swift in Sources */,
 				5F711AA67AD394AC2756D357 /* TreesView.swift in Sources */,
 				9AFA46552134B3F6CFD2C1D5 /* Unlock.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1DEDBB8FFD9CC0C1568F8ED3 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5BC06C9431F16E9340A12537 /* StillPointWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1940,6 +2320,8 @@
 				2E74D537F45C1987DE9FC895 /* MetricKey.swift in Sources */,
 				ADCB5C71FDA1E0034F39EF03 /* Metrics.swift in Sources */,
 				91C909DBC35A2DEBEFEA2C60 /* NightSky.swift in Sources */,
+				380512313A72CEBFA16B89AC /* Notify.swift in Sources */,
+				A3312D86414C2F1E057A86F4 /* Onboarding.swift in Sources */,
 				DA29BFCF877EA0EEF94A2E5A /* OnboardingView.swift in Sources */,
 				C9321EF45A195B6A09FE4705 /* PaywallView.swift in Sources */,
 				BDFEE9365C64C4A18E6FBE88 /* Polish.swift in Sources */,
@@ -1949,12 +2331,22 @@
 				36D2D9DF633BB28EC536B8B0 /* ShareCard.swift in Sources */,
 				C26A278D203E844DF094C0BD /* SleepScreen.swift in Sources */,
 				96AA1437C7FC27B7E96B74E1 /* TodayScreen.swift in Sources */,
+				2FC38E14723CD0120E7C3ED7 /* TrustScreen.swift in Sources */,
 				5F2C61DED6F615C2FB492E86 /* Unlock.swift in Sources */,
 				2F1DA5BD1801B22EF757A989 /* WhoopAdapter.swift in Sources */,
 				6EE7D94F280DBE86A1B08393 /* WhoopAuth.swift in Sources */,
 				867D120EDF75FE7001FE7536 /* WhoopClient.swift in Sources */,
 				001D5AF6688CB2CB8FE26CB7 /* WhoopConnectView.swift in Sources */,
 				2A5630A00F43CE3CA00038B1 /* WhoopModels.swift in Sources */,
+				2D49BA15D282C082BE04F602 /* WidgetBridge.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		240796353BB5E46619C79DD8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				9BBBCDA657AED57F40C8E02B /* ClankerrWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1983,6 +2375,7 @@
 			files = (
 				806F7A43C436AD068D6EC7BF /* AddFoodSheet.swift in Sources */,
 				50F82DDDA1BA6D7CD9A5962F /* Camera.swift in Sources */,
+				486F74AE56ABA95B566A24AB /* DayLog.swift in Sources */,
 				6B5403D2D0B30590A4051BF2 /* Ember.swift in Sources */,
 				38ED399CE64159D47A5C263C /* FoodAI.swift in Sources */,
 				E35CE50B0D6F0C3D72344806 /* FoodBookApp.swift in Sources */,
@@ -1992,12 +2385,15 @@
 				D6A539157CB944634005F61D /* FoodVision.swift in Sources */,
 				D4E2E107CB43F28B5AAE88DD /* FoodWatchBridge.swift in Sources */,
 				BF967698B37620A33C1C44F4 /* HealthViews.swift in Sources */,
+				0CE05ECC9212C0A54F77E9E7 /* HistoryView.swift in Sources */,
 				0D21C60E2F2E7BA0014D780C /* SnapResultSheet.swift in Sources */,
 				2028F8406ABA834033BB2236 /* SnapView.swift in Sources */,
 				F902F6A73747A0CD1381C5AE /* SuppEditSheet.swift in Sources */,
 				A3133445F911E31569ECED60 /* Supplement.swift in Sources */,
 				59A999FB9AFB8ADE3EFC9E8D /* SuppsView.swift in Sources */,
 				AAA5C4FE300AEE58D473B478 /* TodayView.swift in Sources */,
+				6DF0B2393A49C044F8147872 /* WeekReportView.swift in Sources */,
+				53FC69B3CECF39A246641E6B /* WidgetBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2032,6 +2428,7 @@
 				4D9E60381EF8A7957A2A979E /* WatchLink.swift in Sources */,
 				923CCF3CF2A9A19A6A3E6727 /* WatchPracticeInfoView.swift in Sources */,
 				8DD2F56880FF3BDA26D57E22 /* WatchRuntime.swift in Sources */,
+				486B7FE066F26D50FEBE20AA /* WidgetBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2053,10 +2450,13 @@
 				05B1630F021AD945308FD48A /* GlossaryText.swift in Sources */,
 				B391A5B150BF7646FC90DC08 /* HRMiniChart.swift in Sources */,
 				1ADD95DE854BF3211613DA27 /* HomeView.swift in Sources */,
+				EC5E235F879235A4172C7B93 /* Intents.swift in Sources */,
 				CB271B20B64597D1C31A462B /* JourneyView.swift in Sources */,
 				A07633A89942948AB6C1C798 /* Library.swift in Sources */,
 				3A8BFE6503CED3A4BBED0EE4 /* MindfulHealth.swift in Sources */,
 				B640BFC9BD7E7CECB0568C49 /* MovementEngine.swift in Sources */,
+				78E02B3B18F84FF999A0D3C1 /* Onboard.swift in Sources */,
+				70EA9C61B3F8375C3D7B86C8 /* Onboarding.swift in Sources */,
 				CE1F7B09BCB7B4B111D7CB6B /* OrbView.swift in Sources */,
 				8D55FDD36C30AFD7A0E5EE4C /* PaywallView.swift in Sources */,
 				A3AF9F09E8245168EC86A7F1 /* PhoneHaptics.swift in Sources */,
@@ -2066,6 +2466,7 @@
 				D17E173C3AE6F55D6152F302 /* PracticeInfo.swift in Sources */,
 				D1086B4922AD5C61C530C5C0 /* PracticeInfoView.swift in Sources */,
 				266A967AA77415155E696771 /* PracticeViews.swift in Sources */,
+				9AAA149F1F9DCDAF35283431 /* Reminders.swift in Sources */,
 				8490BE5F5E99BDB5549C0CD8 /* Scenes.swift in Sources */,
 				69590DFD6BB991FFA3170676 /* SessionDetailView.swift in Sources */,
 				785DADA8E4DD37F2DB90F8A6 /* SessionLog.swift in Sources */,
@@ -2074,6 +2475,7 @@
 				801EF3F1296D07EC03DCD55E /* StillPointApp.swift in Sources */,
 				553ACB6A7724EAB403232D96 /* Theme.swift in Sources */,
 				286B00D2A96D581E3CDBDEAD /* Unlock.swift in Sources */,
+				9914562E0EA95BC9FF824349 /* WidgetBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2090,15 +2492,20 @@
 				6C649E02624AA526A50F78DC /* GTVLink.swift in Sources */,
 				768F3EBB4B9217E5FA0F2BDB /* GTVProto.swift in Sources */,
 				485B0E71DC6DAE61FD52E610 /* GoogleTVController.swift in Sources */,
+				22C551398FEBC0C1CA7518F7 /* Intents.swift in Sources */,
 				8E36B0FD1CDAAD622490DED5 /* KeyboardBar.swift in Sources */,
 				B5A38F91BF4E6708EE8860B6 /* LGController.swift in Sources */,
 				AB06264988421B3AB01E26B9 /* Look.swift in Sources */,
+				47FA9ADA8F31DC47B05CBE60 /* Onboard.swift in Sources */,
+				1B8FDC2508F3D2C1680FA409 /* Onboarding.swift in Sources */,
 				04FA4C9F3046AC4730764EB2 /* PCClient.swift in Sources */,
 				03EBB2C2CBF4E703ECB256BC /* PCView.swift in Sources */,
 				53D270FB2C2A3024B554824A /* PaywallView.swift in Sources */,
 				2BB69615245B34B7F063673A /* RemoteView.swift in Sources */,
 				3A6C8E11BD2AA96AC7728B96 /* RokuController.swift in Sources */,
 				E5B7644B7EE908D8AB25A4A9 /* SamsungController.swift in Sources */,
+				5A17DFB21CF4067CF5F54DA0 /* Scenes.swift in Sources */,
+				6834862DC8B42D6ED0F15495 /* ScenesView.swift in Sources */,
 				452B55C6051B0156C2215E46 /* SetupView.swift in Sources */,
 				52E2B93970342FD0E3A37C4C /* TVBrand.swift in Sources */,
 				53DCE519A9EBBC10F04A8C31 /* TVDiscovery.swift in Sources */,
@@ -2107,6 +2514,7 @@
 				F3D92520189F9377ABC1477F /* Unlock.swift in Sources */,
 				17652B6477B12D75146F57AB /* VizioClient.swift in Sources */,
 				D04D349EB3E6F2233F141934 /* VizioController.swift in Sources */,
+				93C5A6259A66777A9C6BBE96 /* WidgetBridge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2118,12 +2526,36 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		A387669E245FCF09644CFB25 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6F358B538A49F8B9483106BE /* StillPointWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A6C9C341679AE854253E68D1 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8CADE3C205A18DC3F3165108 /* PulseLabWidgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		B143382CF41380BB21C3714A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2CE564DD565DA9AA928E3068 /* RootboundWidgets.swift in Sources */,
 				71CF0C228CEF869F87B8707F /* TrackingActivityAttributes.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B88E4BB149E60F47083E6D96 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				274FE3BDF642D9B933929F3E /* FoodBookWidgets.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -2147,8 +2579,10 @@
 				105D7FDD08314F15E9BFF37B /* LaunchSplash.swift in Sources */,
 				7746BC78B5BB35477AEB85A8 /* LiveActivityController.swift in Sources */,
 				0A5D9BFBDFAA0AA9E17CAF19 /* LiveAvatar.swift in Sources */,
+				A2148A02F2F5C33E254834B3 /* MonthlyStatsView.swift in Sources */,
 				3D4F7768A084056DE6C96320 /* NavViews.swift in Sources */,
 				E504781A95012E8E83F8C6F1 /* Navigator.swift in Sources */,
+				229B6185B25A3751D61232FF /* Onboarding.swift in Sources */,
 				8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */,
 				4CF9EDEEA00637B772E37401 /* PaywallView.swift in Sources */,
 				6C65F686CA73C7A26ECF3223 /* RoamrWatchBridge.swift in Sources */,
@@ -2189,6 +2623,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		10A385C12FF9FE8FC8294137 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 35D8F730224F83E06D33DC7B /* PulseLabWidgets */;
+			targetProxy = 39DF4BC8BBD2177B740F4EDF /* PBXContainerItemProxy */;
+		};
 		2B478E0D4121CDD54BFFFD6F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 49CDACC6AA587CE6E42F212C /* ClankerrWatch */;
@@ -2204,6 +2643,11 @@
 			target = 7DAC63D05B83BBE7BD589AA8 /* Rootbound */;
 			targetProxy = 690EEF602C528C3FA6587603 /* PBXContainerItemProxy */;
 		};
+		7C29A158576E755967DF3ADC /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 949FC0CEAF903C20D16C7726 /* ClankerrWidgets */;
+			targetProxy = 17E5CA61B276B2FC5FED6408 /* PBXContainerItemProxy */;
+		};
 		7CD46F81FA4B7F70531E5F43 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 8A0EE00DD725A91404FABCE3 /* Roamr */;
@@ -2213,6 +2657,11 @@
 			isa = PBXTargetDependency;
 			target = 486F032A90B7C2656E79CD80 /* FoodBookWatch */;
 			targetProxy = B7E0B2A8A4961F2DF3C2940B /* PBXContainerItemProxy */;
+		};
+		ADCB650EA44BF415C69563C3 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 51058348CF17E7680BF200C6 /* FoodBookWidgets */;
+			targetProxy = 39763A0F3B864872F86D8A04 /* PBXContainerItemProxy */;
 		};
 		B120D3A0733A825F077C503F /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2224,10 +2673,20 @@
 			target = 36AF664DCB7ADFE0ECC78B19 /* RoamrWidgets */;
 			targetProxy = C4B6E640B6A928790AAB222A /* PBXContainerItemProxy */;
 		};
+		E295F81B9BA6D0CE08CD9A3C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 448A8C6F6CE69C516A5CA2DE /* StillPointWidgets */;
+			targetProxy = 977D33513C64026F1F43ED76 /* PBXContainerItemProxy */;
+		};
 		EE05F41D0A621B753F601844 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 7DAC63D05B83BBE7BD589AA8 /* Rootbound */;
 			targetProxy = C2C4D2B7ED61FB9AAB816005 /* PBXContainerItemProxy */;
+		};
+		EF667231EEEA9B6F6BFA9CD1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 3F3E1E750EEEAD1176236D56 /* StillPointWatchWidgets */;
+			targetProxy = EBB34CD5C4A1CDB07FDBDBB3 /* PBXContainerItemProxy */;
 		};
 		FE936B8FC8CB415E3C26E725 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -2275,6 +2734,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClankerrWatch/ClankerrWatch.entitlements;
 				INFOPLIST_FILE = ClankerrWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker.watchkitapp;
 				SDKROOT = watchos;
@@ -2327,6 +2787,23 @@
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = Rootbound;
+			};
+			name = Debug;
+		};
+		2E12A678C63D167BC8F73F49 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillPointWidgets/StillPointWidgets.entitlements;
+				INFOPLIST_FILE = StillPointWidgets/StillPointWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.stillpoint.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -2462,6 +2939,23 @@
 			};
 			name = Debug;
 		};
+		5A62EEE1EB8E2D3E0A27AB20 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PulseLabWidgets/PulseLabWidgets.entitlements;
+				INFOPLIST_FILE = PulseLabWidgets/PulseLabWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.pulselab.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		5D1CA831CA94ED27A0A575B8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2562,6 +3056,40 @@
 			};
 			name = Debug;
 		};
+		7473C8A5CFC9F94DA72D596D /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FoodBookWidgets/FoodBookWidgets.entitlements;
+				INFOPLIST_FILE = FoodBookWidgets/FoodBookWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.foodbook.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		754CBE883B2A5DAD6DF09F15 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = PulseLabWidgets/PulseLabWidgets.entitlements;
+				INFOPLIST_FILE = PulseLabWidgets/PulseLabWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.pulselab.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		78CB73BF0B50221435B23F89 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2580,6 +3108,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = ClankerrWatch/ClankerrWatch.entitlements;
 				INFOPLIST_FILE = ClankerrWatch/Info.plist;
 				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker.watchkitapp;
 				SDKROOT = watchos;
@@ -2607,6 +3136,23 @@
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
+		};
+		81DA3F6B9A11DD4D1121A1BB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillPointWidgets/StillPointWidgets.entitlements;
+				INFOPLIST_FILE = StillPointWidgets/StillPointWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.stillpoint.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
 		};
 		845E01C80CC67EAFBAEA3542 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -2787,6 +3333,59 @@
 			};
 			name = Debug;
 		};
+		AAB6E65D7D2CB5BE2CADFCE7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = FoodBookWidgets/FoodBookWidgets.entitlements;
+				INFOPLIST_FILE = FoodBookWidgets/FoodBookWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.foodbook.widgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		B30179D91496283E6F730DDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillPointWidgets/StillPointWatchWidgets.entitlements;
+				INFOPLIST_FILE = StillPointWidgets/StillPointWatchWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.stillpoint.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
+		B53E07AF779EB3D4CC11B5CC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ClankerrWidgets/ClankerrWidgets.entitlements;
+				INFOPLIST_FILE = ClankerrWidgets/ClankerrWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
 		C6A7BFDE487E01BB87F2BF9E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2884,6 +3483,24 @@
 			};
 			name = Debug;
 		};
+		ED0E5B4D7C3B413FB7CF33A6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = ClankerrWidgets/ClankerrWidgets.entitlements;
+				INFOPLIST_FILE = ClankerrWidgets/ClankerrWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.clicker.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Release;
+		};
 		F28462A46FF91D7242F83A5F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -2914,9 +3531,45 @@
 			};
 			name = Debug;
 		};
+		FB0CAF92CA7F873FB5268858 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = StillPointWidgets/StillPointWatchWidgets.entitlements;
+				INFOPLIST_FILE = StillPointWidgets/StillPointWatchWidgets.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.troydunn.stillpoint.watchkitapp.widgets;
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 10.0;
+			};
+			name = Debug;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		10B5A668431DCD71BD470C4E /* Build configuration list for PBXNativeTarget "ClankerrWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B53E07AF779EB3D4CC11B5CC /* Debug */,
+				ED0E5B4D7C3B413FB7CF33A6 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		1736A0E62505E7449B7D84E5 /* Build configuration list for PBXNativeTarget "PulseLabWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				754CBE883B2A5DAD6DF09F15 /* Debug */,
+				5A62EEE1EB8E2D3E0A27AB20 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		1CC9319547C41374208BACC4 /* Build configuration list for PBXNativeTarget "RootboundTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -2998,11 +3651,29 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
 		};
+		961358083244D7274D838B34 /* Build configuration list for PBXNativeTarget "StillPointWatchWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				FB0CAF92CA7F873FB5268858 /* Debug */,
+				B30179D91496283E6F730DDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
 		A62923C6F8BBA5C7D405ACA0 /* Build configuration list for PBXNativeTarget "RootboundUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				2C63878DC8A4DFB5A8856314 /* Debug */,
 				DC08F5180859F61E6CFE3781 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B9B18683D65C421DCE84EC11 /* Build configuration list for PBXNativeTarget "FoodBookWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7473C8A5CFC9F94DA72D596D /* Debug */,
+				AAB6E65D7D2CB5BE2CADFCE7 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
@@ -3048,6 +3719,15 @@
 			buildConfigurations = (
 				AA691C3D3950C4D88B358562 /* Debug */,
 				621CFE587973C6237079B8F9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		EF58E08BC47F2471D1858B16 /* Build configuration list for PBXNativeTarget "StillPointWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2E12A678C63D167BC8F73F49 /* Debug */,
+				81DA3F6B9A11DD4D1121A1BB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
