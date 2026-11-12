@@ -1623,7 +1623,8 @@
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
    "sources": [
     "baduanjin"
-   ]
+   ],
+   "focus": "stretch"
   },
   {
    "id": "taichi-cloud",
@@ -1691,7 +1692,8 @@
    "sources": [
     "taichi",
     "wayne-taichi"
-   ]
+   ],
+   "focus": "joint"
   },
   {
    "id": "rajio-taiso",
@@ -1813,7 +1815,8 @@
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
    "sources": [
     "rajio-taiso"
-   ]
+   ],
+   "focus": "joint"
   },
   {
    "id": "makko-ho",
@@ -1873,7 +1876,8 @@
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Skip the kneeling recline if your knees or lower back object.",
    "sources": [
     "makko-ho"
-   ]
+   ],
+   "focus": "stretch"
   },
   {
    "id": "surya-gentle",
@@ -1990,7 +1994,8 @@
    "sources": [
     "surya",
     "hatha-yoga-pradipika"
-   ]
+   ],
+   "focus": "stretch"
   },
   {
    "id": "ruesi-dat-ton",
@@ -2072,7 +2077,8 @@
    "sources": [
     "ruesi",
     "ruesi-watpho"
-   ]
+   ],
+   "focus": "stretch"
   },
   {
    "id": "do-in",
@@ -2153,7 +2159,8 @@
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Tap lightly; skip the belly if pregnant.",
    "sources": [
     "do-in"
-   ]
+   ],
+   "focus": "lymph"
   },
   {
    "id": "lujong-warmup",
@@ -2241,7 +2248,173 @@
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
    "sources": [
     "lu-jong"
-   ]
+   ],
+   "focus": "joint"
+  },
+  {
+   "id": "lymph-flow",
+   "title": "Lymph Flow Routine",
+   "traditionId": "modern",
+   "kind": "movement",
+   "focus": "lymph",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "A gentle head-to-toe sequence built from common self-care lymph techniques: slow belly breathing, light skin-stretch strokes toward the collarbones, and rhythmic muscle pumping in the arms and calves. The touch is feather-light; the lymph vessels sit just under the skin.",
+   "why": "Lymph has no pump of its own; it moves with breathing and muscle contraction. This routine strings those together so you finish feeling lighter and less puffy, especially after sitting, flying or a sauna.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand or sit tall. Light touch only, like stroking a cat."
+    },
+    {
+     "at": "end",
+     "text": "Sip some water. Notice how the body feels."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Belly breathing",
+     "seconds": 40,
+     "how": "Hands on the belly. Slow breaths that push the belly out, then let it fall.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Collarbone pumps",
+     "seconds": 30,
+     "how": "Fingertips just above the collarbones. Gently stretch the skin down and out, then release.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Neck sweeps",
+     "seconds": 30,
+     "how": "Flat hands stroke lightly from behind the ears down the sides of the neck.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Armpit pumps",
+     "seconds": 30,
+     "how": "Cup one hand in the opposite armpit; press in and up softly, release.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Arm sweeps",
+     "seconds": 40,
+     "how": "Stroke from the hand up the inside of the arm toward the armpit.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Belly circles",
+     "seconds": 30,
+     "how": "Slow clockwise circles around the navel with a flat hand.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Behind the knees",
+     "seconds": 30,
+     "how": "Hands cupped behind each knee; light pumping presses.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Calf pumps",
+     "seconds": 40,
+     "how": "Rise onto the toes, lower slowly. The calf muscle is the body's second heart.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Use very light pressure. Skip this or ask your doctor first if you have a blood clot (DVT), heart or kidney failure, an active infection, or are being treated for cancer or lymphoedema.",
+   "sources": []
+  },
+  {
+   "id": "joint-circles",
+   "title": "Joint Circles, Head to Toe",
+   "traditionId": "modern",
+   "kind": "movement",
+   "focus": "joint",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "about": "Slow, controlled circles through every major joint, top to bottom, the way mobility coaches warm people up. Each circle goes to the edge of comfortable range and no further.",
+   "why": "Moving a joint through its full range brings fresh synovial fluid to the cartilage, so stiff mornings and long desk days feel looser fast.",
+   "pattern": null,
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, knees soft. Slow circles, no forcing."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the space in the joints."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Neck",
+     "seconds": 30,
+     "how": "Half-circles chin to chest, ear to shoulder. Never roll the head back.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Shoulders",
+     "seconds": 30,
+     "how": "Big slow shoulder rolls, forward then back.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Elbows & wrists",
+     "seconds": 30,
+     "how": "Arms out; circle the forearms, then the wrists.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Spine waves",
+     "seconds": 30,
+     "how": "Hands on knees; round and arch the back slowly.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Hips",
+     "seconds": 40,
+     "how": "Hands on hips; draw wide circles with the pelvis.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Knees",
+     "seconds": 30,
+     "how": "Feet together, hands on knees; small gentle circles.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Ankles",
+     "seconds": 30,
+     "how": "Lift one foot; circle the ankle each way.",
+     "breath": "natural",
+     "side": "both"
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": []
   }
  ],
  "intentions": [
@@ -2342,7 +2515,9 @@
     "surya-gentle",
     "ruesi-dat-ton",
     "do-in",
-    "lujong-warmup"
+    "lujong-warmup",
+    "joint-circles",
+    "lymph-flow"
    ]
   },
   {

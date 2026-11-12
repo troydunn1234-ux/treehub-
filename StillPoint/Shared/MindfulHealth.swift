@@ -107,4 +107,38 @@ final class MindfulHealth {
     }
 
     static let bpm = HKUnit.count().unitDivided(by: .minute())
+
+    /// Heart rate from every source in Apple Health (WHOOP, Apple Watch, Garmin…) inside a time window.
+    /// Nil when nothing was recorded (yet: WHOOP can take a few minutes to sync).
+    func heartRateStats(start: Date, end: Date, _ done: @escaping (HeartWindow?) -> Void) {
+        guard isAvailable, end > start else { done(nil); return }
+        let pred = HKQuery.predicateForSamples(withStart: start, end: end, options: [])
+        let sort = [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]
+        let q = HKSampleQuery(sampleType: heartRate, predicate: pred, limit: HKObjectQueryNoLimit, sortDescriptors: sort) { _, samples, _ in
+            let qs = (samples as? [HKQuantitySample]) ?? []
+            guard !qs.isEmpty else { DispatchQueue.main.async { done(nil) }; return }
+            let values = qs.map { $0.quantity.doubleValue(for: MindfulHealth.bpm) }
+            // Keep at most ~120 points for the chart.
+            let stride = max(1, qs.count / 120)
+            var points: [HRSample] = []
+            for i in Swift.stride(from: 0, to: qs.count, by: stride) {
+                points.append(HRSample(t: qs[i].startDate.timeIntervalSince(start), bpm: values[i]))
+            }
+            let names = Array(Set(qs.map { $0.sourceRevision.source.name })).sorted()
+            let w = HeartWindow(avg: values.reduce(0, +) / Double(values.count),
+                                max: values.max() ?? 0, min: values.min() ?? 0,
+                                sources: names, points: points)
+            DispatchQueue.main.async { done(w) }
+        }
+        store.execute(q)
+    }
+}
+
+/// Heart-rate summary for one stretch of time, from Apple Health.
+struct HeartWindow: Codable, Hashable {
+    var avg: Double
+    var max: Double
+    var min: Double
+    var sources: [String]
+    var points: [HRSample]
 }

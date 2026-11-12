@@ -7,6 +7,7 @@ struct StillPointApp: App {
     @StateObject private var link = PhoneLink.shared
     @StateObject private var router = Router()
     @StateObject private var unlock = Unlock.shared
+    @StateObject private var heat = HeatStore.shared
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -23,6 +24,7 @@ struct StillPointApp: App {
                 .environmentObject(log)
                 .environmentObject(link)
                 .environmentObject(router)
+                .environmentObject(heat)
                 .preferredColorScheme(.dark)
                 .tint(SP.amber)
                 .onReceive(unlock.$isPro) { Prefs.shared.setPro($0) }
@@ -36,6 +38,7 @@ struct StillPointApp: App {
             if phase == .active {
                 router.consumePending()
                 WidgetBridge.publish()
+                heat.refreshMissing()
             }
         }
     }
@@ -171,10 +174,10 @@ enum StillPointPro {
     static let spec = PaywallSpec(
         appName: "Still Point",
         headline: "Every practice, for good.",
-        tagline: "Open all 43 practices from 12 traditions, plus every warm-up and movement routine. One payment, no subscription.",
+        tagline: "Open all 45 practices from 12 traditions, plus every joint, lymph and stretch routine. One payment, no subscription.",
         tint: SP.gold, tint2: SP.amber,
         features: [
-            .init(icon: "books.vertical.fill", title: "All 43 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
+            .init(icon: "books.vertical.fill", title: "All 45 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
             .init(icon: "figure.cooldown", title: "Every warm-up routine", detail: "Makkō-hō, Sūrya Namaskār, Ruesi Dat Ton, Ba Duan Jin and the rest, 2–10 minutes, with figures for each step."),
             .init(icon: "applewatch", title: "Everything on your Watch", detail: "Haptic breathing for the full library, straight from your wrist."),
             .init(icon: "heart.text.square.fill", title: "Journey with heart data", detail: "Every session kept with your heart-rate stats and Mindful Minutes in Apple Health."),

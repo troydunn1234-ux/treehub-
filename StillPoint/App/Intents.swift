@@ -90,6 +90,56 @@ struct StartBreathingIntent: AppIntent {
     }
 }
 
+// MARK: - Sauna / steam
+
+enum HeatRoomEntity: String, AppEnum {
+    case sauna, steam
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Heat room"
+    static var caseDisplayRepresentations: [HeatRoomEntity: DisplayRepresentation] = [
+        .sauna: "Sauna",
+        .steam: "Steam room",
+    ]
+    var kind: HeatKind { self == .sauna ? .sauna : .steam }
+}
+
+/// "Start sauna in Still Point": starts the timer without opening the app (handy with wet hands).
+struct StartHeatIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Sauna or Steam"
+    static var description = IntentDescription("Starts timing a sauna or steam-room session. Heart rate for that time is pulled from Apple Health when you finish.")
+    static var openAppWhenRun = false
+
+    @Parameter(title: "Room", default: .sauna)
+    var room: HeatRoomEntity
+
+    static var parameterSummary: some ParameterSummary { Summary("Start \(\.$room) timer") }
+
+    init() {}
+    init(room: HeatRoomEntity) { self.room = room }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        HeatStore.shared.start(room.kind)
+        return .result(dialog: "\(room.kind.title) timer started. Enjoy the heat.")
+    }
+}
+
+/// "I'm out of the sauna": ends the running heat session.
+struct EndHeatIntent: AppIntent {
+    static var title: LocalizedStringResource = "End Sauna or Steam"
+    static var description = IntentDescription("Stops the running sauna or steam-room timer and saves it to your heat log.")
+    static var openAppWhenRun = false
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        guard let s = HeatStore.shared.active else {
+            return .result(dialog: "There's no sauna or steam session running.")
+        }
+        let mins = Int(s.minutes.rounded())
+        HeatStore.shared.finish()
+        return .result(dialog: "Saved \(mins) minutes in the \(s.kind.short.lowercased()). Cool down and drink some water.")
+    }
+}
+
 /// Phrases Siri understands out of the box.
 struct StillPointShortcuts: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor = .navy
@@ -116,6 +166,26 @@ struct StillPointShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Start a practice",
             systemImageName: "leaf"
+        )
+        AppShortcut(
+            intent: StartHeatIntent(),
+            phrases: [
+                "Start \(\.$room) in \(.applicationName)",
+                "Start the \(\.$room) timer in \(.applicationName)",
+                "I'm in the \(\.$room) \(.applicationName)",
+            ],
+            shortTitle: "Start sauna / steam",
+            systemImageName: "flame.fill"
+        )
+        AppShortcut(
+            intent: EndHeatIntent(),
+            phrases: [
+                "End heat session in \(.applicationName)",
+                "I'm out of the sauna \(.applicationName)",
+                "Stop the sauna timer in \(.applicationName)",
+            ],
+            shortTitle: "End sauna / steam",
+            systemImageName: "checkmark.circle"
         )
     }
 }

@@ -4,6 +4,7 @@ struct HomeView: View {
     @EnvironmentObject var prefs: Prefs
     @EnvironmentObject var router: Router
     @EnvironmentObject var log: SessionLog
+    @EnvironmentObject var heat: HeatStore
     private let lib = PracticeLibrary.shared
     @State private var appeared = false
 
@@ -40,7 +41,15 @@ struct HomeView: View {
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 10)
 
+                    // A running sauna / steam session jumps to the top so "I'm out" is one tap away.
+                    if heat.active != nil { HeatCard() }
+
                     FeaturedCard(practice: featured)
+
+                    SectionHeader("Your body", detail: "Move, release, breathe")
+                    FocusGrid()
+
+                    if heat.active == nil { HeatCard() }
 
                     SectionHeader("Intentions")
                     ScrollView(.horizontal, showsIndicators: false) {
@@ -51,17 +60,6 @@ struct HomeView: View {
                             }
                         }
                         .padding(.horizontal, 2)
-                    }
-
-                    if !lib.warmUps.isEmpty {
-                        SectionHeader("Warm up first", detail: "Move gently, then sit")
-                        ScrollView(.horizontal, showsIndicators: false) {
-                            HStack(spacing: 14) {
-                                ForEach(lib.warmUps) { p in
-                                    NavigationLink(value: p) { MiniCard(practice: p) }.buttonStyle(SoftPress())
-                                }
-                            }
-                        }
                     }
 
                     let favs = prefs.favorites.compactMap { lib.practice($0) }
@@ -89,6 +87,8 @@ struct HomeView: View {
             .navigationDestination(for: Intention.self) { i in IntentionView(intention: i) }
             .navigationDestination(for: Practice.self) { p in PracticeDetailView(practice: p) }
             .navigationDestination(for: Tradition.self) { t in TraditionView(tradition: t) }
+            .navigationDestination(for: BodyFocus.self) { f in FocusView(focus: f) }
+            .navigationDestination(for: HeatRoute.self) { _ in HeatLogView() }
         }
     }
 }
@@ -221,9 +221,10 @@ struct PracticeCardRow: View {
         let t = PracticeLibrary.shared.tradition(practice.traditionId)
         HStack(spacing: 14) {
             ZStack {
-                Circle().fill((t?.tint ?? SP.teal).opacity(0.16))
-                Image(systemName: practice.isMovement ? "figure.cooldown" : (practice.pattern == nil ? "circle.dotted" : "wind"))
-                    .font(.system(size: 17, weight: .light)).foregroundStyle(t?.tint ?? SP.teal)
+                let tint = practice.focus?.tint ?? t?.tint ?? SP.teal
+                Circle().fill(tint.opacity(0.16))
+                Image(systemName: practice.focus?.symbol ?? (practice.pattern == nil ? "circle.dotted" : "wind"))
+                    .font(.system(size: 17, weight: .light)).foregroundStyle(tint)
             }
             .frame(width: 46, height: 46)
             VStack(alignment: .leading, spacing: 3) {

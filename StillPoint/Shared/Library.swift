@@ -183,17 +183,20 @@ struct Practice: Decodable, Hashable, Identifiable {
     var safety: String? = nil
     var sources: [String] = []
     var steps: [MoveStep] = []
+    /// Optional "focus" tag from the library file: joint, lymph, stretch or breathe.
+    var focusTag: String? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, title, traditionId, kind, minutes, level, about, why, pattern, cues, safety, sources, steps
+        case focusTag = "focus"
     }
 
     init(id: String, title: String, traditionId: String, kind: String = "breath", minutes: [Int], level: String = "Beginner",
          about: String, why: String, pattern: BreathPattern?, cues: [Cue] = [], safety: String? = nil, sources: [String] = [],
-         steps: [MoveStep] = []) {
+         steps: [MoveStep] = [], focusTag: String? = nil) {
         self.id = id; self.title = title; self.traditionId = traditionId; self.kind = kind; self.minutes = minutes
         self.level = level; self.about = about; self.why = why; self.pattern = pattern; self.cues = cues
-        self.safety = safety; self.sources = sources; self.steps = steps
+        self.safety = safety; self.sources = sources; self.steps = steps; self.focusTag = focusTag
     }
 
     init(from decoder: Decoder) throws {
@@ -216,10 +219,19 @@ struct Practice: Decodable, Hashable, Identifiable {
         if let s = try? c.decodeIfPresent([String].self, forKey: .sources) { sources = s }
         else if let s = try? c.decodeIfPresent(String.self, forKey: .sources) { sources = [s] }
         steps = ((try? c.decodeIfPresent([MoveStep].self, forKey: .steps)) ?? nil) ?? []
+        focusTag = ((try? c.decodeIfPresent(String.self, forKey: .focusTag)) ?? nil)?.lowercased()
         if isMovement { pattern = nil }
     }
 
     var isMovement: Bool { kind.lowercased() == "movement" || !steps.isEmpty }
+
+    /// Which body section this belongs to. Untagged movement counts as stretch; paced breathing as breathe.
+    var focus: BodyFocus? {
+        if let t = focusTag, let f = BodyFocus(rawValue: t) { return f }
+        if isMovement { return .stretch }
+        if kind.lowercased() == "breath" || isBreathwork { return .breathe }
+        return nil
+    }
 
     /// Steps scaled so the routine fills `minutes`.
     func scaledSteps(minutes: Int) -> [MoveStep] {
@@ -370,6 +382,7 @@ final class PracticeLibrary {
     func note(for source: String) -> String { sourceNotes[source] ?? source }
 
     var warmUps: [Practice] { practices.filter(\.isMovement) }
+    func practices(focus: BodyFocus) -> [Practice] { practices.filter { $0.focus == focus } }
     var meditations: [Practice] { practices.filter { !$0.isMovement } }
 
     /// A good default "breathe now" practice.
@@ -455,4 +468,49 @@ enum Fallback {
         Intention(id: "sleep", name: "Sleep", practiceIds: ["four-seven-eight", "so-hum"]),
         Intention(id: "focus", name: "Focus", practiceIds: ["box", "so-hum"]),
     ]
+}
+
+/// The four body sections on the Today screen.
+enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
+    case joint, lymph, stretch, breathe
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .joint: return "Joints"
+        case .lymph: return "Lymph flow"
+        case .stretch: return "Stretch"
+        case .breathe: return "Breathe"
+        }
+    }
+
+    var symbol: String {
+        switch self {
+        case .joint: return "arrow.triangle.2.circlepath"
+        case .lymph: return "drop.fill"
+        case .stretch: return "figure.flexibility"
+        case .breathe: return "wind"
+        }
+    }
+
+    /// One line under the title on the tile.
+    var tagline: String {
+        switch self {
+        case .joint: return "Circles & mobility"
+        case .lymph: return "Pump, tap, drain"
+        case .stretch: return "Long, slow lines"
+        case .breathe: return "Paced breathing"
+        }
+    }
+
+    /// A couple of sentences at the top of the section page.
+    var about: String {
+        switch self {
+        case .joint: return "Slow circles through every joint, taking each to the edge of comfortable range. Movement is what feeds cartilage, so this is the fastest way to undo a stiff morning or a long day sitting."
+        case .lymph: return "Lymph has no pump of its own; it moves when you breathe deeply and squeeze muscles. Light strokes, tapping and calf pumps get it flowing, which is good after sitting, flying or a sauna."
+        case .stretch: return "Held shapes and flowing sequences that lengthen the big muscle chains: hamstrings, hips, spine and shoulders. Breathe out into each stretch; never bounce."
+        case .breathe: return "Paced breathing patterns from yoga, Zen and modern research. Longer out-breaths calm you; even counts steady you; quick top-ups wake you up."
+        }
+    }
 }
