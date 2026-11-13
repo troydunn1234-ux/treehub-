@@ -105,7 +105,7 @@ enum HeatRoomEntity: String, AppEnum {
 /// "Start sauna in Still Point": starts the timer without opening the app (handy with wet hands).
 struct StartHeatIntent: AppIntent {
     static var title: LocalizedStringResource = "Start Sauna or Steam"
-    static var description = IntentDescription("Starts timing a sauna or steam-room session. Heart rate for that time is pulled from Apple Health when you finish.")
+    static var description = IntentDescription("Starts timing a sauna or steam-room session. Heart rate for that time is read from the Health app when you finish.")
     static var openAppWhenRun = false
 
     @Parameter(title: "Room", default: .sauna)

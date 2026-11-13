@@ -34,6 +34,16 @@ jobs:
           done
           exit $missing
 
+      - name: Siri text check (Apple rejects intent text containing "apple", ITMS-90626)
+        run: |
+          # App Intent titles/descriptions/phrases may not mention "Apple"; such builds upload fine, then silently fail processing.
+          files=$(grep -rlE --include=*.swift 'AppIntent|AppShortcutsProvider|AppEnum|ControlWidget' . || true)
+          bad=$( [ -n "$files" ] && grep -nE 'IntentDescription|static var title|LocalizedStringResource|DisplayRepresentation|shortTitle|applicationName' $files | grep -i 'apple' | grep -viE 'systemImage|systemImageName|import ' || true)
+          if [ -n "$bad" ]; then
+            echo "$bad"
+            echo "::error::App Intent text mentions 'Apple'. Reword it (say 'Watch' or 'Health') or App Store Connect will reject the build."
+            exit 1
+          fi
       - name: Pick newest Xcode
         run: |
           sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"

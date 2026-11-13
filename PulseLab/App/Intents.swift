@@ -7,7 +7,7 @@ import Foundation
 /// "What are my scores?": reads the numbers the app last handed the widget (WidgetBridge) and says them.
 struct CheckLabScoresIntent: AppIntent {
     static var title: LocalizedStringResource = "Check Today's Scores"
-    static var description = IntentDescription("Tells you today's Apple Watch readiness and WHOOP recovery, with resting heart rate from each.")
+    static var description = IntentDescription("Tells you today's Watch readiness and WHOOP recovery, with resting heart rate from each.")
     static var openAppWhenRun = false
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
