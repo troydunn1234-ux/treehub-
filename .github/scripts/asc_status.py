@@ -5,3 +5,12 @@ for b in ["com.troydunn.clicker","com.troydunn.natalorbit"]:
     a = g(f"/v1/apps?filter[bundleId]={b}")["data"][0]
     for v in g(f"/v1/apps/{a['id']}/appStoreVersions?filter[platform]=IOS")["data"]:
         print(a["attributes"]["name"], v["attributes"]["versionString"], v["attributes"]["appStoreState"])
+# Latest TestFlight builds and whether Apple finished processing them.
+for b in ["com.troydunn.stillpoint", "com.troydunn.pulselab", "com.troydunn.questapp"]:
+    try:
+        a = g(f"/v1/apps?filter[bundleId]={b}")["data"][0]
+        for x in g(f"/v1/builds?filter[app]={a['id']}&sort=-uploadedDate&limit=4")["data"]:
+            at = x["attributes"]
+            print(a["attributes"]["name"], "build", at["version"], at["processingState"], "expired" if at.get("expired") else "", at.get("uploadedDate", "")[:16])
+    except Exception as e:
+        print(b, "lookup failed:", e)
