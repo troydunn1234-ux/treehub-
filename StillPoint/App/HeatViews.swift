@@ -9,11 +9,12 @@ enum HeatRoute: Hashable { case log }
 struct HeatCard: View {
     @EnvironmentObject var heat: HeatStore
     @State private var taps = 0
+    @State private var showGuide = false
 
     var body: some View {
         Group {
             if let s = heat.active {
-                ActiveHeatCard(session: s)
+                ActiveHeatCard(session: s, openGuide: { showGuide = true })
             } else {
                 VStack(alignment: .leading, spacing: 12) {
                     HStack(alignment: .firstTextBaseline) {
@@ -32,17 +33,21 @@ struct HeatCard: View {
                             Button {
                                 taps += 1
                                 withAnimation(.spring(response: 0.45, dampingFraction: 0.85)) { heat.start(k) }
+                                showGuide = true
                             } label: { HeatStartTile(kind: k) }
                             .buttonStyle(SoftPress())
                             .accessibilityLabel("Start \(k.title) timer")
                         }
                     }
-                    Text("Tap as you walk in, or ask Siri to start the sauna. Heart rate from WHOOP fills in after.")
+                    Text("Tap as you walk in: a timer starts and a guide opens with breathing and gentle moves for the heat. Heart rate from WHOOP fills in after.")
                         .font(SP.rounded(12)).foregroundStyle(SP.faint)
                 }
             }
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: taps)
+        .fullScreenCover(isPresented: $showGuide) {
+            HeatGuideView().environmentObject(heat)
+        }
     }
 }
 
@@ -74,6 +79,8 @@ struct HeatStartTile: View {
 /// The running session: big live clock, a gentle tip, Done.
 struct ActiveHeatCard: View {
     let session: HeatSession
+    /// Opens the breathing & movement guide; nil when already inside it.
+    var openGuide: (() -> Void)? = nil
     @EnvironmentObject var heat: HeatStore
     @State private var confirmCancel = false
     @State private var doneTaps = 0
@@ -118,6 +125,16 @@ struct ActiveHeatCard: View {
                     }
                     .buttonStyle(SoftPress())
                     .sensoryFeedback(.success, trigger: doneTaps)
+                    if let openGuide {
+                        Button(action: openGuide) {
+                            Label("Guide", systemImage: "wind")
+                                .font(SP.rounded(15, .semibold)).foregroundStyle(.white)
+                                .padding(.horizontal, 16).padding(.vertical, 12)
+                                .background(Capsule().stroke(.white.opacity(0.7), lineWidth: 1.5))
+                        }
+                        .buttonStyle(SoftPress())
+                    }
+                    Spacer(minLength: 0)
                     Button("Cancel") { confirmCancel = true }
                         .font(SP.rounded(14)).foregroundStyle(.white.opacity(0.8))
                         .padding(.horizontal, 10)
