@@ -51,6 +51,7 @@ final class WhoopClient {
         do {
             try await auth.connect()
             isConnected = true
+            backfilled = false
             await sync()
         } catch {
             lastError = error.localizedDescription
@@ -64,38 +65,82 @@ final class WhoopClient {
         profile = nil; body = nil
         cycles = []; recoveries = []; sleeps = []; workouts = []
         lastSync = nil
+        backfilled = false
         try? FileManager.default.removeItem(at: Self.cacheURL)
     }
 
     // MARK: sync
 
-    func sync(days: Int = 30) async {
+    /// 0…1 while a sync runs, and what it's on ("Sleeps"…), for the sync progress bar.
+    private(set) var progress: Double = 0
+    private(set) var stage: String?
+    /// True once the full history has been downloaded at least once.
+    var backfilled: Bool {
+        get { UserDefaults.standard.bool(forKey: "whoopBackfilled") }
+        set { UserDefaults.standard.set(newValue, forKey: "whoopBackfilled") }
+    }
+
+    /// First sync: WHOOP's whole history. After that: the last 3 days (scores and late uploads change)
+    /// or back to the previous sync, merged into what we already have.
+    /// `force: false` skips the network if we synced in the last 10 minutes (foreground / background refreshes).
+    func sync(force: Bool = true) async {
         guard !isDemo else { return }
         guard auth.isConnected else { isConnected = false; return }
         guard !isSyncing else { return }
-        isSyncing = true; lastError = nil
-        defer { isSyncing = false }
+        if !force, backfilled, let last = lastSync, Date().timeIntervalSince(last) < 600 { return }
+        isSyncing = true; lastError = nil; progress = 0
+        defer { isSyncing = false; stage = nil; progress = 0 }
 
         let end = Date()
-        let start = Calendar.current.date(byAdding: .day, value: -days, to: end) ?? end.addingTimeInterval(Double(-days) * 86400)
+        let full = !backfilled || cycles.isEmpty
+        var start: Date? = nil
+        if !full {
+            let threeDays = end.addingTimeInterval(-3 * 86_400)
+            start = min(threeDays, (lastSync ?? threeDays).addingTimeInterval(-86_400))
+        }
+        let span = max(86_400, end.timeIntervalSince(start ?? cycles.last?.start ?? end.addingTimeInterval(-730 * 86_400)))
+        func part(_ i: Int, _ name: String) -> (Date) -> Void {
+            stage = name
+            progress = Double(i) / 4
+            return { [weak self] oldest in
+                let f = min(1, max(0, end.timeIntervalSince(oldest) / span))
+                self?.progress = (Double(i) + f) / 4
+            }
+        }
         do {
-            profile = try? await get("/v2/user/profile/basic", as: WhoopProfile.self)
-            body = try? await get("/v2/user/measurement/body", as: WhoopBody.self)
-            cycles = try await collect("/v2/cycle", start: start, end: end, as: WhoopCycle.self)
-                .sorted { $0.start > $1.start }
-            recoveries = try await collect("/v2/recovery", start: start, end: end, as: WhoopRecovery.self)
-                .sorted { ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast) }
-            sleeps = try await collect("/v2/activity/sleep", start: start, end: end, as: WhoopSleep.self)
-                .sorted { $0.start > $1.start }
-            workouts = try await collect("/v2/activity/workout", start: start, end: end, as: WhoopWorkout.self)
-                .sorted { $0.start > $1.start }
+            stage = "Profile"
+            if let p = try? await get("/v2/user/profile/basic", as: WhoopProfile.self) { profile = p }
+            if let b = try? await get("/v2/user/measurement/body", as: WhoopBody.self) { body = b }
+            let c = try await collect("/v2/cycle", start: start, end: end, as: WhoopCycle.self, onPage: part(0, "Strain & cycles")) { $0.start }
+            cycles = Self.upsert(cycles, c) { $0.start > $1.start }
+            let r = try await collect("/v2/recovery", start: start, end: end, as: WhoopRecovery.self, onPage: part(1, "Recovery")) { $0.createdAt ?? end }
+            recoveries = Self.upsert(recoveries, r) { ($0.createdAt ?? .distantPast) > ($1.createdAt ?? .distantPast) }
+            let sl = try await collect("/v2/activity/sleep", start: start, end: end, as: WhoopSleep.self, onPage: part(2, "Sleep")) { $0.start }
+            sleeps = Self.upsert(sleeps, sl) { $0.start > $1.start }
+            let w = try await collect("/v2/activity/workout", start: start, end: end, as: WhoopWorkout.self, onPage: part(3, "Workouts")) { $0.start }
+            workouts = Self.upsert(workouts, w) { $0.start > $1.start }
             lastSync = Date()
             isConnected = true
+            if full { backfilled = true }
             saveCache()
         } catch {
             lastError = error.localizedDescription
             isConnected = auth.isConnected
+            saveCache()   // keep whatever pages did arrive
         }
+    }
+
+    /// Newer copies replace older ones with the same id (scores arrive later than the record).
+    private static func upsert<T: Identifiable>(_ old: [T], _ new: [T], by order: (T, T) -> Bool) -> [T] {
+        var byID: [T.ID: T] = [:]
+        for x in old { byID[x.id] = x }
+        for x in new { byID[x.id] = x }
+        return byID.values.sorted(by: order)
+    }
+
+    /// Forget the downloaded history so the next sync pulls everything again.
+    func resetHistory() {
+        backfilled = false
     }
 
     // MARK: lookups for comparisons
@@ -125,21 +170,23 @@ final class WhoopClient {
         }
     }
 
-    private func collect<T: Codable>(_ path: String, start: Date, end: Date, as type: T.Type) async throws -> [T] {
+    private func collect<T: Codable>(_ path: String, start: Date?, end: Date, as type: T.Type,
+                                     onPage: ((Date) -> Void)? = nil, date: (T) -> Date) async throws -> [T] {
         var out: [T] = []
         var next: String? = nil
         var pages = 0
         repeat {
             var q = [URLQueryItem(name: "limit", value: "25"),
-                     URLQueryItem(name: "start", value: WhoopJSON.isoString(start)),
                      URLQueryItem(name: "end", value: WhoopJSON.isoString(end))]
+            if let start { q.append(URLQueryItem(name: "start", value: WhoopJSON.isoString(start))) }
             if let next { q.append(URLQueryItem(name: "nextToken", value: next)) }
             let page = try await get(path, query: q, as: WhoopPage<T>.self)
             if !log.isEmpty { log[0].count = page.records.count }
             out += page.records
+            if let oldest = page.records.map(date).min() { onPage?(oldest) }
             next = (page.nextToken?.isEmpty == false) ? page.nextToken : nil
             pages += 1
-        } while next != nil && pages < 40
+        } while next != nil && pages < 1000
         return out
     }
 
@@ -179,7 +226,7 @@ final class WhoopClient {
             case 401 where !refreshed:
                 refreshed = true
                 try await auth.refresh()
-            case 429 where backoffs < 4:
+            case 429 where backoffs < 8:
                 backoffs += 1
                 let wait = http?.value(forHTTPHeaderField: "Retry-After").flatMap(Double.init) ?? Double(2 << backoffs)
                 try await Task.sleep(nanoseconds: UInt64(min(max(wait, 1), 60) * 1_000_000_000))

@@ -90,7 +90,8 @@ final class LabStore {
         healthAsked = true
         UserDefaults.standard.set(true, forKey: "healthAsked")
         if !ok { toast = "Apple Health isn't available on this device." }
-        await refresh()
+        startLiveUpdates()
+        await refresh(.user)
     }
 
     /// Open a tab, optionally focusing a metric (detail sheet or Compare focus).
@@ -100,23 +101,156 @@ final class LabStore {
         if let metric, tab != .compare { detail = metric }
     }
 
-    func refresh() async {
-        if Self.isDemo { loadDemo(); return }
+    // MARK: - Sync
+
+    /// What kicked off a refresh. Only `.user` forces WHOOP past its 10-minute throttle; observer
+    /// refreshes (new Health samples) skip WHOOP entirely and stay quiet.
+    enum Trigger { case user, launch, foreground, observer, background }
+
+    /// Raw Health history (2 years, cached on disk) that each refresh splices fresh days into.
+    private var healthCache: HealthPull.Result?
+    /// Start of the cached Health history (nil until the one-time backfill has finished).
+    private(set) var historyFrom: Date?
+    /// When Apple Health was last read successfully.
+    private(set) var healthSynced: Date?
+    /// True while the one-time full-history read runs.
+    private(set) var backfilling = false
+    private(set) var syncStage: String?
+    private var healthProgress: Double = 0
+    private var pendingPass = false
+    private var observerTask: Task<Void, Never>?
+
+    var lastWatchSample: Date? { healthCache?.lastWatchSample }
+    var lastWhoopInHealth: Date? { healthCache?.lastWhoopSample }
+    var watchName: String? { healthCache?.watchName }
+
+    /// 0…1 across Health and WHOOP while syncing.
+    var syncProgress: Double {
+        let w = WhoopClient.shared
+        if w.isSyncing { return (healthProgress + w.progress) / 2 }
+        return healthProgress
+    }
+    /// One line for the progress bar: "Apple Health · 2 years of history", "WHOOP · Sleep"…
+    var syncLine: String? {
+        guard loading else { return nil }
+        let w = WhoopClient.shared
+        if w.isSyncing, let st = w.stage { return "WHOOP · \(st)" }
+        return syncStage
+    }
+
+    init() {
+        guard !Self.isDemo, let snap = HealthCache.load() else { return }
+        healthCache = snap.result
+        historyFrom = snap.backfilledFrom
+        healthSynced = snap.savedAt
+        lastPull = snap.savedAt
+        merge(health: snap.result)
+        loadedOnce = true
+    }
+
+    /// Observer queries + background delivery for every Health type (no-op until Health was asked).
+    func startLiveUpdates() {
+        guard !Self.isDemo, healthAsked else { return }
+        HealthLive.shared.start { done in
+            Task { @MainActor in
+                await LabStore.shared.healthChanged()
+                done()
+            }
+        }
+    }
+
+    /// New samples landed in Health: coalesce a burst of observer callbacks into one quick refresh.
+    func healthChanged() async {
+        if let t = observerTask { await t.value; return }
+        let t = Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 3_000_000_000)
+            await self.refresh(.observer)
+            self.observerTask = nil
+        }
+        observerTask = t
+        await t.value
+    }
+
+    /// Start over: read the full 2 years from Health and WHOOP's whole history again.
+    func rebuildHistory() async {
         guard !loading else { return }
+        HealthCache.clear()
+        healthCache = nil
+        historyFrom = nil
+        HealthLive.shared.resetAnchors()
+        WhoopClient.shared.resetHistory()
+        await refresh(.user)
+    }
+
+    func refresh(_ trigger: Trigger = .user) async {
+        if Self.isDemo { loadDemo(); return }
+        guard !loading else {
+            if trigger == .observer { pendingPass = true }
+            return
+        }
         loading = true
-        defer { loading = false; loadedOnce = true }
-        async let health = HealthPull.shared.pull(days: 90)
-        if WhoopAdapter.connected {
-            await WhoopAdapter.sync(days: 90)
-            if let e = WhoopAdapter.client.lastError {
+        healthProgress = 0
+        syncStage = "Apple Health"
+        defer {
+            loading = false; loadedOnce = true; syncStage = nil; healthProgress = 0
+            if pendingPass {
+                pendingPass = false
+                Task { await self.refresh(.observer) }
+            }
+        }
+        let interactive = trigger == .user || trigger == .launch || trigger == .foreground
+        // A newer Pulse Lab may read types the user hasn't been asked about yet.
+        if interactive, healthAsked, await HealthPull.shared.needsAuthorizationPrompt() {
+            _ = await HealthPull.shared.requestAccess()
+        }
+
+        async let health = pullHealth()
+        if WhoopAdapter.connected && trigger != .observer {
+            await WhoopAdapter.sync(force: trigger == .user)
+            if interactive, let e = WhoopAdapter.client.lastError {
                 let failed = WhoopAdapter.client.log.first { !$0.ok }.map { " (\($0.path.replacingOccurrences(of: "/v2/", with: "")))" } ?? ""
                 toast = "WHOOP: \(e)\(failed) · see Settings → Data check"
             }
         }
         let h = await health
-        merge(health: h)
+        merge(health: h ?? healthCache ?? HealthPull.Result())
         lastPull = Date()
         afterRefresh()
+    }
+
+    /// Reads Apple Health: the full history once, then only from the earliest day that can have changed
+    /// (3 days back, the last successful read, or a day a late sample landed on), spliced into the cache.
+    /// Nil when Health couldn't be read (locked iPhone, not allowed): the cache stays as it was.
+    private func pullHealth() async -> HealthPull.Result? {
+        guard HealthPull.available, healthAsked, UIApplication.shared.isProtectedDataAvailable else { return nil }
+        let today = Date().dayStart
+        let progress: @Sendable (Double) -> Void = { p in Task { @MainActor in LabStore.shared.healthProgress = p } }
+        let dirtyBefore = HealthLive.dirtyFrom
+        if let cache = healthCache, let from = historyFrom {
+            var cutoff = today.adding(days: -3)
+            if let last = healthSynced { cutoff = min(cutoff, last.dayStart.adding(days: -1)) }
+            if let dirty = dirtyBefore { cutoff = min(cutoff, dirty) }
+            cutoff = max(cutoff, from)
+            let fresh = await HealthPull.shared.pull(from: cutoff, progress: progress)
+            guard !fresh.failed else { return nil }
+            return saveHealth(cache.merged(with: fresh, from: cutoff), from: from, dirtyBefore: dirtyBefore)
+        }
+        let from = today.adding(days: -(HealthCache.historyDays - 1))
+        backfilling = true
+        syncStage = "Apple Health · reading 2 years of history"
+        defer { backfilling = false }
+        let fresh = await HealthPull.shared.pull(from: from, progress: progress)
+        guard !fresh.failed else { return nil }
+        return saveHealth(fresh, from: from, dirtyBefore: dirtyBefore)
+    }
+
+    private func saveHealth(_ result: HealthPull.Result, from: Date, dirtyBefore: Date?) -> HealthPull.Result {
+        healthCache = result
+        historyFrom = from
+        healthSynced = Date()
+        if HealthLive.dirtyFrom == dirtyBefore { HealthLive.dirtyFrom = nil }
+        HealthCache.save(.init(version: HealthCache.version, result: result, backfilledFrom: from, savedAt: Date()))
+        return result
     }
 
     /// Agreement scores over the last 30 days (what Today, the weekly summary and Trust all read).
@@ -155,8 +289,16 @@ final class LabStore {
         whoopDays = whoop.values.sorted { $0.day < $1.day }
 
         // Readiness for every Watch day (so it can be charted against WHOOP recovery).
+        // Each day only needs itself, the 7 days before and that night, so hand it just those (2 years of days otherwise make this quadratic).
         var wd = watchDays
-        for i in wd.indices { wd[i].recovery = Compare.readiness(day: wd[i].day, watch: watchDays, sleeps: h.sleeps) }
+        let byDay = Dictionary(wd.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
+        let watchNights = Dictionary(h.sleeps.filter { $0.source == .watch }.map { ($0.night, $0) }, uniquingKeysWith: { a, _ in a })
+        for i in wd.indices {
+            let d = wd[i].day
+            let window = (0...7).compactMap { byDay[d.adding(days: -$0)] }
+            let night = watchNights[d].map { [$0] } ?? []
+            wd[i].recovery = Compare.readiness(day: d, watch: window, sleeps: night)
+        }
         watchDays = wd
 
         let apiSleeps = WhoopAdapter.sleeps()
@@ -174,7 +316,7 @@ final class LabStore {
     // MARK: - CSV export
 
     func csv() -> String {
-        var rows = ["date,source,resting_hr,hrv_ms,resp_rate,spo2,temp_dev_c,active_kcal,total_kcal,steps,distance_km,exercise_min,recovery,strain,sleep_h,deep_min,rem_min"]
+        var rows = ["date,source,resting_hr,hrv_ms,resp_rate,spo2,temp_dev_c,active_kcal,total_kcal,steps,distance_km,exercise_min,recovery,strain,sleep_h,deep_min,rem_min,sleep_performance,avg_hr,walking_hr,vo2max,weight_kg,body_fat_pct,stand_min,stand_hours,flights,mindful_min,daylight_min,basal_kcal,cycling_km,walk_speed_ms,physical_effort,breathing_disturbances,diet_kcal,water_l,skin_temp_c"]
         let f = DateFormatter(); f.dateFormat = "yyyy-MM-dd"
         func v(_ x: Double?) -> String { x.map { String(format: "%.2f", $0) } ?? "" }
         for s in Source.allCases {
@@ -182,7 +324,10 @@ final class LabStore {
                 let n = sleeps.first { $0.source == s && Calendar.current.isDate($0.night, inSameDayAs: d.day) }
                 rows.append([f.string(from: d.day), s.rawValue, v(d.rhr), v(d.hrv), v(d.resp), v(d.spo2), v(d.tempDev), v(d.activeKcal),
                              v(d.totalKcal), v(d.steps), v(d.distanceKm), v(d.exerciseMin), v(d.recovery), v(d.strain),
-                             v(n.map { $0.asleepMin / 60 }), v(n?.deepMin), v(n?.remMin)].joined(separator: ","))
+                             v(n.map { $0.asleepMin / 60 }), v(n?.deepMin), v(n?.remMin), v(n?.performance), v(d.avgHR), v(d.walkHR),
+                             v(d.vo2), v(d.weightKg), v(d.bodyFat), v(d.standMin), v(d.standHours), v(d.flights), v(d.mindfulMin),
+                             v(d.daylightMin), v(d.basalKcal), v(d.cyclingKm), v(d.walkSpeed), v(d.physicalEffort),
+                             v(d.breathingDisturbances), v(d.dietKcal), v(d.waterL), v(d.skinTempC)].joined(separator: ","))
             }
         }
         return rows.joined(separator: "\n")

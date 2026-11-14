@@ -1,7 +1,7 @@
-// INTEGRATOR NOTE: the app's Info.plist needs a URL scheme so WHOOP can send the user back:
-//   CFBundleURLTypes: [{ CFBundleURLName: com.troydunn.pulselab.whoop, CFBundleURLSchemes: [pulselab] }]
-// The user registers their own (free) WHOOP developer app at developer-dashboard.whoop.com and adds
-// the redirect URI below. Pulse Lab never talks to any server except WHOOP's.
+// The redirect URI pulselab://whoop-callback uses the app's existing "pulselab" URL scheme (Info.plist CFBundleURLTypes).
+// The WHOOP Client ID / Secret are NOT in the repo: Info.plist has WhoopClientID = $(WHOOP_CLIENT_ID) and
+// WhoopClientSecret = $(WHOOP_CLIENT_SECRET), filled at build time from GitHub secrets (.github/workflows/testflight.yml).
+// Pulse Lab never talks to any server except WHOOP's.
 
 import Foundation
 import AuthenticationServices
@@ -14,7 +14,7 @@ import UIKit
 final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding {
     static let shared = WhoopAuth()
 
-    static let redirectURI = "pulselab://whoop"
+    static let redirectURI = "pulselab://whoop-callback"
     static let callbackScheme = "pulselab"
     static let dashboardURL = URL(string: "https://developer-dashboard.whoop.com")!
     static let scopes = "offline read:recovery read:cycles read:sleep read:workout read:profile read:body_measurement"
@@ -27,10 +27,10 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
 
         var errorDescription: String? {
             switch self {
-            case .missingCredentials: return "Paste your WHOOP Client ID and Client Secret first."
+            case .missingCredentials: return "WHOOP connection not set up yet."
             case .cancelled: return "Sign-in was cancelled."
             case .stateMismatch: return "WHOOP sign-in check failed. Try again."
-            case .noCode: return "WHOOP didn't send back a sign-in code. Check the redirect URI is pulselab://whoop."
+            case .noCode: return "WHOOP didn't send back a sign-in code. Check the redirect URI is pulselab://whoop-callback."
             case .tokenFailed(let why): return "WHOOP sign-in failed: \(why)"
             case .notConnected: return "WHOOP isn't connected."
             }
@@ -39,6 +39,18 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
 
     // MARK: credentials
 
+    /// Built into the app from build settings (GitHub secrets). Empty when the build had no secrets.
+    static func bundled(_ key: String) -> String? {
+        let v = (Bundle.main.object(forInfoDictionaryKey: key) as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+        // An unset build setting can leave the literal "$(WHOOP_CLIENT_ID)" behind; treat that as empty.
+        return v.isEmpty || v.hasPrefix("$(") ? nil : v
+    }
+    static var bundledClientID: String? { bundled("WhoopClientID") }
+    static var bundledClientSecret: String? { bundled("WhoopClientSecret") }
+    /// True when this build carries WHOOP app credentials.
+    static var isConfigured: Bool { bundledClientID != nil && bundledClientSecret != nil }
+
+    /// Optional: keys pasted by hand (advanced fallback when the build has none).
     var clientID: String? {
         get { WhoopKeychain.get("clientID") }
         set { WhoopKeychain.set(newValue, for: "clientID") }
@@ -47,7 +59,21 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
         get { WhoopKeychain.get("clientSecret") }
         set { WhoopKeychain.set(newValue, for: "clientSecret") }
     }
-    var hasCredentials: Bool { !(clientID ?? "").isEmpty && !(clientSecret ?? "").isEmpty }
+    var hasPastedCredentials: Bool { !(clientID ?? "").isEmpty && !(clientSecret ?? "").isEmpty }
+    /// Credentials to sign in with: the build's own first, pasted ones otherwise.
+    var signInCredentials: (id: String, secret: String)? {
+        if let id = Self.bundledClientID, let secret = Self.bundledClientSecret { return (id, secret) }
+        if let id = clientID, let secret = clientSecret, !id.isEmpty, !secret.isEmpty { return (id, secret) }
+        return nil
+    }
+    var hasCredentials: Bool { signInCredentials != nil }
+    /// Tokens can only be refreshed with the same app credentials that issued them, so those are remembered.
+    private var tokenCredentials: (id: String, secret: String)? {
+        if let id = WhoopKeychain.get("tokenClientID"), let secret = WhoopKeychain.get("tokenClientSecret") { return (id, secret) }
+        // Connected before credentials were remembered: that was always with pasted keys.
+        if let id = clientID, let secret = clientSecret, !id.isEmpty, !secret.isEmpty { return (id, secret) }
+        return signInCredentials
+    }
     var isConnected: Bool { WhoopKeychain.get("refreshToken") != nil || WhoopKeychain.get("accessToken") != nil }
 
     private var session: ASWebAuthenticationSession?
@@ -56,7 +82,8 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
     // MARK: sign in
 
     func connect() async throws {
-        guard let id = clientID, let secret = clientSecret, !id.isEmpty, !secret.isEmpty else { throw AuthError.missingCredentials }
+        guard let creds = signInCredentials else { throw AuthError.missingCredentials }
+        let id = creds.id, secret = creds.secret
         let state = Self.randomState()
         var comps = URLComponents(string: Self.authorizeURL)!
         comps.queryItems = [
@@ -99,11 +126,13 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
             "client_secret": secret,
             "redirect_uri": Self.redirectURI,
         ])
+        WhoopKeychain.set(id, for: "tokenClientID")
+        WhoopKeychain.set(secret, for: "tokenClientSecret")
     }
 
     func disconnect() {
         refreshTask?.cancel(); refreshTask = nil
-        for k in ["accessToken", "refreshToken", "expiresAt"] { WhoopKeychain.set(nil, for: k) }
+        for k in ["accessToken", "refreshToken", "expiresAt", "tokenClientID", "tokenClientSecret"] { WhoopKeychain.set(nil, for: k) }
     }
 
     /// Forget everything, including the pasted Client ID / Secret.
@@ -132,7 +161,8 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
         let task = Task<String, Error> { @MainActor in
             defer { self.refreshTask = nil }
             guard let rt = WhoopKeychain.get("refreshToken") else { throw AuthError.notConnected }
-            guard let id = self.clientID, let secret = self.clientSecret else { throw AuthError.missingCredentials }
+            guard let creds = self.tokenCredentials else { throw AuthError.missingCredentials }
+            let id = creds.id, secret = creds.secret
             try await self.requestToken([
                 "grant_type": "refresh_token",
                 "refresh_token": rt,

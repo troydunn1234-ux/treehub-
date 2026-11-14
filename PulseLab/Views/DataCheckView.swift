@@ -25,7 +25,7 @@ struct DataCheckView: View {
                     healthRows
                     whoopPanel
                     syncLog
-                    Text("Watch = samples written by your Apple Watch (or Apple's own iPhone writers). WHOOP = samples WHOOP saved into Health. Other = third-party apps, not counted.")
+                    Text("Watch = samples written by your Apple Watch (or Apple's own iPhone writers). WHOOP = samples WHOOP saved into Health. Other = the iPhone and other apps: used for steps/energy totals, and for body, mobility and vitals on days the Watch has nothing.")
                         .font(Lab.body(12)).foregroundStyle(Lab.faint)
                 }
                 .padding(.horizontal, Lab.S.m)

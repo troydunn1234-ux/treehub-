@@ -7,7 +7,7 @@ enum WhoopAdapter {
     static var connected: Bool { client.isConnected }
     static var lastSync: Date? { client.lastSync }
 
-    static func sync(days: Int = 90) async { await client.sync(days: days) }
+    static func sync(force: Bool = true) async { await client.sync(force: force) }
     static func demo() { client.demo() }
 
     /// Per-day numbers from the WHOOP API: recovery, resting HR, HRV (RMSSD), SpO2, skin temp deviation,

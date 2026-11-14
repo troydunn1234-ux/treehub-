@@ -93,6 +93,9 @@ jobs:
           TEAM: ${{ secrets.APPLE_TEAM_ID }}
           KID: ${{ secrets.ASC_KEY_ID }}
           ISS: ${{ secrets.ASC_ISSUER_ID }}
+          # Pulse Lab's WHOOP API app keys (developer-dashboard.whoop.com). Empty = WHOOP connect shows "not set up yet".
+          WHOOP_ID: ${{ secrets.WHOOP_CLIENT_ID }}
+          WHOOP_SECRET: ${{ secrets.WHOOP_CLIENT_SECRET }}
         run: |
           set -o pipefail
           archive() {
@@ -108,6 +111,8 @@ jobs:
               DEVELOPMENT_TEAM="$TEAM" \
               CODE_SIGN_STYLE=Automatic \
               CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+              WHOOP_CLIENT_ID="$WHOOP_ID" \
+              WHOOP_CLIENT_SECRET="$WHOOP_SECRET" \
               | tee archive.log | grep -E "error:|ARCHIVE (SUCCEEDED|FAILED)" || true
           }
           archive

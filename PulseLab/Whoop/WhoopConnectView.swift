@@ -77,7 +77,51 @@ struct WhoopConnectView: View {
 
     // MARK: setup
 
-    private var setupBody: some View {
+    @State private var showOwnKeys = false
+
+    @ViewBuilder private var setupBody: some View {
+        if WhoopAuth.isConfigured {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Sign in with your WHOOP account to pull recovery, strain, sleep stages, HRV, resting HR, SpO₂, skin temperature and workouts, all of your history.")
+                    .font(.subheadline).foregroundStyle(.secondary)
+                connectButton(enabled: true)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 10) {
+                Text("WHOOP connection not set up yet")
+                    .font(.subheadline.weight(.semibold))
+                Text("This build doesn't include WHOOP app keys yet. They're added to the next build automatically once they're set up. Until then WHOOP data that WHOOP saves into Apple Health still shows up.")
+                    .font(.footnote).foregroundStyle(.secondary)
+                DisclosureGroup(isExpanded: $showOwnKeys) {
+                    ownKeysBody.padding(.top, 8)
+                } label: {
+                    Text("Use my own WHOOP developer keys").font(.footnote.weight(.semibold))
+                }
+            }
+        }
+    }
+
+    private func connectButton(enabled: Bool) -> some View {
+        Button {
+            connecting = true; note = nil
+            Task {
+                await client.connect()
+                connecting = false
+            }
+        } label: {
+            HStack {
+                Spacer()
+                if connecting { ProgressView() } else { Label("Connect WHOOP", systemImage: "link") }
+                Spacer()
+            }
+            .font(.headline)
+            .padding(.vertical, 6)
+        }
+        .buttonStyle(.borderedProminent)
+        .disabled(!enabled || connecting)
+    }
+
+    private var ownKeysBody: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("WHOOP shares your data through its free developer access. One-time setup, about 3 minutes:")
                 .font(.subheadline).foregroundStyle(.secondary)
@@ -114,23 +158,7 @@ struct WhoopConnectView: View {
                 }
             }
 
-            Button {
-                connecting = true; note = nil
-                Task {
-                    await client.connect()
-                    connecting = false
-                }
-            } label: {
-                HStack {
-                    Spacer()
-                    if connecting { ProgressView() } else { Label("Connect WHOOP", systemImage: "link") }
-                    Spacer()
-                }
-                .font(.headline)
-                .padding(.vertical, 6)
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(!(hasID && hasSecret) || connecting)
+            connectButton(enabled: hasID && hasSecret)
 
             if hasID || hasSecret {
                 Button("Clear pasted ID and secret") {

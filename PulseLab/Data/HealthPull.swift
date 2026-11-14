@@ -44,16 +44,53 @@ final class HealthPull: @unchecked Sendable {
             QSpec(id: .appleExerciseTime, unit: .minute(), cumulative: true, key: \.exerciseMin),
             QSpec(id: .appleStandTime, unit: .minute(), cumulative: true, key: \.standMin),
             QSpec(id: .timeInDaylight, unit: .minute(), cumulative: true, key: \.daylightMin),
+            QSpec(id: .distanceCycling, unit: .meterUnit(with: .kilo), cumulative: true, key: \.cyclingKm),
+            QSpec(id: .walkingSpeed, unit: .meter().unitDivided(by: .second()), cumulative: false, key: \.walkSpeed),
+            QSpec(id: .walkingStepLength, unit: .meter(), cumulative: false, key: \.walkStepM),
+            QSpec(id: .walkingAsymmetryPercentage, unit: .percent(), cumulative: false, key: \.walkAsymmetry, scale: 100),
+            QSpec(id: .walkingDoubleSupportPercentage, unit: .percent(), cumulative: false, key: \.doubleSupport, scale: 100),
+            QSpec(id: .physicalEffort, unit: .kilocalorie().unitDivided(by: .hour().unitMultiplied(by: .gramUnit(with: .kilo))), cumulative: false, key: \.physicalEffort),
+            QSpec(id: .leanBodyMass, unit: .gramUnit(with: .kilo), cumulative: false, key: \.leanMassKg),
+            QSpec(id: .bodyMassIndex, unit: .count(), cumulative: false, key: \.bmi),
+            QSpec(id: .height, unit: .meter(), cumulative: false, key: \.heightM),
+            QSpec(id: .dietaryEnergyConsumed, unit: .kilocalorie(), cumulative: true, key: \.dietKcal),
+            QSpec(id: .dietaryWater, unit: .liter(), cumulative: true, key: \.waterL),
         ]
-        return s
+        var all = s
+        if #available(iOS 18.0, *) {
+            all.append(QSpec(id: .appleSleepingBreathingDisturbances, unit: .count(), cumulative: false, key: \.breathingDisturbances))
+        }
+        return all
     }()
+
+    /// Metrics the Watch doesn't measure itself (scales, food apps, the Health app): when no Watch sample
+    /// exists for a day, the Apple side uses whatever else is in Health instead of showing a gap.
+    static let fallbackToAnySource: Set<HKQuantityTypeIdentifier> = [
+        .bodyMass, .bodyFatPercentage, .leanBodyMass, .bodyMassIndex, .height, .vo2Max, .oxygenSaturation,
+        .respiratoryRate, .walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, .walkingDoubleSupportPercentage,
+        .walkingHeartRateAverage, .restingHeartRate, .heartRateVariabilitySDNN, .heartRate,
+    ]
 
     var readTypes: Set<HKObjectType> {
         var t = Set<HKObjectType>(Self.specs.compactMap { HKQuantityType.quantityType(forIdentifier: $0.id) })
         t.insert(HKObjectType.workoutType())
         if let sleep = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) { t.insert(sleep) }
         if let mind = HKCategoryType.categoryType(forIdentifier: .mindfulSession) { t.insert(mind) }
+        if let stand = HKCategoryType.categoryType(forIdentifier: .appleStandHour) { t.insert(stand) }
         return t
+    }
+
+    /// Every sample type we watch for new data (observer queries + background delivery).
+    var sampleTypes: [HKSampleType] { readTypes.compactMap { $0 as? HKSampleType } }
+
+    /// True when Health has types we haven't asked about yet (a newer Pulse Lab reads more than before).
+    func needsAuthorizationPrompt() async -> Bool {
+        guard Self.available else { return false }
+        return await withCheckedContinuation { cont in
+            store.getRequestStatusForAuthorization(toShare: [], read: readTypes) { status, _ in
+                cont.resume(returning: status == .shouldRequest)
+            }
+        }
     }
 
     func requestAccess() async -> Bool {
@@ -94,7 +131,7 @@ final class HealthPull: @unchecked Sendable {
 
     // MARK: - Full pull
 
-    struct Result {
+    struct Result: Codable {
         var watch: [DayStat] = []
         var whoop: [DayStat] = []
         var sleeps: [SleepNight] = []
@@ -102,18 +139,61 @@ final class HealthPull: @unchecked Sendable {
         var workouts: [WorkoutRec] = []
         /// Steps per day per device ("iPhone", "Apple Watch Ultra 3"…), before de-duplication.
         var stepsByDevice: [Date: [String: Double]] = [:]
+        /// Newest sample Health has from an Apple Watch / from WHOOP (for the Sources screen).
+        var lastWatchSample: Date?
+        var lastWhoopSample: Date?
+        var watchName: String?
+        /// Set when Health was locked (iPhone locked): the result is incomplete and must not replace the cache.
+        var failed = false
+
+        enum CodingKeys: String, CodingKey { case watch, whoop, sleeps, hypnogram, workouts, stepsByDevice, lastWatchSample, lastWhoopSample, watchName }
+
+        /// Replace everything from `cutoff` on with `newer` (a pull that started at `cutoff`), keep older history.
+        func merged(with newer: Result, from cutoff: Date) -> Result {
+            let c = cutoff.dayStart
+            var out = Result()
+            out.watch = (watch.filter { $0.day < c } + newer.watch.filter { $0.day >= c }).sorted { $0.day < $1.day }
+            out.whoop = (whoop.filter { $0.day < c } + newer.whoop.filter { $0.day >= c }).sorted { $0.day < $1.day }
+            out.sleeps = (sleeps.filter { $0.night < c } + newer.sleeps.filter { $0.night >= c }).sorted { $0.night < $1.night }
+            out.hypnogram = newer.hypnogram.isEmpty ? hypnogram : newer.hypnogram
+            let fresh = newer.workouts.filter { $0.start >= c }
+            let freshIDs = Set(fresh.map(\.id))
+            out.workouts = (workouts.filter { $0.start < c && !freshIDs.contains($0.id) } + fresh).sorted { $0.start < $1.start }
+            out.stepsByDevice = stepsByDevice.filter { $0.key < c }.merging(newer.stepsByDevice.filter { $0.key >= c }) { _, n in n }
+            out.lastWatchSample = [lastWatchSample, newer.lastWatchSample].compactMap { $0 }.max()
+            out.lastWhoopSample = [lastWhoopSample, newer.lastWhoopSample].compactMap { $0 }.max()
+            out.watchName = newer.watchName ?? watchName
+            return out
+        }
+    }
+
+    /// Thread-safe flag for "some query failed".
+    final class FailFlag: @unchecked Sendable {
+        private let lock = NSLock(); private var v = false
+        func set() { lock.lock(); v = true; lock.unlock() }
+        var value: Bool { lock.lock(); defer { lock.unlock() }; return v }
     }
 
     func pull(days: Int = 90) async -> Result {
+        await pull(from: Date().dayStart.adding(days: -(days - 1)))
+    }
+
+    /// Everything from `start` (a day start) to now. `progress` gets 0…1 as the queries finish.
+    func pull(from start: Date, progress: (@Sendable (Double) -> Void)? = nil) async -> Result {
         guard Self.available else { return Result() }
-        let start = Date().dayStart.adding(days: -(days - 1))
+        let failed = FailFlag()
+        let start = start.dayStart
         var watch: [Date: DayStat] = [:], whoop: [Date: DayStat] = [:]
+        let total = Double(Self.specs.count + 6)
+        var done = 0.0
+        func tick() { done += 1; progress?(min(1, done / total)) }
 
         await withTaskGroup(of: (Int, [Date: [Double?]]).self) { group in
             for i in Self.specs.indices {
-                group.addTask { (i, await self.daily(Self.specs[i], from: start)) }
+                group.addTask { (i, await self.daily(Self.specs[i], from: start, failed: failed)) }
             }
             for await (i, values) in group {
+                tick()
                 let spec = Self.specs[i]
                 for (day, pair) in values {
                     let v = (watch: pair[0], whoop: pair[1])
@@ -123,15 +203,44 @@ final class HealthPull: @unchecked Sendable {
             }
         }
 
-        let mindful = await mindfulMinutes(from: start)
-        let stepsByDevice = await stepsByDevice(from: start)
+        let mindful = await mindfulMinutes(from: start, failed: failed); tick()
         for (day, m) in mindful { watch[day, default: DayStat(day: day)].mindfulMin = m }
+        let stand = await standHours(from: start, failed: failed); tick()
+        for (day, h) in stand { watch[day, default: DayStat(day: day)].standHours = h }
+        let stepsByDevice = await stepsByDevice(from: start); tick()
 
-        let (sleeps, hypno) = await sleepNights(from: start.adding(days: -1))
-        let workouts = await workouts(from: start)
-        return Result(watch: watch.values.sorted { $0.day < $1.day },
-                      whoop: whoop.values.sorted { $0.day < $1.day },
-                      sleeps: sleeps, hypnogram: hypno, workouts: workouts, stepsByDevice: stepsByDevice)
+        let (sleeps, hypno) = await sleepNights(from: start.adding(days: -1), failed: failed); tick()
+        let workouts = await workouts(from: start, failed: failed); tick()
+        let (lastWatch, lastWhoop, watchName) = await newestSamples(); tick()
+        var r = Result(watch: watch.values.sorted { $0.day < $1.day },
+                       whoop: whoop.values.sorted { $0.day < $1.day },
+                       sleeps: sleeps, hypnogram: hypno, workouts: workouts, stepsByDevice: stepsByDevice)
+        r.lastWatchSample = lastWatch
+        r.lastWhoopSample = lastWhoop
+        r.watchName = watchName
+        r.failed = failed.value
+        return r
+    }
+
+    /// Newest heart-rate sample from an Apple Watch and from WHOOP (tells whether each is still writing to Health).
+    private func newestSamples() async -> (Date?, Date?, String?) {
+        guard let hr = HKQuantityType.quantityType(forIdentifier: .heartRate) else { return (nil, nil, nil) }
+        let recent = await samples(hr, from: Date().adding(days: -30), limit: 400, newestFirst: true)
+        let w = recent.first { Self.origin($0) == .watch }
+        let wh = recent.first { Self.origin($0) == .whoop }
+        let name = w?.device?.name ?? w?.sourceRevision.source.name
+        return (w?.endDate, wh?.endDate, name)
+    }
+
+    /// Hours with a "stood" mark (the Watch's stand ring), per day.
+    private func standHours(from start: Date, failed: FailFlag) async -> [Date: Double] {
+        guard let t = HKCategoryType.categoryType(forIdentifier: .appleStandHour) else { return [:] }
+        var out: [Date: Double] = [:]
+        for s in await samples(t, from: start, failed: failed) {
+            guard let c = s as? HKCategorySample, c.value == HKCategoryValueAppleStandHour.stood.rawValue else { continue }
+            out[c.startDate.dayStart, default: 0] += 1
+        }
+        return out
     }
 
     /// Steps counted by each device separately (the Watch and the iPhone both count; Health merges them for the total).
@@ -158,26 +267,29 @@ final class HealthPull: @unchecked Sendable {
 
     /// Per-day value for each origin. Cumulative metrics: the Watch side falls back to Health's merged,
     /// de-duplicated total when the day has no Watch-specific samples (e.g. phone-only steps).
-    private func daily(_ spec: QSpec, from start: Date) async -> [Date: [Double?]] {
+    private func daily(_ spec: QSpec, from start: Date, failed: FailFlag) async -> [Date: [Double?]] {
         guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { return [:] }
         let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: .strictStartDate)
         let opts: HKStatisticsOptions = spec.cumulative ? [.cumulativeSum, .separateBySource] : [.discreteAverage, .separateBySource]
         return await withCheckedContinuation { cont in
             let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: pred, options: opts,
                                                 anchorDate: start, intervalComponents: DateComponents(day: 1))
-            q.initialResultsHandler = { _, collection, _ in
+            let fallback = Self.fallbackToAnySource.contains(spec.id)
+            q.initialResultsHandler = { _, collection, error in
+                if (error as? HKError)?.code == .errorDatabaseInaccessible { failed.set() }
                 var out: [Date: [Double?]] = [:]
                 collection?.enumerateStatistics(from: start, to: Date()) { stat, _ in
-                    var w: [Double] = [], wh: [Double] = []
+                    var w: [Double] = [], wh: [Double] = [], other: [Double] = []
                     for src in stat.sources ?? [] {
                         let qty = spec.cumulative ? stat.sumQuantity(for: src) : stat.averageQuantity(for: src)
                         guard let v = qty?.doubleValue(for: spec.unit) else { continue }
                         switch Self.origin(src) {
                         case .whoop: wh.append(v)
                         case .watch: w.append(v)
-                        case .other: break
+                        case .other: other.append(v)
                         }
                     }
+                    if w.isEmpty && fallback && !other.isEmpty && !spec.cumulative { w = other }
                     var watchV: Double? = w.isEmpty ? nil : (spec.cumulative ? w.reduce(0, +) : w.reduce(0, +) / Double(w.count))
                     let whoopV: Double? = wh.isEmpty ? nil : (spec.cumulative ? wh.reduce(0, +) : wh.reduce(0, +) / Double(wh.count))
                     // Cumulative metrics (steps, energy, distance…): Health's merged total already removes the
@@ -195,21 +307,22 @@ final class HealthPull: @unchecked Sendable {
         }
     }
 
-    private func samples(_ type: HKSampleType, from start: Date) async -> [HKSample] {
+    private func samples(_ type: HKSampleType, from start: Date, failed: FailFlag? = nil) async -> [HKSample] {
         let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: [])
         return await withCheckedContinuation { cont in
             let q = HKSampleQuery(sampleType: type, predicate: pred, limit: HKObjectQueryNoLimit,
-                                  sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]) { _, s, _ in
+                                  sortDescriptors: [NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: true)]) { _, s, error in
+                if (error as? HKError)?.code == .errorDatabaseInaccessible { failed?.set() }
                 cont.resume(returning: s ?? [])
             }
             store.execute(q)
         }
     }
 
-    private func mindfulMinutes(from start: Date) async -> [Date: Double] {
+    private func mindfulMinutes(from start: Date, failed: FailFlag) async -> [Date: Double] {
         guard let t = HKCategoryType.categoryType(forIdentifier: .mindfulSession) else { return [:] }
         var out: [Date: Double] = [:]
-        for s in await samples(t, from: start) { out[s.startDate.dayStart, default: 0] += s.endDate.timeIntervalSince(s.startDate) / 60 }
+        for s in await samples(t, from: start, failed: failed) { out[s.startDate.dayStart, default: 0] += s.endDate.timeIntervalSince(s.startDate) / 60 }
         return out
     }
 
@@ -219,9 +332,9 @@ final class HealthPull: @unchecked Sendable {
         return hour >= 18 ? end.dayStart.adding(days: 1) : end.dayStart
     }
 
-    private func sleepNights(from start: Date) async -> ([SleepNight], [HypnoSegment]) {
+    private func sleepNights(from start: Date, failed: FailFlag) async -> ([SleepNight], [HypnoSegment]) {
         guard let t = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else { return ([], []) }
-        let all = await samples(t, from: start).compactMap { $0 as? HKCategorySample }
+        let all = await samples(t, from: start, failed: failed).compactMap { $0 as? HKCategorySample }
         var nights: [String: SleepNight] = [:]
         for s in all {
             let o = Self.origin(s)
@@ -263,10 +376,10 @@ final class HealthPull: @unchecked Sendable {
         return (nights.values.filter { $0.asleepMin > 0 || $0.inBedMin > 0 }.sorted { $0.night < $1.night }, hypno)
     }
 
-    private func workouts(from start: Date) async -> [WorkoutRec] {
-        let ws = await samples(HKObjectType.workoutType(), from: start).compactMap { $0 as? HKWorkout }
+    private func workouts(from start: Date, failed: FailFlag) async -> [WorkoutRec] {
+        let ws = await samples(HKObjectType.workoutType(), from: start, failed: failed).compactMap { $0 as? HKWorkout }
         let bpm = HKUnit.count().unitDivided(by: .minute())
-        return ws.compactMap { w in
+        var recs: [WorkoutRec] = ws.compactMap { w in
             let o = Self.origin(w)
             let src: Source = o == .whoop ? .whoop : .watch
             if o == .other && w.sourceRevision.source.bundleIdentifier.hasPrefix("com.apple") == false { return nil }
@@ -282,7 +395,31 @@ final class HealthPull: @unchecked Sendable {
                               avgHR: hr?.averageQuantity()?.doubleValue(for: bpm),
                               maxHR: hr?.maximumQuantity()?.doubleValue(for: bpm),
                               strain: nil,
-                              distanceKm: w.statistics(for: distType)?.sumQuantity()?.doubleValue(for: .meterUnit(with: .kilo)))
+                              distanceKm: (w.statistics(for: distType) ?? w.statistics(for: HKQuantityType(.distanceCycling)))?
+                                .sumQuantity()?.doubleValue(for: .meterUnit(with: .kilo)))
+        }
+        // Workouts saved without heart-rate statistics (WHOOP, older or third-party ones): work the average and
+        // peak out from the heart-rate samples recorded during the workout.
+        for i in recs.indices where recs[i].avgHR == nil {
+            if let (avg, max) = await heartRate(from: recs[i].start, to: recs[i].end) {
+                recs[i].avgHR = avg
+                recs[i].maxHR = recs[i].maxHR ?? max
+            }
+        }
+        return recs
+    }
+
+    private func heartRate(from start: Date, to end: Date) async -> (Double, Double)? {
+        let bpm = HKUnit.count().unitDivided(by: .minute())
+        let pred = HKQuery.predicateForSamples(withStart: start, end: end, options: [])
+        return await withCheckedContinuation { cont in
+            let q = HKStatisticsQuery(quantityType: HKQuantityType(.heartRate), quantitySamplePredicate: pred,
+                                      options: [.discreteAverage, .discreteMax]) { _, stat, _ in
+                guard let avg = stat?.averageQuantity()?.doubleValue(for: bpm),
+                      let max = stat?.maximumQuantity()?.doubleValue(for: bpm) else { cont.resume(returning: nil); return }
+                cont.resume(returning: (avg, max))
+            }
+            store.execute(q)
         }
     }
 
@@ -308,6 +445,10 @@ final class HealthPull: @unchecked Sendable {
         .runningPower: "Running power", .runningStrideLength: "Stride", .stepCount: "Steps", .distanceWalkingRunning: "Distance",
         .flightsClimbed: "Flights", .activeEnergyBurned: "Active energy", .basalEnergyBurned: "Resting energy",
         .appleExerciseTime: "Exercise minutes", .appleStandTime: "Stand minutes", .timeInDaylight: "Daylight",
+        .distanceCycling: "Cycling distance", .walkingSpeed: "Walking speed", .walkingStepLength: "Step length",
+        .walkingAsymmetryPercentage: "Walking asymmetry", .walkingDoubleSupportPercentage: "Double support",
+        .physicalEffort: "Physical effort", .leanBodyMass: "Lean mass", .bodyMassIndex: "BMI", .height: "Height",
+        .dietaryEnergyConsumed: "Food energy", .dietaryWater: "Water",
     ]
 
     /// One row per metric we read, plus sleep and workouts. Cheap enough to run on demand from Settings.
@@ -317,7 +458,7 @@ final class HealthPull: @unchecked Sendable {
         var rows: [ProbeRow] = []
         for spec in Self.specs {
             guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { continue }
-            var row = ProbeRow(id: spec.id.rawValue, title: Self.probeTitles[spec.id] ?? spec.id.rawValue, unit: Self.unitLabel(spec))
+            var row = ProbeRow(id: spec.id.rawValue, title: Self.probeTitles[spec.id] ?? (spec.key == \DayStat.breathingDisturbances ? "Breathing disturbances" : spec.id.rawValue), unit: Self.unitLabel(spec))
             let recent = await samples(type, from: since, limit: 20_000)
             row.count7d = recent.count
             var last = recent.last as? HKQuantitySample
@@ -363,6 +504,7 @@ final class HealthPull: @unchecked Sendable {
     }
 
     static func unitLabel(_ spec: QSpec) -> String {
+        if spec.key == \DayStat.breathingDisturbances { return "count" }
         switch spec.id {
         case .restingHeartRate, .heartRate, .walkingHeartRateAverage, .heartRateRecoveryOneMinute: return "bpm"
         case .heartRateVariabilitySDNN: return "ms"
@@ -375,8 +517,15 @@ final class HealthPull: @unchecked Sendable {
         case .runningSpeed: return "m/s"
         case .runningPower: return "W"
         case .runningStrideLength: return "m"
-        case .stepCount, .flightsClimbed: return "count"
-        case .distanceWalkingRunning: return "km"
+        case .stepCount, .flightsClimbed, .bodyMassIndex: return "count"
+        case .distanceWalkingRunning, .distanceCycling: return "km"
+        case .walkingSpeed: return "m/s"
+        case .walkingStepLength, .height: return "m"
+        case .walkingAsymmetryPercentage, .walkingDoubleSupportPercentage: return "%"
+        case .physicalEffort: return "MET"
+        case .leanBodyMass: return "kg"
+        case .dietaryEnergyConsumed: return "kcal"
+        case .dietaryWater: return "L"
         case .activeEnergyBurned, .basalEnergyBurned: return "kcal"
         default: return "min"
         }

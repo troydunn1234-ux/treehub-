@@ -1,5 +1,6 @@
 import SwiftUI
 
+@MainActor
 struct SettingsScreen: View {
     @Environment(LabStore.self) private var store
     @AppStorage("unitsImperial") private var imperial = true
@@ -7,16 +8,17 @@ struct SettingsScreen: View {
     @State private var exportURL: URL?
     @State private var showDataCheck = false
     @State private var showTrust = false
+    @State private var showSources = false
     @State private var weekly = Notify.enabled
     @State private var notifyDenied = false
 
     var body: some View {
         LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
+            sync
             health
             LabPanel(tint: Lab.whoop) {
                 WhoopConnectView(accent: Lab.whoop)
             }
-            sync
             trust
             dataCheck
             weeklySummary
@@ -35,7 +37,7 @@ struct SettingsScreen: View {
                     Spacer()
                     Text(store.healthAsked ? "CONNECTED" : "NOT SET UP").font(Lab.label(9)).foregroundStyle(store.healthAsked ? Lab.good : Lab.warn)
                 }
-                Text("Reads heart, HRV, sleep stages, breathing, SpO₂, wrist temp, energy, steps, workouts and more. Pulse Lab never writes to Health. Samples are split by source, so WHOOP data inside Health stays on WHOOP's side.")
+                Text("Reads heart, HRV, sleep stages, breathing, SpO₂, wrist temp, energy, steps, workouts and more. Pulse Lab only writes the supplements you check off. Samples are split by source, so WHOOP data inside Health stays on WHOOP's side.")
                     .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
                 Button {
                     Task { await store.connectHealth() }
@@ -55,22 +57,42 @@ struct SettingsScreen: View {
 
     private var sync: some View {
         LabPanel(tint: Lab.violet) {
-            HStack {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Sync now").font(Lab.display(16, .heavy)).foregroundStyle(Lab.text)
-                    Text(store.lastPull.map { "Last pull " + $0.formatted(.relative(presentation: .named)) } ?? "Not synced yet")
-                        .font(Lab.mono(10)).foregroundStyle(Lab.faint)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Sync now").font(Lab.display(16, .heavy)).foregroundStyle(Lab.text)
+                        Text("WHOOP + Apple Health, full refresh").font(Lab.mono(10)).foregroundStyle(Lab.faint)
+                    }
+                    Spacer()
+                    SyncButton()
                 }
-                Spacer()
-                Button { Task { await store.refresh() } } label: {
-                    Image(systemName: "arrow.triangle.2.circlepath").font(.title3.weight(.bold))
-                        .foregroundStyle(Lab.bg).frame(width: 44, height: 44)
-                        .background(Circle().fill(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .topLeading, endPoint: .bottomTrailing)))
-                        .rotationEffect(.degrees(store.loading ? 360 : 0))
-                        .animation(store.loading ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: store.loading)
+                if store.loading { SyncProgressBar() }
+                syncRow("WHOOP", WhoopClient.shared.isConnected ? WhoopClient.shared.lastSync : nil,
+                        off: WhoopClient.shared.isConnected ? nil : (WhoopAuth.isConfigured ? "not connected" : "not set up yet"))
+                syncRow("Apple Health", store.healthSynced, off: store.healthAsked ? nil : "not set up")
+                syncRow("Apple Watch (newest sample)", store.lastWatchSample, off: nil)
+                Button { showSources = true } label: {
+                    HStack {
+                        Image(systemName: "antenna.radiowaves.left.and.right").foregroundStyle(Lab.violet)
+                        Text("Sources").font(Lab.title(15)).foregroundStyle(Lab.text)
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                    }
+                    .padding(.top, 4)
                 }
-                .accessibilityLabel("Sync now")
+                .buttonStyle(.plain)
+                .sheet(isPresented: $showSources) { SourcesScreen().environment(store).presentationBackground(Lab.bg) }
             }
+        }
+    }
+
+    private func syncRow(_ name: String, _ date: Date?, off: String?) -> some View {
+        HStack {
+            Circle().fill(off == nil && date != nil ? Lab.good : Lab.faint).frame(width: 6, height: 6)
+            Text(name).font(Lab.body(13)).foregroundStyle(Lab.dim)
+            Spacer()
+            Text(off ?? date.map { $0.formatted(.relative(presentation: .named)) } ?? "never")
+                .font(Lab.mono(11)).foregroundStyle(Lab.text)
         }
     }
 

@@ -10,7 +10,7 @@ enum Source: String, CaseIterable, Identifiable, Codable {
 
 /// One calendar day of numbers from one source. Units are fixed (metric) and converted only for display:
 /// bpm, ms, breaths/min, %, °C deviation, kcal, km, minutes, kg.
-struct DayStat: Identifiable, Equatable {
+struct DayStat: Identifiable, Equatable, Codable {
     let day: Date            // start of day (local)
     var id: Date { day }
     var rhr: Double?
@@ -40,6 +40,20 @@ struct DayStat: Identifiable, Equatable {
     var recovery: Double?    // WHOOP recovery 0–100 (or Pulse Lab readiness for the Watch)
     var strain: Double?      // WHOOP day strain 0–21
     var skinTempC: Double?   // WHOOP absolute skin temperature
+    // More of Apple Health (shown in Data check, Sources and the CSV export).
+    var cyclingKm: Double?
+    var walkSpeed: Double?       // m/s
+    var walkStepM: Double?       // walking step length, m
+    var walkAsymmetry: Double?   // percent
+    var doubleSupport: Double?   // percent
+    var physicalEffort: Double?  // kcal/hr·kg (METs)
+    var breathingDisturbances: Double?
+    var leanMassKg: Double?
+    var bmi: Double?
+    var dietKcal: Double?
+    var waterL: Double?
+    var standHours: Double?
+    var heightM: Double?
     var totalKcalWhoop: Double?  // WHOOP gives one total for the cycle
 
     var totalKcal: Double? {
@@ -51,7 +65,7 @@ struct DayStat: Identifiable, Equatable {
     init(day: Date) { self.day = day }
 }
 
-enum SleepStage: String, CaseIterable, Identifiable {
+enum SleepStage: String, CaseIterable, Identifiable, Codable {
     case awake, rem, core, deep
     var id: String { rawValue }
     var title: String {
@@ -62,7 +76,7 @@ enum SleepStage: String, CaseIterable, Identifiable {
 }
 
 /// One night's sleep from one source (attributed to the day you woke up).
-struct SleepNight: Identifiable, Equatable {
+struct SleepNight: Identifiable, Equatable, Codable {
     let night: Date
     let source: Source
     var id: String { "\(source.rawValue)-\(night.timeIntervalSince1970)" }
@@ -88,14 +102,14 @@ struct SleepNight: Identifiable, Equatable {
     }
 }
 
-struct HypnoSegment: Identifiable, Equatable {
+struct HypnoSegment: Identifiable, Equatable, Codable {
     let start: Date
     let end: Date
     let stage: SleepStage
     var id: Date { start }
 }
 
-struct WorkoutRec: Identifiable, Equatable {
+struct WorkoutRec: Identifiable, Equatable, Codable {
     let id: String
     let source: Source
     var name: String
@@ -117,7 +131,11 @@ extension Date {
 }
 
 extension Array where Element == DayStat {
-    func stat(on day: Date) -> DayStat? { first { Calendar.current.isDate($0.day, inSameDayAs: day) } }
+    /// Searches from the newest end (recent days are what screens ask for; history is 2 years long).
+    func stat(on day: Date) -> DayStat? {
+        let d = day.dayStart
+        return last { $0.day == d }
+    }
     func recent(_ n: Int) -> [DayStat] {
         let cut = Date().dayStart.adding(days: -(n - 1))
         return filter { $0.day >= cut }.sorted { $0.day < $1.day }

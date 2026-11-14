@@ -1,8 +1,10 @@
 import SwiftUI
 import SwiftData
+import BackgroundTasks
 
 @main
 struct PulseLabApp: App {
+    @UIApplicationDelegateAdaptor(PulseLabAppDelegate.self) private var appDelegate
     @State private var store = LabStore.shared
 
     var body: some Scene {
@@ -11,6 +13,41 @@ struct PulseLabApp: App {
                 .environment(store)
                 .preferredColorScheme(.dark)
                 .modelContainer(for: [Supplement.self, SuppDose.self])
+        }
+    }
+}
+
+/// Background freshness: Health observer queries (woken by background delivery) and a periodic
+/// BGAppRefreshTask that also pulls WHOOP, so widgets and the app are current before you open it.
+final class PulseLabAppDelegate: NSObject, UIApplicationDelegate {
+    static let refreshID = "com.troydunn.pulselab.refresh"
+
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
+        BGTaskScheduler.shared.register(forTaskWithIdentifier: Self.refreshID, using: nil) { task in
+            guard let task = task as? BGAppRefreshTask else { task.setTaskCompleted(success: false); return }
+            Self.handle(task)
+        }
+        // Observer queries must be running whenever iOS wakes the app for new Health data.
+        MainActor.assumeIsolated { LabStore.shared.startLiveUpdates() }
+        Self.schedule()
+        return true
+    }
+
+    static func schedule() {
+        let req = BGAppRefreshTaskRequest(identifier: refreshID)
+        req.earliestBeginDate = Date().addingTimeInterval(30 * 60)
+        try? BGTaskScheduler.shared.submit(req)
+    }
+
+    private static func handle(_ task: BGAppRefreshTask) {
+        schedule()
+        let work = Task { @MainActor in
+            await LabStore.shared.refresh(.background)
+            if !Task.isCancelled { task.setTaskCompleted(success: true) }
+        }
+        task.expirationHandler = {
+            work.cancel()
+            task.setTaskCompleted(success: false)
         }
     }
 }
@@ -123,11 +160,12 @@ struct RootView: View {
             #if DEBUG
             Stats.selfCheck()
             #endif
-            if !showOnboarding { await store.refresh() }
+            if !showOnboarding { await store.refresh(.launch) }
         }
         .onChange(of: phase) { _, p in
-            if p == .active && !showOnboarding { Task { await store.refresh() } }
+            if p == .active && !showOnboarding { Task { await store.refresh(.foreground) } }
             if p == .active { openPendingTab() }
+            if p == .background { PulseLabAppDelegate.schedule() }
         }
         .onReceive(NotificationCenter.default.publisher(for: PulseLabPending.note)) { _ in openPendingTab() }
         .onAppear { openPendingTab() }
@@ -140,7 +178,7 @@ struct RootView: View {
         withAnimation(.snappy) { tab = t }
     }
 
-    /// `pulselab://today` (widget tap) jumps to Today. `pulselab://whoop` is the WHOOP OAuth
+    /// `pulselab://today` (widget tap) jumps to Today. `pulselab://whoop-callback` is the WHOOP OAuth
     /// callback, consumed by ASWebAuthenticationSession, so anything else is ignored here.
     private func open(_ url: URL) {
         guard url.scheme?.lowercased() == "pulselab", let host = url.host?.lowercased() else { return }
@@ -154,7 +192,7 @@ struct RootView: View {
             }
             return
         }
-        guard host != "whoop", let t = LabTab.named(host) else { return }
+        guard host != "whoop", host != "whoop-callback", let t = LabTab.named(host) else { return }
         withAnimation(.snappy) { tab = t }
     }
 
@@ -187,14 +225,18 @@ struct LabScroll<Content: View>: View {
                 HStack(alignment: .top) {
                     ScreenTitle(kicker: kicker, title: title)
                     VStack(alignment: .trailing, spacing: 10) {
-                        if showsStates {
-                            HeaderIconButton(symbol: "gearshape.fill", label: "Settings", action: nav.openSettings)
-                        } else {
-                            HeaderIconButton(symbol: "xmark", label: "Close settings", action: nav.closeSettings)
+                        HStack(spacing: 8) {
+                            SyncButton()
+                            if showsStates {
+                                HeaderIconButton(symbol: "gearshape.fill", label: "Settings", action: nav.openSettings)
+                            } else {
+                                HeaderIconButton(symbol: "xmark", label: "Close settings", action: nav.closeSettings)
+                            }
                         }
                         SyncPill()
                     }
                 }
+                if store.loading { SyncProgressBar() }
                 if showsStates && !store.hasAnyData {
                     if store.loading || (!store.loadedOnce && store.healthAsked) {
                         SkeletonStack()
@@ -210,7 +252,7 @@ struct LabScroll<Content: View>: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.hidden)
-        .refreshable { await store.refresh() }
+        .refreshable { await store.refresh(.user) }
     }
 }
 

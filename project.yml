@@ -217,6 +217,7 @@ targets:
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        com.apple.developer.healthkit.background-delivery: true
         com.apple.security.application-groups: [group.com.troydunn.pulselab]
     info:
       path: PulseLab/Info.plist
@@ -227,11 +228,17 @@ targets:
         ProProductID: com.troydunn.pulselab.pro
         PaidUntilBuild: 0
         NSHealthShareUsageDescription: Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.
-        NSHealthUpdateUsageDescription: Pulse Lab only reads your health data and never writes to Apple Health.
+        NSHealthUpdateUsageDescription: Pulse Lab saves the supplements you check off in your Stack to Apple Health as nutrients (like vitamin D or magnesium). It never changes your heart, sleep or workout data.
         CFBundleURLTypes:
           - CFBundleURLName: com.troydunn.pulselab
             CFBundleURLSchemes:
               - pulselab
+        WhoopClientID: "$(WHOOP_CLIENT_ID)"
+        WhoopClientSecret: "$(WHOOP_CLIENT_SECRET)"
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.troydunn.pulselab.refresh
+        UIBackgroundModes:
+          - fetch
         UIRequiresFullScreen: true
         UIStatusBarStyle: UIStatusBarStyleLightContent
         UILaunchScreen:
@@ -244,6 +251,9 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.pulselab
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         TARGETED_DEVICE_FAMILY: "1"
+        # Filled from GitHub secrets at build time (testflight.yml); empty locally.
+        WHOOP_CLIENT_ID: ""
+        WHOOP_CLIENT_SECRET: ""
   # Still Point: meditation & breath guide (Apple Watch first, iPhone companion)
   StillPoint:
     type: application
