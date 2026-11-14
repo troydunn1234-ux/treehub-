@@ -685,6 +685,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       </form>
       <p class="note" id="txErr" role="status"></p>
     </div>
+    <div class="box" id="uncBox" hidden><h2>Needs a category</h2>
+      <p class="note">Bank imports that didn't match a merchant keyword or anything you've sorted before. Pick a category and Ride Quest remembers that merchant for next time.</p>
+      <div id="uncList"></div></div>
     <div class="box">
       <div class="mnav">
         <button class="sq" data-act="prev" aria-label="Previous month">&lsaquo;</button>
@@ -721,6 +724,10 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       <p class="note">Type what each wallet really holds today and the page adjusts its starting point to match. Checking and Cash start at $0.00 until you do this.</p>
       <div class="setgrid" id="startSet"></div></div>
     <div class="box" id="bankBox" hidden><h2>Bank sync</h2><div id="bankBody"></div><p class="note" id="bankMsg" role="status"></p></div>
+    <div class="box"><h2>Auto-categorize</h2>
+      <p class="note">Bank imports get sorted by merchant: gas stations go to Gas, grocery stores to Food / groceries, restaurants and delivery to Eating out, streaming and apps to Subscriptions, and so on. When you change a bank purchase's category, Ride Quest remembers that merchant and files it there from then on. Anything it can't place lands in Needs a category on the Money log tab.</p>
+      <div id="ruleList"></div></div>
+    <div class="box"><h2>Weekly recap</h2><div id="recapSet"></div></div>
     <div class="box"><h2>Backup</h2>
       <p class="note">Everything saves automatically. These downloads open in Numbers or Excel if you want your own copy.</p>
       <div class="row"><button class="btn ghost" id="dlTx" type="button">Download purchases</button><button class="btn ghost" id="dlMv" type="button">Download transfers</button></div>
@@ -827,6 +834,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (Array.isArray(s.subs)) o.subs = s.subs.filter(function (x) { return x && typeof x.n === "string"; }).map(cleanSub);
     if (Array.isArray(s.subSkip)) o.subSkip = s.subSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     if (typeof s.budgetAlerts === "number") o.budgetAlerts = s.budgetAlerts ? 1 : 0;
+    if (typeof s.weeklyRecap === "number") o.weeklyRecap = s.weeklyRecap ? 1 : 0;
     if (s.budgetPings && typeof s.budgetPings === "object" && !Array.isArray(s.budgetPings)) o.budgetPings = s.budgetPings;
     if (Array.isArray(s.billSkip)) o.billSkip = s.billSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     return o;
@@ -1145,7 +1153,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var r = findRec(tr.dataset.eid); if (!r) return;
     var k = el.dataset.e, err = applyField(r, k, el.value);
     if (err) { if (!quiet) { el.value = r.o[k]; toast(err, true); } diag("field-invalid", k + ": " + err); return; }
-    if (k === "cat") learnCat(r.o);
+    if (k === "cat") { var more = learnCat(r.o); if (more) { toast("Also filed " + more + " more from " + (r.o.what || "this merchant")); renderUnc(); } }
     diag("field-ok", k); touch(); renderQuest(); renderWallets(); renderBudgets();
   }
   function saveEdit(btn) {
@@ -1159,7 +1167,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         err = applyField(r, inputs[i].dataset.e, inputs[i].value);
         if (err) { toast(err, true); diag("save-invalid", err); return; }
       }
-      if (r.tx) { mon = monthOf(r.o.d); learnCat(r.o); }
+      if (r.tx) { mon = monthOf(r.o.d); var more2 = learnCat(r.o); if (more2) setTimeout(function () { toast("Also filed " + more2 + " more from " + (r.o.what || "this merchant")); }, 300); }
       editId = null; touch(); renderAll(); toast("Saved"); diag("save-ok");
     } catch (e) { toast("Error: " + (e && e.message), true); diag("save-exception", e && (e.stack || e.message)); }
   }
@@ -1175,6 +1183,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     $("startSet").innerHTML = now("Savings now", "savings") + now("Checking now", "checking") + now("Cash now", "cash");
     renderBank();
     renderAlertSet();
+    renderRules();
+    renderRecapSet();
     $("limitSet").innerHTML = S.budgets.map(function (b, i) {
       return '<div class="limit"><span>' + esc(b.n) + '</span><input type="number" step="1" min="0" inputmode="decimal" data-lim="' + i + '" value="' + b.l + '" aria-label="Monthly limit for ' + esc(b.n) + '">' +
         '<button class="x" data-act="delcat" data-i="' + i + '" aria-label="Remove ' + esc(b.n) + '">&times;</button></div>';
@@ -1344,6 +1354,74 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       if (!ok) { toast("Notifications are off for Ride Quest. Turn them on in Settings.", true); return; }
       S.budgetAlerts = 1; touch(); renderAll(); beep("chime"); toast("Budget alerts on: 80% and 100%");
     }, function () { toast("Budget alerts need the Ride Quest app.", true); });
+  }
+  /* ---------- Home Screen widget: the shell saves this in the App Group (ShellNotify.saveWidget) ---------- */
+  var widgetTimer = null;
+  function syncWidget() {
+    clearTimeout(widgetTimer);
+    widgetTimer = setTimeout(function () {
+      var sav = r2(bal("savings")), goal = r2(S.goal.amount || 0), left = Math.max(0, r2(goal - sav));
+      var pct = goal > 0 ? Math.max(0, Math.min(1, sav / goal)) : 0;
+      var json = JSON.stringify({ name: S.goal.name || "Savings goal", saved: sav, goal: goal, left: left, pct: Math.round(pct * 1000) / 1000 });
+      bankNative({ op: "widget", json: json }).then(function () {}, function () {});
+    }, 600);
+  }
+  /* ---------- weekly recap: a local notification every Sunday at 7 PM ---------- */
+  var RECAP_HOUR = 19, recapTimer = null;
+  function nextSunday() {
+    var d = new Date(), add = (7 - d.getDay()) % 7;
+    if (add === 0 && d.getHours() >= RECAP_HOUR) add = 7;
+    return addDays(today(), add);
+  }
+  function recapAt(k) { var q = k.split("-"); return Math.floor(new Date(+q[0], +q[1] - 1, +q[2], RECAP_HOUR, 0, 0).getTime() / 1000); }
+  function recapStats(sun) {
+    var from = addDays(sun, -6), t = today(), to = t < sun ? t : sun;
+    var list = S.tx.filter(function (x) { return x.d >= from && x.d <= to; });
+    var spent = sumTx(list), cats = {};
+    list.forEach(function (x) { cats[x.cat] = r2((cats[x.cat] || 0) + x.amt); });
+    var top = Object.keys(cats).filter(function (c) { return cats[c] > 0; }).sort(function (a, b) { return cats[b] - cats[a]; })[0] || "";
+    var saved = 0;
+    S.moves.forEach(function (m) { if (m.d >= from && m.d <= to) saved += (m.to === "savings" ? m.amt : 0) - (m.from === "savings" ? m.amt : 0); });
+    var g = S.goal.amount || 0, sav = bal("savings");
+    return { spent: spent, budget: r2(totalBudget() * 12 / 52), top: top, topAmt: top ? cats[top] : 0, saved: r2(saved),
+      weekGoal: S.weekGoal || 0, pct: g > 0 ? Math.max(0, Math.min(100, Math.round(sav / g * 100))) : 0, partial: t < sun };
+  }
+  function recapBody(st) {
+    var day = new Date().toLocaleString("en-US", { weekday: "short" });
+    return (st.partial ? "As of " + day + ": " : "") + "Spent " + fmt(st.spent) + (st.budget > 0 ? " of your " + fmt(st.budget) + " weekly budget" : "") + ". " +
+      (st.top ? "Top: " + st.top + " " + fmt(st.topAmt) + ". " : "") +
+      "Saved " + fmt(st.saved) + (st.weekGoal > 0 ? " of your " + fmt(st.weekGoal) + " goal" : "") + " toward " + (S.goal.name || "your goal") + ", now " + st.pct + "% there.";
+  }
+  function scheduleRecap() {
+    clearTimeout(recapTimer);
+    recapTimer = setTimeout(function () {
+      if (!S.weeklyRecap) return;
+      var sun = nextSunday(), items = [{ id: "recap-" + sun, title: "Your week in Ride Quest", body: recapBody(recapStats(sun)), at: recapAt(sun), section: "review" }];
+      /* later Sundays, in case the app isn't opened before then; the numbers are filled in each time you open it */
+      for (var i = 1; i <= 3; i++) { var k = addDays(sun, 7 * i); items.push({ id: "recap-" + k, title: "Your week in Ride Quest", body: "Your weekly recap is ready. Tap to see what you spent and saved toward " + (S.goal.name || "your goal") + ".", at: recapAt(k), section: "review" }); }
+      var sig = JSON.stringify(items);
+      if (lsGet("rq-recap-sig") === sig) return;
+      bankNative({ op: "notify", action: "schedule", prefix: "recap-", items: items }).then(function () { lsSet("rq-recap-sig", sig); }, function () {});
+    }, 1500);
+  }
+  function renderRecapSet() {
+    var el = $("recapSet"); if (!el) return;
+    var app = !!(window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native);
+    var st = recapStats(nextSunday());
+    el.innerHTML = (app ? '<div class="row"><button class="btn' + (S.weeklyRecap ? "" : " ghost") + '" type="button" data-act="weeklyrecap" aria-pressed="' + (S.weeklyRecap ? "true" : "false") + '">WEEKLY RECAP ' + (S.weeklyRecap ? "ON" : "OFF") + "</button></div>" : "") +
+      '<p class="note">' + (app ? "Every Sunday at 7 PM: what you spent this week against your weekly budget, your top category, and what you saved toward your car. It's worked out on your phone from the last time you opened Ride Quest, so open it once in a while to keep it fresh." : "The weekly recap needs the Ride Quest app.") + "</p>" +
+      '<div class="box" style="background:var(--panel2)"><span class="lbl">Preview</span><div>' + esc(recapBody(st)) + "</div></div>";
+  }
+  function setWeeklyRecap(on) {
+    if (!on) {
+      S.weeklyRecap = 0; touch(); lsSet("rq-recap-sig", "");
+      bankNative({ op: "notify", action: "cancel", prefix: "recap-" }).then(function () {}, function () {});
+      renderAll(); toast("Weekly recap off"); return;
+    }
+    bankNative({ op: "notify", action: "permission" }).then(function (ok) {
+      if (!ok) { toast("Notifications are off for Ride Quest. Turn them on in Settings.", true); return; }
+      S.weeklyRecap = 1; lsSet("rq-recap-sig", ""); touch(); renderAll(); beep("chime"); toast("Weekly recap on: Sundays at 7 PM");
+    }, function () { toast("The weekly recap needs the Ride Quest app.", true); });
   }
   function renderRoad() {
     var p = pace(), e1 = etaFor(S.weekGoal), e2 = p == null ? null : etaFor(p);
@@ -2387,7 +2465,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     subsReconcile();
     syncQuests();
     budgetNotify();
-    renderQuest(); renderWallets(); renderBudgets(); renderLog(); renderMoves(); renderSetup(); updSnd(); applyTheme(); bootData();
+    renderQuest(); renderWallets(); renderBudgets(); renderLog(); renderUnc(); renderMoves(); renderSetup(); updSnd(); applyTheme(); bootData();
+    syncWidget(); scheduleRecap();
     if (tab === "arcade") renderArcade();
     if (tab === "review") renderReview();
     if (tab === "subs") renderSubs();
@@ -2413,33 +2492,91 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     return String(s || "").toLowerCase().replace(/#?\d{2,}/g, " ").replace(/[^a-z& ]+/g, " ").replace(/\s+/g, " ").trim().split(" ").slice(0, 3).join(" ");
   }
   function learnCat(o) {
-    if (!o || !o.bank || !o.bank.key || !o.cat) return;
+    if (!o || !o.cat) return 0;
+    if (o.cat !== UNCAT) { delete o.unc; o.auto = "you"; }
+    if (!o.bank || !o.bank.key || o.cat === UNCAT) return 0;
     S.bankRules = S.bankRules || {};
     S.bankRules[o.bank.key] = o.cat;
+    var more = 0;
+    S.tx.forEach(function (t) {
+      if (t !== o && t.bank && t.bank.key === o.bank.key && (t.unc || t.cat === UNCAT)) { t.cat = o.cat; delete t.unc; t.auto = "learned"; more++; }
+    });
+    return more;
   }
+  var UNCAT = "Uncategorized";
   var CAT_RULES = [
-    [/chevron|shell|arco|exxon|mobil|valero|\b76\b|circle k|speedway|sunoco|costco gas|sam'?s fuel|marathon|citgo|gas station|fuel/, ["Gas"]],
-    [/autozone|o'?reilly|napa|advance auto|pep boys|jiffy|firestone|midas|valvoline|discount tire|les schwab|car wash|carwash|auto parts|tire|smog|mechanic/, ["Car repairs / maintenance", "Car repairs", "Parts"]],
-    [/geico|progressive|state farm|allstate|farmers ins|insurance|usaa|liberty mutual/, ["Insurance"]],
+    [/pg&e|\bpge\b|pacific gas|gas (&|and) electric|socalgas|gas co\b|gas company/, ["Needs"]],
+    [/chevron|shell|arco|exxon|mobil|valero|\b76\b|circle k|speedway|sunoco|costco gas|sam'?s fuel|marathon|citgo|gas station|fuel|\bgas\b|wawa|quiktrip|racetrac|kwik|love'?s travel|pilot travel|flying j|\bbp\b|texaco|sinclair|maverik|conoco|phillips 66|ev charg|chargepoint|electrify america|supercharg/, ["Gas"]],
+    [/autozone|o'?reilly|napa|advance auto|pep boys|jiffy|firestone|midas|valvoline|discount tire|les schwab|car wash|carwash|auto parts|\btires?\b|smog|mechanic|auto repair|oil change|fastrak|\btolls?\b|parking|parkmobile/, ["Car repairs / maintenance", "Car repairs", "Parts", "Car"]],
+    [/geico|progressive|state farm|allstate|farmers ins|insurance|usaa|liberty mutual|mercury ins|aaa /, ["Insurance"]],
     [/\bdmv\b|registration|dept of motor/, ["Registration", "Car repairs / maintenance", "Needs"]],
-    [/netflix|spotify|hulu|disney|youtube|apple\.com|icloud|prime video|max\.com|hbo|paramount|peacock|patreon|openai|chatgpt|xbox|playstation|psn|steam/, ["Subscriptions"]],
-    [/planet fitness|24 hour|la fitness|crunch|equinox|gold'?s gym|\bgym\b|fitness/, ["Gym"]],
+    [/netflix|spotify|hulu|disney|youtube|apple\.com|icloud|prime video|amazon prime|max\.com|hbo|paramount|peacock|patreon|openai|chatgpt|xbox|playstation|psn|steam|crunchyroll|audible|sirius|pandora|tidal|twitch|discord|nintendo|adobe|microsoft|google (storage|one|play)|dropbox|espn|fubo|sling|dazn|grok|x premium|claude|anthropic|tinder|bumble|hinge|duolingo|canva|capcut/, ["Subscriptions"]],
+    [/planet fitness|24 hour|la fitness|crunch|equinox|gold'?s gym|\bgym\b|fitness|orangetheory|anytime fit/, ["Gym", "Needs"]],
     [/dispensary|cannabis|420|weed|eaze|stiiizy|budz|smoke shop/, ["Weed"]],
-    [/draftkings|fanduel|betmgm|casino|caesars|prizepicks|underdog|lottery|poker/, ["Gambling"]],
-    [/mcdonald|starbucks|chipotle|taco bell|in-n-out|in n out|wendy|burger|chick-fil|subway|panda|doordash|uber eats|ubereats|grubhub|pizza|domino|restaurant|cafe|coffee|boba|tea|kitchen|grill|bar\b/, ["Eating out"]],
-    [/safeway|trader joe|whole foods|sprouts|costco|walmart|target|kroger|ralphs|vons|lucky|smart ?& ?final|grocery|market|foods/, ["Food / groceries"]],
-    [/cvs|walgreens|pharmacy|pg&e|pge|comcast|xfinity|at&t|verizon|t-mobile|utility|water|electric|rent/, ["Needs"]]
+    [/draftkings|fanduel|betmgm|casino|caesars|prizepicks|underdog|lottery|poker|chumba|stake\.us/, ["Gambling"]],
+    [/mcdonald|starbucks|chipotle|taco bell|in-n-out|in n out|wendy|burger|chick-fil|subway|panda|doordash|uber eats|ubereats|grubhub|postmates|pizza|domino|restaurant|cafe|coffee|boba|\btea\b|kitchen|grill|bar\b|jack in the box|carl'?s jr|kfc|popeyes|five guys|shake shack|wingstop|panera|denny|ihop|applebee|olive garden|chili'?s|sushi|taqueria|ramen|\bpho\b|bakery|dutch bros|peet|jamba|el pollo|raising cane|jersey mike|sonic drive|del taco|habit|wingstop|dine|eatery|bistro|diner/, ["Eating out"]],
+    [/safeway|trader joe|whole foods|sprouts|costco|walmart|target|kroger|ralphs|vons|lucky|smart ?& ?final|grocery|market|foods|aldi|food ?4 ?less|foodmaxx|winco|save ?mart|nob hill|raley|h-e-b|\bheb\b|publix|albertsons|99 ranch|instacart/, ["Food / groceries", "Groceries", "Food"]],
+    [/amc |cinemark|regal|ticketmaster|stubhub|eventbrite|bowling|dave & buster|topgolf|arcade|concert|movie/, ["Fun", "Wants"]],
+    [/amazon|amzn|best buy|ebay|etsy|nike|ross|tj ?maxx|marshalls|old navy|h&m|zara|shein|temu|foot locker|jd sports|ulta|sephora|gamestop|home depot|lowe'?s|ikea/, ["Wants", "Shopping", "Fun"]],
+    [/cvs|walgreens|rite aid|pharmacy|pg&e|pge|comcast|xfinity|at&t|verizon|t-mobile|metro by|mint mobile|utility|water|electric|rent|uber|lyft|laundr|barber|haircut|dentist|doctor|clinic/, ["Needs"]]
   ];
-  function guessCat(text) {
-    var key = payeeKey(text), names = S.budgets.map(function (b) { return b.n; });
-    if (S.bankRules && S.bankRules[key] && names.indexOf(S.bankRules[key]) >= 0) return S.bankRules[key];
+  /* Which category a bank purchase goes in, and why: "learned" (you sorted this merchant before), "rule" (a keyword matched) or "" (nothing fit). */
+  function guessCatInfo(text, key) {
+    var names = S.budgets.map(function (b) { return b.n; });
+    key = key || payeeKey(text);
+    if (S.bankRules && S.bankRules[key] && (names.indexOf(S.bankRules[key]) >= 0 || S.bankRules[key] === UNCAT)) return { c: S.bankRules[key], how: "learned" };
     var low = String(text || "").toLowerCase();
     for (var i = 0; i < CAT_RULES.length; i++) {
       if (CAT_RULES[i][0].test(low)) {
-        for (var j = 0; j < CAT_RULES[i][1].length; j++) if (names.indexOf(CAT_RULES[i][1][j]) >= 0) return CAT_RULES[i][1][j];
+        for (var j = 0; j < CAT_RULES[i][1].length; j++) if (names.indexOf(CAT_RULES[i][1][j]) >= 0) return { c: CAT_RULES[i][1][j], how: "rule" };
       }
     }
-    return names.indexOf("Wants") >= 0 ? "Wants" : (names.indexOf("Other") >= 0 ? "Other" : (names[0] || "Other"));
+    return { c: UNCAT, how: "" };
+  }
+  function guessCat(text, key) { return guessCatInfo(text, key).c; }
+  /* Bank purchases waiting for you to pick a category, newest first. */
+  function uncList() {
+    return S.tx.filter(function (t) { return t.unc || t.cat === UNCAT; }).sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+  }
+  function fileUnc(id, cat) {
+    var t = S.tx.filter(function (x) { return x.id === id; })[0];
+    if (!t || !cat || cat === UNCAT) return;
+    t.cat = cat;
+    var more = learnCat(t);
+    touch(); renderAll(); beep("coin");
+    toast("Filed under " + cat + (more ? " (+" + more + " more from " + (t.what || "this merchant") + ")" : ""));
+  }
+  function recatUnc() {
+    var n = 0;
+    uncList().forEach(function (t) {
+      var key = (t.bank && t.bank.key) || payeeKey(t.what), g = guessCatInfo((t.what || "") + " " + ((t.bank && t.bank.desc) || ""), key);
+      if (g.c !== UNCAT) { t.cat = g.c; delete t.unc; t.auto = g.how; n++; }
+    });
+    touch(); renderAll();
+    toast(n ? "Sorted " + n + " purchase" + (n === 1 ? "" : "s") : "Nothing new matched. Pick categories by hand.");
+  }
+  function renderUnc() {
+    var list = uncList(), box = $("uncBox"); if (!box) return;
+    var tl = $("t-log"); if (tl) tl.textContent = "Money log" + (list.length ? " (" + list.length + ")" : "");
+    box.hidden = !list.length;
+    if (!list.length) { $("uncList").innerHTML = ""; return; }
+    var names = S.budgets.map(function (b) { return b.n; });
+    $("uncList").innerHTML = '<div class="scroll"><table><thead><tr><th>Date</th><th>Merchant</th><th class="r">Amount</th><th>Category</th></tr></thead><tbody>' +
+      list.slice(0, 60).map(function (t) {
+        return '<tr><td class="num">' + esc(t.d.slice(5)) + "</td><td>" + esc(t.what || "-") + bankBadge(t) + '</td><td class="r num">' + fmt(t.amt) + "</td><td>" +
+          '<select data-uc="' + esc(t.id) + '" aria-label="Category for ' + esc(t.what || "purchase") + '"><option value="">Pick one</option>' +
+          names.map(function (n) { return '<option value="' + esc(n) + '">' + esc(n) + "</option>"; }).join("") + "</select></td></tr>";
+      }).join("") + "</tbody></table></div>" +
+      (list.length > 60 ? '<p class="note">Showing the newest 60 of ' + list.length + ".</p>" : "") +
+      '<div class="row"><button class="btn ghost" type="button" data-act="recat">Try auto-sort again</button></div>';
+  }
+  function renderRules() {
+    var el = $("ruleList"); if (!el) return;
+    var r = S.bankRules || {}, keys = Object.keys(r).filter(function (k) { return k && k !== "transfer"; }).sort();
+    el.innerHTML = keys.length ? '<span class="lbl">Merchants you\'ve sorted (' + keys.length + ")</span>" +
+      '<div class="limits">' + keys.map(function (k) {
+        return '<div class="limit"><span>' + esc(k) + ' <span class="mut">&rarr; ' + esc(r[k]) + '</span></span><button class="x" data-act="forgetrule" data-k="' + esc(k) + '" aria-label="Forget ' + esc(k) + '">&times;</button></div>';
+      }).join("") + "</div>" : '<p class="note">No merchants learned yet. Change a bank purchase\'s category and it shows up here.</p>';
   }
   function walletFor(acc) {
     S.bankWallet = S.bankWallet || {};
@@ -2550,12 +2687,18 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       var text = t.payee || t.description || "Bank purchase", key = payeeKey(text);
       var when = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000);
       var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending, acc: a.id };
+      var g = guessCatInfo(text + " " + (t.description || ""), key);
+      if (t.description && t.description !== text) bank.desc = String(t.description).slice(0, 80);
       if (t.amount < 0) {
-        S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: text.slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
+        var nt = { id: uid(), d: when, cat: g.c, what: text.slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank, auto: g.how || "none" };
+        if (!g.how) nt.unc = 1;
+        S.tx.push(nt);
         added++;
       } else if (isCredit(a)) {
         /* money back on a card (a return/refund) takes spending back down in its category */
-        S.tx.push({ id: uid(), d: when, cat: guessCat(text + " " + (t.description || "")), what: ("Refund: " + text).slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank });
+        var rt = { id: uid(), d: when, cat: g.c, what: ("Refund: " + text).slice(0, 60), amt: r2(-t.amount), acct: walletFor(a), note: "", bank: bank, auto: g.how || "none" };
+        if (!g.how) rt.unc = 1;
+        S.tx.push(rt);
         added++;
       } else {
         S.moves.push({ id: uid(), d: when, from: "outside", to: walletFor(a), amt: r2(t.amount), note: text.slice(0, 60), bank: bank });
@@ -2674,6 +2817,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "today") { mon = monthOf(today()); renderAll(); }
     else if (a === "deltx") arm(t, function () { S.tx = S.tx.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderAll(); });
     else if (a === "budgetalerts") setBudgetAlerts(!S.budgetAlerts);
+    else if (a === "weeklyrecap") setWeeklyRecap(!S.weeklyRecap);
+    else if (a === "recat") recatUnc();
+    else if (a === "forgetrule") arm(t, function () { if (S.bankRules) delete S.bankRules[t.dataset.k]; touch(); renderRules(); toast("Forgot " + t.dataset.k); });
     else if (a === "snd") { S.sound = S.sound ? 0 : 1; touch(); updSnd(); beep("coin"); }
     else if (a === "donut") { $("fCat").value = t.dataset.c; setTab("log"); renderLog(); }
     else if (a === "heatday") { heatDay = heatDay === t.dataset.d ? "" : t.dataset.d; renderHeat(); }
@@ -2821,6 +2967,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   });
   document.addEventListener("change", function (e) {
     var t = e.target;
+    if (t.dataset && t.dataset.uc) { fileUnc(t.dataset.uc, t.value); return; }
     if (t.dataset && t.dataset.e) { onEditField(t, false); return; }
     if (t.dataset && t.dataset.sid) { sbField(t); return; }
     if (t.dataset && t.dataset.bid) {
