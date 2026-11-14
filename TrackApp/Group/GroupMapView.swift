@@ -372,6 +372,9 @@ struct GroupMapView: View {
             try? ctx.save()
         }
         dismiss()
+        // Show the saved trip in History, where the recap card can be shared.
+        let id = a.id.uuidString
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { DriveFinishedNotifier.requestOpen(id) }
     }
 }
 

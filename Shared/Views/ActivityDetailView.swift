@@ -14,6 +14,10 @@ struct ActivityDetailView: View {
     @State private var showTrim = false
     @State private var probe: RoutePoint?
     @State private var gpxURL: URL?
+    #if TRACK_APP
+    @State private var showRecap = false
+    @ObservedObject private var groups = GroupHistory.shared
+    #endif
     #if !TRACK_APP
     @Query(sort: \Hug.date) private var allHugs: [Hug]
     private var strollHugs: [Hug] { allHugs.filter { $0.strollID == activity.id } }
@@ -62,8 +66,10 @@ struct ActivityDetailView: View {
                             }
                             .buttonStyle(.plain)
                             .accessibilityLabel(k.title)
+                            .accessibilityAddTraits(activity.kind == k ? .isSelected : [])
                         }
                     }
+                    .sensoryFeedback(.selection, trigger: activity.kindRaw)
                 }
 
                 #if !TRACK_APP
@@ -94,6 +100,17 @@ struct ActivityDetailView: View {
                     .font(Theme.rounded(15, .regular))
                     .padding(12)
                     .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+
+                #if TRACK_APP
+                Button {
+                    showRecap = true
+                } label: {
+                    Label("Share recap card", systemImage: "photo.on.rectangle.angled")
+                }
+                .buttonStyle(PrimaryButtonStyle(gradient: isNew ? Theme.goldGradient : Theme.leafGradient))
+                .sensoryFeedback(.impact(weight: .light), trigger: showRecap)
+                .accessibilityHint("Makes a picture of this trip's map and stats to post or send")
+                #endif
 
                 if coords.count > 1, let gpxURL {
                     ShareLink(item: gpxURL) {
@@ -142,6 +159,12 @@ struct ActivityDetailView: View {
                 }
             }
         }
+        #if TRACK_APP
+        .sheet(isPresented: $showRecap) {
+            RecapShareView(activity: activity)
+                .presentationDragIndicator(.visible)
+        }
+        #endif
         .sheet(isPresented: $showTrim) {
             TrimSheet(activity: activity) { startT, endT in
                 activity.trim(startT: startT, endT: endT)
@@ -155,6 +178,7 @@ struct ActivityDetailView: View {
         .onDisappear { try? context.save() }
         .alert("Delete this activity?", isPresented: $confirmDelete) {
             Button("Delete", role: .destructive) {
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
                 let target = activity
                 dismiss()
                 // Delete after the screen closes so nothing draws a deleted object.
@@ -211,6 +235,17 @@ struct ActivityDetailView: View {
                     .font(Theme.title(32))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
+                    .accessibilityLabel("Title")
+                #if TRACK_APP
+                if let g = groups.log(for: activity.id) {
+                    Label(g.withLabel, systemImage: "person.2.fill")
+                        .font(Theme.rounded(13, .bold))
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10).padding(.vertical, 5)
+                        .background(.ultraThinMaterial, in: Capsule())
+                        .accessibilityLabel("Go together \(g.withLabel)")
+                }
+                #endif
             }
             .padding(.horizontal, Theme.pad)
             .padding(.bottom, 4)

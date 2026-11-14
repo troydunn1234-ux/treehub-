@@ -11,6 +11,8 @@ struct HistoryView: View {
     /// nil means "All".
     @State private var filter: ActivityKind? = nil
     @State private var path = NavigationPath()
+    /// Go together trips you took part in (kept on this phone).
+    @ObservedObject private var groups = GroupHistory.shared
 
     private struct MonthGroup: Identifiable {
         let month: Date
@@ -60,6 +62,10 @@ struct HistoryView: View {
                         .padding(.horizontal, Theme.pad)
 
                     filterRow
+
+                    if filter == nil, !groups.trips.isEmpty {
+                        togetherSection
+                    }
 
                     if groupList.isEmpty {
                         emptyState
@@ -183,12 +189,98 @@ struct HistoryView: View {
             .padding(.top, 10)
 
             ForEach(group.items) { (a: Activity) in
-                NavigationLink(value: a.id) { ActivityRow(activity: a) }
+                NavigationLink(value: a.id) { ActivityRow(activity: a, together: groups.log(for: a.id)?.withLabel) }
                     .pressable()
                     .cardAppear()
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
             }
         }
+    }
+
+    // MARK: Go together
+
+    private var togetherSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("GO TOGETHER")
+                    .font(Theme.rounded(12, .bold))
+                    .tracking(1.4)
+                    .foregroundStyle(Theme.textDim)
+                Spacer()
+                Text("\(groups.trips.count) group \(groups.trips.count == 1 ? "trip" : "trips")")
+                    .font(Theme.rounded(12, .bold))
+                    .foregroundStyle(Theme.sky.opacity(0.9))
+            }
+            .padding(.horizontal, Theme.pad + 4)
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 10) {
+                    ForEach(groups.trips) { g in
+                        let saved = g.activityID.flatMap { id in activities.first { $0.id == id } }
+                        if let saved {
+                            NavigationLink(value: saved.id) { togetherCard(g, activity: saved) }
+                                .pressable()
+                                .accessibilityHint("Opens that trip")
+                        } else {
+                            togetherCard(g, activity: nil)
+                                .contextMenu {
+                                    Button(role: .destructive) { groups.remove(g.id) } label: { Label("Remove", systemImage: "trash") }
+                                }
+                        }
+                    }
+                }
+                .padding(.vertical, 2)
+            }
+            .contentMargins(.horizontal, Theme.pad, for: .scrollContent)
+        }
+    }
+
+    private func togetherCard(_ g: GroupTripLog, activity: Activity?) -> some View {
+        let distance = activity?.distanceM ?? g.distanceM
+        return VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 8) {
+                Image(systemName: g.kind.symbol)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(width: 28, height: 28)
+                    .background(LinearGradient(colors: [Theme.sky, Theme.glow], startPoint: .topLeading, endPoint: .bottomTrailing), in: Circle())
+                Text(Format.day(g.date).uppercased())
+                    .font(Theme.rounded(11, .heavy)).tracking(1)
+                    .foregroundStyle(Theme.textDim)
+                Spacer(minLength: 0)
+                if g.hosted {
+                    Image(systemName: "crown.fill").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.gold)
+                        .accessibilityLabel("You hosted")
+                }
+            }
+            Text(g.withLabel)
+                .font(Theme.rounded(15, .bold))
+                .foregroundStyle(.white)
+                .lineLimit(2)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+            HStack(spacing: 6) {
+                Text(distance > 0 ? Format.distance(distance) : g.kind.title)
+                    .font(Theme.rounded(13, .heavy))
+                    .foregroundStyle(Theme.glow)
+                Spacer(minLength: 0)
+                if activity != nil {
+                    Image(systemName: "chevron.right").font(.system(size: 11, weight: .bold)).foregroundStyle(Theme.textDim)
+                } else {
+                    Text("Not saved").font(Theme.rounded(11, .semibold)).foregroundStyle(Theme.textDim)
+                }
+            }
+        }
+        .padding(14)
+        .frame(width: 190, height: 132, alignment: .topLeading)
+        .background {
+            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
+            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.sky.opacity(0.08))
+        }
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Theme.sky.opacity(0.25)))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Group \(g.kind.title.lowercased()) on \(Format.day(g.date)), \(g.withLabel)\(distance > 0 ? ", " + Format.distance(distance) : "")\(activity == nil ? ", recording not saved" : "")")
     }
 
     // MARK: Empty
@@ -204,10 +296,24 @@ struct HistoryView: View {
                 Text(filter == nil ? "No trips yet" : "No \(filter?.title.lowercased() ?? "") trips yet")
                     .font(Theme.rounded(18, .bold))
                     .foregroundStyle(.white)
-                Text("Start a trip from the Track tab and it will show up here.")
+                Text(filter == nil ? "Start a trip from the Track tab and it will show up here."
+                                   : "Pick \(filter?.title ?? "it") on the Track tab before you start, or change a trip's type from its page.")
                     .font(Theme.rounded(13, .medium))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
+                if filter != nil {
+                    Button {
+                        withAnimation(Self.spring) { filter = nil }
+                    } label: {
+                        Text("Show all trips")
+                            .font(Theme.rounded(14, .heavy))
+                            .foregroundStyle(Theme.forestDeep)
+                            .padding(.horizontal, 18).padding(.vertical, 10)
+                            .background(Theme.leafGradient, in: Capsule())
+                    }
+                    .buttonStyle(.plain)
+                    .padding(.top, 4)
+                }
             }
             .frame(maxWidth: .infinity)
         }

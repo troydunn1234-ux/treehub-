@@ -3,6 +3,8 @@ import MapKit
 
 struct ActivityRow: View {
     let activity: Activity
+    /// "with Alex, Sam" for a Go together trip.
+    var together: String? = nil
 
     var body: some View {
         HStack(spacing: 14) {
@@ -23,6 +25,13 @@ struct ActivityRow: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text(activity.displayTitle).font(Theme.rounded(16, .bold)).foregroundStyle(.white).lineLimit(1)
                 Text(Format.dayTime(activity.start)).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                if let together {
+                    Label(together, systemImage: "person.2.fill")
+                        .labelStyle(CompactLabelStyle())
+                        .font(Theme.rounded(12, .bold))
+                        .foregroundStyle(Theme.sky)
+                        .lineLimit(1)
+                }
                 HStack(spacing: 12) {
                     Label(Format.distance(activity.distanceM), systemImage: "arrow.triangle.swap")
                     Label(Format.duration(activity.elapsedSec), systemImage: "clock")
@@ -47,6 +56,14 @@ struct ActivityRow: View {
             RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Color.white.opacity(0.05))
         }
         .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
+    }
+
+    private var accessibilityText: String {
+        var parts = [activity.displayTitle, Format.dayTime(activity.start), Format.distance(activity.distanceM), Format.duration(activity.elapsedSec)]
+        if let together { parts.append(together) }
+        return parts.joined(separator: ", ")
     }
 }
 

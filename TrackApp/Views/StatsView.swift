@@ -196,19 +196,43 @@ struct StatsView: View {
             .navigationDestination(for: UUID.self) { id in
                 if let a = activities.first(where: { $0.id == id }) { ActivityDetailView(activity: a) }
             }
+            .navigationDestination(for: String.self) { route in
+                if route == "lifetime" { LifetimeStatsView() }
+            }
         }
     }
 
     // MARK: Header
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text("Stats")
-                .font(Theme.title(34))
-                .foregroundStyle(.white)
-            Text(subtitle)
-                .font(Theme.rounded(14, .semibold))
-                .foregroundStyle(Theme.textDim)
+        HStack(alignment: .top) {
+            VStack(alignment: .leading, spacing: 4) {
+                Text("Stats")
+                    .font(Theme.title(34))
+                    .foregroundStyle(.white)
+                Text(subtitle)
+                    .font(Theme.rounded(14, .semibold))
+                    .foregroundStyle(Theme.textDim)
+            }
+            Spacer(minLength: 8)
+            if !activities.isEmpty {
+                NavigationLink(value: "lifetime") {
+                    HStack(spacing: 6) {
+                        Image(systemName: "infinity")
+                            .font(.system(size: 12, weight: .bold))
+                        Text("All time")
+                            .font(Theme.rounded(13, .bold))
+                    }
+                    .foregroundStyle(Theme.glow)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Theme.glow.opacity(0.14), in: Capsule())
+                }
+                .buttonStyle(.plain)
+                .padding(.top, 8)
+                .accessibilityLabel("Lifetime stats")
+                .accessibilityHint("Totals, records, streaks and milestones")
+            }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

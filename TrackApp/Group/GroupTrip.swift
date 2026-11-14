@@ -97,6 +97,10 @@ final class GroupSession: ObservableObject {
     private var tickCount = 0
     private var knownNames: [String: String] = [:]
     private var firstFetchDone = false
+    // Local "Go together" history (GroupHistory.swift): who you went with, and which recording.
+    private var seenFriends: [String] = []
+    private var logActivityID: UUID?
+    private var logStart = Date()
 
     private init() {
         let d = UserDefaults.standard
@@ -284,11 +288,27 @@ final class GroupSession: ObservableObject {
             t.start(kind: kind)
             startedTracking = true
         }
+        logActivityID = tracker?.isActive == true ? tracker?.sessionID : nil
+        logStart = Date()
+        seenFriends = []
+        if newState == .joined, !host.isEmpty { seenFriends.append(host) }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         startLoop()
     }
 
+    /// Remembers this group trip on this phone if anyone else was in it.
+    private func recordHistory() {
+        guard state != .idle, let code else { return }
+        let friends = seenFriends.filter { !$0.isEmpty }
+        guard !friends.isEmpty else { return }
+        let distance = (tracker?.isActive == true && tracker?.sessionID == logActivityID) ? (tracker?.distance ?? 0) : 0
+        GroupHistory.shared.add(GroupTripLog(activityID: logActivityID, code: code, kindRaw: kind.rawValue,
+                                             date: logStart, friends: friends, distanceM: distance,
+                                             hosted: state == .hosting))
+    }
+
     private func reset() {
+        recordHistory()
         loop?.cancel()
         loop = nil
         state = .idle
@@ -394,7 +414,10 @@ final class GroupSession: ObservableObject {
         }
         firstFetchDone = true
         var names: [String: String] = [:]
-        for r in list { names[r.id] = r.name }
+        for r in list {
+            names[r.id] = r.name
+            if !seenFriends.contains(r.name) { seenFriends.append(r.name) }
+        }
         knownNames = names
     }
 
