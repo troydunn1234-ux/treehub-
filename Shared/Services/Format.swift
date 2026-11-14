@@ -116,7 +116,7 @@ enum Geo {
         return label(for: mark)
     }
 
-    /// Accepts "37.28, -121.95", Apple/Google Maps links with coordinates, and DMS.
+    /// Accepts "37.77, -122.45", Apple/Google Maps links with coordinates, and DMS.
     static func parseCoordinates(_ raw: String) -> CLLocationCoordinate2D? {
         let text = (raw.removingPercentEncoding ?? raw)
         let num = #"(-?\d{1,3}(?:\.\d+)?)"#

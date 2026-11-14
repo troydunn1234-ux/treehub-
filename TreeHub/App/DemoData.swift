@@ -22,9 +22,9 @@ enum DemoData {
         let now = Date()
         let oakID = UUID(), redwoodID = UUID(), sycamoreID = UUID()
         let trees: [(UUID, String, String, Double, Double, String, Color)] = [
-            (oakID, "Grandpa Oak", "Coast Live Oak", 37.2823, -121.9431, "Campbell Park, Campbell", Color(red: 0.35, green: 0.6, blue: 0.3)),
+            (oakID, "Grandpa Oak", "Coast Live Oak", 37.7723, -122.4431, "Golden Gate Park, San Francisco", Color(red: 0.35, green: 0.6, blue: 0.3)),
             (redwoodID, "The Giant", "Coast Redwood", 37.1700, -122.2230, "Big Basin, Boulder Creek", Color(red: 0.55, green: 0.3, blue: 0.2)),
-            (sycamoreID, "Silver Arms", "California Sycamore", 37.2870, -121.9500, "Los Gatos Creek Trail, Campbell", Color(red: 0.6, green: 0.65, blue: 0.5)),
+            (sycamoreID, "Silver Arms", "California Sycamore", 37.7770, -122.4500, "The Panhandle, San Francisco", Color(red: 0.6, green: 0.65, blue: 0.5)),
         ]
         let plan: [(Int, Int, Int, Double, Bool, [String], Int)] = [
             // (days ago, tree index, hour, minutes, barefoot, tags, mood after)
@@ -64,7 +64,7 @@ enum DemoData {
             h.xp = GameEngine.xp(for: h, existing: []).total
             context.insert(h)
         }
-        // A walk around Campbell
+        // A walk around San Francisco
         let a = Activity()
         a.id = hikeID
         a.kind = .hike
@@ -83,8 +83,8 @@ enum DemoData {
         a.distanceM = 4180
         a.movingSec = 3500
         a.elevGainM = 64
-        a.startPlace = "Winchester Blvd, Campbell"
-        a.endPlace = "Los Gatos Creek Trail, Campbell"
+        a.startPlace = "Haight St, San Francisco"
+        a.endPlace = "The Panhandle, San Francisco"
         context.insert(a)
 
         try? context.save()

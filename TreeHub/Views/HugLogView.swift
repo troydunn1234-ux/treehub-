@@ -356,7 +356,7 @@ struct HugLogView: View {
                             setCoordinate(c, source: "Pasted pin")
                             pinText = ""
                         } else {
-                            errorText = "Couldn't find coordinates in that. Try \"37.28, -121.95\" or an Apple Maps pin link."
+                            errorText = "Couldn't find coordinates in that. Try \"37.77, -122.45\" or an Apple Maps pin link."
                         }
                     }
                     .font(Theme.rounded(14, .bold))

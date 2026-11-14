@@ -14,7 +14,7 @@
     "healthOrWellnessTopics": true
   },
   "reviewNotes": "No account or sign-in, nothing to buy.\n\nTo try it: tap the big Hug button on Home, add a photo (or skip), and save; the celebration screen shows the XP. The Grove and Collection tabs fill up as hugs are logged. The Track tab records a stroll or hike.\n\nPermissions: location (pin the tree, record strolls; Always only keeps a stroll recording while the phone is locked), motion (stroll vs hike), camera and photos (tree photos), HealthKit read-only (heart rate, breathing rate, mindful minutes, workouts). Data syncs only to the user's own private iCloud (CloudKit private database).",
-  "location": "37.2872,-121.9500",
+  "location": "37.7772,-122.4500",
   "grant": [
     "location",
     "location-always",

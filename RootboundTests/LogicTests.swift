@@ -4,28 +4,28 @@ import CoreLocation
 
 final class GeoTests: XCTestCase {
     func testPlainCoordinates() {
-        let c = Geo.parseCoordinates("37.2872, -121.9500")
-        XCTAssertEqual(c?.latitude ?? 0, 37.2872, accuracy: 1e-6)
-        XCTAssertEqual(c?.longitude ?? 0, -121.95, accuracy: 1e-6)
+        let c = Geo.parseCoordinates("37.7772, -122.4500")
+        XCTAssertEqual(c?.latitude ?? 0, 37.7772, accuracy: 1e-6)
+        XCTAssertEqual(c?.longitude ?? 0, -122.45, accuracy: 1e-6)
     }
 
     func testAppleMapsLink() {
-        let c = Geo.parseCoordinates("https://maps.apple.com/?ll=37.28,-121.95&q=Dropped%20Pin")
-        XCTAssertEqual(c?.latitude ?? 0, 37.28, accuracy: 1e-6)
-        XCTAssertEqual(c?.longitude ?? 0, -121.95, accuracy: 1e-6)
+        let c = Geo.parseCoordinates("https://maps.apple.com/?ll=37.77,-122.45&q=Dropped%20Pin")
+        XCTAssertEqual(c?.latitude ?? 0, 37.77, accuracy: 1e-6)
+        XCTAssertEqual(c?.longitude ?? 0, -122.45, accuracy: 1e-6)
     }
 
     func testGoogleMapsLinks() {
-        XCTAssertEqual(Geo.parseCoordinates("https://www.google.com/maps/@37.2801,-121.9502,17z")?.latitude ?? 0, 37.2801, accuracy: 1e-6)
+        XCTAssertEqual(Geo.parseCoordinates("https://www.google.com/maps/@37.7701,-122.4502,17z")?.latitude ?? 0, 37.7701, accuracy: 1e-6)
         XCTAssertEqual(Geo.parseCoordinates("https://maps.google.com/?q=37.1,-122.2")?.longitude ?? 0, -122.2, accuracy: 1e-6)
         XCTAssertEqual(Geo.parseCoordinates("https://www.google.com/maps/search/?api=1&query=37.5%2C-122.1")?.latitude ?? 0, 37.5, accuracy: 1e-6)
     }
 
     func testDMS() {
-        let c = Geo.parseCoordinates("37°17'13.9\"N 121°57'00.0\"W")
+        let c = Geo.parseCoordinates("37°46'37.9\"N 122°27'00.0\"W")
         XCTAssertNotNil(c)
-        XCTAssertEqual(c?.latitude ?? 0, 37.28719, accuracy: 1e-4)
-        XCTAssertEqual(c?.longitude ?? 0, -121.95, accuracy: 1e-4)
+        XCTAssertEqual(c?.latitude ?? 0, 37.77719, accuracy: 1e-4)
+        XCTAssertEqual(c?.longitude ?? 0, -122.45, accuracy: 1e-4)
     }
 
     func testRejectsJunk() {

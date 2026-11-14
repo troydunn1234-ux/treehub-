@@ -14,7 +14,7 @@
     "healthOrWellnessTopics": true
   },
   "reviewNotes": "No account or sign-in.\n\nTo try it: on the Track tab pick Walk, Run, Hike, Ride or Drive and tap Start. In the Simulator, Features › Location › City Run makes a trip. History and Stats fill in as trips are saved.\n\nLocation: When In Use records the trip you start; Always keeps recording while the phone is locked and lets Roamr notice a drive starting so it can offer to record it (it never records without asking). Motion: tells walking, running, biking and driving apart. HealthKit: read-only, workouts and heart rate.\n\nGo together (group trips): start one with the people button on the Track tab (Pro) or join with a code (free). Members' chosen name and live position are exchanged through the app's CloudKit public database only while the group is on.\n\nSpeed limits: road data is downloaded from OpenStreetMap in map tiles of about 4 km; no personal data is sent.\n\nPro: auto-renewable monthly (com.troydunn.roamr.pro.monthly) and yearly (com.troydunn.roamr.pro.yearly), each with a 1-week free trial as Apple's introductory offer, plus the one-time lifetime unlock (com.troydunn.roamr.pro). Settings › Roamr Pro shows the plans with Restore and Manage Subscription.",
-  "location": "37.2872,-121.9500",
+  "location": "37.7772,-122.4500",
   "grant": [
     "location",
     "location-always",
@@ -26,16 +26,16 @@
       "args": "-demo -autostart",
       "wait": 30,
       "route": [
-        "37.2872,-121.9500",
-        "37.2880,-121.9478",
-        "37.2895,-121.9465",
-        "37.2910,-121.9470",
-        "37.2918,-121.9490",
-        "37.2905,-121.9512",
-        "37.2888,-121.9520",
-        "37.2872,-121.9500",
-        "37.2880,-121.9478",
-        "37.2895,-121.9465"
+        "37.7772,-122.4500",
+        "37.7780,-122.4478",
+        "37.7795,-122.4465",
+        "37.7810,-122.4470",
+        "37.7818,-122.4490",
+        "37.7805,-122.4512",
+        "37.7788,-122.4520",
+        "37.7772,-122.4500",
+        "37.7780,-122.4478",
+        "37.7795,-122.4465"
       ]
     },
     {

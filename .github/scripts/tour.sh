@@ -20,7 +20,7 @@ print(best[1])')
 xcrun simctl boot "$UDID" || true
 xcrun simctl bootstatus "$UDID" -b
 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
-xcrun simctl location "$UDID" set 37.2872,-121.9500 || true
+xcrun simctl location "$UDID" set 37.7772,-122.4500 || true
 
 xcodebuild build-for-testing -project TreeHub.xcodeproj -scheme "$SCHEME" \
   -destination "id=$UDID" -derivedDataPath build CODE_SIGNING_ALLOWED=NO -quiet || exit 1
@@ -31,8 +31,8 @@ xcrun simctl io "$UDID" recordVideo --codec=h264 --force "shots/$NAME-raw.mov" &
 REC=$!
 sleep 2
 ( sleep 60; xcrun simctl location "$UDID" start --speed=4 --interval=1 \
-  37.2872,-121.9500 37.2880,-121.9478 37.2895,-121.9465 37.2910,-121.9470 37.2918,-121.9490 37.2905,-121.9512 37.2888,-121.9520 37.2872,-121.9500 \
-  37.2880,-121.9478 37.2895,-121.9465 37.2910,-121.9470 37.2918,-121.9490 ) &
+  37.7772,-122.4500 37.7780,-122.4478 37.7795,-122.4465 37.7810,-122.4470 37.7818,-122.4490 37.7805,-122.4512 37.7788,-122.4520 37.7772,-122.4500 \
+  37.7780,-122.4478 37.7795,-122.4465 37.7810,-122.4470 37.7818,-122.4490 ) &
 
 xcodebuild test-without-building -project TreeHub.xcodeproj -scheme "$SCHEME" \
   -destination "id=$UDID" -derivedDataPath build CODE_SIGNING_ALLOWED=NO 2>&1 | grep -E "Test Case|error|failed" | tail -25

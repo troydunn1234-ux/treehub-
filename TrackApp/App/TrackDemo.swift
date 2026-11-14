@@ -21,14 +21,14 @@ enum TrackDemo {
         let now = Date()
         // (days ago, kind, distance m, minutes, climb m, center lat, lng, size, title, start, end)
         let trips: [(Int, ActivityKind, Double, Double, Double, Double, Double, Double, String, String, String)] = [
-            (0, .run, 5200, 27, 22, 37.2872, -121.9500, 0.008, "", "Winchester Blvd, Campbell", "Campbell Ave, Campbell"),
-            (1, .drive, 48_000, 52, 0, 37.2300, -122.0800, 0.09, "Drive to Big Basin", "Campbell", "Boulder Creek"),
+            (0, .run, 5200, 27, 22, 37.7772, -122.4500, 0.008, "", "Haight St, San Francisco", "Fell St, San Francisco"),
+            (1, .drive, 48_000, 52, 0, 37.2300, -122.0800, 0.09, "Drive to Big Basin", "San Francisco", "Boulder Creek"),
             (1, .hike, 9300, 140, 410, 37.1720, -122.2230, 0.012, "Redwood Loop", "Big Basin Redwoods", "Big Basin Redwoods"),
-            (3, .bike, 21_000, 64, 120, 37.2600, -121.9300, 0.03, "", "Los Gatos Creek Trail", "Vasona Lake"),
-            (5, .run, 10_300, 55, 40, 37.2872, -121.9500, 0.012, "First 10K!", "Campbell Park", "Campbell Park"),
-            (8, .walk, 3100, 41, 10, 37.2850, -121.9480, 0.006, "", "Downtown Campbell", "Downtown Campbell"),
-            (12, .drive, 92_000, 80, 0, 37.5000, -122.2000, 0.2, "", "Campbell", "San Francisco"),
-            (16, .run, 6400, 33, 30, 37.2872, -121.9500, 0.009, "", "Campbell", "Campbell"),
+            (3, .bike, 21_000, 64, 120, 37.7500, -122.4300, 0.03, "", "The Panhandle", "Stow Lake"),
+            (5, .run, 10_300, 55, 40, 37.7772, -122.4500, 0.012, "First 10K!", "Golden Gate Park", "Golden Gate Park"),
+            (8, .walk, 3100, 41, 10, 37.7750, -122.4480, 0.006, "", "Hayes Valley", "Hayes Valley"),
+            (12, .drive, 92_000, 80, 0, 37.5000, -122.2000, 0.2, "", "San Francisco", "San Francisco"),
+            (16, .run, 6400, 33, 30, 37.7772, -122.4500, 0.009, "", "San Francisco", "San Francisco"),
             (24, .hike, 7200, 120, 300, 37.3300, -122.1000, 0.01, "", "Rancho San Antonio", "Rancho San Antonio"),
         ]
         let cal = Calendar.current

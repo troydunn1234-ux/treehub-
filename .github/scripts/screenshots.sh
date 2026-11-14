@@ -27,7 +27,7 @@ xcrun simctl bootstatus "$UDID" -b
 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
 xcrun simctl install "$UDID" "$APP"
 for svc in location location-always motion photos; do xcrun simctl privacy "$UDID" grant $svc $BUNDLE || true; done
-xcrun simctl location "$UDID" set 37.2872,-121.9500 || true
+xcrun simctl location "$UDID" set 37.7772,-122.4500 || true
 
 FAIL=0
 shot () {
@@ -53,12 +53,12 @@ shot 4-grove 8 -tab trees
 shot 5-collection 8 -tab collection
 shot 6-track 8 -tab track
 
-# Live tracking: drive a fake run through Campbell while recording
+# Live tracking: drive a fake run through San Francisco while recording
 xcrun simctl terminate "$UDID" $BUNDLE 2>/dev/null || true
 xcrun simctl launch "$UDID" $BUNDLE -demo -autostart > /dev/null
 sleep 3
 xcrun simctl location "$UDID" start --speed=4 --interval=1 \
-  37.2872,-121.9500 37.2880,-121.9478 37.2895,-121.9465 37.2910,-121.9470 37.2918,-121.9490 37.2905,-121.9512 37.2888,-121.9520 37.2872,-121.9500 || true
+  37.7772,-122.4500 37.7780,-122.4478 37.7795,-122.4465 37.7810,-122.4470 37.7818,-122.4490 37.7805,-122.4512 37.7788,-122.4520 37.7772,-122.4500 || true
 sleep 40
 if xcrun simctl spawn "$UDID" launchctl list | grep -q "$BUNDLE"; then echo "OK    7-live-run"; else echo "CRASH 7-live-run"; FAIL=1; fi
 xcrun simctl io "$UDID" screenshot "shots/7-live-run.png" > /dev/null 2>&1
