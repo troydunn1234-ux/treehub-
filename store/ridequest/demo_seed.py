@@ -43,7 +43,7 @@ subs = [
 state = {
     "start": {"savings": 3200, "checking": 900, "cash": 80},
     "goal": {"name": "Dream car", "amount": 15000, "by": f"{today.year + 1}-08"},
-    "weekGoal": 200, "weekStart": 5, "rev": 1, "theme": "neon", "sound": 0,
+    "weekGoal": 200, "weekStart": 5, "rev": 1, "boot": 0, "theme": "neon", "sound": 0,
     "budgets": [{"n": n_, "l": l} for n_, l in budgets],
     "bills": [{"id": uid(), "n": "Car insurance", "amt": 142.0, "day": 3}, {"id": uid(), "n": "Phone", "amt": 45.0, "day": 18},
               {"id": uid(), "n": "Rent", "amt": 1150.0, "day": 1}],
