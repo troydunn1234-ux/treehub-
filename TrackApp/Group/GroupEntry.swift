@@ -59,6 +59,7 @@ struct GoTogetherSheet: View {
     @State private var name: String
     @State private var codeText = ""
     @FocusState private var codeFocused: Bool
+    @State private var showPlans = false
     var onClose: () -> Void
 
     init(initialKind: ActivityKind = .drive, onClose: @escaping () -> Void) {
@@ -126,6 +127,7 @@ struct GoTogetherSheet: View {
             if group.working { ProgressView().tint(Theme.glow).scaleEffect(1.3) }
         }
         .onAppear { group.lastError = nil }
+        .paywall(isPresented: $showPlans, spec: RoamrPro.spec, context: "Group trips")
     }
 
     private var startSection: some View {
@@ -158,11 +160,12 @@ struct GoTogetherSheet: View {
             .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
 
             Button {
+                guard Unlock.shared.isPro else { showPlans = true; return }
                 group.myName = cleanedName
                 Task { await group.create(kind: kind) }
             } label: {
                 HStack(spacing: 10) {
-                    Image(systemName: "person.2.fill").font(.system(size: 15, weight: .black))
+                    Image(systemName: Unlock.shared.isPro ? "person.2.fill" : "lock.fill").font(.system(size: 15, weight: .black))
                     Text("Start group \(kind.title.lowercased())")
                 }
             }
@@ -365,7 +368,8 @@ struct GroupTogetherModifier: ViewModifier {
         guard GroupPending.take() else { return }
         tab = "track"
         guard !group.isActive else { showMap = true; return }
-        if group.needsName {
+        if group.needsName || !Unlock.shared.isPro {
+            // Not Pro yet: the sheet's Start button shows the plans.
             sheetKind = .drive
             showSheet = true
         } else {

@@ -45,6 +45,17 @@
 	<string>Roamr uses motion data to tell whether you were walking, running, biking or driving.</string>
 	<key>NSSupportsLiveActivities</key>
 	<true/>
+	<key>PaidUntilBuild</key>
+	<integer>0</integer>
+	<key>ProProductID</key>
+	<string>com.troydunn.roamr.pro</string>
+	<key>SubscriptionProductIDs</key>
+	<array>
+		<string>com.troydunn.roamr.pro.yearly</string>
+		<string>com.troydunn.roamr.pro.monthly</string>
+	</array>
+	<key>TrialProductID</key>
+	<string>com.troydunn.roamr.none</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>location</string>

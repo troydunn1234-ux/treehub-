@@ -39,6 +39,7 @@ struct SettingsView: View {
                     Text("Everything stays on your iPhone and syncs to your private iCloud. Nobody else can see it. \(hugs.count) hugs · \(activities.count) activities.")
                 }
                 Section("About") {
+                    MoreAppsRow()
                     LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
                 }
             }

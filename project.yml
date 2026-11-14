@@ -93,6 +93,12 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Roamr
+        ProProductID: com.troydunn.roamr.pro
+        PaidUntilBuild: 0
+        SubscriptionProductIDs:
+          - com.troydunn.roamr.pro.yearly
+          - com.troydunn.roamr.pro.monthly
+        TrialProductID: com.troydunn.roamr.none
         CFBundleURLTypes:
           - CFBundleURLName: com.troydunn.roamr
             CFBundleURLSchemes:
@@ -226,6 +232,10 @@ targets:
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Pulse Lab
         ProProductID: com.troydunn.pulselab.pro
+        SubscriptionProductIDs:
+          - com.troydunn.pulselab.pro.yearly
+          - com.troydunn.pulselab.pro.monthly
+        TrialProductID: com.troydunn.pulselab.none
         PaidUntilBuild: 0
         NSHealthShareUsageDescription: Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.
         NSHealthUpdateUsageDescription: Pulse Lab saves the supplements you check off in your Stack to Apple Health as nutrients (like vitamin D or magnesium). It never changes your heart, sleep or workout data.

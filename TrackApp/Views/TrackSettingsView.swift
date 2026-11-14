@@ -17,6 +17,8 @@ struct TrackSettingsView: View {
     @State private var healthConnecting = false
     @State private var healthConnected = false
     @State private var exportURL: URL?
+    @State private var showPlans = false
+    @ObservedObject private var unlock = Unlock.shared
 
     private static let spring = Animation.spring(response: 0.4, dampingFraction: 0.82)
 
@@ -373,15 +375,36 @@ struct TrackSettingsView: View {
 
     private var aboutCard: some View {
         GlassCard(padding: 0) {
-            row(symbol: "info.circle.fill", tint: Theme.glow,
-                title: "Version",
-                subtitle: nil) {
-                Text(versionString)
-                    .font(Theme.rounded(14, .bold))
-                    .monospacedDigit()
-                    .foregroundStyle(Theme.textDim)
+            VStack(spacing: 0) {
+                Button { showPlans = true } label: {
+                    row(symbol: "sparkles", tint: Theme.gold,
+                        title: "Roamr Pro",
+                        subtitle: unlock.subscribed ? "Active · change plan or cancel"
+                            : unlock.isPro ? "Lifetime · thank you!" : "Free week, then monthly, yearly or lifetime") {
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 12, weight: .bold))
+                            .foregroundStyle(Theme.textDim)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                divider
+                MoreAppsRow(tint: Theme.sky)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 11)
+                divider
+                row(symbol: "info.circle.fill", tint: Theme.glow,
+                    title: "Version",
+                    subtitle: nil) {
+                    Text(versionString)
+                        .font(Theme.rounded(14, .bold))
+                        .monospacedDigit()
+                        .foregroundStyle(Theme.textDim)
+                }
             }
         }
+        .paywall(isPresented: $showPlans, spec: RoamrPro.spec)
     }
 
     private var versionFooter: some View {

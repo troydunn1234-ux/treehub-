@@ -43,6 +43,8 @@ struct TrackHubApp: App {
                 .onOpenURL { url in Task { @MainActor in GroupSession.shared.handle(url: url) } }
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)
+                // Pro: start listening for purchases / renewals right away.
+                .task { await Unlock.shared.refresh() }
         }
         .modelContainer(container)
     }

@@ -231,6 +231,7 @@ struct SettingsView: View {
                 } header: { Text("Apple Health") } footer: {
                     Text("Sessions are saved on your phone and as Mindful Minutes in Apple Health. Heart rate is read from Apple Health; nothing leaves your devices.")
                 }
+                Section { MoreAppsRow() }
                 Section("Apple Watch") {
                     LabeledContent("Watch", value: link.watchPaired ? "Paired" : "Not paired")
                     LabeledContent("Still Point on Watch", value: link.watchAppInstalled ? "Installed" : "Not installed")

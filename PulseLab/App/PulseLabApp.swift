@@ -321,12 +321,12 @@ struct LabScroll<Content: View>: View {
 }
 
 
-/// Pulse Lab Pro: what the one-time unlock contains.
+/// Pulse Lab Pro: what the subscription (or lifetime unlock) contains.
 enum PulseLabPro {
     static let spec = PaywallSpec(
         appName: "Pulse Lab",
         headline: "Settle it: Watch vs WHOOP.",
-        tagline: "The full head-to-head lab, 90 days of history and shareable results. One payment, no subscription.",
+        tagline: "The full head-to-head lab, 90 days of history and shareable results. Try it free for a week.",
         tint: Lab.watch, tint2: Lab.violet,
         features: [
             .init(icon: "bolt.horizontal.fill", title: "The VS tab", detail: "Day-by-day agreement scores for resting HR, HRV, sleep, SpO₂, respiratory rate, temperature and calories — and who's winning."),

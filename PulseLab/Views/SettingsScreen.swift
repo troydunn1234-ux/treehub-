@@ -15,9 +15,12 @@ struct SettingsScreen: View {
     @State private var whoopReminder = WhoopPrompt.reminderOn
     @State private var whoopTime = WhoopPrompt.reminderTime
     @State private var whoopDenied = false
+    @State private var showPlans = false
+    @ObservedObject private var unlock = Unlock.shared
 
     var body: some View {
         LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
+            pro
             sync
             health
             LabPanel(tint: Lab.whoop) {
@@ -29,8 +32,30 @@ struct SettingsScreen: View {
             weeklySummary
             units
             export
+            LabPanel(tint: Lab.violet) { MoreAppsRow(tint: Lab.violet).foregroundStyle(Lab.text) }
             about
         }
+        .sheet(isPresented: $showPlans) { PaywallView(spec: PulseLabPro.spec) }
+    }
+
+    /// Pulse Lab Pro: plans, current subscription, restore.
+    private var pro: some View {
+        Button { showPlans = true } label: {
+            LabPanel(tint: Lab.watch) {
+                HStack(spacing: Lab.S.m) {
+                    Image(systemName: "sparkles").font(.title3.weight(.bold)).foregroundStyle(Lab.watch)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Pulse Lab Pro").font(Lab.title(16)).foregroundStyle(Lab.text)
+                        Text(unlock.subscribed ? "Active. Change plan, cancel or restore here."
+                             : unlock.isPro ? "Lifetime. Thank you!" : "Free week, then monthly, yearly or lifetime.")
+                            .font(Lab.body(12)).foregroundStyle(Lab.dim)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                }
+            }
+        }
+        .buttonStyle(PressScale())
     }
 
     private var health: some View {

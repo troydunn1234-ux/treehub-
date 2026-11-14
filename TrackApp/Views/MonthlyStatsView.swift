@@ -9,6 +9,7 @@ struct MonthlyStatsView: View {
     @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
     /// Re-renders when the unit setting changes.
     @AppStorage("useMetric") private var useMetric = false
+    @ObservedObject private var unlock = Unlock.shared
 
     private struct MonthStat: Identifiable {
         let month: Date
@@ -90,6 +91,20 @@ struct MonthlyStatsView: View {
     // MARK: Body
 
     var body: some View {
+        if unlock.isPro {
+            stats
+        } else {
+            ScrollView {
+                RoamrProLock(symbol: "calendar", title: "Monthly recap is Pro",
+                             message: "Miles, hours, average speed and your longest drive, month by month, plus the last 12 weeks.",
+                             context: "Monthly recap")
+                    .padding(.top, 60)
+            }
+            .forestScreen()
+        }
+    }
+
+    private var stats: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.gap) {
                 header

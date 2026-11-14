@@ -49,6 +49,13 @@
 	<integer>0</integer>
 	<key>ProProductID</key>
 	<string>com.troydunn.pulselab.pro</string>
+	<key>SubscriptionProductIDs</key>
+	<array>
+		<string>com.troydunn.pulselab.pro.yearly</string>
+		<string>com.troydunn.pulselab.pro.monthly</string>
+	</array>
+	<key>TrialProductID</key>
+	<string>com.troydunn.pulselab.none</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>
