@@ -24,6 +24,7 @@ struct FoodBookApp: App {
     var body: some Scene {
         WindowGroup {
             Splash { RootTabs() }
+                .modifier(StackMoveOffer())
                 .onAppear { LegacyImport.runOnce(into: container.mainContext); DemoFood.seedIfNeeded(container.mainContext) }
                 .onOpenURL { url in
                     // foodbook://snap (widget) opens the camera on Today.
