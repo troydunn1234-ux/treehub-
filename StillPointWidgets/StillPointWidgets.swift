@@ -10,8 +10,8 @@ struct StillPointWidgets: WidgetBundle {
     var body: some Widget {
         #if os(watchOS)
         StillPointComplication()
-        HeatComplication(kind: .sauna)
-        HeatComplication(kind: .steam)
+        SaunaComplication()
+        SteamComplication()
         #else
         StillPointWidget()
         StillPointComplication()
@@ -453,11 +453,18 @@ struct HeatProvider: TimelineProvider {
     }
 }
 
-/// Quick-start for the sauna or steam timer on the Watch face; while a timer runs it shows the elapsed time.
-struct HeatComplication: Widget {
-    let kind: HeatChoice
+/// Quick-start for the sauna timer on the Watch face (Widget needs a plain init, so one type per kind).
+struct SaunaComplication: Widget {
+    var body: some WidgetConfiguration { HeatComplication.configuration(.sauna) }
+}
 
-    var body: some WidgetConfiguration {
+struct SteamComplication: Widget {
+    var body: some WidgetConfiguration { HeatComplication.configuration(.steam) }
+}
+
+/// Quick-start for the sauna or steam timer on the Watch face; while a timer runs it shows the elapsed time.
+enum HeatComplication {
+    static func configuration(_ kind: HeatChoice) -> some WidgetConfiguration {
         StaticConfiguration(kind: "StillPointHeat.\(kind.rawValue)", provider: HeatProvider(choice: kind)) { entry in
             HeatAccessoryView(entry: entry)
                 .containerBackground(for: .widget) { Color.clear }
@@ -465,7 +472,7 @@ struct HeatComplication: Widget {
         }
         .configurationDisplayName(kind.title)
         .description("Start the \(kind.title.lowercased()) timer in one tap. Shows the time while you're in.")
-        .supportedFamilies(Self.families)
+        .supportedFamilies(families)
     }
 
     private static var families: [WidgetFamily] {
