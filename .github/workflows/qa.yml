@@ -11,7 +11,7 @@ on:
         default: pulselab stillpoint roamr clicker natalorbit ridequest
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   pick:
@@ -74,6 +74,17 @@ jobs:
       - name: Launch every screen and capture
         env: { PYTHONUNBUFFERED: "1" }
         run: python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
+
+      - name: Publish to the qa-<app> branch (artifacts can't always be downloaded)
+        if: always()
+        run: |
+          [ -d qa-out ] || exit 0
+          grep -E "error:" build.log | head -40 > qa-out/build-errors.txt 2>/dev/null || true
+          TMP=$(mktemp -d); cp -R qa-out/. "$TMP"/; cd "$TMP"
+          git init -q -b qa-${{ matrix.app }}
+          git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
+          git add -A; git commit -q -m "QA for ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" qa-${{ matrix.app }}
 
       - uses: actions/upload-artifact@v4
         if: always()

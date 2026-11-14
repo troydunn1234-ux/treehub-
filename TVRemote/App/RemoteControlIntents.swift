@@ -40,9 +40,8 @@ struct TVControlKeyIntent: LiveActivityIntent {
         case .volumeDown: k = .volumeDown
         case .mute: k = .muteToggle
         }
-        store.press(k)
-        // Let the command reach the TV before the system suspends the app again.
-        try? await Task.sleep(nanoseconds: 700_000_000)
+        // Wait for the TV's answer (a cold background launch may still be connecting), not a fixed delay.
+        await store.pressAndWait(k)
         return .result()
         #endif
     }

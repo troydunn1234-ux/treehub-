@@ -60,6 +60,8 @@ struct GoTogetherSheet: View {
     @State private var codeText = ""
     @FocusState private var codeFocused: Bool
     @State private var showPlans = false
+    /// Observed so the lock on Start goes away as soon as a purchase goes through (paywall over this sheet).
+    @ObservedObject private var unlock = Unlock.shared
     var onClose: () -> Void
 
     init(initialKind: ActivityKind = .drive, onClose: @escaping () -> Void) {
@@ -160,12 +162,12 @@ struct GoTogetherSheet: View {
             .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
 
             Button {
-                guard Unlock.shared.isPro else { showPlans = true; return }
+                guard unlock.isPro else { showPlans = true; return }
                 group.myName = cleanedName
                 Task { await group.create(kind: kind) }
             } label: {
                 HStack(spacing: 10) {
-                    Image(systemName: Unlock.shared.isPro ? "person.2.fill" : "lock.fill").font(.system(size: 15, weight: .black))
+                    Image(systemName: unlock.isPro ? "person.2.fill" : "lock.fill").font(.system(size: 15, weight: .black))
                     Text("Start group \(kind.title.lowercased())")
                 }
             }

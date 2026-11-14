@@ -24,6 +24,9 @@ struct PlansBlock: View {
         VStack(spacing: 12) {
             if unlock.subscribed {
                 subscribedCard
+            } else if unlock.owned {
+                // Lifetime (or bought back when the app was paid): nothing more to buy here.
+                lifetimeCard
             } else if options.isEmpty && Unlock.demoPaywall {
                 demoPlans
             } else if options.isEmpty {
@@ -196,6 +199,19 @@ struct PlansBlock: View {
                 .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(.white)
                 .padding(.horizontal, 18).padding(.vertical, 10)
                 .background(Capsule().stroke(.white.opacity(0.4), lineWidth: 1))
+        }
+        .frame(maxWidth: .infinity)
+        .padding(18)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(.white.opacity(0.06)))
+    }
+
+    private var lifetimeCard: some View {
+        VStack(spacing: 8) {
+            Label("You're Pro for life", systemImage: "checkmark.seal.fill")
+                .font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(spec.tint)
+            Text("Everything is unlocked. No subscription needed.")
+                .font(.system(size: 14, design: .rounded)).foregroundStyle(.white.opacity(0.75))
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(18)

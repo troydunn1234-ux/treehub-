@@ -65,7 +65,11 @@ struct LogWhoopSheet: View {
             .toolbar {
                 ToolbarItemGroup(placement: .keyboard) {
                     Spacer()
-                    Button("Done") { focus = nil }.font(Lab.display(15, .heavy)).foregroundStyle(Lab.whoop)
+                    Button("Done") {
+                        focus = nil
+                        // The sleep minutes field has no focus value of its own; end editing everywhere.
+                        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
+                    }.font(Lab.display(15, .heavy)).foregroundStyle(Lab.whoop)
                 }
             }
         }

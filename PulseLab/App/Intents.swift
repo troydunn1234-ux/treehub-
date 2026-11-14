@@ -25,7 +25,7 @@ struct CheckLabScoresIntent: AppIntent {
         let rhrWhoop = value(WidgetBridge.Key.rhrWhoop)
 
         var parts: [String] = []
-        if let r = readiness { parts.append("Apple Watch readiness is \(Int(r.rounded()))") }
+        if let r = readiness { parts.append("Watch readiness is \(Int(r.rounded()))") }
         if let r = recovery { parts.append("WHOOP recovery is \(Int(r.rounded())) percent") }
         if let w = rhrWatch, let h = rhrWhoop {
             parts.append("resting heart rate is \(Int(w.rounded())) on the Watch and \(Int(h.rounded())) on WHOOP")

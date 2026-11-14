@@ -234,7 +234,8 @@ struct RootView: View {
 
     /// Morning pop-up: after 6 am, once a day, when today has no WHOOP recovery yet (API, Health or typed).
     private func askForWhoopIfDue() {
-        guard !showOnboarding, phase == .active, store.logWhoop == nil, store.detail == nil,
+        // Not mid-sync: WHOOP's recovery for today may be about to arrive (cold launch runs two refreshes at once).
+        guard !showOnboarding, phase == .active, !store.loading, store.logWhoop == nil, store.detail == nil,
               WhoopPrompt.shouldAsk(store) else { return }
         WhoopPrompt.markAsked()
         store.logWhoop = LogWhoopRequest(auto: true)

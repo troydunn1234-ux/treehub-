@@ -314,6 +314,22 @@ final class TVStore {
         }
     }
 
+    /// Like `press`, but returns once the TV has answered (or failed). Control Center / Lock Screen controls run
+    /// in the background, where the app can be suspended again as soon as the intent returns.
+    @discardableResult
+    func pressAndWait(_ key: RemoteKey) async -> Bool {
+        if Self.demo { return true }
+        guard let t = tv else { return false }
+        do {
+            try await controller(for: t.brand).press(t, key)
+            reachable = true; failures = 0
+            return true
+        } catch {
+            handle(error)
+            return false
+        }
+    }
+
     func sendText(_ text: String) async {
         if Self.demo { show("Typed on your TV"); return }
         guard let t = tv else { return }

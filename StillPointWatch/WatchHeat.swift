@@ -70,9 +70,9 @@ final class WatchHeat: ObservableObject {
         send(["heatKind": a.kind.rawValue, "heatStart": a.start.timeIntervalSince1970, "heatCancel": true])
     }
 
+    /// Queued by WatchLink if the session isn't activated yet (cold launch from the complication).
     private func send(_ info: [String: Any]) {
-        guard WCSession.isSupported(), WCSession.default.activationState == .activated else { return }
-        WCSession.default.transferUserInfo(info)
+        WatchLink.shared.transfer(info)
     }
 }
 

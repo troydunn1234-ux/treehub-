@@ -72,7 +72,9 @@ def run(udid, bundle, exe, shots, prefix=""):
         log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--last", f"{secs}s", "--style", "compact",
                  "--predicate", f'process == "{exe}"', timeout=180)
         open(os.path.join(out, "logs", name + ".log"), "w").write(log.stdout)
-        faults = [l for l in log.stdout.splitlines() if re.search(r"\b(Fault|Error)\b|fatal|crash|precondition|Thread \d+", l, re.I)]
+        # Compact style: "<date> <time> <type> <process>[pid:tid] ..."; E = error, F = fault.
+        faults = [l for l in log.stdout.splitlines() if re.match(r"^\S+ \S+ (E|F)\s", l)]
+        open(os.path.join(out, "logs", name + ".errors.log"), "w").write("\n".join(faults))
         line = ("OK    " if ok else "CRASH ") + name + "  " + s.get("args", "") + (f"  [{len(faults)} error/fault log lines]" if faults else "")
         print(line)
         summary.append(line)
