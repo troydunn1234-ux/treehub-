@@ -10,6 +10,8 @@ when this one has none (read and written straight through the API, never printed
 """
 import json, os, sys, time, urllib.request, urllib.error
 import jwt
+import socket
+socket.setdefaulttimeout(120)  # never hang the job on one stuck request
 
 bundle, meta_path = sys.argv[1], sys.argv[2]
 meta = json.load(open(meta_path))

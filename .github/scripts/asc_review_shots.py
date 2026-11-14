@@ -5,6 +5,8 @@ usage: asc_review_shots.py <bundle id> <paywall .png>      FORCE=1 replaces exis
 """
 import hashlib, json, os, sys, time, urllib.request, urllib.error
 import jwt
+import socket
+socket.setdefaulttimeout(120)  # never hang the job on one stuck request
 
 bundle, shot = sys.argv[1], sys.argv[2]
 data = open(shot, "rb").read()

@@ -5,6 +5,8 @@ usage: asc_listing.py <bundle id> <metadata.json> <screenshots dir> [apple watch
 """
 import hashlib, json, os, sys, time, urllib.request, urllib.error
 import jwt
+import socket
+socket.setdefaulttimeout(120)  # never hang the job on one stuck request
 
 bundle, meta_path, shots_dir = sys.argv[1], sys.argv[2], sys.argv[3]
 watch_dir = sys.argv[4] if len(sys.argv) > 4 else None

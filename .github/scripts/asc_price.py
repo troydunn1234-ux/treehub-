@@ -5,6 +5,8 @@ Needs the Paid Apps agreement to be active in App Store Connect > Business.
 """
 import json, os, sys, time, urllib.request, urllib.error
 import jwt
+import socket
+socket.setdefaulttimeout(120)  # never hang the job on one stuck request
 
 bundle, price = sys.argv[1], sys.argv[2]
 token = jwt.encode({"iss": os.environ["ISS"], "iat": int(time.time()), "exp": int(time.time()) + 1200, "aud": "appstoreconnect-v1"},
