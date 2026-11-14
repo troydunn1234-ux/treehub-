@@ -64,6 +64,22 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
     func sessionReachabilityDidChange(_ session: WCSession) { refresh(session) }
 
     func session(_ session: WCSession, didReceiveUserInfo userInfo: [String: Any] = [:]) {
+        // Sauna / steam started or ended on the Watch.
+        if let k = userInfo["heatKind"] as? String, let kind = HeatKind(rawValue: k), let start = userInfo["heatStart"] as? Double {
+            let end = userInfo["heatEnd"] as? Double
+            let cancelled = userInfo["heatCancel"] as? Bool ?? false
+            Task { @MainActor in
+                let store = HeatStore.shared
+                if cancelled {
+                    if let a = store.active, abs(a.start.timeIntervalSince1970 - start) < 5 { store.cancel() }
+                } else if let end {
+                    store.finishFromWatch(kind, start: Date(timeIntervalSince1970: start), end: Date(timeIntervalSince1970: end))
+                } else {
+                    store.startFromWatch(kind, at: Date(timeIntervalSince1970: start))
+                }
+            }
+            return
+        }
         if let s = userInfo["deleteSession"] as? String, let id = UUID(uuidString: s) {
             DispatchQueue.main.async { SessionLog.shared.remove(id) }
             return

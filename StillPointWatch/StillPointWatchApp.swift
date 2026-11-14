@@ -27,6 +27,7 @@ struct WatchRoot: View {
     @EnvironmentObject var prefs: Prefs
     @EnvironmentObject var link: WatchLink
     @State private var running: SessionPlan? = nil
+    @State private var showHeat = false
     @State private var path = NavigationPath()
     private let lib = PracticeLibrary.shared
 
@@ -61,6 +62,8 @@ struct WatchRoot: View {
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Begin \(beginPractice.title), \(preferredMinutes(beginPractice)) minutes")
+
+                    WatchHeatButtons { showHeat = true }
 
                     HStack(spacing: 8) {
                         ForEach(homeIntentions) { i in
@@ -109,6 +112,9 @@ struct WatchRoot: View {
         .fullScreenCover(item: $running) { plan in
             RunView(plan: plan) { running = nil }
                 .environmentObject(prefs)
+        }
+        .fullScreenCover(isPresented: $showHeat) {
+            WatchHeatView { showHeat = false }
         }
         .onChange(of: link.pendingStart?.practiceId) { _, _ in consumePending() }
         // Complication tap: stillpoint://practice/<id>. Locked practices open their page instead.

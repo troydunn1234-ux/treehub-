@@ -2,20 +2,6 @@ import Foundation
 import SwiftUI
 import UserNotifications
 
-/// Sauna or steam room.
-enum HeatKind: String, Codable, CaseIterable, Identifiable, Hashable {
-    case sauna, steam
-
-    var id: String { rawValue }
-    var title: String { self == .sauna ? "Sauna" : "Steam room" }
-    var short: String { self == .sauna ? "Sauna" : "Steam" }
-    var symbol: String { self == .sauna ? "flame.fill" : "cloud.fog.fill" }
-    var tint: Color { self == .sauna ? Color(spHex: "#F29A5B") : Color(spHex: "#7FC8D9") }
-    var tint2: Color { self == .sauna ? Color(spHex: "#C2474A") : Color(spHex: "#5B7FD6") }
-    /// When to send the "time to step out?" nudge.
-    var checkInMinutes: Int { self == .sauna ? 20 : 15 }
-}
-
 /// One heat session: a start and end time, plus the heart rate Apple Health had for that window.
 struct HeatSession: Codable, Identifiable, Hashable {
     var id = UUID()
@@ -56,17 +42,34 @@ final class HeatStore: ObservableObject {
     }
 
     /// Start timing. If another session is running it is finished first.
-    func start(_ kind: HeatKind) {
+    func start(_ kind: HeatKind, at date: Date = Date()) {
         if active != nil { finish() }
-        active = HeatSession(kind: kind, start: Date())
+        active = HeatSession(kind: kind, start: date)
         save()
         scheduleCheckIn(kind)
     }
 
+    // MARK: From the Watch
+
+    func startFromWatch(_ kind: HeatKind, at date: Date) {
+        if let a = active, abs(a.start.timeIntervalSince(date)) < 5 { return }
+        start(kind, at: date)
+    }
+
+    func finishFromWatch(_ kind: HeatKind, start: Date, end: Date) {
+        if history.contains(where: { abs($0.start.timeIntervalSince(start)) < 5 }) { return }
+        if let a = active, abs(a.start.timeIntervalSince(start)) < 5 { finish(at: end); return }
+        // The phone never heard the start: log it on its own, leaving anything running here alone.
+        let running = active
+        active = HeatSession(kind: kind, start: start)
+        finish(at: end)
+        if let running { active = running; save() }
+    }
+
     /// Stop timing, keep it in the log and look up heart rate for the window.
-    func finish() {
+    func finish(at endDate: Date = Date()) {
         guard var s = active else { return }
-        s.end = Date()
+        s.end = endDate
         active = nil
         cancelCheckIn()
         // Under a minute is almost certainly a mis-tap.
