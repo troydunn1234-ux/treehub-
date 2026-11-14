@@ -135,15 +135,16 @@ struct GroupMapView: View {
                                color: Color(groupHex: group.myColorHex), speed: tracker.currentSpeed,
                                isMe: true, stale: false)
                 }
+                .annotationTitles(.hidden)
             }
             ForEach(group.riders) { r in
                 Annotation(r.name, coordinate: r.coordinate, anchor: .center) {
                     RiderBadge(name: r.name, kind: r.kind, color: r.color, speed: r.speed,
                                isMe: false, stale: r.isStale(now))
                 }
+                .annotationTitles(.hidden)
             }
         }
-        .annotationTitles(.hidden)
         .mapStyle(.standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
         .mapControls { MapCompass() }
         .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in userMovedMap = true })
