@@ -94,6 +94,11 @@ label.f{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transfo
 .today .head{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.4vw,30px);line-height:1.15;margin:6px 0 12px;text-wrap:balance}
 .today .body p{font-size:15.5px}
 .daynav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.big3{width:100%;border-collapse:collapse;margin:4px 0 10px;font-size:13px}
+.big3 th{font-family:var(--mono);font-size:11px;color:var(--gold);text-align:left;font-weight:500;padding:4px 6px}
+.big3 td{padding:6px;border-top:1px solid rgba(255,255,255,.07);vertical-align:top}
+.big3 td small{color:var(--dim,#8a92b4);font-size:11px}
+.big3 td.mut{color:var(--dim,#8a92b4);font-size:12px}
 .daynav .d{font-family:var(--mono);font-size:12px;color:var(--gold);margin-right:6px}
 .meters{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
 .meter{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;font-size:13.5px}
@@ -338,7 +343,7 @@ footer{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.7}
   <section id="today-sec">
     <div class="sec-head">
       <div><div class="eyebrow">Daily horoscope</div><h2>Today for you</h2></div>
-      <div class="daynav"><span class="d" id="day-label"></span><button id="day-prev">‹ Yesterday</button><button id="day-now">Today</button><button id="day-next">Tomorrow ›</button></div>
+      <div class="daynav"><span class="d" id="day-label"></span><button id="day-prev">‹ Yesterday</button><button id="day-now">Today</button><button id="day-next">Tomorrow ›</button><button id="day-share" class="cta">Share card</button></div>
     </div>
     <div class="today">
       <div class="panel body"><div class="head" id="h-head"></div><div id="h-body"></div></div>
@@ -1119,6 +1124,8 @@ function renderToday(){
   const moonSign=signOf(L.moon),MS=SIGN_TXT[moonSign],mh=CH.cusps?houseOf(L.moon,CH.cusps):null;
   const head=top?`${T_HEAD[top.t]} ${T_AREA[top.n]}`:`A quiet day: follow the ${moonSign} Moon`;
   $('h-head').textContent=head;
+  LAST_TODAY={ms,head:cap(head),lines:cs.slice(0,2).map(c=>`${BK[c.t].n} ${c.sym} your ${nm(c.n)}: ${BK[c.t].n} ${T_DO[c.t]} ${T_AREA[c.n]}, ${T_MOD[c.a]}.`),
+    moonLine:`Moon in ${moonSign}${mh?`, your ${ord(mh)} house`:''}. The mood is ${MS.adj[0]} and ${MS.adj[1]}.`};
   const lines=cs.slice(0,3).map(c=>`<p><b>${BK[c.t].g} ${BK[c.t].n} ${c.sym} your ${nm(c.n)}.</b> ${BK[c.t].n} ${T_DO[c.t]} ${T_AREA[c.n]}, ${T_MOD[c.a]}. This lasts ${T_LAST[c.t]}.</p>`);
   lines.push(`<p><b>☽ Moon in ${moonSign}${mh?`, your ${ord(mh)} house`:''}.</b> The mood today is ${MS.adj[0]} and ${MS.adj[1]}${mh?`, and your attention drifts toward ${HOUSE_TXT[mh].s}`:''}.</p>`);
   $('h-body').innerHTML=lines.join('');
@@ -1129,11 +1136,14 @@ function renderToday(){
   $('h-meters').innerHTML=M.map(([n,v,c])=>`<div class="meter" style="--mc:${c}"><span>${n}</span><div class="dots" role="img" aria-label="${n} ${v} of 5">${[1,2,3,4,5].map(i=>`<i class="${i<=v?'on':''}"></i>`).join('')}</div></div>`).join('');
   const good=[...new Set([...cs.filter(c=>!c.hard).slice(0,2).map(c=>T_GOOD[c.t]),MS.good[0],MS.good[1]])].slice(0,3);
   const easy=[...new Set(cs.filter(c=>c.hard).slice(0,2).map(c=>T_EASY[c.t]))];if(!easy.length)easy.push('overthinking a good thing');
+  Object.assign(LAST_TODAY,{meters:M,good:good.map(cap),easy:easy.map(cap)});
   $('h-lists').innerHTML=`<h4>Good day for</h4><ul class="good">${good.map(x=>`<li>${esc(cap(x))}</li>`).join('')}</ul><h4>Go easy on</h4><ul class="easy">${easy.map(x=>`<li>${esc(cap(x))}</li>`).join('')}</ul>`;
   const ph=moonPhase(L.sun,L.moon);
   $('h-moon').innerHTML=`<canvas id="today-moon" aria-hidden="true"></canvas><span><b style="color:var(--ink)">${ph.name}</b>, ${Math.round(ph.illum*100)}% lit: ${PHASE_NOW[ph.ix]}.</span>`;
   moonIcon($('today-moon'),ph.elong,40);
+  Object.assign(LAST_TODAY,{phase:ph});
   renderSkyNow(L,ms,ph);}
+let LAST_TODAY=null;
 /* Today's sky: where the planets are right now, and every tight contact to your chart. Orbs: 3° for conjunctions and oppositions, 2° squares and trines, 1° sextiles. */
 const SKY_BODIES=['sun','moon','mercury','venus','mars','jupiter','saturn'];
 const SKY_ORB={conjunction:3,opposition:3,square:2,trine:2,sextile:1};
@@ -1391,14 +1401,84 @@ async function makeCard(fmt){
   x.fillStyle='#5d6796';x.font='500 20px JetBrains Mono, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-(fmt==='wall'?220:56));
   return c;}
 let cardBlob=null;
-async function renderCard(){$('card-img').src='';const c=await makeCard(cardFmt);$('card-img').src=c.toDataURL('image/png');cardBlob=await new Promise(r=>c.toBlob(r,'image/png'));
+let cardKind='chart';
+function cardBg(x,W,H,seed){
+  const bg=x.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#070a18');bg.addColorStop(.5,'#0a0e22');bg.addColorStop(1,'#04050c');x.fillStyle=bg;x.fillRect(0,0,W,H);
+  [['rgba(124,77,255,.26)',.15,.22,.6],['rgba(242,196,109,.14)',.9,.55,.55],['rgba(255,92,138,.12)',.3,.88,.5]].forEach(([col,px,py,r])=>{const g=x.createRadialGradient(px*W,py*H,0,px*W,py*H,r*W);g.addColorStop(0,col);g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H);});
+  const R_=rng(seed%2147483646+1);for(let i=0;i<420;i++){const s=R_()*1.7+.3;x.globalAlpha=.25+R_()*.6;x.fillStyle=R_()<.15?'#bcd0ff':'#fff';x.beginPath();x.arc(R_()*W,R_()*H,s,0,7);x.fill();}x.globalAlpha=1;
+  // thin gold frame
+  x.strokeStyle='rgba(242,196,109,.55)';x.lineWidth=2;x.strokeRect(48,48,W-96,H-96);x.strokeStyle='rgba(242,196,109,.18)';x.strokeRect(60,60,W-120,H-120);}
+function cardFoot(x,W,H){x.fillStyle='#5d6796';x.font='500 20px JetBrains Mono, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-96);}
+function cardLines(x,text,cx,y,maxW,lh,max){const ls=wrapText(x,text,maxW).slice(0,max||9);ls.forEach((l,i)=>x.fillText(l,cx,y+i*lh));return y+ls.length*lh;}
+async function makeTodayCard(){
+  try{await document.fonts.ready;}catch(e){}
+  const T=LAST_TODAY,W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  cardBg(x,W,H,Math.floor((T?T.ms:Date.now())/864e5));x.textAlign='center';x.textBaseline='alphabetic';
+  const dstr=new Date(T?T.ms:Date.now()).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',timeZone:VIEW_TZ});
+  x.fillStyle='#f2c46d';x.font='500 26px JetBrains Mono, monospace';x.fillText(((CH.name?CH.name.toUpperCase()+' · ':'')+'DAILY READING'),W/2,190);
+  x.fillStyle='#8a92b4';x.font='400 26px JetBrains Mono, monospace';x.fillText(dstr,W/2,236);
+  if(!T){x.fillStyle='#e8ebf7';x.font='700 54px Syne, sans-serif';x.fillText('Open Today to make your card',W/2,H/2);cardFoot(x,W,H);return c;}
+  // moon
+  const mc=document.createElement('canvas');moonIcon(mc,T.phase.elong,150);const my=300;
+  x.save();x.shadowColor='rgba(242,196,109,.45)';x.shadowBlur=40;x.drawImage(mc,W/2-75,my,150,150);x.restore();
+  x.fillStyle='#8a92b4';x.font='500 24px JetBrains Mono, monospace';x.fillText(`${T.phase.name.toUpperCase()} · ${Math.round(T.phase.illum*100)}% LIT`,W/2,my+196);
+  // headline
+  x.fillStyle='#f4e6c4';x.font='700 66px Syne, sans-serif';x.save();x.shadowColor='rgba(242,196,109,.35)';x.shadowBlur=24;
+  let y=cardLines(x,T.head,W/2,640,880,80,4);x.restore();
+  // meters
+  y+=70;const mw=260,gap=40,mx0=W/2-(mw*3+gap*2)/2;
+  (T.meters||[]).forEach(([n,v,col],i)=>{const cx=mx0+i*(mw+gap)+mw/2;x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(n.toUpperCase(),cx,y);
+    for(let k=0;k<5;k++){x.beginPath();x.arc(cx-80+k*40,y+40,13,0,7);x.fillStyle=k<v?col:'rgba(255,255,255,.12)';if(k<v){x.shadowColor=col;x.shadowBlur=14;}x.fill();x.shadowBlur=0;}});
+  y+=140;
+  // good for / go easy on
+  x.fillStyle='#f2c46d';x.font='500 24px JetBrains Mono, monospace';x.fillText('GOOD DAY FOR',W/2,y);
+  x.fillStyle='#e8ebf7';x.font='500 36px Instrument Sans, sans-serif';y=cardLines(x,(T.good||[]).join(' · '),W/2,y+54,880,48,3);
+  y+=36;x.fillStyle='#ff8fa8';x.font='500 24px JetBrains Mono, monospace';x.fillText('GO EASY ON',W/2,y);
+  x.fillStyle='#e8ebf7';x.font='500 36px Instrument Sans, sans-serif';y=cardLines(x,(T.easy||[]).join(' · '),W/2,y+54,880,48,2);
+  // the sky behind it
+  y+=60;x.strokeStyle='rgba(242,196,109,.35)';x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-160,y);x.lineTo(W/2+160,y);x.stroke();y+=70;
+  x.fillStyle='#aab1d0';x.font='400 30px Instrument Sans, sans-serif';
+  T.lines.concat([T.moonLine]).forEach(t=>{if(y<H-260)y=cardLines(x,t,W/2,y,860,42,3)+26;});
+  cardFoot(x,W,H);return c;}
+async function makeMatchCard(){
+  try{await document.fonts.ready;}catch(e){}
+  const M=LAST_MATCH,W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
+  cardBg(x,W,H,Math.floor(CH.utc/6e4)+(M?M.pct:0));x.textAlign='center';x.textBaseline='alphabetic';
+  if(!M){x.fillStyle='#e8ebf7';x.font='700 54px Syne, sans-serif';x.fillText('Compare with a friend first',W/2,H/2);cardFoot(x,W,H);return c;}
+  const me=(CH.name||'You').toUpperCase(),them=M.name.toUpperCase();
+  x.fillStyle='#f2c46d';x.font='500 26px JetBrains Mono, monospace';x.fillText('COMPATIBILITY',W/2,190);
+  x.fillStyle='#e8ebf7';x.font='800 64px Syne, sans-serif';let ty=cardLines(x,`${me} & ${them}`,W/2,280,900,74,2);
+  // score ring
+  const cy=ty+250,R=190;x.lineWidth=26;x.lineCap='round';x.strokeStyle='rgba(255,255,255,.08)';x.beginPath();x.arc(W/2,cy,R,0,7);x.stroke();
+  const g=x.createLinearGradient(W/2-R,cy-R,W/2+R,cy+R);g.addColorStop(0,'#f2c46d');g.addColorStop(1,'#ff8fa8');x.strokeStyle=g;
+  x.save();x.shadowColor='rgba(242,196,109,.6)';x.shadowBlur=30;x.beginPath();x.arc(W/2,cy,R,-Math.PI/2,-Math.PI/2+Math.PI*2*M.pct/100);x.stroke();x.restore();x.lineCap='butt';
+  x.fillStyle='#f4e6c4';x.font='800 150px Syne, sans-serif';x.fillText(String(M.pct),W/2-18,cy+52);x.font='700 54px Syne, sans-serif';x.fillText('%',W/2+x.measureText(String(M.pct)).width/2+70,cy+52);
+  x.fillStyle='#f2c46d';x.font='700 46px Syne, sans-serif';x.fillText(M.verdict,W/2,cy+R+100);
+  // big three, side by side
+  let y=cy+R+190;const c1=W/2-250,c2=W/2,c3=W/2+250;
+  x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(me.slice(0,12),c1,y);x.fillText(them.slice(0,12),c3,y);y+=26;
+  M.me.forEach((m,i)=>{const t=M.them[i];y+=82;x.fillStyle='#f2c46d';x.font='54px serif';x.fillText(TXTG(m[0]),c2,y);
+    x.fillStyle='#8a92b4';x.font='500 18px JetBrains Mono, monospace';x.fillText(m[1].toUpperCase(),c2,y+30);
+    x.fillStyle='#e8ebf7';x.font=`700 ${m[2].length>10?34:42}px Syne, sans-serif`;x.fillText(m[2],c1,y);x.font=`700 ${t[2].length>10?34:42}px Syne, sans-serif`;x.fillText(t[2],c3,y);});
+  y+=110;
+  // score breakdown
+  [['SIGNS',M.pairPct],['ELEMENTS',M.bal],['ASPECTS',M.asp]].forEach(([n,v],i)=>{const cx=W/2+(i-1)*280;x.fillStyle='#f4e6c4';x.font='800 58px Syne, sans-serif';x.fillText(String(v),cx,y);
+    x.fillStyle='#8a92b4';x.font='500 20px JetBrains Mono, monospace';x.fillText(n,cx,y+36);});
+  y+=110;x.fillStyle='#aab1d0';x.font='400 30px Instrument Sans, sans-serif';y=cardLines(x,M.el,W/2,y,860,42,2)+20;
+  x.fillStyle='#f2c46d';x.font='500 22px JetBrains Mono, monospace';if(M.top.length&&y<H-330){x.fillText('STRONGEST CONNECTIONS',W/2,y+20);y+=70;}
+  x.fillStyle='#e8ebf7';x.font='400 30px Instrument Sans, sans-serif';M.top.forEach(t=>{if(y<H-240)y=cardLines(x,t,W/2,y,860,42,2)+18;});
+  cardFoot(x,W,H);return c;}
+async function renderCard(){$('card-img').src='';const c=cardKind==='today'?await makeTodayCard():cardKind==='match'?await makeMatchCard():await makeCard(cardFmt);$('card-img').src=c.toDataURL('image/png');cardBlob=await new Promise(r=>c.toBlob(r,'image/png'));
   ['story','square','wall'].forEach(f=>$('fmt-'+f).setAttribute('aria-pressed',String(f===cardFmt)));}
-function openCard(){stopTour();$('modal').hidden=false;scrim.hidden=false;requestAnimationFrame(()=>scrim.classList.add('on'));syncSaveBtn();renderCard();$('card-x').focus({preventScroll:true});}
+function openCard(kind){cardKind=typeof kind==='string'?kind:'chart';
+  const fm=$('fmt-story').parentElement;if(fm)fm.hidden=cardKind!=='chart';
+  $('card-save').textContent=cardKind==='chart'?'Save image':'Share';stopTour();$('modal').hidden=false;scrim.hidden=false;requestAnimationFrame(()=>scrim.classList.add('on'));syncSaveBtn();renderCard();$('card-x').focus({preventScroll:true});}
 function closeCard(){$('modal').hidden=true;if(sheet.hidden){scrim.classList.remove('on');setTimeout(()=>{if(sheet.hidden&&$('modal').hidden)scrim.hidden=true;},reduce?0:250);}$('act-card').focus({preventScroll:true});}
 $('act-card').onclick=openCard;$('card-x').onclick=closeCard;
 ['story','square','wall'].forEach(f=>$('fmt-'+f).onclick=()=>{cardFmt=f;renderCard();});
-$('card-save').onclick=async()=>{if(!downloadsNS||!cardBlob)return;const nm=(CH.name||'natal-chart').toLowerCase().replace(/[^a-z0-9]+/g,'-');
-  try{await downloadsNS.save({filename:`${nm}-${cardFmt}.png`,data:cardBlob});$('card-msg').textContent='Saved.';}
+$('day-share').onclick=()=>openCard('today');
+$('card-save').onclick=async()=>{if(!downloadsNS||!cardBlob)return;const nm=(cardKind==='match'&&LAST_MATCH?(CH.name||'me')+'-and-'+LAST_MATCH.name:(CH.name||'natal-chart')+(cardKind==='today'?'-today':'')).toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  try{await downloadsNS.save({filename:`${nm}-${cardFmt}.png`,data:cardBlob});$('card-msg').textContent=cardKind==='chart'?'Saved.':'Shared.';}
   catch(e){const c=e&&e.code;$('card-msg').textContent=c==='declined'?'Save cancelled.':c==='rate_limited'?'One moment, then try again.':'Saving is not available here. Long-press or right-click the image instead.';if(c==='unavailable'||c==='not_granted'){downloadsNS=null;$('card-save').hidden=true;}}};
 
 /* ================= share link ================= */
@@ -1418,7 +1498,7 @@ function findCity(v){v=(v||'').trim().toLowerCase();if(!v)return -1;if(CITY_IX.h
 const PAIRS=[['sun','sun','Core vibe','Your Sun and their Sun'],['moon','moon','Emotional rhythm','Your Moon and their Moon'],['sun','moon','How they make you feel','Your Sun and their Moon'],['moon','sun','How you make them feel','Your Moon and their Sun'],['venus','mars','Your attraction to them','Your Venus and their Mars'],['mars','venus','Their attraction to you','Your Mars and their Venus'],['mercury','mercury','Communication','Your Mercury and their Mercury']];
 const PTS=[4,1,4,1,5,1.5,3];
 const SAY=['Same sign. You get each other instantly.','Neighbor signs. Different styles that take some translating.','Friendly signs. Easy, supportive energy.','A square. Some friction, and it pushes you both to grow.','Same element. Things flow naturally.','An awkward angle. It works with some adjusting.','Opposite signs. Strong pull and good balance.'];
-let FRIEND=null;
+let FRIEND=null,LAST_MATCH=null;
 /* people you have compared with, kept on this device */
 function people(){try{const p=JSON.parse(localStorage.getItem('natal-orbit-people')||'[]');return Array.isArray(p)?p.filter(x=>x&&x.date):[];}catch(e){return [];}}
 function savePerson(sp){try{const key=x=>`${x.name}|${x.date}|${x.time}|${x.city}`;const r=people().filter(x=>key(x)!==key(sp));r.unshift(sp);localStorage.setItem('natal-orbit-people',JSON.stringify(r.slice(0,8)));}catch(e){}}
@@ -1473,17 +1553,33 @@ function runMatch(remember){const err=$('m-err');err.hidden=true;
   const mineMix={...mine};if(CH.asc!=null)mineMix.asc=CH.asc;const theirMix={...fl};if(F.asc!=null)theirMix.asc=F.asc;
   const bal=balanceScore(mineMix,theirMix),asp=aspectScore(syn);
   const pct=Math.max(0,Math.min(100,Math.round(pairPct*.4+bal.score*.25+asp*.35)));
+  const bigOf=(lons,asc,unsure,range)=>[['☉','Sun',lons.sun],['☽','Moon',lons.moon,unsure?`${signOf(range[0])}/${signOf(range[1])}`:null],['↑','Rising',asc]];
+  const myBig=bigOf(mine,CH.asc,CH.moonUnsure,CH.moonRange),thBig=bigOf(fl,F.asc,F.moonUnsure,F.moonRange);
+  const ELFIT=(a,b)=>{if(a===b)return 'same element';const pr=[a,b].sort().join('-');return pr==='air-fire'||pr==='earth-water'?'elements that feed each other':pr==='air-earth'||pr==='fire-water'?'elements that take translating':'an easy mix';};
+  const bigRows=myBig.map((m,i)=>{const t=thBig[i];if(m[2]==null||t[2]==null)return `<tr><td>${m[0]} ${m[1]}</td><td>${m[2]==null?'—':m[3]||signOf(m[2])}</td><td>${t[2]==null?'—':t[3]||signOf(t[2])}</td><td class="mut">${m[1]==='Rising'?'Needs both birth times and cities':''}</td></tr>`;
+    const ea=ELEM[signIx(m[2])%4],eb=ELEM[signIx(t[2])%4];return `<tr><td>${m[0]} ${m[1]}</td><td>${m[3]||signOf(m[2])} <small>${ea}</small></td><td>${t[3]||signOf(t[2])} <small>${eb}</small></td><td class="mut">${cap(ELFIT(ea,eb))}</td></tr>`;}).join('');
+  const parts=[['sign pairs',pairPct],['element balance',bal.score],['chart-to-chart aspects',asp]].sort((a,b)=>b[1]-a[1]);
+  const softN=syn.filter(x=>!x.hard).length,hardN=syn.length-softN;
+  const why=`Lifted most by your ${parts[0][0]} (${parts[0][1]}), held back most by your ${parts[2][0]} (${parts[2][1]}). Between your charts there ${softN===1?'is':'are'} ${softN} easy connection${softN===1?'':'s'} and ${hardN} tense one${hardN===1?'':'s'}${syn[0]?`; the strongest is their ${syn[0].t.n} ${syn[0].A.n} your ${syn[0].m.n}`:''}.`;
   const verdict=pct>=75?'Cosmic match':pct>=60?'Strong connection':pct>=45?'A good mix of easy and challenging':'Opposites with a lot to teach each other';
   const WHY={conjunction:'the strongest kind of contact: these two parts of you act as one',trine:'an easy, natural flow that neither of you has to work at',sextile:'a friendly opening that rewards a little effort',square:'friction that creates chemistry, and arguments, in equal measure',opposition:'a magnetic pull: you balance each other, or you tug'};
   const overlays=CH.cusps?['sun','moon','venus','mars'].map(k=>{const h=houseOf(fl[k],CH.cusps);return `<li><b>${BK[k].g} Their ${BK[k].n} → your ${ord(h)} house</b><p>They light up your ${HOUSE_TXT[h].s}: their ${PFN[k]} ${k==='moon'?'show':'shows'} up in ${HOUSE_TXT[h].a}.</p></li>`;}).join(''):'';
   out.innerHTML=`<div class="mres"><div class="score"><div class="ring" style="--v:${pct}"><div><span>${pct}<small>%</small></span></div></div><div class="verdict">${verdict}</div><div class="fchips">${fc.map(([g,s])=>`<span class="tag">${g} ${s}</span>`).join('')}</div>
      <div class="sbreak" role="list"><div role="listitem"><b>${pairPct}</b>signs</div><div role="listitem"><b>${bal.score}</b>elements</div><div role="listitem"><b>${asp}</b>aspects</div></div>
-     <button class="cta" id="m-3d">See ${esc(name)} in 3D</button></div>
-   <div><h2 style="font-size:17px;margin-top:0">You and ${esc(name)}</h2><ul class="pairs">${rows.join('')}</ul>
+     <button class="cta" id="m-3d">See ${esc(name)} in 3D</button><button id="m-share" style="margin-top:8px">Share card</button></div>
+   <div><h2 style="font-size:17px;margin-top:0">You and ${esc(name)}</h2>
+     <table class="big3"><thead><tr><th></th><th>You</th><th>${esc(name)}</th><th></th></tr></thead><tbody>${bigRows}</tbody></table>
+     <p class="note"><b>Why ${pct}%:</b> ${esc(why)}</p>
+     <ul class="pairs">${rows.join('')}</ul>
      <p class="note" style="margin-top:12px">Elements: you lead with ${bal.EA}, they lead with ${bal.EB}${bal.EA===bal.EB?', so you speak the same language':bal.elHarm>=90?', which feed each other':bal.elHarm<=45?', which takes some translating':', an easy mix'}. Together you cover the four elements ${bal.spread>=70?'well':bal.spread>=50?'fairly evenly':'unevenly'}. You are mostly ${bal.MA}, they are mostly ${bal.MB}${bal.MA===bal.MB?(bal.MA==='fixed'?': two anchors, so expect standoffs':': a shared pace'):': different paces that round each other out'}.</p></div></div>
    <div class="syn"><h3>Top ${Math.min(6,syn.length)||''} chart-to-chart connections</h3><ul>${syn.slice(0,6).map(s=>`<li><span class="o">${s.o.toFixed(1)}°</span><b><span style="color:var(--pink)">${s.t.g}</span> Their ${s.t.n} ${s.A.s} <span style="color:var(--gold)">${s.m.g}</span> your ${s.m.n}</b><p>Their ${PFN[s.t.k]} and your ${PFN[s.m.k]} ${SYN_TXT[s.A.n]}: ${WHY[s.A.n]}.${s.hard?' Tense, but it keeps things alive.':' A built-in strength.'}</p></li>`).join('')||'<li><p>No tight connections between your charts.</p></li>'}</ul></div>
    ${overlays?`<div class="syn"><h3>Where they land in your chart</h3><ul>${overlays}</ul></div>`:''}
    <p class="note">${full?'Using their exact birth time and city, so the Moon, rising sign and connections are precise.':'Based on a birthday alone, so their Moon and rising sign are approximate. Add a time and city for the full reading.'} Score = 40% sign pairs + 25% element and modality balance + 35% weighted aspects.</p>`;
+  LAST_MATCH={name,pct,verdict,why,full,pairPct,bal:bal.score,asp,
+    me:myBig.map(m=>[m[0],m[1],m[2]==null?'—':(m[3]||signOf(m[2]))]),them:thBig.map(m=>[m[0],m[1],m[2]==null?'—':(m[3]||signOf(m[2]))]),
+    el:`You lead with ${bal.EA}, ${name} leads with ${bal.EB}: ${ELFIT(bal.EA,bal.EB)}.`,
+    top:syn.slice(0,3).map(x=>`Their ${x.t.n} ${x.A.n} your ${x.m.n}: ${x.hard?'tense, and it keeps things alive':'a built-in strength'}.`)};
+  $('m-share').onclick=()=>openCard('match');
   $('m-3d').onclick=()=>{stopTour();if(viewMode==='sky')exitSky();skyOn=false;placeGhosts(fl,css('pink'),syn.slice(0,8).filter(s=>s.m.k!=='asc').map(s=>({t:s.t.k,n:s.m.k})),F.asc);setOverlay('friend',`${name}'s planets`,css('pink'));
     document.querySelector('.stage').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});};}
 $('match-form').addEventListener('submit',e=>{e.preventDefault();runMatch(true);});
