@@ -62,6 +62,18 @@ def boot(udid):
     sh("xcrun", "simctl", "bootstatus", udid, "-b", quiet=True, timeout=900)
 
 
+def blank(path):
+    """True when everything below the status bar is (nearly) one flat color."""
+    try:
+        from PIL import Image
+        im = Image.open(path).convert("L")
+        w, h = im.size
+        lo, hi = im.crop((0, int(h * 0.08), w, h)).getextrema()
+        return hi - lo < 12
+    except Exception:
+        return False
+
+
 def is_running(udid, bundle):
     return bundle in sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", quiet=True).stdout
 
@@ -78,6 +90,12 @@ def shoot(udid, bundle, args, wait, path, route=None, section=None):
     time.sleep(float(wait))
     ok = is_running(udid, bundle)
     sh("xcrun", "simctl", "io", udid, "screenshot", path)
+    # Still on the plain launch screen (a slow cold start)? Give it longer and take it again.
+    for _ in range(4):
+        if not blank(path): break
+        print("  (still loading, waiting)")
+        time.sleep(10)
+        sh("xcrun", "simctl", "io", udid, "screenshot", path)
     if route:
         sh("xcrun", "simctl", "location", udid, "clear", quiet=True)
     print(("OK    " if ok else "CRASH ") + os.path.basename(path), args)

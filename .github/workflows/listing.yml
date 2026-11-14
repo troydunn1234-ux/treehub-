@@ -72,7 +72,9 @@ jobs:
 
       - name: Screenshots (demo data only)
         env: { PYTHONUNBUFFERED: "1" }
-        run: python3 .github/scripts/store_capture.py $STORE/metadata.json build/Build/Products shots
+        run: |
+          pip3 install --quiet --break-system-packages pillow "pyjwt[crypto]" || pip3 install --quiet pillow "pyjwt[crypto]"
+          python3 .github/scripts/store_capture.py $STORE/metadata.json build/Build/Products shots
 
       - name: Caption the iPhone screenshots
         run: |
