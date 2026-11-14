@@ -42,6 +42,7 @@ targets:
         CFBundleDisplayName: Rootbound
         ProProductID: com.troydunn.rootbound.pro
         PaidUntilBuild: 0
+        TrialProductID: com.troydunn.rootbound.none
         NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
         NSHealthUpdateUsageDescription: Rootbound does not write to Apple Health; it only reads your workouts and heart data.

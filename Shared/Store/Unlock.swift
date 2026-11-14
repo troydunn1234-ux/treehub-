@@ -98,7 +98,8 @@ final class Unlock: ObservableObject {
     /// Everything is open right now because of the free trial (not a purchase).
     var inTrial: Bool { !owned && (trialEnds.map { $0 > Date() } ?? false) }
     /// The trial can still be started: never used on this Apple ID and the product exists.
-    var trialAvailable: Bool { !owned && trialEnds == nil && (trialProduct != nil || Self.demoPaywall) }
+    /// (Apps without a trial set TrialProductID to "<bundle>.none", so the review screenshot doesn't show one either.)
+    var trialAvailable: Bool { !owned && trialEnds == nil && (trialProduct != nil || (Self.demoPaywall && !trialProductID.hasSuffix(".none"))) }
     var trialDaysLeft: Int {
         guard let end = trialEnds else { return 0 }
         return max(0, Int((end.timeIntervalSinceNow / 86_400).rounded(.up)))

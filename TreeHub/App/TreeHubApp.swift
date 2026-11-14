@@ -29,6 +29,8 @@ struct TreeHubApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchGate { RootView() }
+                // Rootbound Pro: "-demo -paywall" (review screenshot) and Unlock.shared.gate(...) open the paywall here.
+                .paywallHost(spec: RootboundPro.spec)
                 .environment(tracker)
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)
@@ -91,8 +93,6 @@ struct RootView: View {
         .fullScreenCover(item: $demoCelebration) { c in
             CelebrationView(data: c) { demoCelebration = nil }
         }
-        // Rootbound Pro: "-demo -paywall" (review screenshot) and Unlock.shared.gate(...) open the paywall here.
-        .background { Color.clear.paywallHost(spec: RootboundPro.spec) }
     }
 
     /// Siri / Shortcuts / Control Center actions (RootboundActions.swift).
