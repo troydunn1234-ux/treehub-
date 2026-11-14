@@ -66,6 +66,7 @@ struct SourcesScreen: View {
     @Environment(LabStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State private var showDataCheck = false
+    @State private var showAllData = false
     @State private var confirmRebuild = false
     private var whoop: WhoopClient { WhoopClient.shared }
 
@@ -99,6 +100,7 @@ struct SourcesScreen: View {
         }
         .preferredColorScheme(.dark)
         .sheet(isPresented: $showDataCheck) { DataCheckView().environment(store) }
+        .sheet(isPresented: $showAllData) { AllDataScreen().environment(store).presentationBackground(Lab.bg) }
     }
 
     // MARK: cards
@@ -208,6 +210,16 @@ struct SourcesScreen: View {
     private var tools: some View {
         LabPanel(tint: Lab.violet) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
+                Button { showAllData = true } label: {
+                    HStack {
+                        Image(systemName: "square.grid.3x3.fill").foregroundStyle(Lab.violet)
+                        Text("All data, every metric").font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
+                        Spacer()
+                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                    }
+                }
+                .buttonStyle(.plain)
+                Divider().overlay(Lab.line)
                 Button { showDataCheck = true } label: {
                     HStack {
                         Image(systemName: "stethoscope").foregroundStyle(Lab.violet)

@@ -3,6 +3,7 @@ import Charts
 
 struct TodayScreen: View {
     @Environment(LabStore.self) private var store
+    @State private var showAllData = false
 
     var body: some View {
         let notes = Insights.build(store)
@@ -19,6 +20,7 @@ struct TodayScreen: View {
                         note: gaugeNote)
             if streak >= 2 { StreakChip(days: streak) }
             quickTiles
+            seeAllButton
             LabNotesCard(insights: notes)
             hero
             sleepDuel
@@ -26,6 +28,32 @@ struct TodayScreen: View {
             ShareVSButton()
             if !store.whoopConnected { whoopNudge }
         }
+        .sheet(isPresented: $showAllData) {
+            AllDataScreen().environment(store).presentationBackground(Lab.bg)
+        }
+    }
+
+    /// Opens the All data screen: every synced metric, including the ones without a card here.
+    private var seeAllButton: some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            showAllData = true
+        } label: {
+            HStack(spacing: Lab.S.s) {
+                Image(systemName: "square.grid.3x3.fill").font(.system(size: 14, weight: .bold)).foregroundStyle(Lab.violet)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("See all stats").font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
+                    Text("Every metric from WHOOP, Watch and Health").font(Lab.mono(10)).foregroundStyle(Lab.faint)
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+            }
+            .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.violet.opacity(0.35)))
+        }
+        .buttonStyle(PressScale())
+        .accessibilityHint("Opens every synced metric")
     }
 
     /// Every number people check, Watch over WHOOP, in one scannable grid. A value from an

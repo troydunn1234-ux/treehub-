@@ -117,6 +117,12 @@ final class HealthPull: @unchecked Sendable {
         if id.hasPrefix("com.apple.health.") || name.contains("watch") { return .watch }
         return .other
     }
+    /// Short badge text for a non-Watch, non-WHOOP source: "IPHONE" for the phone / Health app, else the app's name.
+    static func originLabel(_ src: HKSource) -> String {
+        if src.bundleIdentifier.lowercased().hasPrefix("com.apple") { return "IPHONE" }
+        let n = src.name.uppercased()
+        return n.count > 14 ? String(n.prefix(13)) + "…" : n
+    }
     /// Apple's own iPhone writers (Sleep schedule "in bed", Health app entries).
     static func isAppleOther(_ sample: HKSample) -> Bool {
         origin(sample) == .other && sample.sourceRevision.source.bundleIdentifier.lowercased().hasPrefix("com.apple")
@@ -143,10 +149,12 @@ final class HealthPull: @unchecked Sendable {
         var lastWatchSample: Date?
         var lastWhoopSample: Date?
         var watchName: String?
+        /// Where the newest Apple-side value of each quantity type came from ("WATCH", "IPHONE", "WATCH + IPHONE", an app name).
+        var appleOrigins: [String: String]?
         /// Set when Health was locked (iPhone locked): the result is incomplete and must not replace the cache.
         var failed = false
 
-        enum CodingKeys: String, CodingKey { case watch, whoop, sleeps, hypnogram, workouts, stepsByDevice, lastWatchSample, lastWhoopSample, watchName }
+        enum CodingKeys: String, CodingKey { case watch, whoop, sleeps, hypnogram, workouts, stepsByDevice, lastWatchSample, lastWhoopSample, watchName, appleOrigins }
 
         /// Replace everything from `cutoff` on with `newer` (a pull that started at `cutoff`), keep older history.
         func merged(with newer: Result, from cutoff: Date) -> Result {
@@ -163,6 +171,7 @@ final class HealthPull: @unchecked Sendable {
             out.lastWatchSample = [lastWatchSample, newer.lastWatchSample].compactMap { $0 }.max()
             out.lastWhoopSample = [lastWhoopSample, newer.lastWhoopSample].compactMap { $0 }.max()
             out.watchName = newer.watchName ?? watchName
+            out.appleOrigins = (appleOrigins ?? [:]).merging(newer.appleOrigins ?? [:]) { _, n in n }
             return out
         }
     }
@@ -188,13 +197,18 @@ final class HealthPull: @unchecked Sendable {
         var done = 0.0
         func tick() { done += 1; progress?(min(1, done / total)) }
 
-        await withTaskGroup(of: (Int, [Date: [Double?]]).self) { group in
+        var origins: [String: String] = [:]
+        await withTaskGroup(of: (Int, [Date: [Double?]], String?).self) { group in
             for i in Self.specs.indices {
-                group.addTask { (i, await self.daily(Self.specs[i], from: start, failed: failed)) }
+                group.addTask {
+                    let (values, origin) = await self.daily(Self.specs[i], from: start, failed: failed)
+                    return (i, values, origin)
+                }
             }
-            for await (i, values) in group {
+            for await (i, values, origin) in group {
                 tick()
                 let spec = Self.specs[i]
+                if let origin { origins[spec.id.rawValue] = origin }
                 for (day, pair) in values {
                     let v = (watch: pair[0], whoop: pair[1])
                     if let w = v.watch { watch[day, default: DayStat(day: day)][keyPath: spec.key] = w * spec.scale }
@@ -218,6 +232,7 @@ final class HealthPull: @unchecked Sendable {
         r.lastWatchSample = lastWatch
         r.lastWhoopSample = lastWhoop
         r.watchName = watchName
+        r.appleOrigins = origins
         r.failed = failed.value
         return r
     }
@@ -267,8 +282,8 @@ final class HealthPull: @unchecked Sendable {
 
     /// Per-day value for each origin. Cumulative metrics: the Watch side falls back to Health's merged,
     /// de-duplicated total when the day has no Watch-specific samples (e.g. phone-only steps).
-    private func daily(_ spec: QSpec, from start: Date, failed: FailFlag) async -> [Date: [Double?]] {
-        guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { return [:] }
+    private func daily(_ spec: QSpec, from start: Date, failed: FailFlag) async -> ([Date: [Double?]], String?) {
+        guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { return ([:], nil) }
         let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: .strictStartDate)
         let opts: HKStatisticsOptions = spec.cumulative ? [.cumulativeSum, .separateBySource] : [.discreteAverage, .separateBySource]
         return await withCheckedContinuation { cont in
@@ -278,17 +293,20 @@ final class HealthPull: @unchecked Sendable {
             q.initialResultsHandler = { _, collection, error in
                 if (error as? HKError)?.code == .errorDatabaseInaccessible { failed.set() }
                 var out: [Date: [Double?]] = [:]
+                var newestOrigin: String?
                 collection?.enumerateStatistics(from: start, to: Date()) { stat, _ in
                     var w: [Double] = [], wh: [Double] = [], other: [Double] = []
+                    var otherNames: [String] = []
                     for src in stat.sources ?? [] {
                         let qty = spec.cumulative ? stat.sumQuantity(for: src) : stat.averageQuantity(for: src)
                         guard let v = qty?.doubleValue(for: spec.unit) else { continue }
                         switch Self.origin(src) {
                         case .whoop: wh.append(v)
                         case .watch: w.append(v)
-                        case .other: other.append(v)
+                        case .other: other.append(v); otherNames.append(Self.originLabel(src))
                         }
                     }
+                    let hadWatch = !w.isEmpty
                     if w.isEmpty && fallback && !other.isEmpty && !spec.cumulative { w = other }
                     var watchV: Double? = w.isEmpty ? nil : (spec.cumulative ? w.reduce(0, +) : w.reduce(0, +) / Double(w.count))
                     let whoopV: Double? = wh.isEmpty ? nil : (spec.cumulative ? wh.reduce(0, +) : wh.reduce(0, +) / Double(wh.count))
@@ -300,8 +318,16 @@ final class HealthPull: @unchecked Sendable {
                         watchV = v > 0 ? v : nil
                     }
                     if watchV != nil || whoopV != nil { out[stat.startDate.dayStart] = [watchV, whoopV] }
+                    if watchV != nil {
+                        // Which devices/apps the Apple-side number is built from (days run oldest → newest).
+                        var names: [String] = hadWatch ? ["WATCH"] : []
+                        if spec.cumulative || !hadWatch {
+                            for n in otherNames where !names.contains(n) { names.append(n) }
+                        }
+                        if !names.isEmpty { newestOrigin = names.prefix(2).joined(separator: " + ") }
+                    }
                 }
-                cont.resume(returning: out)
+                cont.resume(returning: (out, newestOrigin))
             }
             store.execute(q)
         }

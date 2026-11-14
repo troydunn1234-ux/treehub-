@@ -123,6 +123,8 @@ final class LabStore {
     var lastWatchSample: Date? { healthCache?.lastWatchSample }
     var lastWhoopInHealth: Date? { healthCache?.lastWhoopSample }
     var watchName: String? { healthCache?.watchName }
+    /// Where the Apple side of each Health metric last came from ("WATCH", "IPHONE", an app name…), keyed by type id.
+    var appleOrigins: [String: String] { healthCache?.appleOrigins ?? [:] }
 
     /// 0…1 across Health and WHOOP while syncing.
     var syncProgress: Double {
@@ -281,6 +283,7 @@ final class LabStore {
             d.tempDev = api.tempDev ?? d.tempDev
             d.skinTempC = api.skinTempC ?? d.skinTempC
             d.avgHR = api.avgHR ?? d.avgHR
+            d.maxHR = api.maxHR ?? d.maxHR
             d.recovery = api.recovery ?? d.recovery
             d.strain = api.strain ?? d.strain
             d.totalKcalWhoop = api.totalKcalWhoop ?? d.totalKcalWhoop

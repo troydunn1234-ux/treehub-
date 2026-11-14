@@ -55,6 +55,7 @@ struct DayStat: Identifiable, Equatable, Codable {
     var standHours: Double?
     var heightM: Double?
     var totalKcalWhoop: Double?  // WHOOP gives one total for the cycle
+    var maxHR: Double?           // WHOOP cycle peak heart rate
 
     var totalKcal: Double? {
         if let t = totalKcalWhoop { return t }
@@ -90,6 +91,12 @@ struct SleepNight: Identifiable, Equatable, Codable {
     var unspecifiedMin: Double = 0
     var performance: Double?   // WHOOP sleep performance %
     var respRate: Double?
+    // WHOOP-only extras (shown on the All data screen).
+    var whoopEfficiency: Double?   // WHOOP's own sleep efficiency %
+    var consistency: Double?       // WHOOP sleep consistency %
+    var disturbances: Double?      // WHOOP disturbance count
+    var cycles: Double?            // WHOOP sleep cycle count
+    var needMin: Double?           // WHOOP sleep need, minutes
 
     var asleepMin: Double { coreMin + deepMin + remMin + unspecifiedMin }
     /// Asleep ÷ time in bed (or asleep + awake when the tracker doesn't log "in bed").
@@ -121,6 +128,9 @@ struct WorkoutRec: Identifiable, Equatable, Codable {
     var maxHR: Double?
     var strain: Double?
     var distanceKm: Double?
+    /// Minutes in heart-rate zones 0…5 (WHOOP workouts).
+    var zonesMin: [Double]? = nil
+    var altitudeGainM: Double? = nil
     var minutes: Double { end.timeIntervalSince(start) / 60 }
 }
 
