@@ -20,6 +20,11 @@ enum WidgetBridge {
         static let sleepWatch = "sleepWatch"
         static let sleepWhoop = "sleepWhoop"
         static let updatedAt = "updatedAt"
+        // Morning briefing (Siri "Today's recovery", the Watch app).
+        static let briefingSpoken = "briefingSpoken"
+        static let briefingDay = "briefingDay"
+        static let hrv = "hrv"
+        static let strain = "strain"
     }
 
     @MainActor
@@ -33,6 +38,11 @@ enum WidgetBridge {
         d.set(store.lastNight(.watch).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWatch)
         d.set(store.lastNight(.whoop).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWhoop)
         d.set(Date().timeIntervalSince1970, forKey: Key.updatedAt)
+        let b = store.briefing
+        d.set(b.spoken, forKey: Key.briefingSpoken)
+        d.set(Date().dayStart.timeIntervalSince1970, forKey: Key.briefingDay)
+        put(b.hrv, Key.hrv)
+        put(store.whoopDays.stat(on: Date())?.strain ?? b.strainYesterday, Key.strain)
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
         #endif

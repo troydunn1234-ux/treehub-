@@ -20,7 +20,7 @@ struct LabDock: View {
                         Image(systemName: t.symbol)
                             .font(.system(size: 18, weight: .bold))
                             .symbolEffect(.bounce, value: tab == t)
-                        Text(t.dockTitle).font(Lab.label(8)).tracking(1)
+                        Text(t.dockTitle).font(.system(size: 8, weight: .heavy, design: .monospaced)).tracking(1)
                     }
                     .foregroundStyle(tab == t ? Lab.bg : Lab.dim)
                     .frame(maxWidth: .infinity)

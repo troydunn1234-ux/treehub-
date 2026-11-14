@@ -15,6 +15,8 @@ struct SettingsScreen: View {
     @State private var whoopReminder = WhoopPrompt.reminderOn
     @State private var whoopTime = WhoopPrompt.reminderTime
     @State private var whoopDenied = false
+    @State private var briefing = MorningBriefing.enabled
+    @State private var cloud = CloudSync.userEnabled
     @State private var showPlans = false
     @ObservedObject private var unlock = Unlock.shared
 
@@ -26,7 +28,9 @@ struct SettingsScreen: View {
             LabPanel(tint: Lab.whoop) {
                 WhoopConnectView(accent: Lab.whoop)
             }
+            morningBriefing
             whoopByHand
+            if CloudSync.built { iCloud }
             trust
             dataCheck
             weeklySummary
@@ -198,7 +202,7 @@ struct SettingsScreen: View {
                             Task { await WhoopPrompt.reschedule(loggedToday: logged) }
                         }
                     }
-                if whoopReminder {
+                if whoopReminder || briefing {
                     DatePicker("Remind me at", selection: $whoopTime, displayedComponents: .hourAndMinute)
                         .tint(Lab.whoop)
                         .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
@@ -214,6 +218,49 @@ struct SettingsScreen: View {
                     Text("Notifications are off for Pulse Lab. Turn them on in Settings → Notifications → Pulse Lab.")
                         .font(.system(size: 11, design: .rounded)).foregroundStyle(Lab.warn)
                 }
+            }
+        }
+    }
+
+    /// The morning notification with the briefing. Same notification as the WHOOP reminder, never a second one.
+    private var morningBriefing: some View {
+        LabPanel(tint: Lab.good) {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionTag(String(localized: "Morning briefing"), color: Lab.good)
+                Toggle(String(localized: "Morning briefing notification"), isOn: $briefing).tint(Lab.good)
+                    .font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
+                    .onChange(of: briefing) { _, on in
+                        let logged = store.hasWhoopRecoveryToday
+                        Task {
+                            if on {
+                                let ok = await MorningBriefing.enable(loggedToday: logged)
+                                if !ok { briefing = false; whoopDenied = true }
+                            } else {
+                                MorningBriefing.enabled = false
+                                await WhoopPrompt.reschedule(loggedToday: logged)
+                            }
+                        }
+                    }
+                Text(String(localized: "One notification each morning at the reminder time below: recovery, sleep vs your week, HRV and resting HR vs your baseline, and one takeaway. If today's WHOOP numbers are missing, it asks you to log them instead, so you never get two."))
+                    .font(Lab.body(12, .regular)).foregroundStyle(Lab.dim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    /// iCloud: the Stack and hand-typed WHOOP numbers on every device signed in to your account.
+    private var iCloud: some View {
+        LabPanel(tint: Lab.watch) {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionTag(String(localized: "iCloud"))
+                Toggle(String(localized: "Sync my Stack and logged WHOOP numbers"), isOn: $cloud).tint(Lab.watch)
+                    .font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
+                    .onChange(of: cloud) { _, on in CloudSync.userEnabled = on }
+                Text(CloudSync.signedIn
+                     ? String(localized: "Uses your private iCloud. Health and WHOOP data aren't uploaded; each device reads those itself. Changes apply the next time Pulse Lab opens.")
+                     : String(localized: "Sign in to iCloud in the Settings app to sync."))
+                    .font(Lab.body(12, .regular)).foregroundStyle(Lab.dim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }

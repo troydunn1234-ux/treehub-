@@ -17,12 +17,19 @@ enum Lab {
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
     static let bad = Color(red: 1.00, green: 0.30, blue: 0.40)
 
-    static func display(_ size: CGFloat, _ weight: Font.Weight = .black) -> Font { .system(size: size, weight: weight, design: .rounded) }
-    static func mono(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: size, weight: weight, design: .monospaced) }
-    static func label(_ size: CGFloat = 10) -> Font { .system(size: size, weight: .heavy, design: .monospaced) }
+    /// Dynamic Type: every Lab font follows the text size setting. Big display numbers grow less than
+    /// small text (they're already large and sit in fixed layouts); small labels grow the most.
+    static func scaled(_ size: CGFloat) -> CGFloat {
+        let s = UIFontMetrics.default.scaledValue(for: size)
+        let cap: CGFloat = size >= 28 ? 1.2 : size >= 18 ? 1.4 : 1.8
+        return max(size * 0.85, min(s, size * cap))
+    }
+    static func display(_ size: CGFloat, _ weight: Font.Weight = .black) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
+    static func mono(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: scaled(size), weight: weight, design: .monospaced) }
+    static func label(_ size: CGFloat = 10) -> Font { .system(size: scaled(size), weight: .heavy, design: .monospaced) }
     /// Big scoreboard numbers: heavy rounded, condensed, monospaced digits.
     static func number(_ size: CGFloat, _ weight: Font.Weight = .heavy) -> Font {
-        .system(size: size, weight: weight, design: .rounded).width(.condensed).monospacedDigit()
+        .system(size: scaled(size), weight: weight, design: .rounded).width(.condensed).monospacedDigit()
     }
     /// Signature gradient: Watch cyan → violet → WHOOP amber.
     static let duel = LinearGradient(colors: [watch, violet, whoop], startPoint: .leading, endPoint: .trailing)
@@ -43,8 +50,8 @@ enum Lab {
         static let xl: CGFloat = 32
     }
     /// Type scale: display 44/34 · title 22 · body 15 · caption 11 (small caps via `label`).
-    static func title(_ size: CGFloat = 22, _ weight: Font.Weight = .heavy) -> Font { .system(size: size, weight: weight, design: .rounded) }
-    static func body(_ size: CGFloat = 15, _ weight: Font.Weight = .medium) -> Font { .system(size: size, weight: weight, design: .rounded) }
+    static func title(_ size: CGFloat = 22, _ weight: Font.Weight = .heavy) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
+    static func body(_ size: CGFloat = 15, _ weight: Font.Weight = .medium) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
 
     static func tick() { UISelectionFeedbackGenerator().selectionChanged() }
 }
@@ -130,7 +137,7 @@ struct SectionTag: View {
     var body: some View {
         HStack(spacing: 7) {
             LiveDot(color: color == Lab.dim ? Lab.violet : color, size: 5)
-            Text(text.uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
+            Text(L(text).uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
         }
         .accessibilityElement(children: .combine)
     }
@@ -163,9 +170,10 @@ struct ScreenTitle: View {
             HStack(spacing: 6) {
                 Circle().fill(Lab.watch).frame(width: 6, height: 6)
                 Circle().fill(Lab.whoop).frame(width: 6, height: 6)
-                Text(kicker.uppercased()).font(Lab.label(11)).tracking(2.6).foregroundStyle(Lab.dim)
+                Text(L(kicker).uppercased()).font(Lab.label(11)).tracking(2.6).foregroundStyle(Lab.dim)
             }
-            Text(title).font(Lab.display(34)).foregroundStyle(Lab.text)
+            Text(L(title)).font(Lab.display(34)).foregroundStyle(Lab.text)
+                .accessibilityAddTraits(.isHeader)
                 .shadow(color: Lab.violet.opacity(0.35), radius: 12)
             Capsule().fill(Lab.duel).frame(width: 46, height: 3).opacity(0.9)
         }
@@ -363,3 +371,7 @@ enum LabAxis {
         }
     }
 }
+
+/// Looks up a runtime string (titles passed around as `String`) in the String Catalog.
+/// Strings with no entry come back unchanged.
+func L(_ key: String) -> String { NSLocalizedString(key, comment: "") }

@@ -7,13 +7,14 @@ import UserNotifications
 struct PulseLabApp: App {
     @UIApplicationDelegateAdaptor(PulseLabAppDelegate.self) private var appDelegate
     @State private var store = LabStore.shared
+    private let container = CloudSync.makeContainer()
 
     var body: some Scene {
         WindowGroup {
             RootView()
                 .environment(store)
                 .preferredColorScheme(.dark)
-                .modelContainer(for: [Supplement.self, SuppDose.self])
+                .modelContainer(container)
         }
     }
 }
@@ -31,6 +32,8 @@ final class PulseLabAppDelegate: NSObject, UIApplicationDelegate, UNUserNotifica
         // Observer queries must be running whenever iOS wakes the app for new Health data.
         MainActor.assumeIsolated { LabStore.shared.startLiveUpdates() }
         UNUserNotificationCenter.current().delegate = self
+        WatchSync.shared.activate()
+        CloudSync.startManualSync()
         Self.schedule()
         return true
     }
@@ -44,7 +47,10 @@ final class PulseLabAppDelegate: NSObject, UIApplicationDelegate, UNUserNotifica
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let id = response.notification.request.identifier
         let url = response.notification.request.content.userInfo["url"] as? String
-        if id.hasPrefix(WhoopPrompt.idPrefix) || url == WhoopPrompt.url.absoluteString {
+        if url == MorningBriefing.url.absoluteString {
+            // The morning briefing: open Today, where the briefing card sits on top.
+            await MainActor.run { PulseLabPending.queue(tab: LabTab.today.rawValue) }
+        } else if id.hasPrefix(WhoopPrompt.idPrefix) || url == WhoopPrompt.url.absoluteString {
             await MainActor.run { LogWhoopPending.queue() }
         }
     }
@@ -73,9 +79,13 @@ enum LabTab: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .activity: "Moves"
+        case .today: String(localized: "Today")
+        case .sleep: String(localized: "Sleep")
+        case .heart: String(localized: "Heart")
+        case .activity: String(localized: "Moves")
+        case .stack: String(localized: "Stack")
         case .compare: "VS"
-        default: rawValue.capitalized
+        case .settings: String(localized: "Settings")
         }
     }
     var dockTitle: String { title.uppercased() }
@@ -114,6 +124,7 @@ struct RootView: View {
     @ObservedObject private var unlock = Unlock.shared
     @Environment(\.scenePhase) private var phase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var typeSize
     @AppStorage("onboarded") private var onboarded = false
     @State private var tab = LabTab.launch
     @State private var lastMain = LabTab.launch == .settings ? LabTab.today : LabTab.launch
@@ -133,7 +144,8 @@ struct RootView: View {
             } else {
                 ZStack {
                     screen(tab)
-                        .id(tab)
+                        // Rebuilt when the text size changes so every Lab font picks up the new size.
+                        .id("\(tab.rawValue)-\(typeSize)")
                         .transition(reduceMotion ? .opacity : .asymmetric(
                             insertion: .opacity.combined(with: .offset(y: 14)),
                             removal: .opacity))

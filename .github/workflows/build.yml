@@ -50,7 +50,7 @@ jobs:
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|NatalOrbit)/' && PICK="$PICK NatalOrbit"
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|QuestApp)/' && PICK="$PICK RideQuest"
             echo "$CHANGED" | grep -qE '^(TVRemote|ClankerrWatch)/' && PICK="$PICK Clicker"
-            echo "$CHANGED" | grep -qE '^PulseLab/' && PICK="$PICK PulseLab"
+            echo "$CHANGED" | grep -qE '^PulseLab(Watch|WatchWidgets|Widgets)?/' && PICK="$PICK PulseLab"
             echo "$CHANGED" | grep -qE '^(StillPoint|StillPointWatch)/' && PICK="$PICK StillPoint"
             echo "$CHANGED" | grep -qE '^project.yml|^.github/|^all$' && PICK="$ALL"
           fi

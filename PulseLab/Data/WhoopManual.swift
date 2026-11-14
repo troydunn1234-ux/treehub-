@@ -59,10 +59,13 @@ enum WhoopManualStore {
         return Dictionary(list.map { ($0.day.dayStart, $0) }, uniquingKeysWith: { a, b in a.savedAt > b.savedAt ? a : b })
     }
 
-    static func save(_ entries: [Date: WhoopManualEntry]) {
+    /// `push`: hand the change to iCloud (CloudSync); false when the change came from iCloud.
+    static func save(_ entries: [Date: WhoopManualEntry], push: Bool = true) {
+        let removed = push ? Array(Set(load().keys).subtracting(entries.keys)) : []
         let list = entries.values.sorted { $0.day < $1.day }
         guard let data = try? JSONEncoder().encode(list) else { return }
         try? data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        if push { CloudSync.pushManual(entries, removed: removed) }
     }
 }
 
@@ -131,25 +134,52 @@ enum WhoopPrompt {
         return granted
     }
 
-    /// One notification per morning for the next 14 days at the chosen time, skipping today once it's logged.
-    /// Rebuilt after every sync and save, so it keeps rolling forward. Does nothing until permission was given.
+    /// One notification per morning for the next 14 days at the chosen time. It is the only morning
+    /// notification: with the briefing on, it carries the briefing, and it asks for WHOOP numbers instead
+    /// when they're missing. Rebuilt after every sync and save, so it keeps rolling forward and today's
+    /// text matches the latest numbers. Does nothing until permission was given.
     static func reschedule(loggedToday: Bool) async {
         let center = UNUserNotificationCenter.current()
         let ids = (0..<14).map { "\(idPrefix)\($0)" }
         center.removePendingNotificationRequests(withIdentifiers: ids)
-        guard reminderOn else { return }
+        let briefingOn = MorningBriefing.enabled
+        guard reminderOn || briefingOn else { return }
         let status = await center.notificationSettings().authorizationStatus
         guard status == .authorized || status == .provisional || status == .ephemeral else { return }
         let now = Date(), cal = Calendar.current
+        let api = MorningBriefing.whoopAPI
+        let latest = MorningBriefing.latest
         for i in 0..<14 {
-            if i == 0 && loggedToday { continue }
             let day = now.dayStart.adding(days: i)
             guard let fire = cal.date(bySettingHour: hour, minute: minute, second: 0, of: day), fire > now else { continue }
             let c = UNMutableNotificationContent()
-            c.title = "Log today's WHOOP — 20 seconds"
-            c.body = "Recovery, strain and sleep from the WHOOP app, so Pulse Lab can compare."
             c.sound = .default
-            c.userInfo = ["url": url.absoluteString]
+            let usesWhoop = MorningBriefing.usesWhoop
+            let askForWhoop: Bool
+            if i == 0 {
+                askForWhoop = reminderOn && usesWhoop && !loggedToday
+            } else {
+                // Future mornings: with the WHOOP API connected the numbers arrive by themselves.
+                askForWhoop = reminderOn && usesWhoop && !(briefingOn && api)
+            }
+            if askForWhoop {
+                c.title = String(localized: "Log today's WHOOP — 20 seconds")
+                c.body = briefingOn
+                    ? String(localized: "Type recovery, strain and sleep from the WHOOP app, then your morning briefing fills in.")
+                    : String(localized: "Recovery, strain and sleep from the WHOOP app, so Pulse Lab can compare.")
+                c.userInfo = ["url": url.absoluteString]
+            } else if briefingOn {
+                c.title = String(localized: "Your morning briefing")
+                if i == 0, let b = latest, !b.isEmpty {
+                    let line = b.compactLine
+                    c.body = line.isEmpty ? b.takeaway : line + "\n" + b.takeaway
+                } else {
+                    c.body = String(localized: "Recovery, sleep vs your week, HRV and resting HR vs your baseline. Tap to see it.")
+                }
+                c.userInfo = ["url": MorningBriefing.url.absoluteString]
+            } else {
+                continue   // today is logged and the briefing is off
+            }
             let comps = cal.dateComponents([.year, .month, .day, .hour, .minute], from: fire)
             try? await center.add(UNNotificationRequest(identifier: ids[i], content: c,
                                                         trigger: UNCalendarNotificationTrigger(dateMatching: comps, repeats: false)))

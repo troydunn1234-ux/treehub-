@@ -1,0 +1,1546 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@: no score yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: aún sin puntuación"
+          }
+        }
+      }
+    },
+    "%lld days with, %lld without · needs %lld of each": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días con, %lld sin · se necesitan %lld de cada"
+          }
+        }
+      }
+    },
+    "8 am by default. It asks you to log WHOOP when today's numbers are missing. Change it any time in Settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A las 8 am por defecto. Te pide registrar WHOOP cuando faltan los números de hoy. Cámbialo cuando quieras en Ajustes."
+          }
+        }
+      }
+    },
+    "Agreement scores and a readiness score from your Watch to sit next to WHOOP recovery.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntuaciones de coincidencia y una puntuación de preparación de tu Watch junto a la recuperación de WHOOP."
+          }
+        }
+      }
+    },
+    "Alcohol": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alcohol"
+          }
+        }
+      }
+    },
+    "Allow reading drinks": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir leer bebidas"
+          }
+        }
+      }
+    },
+    "Ask me for WHOOP numbers each morning": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pedirme los números de WHOOP cada mañana"
+          }
+        }
+      }
+    },
+    "Big day yesterday (strain %@). Recovery often trails a hard day by one morning.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer fue un día intenso (esfuerzo %@). La recuperación suele ir un día por detrás de un día duro."
+          }
+        }
+      }
+    },
+    "Calibration": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calibración"
+          }
+        }
+      }
+    },
+    "Check off your Stack, log workouts or sauna sessions, and keep wearing your trackers. Once there are at least %lld days with and %lld without, comparisons show up here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marca tu Stack, registra entrenamientos o sesiones de sauna y sigue usando tus dispositivos. Cuando haya al menos %lld días con y %lld sin, las comparaciones aparecerán aquí."
+          }
+        }
+      }
+    },
+    "Compare": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparar"
+          }
+        }
+      }
+    },
+    "Connect Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar Salud"
+          }
+        }
+      }
+    },
+    "Connect WHOOP for recovery, strain and sleep, or type the numbers in each morning in about 20 seconds. Check off supplements in the Stack tab so Insights can compare.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta WHOOP para recuperación, esfuerzo y sueño, o escribe los números cada mañana en unos 20 segundos. Marca los suplementos en la pestaña Stack para que Análisis pueda comparar."
+          }
+        }
+      }
+    },
+    "Connected": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectado"
+          }
+        }
+      }
+    },
+    "Daily reminder": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio diario"
+          }
+        }
+      }
+    },
+    "Describes your numbers against your own history. Not medical advice.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Describe tus números frente a tu propio historial. No es consejo médico."
+          }
+        }
+      }
+    },
+    "Difference %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia %@"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
+        }
+      }
+    },
+    "Effect size %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tamaño del efecto %@"
+          }
+        }
+      }
+    },
+    "Engine room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sala de máquinas"
+          }
+        }
+      }
+    },
+    "Enter the lab": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrar al laboratorio"
+          }
+        }
+      }
+    },
+    "Export": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exportar"
+          }
+        }
+      }
+    },
+    "Fahrenheit": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fahrenheit"
+          }
+        }
+      }
+    },
+    "Fitness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Forma física"
+          }
+        }
+      }
+    },
+    "Green light: recovery is high and HRV and resting HR sit at or better than your baseline.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luz verde: la recuperación es alta y tu VFC y FC en reposo están iguales o mejor que tu referencia."
+          }
+        }
+      }
+    },
+    "HRV": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC"
+          }
+        }
+      }
+    },
+    "HRV %lld ms": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC %lld ms"
+          }
+        }
+      }
+    },
+    "HRV is %lld milliseconds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la VFC es de %lld milisegundos"
+          }
+        }
+      }
+    },
+    "HRV is %lld milliseconds, %lld percent %@ your baseline": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "la VFC es de %lld milisegundos, un %lld por ciento %@ de tu referencia"
+          }
+        }
+      }
+    },
+    "HRV is above your 30-day baseline this morning, a sign you're well rested by your own standard.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu VFC está por encima de tu referencia de 30 días esta mañana: según tus propios datos, estás bien descansado."
+          }
+        }
+      }
+    },
+    "Head to head": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cara a cara"
+          }
+        }
+      }
+    },
+    "Heart": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Corazón"
+          }
+        }
+      }
+    },
+    "High": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Alta"
+          }
+        }
+      }
+    },
+    "High strain (14+)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo alto (14+)"
+          }
+        }
+      }
+    },
+    "How we compare": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo comparamos"
+          }
+        }
+      }
+    },
+    "How your next morning looks after days with, and without, each thing you do. Averages of your own days only.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo es tu mañana siguiente después de días con y sin cada cosa que haces. Solo promedios de tus propios días."
+          }
+        }
+      }
+    },
+    "How your next morning looks after supplements, sauna, workouts and late meals.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo es tu mañana siguiente después de suplementos, sauna, entrenamientos y comidas tardías."
+          }
+        }
+      }
+    },
+    "If you log drinks in the Health app (or an app that saves them there), Pulse Lab can compare mornings after. It only reads them.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si registras bebidas en la app Salud (o en una app que las guarde allí), Pulse Lab puede comparar las mañanas siguientes. Solo las lee."
+          }
+        }
+      }
+    },
+    "Include alcohol": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Incluir alcohol"
+          }
+        }
+      }
+    },
+    "Insights": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Análisis"
+          }
+        }
+      }
+    },
+    "Lab notes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notas del laboratorio"
+          }
+        }
+      }
+    },
+    "Lab results": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resultados"
+          }
+        }
+      }
+    },
+    "Large difference": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia grande"
+          }
+        }
+      }
+    },
+    "Last night": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anoche"
+          }
+        }
+      }
+    },
+    "Last night · stages": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anoche · fases"
+          }
+        }
+      }
+    },
+    "Late eating (after 9 pm)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comer tarde (después de las 9 pm)"
+          }
+        }
+      }
+    },
+    "Log WHOOP": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrar WHOOP"
+          }
+        }
+      }
+    },
+    "Log today's WHOOP to complete it": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra el WHOOP de hoy para completarlo"
+          }
+        }
+      }
+    },
+    "Log today's WHOOP — 20 seconds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra el WHOOP de hoy: 20 segundos"
+          }
+        }
+      }
+    },
+    "Low": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja"
+          }
+        }
+      }
+    },
+    "Measured with: %@ · %lld mornings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medido con: %@ · %lld mañanas"
+          }
+        }
+      }
+    },
+    "Miles & pounds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Millas y libras"
+          }
+        }
+      }
+    },
+    "Mindful session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesión de atención plena"
+          }
+        }
+      }
+    },
+    "Moderate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moderada"
+          }
+        }
+      }
+    },
+    "Moderate difference": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia moderada"
+          }
+        }
+      }
+    },
+    "Morning briefing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen matutino"
+          }
+        }
+      }
+    },
+    "Morning briefing notification": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notificación del resumen matutino"
+          }
+        }
+      }
+    },
+    "Moves": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movimiento"
+          }
+        }
+      }
+    },
+    "Next": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente"
+          }
+        }
+      }
+    },
+    "Night shift": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Turno de noche"
+          }
+        }
+      }
+    },
+    "No briefing yet. Open Pulse Lab once to sync.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay resumen. Abre Pulse Lab una vez para sincronizar."
+          }
+        }
+      }
+    },
+    "No clear difference": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin diferencia clara"
+          }
+        }
+      }
+    },
+    "No numbers yet this morning. Sync after you wake up and the briefing fills in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay datos esta mañana. Sincroniza al despertar y el resumen se completará."
+          }
+        }
+      }
+    },
+    "Not enough data yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay suficientes datos"
+          }
+        }
+      }
+    },
+    "Not in yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no disponible"
+          }
+        }
+      }
+    },
+    "Not now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora no"
+          }
+        }
+      }
+    },
+    "Not now ": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora no"
+          }
+        }
+      }
+    },
+    "Nothing to compare yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay nada que comparar"
+          }
+        }
+      }
+    },
+    "Notifications are off for Pulse Lab. You can turn them on later in the Settings app.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Pulse Lab están desactivadas. Puedes activarlas más tarde en la app Ajustes."
+          }
+        }
+      }
+    },
+    "On days you %@, your next-morning %@ averaged %@ (%lld days), vs %@ on days you didn't (%lld days).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los días en que %@, tu %@ de la mañana siguiente promedió %@ (%lld días), frente a %@ los días que no (%lld días)."
+          }
+        }
+      }
+    },
+    "One notification each morning at the reminder time below: recovery, sleep vs your week, HRV and resting HR vs your baseline, and one takeaway. If today's WHOOP numbers are missing, it asks you to log them instead, so you never get two.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una notificación cada mañana a la hora del recordatorio: recuperación, sueño frente a tu semana, VFC y FC en reposo frente a tu referencia, y una conclusión. Si faltan los números de WHOOP de hoy, te pide registrarlos en su lugar, así nunca recibes dos."
+          }
+        }
+      }
+    },
+    "Opens trends and correlations": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tendencias y correlaciones"
+          }
+        }
+      }
+    },
+    "Output": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rendimiento"
+          }
+        }
+      }
+    },
+    "Page %lld of %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Página %lld de %lld"
+          }
+        }
+      }
+    },
+    "Pulse Lab is synced.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab está sincronizado."
+          }
+        }
+      }
+    },
+    "Pulse Lab reads your Watch's heart, sleep and activity data, and what WHOOP saves to Health. It only writes the supplements you check off. Tap Turn On All on the next screen so nothing is missing.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab lee los datos de corazón, sueño y actividad de tu Watch, y lo que WHOOP guarda en Salud. Solo escribe los suplementos que marcas. Toca Activar todo en la siguiente pantalla para que no falte nada."
+          }
+        }
+      }
+    },
+    "Pulse Lab's score from your Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntuación de Pulse Lab a partir de tu Watch"
+          }
+        }
+      }
+    },
+    "Readiness %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación %lld"
+          }
+        }
+      }
+    },
+    "Reading sauna, food and drink data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Leyendo datos de sauna, comida y bebidas"
+          }
+        }
+      }
+    },
+    "Recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación"
+          }
+        }
+      }
+    },
+    "Recovery %lld%%": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación %lld%%"
+          }
+        }
+      }
+    },
+    "Recovery vs Readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación vs preparación"
+          }
+        }
+      }
+    },
+    "Recovery vs readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación vs preparación"
+          }
+        }
+      }
+    },
+    "Recovery, sleep vs your week and HRV vs your baseline in one card.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación, sueño frente a tu semana y VFC frente a tu referencia en una tarjeta."
+          }
+        }
+      }
+    },
+    "Recovery, sleep vs your week, HRV and resting HR vs your baseline. Tap to see it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación, sueño frente a tu semana, VFC y FC en reposo frente a tu referencia. Toca para verlo."
+          }
+        }
+      }
+    },
+    "Recovery, strain and sleep from the WHOOP app, so Pulse Lab can compare.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación, esfuerzo y sueño de la app WHOOP, para que Pulse Lab pueda comparar."
+          }
+        }
+      }
+    },
+    "Remind me at": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordarme a las"
+          }
+        }
+      }
+    },
+    "Resting HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo"
+          }
+        }
+      }
+    },
+    "Resting HR · 14 days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo · 14 días"
+          }
+        }
+      }
+    },
+    "Resting HR, HRV, sleep stages, breathing, blood oxygen, temperature, calories and workouts from your Watch and WHOOP, side by side.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo, VFC, fases del sueño, respiración, oxígeno en sangre, temperatura, calorías y entrenamientos de tu Watch y WHOOP, lado a lado."
+          }
+        }
+      }
+    },
+    "Sauna or steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauna o vapor"
+          }
+        }
+      }
+    },
+    "See all stats": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver todas las estadísticas"
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
+          }
+        }
+      }
+    },
+    "Short night: %@, about %@ under your 7-night average. Expect today to feel it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche corta: %@, unos %@ menos que tu promedio de 7 noches. Es probable que hoy lo notes."
+          }
+        }
+      }
+    },
+    "Sign in to iCloud in the Settings app to sync.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia sesión en iCloud en la app Ajustes para sincronizar."
+          }
+        }
+      }
+    },
+    "Skip WHOOP for now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Omitir WHOOP por ahora"
+          }
+        }
+      }
+    },
+    "Sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño"
+          }
+        }
+      }
+    },
+    "Slept %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormiste %@"
+          }
+        }
+      }
+    },
+    "Small difference": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia pequeña"
+          }
+        }
+      }
+    },
+    "Stack": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Stack"
+          }
+        }
+      }
+    },
+    "Stages per night": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fases por noche"
+          }
+        }
+      }
+    },
+    "Steady morning: your numbers are close to your usual baseline.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mañana estable: tus números están cerca de tu referencia habitual."
+          }
+        }
+      }
+    },
+    "Steps · by device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos · por dispositivo"
+          }
+        }
+      }
+    },
+    "Strain": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo"
+          }
+        }
+      }
+    },
+    "Strain yday %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo ayer %@"
+          }
+        }
+      }
+    },
+    "Strain yesterday": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo de ayer"
+          }
+        }
+      }
+    },
+    "Sunday 6 pm notification": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Notificación del domingo a las 6 pm"
+          }
+        }
+      }
+    },
+    "Supplements, sauna, workouts and more vs your next morning": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suplementos, sauna, entrenamientos y más frente a tu mañana siguiente"
+          }
+        }
+      }
+    },
+    "Sync": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizar"
+          }
+        }
+      }
+    },
+    "Sync my Stack and logged WHOOP numbers": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizar mi Stack y los números de WHOOP registrados"
+          }
+        }
+      }
+    },
+    "The short version": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En resumen"
+          }
+        }
+      }
+    },
+    "These are patterns in your own numbers, not cause and effect, and not medical advice. Sleep, training, stress and illness move these numbers too. Effect size is Cohen's d: under 0.2 is no clear difference, 0.5 moderate, 0.8 or more large.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son patrones en tus propios números, no causa y efecto, ni consejo médico. El sueño, el entrenamiento, el estrés y las enfermedades también influyen. El tamaño del efecto es la d de Cohen: menos de 0,2 es sin diferencia clara, 0,5 moderado, 0,8 o más grande."
+          }
+        }
+      }
+    },
+    "This is from your last sync, not today: ": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esto es de tu última sincronización, no de hoy: "
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        }
+      }
+    },
+    "Total calories burned": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calorías totales quemadas"
+          }
+        }
+      }
+    },
+    "Two trackers.\nOne lab.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos dispositivos.\nUn laboratorio."
+          }
+        }
+      }
+    },
+    "Type recovery, strain and sleep from the WHOOP app, then your morning briefing fills in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribe la recuperación, el esfuerzo y el sueño de la app WHOOP y tu resumen matutino se completará."
+          }
+        }
+      }
+    },
+    "Units": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unidades"
+          }
+        }
+      }
+    },
+    "Uses your private iCloud. Health and WHOOP data aren't uploaded; each device reads those itself. Changes apply the next time Pulse Lab opens.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa tu iCloud privado. Los datos de Salud y WHOOP no se suben; cada dispositivo los lee por sí mismo. Los cambios se aplican la próxima vez que abras Pulse Lab."
+          }
+        }
+      }
+    },
+    "WHOOP & your Stack": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP y tu Stack"
+          }
+        }
+      }
+    },
+    "WHOOP API": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "API de WHOOP"
+          }
+        }
+      }
+    },
+    "WHOOP HRV": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC de WHOOP"
+          }
+        }
+      }
+    },
+    "WHOOP by hand": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP a mano"
+          }
+        }
+      }
+    },
+    "WHOOP recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación WHOOP"
+          }
+        }
+      }
+    },
+    "WHOOP recovery is %lld percent": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La recuperación WHOOP es del %lld por ciento"
+          }
+        }
+      }
+    },
+    "Watch HRV": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC del Watch"
+          }
+        }
+      }
+    },
+    "Watch readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación del Watch"
+          }
+        }
+      }
+    },
+    "Watch readiness is %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación del Watch es %lld"
+          }
+        }
+      }
+    },
+    "Weekly summary": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resumen semanal"
+          }
+        }
+      }
+    },
+    "Who agrees": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quién coincide"
+          }
+        }
+      }
+    },
+    "With": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con"
+          }
+        }
+      }
+    },
+    "Without": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin"
+          }
+        }
+      }
+    },
+    "Workout": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrenamiento"
+          }
+        }
+      }
+    },
+    "Your VS card": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu tarjeta VS"
+          }
+        }
+      }
+    },
+    "Your morning briefing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu resumen matutino"
+          }
+        }
+      }
+    },
+    "Your numbers are running below your usual today. An easier session and an earlier night are worth considering.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy tus números están por debajo de lo habitual. Vale la pena considerar una sesión más suave y acostarte más temprano."
+          }
+        }
+      }
+    },
+    "above": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "por encima"
+          }
+        }
+      }
+    },
+    "below": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "por debajo"
+          }
+        }
+      }
+    },
+    "had a sauna or steam session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "hiciste una sesión de sauna o vapor"
+          }
+        }
+      }
+    },
+    "hit a WHOOP strain of 14 or more": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "llegaste a un esfuerzo WHOOP de 14 o más"
+          }
+        }
+      }
+    },
+    "iCloud": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "iCloud"
+          }
+        }
+      }
+    },
+    "logged a drink": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "registraste una bebida"
+          }
+        }
+      }
+    },
+    "logged a mindful session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "registraste una sesión de atención plena"
+          }
+        }
+      }
+    },
+    "logged food after 9 pm": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "registraste comida después de las 9 pm"
+          }
+        }
+      }
+    },
+    "n = %lld / %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n = %lld / %lld"
+          }
+        }
+      }
+    },
+    "sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sueño"
+          }
+        }
+      }
+    },
+    "took %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tomaste %@"
+          }
+        }
+      }
+    },
+    "vs 30-day": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs 30 días"
+          }
+        }
+      }
+    },
+    "vs 7-night avg": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs prom. 7 noches"
+          }
+        }
+      }
+    },
+    "worked out": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "entrenaste"
+          }
+        }
+      }
+    },
+    "yesterday's strain was %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "el esfuerzo de ayer fue %@"
+          }
+        }
+      }
+    },
+    "you slept %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dormiste %@"
+          }
+        }
+      }
+    },
+    "you slept %@, %@ less than your weekly average": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dormiste %@, %@ menos que tu promedio semanal"
+          }
+        }
+      }
+    },
+    "you slept %@, %@ more than your weekly average": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dormiste %@, %@ más que tu promedio semanal"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

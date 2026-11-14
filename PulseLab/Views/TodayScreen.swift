@@ -9,6 +9,7 @@ struct TodayScreen: View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
+            BriefingCard()
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
                           sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday) {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
@@ -22,6 +23,7 @@ struct TodayScreen: View {
             if streak >= 2 { StreakChip(days: streak) }
             quickTiles
             seeAllButton
+            InsightsButton()
             LabNotesCard(insights: notes)
             hero
             sleepDuel

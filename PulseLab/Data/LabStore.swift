@@ -30,6 +30,8 @@ final class LabStore {
     var detail: MetricKey?
     /// Short message shown as a toast at the top (errors, confirmations).
     var toast: String?
+    /// This morning's briefing (Today card, notification, Siri, Watch); rebuilt after every sync.
+    private(set) var briefing = Briefing()
     /// Log WHOOP sheet shown from the root (morning pop-up, notification tap, Siri, pulselab://log-whoop).
     var logWhoop: LogWhoopRequest?
 
@@ -57,6 +59,13 @@ final class LabStore {
     func deleteManual(_ day: Date) {
         manual[day.dayStart] = nil
         if !Self.isDemo { WhoopManualStore.save(manual) }
+        remerge()
+    }
+
+    /// Another device changed manual entries (iCloud): read them again and redraw.
+    func reloadManual() {
+        guard !Self.isDemo else { return }
+        manual = WhoopManualStore.load()
         remerge()
     }
 
@@ -297,7 +306,13 @@ final class LabStore {
 
     /// Push fresh numbers to the widget and refresh the weekly notification text.
     private func afterRefresh() {
+        let b = Briefing.build(self)
+        briefing = b
+        MorningBriefing.latest = b
+        MorningBriefing.whoopAPI = WhoopAdapter.connected
+        MorningBriefing.usesWhoop = whoopConnected || !whoopDays.isEmpty || !manual.isEmpty
         WidgetBridge.publish(self)
+        WatchSync.shared.push(self)
         Notify.reschedule(agreements: agreements30)
         let logged = hasWhoopRecoveryToday
         Task { await WhoopPrompt.reschedule(loggedToday: logged) }

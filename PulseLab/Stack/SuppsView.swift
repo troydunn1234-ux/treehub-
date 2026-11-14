@@ -39,6 +39,7 @@ struct SuppsView: View {
                         progressCard
                         weekDots
                         StackInsightsCard(supps: supps, doses: doses)
+                        InsightsButton()
                         ForEach(SuppTime.allCases) { time in group(time) }
                     }
                 }
