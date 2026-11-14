@@ -145,6 +145,10 @@ struct SourcesScreen: View {
                 if let t = store.lastWhoopInHealth {
                     line("WHOOP in Health, newest", ago(t))
                 }
+                if !store.manual.isEmpty {
+                    line("Typed in by hand", "\(store.manual.count) day\(store.manual.count == 1 ? "" : "s")")
+                }
+                LogWhoopCard()
             }
         }
     }

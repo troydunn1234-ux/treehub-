@@ -14,6 +14,7 @@ struct TodayScreen: View {
                 UIImpactFeedbackGenerator(style: .light).impactOccurred()
                 if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
             }
+            LogWhoopCard()
             RivalryHero(rounds: Rivalry.rounds(store),
                         watchBPM: store.today(.watch)?.rhr, whoopBPM: store.today(.whoop)?.rhr,
                         readiness: store.readinessToday, recovery: store.recoveryToday,
@@ -70,7 +71,8 @@ struct TodayScreen: View {
             tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, .temp, decimals: 1, signed: true)
             tile("Calories", "kcal", kcalW, kcalH, .calories)
             tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), .recovery, decimals: 1, only: .whoop)
-            tile("Steps", "steps", store.latest(.watch, \.steps), nil, .steps, only: .watch)
+            tile("Steps", "steps", store.latest(.watch, \.steps), store.latest(.whoop, \.steps), .steps,
+                 only: store.latest(.whoop, \.steps) == nil ? .watch : nil)
         }
     }
 

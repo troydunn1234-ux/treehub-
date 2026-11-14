@@ -1,6 +1,7 @@
 import SwiftUI
 import SwiftData
 import BackgroundTasks
+import UserNotifications
 
 @main
 struct PulseLabApp: App {
@@ -19,7 +20,7 @@ struct PulseLabApp: App {
 
 /// Background freshness: Health observer queries (woken by background delivery) and a periodic
 /// BGAppRefreshTask that also pulls WHOOP, so widgets and the app are current before you open it.
-final class PulseLabAppDelegate: NSObject, UIApplicationDelegate {
+final class PulseLabAppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
     static let refreshID = "com.troydunn.pulselab.refresh"
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil) -> Bool {
@@ -29,8 +30,23 @@ final class PulseLabAppDelegate: NSObject, UIApplicationDelegate {
         }
         // Observer queries must be running whenever iOS wakes the app for new Health data.
         MainActor.assumeIsolated { LabStore.shared.startLiveUpdates() }
+        UNUserNotificationCenter.current().delegate = self
         Self.schedule()
         return true
+    }
+
+    /// Show Pulse Lab's own reminders as banners even while the app is open.
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        [.banner, .sound]
+    }
+
+    /// Tapping "Log today's WHOOP" opens the Log WHOOP sheet (pulselab://log-whoop).
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let id = response.notification.request.identifier
+        let url = response.notification.request.content.userInfo["url"] as? String
+        if id.hasPrefix(WhoopPrompt.idPrefix) || url == WhoopPrompt.url.absoluteString {
+            await MainActor.run { LogWhoopPending.queue() }
+        }
     }
 
     static func schedule() {
@@ -146,6 +162,15 @@ struct RootView: View {
                         .presentationDetents([.large])
                         .presentationBackground(Lab.bg)
                 }
+                .background {
+                    // Separate host so it never fights the metric sheet for the same presenter.
+                    Color.clear
+                        .sheet(item: Binding(get: { store.logWhoop }, set: { store.logWhoop = $0 })) { r in
+                            LogWhoopSheet(day: r.day, auto: r.auto)
+                                .environment(store)
+                                .presentationBackground(Lab.bg)
+                        }
+                }
             }
             if splash && !reduceMotion {
                 LaunchSplash { splash = false }
@@ -160,16 +185,50 @@ struct RootView: View {
             #if DEBUG
             Stats.selfCheck()
             #endif
-            if !showOnboarding { await store.refresh(.launch) }
+            if !showOnboarding {
+                await store.refresh(.launch)
+                askForWhoopIfDue()
+            }
         }
         .onChange(of: phase) { _, p in
-            if p == .active && !showOnboarding { Task { await store.refresh(.foreground) } }
-            if p == .active { openPendingTab() }
+            if p == .active && !showOnboarding {
+                Task {
+                    await store.refresh(.foreground)
+                    askForWhoopIfDue()
+                }
+            }
+            if p == .active { openPendingTab(); openPendingLogWhoop() }
             if p == .background { PulseLabAppDelegate.schedule() }
         }
         .onReceive(NotificationCenter.default.publisher(for: PulseLabPending.note)) { _ in openPendingTab() }
-        .onAppear { openPendingTab() }
+        .onReceive(NotificationCenter.default.publisher(for: LogWhoopPending.note)) { _ in openPendingLogWhoop() }
+        .onAppear { openPendingTab(); openPendingLogWhoop() }
         .onOpenURL(perform: open)
+    }
+
+    /// Morning pop-up: after 6 am, once a day, when today has no WHOOP recovery yet (API, Health or typed).
+    private func askForWhoopIfDue() {
+        guard !showOnboarding, phase == .active, store.logWhoop == nil, store.detail == nil,
+              WhoopPrompt.shouldAsk(store) else { return }
+        WhoopPrompt.markAsked()
+        store.logWhoop = LogWhoopRequest(auto: true)
+    }
+
+    /// Notification tap / Siri "Log WHOOP": open the sheet on today.
+    private func openPendingLogWhoop() {
+        guard LogWhoopPending.take(), !showOnboarding else { return }
+        presentLogWhoop()
+    }
+
+    /// Closes a metric sheet first if one is up (two sheets can't share one presenter).
+    private func presentLogWhoop() {
+        guard store.logWhoop == nil else { return }
+        if store.detail != nil {
+            store.detail = nil
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { store.logWhoop = LogWhoopRequest() }
+        } else {
+            store.logWhoop = LogWhoopRequest()
+        }
     }
 
     /// Siri / Shortcuts / Control Center "open a section" (PulseLabActions.swift).
@@ -182,6 +241,11 @@ struct RootView: View {
     /// callback, consumed by ASWebAuthenticationSession, so anything else is ignored here.
     private func open(_ url: URL) {
         guard url.scheme?.lowercased() == "pulselab", let host = url.host?.lowercased() else { return }
+        // Morning reminder / shortcut: type today's WHOOP numbers.
+        if host == "log-whoop" {
+            if !showOnboarding { presentLogWhoop() }
+            return
+        }
         // Food Book handing over its supplement stack.
         if host == "stack-import" {
             withAnimation(.snappy) { tab = .stack }

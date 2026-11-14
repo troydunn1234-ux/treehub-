@@ -30,6 +30,43 @@ final class LabStore {
     var detail: MetricKey?
     /// Short message shown as a toast at the top (errors, confirmations).
     var toast: String?
+    /// Log WHOOP sheet shown from the root (morning pop-up, notification tap, Siri, pulselab://log-whoop).
+    var logWhoop: LogWhoopRequest?
+
+    // MARK: - WHOOP typed in by hand
+
+    /// Manual WHOOP entries by day (persisted in WhoopManualStore).
+    private(set) var manual: [Date: WhoopManualEntry] = LabStore.isDemo ? [:] : WhoopManualStore.load()
+    /// Fields whose shown WHOOP value came from a manual entry (the API didn't have that number), by day.
+    private(set) var manualMarks: [Date: Set<ManualField>] = [:]
+
+    func isManual(_ day: Date, _ f: ManualField) -> Bool { manualMarks[day.dayStart]?.contains(f) ?? false }
+    func manualEntry(_ day: Date) -> WhoopManualEntry? { manual[day.dayStart] }
+    /// Today's WHOOP recovery, from the API, Health or a manual entry.
+    var hasWhoopRecoveryToday: Bool { whoopDays.stat(on: Date())?.recovery != nil }
+
+    func saveManual(_ e: WhoopManualEntry) {
+        var e = e
+        e.day = e.day.dayStart
+        e.savedAt = Date()
+        if e.isEmpty { manual[e.day] = nil } else { manual[e.day] = e }
+        if !Self.isDemo { WhoopManualStore.save(manual) }
+        remerge()
+    }
+
+    func deleteManual(_ day: Date) {
+        manual[day.dayStart] = nil
+        if !Self.isDemo { WhoopManualStore.save(manual) }
+        remerge()
+    }
+
+    /// Rebuild the merged days after a manual edit, without reading Health or WHOOP again.
+    private func remerge() {
+        if Self.isDemo { loadDemo(); return }
+        merge(health: healthCache ?? HealthPull.Result())
+        lastPull = Date()
+        afterRefresh()
+    }
 
     var hasAnyData: Bool { !watchDays.isEmpty || !whoopDays.isEmpty || !sleeps.isEmpty || !workouts.isEmpty }
 
@@ -262,6 +299,55 @@ final class LabStore {
     private func afterRefresh() {
         WidgetBridge.publish(self)
         Notify.reschedule(agreements: agreements30)
+        let logged = hasWhoopRecoveryToday
+        Task { await WhoopPrompt.reschedule(loggedToday: logged) }
+    }
+
+    /// Lays manual WHOOP entries over the merged data. Per field the WHOOP API wins; a manual number
+    /// beats a WHOOP value found in Health (it's what you read off the WHOOP app, prefilled from Health).
+    private func applyManual(api: [DayStat], apiNights: Set<Date>) {
+        var marks: [Date: Set<ManualField>] = [:]
+        guard !manual.isEmpty else { manualMarks = [:]; return }
+        let apiByDay = Dictionary(api.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
+        var byDay = Dictionary(whoopDays.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
+        var nights = sleeps
+        for (day, e) in manual {
+            let a = apiByDay[day]
+            var d = byDay[day] ?? DayStat(day: day)
+            var m = Set<ManualField>()
+            func put(_ v: Double?, _ apiV: Double?, _ kp: WritableKeyPath<DayStat, Double?>, _ f: ManualField) {
+                guard let v, apiV == nil else { return }
+                d[keyPath: kp] = v
+                m.insert(f)
+            }
+            put(e.recovery, a?.recovery, \.recovery, .recovery)
+            put(e.strain, a?.strain, \.strain, .strain)
+            put(e.hrv, a?.hrv, \.hrv, .hrv)
+            put(e.rhr, a?.rhr, \.rhr, .rhr)
+            put(e.resp, a?.resp, \.resp, .resp)
+            put(e.steps, a?.steps, \.steps, .steps)
+            put(e.kcal, a?.totalKcalWhoop, \.totalKcalWhoop, .kcal)
+            if e.recovery != nil || e.strain != nil || e.hrv != nil || e.rhr != nil || e.resp != nil || e.steps != nil || e.kcal != nil {
+                byDay[day] = d
+            }
+            // Sleep belongs to the morning you woke up, same day as the entry.
+            if !apiNights.contains(day), e.sleepMin != nil || e.sleepPerformance != nil {
+                if let i = nights.firstIndex(where: { $0.source == .whoop && $0.night == day }) {
+                    if let p = e.sleepPerformance { nights[i].performance = p; m.insert(.sleepPerformance) }
+                    // Stages WHOOP wrote to Health stay; a typed total only fills a night without them.
+                    if let s = e.sleepMin, nights[i].asleepMin == 0 { nights[i].unspecifiedMin = s; m.insert(.sleep) }
+                } else {
+                    var n = SleepNight(night: day, source: .whoop)
+                    if let s = e.sleepMin { n.unspecifiedMin = s; m.insert(.sleep) }
+                    if let p = e.sleepPerformance { n.performance = p; m.insert(.sleepPerformance) }
+                    nights.append(n)
+                }
+            }
+            if !m.isEmpty { marks[day] = m }
+        }
+        whoopDays = byDay.values.sorted { $0.day < $1.day }
+        sleeps = nights.sorted { $0.night < $1.night }
+        manualMarks = marks
     }
 
     /// WHOOP API wins where it has data; WHOOP samples found in Apple Health fill the gaps.
@@ -274,7 +360,8 @@ final class LabStore {
         stepsByDevice = h.stepsByDevice
         if !wdays.isEmpty { Reviews.noteWin() }
         var whoop = Dictionary(h.whoop.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
-        for api in WhoopAdapter.days() {
+        let apiDays = WhoopAdapter.days()
+        for api in apiDays {
             var d = whoop[api.day] ?? DayStat(day: api.day)
             d.rhr = api.rhr ?? d.rhr
             d.hrv = api.hrv ?? d.hrv
@@ -314,6 +401,7 @@ final class LabStore {
         // Drop WHOOP-in-Health workouts that the API already gave us (same start within 2 min).
         let extra = healthWhoop.filter { hw in !apiW.contains { abs($0.start.timeIntervalSince(hw.start)) < 120 } }
         workouts = (h.workouts.filter { $0.source == .watch } + extra + apiW).sorted { $0.start > $1.start }
+        applyManual(api: apiDays, apiNights: apiNights)
     }
 
     // MARK: - CSV export
@@ -351,6 +439,7 @@ final class LabStore {
         sleeps = d.sleeps
         hypnogram = d.hypnogram
         workouts = d.workouts
+        applyManual(api: [], apiNights: [])
         var wd = watchDays
         for i in wd.indices { wd[i].recovery = Compare.readiness(day: wd[i].day, watch: watchDays, sleeps: sleeps) }
         watchDays = wd

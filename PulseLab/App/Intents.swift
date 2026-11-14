@@ -46,6 +46,19 @@ struct CheckLabScoresIntent: AppIntent {
     }
 }
 
+/// "Log WHOOP": opens Pulse Lab straight to the Log WHOOP sheet to type today's numbers.
+struct LogWhoopIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log WHOOP"
+    static var description = IntentDescription("Opens Pulse Lab to type today's WHOOP recovery, strain and sleep by hand.")
+    static var openAppWhenRun = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        LogWhoopPending.queue()
+        return .result()
+    }
+}
+
 struct PulseLabShortcuts: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor = .purple
 
@@ -70,6 +83,16 @@ struct PulseLabShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Open a section",
             systemImageName: "square.grid.2x2.fill"
+        )
+        AppShortcut(
+            intent: LogWhoopIntent(),
+            phrases: [
+                "Log WHOOP in \(.applicationName)",
+                "Log my WHOOP in \(.applicationName)",
+                "Log today's WHOOP in \(.applicationName)",
+            ],
+            shortTitle: "Log WHOOP",
+            systemImageName: "square.and.pencil"
         )
     }
 }

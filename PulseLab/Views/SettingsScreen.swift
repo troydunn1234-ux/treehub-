@@ -11,6 +11,10 @@ struct SettingsScreen: View {
     @State private var showSources = false
     @State private var weekly = Notify.enabled
     @State private var notifyDenied = false
+    @State private var askWhoop = WhoopPrompt.askEnabled
+    @State private var whoopReminder = WhoopPrompt.reminderOn
+    @State private var whoopTime = WhoopPrompt.reminderTime
+    @State private var whoopDenied = false
 
     var body: some View {
         LabScroll(kicker: "Calibration", title: "Settings", showsStates: false) {
@@ -19,6 +23,7 @@ struct SettingsScreen: View {
             LabPanel(tint: Lab.whoop) {
                 WhoopConnectView(accent: Lab.whoop)
             }
+            whoopByHand
             trust
             dataCheck
             weeklySummary
@@ -135,6 +140,51 @@ struct SettingsScreen: View {
         }
         .buttonStyle(PressScale())
         .sheet(isPresented: $showTrust) { TrustScreen().environment(store).presentationBackground(Lab.bg) }
+    }
+
+    /// Typing WHOOP numbers in by hand: the morning pop-up and the daily reminder notification.
+    private var whoopByHand: some View {
+        LabPanel(tint: Lab.whoop) {
+            VStack(alignment: .leading, spacing: 10) {
+                SectionTag("WHOOP by hand", color: Lab.whoop)
+                LogWhoopCard()
+                Toggle("Ask me for WHOOP numbers each morning", isOn: $askWhoop).tint(Lab.whoop)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
+                    .onChange(of: askWhoop) { _, on in WhoopPrompt.askEnabled = on }
+                Text("After 6 am, the first time you open Pulse Lab without a WHOOP recovery for today, the Log WHOOP sheet pops up once.")
+                    .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
+                Toggle("Daily reminder", isOn: $whoopReminder).tint(Lab.whoop)
+                    .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
+                    .onChange(of: whoopReminder) { _, on in
+                        let logged = store.hasWhoopRecoveryToday
+                        if on {
+                            Task {
+                                let ok = await WhoopPrompt.enableReminder(loggedToday: logged)
+                                if !ok { whoopReminder = false; whoopDenied = true }
+                            }
+                        } else {
+                            WhoopPrompt.reminderOn = false
+                            Task { await WhoopPrompt.reschedule(loggedToday: logged) }
+                        }
+                    }
+                if whoopReminder {
+                    DatePicker("Remind me at", selection: $whoopTime, displayedComponents: .hourAndMinute)
+                        .tint(Lab.whoop)
+                        .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(Lab.text)
+                        .onChange(of: whoopTime) { _, t in
+                            WhoopPrompt.reminderTime = t
+                            let logged = store.hasWhoopRecoveryToday
+                            Task { await WhoopPrompt.reschedule(loggedToday: logged) }
+                        }
+                }
+                Text("“Log today's WHOOP — 20 seconds”, skipped on days you've already logged. Tap it to open the sheet.")
+                    .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
+                if whoopDenied {
+                    Text("Notifications are off for Pulse Lab. Turn them on in Settings → Notifications → Pulse Lab.")
+                        .font(.system(size: 11, design: .rounded)).foregroundStyle(Lab.warn)
+                }
+            }
+        }
     }
 
     /// Sunday 6 pm local: "WHOOP vs Watch this week" with one line of stats. Off by default.

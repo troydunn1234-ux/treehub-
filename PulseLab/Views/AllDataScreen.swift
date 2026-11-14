@@ -50,7 +50,7 @@ struct AllDataScreen: View {
         .preferredColorScheme(.dark)
         .task(id: dataStamp) { rebuild() }
         .sheet(item: $selected) { def in
-            StatDetailSheet(def: def, series: series[def.id] ?? StatSeries(), badge: badge(def, .watch))
+            StatDetailSheet(def: def, series: series[def.id] ?? StatSeries(), badge: badge(def, .watch), whoopBadge: badge(def, .whoop))
                 .presentationDetents([.large])
                 .presentationBackground(Lab.bg)
         }
@@ -141,7 +141,11 @@ struct AllDataScreen: View {
     }
 
     private func badge(_ def: StatDef, _ s: Source) -> String {
-        if s == .whoop { return "WHOOP" }
+        if s == .whoop {
+            // The newest WHOOP number was typed in (Log WHOOP), not synced.
+            if let f = ManualField.forStat(def.id), let d = series[def.id]?.whoop.last?.day, store.isManual(d, f) { return "WHOOP · MANUAL" }
+            return "WHOOP"
+        }
         if let id = def.healthID, let o = store.appleOrigins[id] { return o }
         return def.appleBadge
     }
@@ -189,7 +193,7 @@ struct AllDataScreen: View {
 struct SourceBadge: View {
     let text: String
     private var color: Color {
-        if text == "WHOOP" { return Lab.whoop }
+        if text.hasPrefix("WHOOP") { return Lab.whoop }
         if text.contains("WATCH") { return Lab.watch }
         if text.contains("IPHONE") { return Lab.violet }
         return Lab.dim
@@ -398,6 +402,7 @@ struct StatDetailSheet: View {
     let def: StatDef
     let series: StatSeries
     let badge: String
+    var whoopBadge = "WHOOP"
     @Environment(\.dismiss) private var dismiss
     @State private var days = 30
     @State private var solo: Source?
@@ -444,7 +449,7 @@ struct StatDetailSheet: View {
                                 .fixedSize(horizontal: false, vertical: true)
                             HStack(spacing: 6) {
                                 if !series.watch.isEmpty { SourceBadge(text: badge) }
-                                if !series.whoop.isEmpty { SourceBadge(text: "WHOOP") }
+                                if !series.whoop.isEmpty { SourceBadge(text: whoopBadge) }
                                 Spacer()
                                 if let first = [series.watch.first?.day, series.whoop.first?.day].compactMap({ $0 }).min() {
                                     Text("History from \(first.formatted(.dateTime.month(.abbreviated).day().year()))")

@@ -203,7 +203,7 @@ enum AllStats {
             StatDef(id: "basalKcal", section: .strain, title: "Resting energy", unit: "kcal", healthID: "HKQuantityTypeIdentifierBasalEnergyBurned",
                     note: "Calories your body burns at rest.", read: days(\.basalKcal, sides: [.watch])),
             StatDef(id: "steps", section: .strain, title: "Steps", unit: "steps", healthID: "HKQuantityTypeIdentifierStepCount",
-                    note: "Watch and iPhone steps, de-duplicated by Health.", read: days(\.steps, sides: [.watch])),
+                    note: "Watch and iPhone steps, de-duplicated by Health. WHOOP steps when typed in by hand.", read: days(\.steps)),
             StatDef(id: "distance", section: .strain, title: "Walking + running distance", unit: distU, decimals: 2, healthID: "HKQuantityTypeIdentifierDistanceWalkingRunning",
                     note: "Distance on foot.", read: days(\.distanceKm, sides: [.watch], dist)),
             StatDef(id: "flights", section: .strain, title: "Flights climbed", unit: "floors", healthID: "HKQuantityTypeIdentifierFlightsClimbed",

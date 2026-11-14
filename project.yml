@@ -233,6 +233,8 @@ targets:
           - CFBundleURLName: com.troydunn.pulselab
             CFBundleURLSchemes:
               - pulselab
+        LSApplicationQueriesSchemes:
+          - whoop
         WhoopClientID: "$(WHOOP_CLIENT_ID)"
         WhoopClientSecret: "$(WHOOP_CLIENT_SECRET)"
         BGTaskSchedulerPermittedIdentifiers:

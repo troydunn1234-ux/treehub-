@@ -37,6 +37,10 @@
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>whoop</string>
+	</array>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.</string>
 	<key>NSHealthUpdateUsageDescription</key>
