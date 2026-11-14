@@ -106,6 +106,13 @@ label.f{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transfo
 .goodfor .good li::marker{color:var(--soft)}
 .mooninfo{display:flex;align-items:center;gap:12px;margin-top:14px;font-size:13.5px;color:var(--dim)}
 .skynow{margin-top:16px}
+.remind{margin-top:16px;display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}
+.remind h3{font-family:var(--display);font-size:17px;margin:0}
+.remind .rm-sub{margin:4px 0 0;font-size:13.5px;color:var(--dim)}
+.remind .rm-ctrls{display:flex;align-items:center;gap:10px}
+.remind input[type=time]{width:auto}
+.remind #rm-on{min-width:64px;font-weight:600}
+.remind #rm-on[aria-pressed="true"]{background:var(--gold);color:var(--void);border-color:var(--gold)}
 .skynow .shead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
 .skynow h3{font-family:var(--display);font-size:17px;margin:0}
 .skynow .shead .m{font-family:var(--mono);font-size:12px;color:var(--gold)}
@@ -342,6 +349,10 @@ footer{font-family:var(--mono);font-size:11px;color:var(--dim);line-height:1.7}
       </div>
     </div>
     <div class="panel skynow" id="h-sky"></div>
+    <div class="panel remind" id="remind" hidden>
+      <div><h3>Daily reading</h3><p class="rm-sub" id="rm-sub">Get today's reading as a notification each morning.</p></div>
+      <div class="rm-ctrls"><input type="time" id="rm-time" value="08:00" aria-label="Notification time"><button id="rm-on" aria-pressed="false">Off</button></div>
+    </div>
   </section>
 
   <section>
@@ -1532,6 +1543,56 @@ function goSection(sec){const map={chart:null,today:'today-sec',three:'three-h',
 /* Siri / Shortcuts: the app shell calls this with a section name (today, year, sky, compare, chart, share). */
 window.__shellOpen=function(sec){if(typeof sec==='string')goSection(sec);};
 
+/* ================= daily reading: notification + Home Screen widget (app only) =================
+   The app shell schedules the next week of readings as local notifications at the time you pick, and hands
+   the same readings to the widget. Everything is worked out on the phone from your own saved chart. */
+const NATIVE=(()=>{try{return window.webkit&&window.webkit.messageHandlers&&window.webkit.messageHandlers.native||null;}catch(e){return null;}})();
+function nativeCall(msg){try{return NATIVE?Promise.resolve(NATIVE.postMessage(msg)):Promise.reject(new Error('not in the app'));}catch(e){return Promise.reject(e);}}
+function dailyPref(){try{const p=JSON.parse(localStorage.getItem('natal-orbit-daily')||'null');return {on:!!(p&&p.on),t:(p&&/^\d\d:\d\d$/.test(p.t))?p.t:'08:00'};}catch(e){return {on:false,t:'08:00'};}}
+function saveDailyPref(p){try{localStorage.setItem('natal-orbit-daily',JSON.stringify(p));}catch(e){}}
+function dayKeyLocal(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function fmtClock(t){const [h,m]=t.split(':').map(Number);return new Date(2000,0,1,h,m).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+/* Same headline as "Today for you", for any moment, against whatever chart is in CH. */
+function readingAt(ms){
+  const L=lonsAt(new Date(ms));
+  const cs=contactsFor(L,2,['moon']).map(c=>({...c,w:W8[c.t]*(1-c.o/2.6)})).sort((a,b)=>b.w-a.w);
+  const top=cs[0],moonSign=signOf(L.moon),MS=SIGN_TXT[moonSign],ph=moonPhase(L.sun,L.moon);
+  const head=top?`${T_HEAD[top.t]} ${T_AREA[top.n]}`:`A quiet day: follow the ${moonSign} Moon`;
+  const good=[...new Set([...cs.filter(c=>!c.hard).slice(0,2).map(c=>T_GOOD[c.t]),MS.good[0],MS.good[1]])].slice(0,2);
+  return {head:cap(head),good:'Good day for '+good.join(', '),moon:`☽ Moon in ${moonSign} · ${ph.name}`};}
+function syncDaily(){
+  if(!NATIVE||!HAS_ASTRO)return;
+  const prof=profile(),pref=dailyPref();
+  if(!prof){nativeCall({op:'widget',json:JSON.stringify({days:[]})}).catch(()=>{});nativeCall({op:'notify',action:'cancel',prefix:'daily-'}).catch(()=>{});return;}
+  const keep=CH;let days=[];
+  try{CH=specToChart(prof);
+    const [hh,mm]=pref.t.split(':').map(Number),base=new Date();base.setHours(0,0,0,0);
+    for(let i=0;i<8;i++){const d=new Date(base.getFullYear(),base.getMonth(),base.getDate()+i,hh,mm,0,0);
+      days.push({d:dayKeyLocal(d),at:Math.floor(d.getTime()/1000),...readingAt(d.getTime())});}
+  }catch(e){days=[];}finally{CH=keep;}
+  const name=String(prof.name||'').slice(0,20);
+  nativeCall({op:'widget',json:JSON.stringify({name,days:days.map(x=>({d:x.d,head:x.head,moon:x.moon,good:x.good}))})}).catch(()=>{});
+  if(pref.on&&days.length)nativeCall({op:'notify',action:'schedule',prefix:'daily-',items:days.map(x=>({id:'daily-'+x.d,at:x.at,section:'today',
+      title:name?`Today for ${name}`:'Today for you',body:`${x.head}. ${x.good}. ${x.moon}.`}))}).catch(()=>{});
+  else nativeCall({op:'notify',action:'cancel',prefix:'daily-'}).catch(()=>{});}
+function renderRemind(){
+  const box=$('remind');if(!box||!NATIVE)return;box.hidden=false;const p=dailyPref();
+  $('rm-on').textContent=p.on?'On':'Off';$('rm-on').setAttribute('aria-pressed',String(p.on));$('rm-time').value=p.t;
+  $('rm-sub').textContent=p.on?`Your reading arrives every day at ${fmtClock(p.t)}.`:"Get today's reading as a notification each morning.";}
+async function setDaily(on){
+  const p=dailyPref();
+  if(on){
+    if(!profile()){toast('Save your own chart first: New chart, then tick "This is my own chart".');return;}
+    let ok=false;try{ok=await nativeCall({op:'notify',action:'permission'});}catch(e){ok=false;}
+    if(!ok){p.on=false;saveDailyPref(p);renderRemind();toast('Notifications are off for Natal Orbit. Turn them on in Settings.');return;}}
+  p.on=on;saveDailyPref(p);renderRemind();syncDaily();haptic(on?'success':'light');
+  if(on)toast(`Daily reading on at ${fmtClock(p.t)}.`);}
+if(NATIVE){
+  $('rm-on').onclick=()=>setDaily(!dailyPref().on);
+  $('rm-time').addEventListener('change',()=>{const v=$('rm-time').value;if(!/^\d\d:\d\d$/.test(v))return;const p=dailyPref();p.t=v;saveDailyPref(p);renderRemind();syncDaily();});
+  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncDaily();});
+  renderRemind();}
+
 /* ================= load a chart ================= */
 function loadChart(spec){
   SPEC=spec;IS_ORIG=sameSpec(spec,ORIGINAL);CH=specToChart(spec);
@@ -1542,7 +1603,8 @@ function loadChart(spec){
   $('match-out').innerHTML='<p class="mempty">Pick a birthday to get a match score, a breakdown of where you click and where you clash, and their planets shown inside your 3D chart.</p>';
   PERSON_IX=-1;renderPeople();
   select('sun');home(true);
-  if(soundOn&&AC){stopDrone();startDrone();}}
+  if(soundOn&&AC){stopDrone();startDrone();}
+  try{syncDaily();}catch(e){}}
 
 /* ================= render loop ================= */
 let composer=null;

@@ -11,10 +11,18 @@ enum ShellConfig {
 
 @main
 struct WebShellApp: App {
+    init() {
+        // Local notifications (daily reading, budget alerts): banners while open, taps open their section.
+        ShellNotify.shared.install()
+    }
     var body: some Scene {
         WindowGroup {
             ShellRoot()
                 .preferredColorScheme(.dark)
+                // <app>://<section> (Home Screen widget) opens that section of the page.
+                .onOpenURL { url in
+                    if let section = url.host, !section.isEmpty { ShellLink.queue(section: section) }
+                }
         }
     }
 }

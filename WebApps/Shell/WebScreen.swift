@@ -187,6 +187,8 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
             share(tmp) { done in replyHandler(done, done ? nil : "declined") }
         case "simplefin", "pasteboard":
             handleBank(body, reply: replyHandler)
+        case "notify", "widget":
+            handleNotify(body, reply: replyHandler)
         default:
             replyHandler(nil, "unknown op")
         }

@@ -356,12 +356,22 @@ targets:
       - path: WebApps/NatalOrbit/web
         type: folder
         buildPhase: resources
+    dependencies:
+      - target: NatalOrbitWidgets
+    entitlements:
+      path: WebApps/NatalOrbit/NatalOrbit.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.natalorbit]
     info:
       path: WebApps/NatalOrbit/Info.plist
       properties:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Natal Orbit
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.natalorbit
+            CFBundleURLSchemes: [natalorbit]
+        WebShellAppGroup: group.com.troydunn.natalorbit
         WebShellBackground: "#05070f"
         WebShellAccent: "#f2c46d"
         WebShellSymbol: sparkles
@@ -378,6 +388,29 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.natalorbit
         TARGETED_DEVICE_FAMILY: "1"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # Natal Orbit Home Screen widget: today's reading headline
+  NatalOrbitWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: WebApps/NatalOrbit/Widgets
+    entitlements:
+      path: WebApps/NatalOrbit/Widgets/NatalOrbitWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.natalorbit]
+    info:
+      path: WebApps/NatalOrbit/Widgets/NatalOrbitWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Natal Orbit
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.natalorbit.widgets
+        SKIP_INSTALL: YES
 
   # Ride Quest: bundled web app in a native shell
   RideQuest:
@@ -421,8 +454,11 @@ targets:
     platform: iOS
     sources:
       - path: TVRemote
+        excludes:
+          - "Widgets/**"
       - path: Shared/Store
     dependencies:
+      - target: ClickerWidgets
       - target: ClankerrWatch
         embed: true
         copy:
@@ -592,6 +628,31 @@ targets:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.pulselab.widgets
         SKIP_INSTALL: YES
+
+  # Couch Remote on iPhone: Control Center / Lock Screen TV controls and a Lock Screen widget
+  ClickerWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: TVRemote/Widgets
+      - path: TVRemote/App/RemoteControlIntents.swift
+    entitlements:
+      path: TVRemote/Widgets/ClickerWidgets.entitlements
+      properties:
+        com.apple.security.application-groups: [group.com.troydunn.clicker]
+    info:
+      path: TVRemote/Widgets/ClickerWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Couch Remote
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.clicker.widgets
+        SKIP_INSTALL: YES
+        SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) COUCH_WIDGETS"
 
   ClankerrWidgets:
     type: app-extension

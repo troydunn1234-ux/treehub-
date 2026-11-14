@@ -160,6 +160,7 @@ struct ClankerrWatchRoot: View {
         NavigationStack {
             TabView {
                 PadPage().containerBackground(CW.bg.gradient, for: .tabView)
+                PowerPage().containerBackground(CW.bg.gradient, for: .tabView)
                 AppsPage().containerBackground(CW.bg.gradient, for: .tabView)
             }
             .tabViewStyle(.verticalPage)
@@ -275,6 +276,51 @@ struct PadPage: View {
                 .foregroundStyle(.white)
                 .frame(maxWidth: .infinity, minHeight: 34)
                 .background(Color.white.opacity(0.1), in: Capsule())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel(label)
+    }
+}
+
+/// Power, volume and input as big buttons (the crown on the pad page does volume too).
+struct PowerPage: View {
+    @Environment(RemoteLink.self) private var link
+    var body: some View {
+        VStack(spacing: 6) {
+            HStack(spacing: 6) {
+                Button { link.press("power", haptic: .start) } label: {
+                    Image(systemName: "power")
+                        .font(.system(size: 20, weight: .black))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, minHeight: 52)
+                        .background(RadialGradient(colors: [Color(red: 1, green: 0.3, blue: 0.38), Color(red: 0.55, green: 0.05, blue: 0.15)],
+                                                   center: .topLeading, startRadius: 2, endRadius: 70),
+                                    in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Power")
+                VStack(spacing: 6) {
+                    big("plus", "volUp", "Volume up", haptic: .directionUp, h: 23)
+                    big("minus", "volDown", "Volume down", haptic: .directionDown, h: 23)
+                }
+            }
+            HStack(spacing: 6) {
+                big("speaker.slash.fill", "mute", "Mute")
+                big("rectangle.on.rectangle", "input", "Input")
+                big("line.3.horizontal", "menu", "Menu")
+            }
+        }
+        .navigationTitle("Power")
+    }
+
+    private func big(_ symbol: String, _ cmd: String, _ label: String, haptic: WKHapticType = .click, h: CGFloat = 36) -> some View {
+        Button { link.press(cmd, haptic: haptic) } label: {
+            Image(systemName: symbol)
+                .font(.system(size: 15, weight: .heavy))
+                .foregroundStyle(.white)
+                .frame(maxWidth: .infinity, minHeight: h)
+                .background(Color.white.opacity(0.1), in: Capsule())
+                .overlay(Capsule().stroke(CW.accent, lineWidth: 1).opacity(0.5))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)

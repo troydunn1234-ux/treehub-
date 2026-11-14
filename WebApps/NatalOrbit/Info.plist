@@ -16,6 +16,17 @@
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.troydunn.natalorbit</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>natalorbit</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleVersion</key>
@@ -39,6 +50,8 @@
 	</array>
 	<key>WebShellAccent</key>
 	<string>#f2c46d</string>
+	<key>WebShellAppGroup</key>
+	<string>group.com.troydunn.natalorbit</string>
 	<key>WebShellBackground</key>
 	<string>#05070f</string>
 	<key>WebShellSymbol</key>

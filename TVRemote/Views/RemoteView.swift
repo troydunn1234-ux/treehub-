@@ -11,7 +11,7 @@ struct RemoteView: View {
     var body: some View {
         GeometryReader { geo in
             // Size the pad to whatever room is left, so nothing ends up under the tab bar.
-            let pad = max(160, min(geo.size.width - 92, geo.size.height - 360 - (store.reachable ? 0 : 48), 290))
+            let pad = max(160, min(geo.size.width - 92, geo.size.height - 404 - (store.reachable ? 0 : 48), 290))
             VStack(spacing: Look.S.m) {
                 if !store.reachable {
                     Button {
@@ -32,6 +32,7 @@ struct RemoteView: View {
 
                 VStack(spacing: Look.S.m) {
                     topRow
+                    quickLaunch
                     Spacer(minLength: 0)
                     TouchPad(size: pad) { key, heavy in send(key, heavy: heavy) }
                     Spacer(minLength: 0)
@@ -82,6 +83,36 @@ struct RemoteView: View {
                 KeyButton(symbol: "rectangle.on.rectangle", label: "Input", size: 48) { send(.inputNext) }
             }
         }
+    }
+
+    /// One tap to open a favorite app (Netflix, YouTube, Hulu, Prime Video, Disney+ by default) on the TV.
+    private var quickLaunch: some View {
+        let apps = Array(store.favoriteApps.prefix(6))
+        return ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 6) {
+                ForEach(apps) { app in
+                    Button {
+                        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+                        Task { await store.launch(app) }
+                    } label: {
+                        Text(app.name)
+                            .font(Look.font(12, .heavy))
+                            .foregroundStyle(.white)
+                            .lineLimit(1)
+                            .padding(.horizontal, 12)
+                            .frame(height: 32)
+                            .background(Capsule().fill(LinearGradient(colors: app.colors, startPoint: .topLeading, endPoint: .bottomTrailing)))
+                            .overlay(Capsule().fill(LinearGradient(colors: [.white.opacity(0.28), .clear], startPoint: .top, endPoint: .center)).padding(1))
+                            .overlay(Capsule().strokeBorder(store.nowPlaying == app.name ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.white.opacity(0.22)),
+                                                            lineWidth: store.nowPlaying == app.name ? 2 : 1))
+                    }
+                    .buttonStyle(SquishStyle(scale: 0.92))
+                    .accessibilityLabel("Open \(app.name) on the TV")
+                }
+            }
+            .padding(.horizontal, 2)
+        }
+        .frame(height: 34)
     }
 
     /// Back / Home / Menu as one segmented glass bar.

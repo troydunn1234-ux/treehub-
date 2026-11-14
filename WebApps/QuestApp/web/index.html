@@ -725,7 +725,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       <p class="note">Everything saves automatically. These downloads open in Numbers or Excel if you want your own copy.</p>
       <div class="row"><button class="btn ghost" id="dlTx" type="button">Download purchases</button><button class="btn ghost" id="dlMv" type="button">Download transfers</button></div>
       <p class="note" id="dlMsg" role="status"></p></div>
-    <div class="box"><h2>Monthly budgets</h2><div class="limits" id="limitSet"></div>
+    <div class="box"><h2>Monthly budgets</h2><div id="alertSet"></div><div class="limits" id="limitSet"></div>
       <form class="row" id="catForm"><label class="f"><span class="lbl">New category</span><input type="text" id="newCat" autocomplete="off" placeholder="Pets"></label>
         <label class="f"><span class="lbl">Monthly limit</span><input type="number" id="newLim" step="1" min="0" inputmode="decimal" placeholder="0"></label>
         <button class="btn" type="submit">Add category</button></form></div>
@@ -828,6 +828,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (Array.isArray(s.bankSkip)) o.bankSkip = s.bankSkip.filter(function (x) { return typeof x === "string"; }).slice(-800);
     if (Array.isArray(s.subs)) o.subs = s.subs.filter(function (x) { return x && typeof x.n === "string"; }).map(cleanSub);
     if (Array.isArray(s.subSkip)) o.subSkip = s.subSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
+    if (typeof s.budgetAlerts === "number") o.budgetAlerts = s.budgetAlerts ? 1 : 0;
+    if (s.budgetPings && typeof s.budgetPings === "object" && !Array.isArray(s.budgetPings)) o.budgetPings = s.budgetPings;
     if (Array.isArray(s.billSkip)) o.billSkip = s.billSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     return o;
   }
@@ -1174,6 +1176,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     function now(label, a) { return '<label class="f"><span class="lbl">' + label + '</span><input type="number" step="0.01" inputmode="decimal" data-bal="' + a + '" value="' + bal(a) + '"></label>'; }
     $("startSet").innerHTML = now("Savings now", "savings") + now("Checking now", "checking") + now("Cash now", "cash");
     renderBank();
+    renderAlertSet();
     $("limitSet").innerHTML = S.budgets.map(function (b, i) {
       return '<div class="limit"><span>' + esc(b.n) + '</span><input type="number" step="1" min="0" inputmode="decimal" data-lim="' + i + '" value="' + b.l + '" aria-label="Monthly limit for ' + esc(b.n) + '">' +
         '<button class="x" data-act="delcat" data-i="' + i + '" aria-label="Remove ' + esc(b.n) + '">&times;</button></div>';
@@ -1309,7 +1312,40 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     }).join("") : '<span class="ach ok">ALL CLEAR</span>';
     $("alerts").innerHTML = '<h2>Heads up</h2><div class="alerts">' + (al ?
       '<div class="allow"><span class="lbl">Safe to spend today</span><b class="num ' + (al.amt > 0 ? "" : "bad") + '">' + fmt(al.amt) + '</b><span class="mut wsub">' + (al.left > 0 ? fmt(al.left) + " left over " + al.days + " day" + (al.days === 1 ? "" : "s") : "Month budget is used up") + " &middot; spent today " + fmt(todaySpend()) + "</span></div>" : "") +
-      '<div class="achips">' + chips + "</div></div>";
+      '<div class="achips">' + chips + "</div></div>" +
+      (BANK.on && !S.budgetAlerts ? '<div class="row"><button class="btn ghost" type="button" data-act="budgetalerts">Notify me at 80% and 100%</button></div>' : "");
+  }
+  /* ---------- budget alerts: a phone notification when a category passes 80% and 100% of its monthly limit ---------- */
+  function budgetNotify() {
+    if (!S.budgetAlerts || !BANK.on) return;
+    var cm = monthOf(today()), all = S.budgetPings || {}, pings = all[cm] || {}, changed = false, sent = 0;
+    catRows(cm).forEach(function (r) {
+      if (!(r.l > 0)) return;
+      var lvl = r.s >= r.l ? 100 : r.s >= r.l * 0.8 ? 80 : 0;
+      if (!lvl || lvl <= (pings[r.n] || 0)) return;
+      pings[r.n] = lvl; changed = true;
+      if (sent >= 4) return; /* never flood the lock screen */
+      sent++;
+      var left = r2(r.l - r.s);
+      bankNative({ op: "notify", action: "now", id: "budget-" + cm + "-" + r.n + "-" + lvl, section: "budgets",
+        title: lvl === 100 ? r.n + " is over budget" : r.n + " is at " + Math.round(r.s / r.l * 100) + "% of its budget",
+        body: fmt(r.s) + " of " + fmt(r.l) + " spent in " + monShort(cm) + ". " + (left < 0 ? fmt(-left) + " over." : fmt(left) + " left.") }).then(function () {}, function () {});
+    });
+    if (!changed) return;
+    var keep = {}; keep[cm] = pings; S.budgetPings = keep;
+    touch();
+  }
+  function renderAlertSet() {
+    var el = $("alertSet"); if (!el) return;
+    el.innerHTML = BANK.on ? '<div class="row"><button class="btn' + (S.budgetAlerts ? "" : " ghost") + '" type="button" data-act="budgetalerts" aria-pressed="' + (S.budgetAlerts ? "true" : "false") + '">BUDGET ALERTS ' + (S.budgetAlerts ? "ON" : "OFF") + "</button></div>" +
+      '<p class="note">A notification when a category reaches 80% of its monthly limit, and again when it goes over. Bank imports count.</p>' : "";
+  }
+  function setBudgetAlerts(on) {
+    if (!on) { S.budgetAlerts = 0; touch(); renderAll(); toast("Budget alerts off"); return; }
+    bankNative({ op: "notify", action: "permission" }).then(function (ok) {
+      if (!ok) { toast("Notifications are off for Ride Quest. Turn them on in Settings.", true); return; }
+      S.budgetAlerts = 1; touch(); renderAll(); beep("chime"); toast("Budget alerts on: 80% and 100%");
+    }, function () { toast("Budget alerts need the Ride Quest app.", true); });
   }
   function renderRoad() {
     var p = pace(), e1 = etaFor(S.weekGoal), e2 = p == null ? null : etaFor(p);
@@ -1888,10 +1924,10 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     rows.sort(function (x, y) { return y.a - x.a || y.b - x.b; });
     var mx = rows.reduce(function (m, r) { return Math.max(m, r.a, r.b); }, 0) || 1;
     $("rvCats").innerHTML = rows.length ? rows.map(function (r) {
-      var df = r2(r.a - r.b), pc = r.b > 0 ? Math.round(df / r.b * 100) : null;
+      var df = r2(r.a - r.b), pc = r.b > 0 ? Math.round(df / r.b * 100) : null, sh = sp > 0 && r.a > 0 ? Math.round(r.a / sp * 100) : 0;
       return '<div class="rv"><div class="nm">' + ico(r.n) + esc(r.n) + "</div>" +
         '<div class="bars"><div class="bar thin"><i style="width:' + Math.round(r.a / mx * 100) + '%"></i></div><div class="bar thin last"><i style="width:' + Math.round(r.b / mx * 100) + '%"></i></div></div>' +
-        '<div class="amt num">' + fmt(r.a) + ' <span class="mut">vs ' + fmt(r.b) + "</span><small>" + (df === 0 ? "same" : '<span class="' + (df > 0 ? "up" : "down") + '">' + (df > 0 ? "+" : "-") + fmt(Math.abs(df)) + (pc === null ? "" : " (" + (pc > 0 ? "+" : "") + pc + "%)") + "</span>") + "</small></div></div>";
+        '<div class="amt num">' + fmt(r.a) + ' <span class="mut">vs ' + fmt(r.b) + "</span><small>" + (sh ? sh + "% of spend &middot; " : "") + (df === 0 ? "same" : '<span class="' + (df > 0 ? "up" : "down") + '">' + (df > 0 ? "+" : "-") + fmt(Math.abs(df)) + (pc === null ? "" : " (" + (pc > 0 ? "+" : "") + pc + "%)") + "</span>") + "</small></div></div>";
     }).join("") : '<div class="empty">Nothing logged in ' + monLabel(mon) + " or " + monLabel(pm) + " yet.</div>";
 
     /* income vs spend */
@@ -2352,6 +2388,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (!loaded) return;
     subsReconcile();
     syncQuests();
+    budgetNotify();
     renderQuest(); renderWallets(); renderBudgets(); renderLog(); renderMoves(); renderSetup(); updSnd(); applyTheme(); bootData();
     if (tab === "arcade") renderArcade();
     if (tab === "review") renderReview();
@@ -2562,6 +2599,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     return bankNative({ op: "simplefin", action: "status" }).then(function (st) { BANK.on = true; BANK.st = st; renderBank(); return st; }, function () { BANK.on = false; renderBank(); });
   }
   function renderBank() {
+    renderAlertSet();
     var box = $("bankBox"); if (!box) return;
     box.hidden = !BANK.on;
     if (!BANK.on) return;
@@ -2637,6 +2675,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "next") { mon = shift(mon, 1); renderAll(); }
     else if (a === "today") { mon = monthOf(today()); renderAll(); }
     else if (a === "deltx") arm(t, function () { S.tx = S.tx.filter(function (x) { return x.id !== t.dataset.id; }); touch(); renderAll(); });
+    else if (a === "budgetalerts") setBudgetAlerts(!S.budgetAlerts);
     else if (a === "snd") { S.sound = S.sound ? 0 : 1; touch(); updSnd(); beep("coin"); }
     else if (a === "donut") { $("fCat").value = t.dataset.c; setTab("log"); renderLog(); }
     else if (a === "heatday") { heatDay = heatDay === t.dataset.d ? "" : t.dataset.d; renderHeat(); }
