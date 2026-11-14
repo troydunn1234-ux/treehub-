@@ -18,8 +18,8 @@ struct PaywallSpec {
     var privacyURL: URL? = nil
 }
 
-/// A one-screen paywall for a single lifetime unlock. No timers, no fake urgency,
-/// no subscription: one price, one button, restore underneath.
+/// A one-screen paywall. No timers, no fake urgency. Apps that list "SubscriptionProductIDs"
+/// get monthly / yearly plans (with Apple's free trial) plus lifetime; the rest sell one lifetime unlock.
 struct PaywallView: View {
     let spec: PaywallSpec
     /// What the person was trying to do when the sheet came up, e.g. "Cloud Hands".
@@ -35,8 +35,15 @@ struct PaywallView: View {
                 VStack(spacing: 22) {
                     header
                     featureList
-                    buyBlock
-                    footer
+                    if unlock.usesSubscriptions {
+                        PlansBlock(spec: spec)
+                        Text(spec.freeNote)
+                            .font(.system(size: 13, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                            .multilineTextAlignment(.center)
+                    } else {
+                        buyBlock
+                        footer
+                    }
                 }
                 .padding(.horizontal, 22)
                 .padding(.top, 18)

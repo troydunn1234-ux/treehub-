@@ -173,12 +173,13 @@ struct Motes: View {
 enum StillPointPro {
     static let spec = PaywallSpec(
         appName: "Still Point",
-        headline: "Every practice, for good.",
-        tagline: "Open all 45 practices from 12 traditions, plus every joint, lymph and stretch routine. One payment, no subscription.",
+        headline: "Everything in Still Pointz.",
+        tagline: "All 45 practices from 12 traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch.",
         tint: SP.gold, tint2: SP.amber,
         features: [
             .init(icon: "books.vertical.fill", title: "All 45 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
             .init(icon: "figure.cooldown", title: "Every warm-up routine", detail: "Makkō-hō, Sūrya Namaskār, Ruesi Dat Ton, Ba Duan Jin and the rest, 2–10 minutes, with figures for each step."),
+            .init(icon: "flame.fill", title: "Sauna & steam guide", detail: "Heat-safe breathing, gentle bench moves and a timer that pulls your WHOOP heart rate for each session."),
             .init(icon: "applewatch", title: "Everything on your Watch", detail: "Haptic breathing for the full library, straight from your wrist."),
             .init(icon: "heart.text.square.fill", title: "Journey with heart data", detail: "Every session kept with your heart-rate stats and Mindful Minutes in Apple Health."),
         ],

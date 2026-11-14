@@ -1,0 +1,28 @@
+{
+  "group": "Still Pointz Pro",
+  "groupDisplay": "Still Pointz Pro",
+  "subs": [
+    {
+      "productId": "com.troydunn.stillpoint.pro.monthly",
+      "name": "Pro Monthly",
+      "period": "ONE_MONTH",
+      "level": 2,
+      "price": "2.99",
+      "displayName": "Still Pointz Pro – Monthly",
+      "description": "Every practice, routine, heat guide and Watch library.",
+      "trial": "ONE_WEEK"
+    },
+    {
+      "productId": "com.troydunn.stillpoint.pro.yearly",
+      "name": "Pro Yearly",
+      "period": "ONE_YEAR",
+      "level": 1,
+      "price": "19.99",
+      "displayName": "Still Pointz Pro – Yearly",
+      "description": "Every practice, routine, heat guide and Watch library.",
+      "trial": "ONE_WEEK"
+    }
+  ],
+  "reviewNote": "Still Pointz Pro unlocks every practice, movement routine, the sauna/steam guide and the Watch library. Open any lock icon or Settings › Pro to see the plans. The free 1-week trial is Apple's introductory offer; Restore and Manage Subscription are on the same screen.",
+  "reviewScreenshot": "store/stillpoint/iap-review.png"
+}

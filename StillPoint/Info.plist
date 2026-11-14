@@ -41,6 +41,13 @@
 	<integer>0</integer>
 	<key>ProProductID</key>
 	<string>com.troydunn.stillpoint.pro</string>
+	<key>SubscriptionProductIDs</key>
+	<array>
+		<string>com.troydunn.stillpoint.pro.yearly</string>
+		<string>com.troydunn.stillpoint.pro.monthly</string>
+	</array>
+	<key>TrialProductID</key>
+	<string>com.troydunn.stillpoint.none</string>
 	<key>UILaunchScreen</key>
 	<dict>
 		<key>UIColorName</key>

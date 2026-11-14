@@ -30,6 +30,19 @@ final class Unlock: ObservableObject {
     /// Bought Pro (or bought the app back when it was paid upfront).
     @Published private(set) var owned = false
     private var expiryTask: Task<Void, Never>?
+
+    // MARK: Subscriptions (opt-in per app via Info.plist "SubscriptionProductIDs")
+    /// Auto-renewable plans, e.g. monthly + yearly. Empty = this app only sells the one-time unlock.
+    let subscriptionIDs: [String]
+    var usesSubscriptions: Bool { !subscriptionIDs.isEmpty }
+    /// Loaded plans, longest period first (yearly before monthly).
+    @Published private(set) var plans: [Product] = []
+    /// Has a live subscription (including Apple's free-trial period).
+    @Published private(set) var subscribed = false
+    @Published private(set) var activePlanID: String?
+    @Published private(set) var renewsOrEnds: Date?
+    /// Can still use the free-trial introductory offer (one per person per subscription group).
+    @Published private(set) var introEligible = false
     private let paidUntilBuild: Int
     private var updates: Task<Void, Never>?
     private static let cacheKey = "unlock.pro"
@@ -38,6 +51,7 @@ final class Unlock: ObservableObject {
         let bundle = Bundle.main.bundleIdentifier ?? "app"
         productID = (Bundle.main.object(forInfoDictionaryKey: "ProProductID") as? String) ?? bundle + ".pro"
         trialProductID = (Bundle.main.object(forInfoDictionaryKey: "TrialProductID") as? String) ?? bundle + ".trial"
+        subscriptionIDs = (Bundle.main.object(forInfoDictionaryKey: "SubscriptionProductIDs") as? [String]) ?? []
         paidUntilBuild = (Bundle.main.object(forInfoDictionaryKey: "PaidUntilBuild") as? NSNumber)?.intValue ?? 0
         isPro = UserDefaults.standard.bool(forKey: Self.cacheKey)
         #if DEBUG
@@ -78,19 +92,38 @@ final class Unlock: ObservableObject {
 
     /// Fetch the product so the paywall can show the localized price.
     func load() async {
-        guard product == nil || trialProduct == nil else { return }
-        let found = (try? await Product.products(for: [productID, trialProductID])) ?? []
+        guard product == nil || trialProduct == nil || (usesSubscriptions && plans.isEmpty) else { return }
+        let found = (try? await Product.products(for: [productID, trialProductID] + subscriptionIDs)) ?? []
         if product == nil { product = found.first { $0.id == productID } }
         if trialProduct == nil { trialProduct = found.first { $0.id == trialProductID } }
+        let subs = found.filter { subscriptionIDs.contains($0.id) }
+        if !subs.isEmpty {
+            plans = subs.sorted { Self.days($0) > Self.days($1) }
+            introEligible = await plans.first?.subscription?.isEligibleForIntroOffer ?? false
+        }
+    }
+
+    /// Rough length of a plan in days, for sorting and per-month maths.
+    static func days(_ p: Product) -> Int {
+        guard let s = p.subscription?.subscriptionPeriod else { return 0 }
+        switch s.unit {
+        case .day: return s.value
+        case .week: return s.value * 7
+        case .month: return s.value * 30
+        case .year: return s.value * 365
+        @unknown default: return 0
+        }
     }
 
     /// Re-check entitlements: current purchases, then the paid-upfront grandfather clause.
     func refresh() async {
         var pro = false
         var trialStart: Date?
+        var sub: Transaction?
         for await result in Transaction.currentEntitlements {
             guard case .verified(let t) = result, t.revocationDate == nil else { continue }
             if t.productID == productID { pro = true }
+            if subscriptionIDs.contains(t.productID), (t.expirationDate ?? .distantFuture) > Date() { sub = t }
             if t.productID == trialProductID { trialStart = t.originalPurchaseDate }
         }
         trialEnds = trialStart.map { $0.addingTimeInterval(Double(Self.trialDays) * 86_400) }
@@ -98,9 +131,54 @@ final class Unlock: ObservableObject {
             let original = Int(at.originalAppVersion.split(separator: ".").first ?? "") ?? Int.max
             if original <= paidUntilBuild { pro = true }
         }
-        owned = pro
-        set(pro || inTrial)
+        subscribed = sub != nil
+        activePlanID = sub?.productID
+        renewsOrEnds = sub?.expirationDate
+        if usesSubscriptions, let first = plans.first {
+            introEligible = await first.subscription?.isEligibleForIntroOffer ?? false
+        }
+        owned = pro || subscribed
+        set(owned || inTrial)
         scheduleTrialExpiry()
+        scheduleSubscriptionCheck()
+    }
+
+    /// Re-check right after the current period ends, so a lapsed subscription locks again
+    /// (and a renewal is picked up) even if the app stays open.
+    private var subTask: Task<Void, Never>?
+    private func scheduleSubscriptionCheck() {
+        subTask?.cancel()
+        guard subscribed, let end = renewsOrEnds else { return }
+        let wait = end.timeIntervalSinceNow + 60
+        guard wait > 0, wait < 40 * 86_400 else { return }
+        subTask = Task { [weak self] in
+            try? await Task.sleep(nanoseconds: UInt64(wait * 1_000_000_000))
+            guard !Task.isCancelled else { return }
+            await self?.refresh()
+        }
+    }
+
+    /// Buy one of the subscription plans.
+    func subscribe(_ plan: Product) async {
+        guard !busy else { return }
+        busy = true; defer { busy = false }
+        message = nil
+        do {
+            switch try await plan.purchase() {
+            case .success(let verification):
+                if case .verified(let t) = verification {
+                    await t.finish()
+                    await refresh()
+                } else {
+                    message = "Apple couldn't verify that purchase."
+                }
+            case .pending: message = "Waiting for approval (Ask to Buy)."
+            case .userCancelled: break
+            @unknown default: break
+            }
+        } catch {
+            message = error.localizedDescription
+        }
     }
 
     /// Start the free trial (a $0 purchase, so Apple shows its usual confirm sheet).

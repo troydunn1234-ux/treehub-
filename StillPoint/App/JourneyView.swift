@@ -138,6 +138,8 @@ struct SettingsView: View {
     @EnvironmentObject var link: PhoneLink
     @EnvironmentObject var log: SessionLog
     @StateObject private var reminders = Reminders.shared
+    @ObservedObject private var unlock = Unlock.shared
+    @State private var showPlans = false
     @Environment(\.dismiss) private var dismiss
 
     private let goalChoices: [Double] = [15, 30, 45, 60, 90, 120, 150, 210]
@@ -145,6 +147,18 @@ struct SettingsView: View {
     var body: some View {
         NavigationStack {
             Form {
+                Section {
+                    Button { showPlans = true } label: {
+                        HStack {
+                            Label("Still Pointz Pro", systemImage: "sparkles")
+                            Spacer()
+                            Text(unlock.subscribed ? "Active" : (unlock.isPro ? "Lifetime" : "See plans"))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                } footer: {
+                    Text(unlock.subscribed ? "Change plan, cancel or restore from here." : "Free trial, monthly, yearly or lifetime.")
+                }
                 Section {
                     Picker("Weekly goal", selection: $log.weeklyGoal) {
                         ForEach(goalOptions, id: \.self) { m in Text(goalLabel(m)).tag(m) }
@@ -204,6 +218,7 @@ struct SettingsView: View {
             .background(DuskBackground())
             .navigationTitle("Settings")
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
+            .sheet(isPresented: $showPlans) { PaywallView(spec: StillPointPro.spec) }
         }
         .presentationBackground(.ultraThinMaterial)
     }
