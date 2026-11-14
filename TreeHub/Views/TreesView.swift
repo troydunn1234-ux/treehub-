@@ -7,6 +7,10 @@ struct TreesView: View {
     @State private var mode = 0
     @State private var camera: MapCameraPosition = .automatic
     @State private var selectedTree: UUID?
+    @State private var showFriends = false
+    @State private var incomingCode: String?
+    @State private var friends = FriendShare.friends
+    @State private var showFriendTrees = true
 
     private var trees: [TreeSummary] { TreeSummary.build(from: hugs) }
 
@@ -20,6 +24,14 @@ struct TreesView: View {
                             .font(Theme.rounded(14, .semibold)).foregroundStyle(Theme.textDim)
                     }
                     Spacer()
+                    Button { incomingCode = nil; showFriends = true } label: {
+                        Image(systemName: "person.2.fill")
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Theme.sky)
+                            .frame(width: 40, height: 40)
+                            .background(Color.white.opacity(0.08), in: Circle())
+                    }
+                    .accessibilityLabel("Friends map: share and import trees")
                     PillSwitcher(options: [.init(id: 0, label: "Grid", symbol: "square.grid.2x2.fill"),
                                            .init(id: 1, label: "Map", symbol: "map.fill")],
                                  selection: $mode)
@@ -47,11 +59,26 @@ struct TreesView: View {
             }
             .forestScreen()
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showFriends, onDismiss: { friends = FriendShare.friends }) {
+                FriendsView(incoming: incomingCode)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: FriendShare.changed)) { _ in friends = FriendShare.friends }
+            .onReceive(NotificationCenter.default.publisher(for: FriendShare.incoming)) { _ in openIncoming() }
+            .onAppear { openIncoming() }
             .navigationDestination(for: UUID.self) { id in
                 if let t = trees.first(where: { $0.id == id }) { TreeDetailView(treeID: t.id) }
                 else if let h = hugs.first(where: { $0.id == id }) { HugDetailView(hug: h) }
             }
         }
+    }
+
+    /// A rootbound://friends?c=… link was opened (TreeHubApp): show it in the Friends sheet.
+    private func openIncoming() {
+        guard let c = FriendShare.pendingCode else { return }
+        FriendShare.pendingCode = nil
+        incomingCode = c
+        mode = 1
+        showFriends = true
     }
 
     private var grid: some View {
@@ -79,6 +106,13 @@ struct TreesView: View {
                             TreePin(photo: t.coverPhoto, size: selectedTree == t.id ? 58 : 44)
                         }
                         .buttonStyle(.plain)
+                    }
+                }
+                if showFriendTrees {
+                    ForEach(friends) { f in
+                        ForEach(Array(f.trees.enumerated()), id: \.offset) { _, ft in
+                            Annotation("\(f.name): \(ft.n)", coordinate: ft.coordinate) { FriendTreePin() }
+                        }
                     }
                 }
             }
@@ -109,6 +143,18 @@ struct TreesView: View {
             }
         }
         .padding(.bottom, 100)
+        .overlay(alignment: .topTrailing) {
+            if !friends.isEmpty {
+                Button { withAnimation { showFriendTrees.toggle() } } label: {
+                    Label(showFriendTrees ? "Friends on" : "Friends off", systemImage: "person.2.fill")
+                        .font(Theme.rounded(12, .bold))
+                        .foregroundStyle(showFriendTrees ? Theme.sky : Theme.textDim)
+                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .background(.ultraThinMaterial, in: Capsule())
+                }
+                .padding(.top, 10).padding(.trailing, 70)
+            }
+        }
         .overlay(alignment: .top) {
             if mapped.count < trees.count {
                 Text("\(trees.count - mapped.count) tree\(trees.count - mapped.count == 1 ? "" : "s") without a pin")
@@ -123,6 +169,7 @@ struct TreesView: View {
 
 struct TreeCard: View {
     let tree: TreeSummary
+    private var rarity: Rarity { SpeciesRarity.rarity(for: tree.species) }
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
@@ -158,7 +205,11 @@ struct TreeCard: View {
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
             .strokeBorder(LinearGradient(colors: [.white.opacity(0.25), .white.opacity(0.03)], startPoint: .top, endPoint: .bottom)))
-        .shadow(color: .black.opacity(0.35), radius: 14, y: 8)
+        .overlay { if rarity > .common { RarityFrame(rarity: rarity, cornerRadius: 22) } }
+        .overlay(alignment: .topLeading) {
+            if rarity > .common { RarityLabel(rarity: rarity).padding(10) }
+        }
+        .shadow(color: rarity > .common ? rarity.color.opacity(rarity >= .epic ? 0.55 : 0.3) : .black.opacity(0.35), radius: 14, y: 8)
     }
 }
 
@@ -277,8 +328,12 @@ struct TreeDetailView: View {
                     .foregroundStyle(Theme.glow)
                 Text(tree.name).font(Theme.title(38)).foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
-                Text(tree.species.isEmpty ? "Mystery species" : tree.species)
-                    .font(Theme.rounded(15, .semibold)).foregroundStyle(.white.opacity(0.8))
+                HStack(spacing: 8) {
+                    Text(tree.species.isEmpty ? "Mystery species" : tree.species)
+                        .font(Theme.rounded(15, .semibold)).foregroundStyle(.white.opacity(0.8))
+                    let r = SpeciesRarity.rarity(for: tree.species)
+                    if r > .common { RarityLabel(rarity: r) }
+                }
             }
             .padding(.horizontal, Theme.pad)
             .padding(.bottom, 4)
@@ -335,6 +390,35 @@ struct TreeInsightsCard: View {
             RootboundProLock(symbol: "chart.line.uptrend.xyaxis", title: "Tree insights",
                              message: "See your mood lift, stress drop and heart rate with \(tree.name).",
                              context: "Tree insights")
+        }
+    }
+}
+
+/// Special card frame for rare, epic and legendary species: a rarity-colored rim; epic and legendary shimmer.
+struct RarityFrame: View {
+    let rarity: Rarity
+    var cornerRadius: CGFloat = 22
+    @State private var spin = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+        ZStack {
+            if rarity >= .epic {
+                shape.strokeBorder(AngularGradient(colors: [rarity.color, .white, rarity.color, rarity.color.opacity(0.4), rarity.color],
+                                                   center: .center, angle: .degrees(spin ? 360 : 0)),
+                                   lineWidth: rarity == .legendary ? 4 : 3)
+            } else {
+                shape.strokeBorder(rarity.color, lineWidth: 2.5)
+            }
+            if rarity == .legendary {
+                shape.inset(by: 6).strokeBorder(rarity.color.opacity(0.45), lineWidth: 1)
+            }
+        }
+        .allowsHitTesting(false)
+        .onAppear {
+            guard rarity >= .epic, !reduceMotion else { return }
+            withAnimation(.linear(duration: 5).repeatForever(autoreverses: false)) { spin = true }
         }
     }
 }

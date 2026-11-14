@@ -78,6 +78,11 @@ struct CelebrationData: Identifiable {
     let levelBefore: LevelInfo
     let levelAfter: LevelInfo
     let treeName: String
+    /// First hug of a rare / epic / legendary species: the celebration makes a big deal of it.
+    var rareFind: Rarity? = nil
+    var species: String = ""
+    /// The seasonal event running when the hug was logged.
+    var event: SeasonalEvent? = nil
 }
 
 @MainActor
@@ -679,8 +684,13 @@ struct HugLogView: View {
         }
         if isNew {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            let sp = hug.species.lowercased().trimmingCharacters(in: .whitespaces)
+            let firstOfSpecies = !sp.isEmpty && !all.contains { $0.id != hug.id && $0.species.lowercased().trimmingCharacters(in: .whitespaces) == sp }
+            let r = SpeciesRarity.rarity(for: hug.species)
             celebration = CelebrationData(breakdown: breakdown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,
-                                          levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName)
+                                          levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName,
+                                          rareFind: firstOfSpecies && r > .common ? r : nil, species: hug.species,
+                                          event: SeasonalEvent.active(on: hug.date))
         } else {
             dismiss()
         }

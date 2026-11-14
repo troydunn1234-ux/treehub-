@@ -29,6 +29,21 @@ struct CelebrationView: View {
                     }
                     .padding(.top, 40)
 
+                    if let r = data.rareFind {
+                        RareFindCard(rarity: r, species: data.species)
+                            .transition(.scale.combined(with: .opacity))
+                    }
+                    if let ev = data.event {
+                        HStack(spacing: 10) {
+                            Image(systemName: ev.symbol).font(.system(size: 16, weight: .bold)).foregroundStyle(.white)
+                                .frame(width: 34, height: 34).background(ev.gradient, in: Circle())
+                            Text("\(ev.name) event: bonus XP on every hug").font(Theme.rounded(14, .bold)).foregroundStyle(.white)
+                            Spacer()
+                        }
+                        .padding(12)
+                        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+                    }
+
                     GlassCard {
                         VStack(alignment: .leading, spacing: 8) {
                             HStack {
@@ -177,5 +192,38 @@ struct LeafBurst: View {
         }
         .ignoresSafeArea()
         .onAppear { start = Date() }
+    }
+}
+
+/// "Rare find!": the first time you hug a species that's rare, epic or legendary.
+struct RareFindCard: View {
+    let rarity: Rarity
+    let species: String
+    @State private var glow = false
+
+    var body: some View {
+        VStack(spacing: 8) {
+            Image(systemName: rarity == .legendary ? "crown.fill" : rarity == .epic ? "star.circle.fill" : "sparkle.magnifyingglass")
+                .font(.system(size: 38, weight: .bold))
+                .foregroundStyle(.white)
+                .shadow(color: rarity.color, radius: glow ? 18 : 6)
+                .symbolEffect(.bounce, value: glow)
+            Text(rarity == .legendary ? "LEGENDARY FIND!" : "RARE FIND!")
+                .font(.system(size: 13, weight: .heavy, design: .rounded)).tracking(2)
+                .foregroundStyle(rarity.color)
+            Text(species).font(Theme.title(26)).foregroundStyle(.white).multilineTextAlignment(.center)
+            RarityLabel(rarity: rarity)
+            Text("+\(SpeciesRarity.firstFindXP(rarity)) XP for your first \(rarity.title.lowercased()) \(species.lowercased()).")
+                .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim).multilineTextAlignment(.center)
+        }
+        .padding(20)
+        .frame(maxWidth: .infinity)
+        .background(RadialGradient(colors: [rarity.color.opacity(0.45), Theme.forestDeep.opacity(0.6)], center: .center, startRadius: 4, endRadius: 220),
+                    in: RoundedRectangle(cornerRadius: 24, style: .continuous))
+        .overlay(RarityFrame(rarity: rarity, cornerRadius: 24))
+        .onAppear {
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+            withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) { glow = true }
+        }
     }
 }

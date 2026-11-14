@@ -40,6 +40,9 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Rootbound
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.rootbound
+            CFBundleURLSchemes: [rootbound]
         ProProductID: com.troydunn.rootbound.pro
         PaidUntilBuild: 0
         TrialProductID: com.troydunn.rootbound.none

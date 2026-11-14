@@ -303,3 +303,51 @@ final class RoadLaneTests: XCTestCase {
         XCTAssertEqual(LaneMath.signedAngle(350, 10), -20, accuracy: 1e-9)
     }
 }
+
+final class SeasonsAndFriendsTests: XCTestCase {
+    private func day(_ y: Int, _ m: Int, _ d: Int) -> Date {
+        Calendar.current.date(from: DateComponents(year: y, month: m, day: d, hour: 12))!
+    }
+
+    func testEveryDayHasExactlyOneEvent() {
+        var d = day(2028, 1, 1)
+        for _ in 0..<366 {
+            XCTAssertEqual(SeasonalEvent.all.filter { $0.isActive(on: d) }.count, 1, "\(d)")
+            d = Calendar.current.date(byAdding: .day, value: 1, to: d)!
+        }
+        XCTAssertEqual(SeasonalEvent.active(on: day(2026, 11, 14))?.id, "autumn-leaves")
+        XCTAssertEqual(SeasonalEvent.active(on: day(2027, 1, 10))?.id, "winter-evergreens")
+        XCTAssertEqual(SeasonalEvent.active(on: day(2026, 12, 20))?.daysLeft(from: day(2026, 12, 20)), 70)
+    }
+
+    func testEventFeaturesAndXP() {
+        let ev = SeasonalEvent.active(on: day(2026, 10, 15))!
+        XCTAssertTrue(ev.features(species: "Japanese Maple"))
+        XCTAssertFalse(ev.features(species: ""))
+        let h = Hug(); h.date = day(2026, 10, 15); h.species = "Sugar maple"
+        let xp = GameEngine.xp(for: h, existing: [])
+        XCTAssertTrue(xp.lines.contains { $0.0 == "Autumn Leaves bonus" })
+        XCTAssertTrue(xp.lines.contains { $0.0.hasPrefix("Featured") })
+    }
+
+    func testSpeciesRarity() {
+        XCTAssertEqual(SpeciesRarity.rarity(for: "Giant Sequoia"), .legendary)
+        XCTAssertEqual(SpeciesRarity.rarity(for: "Coast Redwood"), .epic)
+        XCTAssertEqual(SpeciesRarity.rarity(for: "Southern Magnolia"), .rare)
+        XCTAssertEqual(SpeciesRarity.rarity(for: "Mexican fan palm"), .common)
+        XCTAssertEqual(SpeciesRarity.rarity(for: ""), .common)
+    }
+
+    func testShareCodeRoundTripIsCoarse() {
+        let pack = SharePack(from: "Sam", t: [SharedTree(n: "Big Oak", s: "Valley oak", la: 37.774929, lo: -122.419416)])
+        let code = FriendShare.code(for: pack)!
+        XCTAssertTrue(code.hasPrefix(FriendShare.prefix))
+        let link = FriendShare.link(for: code)!.absoluteString
+        let back = FriendShare.decode("Open this: " + link)!
+        XCTAssertEqual(back.from, "Sam")
+        XCTAssertEqual(back.t.first?.n, "Big Oak")
+        XCTAssertEqual(back.t.first?.la ?? 0, 37.77, accuracy: 1e-9)
+        XCTAssertEqual(back.t.first?.lo ?? 0, -122.42, accuracy: 1e-9)
+        XCTAssertNil(FriendShare.decode("hello"))
+    }
+}

@@ -85,6 +85,18 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: RootboundPending.note)) { _ in
             consumePendingAction()
         }
+        // rootbound://friends?c=RB1-… (a friend's shared trees, from a link or their QR code)
+        .onOpenURL { url in
+            guard url.scheme == FriendShare.scheme, url.host == "friends",
+                  let c = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "c" })?.value
+            else { return }
+            showHugLog = false
+            FriendShare.pendingCode = c
+            tab = .trees
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                NotificationCenter.default.post(name: FriendShare.incoming, object: nil)
+            }
+        }
         .onAppear {
             if tracker.recoveredFromCrash { tab = .track }
             if DemoData.isOn { setUpDemo() }

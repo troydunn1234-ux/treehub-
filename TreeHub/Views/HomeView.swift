@@ -20,6 +20,7 @@ struct HomeView: View {
                     hero
                     Group {
                         levelCard.offset(y: -54).padding(.bottom, -54)
+                        if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         quickActions
                         statsGrid
                         if hugs.isEmpty { firstHugCard } else { recentHugs }
@@ -304,3 +305,59 @@ struct HugCard: View {
     }
 }
 
+
+/// The running seasonal event (Seasons.swift): what it is, how long it lasts, and whether you've got its badge.
+struct SeasonalEventBanner: View {
+    let event: SeasonalEvent
+    let hugs: [Hug]
+
+    private var duringEvent: [Hug] {
+        let start = Calendar.current.date(byAdding: .day, value: -100, to: Date()) ?? Date()
+        return hugs.filter { $0.date >= start && event.isActive(on: $0.date) }
+    }
+    private var badgeEarned: Bool { hugs.contains { event.isActive(on: $0.date) && event.features(species: $0.species) } }
+
+    var body: some View {
+        let days = event.daysLeft()
+        HStack(alignment: .top, spacing: 14) {
+            Image(systemName: event.symbol)
+                .font(.system(size: 24, weight: .bold))
+                .foregroundStyle(.white)
+                .frame(width: 52, height: 52)
+                .background(event.gradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                .shadow(color: event.colors[0].opacity(0.6), radius: 10)
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text("EVENT").font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(1.2)
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(event.colors[0], in: Capsule()).foregroundStyle(Theme.forestDeep)
+                    Text(days == 0 ? "Last day" : "\(days) day\(days == 1 ? "" : "s") left")
+                        .font(Theme.rounded(12, .bold)).foregroundStyle(Theme.textDim)
+                }
+                Text(event.name).font(Theme.rounded(19, .heavy)).foregroundStyle(.white)
+                Text(event.tagline).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                Text("+\(event.bonusXP) XP every hug · +\(event.featuredBonusXP) more for \(event.featuredLabel)")
+                    .font(Theme.rounded(12, .bold)).foregroundStyle(event.colors[0])
+                HStack(spacing: 6) {
+                    Image(systemName: badgeEarned ? "checkmark.seal.fill" : "seal")
+                    Text(badgeEarned ? "\(event.badgeName) badge earned" : "Hug one of the \(event.featuredLabel) for the \(event.badgeName) badge")
+                }
+                .font(Theme.rounded(12, .semibold))
+                .foregroundStyle(badgeEarned ? Theme.gold : Theme.textDim)
+                if !duringEvent.isEmpty {
+                    Text("\(duringEvent.count) hug\(duringEvent.count == 1 ? "" : "s") so far this event")
+                        .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(16)
+        .background {
+            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.card)
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(LinearGradient(colors: [event.colors[0].opacity(0.22), .clear], startPoint: .topLeading, endPoint: .bottomTrailing))
+        }
+        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(event.colors[0].opacity(0.45), lineWidth: 1))
+        .accessibilityElement(children: .combine)
+    }
+}

@@ -150,6 +150,13 @@ enum GameEngine {
         let sp = hug.species.lowercased().trimmingCharacters(in: .whitespaces)
         if !sp.isEmpty && !others.contains(where: { $0.species.lowercased().trimmingCharacters(in: .whitespaces) == sp }) {
             b.add("New species", 30)
+            let r = SpeciesRarity.rarity(for: hug.species)
+            if r > .common { b.add("Rare find: \(r.title) species", SpeciesRarity.firstFindXP(r)) }
+        }
+        // Seasonal event (Seasons.swift): bonus for any hug during it, more for its featured trees.
+        if let ev = SeasonalEvent.active(on: hug.date) {
+            b.add("\(ev.name) bonus", ev.bonusXP)
+            if ev.features(species: hug.species) { b.add("Featured: \(ev.featuredLabel)", ev.featuredBonusXP) }
         }
         let streak = currentStreak(others + [hug])
         if streak >= 2 { b.add("\(streak)-day streak", min(streak * 10, 70)) }
@@ -342,7 +349,18 @@ enum GameEngine {
             b("stroll-hugs-3", "Tree Hopper", "Hug 3 trees on one stroll", "arrow.triangle.branch", .epic, Double(maxHugsOneStroll), 3),
             b("trail-hug", "Trail Hug", "Hug a tree during a recorded hike", "point.topleft.down.to.point.bottomright.curvepath.fill",
               .rare, Double(trailHugs), 1),
-        ]
+            // Rare trees
+            flag("rare-find", "Rare Find", "Hug a rare species", "sparkle.magnifyingglass", .rare,
+                 hugs.contains { SpeciesRarity.rarity(for: $0.species) >= .rare }),
+            flag("epic-find", "Wonder Tree", "Hug an epic species", "star.circle.fill", .epic,
+                 hugs.contains { SpeciesRarity.rarity(for: $0.species) >= .epic }),
+            flag("legend-find", "Legend Hunter", "Hug a legendary species", "crown.fill", .legendary,
+                 hugs.contains { SpeciesRarity.rarity(for: $0.species) == .legendary }),
+        ] + SeasonalEvent.all.map { ev in
+            // Event badges: hug one of the event's featured trees while it runs.
+            flag("event-\(ev.id)", ev.badgeName, "Hug one of the \(ev.featuredLabel) during \(ev.name)", ev.badgeSymbol, .epic,
+                 hugs.contains { ev.isActive(on: $0.date) && ev.features(species: $0.species) })
+        }
     }
 
     static func season(of date: Date) -> Int {
