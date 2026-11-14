@@ -39,7 +39,7 @@ jobs:
       - name: Build both apps for iOS Simulator (no signing)
         run: |
           set -o pipefail
-          ALL="Rootbound Roamr FoodBook NatalOrbit RideQuest Clicker PulseLab StillPoint"
+          ALL="Rootbound Roamr NatalOrbit RideQuest Clicker PulseLab StillPoint"
           PICK="${{ github.event.inputs.schemes }}"
           if [ -z "$PICK" ] && [ "${{ github.event_name }}" = "push" ]; then
             # Only build the apps touched by this push (GitHub kills macOS jobs at ~15 min).
@@ -47,7 +47,6 @@ jobs:
             PICK=""
             echo "$CHANGED" | grep -qE '^(TreeHub|RootboundTests)/|^Shared/' && PICK="$PICK Rootbound"
             echo "$CHANGED" | grep -qE '^(TrackApp|RoamrWatch)/|^Shared/' && PICK="$PICK Roamr"
-            echo "$CHANGED" | grep -qE '^(FoodApp|FoodBookWatch)/' && PICK="$PICK FoodBook"
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|NatalOrbit)/' && PICK="$PICK NatalOrbit"
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|QuestApp)/' && PICK="$PICK RideQuest"
             echo "$CHANGED" | grep -qE '^(TVRemote|ClankerrWatch)/' && PICK="$PICK Clicker"

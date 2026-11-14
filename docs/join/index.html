@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Join on Roamr</title>
+<meta property="og:title" content="Go together on Roamr">
+<meta property="og:description" content="Tap to join the group. See each other live on the map, speed and all.">
+<style>
+  :root { color-scheme: dark; }
+  body { margin: 0; min-height: 100vh; display: grid; place-items: center; font-family: -apple-system, system-ui, sans-serif;
+         background: radial-gradient(circle at 30% 10%, #1f6feb55, transparent 55%), radial-gradient(circle at 90% 80%, #ff7a1a44, transparent 55%), #07080c; color: #f4f1ea; }
+  .card { width: min(420px, 88vw); padding: 32px 26px; border-radius: 28px; background: #ffffff0d; border: 1px solid #ffffff1a; text-align: center; }
+  .icon { font-size: 54px; }
+  h1 { font-size: 26px; margin: 10px 0 6px; }
+  p { color: #f4f1eab3; line-height: 1.45; margin: 8px 0; }
+  .code { font: 700 30px ui-monospace, Menlo, monospace; letter-spacing: 6px; margin: 16px 0; }
+  a.btn { display: block; margin-top: 16px; padding: 16px; border-radius: 999px; font-weight: 700; text-decoration: none;
+          color: #07080c; background: linear-gradient(90deg, #4cc2ff, #ff8a3d); }
+  a.sub { display: block; margin-top: 12px; color: #9fd7ff; text-decoration: none; font-size: 15px; }
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="icon" id="icon">🚗</div>
+  <h1 id="title">You're invited to go together</h1>
+  <p>Open in Roamr to join. You'll see each other live on the map, with speeds.</p>
+  <div class="code" id="code"></div>
+  <a class="btn" id="open" href="#">Open in Roamr</a>
+  <a class="sub" href="https://testflight.apple.com/">Don't have Roamr yet? Ask for a TestFlight invite</a>
+  <p style="font-size:13px;margin-top:18px">No account needed. Your location is shared only with this group, only while you're in it.</p>
+</div>
+<script>
+  var q = new URLSearchParams(location.search);
+  var c = (q.get("c") || "").toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+  var k = (q.get("k") || "drive").toLowerCase().replace(/[^a-z]/g, "");
+  var icons = { drive: "🚗", walk: "🚶", run: "🏃", hike: "🥾", bike: "🚴", ride: "🚴" };
+  var words = { drive: "drive", walk: "walk", run: "run", hike: "hike", bike: "ride", ride: "ride" };
+  document.getElementById("icon").textContent = icons[k] || "🧭";
+  document.getElementById("title").textContent = "Join the group " + (words[k] || "trip");
+  document.getElementById("code").textContent = c;
+  var app = "roamr://join?c=" + encodeURIComponent(c) + "&k=" + encodeURIComponent(k);
+  document.getElementById("open").href = app;
+  if (c) { setTimeout(function () { location.href = app; }, 350); }
+</script>
+</body>
+</html>

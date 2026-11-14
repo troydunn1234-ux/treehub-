@@ -7,7 +7,7 @@ struct LabDock: View {
     @Namespace private var pill
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    static let tabs: [LabTab] = [.today, .sleep, .heart, .activity, .compare]
+    static let tabs: [LabTab] = [.today, .sleep, .heart, .activity, .stack, .compare]
 
     var body: some View {
         HStack(spacing: 4) {

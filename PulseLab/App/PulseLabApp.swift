@@ -1,4 +1,5 @@
 import SwiftUI
+import SwiftData
 
 @main
 struct PulseLabApp: App {
@@ -9,12 +10,13 @@ struct PulseLabApp: App {
             RootView()
                 .environment(store)
                 .preferredColorScheme(.dark)
+                .modelContainer(for: [Supplement.self, SuppDose.self])
         }
     }
 }
 
 enum LabTab: String, CaseIterable, Identifiable {
-    case today, sleep, heart, activity, compare, settings
+    case today, sleep, heart, activity, stack, compare, settings
     var id: String { rawValue }
     var title: String {
         switch self {
@@ -31,6 +33,7 @@ enum LabTab: String, CaseIterable, Identifiable {
         case .heart: "heart.text.square.fill"
         case .activity: "flame.fill"
         case .compare: "bolt.horizontal.fill"
+        case .stack: "pills.fill"
         case .settings: "slider.horizontal.3"
         }
     }
@@ -151,6 +154,7 @@ struct RootView: View {
         case .heart: HeartScreen()
         case .activity: ActivityScreen()
         case .compare: if unlock.isPro { CompareScreen() } else { ProTeaser() }
+        case .stack: SuppsView()
         case .settings: SettingsScreen()
         }
     }
