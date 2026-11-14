@@ -77,6 +77,7 @@ final class HeatStore: ObservableObject {
         history.insert(s, at: 0)
         save()
         Reviews.noteWin()
+        if let end = s.end { MindfulHealth.shared.saveWorkout(.preparationAndRecovery, start: s.start, end: end, title: s.kind.title) }
         lookUpHeart(s.id)
         // WHOOP often syncs a few minutes late; ask again shortly.
         DispatchQueue.main.asyncAfter(deadline: .now() + 180) { [weak self] in self?.lookUpHeart(s.id) }
@@ -89,6 +90,9 @@ final class HeatStore: ObservableObject {
     }
 
     func delete(_ id: UUID) {
+        if let s = history.first(where: { $0.id == id }), let end = s.end {
+            MindfulHealth.shared.deleteMindful(start: s.start, end: end)
+        }
         history.removeAll { $0.id == id }
         save()
     }

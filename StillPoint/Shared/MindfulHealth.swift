@@ -43,7 +43,42 @@ final class MindfulHealth {
         store.save(sample) { _, _ in }
     }
 
-    /// Remove the Mindful Minutes this app saved for a session that was discarded.
+    // MARK: Workouts (movement routines, sauna & steam)
+
+    /// What kind of Health workout a practice counts as; nil for breathing / stillness.
+    static func activity(for practiceId: String) -> HKWorkoutActivityType? {
+        guard let p = PracticeLibrary.shared.practice(practiceId), p.isMovement else { return nil }
+        switch p.id {
+        case "taichi-cloud", "baduanjin": return .taiChi
+        case "surya-gentle": return .yoga
+        default: break
+        }
+        switch p.focus {
+        case .joint?, .lymph?: return .preparationAndRecovery
+        default: return .flexibility
+        }
+    }
+
+    /// Save a finished routine or heat session as a workout, so it counts as exercise in Health and Fitness.
+    func saveWorkout(_ type: HKWorkoutActivityType, start: Date, end: Date, title: String) {
+        guard isAvailable, end.timeIntervalSince(start) >= 60,
+              !ProcessInfo.processInfo.arguments.contains("-demo"),
+              store.authorizationStatus(for: HKObjectType.workoutType()) == .sharingAuthorized else { return }
+        let config = HKWorkoutConfiguration()
+        config.activityType = type
+        config.locationType = .indoor
+        let b = HKWorkoutBuilder(healthStore: store, configuration: config, device: .local())
+        b.beginCollection(withStart: start) { ok, _ in
+            guard ok else { return }
+            b.addMetadata([HKMetadataKeyWorkoutBrandName: "Still Pointz", HKMetadataKeyIndoorWorkout: true, "StillPointTitle": title]) { _, _ in
+                b.endCollection(withEnd: end) { _, _ in
+                    b.finishWorkout { _, _ in }
+                }
+            }
+        }
+    }
+
+    /// Remove the Mindful Minutes (and workout) this app saved for a session that was discarded.
     func deleteMindful(start: Date, end: Date) {
         guard isAvailable, !ProcessInfo.processInfo.arguments.contains("-demo") else { return }
         let pred = NSCompoundPredicate(andPredicateWithSubpredicates: [
@@ -51,6 +86,7 @@ final class MindfulHealth {
             HKQuery.predicateForObjects(from: HKSource.default()),
         ])
         store.deleteObjects(of: mindful, predicate: pred) { _, _, _ in }
+        store.deleteObjects(of: HKObjectType.workoutType(), predicate: pred) { _, _, _ in }
     }
 
     /// Mindful minutes recorded in Health since `since` (all apps).

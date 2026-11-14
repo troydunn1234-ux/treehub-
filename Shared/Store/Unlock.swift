@@ -119,7 +119,7 @@ final class Unlock: ObservableObject {
     func refresh() async {
         var pro = false
         var trialStart: Date?
-        var sub: Transaction?
+        var sub: StoreKit.Transaction?
         for await result in Transaction.currentEntitlements {
             guard case .verified(let t) = result, t.revocationDate == nil else { continue }
             if t.productID == productID { pro = true }

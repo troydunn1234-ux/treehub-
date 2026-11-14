@@ -147,6 +147,10 @@ struct RunView: View {
         SessionLog.shared.add(r)
         WatchLink.shared.send(r)
         if mindful { MindfulHealth.shared.saveMindful(start: r.start, end: r.end) }
+        // Movement routines count as exercise (unless the whole session is already saved as a workout).
+        if !prefs.settings.saveAsWorkout, let type = MindfulHealth.activity(for: r.practiceId) {
+            MindfulHealth.shared.saveWorkout(type, start: r.start, end: r.end, title: r.title)
+        }
     }
 }
 
@@ -185,12 +189,12 @@ struct BreathRunView: View {
                 // The cue stays readable when dimmed or in Always-On, so you can follow along.
                 Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
                     .font(SP.serif(17, .light)).foregroundStyle(SP.ink.opacity(dimmed || luminanceReduced ? 0.8 : 1))
-                    .lineLimit(2).multilineTextAlignment(.center)
+                    .lineLimit(3).minimumScaleFactor(0.85).multilineTextAlignment(.center)
                 if !dimmed && !luminanceReduced {
                     if let n = st.nostril {
                         SideIndicator(left: n == .left, right: n == .right, color: SP.amber)
                     } else if let c = session.cue, session.pattern != nil {
-                        Text(c).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(2).multilineTextAlignment(.center)
+                        Text(c).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(3).minimumScaleFactor(0.85).multilineTextAlignment(.center)
                     } else {
                         Text(spFormatClock(session.remaining)).font(SP.rounded(12)).foregroundStyle(SP.faint)
                     }
@@ -263,13 +267,22 @@ struct MovementRunView: View {
                     }
                 }
                 .frame(height: 78)
-                Text(s.name).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2).multilineTextAlignment(.center)
-                if !s.how.isEmpty {
-                    Text(s.how).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(2).multilineTextAlignment(.center)
-                }
-                HStack(spacing: 8) {
-                    if s.side != nil { SideIndicator(left: s.side == "left" || s.side == "both", right: s.side == "right" || s.side == "both", color: SP.teal) }
-                    Text(s.breathCue).font(SP.rounded(11)).foregroundStyle(SP.amber)
+                // Full description; turn the Digital Crown to read the rest.
+                ScrollView {
+                    VStack(spacing: 3) {
+                        Text(s.name).font(SP.serif(16)).foregroundStyle(SP.ink).multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if !s.how.isEmpty {
+                            Text(s.how).font(SP.rounded(12)).foregroundStyle(SP.dim).multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        HStack(spacing: 8) {
+                            if s.side != nil { SideIndicator(left: s.side == "left" || s.side == "both", right: s.side == "right" || s.side == "both", color: SP.teal) }
+                            Text(s.breathCue).font(SP.rounded(11)).foregroundStyle(SP.amber)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .id(session.index)
                 }
                 HStack(spacing: 14) {
                     Button { session.isPaused ? session.resume() : session.pause() } label: {

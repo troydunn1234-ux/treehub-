@@ -168,6 +168,11 @@ struct WatchHeatView: View {
 
     private var movesPage: some View {
         List {
+            NavigationLink {
+                WatchMovePlayer(tint: kind.tint, glow: kind.tint2)
+            } label: {
+                Label("Play all", systemImage: "play.fill").font(SP.rounded(14, .semibold)).foregroundStyle(kind.tint)
+            }
             ForEach(HeatMove.all) { m in
                 NavigationLink {
                     ScrollView {
@@ -253,5 +258,59 @@ private struct WristTap: View {
         Color.clear.onChange(of: key) { _, _ in
             WKInterfaceDevice.current().play(grow ? .directionUp : .directionDown)
         }
+    }
+}
+
+/// Plays every bench move in order with a countdown and a wrist tap on each change.
+struct WatchMovePlayer: View {
+    let tint: Color
+    let glow: Color
+    @State private var index = 0
+    @State private var start = Date()
+    @State private var paused = false
+    @State private var pausedLeft: Double = 0
+
+    var body: some View {
+        TimelineView(.periodic(from: start, by: 1)) { ctx in
+            let m = HeatMove.all[min(index, HeatMove.all.count - 1)]
+            let left = paused ? pausedLeft : max(0, m.seconds - ctx.date.timeIntervalSince(start))
+            ScrollView {
+                VStack(spacing: 4) {
+                    HStack {
+                        Text("\(index + 1)/\(HeatMove.all.count)").font(SP.rounded(10, .semibold)).foregroundStyle(SP.faint)
+                        Spacer()
+                        Text(spFormatClock(left)).font(SP.numbers(15)).foregroundStyle(SP.ink).monospacedDigit()
+                    }
+                    PoseFigureView(motion: PoseLibrary.motion(for: m.step), tint: tint, glow: glow, lineWidth: 2.2, captions: false)
+                        .frame(height: 80)
+                        .id(m.id)
+                    Text(m.title).font(SP.serif(16)).foregroundStyle(SP.ink)
+                    HStack(spacing: 18) {
+                        Button { go(-1) } label: { Image(systemName: "backward.fill") }.disabled(index == 0)
+                        Button {
+                            if paused { start = Date().addingTimeInterval(-(m.seconds - pausedLeft)); paused = false }
+                            else { pausedLeft = left; paused = true }
+                        } label: { Image(systemName: paused ? "play.fill" : "pause.fill") }
+                        Button { go(1) } label: { Image(systemName: "forward.fill") }
+                    }
+                    .buttonStyle(.plain).foregroundStyle(tint)
+                    Text(m.how).font(SP.rounded(12)).foregroundStyle(SP.dim)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            .onChange(of: left <= 0) { _, done in if done && !paused { go(1) } }
+        }
+    }
+
+    private func go(_ d: Int) {
+        let n = index + d
+        guard n >= 0, n < HeatMove.all.count else {
+            if n >= HeatMove.all.count { WKInterfaceDevice.current().play(.success) }
+            return
+        }
+        index = n
+        start = Date()
+        paused = false
+        WKInterfaceDevice.current().play(.directionUp)
     }
 }

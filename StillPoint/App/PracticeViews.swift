@@ -207,7 +207,11 @@ struct PracticeDetailView: View {
                                         .frame(width: 34, height: 44)
                                     VStack(alignment: .leading, spacing: 2) {
                                         Text(s.name + (s.sideLetter.map { " · \($0)" } ?? "")).font(SP.serif(16)).foregroundStyle(SP.ink)
-                                        if !s.how.isEmpty { Text(s.how).font(SP.rounded(13)).foregroundStyle(SP.dim) }
+                                            .fixedSize(horizontal: false, vertical: true)
+                                        if !s.how.isEmpty {
+                                            Text(s.how).font(SP.rounded(13)).foregroundStyle(SP.dim)
+                                                .fixedSize(horizontal: false, vertical: true)
+                                        }
                                     }
                                     Spacer()
                                     Text("\(Int(s.seconds))s").font(SP.rounded(12)).foregroundStyle(SP.faint)

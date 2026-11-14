@@ -94,6 +94,10 @@ struct PhoneRunView: View {
         SessionLog.shared.add(r)
         Reviews.noteWin()
         if mindful { MindfulHealth.shared.saveMindful(start: r.start, end: r.end) }
+        // Movement routines also count as exercise in Health.
+        if let type = MindfulHealth.activity(for: r.practiceId) {
+            MindfulHealth.shared.saveWorkout(type, start: r.start, end: r.end, title: r.title)
+        }
     }
 }
 
@@ -223,8 +227,17 @@ struct PhoneMovementView: View {
                 .accessibilityLabel("\(Int(session.stepRemaining.rounded(.up))) seconds left")
                 VStack(spacing: 10) {
                     Text(s.name).font(SP.serif(34, .light)).foregroundStyle(SP.ink).multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
                     if !s.how.isEmpty {
-                        Text(s.how).font(SP.rounded(16)).foregroundStyle(SP.dim).multilineTextAlignment(.center).padding(.horizontal, 24)
+                        // Long instructions scroll here rather than getting cut off on smaller phones.
+                        ScrollView(showsIndicators: false) {
+                            Text(s.how).font(SP.rounded(16)).foregroundStyle(SP.dim).multilineTextAlignment(.center)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.horizontal, 24)
+                                .frame(maxWidth: .infinity)
+                        }
+                        .frame(maxHeight: 150)
+                        .fixedSize(horizontal: false, vertical: true)
                     }
                     HStack(spacing: 14) {
                         if s.side != nil {

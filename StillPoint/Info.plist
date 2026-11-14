@@ -36,7 +36,7 @@
 	<key>NSHealthShareUsageDescription</key>
 	<string>Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Still Point saves your sessions to Apple Health as Mindful Minutes.</string>
+	<string>Still Point saves your sessions to Apple Health as Mindful Minutes, and movement routines and sauna/steam sessions as workouts.</string>
 	<key>PaidUntilBuild</key>
 	<integer>0</integer>
 	<key>ProProductID</key>

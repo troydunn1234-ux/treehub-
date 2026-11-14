@@ -40,6 +40,10 @@ struct HeatGuideView: View {
     @State private var roundDone = false
     @State private var breathPick = "cool"
     @State private var movePick: String? = nil
+    // Play-through of all the moves, like a routine.
+    @State private var playing = false
+    @State private var playIndex = 0
+    @State private var playStart = Date()
 
     private var kind: HeatKind { heat.active?.kind ?? heat.history.first?.kind ?? .sauna }
 
@@ -202,12 +206,36 @@ struct HeatGuideView: View {
 
     private var move: some View {
         VStack(spacing: 12) {
-            if let id = movePick {
-                MovePanel(move: HeatMove.find(id), tint: kind.tint, large: true)
+            if playing {
+                movePlayer
+            } else {
+                Button {
+                    playIndex = HeatMove.all.firstIndex { $0.id == movePick } ?? 0
+                    playStart = Date()
+                    withAnimation { playing = true }
+                } label: {
+                    HStack(spacing: 10) {
+                        Image(systemName: "play.fill")
+                        Text("Play all \(HeatMove.all.count) moves")
+                        Spacer()
+                        Text("\(Int((HeatMove.all.reduce(0) { $0 + $1.seconds } / 60).rounded())) min").opacity(0.7)
+                    }
+                    .font(SP.rounded(16, .semibold))
+                    .foregroundStyle(.black.opacity(0.85))
+                    .padding(.horizontal, 18).padding(.vertical, 14)
+                    .background(Capsule().fill(LinearGradient(colors: [kind.tint, kind.tint2], startPoint: .leading, endPoint: .trailing)))
+                }
+                .buttonStyle(SoftPress())
+                if let id = movePick {
+                    MovePanel(move: HeatMove.find(id), tint: kind.tint, large: true)
+                }
             }
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
                 ForEach(HeatMove.all) { m in
-                    Button { withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { movePick = m.id } } label: {
+                    Button {
+                        withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { movePick = m.id }
+                        if playing, let i = HeatMove.all.firstIndex(of: m) { playIndex = i; playStart = Date() }
+                    } label: {
                         VStack(spacing: 6) {
                             PoseFigureView(motion: PoseLibrary.motion(for: m.step), tint: kind.tint, glow: kind.tint2,
                                            lineWidth: 2, captions: false)
@@ -223,6 +251,48 @@ struct HeatGuideView: View {
                 }
             }
         }
+    }
+
+    /// Plays every move in order with a countdown, then stops. Tap a tile to start from that move.
+    private var movePlayer: some View {
+        TimelineView(.periodic(from: playStart, by: 1)) { ctx in
+            let m = HeatMove.all[min(playIndex, HeatMove.all.count - 1)]
+            let left = max(0, m.seconds - ctx.date.timeIntervalSince(playStart))
+            VStack(spacing: 12) {
+                HStack {
+                    Text("MOVE \(playIndex + 1) OF \(HeatMove.all.count)").font(SP.rounded(11, .semibold)).tracking(1.4)
+                    Spacer()
+                    Text(spFormatClock(left)).font(SP.numbers(16)).monospacedDigit()
+                }
+                .foregroundStyle(.white.opacity(0.7))
+                ProgressView(value: 1 - left / max(1, m.seconds)).tint(kind.tint)
+                MovePanel(move: m, tint: kind.tint, large: true)
+                    .id(m.id)
+                    .transition(.opacity)
+                HStack(spacing: 22) {
+                    Button { stepMove(-1) } label: { Image(systemName: "backward.fill") }
+                        .disabled(playIndex == 0)
+                    Button { withAnimation { playing = false } } label: { Image(systemName: "stop.fill") }
+                    Button { stepMove(1) } label: { Image(systemName: "forward.fill") }
+                }
+                .font(.system(size: 20, weight: .semibold))
+                .foregroundStyle(.white)
+                if playIndex + 1 < HeatMove.all.count {
+                    Text("Next: \(HeatMove.all[playIndex + 1].title)").font(SP.rounded(13)).foregroundStyle(.white.opacity(0.6))
+                }
+            }
+            .onChange(of: left <= 0) { _, done in if done { stepMove(1) } }
+        }
+    }
+
+    private func stepMove(_ d: Int) {
+        let n = playIndex + d
+        if n >= HeatMove.all.count {
+            withAnimation { playing = false }
+            return
+        }
+        withAnimation(.easeInOut) { playIndex = max(0, n) }
+        playStart = Date()
     }
 
     private var safety: some View {
