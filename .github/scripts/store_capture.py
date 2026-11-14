@@ -129,6 +129,8 @@ if meta.get("paywall"):
     # A fresh install so nothing (trial, purchase cache) is remembered.
     sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
     sh("xcrun", "simctl", "install", udid, app, check=True)
+    for svc in meta.get("grant", []):
+        sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
     fails += not shoot(udid, bundle, p["args"], p.get("wait", 7), os.path.join(out, "paywall", "iap-review.png"))
 sh("xcrun", "simctl", "shutdown", udid, quiet=True)
 

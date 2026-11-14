@@ -179,7 +179,9 @@ for i, s in enumerate(m["shots"]):
     pill(img, W / 2, 168, s["eyebrow"].upper(), BOLD(34), acc)
     centered_text(img, 290, s["line1"], HEAVY(148), fill=(255, 255, 255, 255))
     centered_text(img, 450, s["line2"], HEAVY(148), glow=VIOLET)
-    centered_text(img, 650, s["sub"], SEMI(54), fill=(222, 216, 255, 210))
+    size = 54  # shrink long sublines so they never run off the edge
+    while size > 38 and ImageDraw.Draw(img).textlength(s["sub"], font=SEMI(size)) > W - 90: size -= 2
+    centered_text(img, 650 + (54 - size) // 2, s["sub"], SEMI(size), fill=(222, 216, 255, 210))
 
     ph = phone(Image.open(src), int(W * .80))
     tilt = s.get("tilt", 0)
