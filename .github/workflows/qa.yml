@@ -1,0 +1,83 @@
+name: Simulator QA
+
+# Run by hand: builds each chosen app (Debug) for the simulator, launches it in demo mode on every screen
+# listed in .github/qa/<app>.json (including large Dynamic Type and light mode passes), and uploads the
+# screenshots, per-launch app logs and crash reports as the qa-<app> artifact. Nothing is published.
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: Space-separated (pulselab stillpoint roamr clicker natalorbit ridequest)
+        default: pulselab stillpoint roamr clicker natalorbit ridequest
+
+permissions:
+  contents: read
+
+jobs:
+  pick:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.p.outputs.apps }}
+    steps:
+      - id: p
+        run: echo "apps=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1].split()))" "${{ inputs.apps }}")" >> $GITHUB_OUTPUT
+
+  qa:
+    needs: pick
+    runs-on: macos-15-intel
+    timeout-minutes: 75
+    strategy:
+      fail-fast: false
+      matrix:
+        app: ${{ fromJson(needs.pick.outputs.apps) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick app settings
+        run: |
+          CFG=.github/qa/${{ matrix.app }}.json
+          echo "CFG=$CFG" >> $GITHUB_ENV
+          echo "SCHEME=$(python3 -c "import json;print(json.load(open('$CFG'))['scheme'])")" >> $GITHUB_ENV
+          echo "WATCH=$(python3 -c "import json;print((json.load(open('$CFG')).get('watch') or {}).get('product',''))")" >> $GITHUB_ENV
+
+      - name: Pick newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+
+      - name: Make sure the watchOS SDK is installed
+        if: env.WATCH != ''
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
+      - name: Generate Xcode project
+        run: |
+          brew install xcodegen
+          for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
+          if [ "$SCHEME" = RideQuest ]; then python3 store/ridequest/demo_seed.py > WebApps/QuestApp/seed.json; fi
+          xcodegen generate
+
+      - name: Build for the simulator (Debug)
+        run: |
+          set -o pipefail
+          xcodebuild build -project TreeHub.xcodeproj -scheme $SCHEME -destination 'generic/platform=iOS Simulator' \
+            -configuration Debug -derivedDataPath build CODE_SIGNING_ALLOWED=NO \
+            | tee build.log | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log || { grep -E "error:" build.log | head -30; exit 1; }
+
+      - name: Build the Watch app for its simulator
+        if: env.WATCH != ''
+        run: |
+          if [ ! -d build/Build/Products/Debug-watchsimulator/$WATCH.app ]; then
+            xcodebuild build -project TreeHub.xcodeproj -target $WATCH -sdk watchsimulator -configuration Debug \
+              SYMROOT=$PWD/build/Build/Products CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          fi
+          ls -d build/Build/Products/Debug-watchsimulator/*.app || true
+
+      - name: Launch every screen and capture
+        env: { PYTHONUNBUFFERED: "1" }
+        run: python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: qa-${{ matrix.app }}
+          path: qa-out/
+          if-no-files-found: ignore

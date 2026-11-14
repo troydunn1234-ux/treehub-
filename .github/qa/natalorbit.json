@@ -1,0 +1,8 @@
+{"scheme": "NatalOrbit", "bundle": "com.troydunn.natalorbit",
+ "shots": [
+  {"name": "00-warmup", "args": "-demo", "wait": 15},
+  {"name": "01-today", "args": "-demo -section today", "wait": 14},
+  {"name": "02-chart", "args": "-demo -section chart", "wait": 16},
+  {"name": "03-share", "args": "-demo -section share", "wait": 14},
+  {"name": "04-today-largetype", "args": "-demo -section today", "wait": 14, "size": "accessibility-large"}
+ ]}

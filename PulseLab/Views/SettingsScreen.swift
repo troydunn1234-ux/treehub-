@@ -36,6 +36,12 @@ struct SettingsScreen: View {
             about
         }
         .sheet(isPresented: $showPlans) { PaywallView(spec: PulseLabPro.spec) }
+        .onAppear {
+            // -demo -open sources / alldata (simulator QA): Sources first; it opens All data itself.
+            if DemoOpen.take("sources") || DemoOpen.pending == "alldata" {
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { showSources = true }
+            }
+        }
     }
 
     /// Pulse Lab Pro: plans, current subscription, restore.

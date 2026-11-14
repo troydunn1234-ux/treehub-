@@ -94,6 +94,13 @@ struct HistoryView: View {
                 if route == "monthly" { MonthlyStatsView() }
             }
             .onAppear { openPendingActivity() }
+            .task {
+                // -demo -open monthly / activity / recap (simulator QA), once the demo trips are in.
+                guard let open = TrackDemo.open, ["monthly", "activity", "recap"].contains(open) else { return }
+                try? await Task.sleep(for: .seconds(1))
+                guard path.isEmpty else { return }
+                if open == "monthly" { path.append("monthly") } else if let a = activities.first { path.append(a.id) }
+            }
             .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
                 openPendingActivity()
             }

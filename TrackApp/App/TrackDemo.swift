@@ -12,6 +12,9 @@ enum TrackDemo {
         return args[i + 1]
     }
 
+    /// `-demo -open <screen>` (simulator QA): lifetime, monthly, activity, recap, moreapps.
+    static var open: String? { isOn ? argument(after: "-open") : nil }
+
     @MainActor private static var seeded = false
 
     @MainActor

@@ -151,6 +151,15 @@ struct RootView: View {
             if let i = args.firstIndex(of: "-tab"), i + 1 < args.count {
                 router.tab = ["today": 0, "traditions": 1, "journey": 2][args[i + 1]] ?? 0
             }
+            // -demo -open <screen> (simulator QA): progress (Journey tab), settings, moreapps.
+            if args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count {
+                switch args[i + 1] {
+                case "progress": router.tab = 2
+                case "settings": router.showSettings = true
+                case "moreapps": DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() }
+                default: break
+                }
+            }
             if let i = args.firstIndex(of: "-session"), i + 1 < args.count, let p = lib.practice(args[i + 1]) {
                 router.run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: p.defaultMinutes))
             }

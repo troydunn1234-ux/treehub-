@@ -1,0 +1,20 @@
+{"scheme": "Roamr", "bundle": "com.troydunn.roamr", "location": "37.7772,-122.4500",
+ "grant": ["location", "location-always", "motion", "photos"],
+ "shots": [
+  {"name": "01-stats", "args": "-demo -pro -tab stats", "wait": 8},
+  {"name": "02-lifetime", "args": "-demo -pro -open lifetime", "wait": 10},
+  {"name": "03-history-together", "args": "-demo -pro -tab history", "wait": 8},
+  {"name": "04-monthly", "args": "-demo -pro -open monthly", "wait": 10},
+  {"name": "05-activity", "args": "-demo -pro -open activity", "wait": 10},
+  {"name": "06-recap", "args": "-demo -pro -open recap", "wait": 14},
+  {"name": "07-settings", "args": "-demo -pro -tab settings", "wait": 8},
+  {"name": "08-settings-free", "args": "-demo -free -tab settings", "wait": 8},
+  {"name": "09-monthly-free", "args": "-demo -free -open monthly", "wait": 10},
+  {"name": "10-paywall", "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99", "wait": 10},
+  {"name": "11-moreapps", "args": "-demo -pro -tab stats -open moreapps", "wait": 12},
+  {"name": "12-lifetime-largetype", "args": "-demo -pro -open lifetime", "wait": 10, "size": "accessibility-large"},
+  {"name": "13-recap-largetype", "args": "-demo -pro -open recap", "wait": 14, "size": "accessibility-large"},
+  {"name": "14-history-largetype", "args": "-demo -pro -tab history", "wait": 8, "size": "accessibility-large"}
+ ],
+ "watch": {"product": "RoamrWatch", "bundle": "com.troydunn.roamr.watchkitapp",
+   "shots": [{"name": "w1-home", "args": "-demo", "wait": 8}, {"name": "w2-nophone", "args": "", "wait": 8}]}}

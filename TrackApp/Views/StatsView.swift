@@ -8,6 +8,7 @@ struct StatsView: View {
     /// Re-renders the screen when the unit setting changes.
     @AppStorage("useMetric") private var useMetric = false
     @State private var period: Period = .month
+    @State private var path = NavigationPath()
     @Namespace private var periodPill
 
     private static let spring = Animation.spring(response: 0.42, dampingFraction: 0.82)
@@ -170,7 +171,7 @@ struct StatsView: View {
     // MARK: Body
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(alignment: .leading, spacing: Theme.gap) {
                     header
@@ -199,6 +200,7 @@ struct StatsView: View {
             .navigationDestination(for: String.self) { route in
                 if route == "lifetime" { LifetimeStatsView() }
             }
+            .onAppear { if TrackDemo.open == "lifetime", path.isEmpty { path.append("lifetime") } }
         }
     }
 

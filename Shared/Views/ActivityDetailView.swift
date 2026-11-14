@@ -160,6 +160,9 @@ struct ActivityDetailView: View {
             }
         }
         #if TRACK_APP
+        .onAppear {
+            if TrackDemo.open == "recap" { DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { showRecap = true } }
+        }
         .sheet(isPresented: $showRecap) {
             RecapShareView(activity: activity)
                 .presentationDragIndicator(.visible)

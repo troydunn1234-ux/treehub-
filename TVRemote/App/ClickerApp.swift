@@ -110,6 +110,13 @@ struct RootView: View {
             }
         }
         .sheet(isPresented: $showAbout) { AboutView() }
+        .onAppear {
+            // -demo -open about / moreapps (simulator QA).
+            let args = ProcessInfo.processInfo.arguments
+            guard args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count else { return }
+            if args[i + 1] == "about" { showAbout = true }
+            if args[i + 1] == "moreapps" { DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() } }
+        }
         .paywallHost(spec: CouchRemotePro.spec)
         .onboarding(CouchRemoteOnboard.spec)
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {

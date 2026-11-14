@@ -155,11 +155,17 @@ struct TrackRootView: View {
             if tracker.recoveredFromCrash { tab = "track" }
             if TrackDemo.isOn {
                 TrackDemo.seed(context)
+                switch TrackDemo.open {
+                case "lifetime": tab = "stats"
+                case "monthly", "activity", "recap": tab = "history"
+                case "moreapps": DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() }
+                default: break
+                }
                 switch TrackDemo.argument(after: "-tab") {
                 case "history": tab = "history"
                 case "stats": tab = "stats"
                 case "settings": tab = "settings"
-                default: tab = "track"
+                default: if TrackDemo.open == nil || TrackDemo.open == "moreapps" { tab = "track" }
                 }
                 if ProcessInfo.processInfo.arguments.contains("-autostart") { tracker.start(kind: .run) }
                 if ProcessInfo.processInfo.arguments.contains("-autodrive") { tracker.start(kind: .drive) }

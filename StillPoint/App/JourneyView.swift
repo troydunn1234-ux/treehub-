@@ -7,11 +7,12 @@ struct JourneyView: View {
     @State private var healthWeek: Double? = nil
     @State private var external: [ExternalMindfulSession] = []
     @State private var selectedDay: DayPick? = nil
+    @State private var path = NavigationPath()
 
     private var weekStart: Date { Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date() }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     Text("Journey").font(SP.serif(34, .light)).foregroundStyle(SP.ink).padding(.top, 8)
@@ -69,6 +70,12 @@ struct JourneyView: View {
                     .presentationBackground(.ultraThinMaterial)
             }
             .onAppear {
+                // -demo -open progress (simulator QA / screenshots): straight to the Progress screen.
+                let args = ProcessInfo.processInfo.arguments
+                if args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count,
+                   args[i + 1] == "progress", path.isEmpty {
+                    path.append(ProgressRoute.main)
+                }
                 guard !ProcessInfo.processInfo.arguments.contains("-demo") else { return }
                 MindfulHealth.shared.mindfulMinutes(since: weekStart) { healthWeek = $0 }
                 MindfulHealth.shared.externalMindfulSessions(since: Date().addingTimeInterval(-30 * 86400)) { external = $0 }

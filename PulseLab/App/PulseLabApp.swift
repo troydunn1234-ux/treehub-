@@ -188,6 +188,7 @@ struct RootView: View {
             if !showOnboarding {
                 await store.refresh(.launch)
                 askForWhoopIfDue()
+                openDemoScreen()
             }
         }
         .onChange(of: phase) { _, p in
@@ -204,6 +205,19 @@ struct RootView: View {
         .onReceive(NotificationCenter.default.publisher(for: LogWhoopPending.note)) { _ in openPendingLogWhoop() }
         .onAppear { openPendingTab(); openPendingLogWhoop() }
         .onOpenURL(perform: open)
+    }
+
+    /// `-demo -open <screen>`: opens a screen straight away (simulator QA and screenshots only).
+    private func openDemoScreen() {
+        guard let screen = DemoOpen.screen else { return }
+        switch screen {
+        case "logwhoop": store.logWhoop = LogWhoopRequest()
+        case "logwhoopauto": store.logWhoop = LogWhoopRequest(auto: true)
+        case "alldata", "sources": DemoOpen.pending = screen; tab = .settings
+        case "moreapps":
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() }
+        default: break
+        }
     }
 
     /// Morning pop-up: after 6 am, once a day, when today has no WHOOP recovery yet (API, Health or typed).
@@ -270,6 +284,22 @@ struct RootView: View {
         case .stack: SuppsView()
         case .settings: SettingsScreen()
         }
+    }
+}
+
+/// `-demo -open <screen>` launch flag (simulator QA and screenshots; ignored without -demo).
+enum DemoOpen {
+    static var screen: String? {
+        let a = ProcessInfo.processInfo.arguments
+        guard a.contains("-demo"), let i = a.firstIndex(of: "-open"), i + 1 < a.count else { return nil }
+        return a[i + 1].lowercased()
+    }
+    /// Screen a deeper view should open once it appears ("sources", "alldata"); taken once.
+    @MainActor static var pending: String?
+    @MainActor static func take(_ name: String) -> Bool {
+        guard pending == name else { return false }
+        pending = nil
+        return true
     }
 }
 

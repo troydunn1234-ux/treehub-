@@ -43,6 +43,16 @@ final class GroupHistory: ObservableObject {
            let list = try? JSONDecoder().decode([GroupTripLog].self, from: data) {
             trips = list
         }
+        // Demo screenshots: a few made-up group trips (never saved).
+        if TrackDemo.isOn && trips.isEmpty {
+            let now = Date()
+            trips = [
+                GroupTripLog(code: "DEMO01", kindRaw: ActivityKind.drive.rawValue, date: now.addingTimeInterval(-86400),
+                             friends: ["Alex", "Sam"], distanceM: 48_000, hosted: true),
+                GroupTripLog(code: "DEMO02", kindRaw: ActivityKind.hike.rawValue, date: now.addingTimeInterval(-6 * 86400),
+                             friends: ["Jordan", "Riley", "Casey", "Morgan"], distanceM: 9300, hosted: false),
+            ]
+        }
         // When the recording of a group trip is saved, keep its final distance.
         token = NotificationCenter.default.addObserver(forName: .activitySaved, object: nil, queue: .main) { note in
             guard let raw = note.userInfo?["id"] as? String, let id = UUID(uuidString: raw),

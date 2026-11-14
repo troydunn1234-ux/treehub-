@@ -101,6 +101,9 @@ struct SourcesScreen: View {
         .preferredColorScheme(.dark)
         .sheet(isPresented: $showDataCheck) { DataCheckView().environment(store) }
         .sheet(isPresented: $showAllData) { AllDataScreen().environment(store).presentationBackground(Lab.bg) }
+        .onAppear {
+            if DemoOpen.take("alldata") { DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { showAllData = true } }
+        }
     }
 
     // MARK: cards
