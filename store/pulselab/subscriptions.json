@@ -1,0 +1,28 @@
+{
+  "group": "Pulse Lab Pro",
+  "groupDisplay": "Pulse Lab Pro",
+  "subs": [
+    {
+      "productId": "com.troydunn.pulselab.pro.monthly",
+      "name": "Pro Monthly",
+      "period": "ONE_MONTH",
+      "level": 2,
+      "price": "2.99",
+      "displayName": "Pulse Lab Pro – Monthly",
+      "description": "VS lab, 90-day history, share cards and CSV export.",
+      "trial": "ONE_WEEK"
+    },
+    {
+      "productId": "com.troydunn.pulselab.pro.yearly",
+      "name": "Pro Yearly",
+      "period": "ONE_YEAR",
+      "level": 1,
+      "price": "19.99",
+      "displayName": "Pulse Lab Pro – Yearly",
+      "description": "VS lab, 90-day history, share cards and CSV export.",
+      "trial": "ONE_WEEK"
+    }
+  ],
+  "reviewNote": "Pulse Lab Pro unlocks the VS tab (Watch vs WHOOP agreement), Who to trust, 90-day and 1-year history, share cards and CSV export. Tap any lock icon (for example the VS tab or Settings › Pulse Lab Pro) to see the plans. The free 1-week trial is Apple's introductory offer; Restore and Manage Subscription are on the same screen. The one-time Lifetime unlock (com.troydunn.pulselab.pro) is offered alongside.",
+  "reviewScreenshot": "store/pulselab/iap-review.png"
+}

@@ -1,0 +1,28 @@
+{
+  "group": "Roamr Pro",
+  "groupDisplay": "Roamr Pro",
+  "subs": [
+    {
+      "productId": "com.troydunn.roamr.pro.monthly",
+      "name": "Pro Monthly",
+      "period": "ONE_MONTH",
+      "level": 2,
+      "price": "2.99",
+      "displayName": "Roamr Pro – Monthly",
+      "description": "Group trips with friends and monthly recaps.",
+      "trial": "ONE_WEEK"
+    },
+    {
+      "productId": "com.troydunn.roamr.pro.yearly",
+      "name": "Pro Yearly",
+      "period": "ONE_YEAR",
+      "level": 1,
+      "price": "19.99",
+      "displayName": "Roamr Pro – Yearly",
+      "description": "Group trips with friends and monthly recaps.",
+      "trial": "ONE_WEEK"
+    }
+  ],
+  "reviewNote": "Roamr Pro unlocks starting a group trip (Go together, the people button on the Track tab) and the monthly recap (History › Monthly). Settings › Roamr Pro shows the plans. The free 1-week trial is Apple's introductory offer; Restore and Manage Subscription are on the same screen. The one-time Lifetime unlock (com.troydunn.roamr.pro) is offered alongside.",
+  "reviewScreenshot": "store/roamr/iap-review.png"
+}

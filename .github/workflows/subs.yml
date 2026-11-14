@@ -5,7 +5,7 @@ on:
       app:
         description: Which app
         type: choice
-        options: [StillPoint]
+        options: [StillPoint, PulseLab, Roamr]
         default: StillPoint
 jobs:
   subs:
@@ -21,6 +21,8 @@ jobs:
           printf '%s\n' "$P8" > /tmp/key.p8
           case "${{ inputs.app }}" in
             StillPoint) B=com.troydunn.stillpoint; C=store/stillpoint/subscriptions.json ;;
+            PulseLab)   B=com.troydunn.pulselab;   C=store/pulselab/subscriptions.json ;;
+            Roamr)      B=com.troydunn.roamr;      C=store/roamr/subscriptions.json ;;
             *) echo "Unknown app"; exit 1 ;;
           esac
           KEY_PATH=/tmp/key.p8 python3 .github/scripts/asc_subs.py "$B" "$C"
