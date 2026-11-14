@@ -93,6 +93,10 @@ targets:
         CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
         CFBundleShortVersionString: "$(MARKETING_VERSION)"
         CFBundleDisplayName: Roamr
+        CFBundleURLTypes:
+          - CFBundleURLName: com.troydunn.roamr
+            CFBundleURLSchemes:
+              - roamr
         NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
         NSHealthUpdateUsageDescription: Roamr does not write to Apple Health; it only reads your workouts and heart data.

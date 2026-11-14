@@ -28,5 +28,13 @@ struct RoamrShortcuts: AppShortcutsProvider {
             shortTitle: "History & stats",
             systemImageName: "clock.arrow.circlepath"
         )
+        AppShortcut(
+            intent: StartGroupDriveIntent(),
+            phrases: [
+                "Start a group drive in \(.applicationName)",
+            ],
+            shortTitle: "Group drive",
+            systemImageName: "person.2.fill"
+        )
     }
 }

@@ -39,6 +39,8 @@ struct TrackHubApp: App {
         WindowGroup {
             LaunchGate { TrackRootView() }
                 .environment(tracker)
+                // "Go together" invite links: roamr://join?c=CODE (and the https join page form).
+                .onOpenURL { url in Task { @MainActor in GroupSession.shared.handle(url: url) } }
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)
         }
@@ -81,6 +83,8 @@ struct TrackRootView: View {
 
             FloatingTabBar(items: tabItems, selection: $tab)
         }
+        // "Go together": live group activities with friends (TrackApp/Group).
+        .groupTogether(tab: $tab)
         .overlay(alignment: .top) {
             if detector.showBanner && !tracker.isActive {
                 DriveBanner(onStart: startDriveFromPrompt, onDismiss: { detector.dismissBanner() })
