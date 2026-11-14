@@ -41,22 +41,26 @@
     {
       "file": "rm-2-drive.png",
       "args": "-demo -autodrive",
-      "wait": 14
+      "wait": 14,
+      "fresh": true
     },
     {
       "file": "rm-3-history.png",
       "args": "-demo -pro -tab history",
-      "wait": 9
+      "wait": 9,
+      "fresh": true
     },
     {
       "file": "rm-4-stats.png",
       "args": "-demo -pro -tab stats",
-      "wait": 9
+      "wait": 9,
+      "fresh": true
     },
     {
       "file": "rm-5-track.png",
       "args": "-demo -pro -tab track",
-      "wait": 9
+      "wait": 9,
+      "fresh": true
     }
   ],
   "paywall": {

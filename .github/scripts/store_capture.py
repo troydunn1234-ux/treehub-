@@ -75,7 +75,8 @@ def blank(path):
 
 
 def is_running(udid, bundle):
-    return bundle in sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", quiet=True).stdout
+    r = sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", quiet=True, timeout=60)
+    return r.stderr == "timeout" or bundle in r.stdout   # a hung launchctl says nothing about the app
 
 
 def shoot(udid, bundle, args, wait, path, route=None, section=None):
@@ -122,6 +123,11 @@ if meta.get("location"):
     sh("xcrun", "simctl", "location", udid, "set", meta["location"], quiet=True)
 
 for c in meta.get("capture", []):
+    if c.get("fresh"):  # start from a clean install (e.g. no trip left over from the previous shot)
+        sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
+        sh("xcrun", "simctl", "install", udid, app, check=True)
+        for svc in meta.get("grant", []):
+            sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
     fails += not shoot(udid, bundle, c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "raw", c["file"]), c.get("route"), c.get("section"))
 
 if meta.get("paywall"):
