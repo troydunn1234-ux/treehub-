@@ -31,7 +31,7 @@ final class ClankerrWatchBridge: NSObject {
         let s = WCSession.default
         guard s.activationState == .activated, s.isPaired, s.isWatchAppInstalled else { return }
         let state = snapshot()
-        let key = "\(state["tv"] ?? "")|\(state["now"] ?? "")|\(state["paired"] ?? "")|\((state["apps"] as? [[String: Any]])?.compactMap { $0["name"] as? String }.joined(separator: ",") ?? "")"
+        let key = "\(state["tv"] ?? "")|\(state["now"] ?? "")|\(state["paired"] ?? "")|\(state["sleepEnd"] ?? 0)|\((state["apps"] as? [[String: Any]])?.compactMap { $0["name"] as? String }.joined(separator: ",") ?? "")"
         guard force || key != lastKey else { return }
         lastKey = key
         try? s.updateApplicationContext(state)
@@ -45,7 +45,14 @@ final class ClankerrWatchBridge: NSObject {
             return ["name": app.name, "c1": Self.hex(c.first ?? .purple), "c2": Self.hex(c.last ?? .black)] as [String: Any]
         }
         return ["paired": store.isPaired, "tv": store.tv?.name ?? "", "now": store.nowPlaying ?? "",
-                "reachable": store.reachable, "brand": store.tv?.brand.displayName ?? "", "apps": apps]
+                "reachable": store.reachable, "brand": store.tv?.brand.displayName ?? "", "apps": apps,
+                "sleepEnd": SleepTimer.shared.endsAt?.timeIntervalSince1970 ?? 0]
+    }
+
+    /// The sleep timer started, changed or ended: show it on the watch right away.
+    func sleepTimerChanged() {
+        guard store != nil else { return }
+        pushIfChanged(force: true)
     }
 
     private static func hex(_ color: Color) -> Int {
@@ -81,6 +88,9 @@ final class ClankerrWatchBridge: NSObject {
             default: key = RemoteKey(rawValue: k)
             }
             if let key { store.press(key) }
+        } else if let minutes = msg["sleep"] as? Int {
+            // From the watch's Sleep page: a length in minutes, or 0 to cancel.
+            if minutes > 0 { SleepTimer.shared.start(minutes: minutes) } else if SleepTimer.shared.isRunning { SleepTimer.shared.cancel() }
         } else if let name = msg["launch"] as? String, let app = store.catalog.first(where: { $0.name == name }) {
             await store.launch(app)
             playing = true

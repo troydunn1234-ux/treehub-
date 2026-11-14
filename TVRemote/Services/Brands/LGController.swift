@@ -291,6 +291,11 @@ final class LGController: NSObject, TVController, URLSessionDelegate, @unchecked
         }
     }
 
+    /// webOS takes an exact level.
+    func setVolume(_ tv: DiscoveredTV, level: Int) async throws {
+        _ = try await request(tv, "ssap://audio/setVolume", ["volume": max(0, min(100, level))])
+    }
+
     private func setPlaying(_ tv: DiscoveredTV, _ v: Bool) { lock.withLock { playing[key(tv)] = v } }
 
     private func currentMute(_ tv: DiscoveredTV) async -> Bool {

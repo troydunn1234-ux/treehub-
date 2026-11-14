@@ -77,6 +77,9 @@ protocol TVController: AnyObject, Sendable {
     func forget(_ tv: DiscoveredTV)
 
     func press(_ tv: DiscoveredTV, _ key: RemoteKey) async throws
+    /// Optional: jump straight to a volume level (0–100). Throw .unsupported where the TV only takes up/down
+    /// presses; TVStore.setVolume(level:) then steps there with presses instead.
+    func setVolume(_ tv: DiscoveredTV, level: Int) async throws
     /// Launch a streaming app by its catalog name (e.g. "Netflix"). Controllers keep their own
     /// name → app-id table and throw TVControlError.appUnavailable if unknown on this TV.
     func launch(_ tv: DiscoveredTV, appName: String) async throws
@@ -116,6 +119,7 @@ extension TVController {
     /// The TV was found again at a new address. Carry pairing credentials over so the
     /// user does not have to pair twice. Default: nothing to move.
     func didMove(from old: DiscoveredTV, to new: DiscoveredTV) async {}
+    func setVolume(_ tv: DiscoveredTV, level: Int) async throws { throw TVControlError.unsupported }
     func backspace(_ tv: DiscoveredTV, count: Int) async throws { throw TVControlError.unsupported }
     func submitText(_ tv: DiscoveredTV) async throws { try await press(tv, .ok) }
     func openSearch(_ tv: DiscoveredTV) async throws { throw TVControlError.unsupported }

@@ -58,6 +58,8 @@ struct RemoteState: Equatable {
     var now = ""
     var reachable = true
     var apps: [TVApp] = []
+    /// When the phone's sleep timer turns the TV off (nil = no timer).
+    var sleepEnd: Date?
 
     init() {}
     init(_ d: [String: Any]) {
@@ -65,6 +67,8 @@ struct RemoteState: Equatable {
         tv = d["tv"] as? String ?? ""
         now = d["now"] as? String ?? ""
         reachable = d["reachable"] as? Bool ?? true
+        let se = d["sleepEnd"] as? Double ?? 0
+        sleepEnd = se > Date().timeIntervalSince1970 ? Date(timeIntervalSince1970: se) : nil
         apps = (d["apps"] as? [[String: Any]] ?? []).map {
             TVApp(name: $0["name"] as? String ?? "", c1: $0["c1"] as? Int ?? 0x8A3BFF, c2: $0["c2"] as? Int ?? 0x1E0B4A)
         }
@@ -107,6 +111,13 @@ final class RemoteLink: NSObject {
     }
 
     func refresh() { send([:], wantReply: true, quiet: true) }
+
+    /// Start the phone's sleep timer (minutes), or 0 to turn it off.
+    func sleep(minutes: Int) {
+        WKInterfaceDevice.current().play(minutes > 0 ? .start : .stop)
+        if Self.demo { state.sleepEnd = minutes > 0 ? Date().addingTimeInterval(TimeInterval(minutes * 60)) : nil; return }
+        send(["sleep": minutes], wantReply: true)
+    }
 
     private func send(_ msg: [String: Any], wantReply: Bool, quiet: Bool = false) {
         if Self.demo { return }
@@ -162,6 +173,7 @@ struct ClankerrWatchRoot: View {
                 PadPage().containerBackground(CW.bg.gradient, for: .tabView)
                 PowerPage().containerBackground(CW.bg.gradient, for: .tabView)
                 AppsPage().containerBackground(CW.bg.gradient, for: .tabView)
+                SleepPage().containerBackground(CW.bg.gradient, for: .tabView)
             }
             .tabViewStyle(.verticalPage)
         }
@@ -324,6 +336,52 @@ struct PowerPage: View {
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
+    }
+}
+
+/// The phone's sleep timer: countdown, and quick lengths to start or change it.
+struct SleepPage: View {
+    @Environment(RemoteLink.self) private var link
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 6) {
+                if let end = link.state.sleepEnd, end > Date() {
+                    VStack(spacing: 2) {
+                        Text("TV OFF IN").font(CW.font(11, .heavy)).foregroundStyle(.secondary)
+                        Text(timerInterval: Date()...end, countsDown: true)
+                            .font(.system(size: 30, weight: .black, design: .rounded)).monospacedDigit()
+                            .foregroundStyle(CW.accent)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 4)
+                    .accessibilityElement(children: .combine)
+                    Button { link.sleep(minutes: 0) } label: {
+                        Text("Turn Off Timer").font(CW.font(13, .heavy)).frame(maxWidth: .infinity, minHeight: 32)
+                    }
+                    .tint(.red)
+                } else {
+                    Image(systemName: "moon.zzz.fill").font(.system(size: 22, weight: .bold)).foregroundStyle(CW.accent)
+                    Text("Turn the TV off after").font(CW.font(12, .semibold)).foregroundStyle(.secondary)
+                }
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
+                    ForEach([15, 30, 60, 90], id: \.self) { m in
+                        Button { link.sleep(minutes: m) } label: {
+                            Text(m < 60 ? "\(m) min" : (m == 60 ? "1 hr" : "1.5 hr"))
+                                .font(CW.font(14, .heavy)).foregroundStyle(.white)
+                                .frame(maxWidth: .infinity, minHeight: 38)
+                                .background(Color.white.opacity(0.1), in: Capsule())
+                                .overlay(Capsule().stroke(CW.accent, lineWidth: 1).opacity(0.5))
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Sleep timer \(m) minutes")
+                    }
+                }
+                Text("Your iPhone does the turning off, so keep it on the same Wi-Fi as the TV.")
+                    .font(CW.font(10, .medium)).foregroundStyle(.secondary).multilineTextAlignment(.center)
+            }
+        }
+        .navigationTitle("Sleep")
     }
 }
 

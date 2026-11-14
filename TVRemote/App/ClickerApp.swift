@@ -14,6 +14,10 @@ struct ClickerApp: App {
         WidgetBridge.shared.attach(s)
         // Scenes (macros) drive the TV and the PC.
         SceneStore.shared.attach(store: s, pc: PCClient.shared)
+        // Sleep timer: notification buttons and the background refresh must be set up before launch finishes.
+        SleepTimer.shared.attach()
+        // Siri phrases that name an app ("Open Netflix on the TV with Couch Remote") need the app list.
+        CouchRemoteShortcuts.updateAppShortcutParameters()
     }
     var body: some Scene {
         WindowGroup {

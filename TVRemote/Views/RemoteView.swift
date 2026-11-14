@@ -187,9 +187,11 @@ struct RemoteView: View {
                     .accessibilityLabel(playing ? "Pause" : "Play")
                     KeyButton(symbol: "forward.fill", label: "Fast forward", size: 46) { send(.seekForward) }
                 }
-                HStack(spacing: Look.S.s) {
-                    SmallKey(title: "Info") { send(.info) }
-                    SmallKey(title: "Exit") { send(.exit) }
+                HStack(spacing: 6) {
+                    SmallKey(title: "Info", width: 58) { send(.info) }
+                    SmallKey(title: "Exit", width: 58) { send(.exit) }
+                    // Sleep timer: moon, or the countdown while it runs (TVRemote/Views/SleepTimerViews.swift).
+                    SleepTimerKey(width: 58)
                 }
             }
             .frame(maxWidth: .infinity)
@@ -532,11 +534,12 @@ private struct KeyFace: ViewModifier {
 /// Small text key (Info, Exit).
 private struct SmallKey: View {
     let title: String
+    var width: CGFloat = 70
     let action: () -> Void
     var body: some View {
         Button(action: action) {
             Text(title.uppercased()).font(Look.font(11, .black)).tracking(1.4).foregroundStyle(.white.opacity(0.85))
-                .frame(width: 70, height: 36)
+                .frame(width: width, height: 36)
                 .glassCapsule()
                 .frame(height: 44)
                 .contentShape(Rectangle())

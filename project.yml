@@ -541,6 +541,11 @@ targets:
           - _androidtvremote2._tcp
         NSAppTransportSecurity:
           NSAllowsLocalNetworking: true
+        # Sleep timer: a background refresh at the end time is one of the ways it reaches the TV (TVRemote/Services/SleepTimer.swift).
+        BGTaskSchedulerPermittedIdentifiers:
+          - com.troydunn.clicker.sleeptimer
+        UIBackgroundModes:
+          - fetch
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:

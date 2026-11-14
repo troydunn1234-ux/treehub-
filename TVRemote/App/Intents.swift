@@ -76,6 +76,77 @@ struct SetVolumeIntent: AppIntent {
     }
 }
 
+/// "Mute the TV with Couch Remote": its own intent, so Siri never reads it as volume up.
+struct MuteTVIntent: AppIntent {
+    static var title: LocalizedStringResource = "Mute TV"
+    static var description = IntentDescription("Mutes or unmutes the TV Couch Remote is paired with.")
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let store = TVStore.shared
+        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
+        store.press(.muteToggle)
+        try? await Task.sleep(nanoseconds: 400_000_000)
+        return .result(dialog: "Toggled mute on \(store.tv?.name ?? "the TV").")
+    }
+}
+
+/// Volume levels Siri can say ("Set TV volume to 20 with Couch Remote"). App Shortcut phrases can only
+/// fill in a list of choices, not any number, so the levels go in steps of 5.
+enum TVVolumeLevel: String, AppEnum {
+    case v0 = "0", v5 = "5", v10 = "10", v15 = "15", v20 = "20", v25 = "25", v30 = "30", v35 = "35", v40 = "40"
+    case v45 = "45", v50 = "50", v55 = "55", v60 = "60", v65 = "65", v70 = "70", v75 = "75", v80 = "80"
+    case v85 = "85", v90 = "90", v95 = "95", v100 = "100"
+
+    var level: Int { Int(rawValue) ?? 0 }
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Volume level"
+    static var caseDisplayRepresentations: [TVVolumeLevel: DisplayRepresentation] = [
+        .v0: DisplayRepresentation(title: "0", synonyms: ["zero"]),
+        .v5: DisplayRepresentation(title: "5", synonyms: ["five"]),
+        .v10: DisplayRepresentation(title: "10", synonyms: ["ten"]),
+        .v15: DisplayRepresentation(title: "15", synonyms: ["fifteen"]),
+        .v20: DisplayRepresentation(title: "20", synonyms: ["twenty"]),
+        .v25: DisplayRepresentation(title: "25", synonyms: ["twenty five"]),
+        .v30: DisplayRepresentation(title: "30", synonyms: ["thirty"]),
+        .v35: DisplayRepresentation(title: "35", synonyms: ["thirty five"]),
+        .v40: DisplayRepresentation(title: "40", synonyms: ["forty"]),
+        .v45: DisplayRepresentation(title: "45", synonyms: ["forty five"]),
+        .v50: DisplayRepresentation(title: "50", synonyms: ["fifty"]),
+        .v55: DisplayRepresentation(title: "55", synonyms: ["fifty five"]),
+        .v60: DisplayRepresentation(title: "60", synonyms: ["sixty"]),
+        .v65: DisplayRepresentation(title: "65", synonyms: ["sixty five"]),
+        .v70: DisplayRepresentation(title: "70", synonyms: ["seventy"]),
+        .v75: DisplayRepresentation(title: "75", synonyms: ["seventy five"]),
+        .v80: DisplayRepresentation(title: "80", synonyms: ["eighty"]),
+        .v85: DisplayRepresentation(title: "85", synonyms: ["eighty five"]),
+        .v90: DisplayRepresentation(title: "90", synonyms: ["ninety"]),
+        .v95: DisplayRepresentation(title: "95", synonyms: ["ninety five"]),
+        .v100: DisplayRepresentation(title: "100", synonyms: ["a hundred", "one hundred", "max"]),
+    ]
+}
+
+struct SetTVVolumeLevelIntent: AppIntent {
+    static var title: LocalizedStringResource = "Set TV Volume"
+    static var description = IntentDescription("Sets the TV volume to a level from 0 to 100. TVs that only take up and down presses get stepped there, so the level is close rather than exact.")
+
+    @Parameter(title: "Level", default: .v20)
+    var level: TVVolumeLevel
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Set the TV volume to \(\.$level)")
+    }
+
+    init() {}
+    init(level: TVVolumeLevel) { self.level = level }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let exact = try await TVStore.shared.setVolume(level: level.level)
+        return .result(dialog: exact ? "Volume set to \(level.level)." : "Volume stepped to about \(level.level).")
+    }
+}
+
 // MARK: - Open an app
 
 struct OpenAppIntent: AppIntent {
@@ -97,6 +168,114 @@ struct OpenAppIntent: AppIntent {
         let app = store.catalog.first { $0.name.caseInsensitiveCompare(name) == .orderedSame } ?? StreamingApp(name: name)
         await store.launch(app)
         return .result(dialog: "Opening \(app.name) on \(store.tv?.name ?? "the TV").")
+    }
+}
+
+/// A streaming app the TV can open, so Siri can fill it in: "Open Netflix on the TV with Couch Remote".
+struct TVAppEntity: AppEntity {
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "TV app"
+    static var defaultQuery = TVAppQuery()
+
+    var id: String
+    var displayRepresentation: DisplayRepresentation { DisplayRepresentation(title: "\(id)") }
+
+    init(name: String) { id = name }
+}
+
+struct TVAppQuery: EntityStringQuery {
+    @MainActor
+    func entities(for identifiers: [String]) async throws -> [TVAppEntity] {
+        identifiers.map { TVAppEntity(name: $0) }
+    }
+
+    @MainActor
+    func entities(matching string: String) async throws -> [TVAppEntity] {
+        let q = string.trimmingCharacters(in: .whitespaces)
+        let hits = TVStore.shared.catalog.filter { $0.name.localizedCaseInsensitiveContains(q) }.map { TVAppEntity(name: $0.name) }
+        return hits.isEmpty && !q.isEmpty ? [TVAppEntity(name: q)] : hits
+    }
+
+    /// Favorites first, then the rest of the catalog.
+    @MainActor
+    func suggestedEntities() async throws -> [TVAppEntity] {
+        let store = TVStore.shared
+        let favs = store.favoriteApps.map(\.name)
+        let rest = store.catalog.map(\.name).filter { !favs.contains($0) }
+        return (favs + rest).map { TVAppEntity(name: $0) }
+    }
+}
+
+struct OpenTVAppIntent: AppIntent {
+    static var title: LocalizedStringResource = "Open TV App"
+    static var description = IntentDescription("Opens a streaming app like Netflix, YouTube or Hulu on your TV.")
+
+    @Parameter(title: "App")
+    var app: TVAppEntity
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Open \(\.$app) on the TV")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let store = TVStore.shared
+        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
+        let a = store.catalog.first { $0.name.caseInsensitiveCompare(app.id) == .orderedSame } ?? StreamingApp(name: app.id)
+        await store.launch(a)
+        return .result(dialog: "Opening \(a.name) on \(store.tv?.name ?? "the TV").")
+    }
+}
+
+// MARK: - Sleep timer
+
+enum SleepTimerLength: String, AppEnum {
+    case m15, m30, m45, m60, m90, m120, off
+
+    var minutes: Int {
+        switch self {
+        case .m15: return 15
+        case .m30: return 30
+        case .m45: return 45
+        case .m60: return 60
+        case .m90: return 90
+        case .m120: return 120
+        case .off: return 0
+        }
+    }
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Sleep timer"
+    static var caseDisplayRepresentations: [SleepTimerLength: DisplayRepresentation] = [
+        .m15: DisplayRepresentation(title: "15 minutes", synonyms: ["fifteen minutes"]),
+        .m30: DisplayRepresentation(title: "30 minutes", synonyms: ["thirty minutes", "half an hour"]),
+        .m45: DisplayRepresentation(title: "45 minutes", synonyms: ["forty five minutes"]),
+        .m60: DisplayRepresentation(title: "1 hour", synonyms: ["one hour", "an hour", "60 minutes"]),
+        .m90: DisplayRepresentation(title: "90 minutes", synonyms: ["an hour and a half", "ninety minutes"]),
+        .m120: DisplayRepresentation(title: "2 hours", synonyms: ["two hours"]),
+        .off: DisplayRepresentation(title: "Off", synonyms: ["cancel", "nothing"]),
+    ]
+}
+
+struct StartSleepTimerIntent: AppIntent {
+    static var title: LocalizedStringResource = "TV Sleep Timer"
+    static var description = IntentDescription("Turns the TV off after a while. Your phone needs to be on the same Wi-Fi as the TV; if iOS pauses the app, a notification lets you turn the TV off with one tap.")
+
+    @Parameter(title: "Turn off after", default: .m30)
+    var length: SleepTimerLength
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Sleep timer: \(\.$length)")
+    }
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let timer = SleepTimer.shared
+        if length == .off {
+            timer.cancel()
+            return .result(dialog: "Sleep timer off.")
+        }
+        guard TVStore.shared.tv != nil else { throw CouchRemoteIntentError.noTV }
+        timer.start(minutes: length.minutes)
+        return .result(dialog: "The TV turns off in \(SleepTimer.label(minutes: length.minutes)).")
     }
 }
 
@@ -232,12 +411,27 @@ struct CouchRemoteShortcuts: AppShortcutsProvider {
         AppShortcut(intent: TurnTVOffIntent(),
                     phrases: ["Turn off the TV with \(.applicationName)", "Turn off my TV with \(.applicationName)"],
                     shortTitle: "TV off", systemImageName: "power.circle")
+        AppShortcut(intent: SetTVVolumeLevelIntent(),
+                    phrases: ["Set TV volume to \(\.$level) with \(.applicationName)",
+                              "Set the TV volume to \(\.$level) with \(.applicationName)",
+                              "Set the TV volume with \(.applicationName)"],
+                    shortTitle: "Set volume", systemImageName: "speaker.wave.3.fill")
         AppShortcut(intent: SetVolumeIntent(),
-                    phrases: ["Change the TV volume with \(.applicationName)", "Mute the TV with \(.applicationName)"],
+                    phrases: ["Change the TV volume with \(.applicationName)", "Turn the TV volume up with \(.applicationName)"],
                     shortTitle: "Volume", systemImageName: "speaker.wave.2.fill")
-        AppShortcut(intent: OpenAppIntent(),
-                    phrases: ["Open an app on the TV with \(.applicationName)"],
+        AppShortcut(intent: MuteTVIntent(),
+                    phrases: ["Mute the TV with \(.applicationName)", "Unmute the TV with \(.applicationName)",
+                              "Mute my TV with \(.applicationName)"],
+                    shortTitle: "Mute", systemImageName: "speaker.slash.fill")
+        AppShortcut(intent: OpenTVAppIntent(),
+                    phrases: ["Open \(\.$app) on the TV with \(.applicationName)", "Put on \(\.$app) with \(.applicationName)",
+                              "Open an app on the TV with \(.applicationName)"],
                     shortTitle: "Open app", systemImageName: "play.rectangle.fill")
+        AppShortcut(intent: StartSleepTimerIntent(),
+                    phrases: ["Set a sleep timer for \(\.$length) with \(.applicationName)",
+                              "Start a TV sleep timer with \(.applicationName)",
+                              "Turn off the TV in \(\.$length) with \(.applicationName)"],
+                    shortTitle: "Sleep timer", systemImageName: "moon.zzz.fill")
         AppShortcut(intent: RunSceneIntent(),
                     phrases: ["Run \(\.$scene) in \(.applicationName)", "Run \(\.$scene) with \(.applicationName)",
                               "Run a scene in \(.applicationName)"],
