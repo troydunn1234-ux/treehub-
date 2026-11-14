@@ -23,27 +23,23 @@
     },
     {
       "file": "rq-2-review.png",
-      "args": "-demo",
-      "wait": 12,
-      "section": "review"
+      "args": "-demo -section review",
+      "wait": 12
     },
     {
       "file": "rq-3-subs.png",
-      "args": "-demo",
-      "wait": 12,
-      "section": "subs"
+      "args": "-demo -section subs",
+      "wait": 12
     },
     {
       "file": "rq-4-arcade.png",
-      "args": "-demo",
-      "wait": 12,
-      "section": "arcade"
+      "args": "-demo -section arcade",
+      "wait": 12
     },
     {
       "file": "rq-5-log.png",
-      "args": "-demo",
-      "wait": 12,
-      "section": "log"
+      "args": "-demo -section log",
+      "wait": 12
     }
   ],
   "shots": [
