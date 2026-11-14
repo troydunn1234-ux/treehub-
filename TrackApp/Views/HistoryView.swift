@@ -12,7 +12,7 @@ struct HistoryView: View {
     @State private var filter: ActivityKind? = nil
     @State private var path = NavigationPath()
     /// Go together trips you took part in (kept on this phone).
-    @ObservedObject private var groups = GroupHistory.shared
+    @ObservedObject private var groupLog = GroupHistory.shared
 
     private struct MonthGroup: Identifiable {
         let month: Date
@@ -63,7 +63,7 @@ struct HistoryView: View {
 
                     filterRow
 
-                    if filter == nil, !groups.trips.isEmpty {
+                    if filter == nil, !groupLog.trips.isEmpty {
                         togetherSection
                     }
 
@@ -189,7 +189,7 @@ struct HistoryView: View {
             .padding(.top, 10)
 
             ForEach(group.items) { (a: Activity) in
-                NavigationLink(value: a.id) { ActivityRow(activity: a, together: groups.log(for: a.id)?.withLabel) }
+                NavigationLink(value: a.id) { ActivityRow(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
                     .pressable()
                     .cardAppear()
                     .transition(.opacity.combined(with: .move(edge: .bottom)))
@@ -207,7 +207,7 @@ struct HistoryView: View {
                     .tracking(1.4)
                     .foregroundStyle(Theme.textDim)
                 Spacer()
-                Text("\(groups.trips.count) group \(groups.trips.count == 1 ? "trip" : "trips")")
+                Text("\(groupLog.trips.count) group \(groupLog.trips.count == 1 ? "trip" : "trips")")
                     .font(Theme.rounded(12, .bold))
                     .foregroundStyle(Theme.sky.opacity(0.9))
             }
@@ -215,7 +215,7 @@ struct HistoryView: View {
 
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
-                    ForEach(groups.trips) { g in
+                    ForEach(groupLog.trips) { g in
                         let saved = g.activityID.flatMap { id in activities.first { $0.id == id } }
                         if let saved {
                             NavigationLink(value: saved.id) { togetherCard(g, activity: saved) }
@@ -224,7 +224,7 @@ struct HistoryView: View {
                         } else {
                             togetherCard(g, activity: nil)
                                 .contextMenu {
-                                    Button(role: .destructive) { groups.remove(g.id) } label: { Label("Remove", systemImage: "trash") }
+                                    Button(role: .destructive) { groupLog.remove(g.id) } label: { Label("Remove", systemImage: "trash") }
                                 }
                         }
                     }
