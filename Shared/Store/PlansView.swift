@@ -24,6 +24,8 @@ struct PlansBlock: View {
         VStack(spacing: 12) {
             if unlock.subscribed {
                 subscribedCard
+            } else if options.isEmpty && Unlock.demoPaywall {
+                demoPlans
             } else if options.isEmpty {
                 ProgressView().tint(.white).padding(30)
                 Text("Loading plans from the App Store…").font(.system(size: 13, design: .rounded)).foregroundStyle(.white.opacity(0.6))
@@ -41,6 +43,73 @@ struct PlansBlock: View {
             links
         }
         .manageSubscriptionsSheet(isPresented: $manage)
+    }
+
+    // MARK: Simulator screenshot (no App Store there): the same rows, priced from "-demoPlans" / "-demoPrice"
+
+    private var demoPlans: some View {
+        let plans = (Unlock.demoArg("-demoPlans") ?? "").split(separator: ",").map { String($0) }
+        let yearly = plans.first ?? "19.99"
+        let monthly = plans.count > 1 ? plans[1] : "2.99"
+        let lifetime = Unlock.demoArg("-demoPrice")
+        let y = Double(yearly) ?? 0, m = Double(monthly) ?? 0
+        let save: String? = m > 0 && y < m * 12 ? "SAVE \(Int(((1 - y / (m * 12)) * 100).rounded()))%" : nil
+        return VStack(spacing: 12) {
+            demoRow(title: "Yearly", badge: "1 week free", subtitle: String(format: "Just $%.2f a month", y / 12),
+                    price: "$" + yearly, period: "per year", on: true, save: save)
+            demoRow(title: "Monthly", badge: nil, subtitle: "Cancel anytime", price: "$" + monthly, period: "per month", on: false, save: nil)
+            if let lifetime {
+                demoRow(title: "Lifetime", badge: nil, subtitle: "Pay once, keep Pro forever", price: "$" + lifetime, period: "once", on: false, save: nil)
+            }
+            Text("Start 1 week free trial")
+                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .foregroundStyle(.black.opacity(0.88))
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 17)
+                .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
+                .shadow(color: spec.tint.opacity(0.45), radius: 18, y: 8)
+            Text("Free for 1 week, then $\(yearly) per year. Renews automatically until cancelled. Payment is charged to your Apple ID; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.")
+                .font(.system(size: 11.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+
+    private func demoRow(title: String, badge: String?, subtitle: String, price: String, period: String, on: Bool, save: String?) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                .font(.system(size: 20)).foregroundStyle(on ? spec.tint : .white.opacity(0.35))
+            VStack(alignment: .leading, spacing: 3) {
+                HStack(spacing: 6) {
+                    Text(title).font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundStyle(.white)
+                    if let badge {
+                        Text(badge.uppercased()).font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(0.6)
+                            .foregroundStyle(.black.opacity(0.85))
+                            .padding(.horizontal, 7).padding(.vertical, 3)
+                            .background(Capsule().fill(spec.tint))
+                    }
+                }
+                Text(subtitle).font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.6))
+            }
+            Spacer(minLength: 0)
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(price).font(.system(size: 17, weight: .bold, design: .rounded)).foregroundStyle(.white)
+                Text(period).font(.system(size: 11, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+            }
+        }
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.white.opacity(on ? 0.12 : 0.05)))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .stroke(on ? spec.tint : .white.opacity(0.08), lineWidth: on ? 1.5 : 1))
+        .overlay(alignment: .topTrailing) {
+            if let save {
+                Text(save).font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .foregroundStyle(.black.opacity(0.85))
+                    .padding(.horizontal, 8).padding(.vertical, 3)
+                    .background(Capsule().fill(spec.tint2))
+                    .offset(x: -12, y: -9)
+            }
+        }
     }
 
     // MARK: Rows

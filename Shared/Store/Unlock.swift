@@ -58,6 +58,14 @@ final class Unlock: ObservableObject {
         if ProcessInfo.processInfo.arguments.contains("-pro") { isPro = true }
         if ProcessInfo.processInfo.arguments.contains("-free") { isPro = false }
         #endif
+        if Self.demoPro { isPro = true }
+        if Self.demoPaywall {
+            isPro = false
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 1_500_000_000)
+                self?.requested = PaywallRequest(context: nil)
+            }
+        }
         updates = Task { [weak self] in
             for await result in Transaction.updates {
                 if case .verified(let t) = result {
@@ -71,12 +79,24 @@ final class Unlock: ObservableObject {
 
     deinit { updates?.cancel(); expiryTask?.cancel() }
 
-    var priceText: String { product?.displayPrice ?? "" }
+    var priceText: String { product?.displayPrice ?? (Self.demoPaywall ? Self.demoArg("-demoPrice").map { "$" + $0 } ?? "" : "") }
+
+    // MARK: Simulator screenshots (launch arguments; only the CI simulator ever passes these)
+    /// "-demo -pro": everything unlocked, for App Store screenshots of Pro screens.
+    static let demoPro = ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-pro")
+    /// "-demo -paywall": opens the paywall at launch for the in-app purchase review screenshot. The simulator has no
+    /// App Store, so prices come from "-demoPrice 2.99" (one-time unlock) and "-demoPlans 19.99,2.99" (yearly, monthly).
+    static let demoPaywall = ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-paywall")
+    static func demoArg(_ flag: String) -> String? {
+        let args = ProcessInfo.processInfo.arguments
+        guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
+        return args[i + 1]
+    }
 
     /// Everything is open right now because of the free trial (not a purchase).
     var inTrial: Bool { !owned && (trialEnds.map { $0 > Date() } ?? false) }
     /// The trial can still be started: never used on this Apple ID and the product exists.
-    var trialAvailable: Bool { !owned && trialEnds == nil && trialProduct != nil }
+    var trialAvailable: Bool { !owned && trialEnds == nil && (trialProduct != nil || Self.demoPaywall) }
     var trialDaysLeft: Int {
         guard let end = trialEnds else { return 0 }
         return max(0, Int((end.timeIntervalSinceNow / 86_400).rounded(.up)))
@@ -117,6 +137,7 @@ final class Unlock: ObservableObject {
 
     /// Re-check entitlements: current purchases, then the paid-upfront grandfather clause.
     func refresh() async {
+        if Self.demoPro || Self.demoPaywall { return }
         var pro = false
         var trialStart: Date?
         var sub: StoreKit.Transaction?
@@ -254,7 +275,7 @@ final class Unlock: ObservableObject {
     }
 }
 
-struct PaywallRequest: Identifiable { let id = UUID(); let context: String }
+struct PaywallRequest: Identifiable { let id = UUID(); let context: String? }
 
 // MARK: - Review prompts
 

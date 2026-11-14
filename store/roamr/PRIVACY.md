@@ -12,6 +12,9 @@ Roamr records your walks, runs, hikes, rides and drives and maps them. It has no
 **Go together (group trips)**
 When you start or join a group, your chosen name, live position, speed and heading are shared with the people in that group through Apple's iCloud, only while the group is on. Leaving or ending the group stops sharing.
 
+**Speed limits**
+While you drive, Roamr downloads road and speed-limit data from public OpenStreetMap servers in map squares of about 4 km, and saves them on your phone. Those servers see which map square is being downloaded (like any map app), but nothing about you.
+
 **What Roamr does not do**
 - No accounts, sign-ups or logins.
 - No analytics, tracking, advertising or third-party SDKs.

@@ -1,0 +1,136 @@
+{
+  "copyright": "2026 Troy Dunn",
+  "bundle": "com.troydunn.roamr",
+  "scheme": "Roamr",
+  "name": "Roamr: Every Mile Mapped",
+  "subtitle": "GPS tracker: walk, run, drive",
+  "promotionalText": "One app for every trip: walks, runs, hikes, rides and drives. Lock your phone and go; Roamr maps the route, splits and speed. Now with group trips.",
+  "keywords": "gps,route,running,hiking,cycling,drive log,mileage,trip,speedometer,pace,map,workout,bike,walking",
+  "description": "Roamr records every way you move: walks, runs, hikes, bike rides and drives. Tap start, lock your phone and go. Roamr draws your route on a street map and keeps every trip.\n\nTRACK ANYTHING\nDistance, time, pace or speed, and climb, live on screen and on the Lock Screen with a Live Activity. Roamr keeps recording with the app closed and recovers the trip if the app gets closed. Voice splits call out each mile or kilometer.\n\nMADE FOR DRIVES TOO\nRoamr notices when you start driving and offers to record the drive. On the road you get a big speedometer with the posted speed limit (from OpenStreetMap), and every drive is saved with its start and end streets and time.\n\nGO TOGETHER\nDriving to the trailhead with friends, or running as a group? Start a group trip, send the invite link or join code, and everyone shows up live on one map. Each person's trip still lands in their own history.\n\nHISTORY AND STATS\nEvery trip with its map, splits and stats. Filter by activity, see weekly totals, personal records and all-time numbers, and get a monthly recap of miles, hours and your longest trip. Make a shareable recap card for any trip.\n\nYOUR WORKOUTS AND HEART RATE\nRoamr reads the workouts and heart rate your watch saves to the Health app, so a run recorded on your wrist shows up with its heart rate.\n\nEXPORT\nShare any route as a GPX file to the mapping or training app you already use.\n\nAPPLE WATCH, WIDGETS AND SIRI\nSee your live trip on your wrist, start tracking from a widget or Control Center, or just say \"Start tracking\" to Siri.\n\nFREE AND PRO\nRecording every trip, History, Stats, the Watch app and joining a friend's group are free. Roamr Pro adds starting group trips and the monthly recap. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your trips live on your iPhone and in your own private iCloud. Your position is shared only with the people in a group trip you start or join, and only while it's on.\n\nWatch the road, not your phone: keep your eyes on driving and follow local traffic laws.",
+  "primaryCategory": "HEALTH_AND_FITNESS",
+  "secondaryCategory": "NAVIGATION",
+  "price": "0.0",
+  "ageRating": {
+    "healthOrWellnessTopics": true
+  },
+  "reviewNotes": "No account or sign-in.\n\nTo try it: on the Track tab pick Walk, Run, Hike, Ride or Drive and tap Start. In the Simulator, Features › Location › City Run makes a trip. History and Stats fill in as trips are saved.\n\nLocation: When In Use records the trip you start; Always keeps recording while the phone is locked and lets Roamr notice a drive starting so it can offer to record it (it never records without asking). Motion: tells walking, running, biking and driving apart. HealthKit: read-only, workouts and heart rate.\n\nGo together (group trips): start one with the people button on the Track tab (Pro) or join with a code (free). Members' chosen name and live position are exchanged through the app's CloudKit public database only while the group is on.\n\nSpeed limits: road data is downloaded from OpenStreetMap in map tiles of about 4 km; no personal data is sent.\n\nPro: auto-renewable monthly (com.troydunn.roamr.pro.monthly) and yearly (com.troydunn.roamr.pro.yearly), each with a 1-week free trial as Apple's introductory offer, plus the one-time lifetime unlock (com.troydunn.roamr.pro). Settings › Roamr Pro shows the plans with Restore and Manage Subscription.",
+  "location": "37.2872,-121.9500",
+  "grant": [
+    "location",
+    "location-always",
+    "motion"
+  ],
+  "capture": [
+    {
+      "file": "rm-1-live.png",
+      "args": "-demo -autostart",
+      "wait": 30,
+      "route": [
+        "37.2872,-121.9500",
+        "37.2880,-121.9478",
+        "37.2895,-121.9465",
+        "37.2910,-121.9470",
+        "37.2918,-121.9490",
+        "37.2905,-121.9512",
+        "37.2888,-121.9520",
+        "37.2872,-121.9500",
+        "37.2880,-121.9478",
+        "37.2895,-121.9465"
+      ]
+    },
+    {
+      "file": "rm-2-drive.png",
+      "args": "-demo -autodrive",
+      "wait": 14
+    },
+    {
+      "file": "rm-3-history.png",
+      "args": "-demo -pro -tab history",
+      "wait": 9
+    },
+    {
+      "file": "rm-4-stats.png",
+      "args": "-demo -pro -tab stats",
+      "wait": 9
+    },
+    {
+      "file": "rm-5-track.png",
+      "args": "-demo -pro -tab track",
+      "wait": 9
+    }
+  ],
+  "paywall": {
+    "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99",
+    "wait": 9
+  },
+  "watch": {
+    "product": "RoamrWatch",
+    "bundle": "com.troydunn.roamr.watchkitapp",
+    "capture": [
+      {
+        "file": "rmw-1-live.png",
+        "args": "-demo",
+        "wait": 10
+      }
+    ]
+  },
+  "shots": [
+    {
+      "file": "rm-1-live.png",
+      "eyebrow": "Roamr",
+      "line1": "Every mile,",
+      "line2": "mapped.",
+      "sub": "Walk, run, hike, ride or drive. Lock your phone and go.",
+      "chips": [
+        "Live Activity",
+        "Voice splits"
+      ]
+    },
+    {
+      "file": "rm-2-drive.png",
+      "eyebrow": "Drives",
+      "line1": "Your drive,",
+      "line2": "your log.",
+      "sub": "Big speedometer with the posted speed limit.",
+      "chips": [
+        "Auto drive detect",
+        "Start + end streets"
+      ]
+    },
+    {
+      "file": "rm-3-history.png",
+      "eyebrow": "History",
+      "line1": "Every trip",
+      "line2": "kept.",
+      "sub": "Maps, splits and recap cards for each one.",
+      "chips": [
+        "GPX export",
+        "Share a recap"
+      ]
+    },
+    {
+      "file": "rm-4-stats.png",
+      "eyebrow": "Stats",
+      "line1": "Watch the",
+      "line2": "miles stack.",
+      "sub": "Weekly totals, records and all-time numbers.",
+      "chips": [
+        "Personal records",
+        "Monthly recap"
+      ]
+    },
+    {
+      "file": "rm-5-track.png",
+      "eyebrow": "Go together",
+      "line1": "Bring",
+      "line2": "your crew.",
+      "sub": "Start a group trip and see everyone live.",
+      "chips": [
+        "Invite link",
+        "One shared map"
+      ]
+    }
+  ],
+  "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/roamr/PRIVACY.md",
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/roamr/SUPPORT.md"
+}

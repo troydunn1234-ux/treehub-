@@ -87,6 +87,8 @@ struct TrackRootView: View {
         }
         // "Go together": live group activities with friends (TrackApp/Group).
         .groupTogether(tab: $tab)
+        // Root paywall host (Unlock.gate; opens for the purchase review screenshot: "-demo -paywall").
+        .background { Color.clear.paywallHost(spec: RoamrPro.spec) }
         .overlay(alignment: .top) {
             if detector.showBanner && !tracker.isActive {
                 DriveBanner(onStart: startDriveFromPrompt, onDismiss: { detector.dismissBanner() })

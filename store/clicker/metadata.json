@@ -76,5 +76,56 @@
       ]
     }
   ],
-  "name": "Couch Remote"
+  "name": "Couch Remote",
+  "bundle": "com.troydunn.clicker",
+  "scheme": "Clicker",
+  "copyright": "2026 Troy Dunn",
+  "reviewNotes": "No account or sign-in. Couch Remote controls VIZIO, Roku, Samsung, LG and Google TV / Android TV sets on the same Wi-Fi, and optionally a Windows PC running the free Couch Remote PC companion. Without a TV handy, tap 'No TV handy? Try the demo' on the first screen to explore every screen with pretend TVs; nothing is sent over the network in demo mode. Exit it from the ... menu.\n\nPro (one-time, com.troydunn.clicker.pro) unlocks more than one TV, typing on the TV and the PC remote; a free 7-day trial is offered as a $0 non-consumable (com.troydunn.clicker.trial). To see the paywall, open the PC remote, add a second TV, use the TV keyboard, or add more than the free number of scenes; Restore is on the same screen. People who bought the app while it was paid-upfront get Pro automatically.",
+  "capture": [
+    {
+      "file": "clicker-1-apps.png",
+      "args": "-demo",
+      "wait": 7
+    },
+    {
+      "file": "clicker-2-remote.png",
+      "args": "-demo -pro -remote",
+      "wait": 7
+    },
+    {
+      "file": "clicker-5-picker.png",
+      "args": "-demo -pro -picker",
+      "wait": 8
+    },
+    {
+      "file": "clicker-3-pc.png",
+      "args": "-demo -pro -pc",
+      "wait": 7
+    },
+    {
+      "file": "clicker-4-switcher.png",
+      "args": "-demo -pro -switcher",
+      "wait": 8
+    },
+    {
+      "file": "clicker-0-setup.png",
+      "args": "-noOnboarding",
+      "wait": 7
+    }
+  ],
+  "paywall": {
+    "args": "-demo -paywall -demoPrice 2.99",
+    "wait": 8
+  },
+  "watch": {
+    "product": "ClankerrWatch",
+    "bundle": "com.troydunn.clicker.watchkitapp",
+    "capture": [
+      {
+        "file": "cw-1-remote.png",
+        "args": "-demo",
+        "wait": 9
+      }
+    ]
+  }
 }

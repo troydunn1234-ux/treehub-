@@ -1,0 +1,108 @@
+{
+  "copyright": "2026 Troy Dunn",
+  "bundle": "com.troydunn.ridequest",
+  "scheme": "RideQuest",
+  "name": "Ride Quest: Car Savings Game",
+  "subtitle": "Budget + save for your car",
+  "promotionalText": "Saving for a car shouldn't feel like a chore. Set your goal, log spending, and level up as your savings grow, with quests, boss fights and an arcade.",
+  "keywords": "budget,savings goal,money tracker,expense,spending,subscriptions,bills,finance game,save money",
+  "description": "Ride Quest turns saving for a car into a retro arcade game. Set a savings goal, keep your monthly budgets, and watch your pixel car get closer to the keys with every dollar you put away.\n\nYOUR QUEST\nName your goal and set the amount and the month you want it by. A neon dial shows how far you've come, and every 10% unlocks a new level, all the way to QUEST CLEAR.\n\nBUDGETS THAT FEEL LIKE A GAME\nSet a monthly limit for each category: groceries, gas, eating out, car care and anything else you like. Health bars show what's left, a donut shows where the money went, and a heat map and six-month chart show your habits. Budget alerts warn you before a category runs out.\n\nLOG IN SECONDS\nQuick add a purchase or move money between checking, savings and cash. Every entry lands in your money log, and transfers track what you've stashed for the goal.\n\nMONTHLY REVIEW\nThis month versus last month by category, income versus spending, your savings pace toward the goal, your top merchants and the bills coming up next.\n\nFIND EVERY SUBSCRIPTION\nTrack every subscription and what it costs a month and a year. Paste a list to add them all at once, mark the ones to cancel, and see the subscriptions Ride Quest spots in your bank activity.\n\nTHE ARCADE\nDaily quests, challenges, boss fights against your spendiest categories, a pixel garage, a road trip map, rank and streaks, a pit-stop reaction game, and a loot chest for every week you hit your savings goal. Just for fun: no real money, prizes or purchases.\n\nOPTIONAL BANK SYNC\nConnect your bank through SimpleFIN Bridge (a separate paid service you sign up for) and purchases log themselves. Your access key is kept in the iPhone Keychain and the app talks to SimpleFIN directly. No bank? Everything works by hand.\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics, no servers. Your budget lives on your iPhone, with a backup you can export any time.\n\nFree, with nothing to buy. Ride Quest is a budgeting tool, not financial advice, and is not affiliated with any bank or car brand.",
+  "primaryCategory": "FINANCE",
+  "secondaryCategory": "LIFESTYLE",
+  "price": "0.0",
+  "ageRating": {
+    "gamblingSimulated": "INFREQUENT_OR_MILD",
+    "alcoholTobaccoOrDrugUseOrReferences": "INFREQUENT_OR_MILD"
+  },
+  "reviewNotes": "No account or sign-in, nothing to buy. Everything works offline by hand: Setup sets the goal and balances, Quick add (+) logs a purchase.\n\nBank sync is optional and needs the user's own SimpleFIN Bridge account (a third-party paid service, simplefin.org). The setup token is exchanged on the device; the access URL is stored only in the Keychain. Reviewers can skip it: every feature works without it.\n\nThe Arcade games (including a slot-machine style reward spinner) use no real money, have no prizes and cannot be paid for.",
+  "capture": [
+    {
+      "file": "rq-1-quest.png",
+      "args": "-demo",
+      "wait": 12
+    },
+    {
+      "file": "rq-2-review.png",
+      "args": "-demo",
+      "wait": 12,
+      "section": "review"
+    },
+    {
+      "file": "rq-3-subs.png",
+      "args": "-demo",
+      "wait": 12,
+      "section": "subs"
+    },
+    {
+      "file": "rq-4-arcade.png",
+      "args": "-demo",
+      "wait": 12,
+      "section": "arcade"
+    },
+    {
+      "file": "rq-5-log.png",
+      "args": "-demo",
+      "wait": 12,
+      "section": "log"
+    }
+  ],
+  "shots": [
+    {
+      "file": "rq-1-quest.png",
+      "eyebrow": "Ride Quest",
+      "line1": "Save for",
+      "line2": "the keys.",
+      "sub": "Your car savings goal, as a game.",
+      "chips": [
+        "Level up every 10%",
+        "Monthly budgets"
+      ]
+    },
+    {
+      "file": "rq-2-review.png",
+      "eyebrow": "Review",
+      "line1": "Where did",
+      "line2": "it go?",
+      "sub": "This month vs last, income vs spending.",
+      "chips": [
+        "Savings pace",
+        "Upcoming bills"
+      ]
+    },
+    {
+      "file": "rq-3-subs.png",
+      "eyebrow": "Subscriptions",
+      "line1": "Find every",
+      "line2": "subscription.",
+      "sub": "Monthly and yearly cost, and which to cancel.",
+      "chips": [
+        "Paste a list",
+        "Spotted at your bank"
+      ]
+    },
+    {
+      "file": "rq-4-arcade.png",
+      "eyebrow": "Arcade",
+      "line1": "Beat the",
+      "line2": "boss.",
+      "sub": "Quests, streaks and loot for hitting your goal.",
+      "chips": [
+        "Daily quests",
+        "Pixel garage"
+      ]
+    },
+    {
+      "file": "rq-5-log.png",
+      "eyebrow": "Money log",
+      "line1": "Log it in",
+      "line2": "seconds.",
+      "sub": "Quick add, transfers and optional bank sync.",
+      "chips": [
+        "Checking, savings, cash",
+        "Backup any time"
+      ]
+    }
+  ],
+  "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/ridequest/PRIVACY.md",
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/ridequest/SUPPORT.md"
+}

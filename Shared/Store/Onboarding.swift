@@ -29,7 +29,12 @@ private struct ProOnboardingHost: ViewModifier {
     private var key: String { "onboarding.seen.v\(spec.version)" }
     func body(content: Content) -> some View {
         content
-            .onAppear { if !UserDefaults.standard.bool(forKey: key) { show = true } }
+            .onAppear {
+                // Screenshots ("-demo" or "-noOnboarding") skip it unless "-onboarding" asks for it.
+                let args = ProcessInfo.processInfo.arguments
+                let skip = args.contains("-demo") || args.contains("-noOnboarding")
+                if args.contains("-onboarding") || (!skip && !UserDefaults.standard.bool(forKey: key)) { show = true }
+            }
             .fullScreenCover(isPresented: $show) {
                 ProOnboardingView(spec: spec) {
                     UserDefaults.standard.set(true, forKey: key)

@@ -1,12 +1,13 @@
 """Fill in an app's App Store listing from store/<app>/metadata.json and upload
 marketing screenshots. Never submits anything for review.
 
-usage: asc_listing.py <bundle id> <metadata.json> <screenshots dir>
+usage: asc_listing.py <bundle id> <metadata.json> <screenshots dir> [apple watch screenshots dir]
 """
 import hashlib, json, os, sys, time, urllib.request, urllib.error
 import jwt
 
 bundle, meta_path, shots_dir = sys.argv[1], sys.argv[2], sys.argv[3]
+watch_dir = sys.argv[4] if len(sys.argv) > 4 else None
 meta = json.load(open(meta_path))
 token = jwt.encode({"iss": os.environ["ISS"], "iat": int(time.time()), "exp": int(time.time()) + 1200, "aud": "appstoreconnect-v1"},
                    open(os.environ["KEY_PATH"]).read(), algorithm="ES256", headers={"kid": os.environ["KID"], "typ": "JWT"})
@@ -64,46 +65,72 @@ vattrs = {k: meta[k] for k in ("description", "keywords", "promotionalText", "su
 if call(f"/appStoreVersionLocalizations/{vloc['id']}", "PATCH", {"data": {"type": "appStoreVersionLocalizations", "id": vloc["id"], "attributes": vattrs}}) is not None:
     print("Description, keywords, promo text and support URL set")
 
-# --- Screenshots (6.9" iPhone set), replacing what's there
-files = sorted(f for f in os.listdir(shots_dir) if f.endswith(".png"))
-if not files:
-    print("No screenshots to upload"); sys.exit(0)
-sets = call(f"/appStoreVersionLocalizations/{vloc['id']}/appScreenshotSets")["data"]
-display = "APP_IPHONE_67"
-sset = next((s for s in sets if s["attributes"]["screenshotDisplayType"] == display), None)
-if not sset:
-    sset = call("/appScreenshotSets", "POST", {"data": {"type": "appScreenshotSets", "attributes": {"screenshotDisplayType": display},
-                "relationships": {"appStoreVersionLocalization": {"data": {"type": "appStoreVersionLocalizations", "id": vloc["id"]}}}}})["data"]
-for old in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]:
-    call(f"/appScreenshots/{old['id']}", "DELETE")
-
-for f in files:
-    data = open(os.path.join(shots_dir, f), "rb").read()
-    shot = call("/appScreenshots", "POST", {"data": {"type": "appScreenshots", "attributes": {"fileName": f, "fileSize": len(data)},
-                "relationships": {"appScreenshotSet": {"data": {"type": "appScreenshotSets", "id": sset["id"]}}}}})
-    if not shot: continue
-    sid = shot["data"]["id"]
-    for op in shot["data"]["attributes"]["uploadOperations"]:
-        part = data[op["offset"]:op["offset"] + op["length"]]
-        req = urllib.request.Request(op["url"], method=op["method"], data=part,
-                                     headers={h["name"]: h["value"] for h in op.get("requestHeaders", [])})
-        urllib.request.urlopen(req).read()
-    done = call(f"/appScreenshots/{sid}", "PATCH", {"data": {"type": "appScreenshots", "id": sid,
-                "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
-    print("Uploaded screenshot", f if done else f + " (commit failed)")
-
-# Wait until Apple has actually processed every screenshot; a shot stuck in UPLOAD_COMPLETE/FAILED blocks "Add for Review".
+# --- Screenshots, replacing what's there: the 6.9" iPhone set, plus the Apple Watch set when there is one
 import time as _t
-for attempt in range(12):
-    states = [(x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"]["state"])
-              for x in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]]
-    print("screenshot states:", states)
-    if all(st == "COMPLETE" for _, st in states): break
-    if any(st == "FAILED" for _, st in states):
-        for x in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]:
-            if x["attributes"]["assetDeliveryState"]["state"] == "FAILED":
-                print("  FAILED:", x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"].get("errors"))
-                call(f"/appScreenshots/{x['id']}", "DELETE")
-        break
-    _t.sleep(20)
+
+# Apple Watch display type by pixel size (simulator screenshots).
+WATCH_TYPES = {(410, 502): "APP_WATCH_ULTRA", (422, 514): "APP_WATCH_ULTRA", (416, 496): "APP_WATCH_SERIES_10",
+               (374, 446): "APP_WATCH_SERIES_10", (396, 484): "APP_WATCH_SERIES_7", (352, 430): "APP_WATCH_SERIES_7",
+               (368, 448): "APP_WATCH_SERIES_4", (324, 394): "APP_WATCH_SERIES_4", (312, 390): "APP_WATCH_SERIES_3",
+               (272, 340): "APP_WATCH_SERIES_3"}
+
+
+def png_size(path):
+    with open(path, "rb") as f:
+        head = f.read(24)
+    return int.from_bytes(head[16:20], "big"), int.from_bytes(head[20:24], "big")
+
+
+def upload_set(display, folder, files):
+    sets = call(f"/appStoreVersionLocalizations/{vloc['id']}/appScreenshotSets")["data"]
+    sset = next((s for s in sets if s["attributes"]["screenshotDisplayType"] == display), None)
+    if not sset:
+        res = call("/appScreenshotSets", "POST", {"data": {"type": "appScreenshotSets", "attributes": {"screenshotDisplayType": display},
+                   "relationships": {"appStoreVersionLocalization": {"data": {"type": "appStoreVersionLocalizations", "id": vloc["id"]}}}}})
+        if not res: print("Couldn't make the", display, "set"); return
+        sset = res["data"]
+    for old in call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]:
+        call(f"/appScreenshots/{old['id']}", "DELETE")
+    for f in files[:10]:
+        data = open(os.path.join(folder, f), "rb").read()
+        shot = call("/appScreenshots", "POST", {"data": {"type": "appScreenshots", "attributes": {"fileName": f, "fileSize": len(data)},
+                    "relationships": {"appScreenshotSet": {"data": {"type": "appScreenshotSets", "id": sset["id"]}}}}})
+        if not shot: continue
+        sid = shot["data"]["id"]
+        for op in shot["data"]["attributes"]["uploadOperations"]:
+            part = data[op["offset"]:op["offset"] + op["length"]]
+            req = urllib.request.Request(op["url"], method=op["method"], data=part,
+                                         headers={h["name"]: h["value"] for h in op.get("requestHeaders", [])})
+            urllib.request.urlopen(req).read()
+        done = call(f"/appScreenshots/{sid}", "PATCH", {"data": {"type": "appScreenshots", "id": sid,
+                    "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
+        print(display, "uploaded", f if done else f + " (commit failed)")
+    # Wait until Apple has processed every screenshot; one stuck in UPLOAD_COMPLETE/FAILED blocks "Add for Review".
+    for attempt in range(12):
+        items = call(f"/appScreenshotSets/{sset['id']}/appScreenshots")["data"]
+        states = [(x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"]["state"]) for x in items]
+        print(display, "states:", states)
+        if all(st == "COMPLETE" for _, st in states): break
+        if any(st == "FAILED" for _, st in states):
+            for x in items:
+                if x["attributes"]["assetDeliveryState"]["state"] == "FAILED":
+                    print("  FAILED:", x["attributes"]["fileName"], x["attributes"]["assetDeliveryState"].get("errors"))
+                    call(f"/appScreenshots/{x['id']}", "DELETE")
+            break
+        _t.sleep(20)
+
+
+files = sorted(f for f in os.listdir(shots_dir) if f.endswith(".png")) if os.path.isdir(shots_dir) else []
+if files:
+    upload_set("APP_IPHONE_67", shots_dir, files)
+else:
+    print("No iPhone screenshots to upload")
+if watch_dir and os.path.isdir(watch_dir):
+    by_type = {}
+    for f in sorted(x for x in os.listdir(watch_dir) if x.endswith(".png")):
+        t = WATCH_TYPES.get(png_size(os.path.join(watch_dir, f)))
+        if t: by_type.setdefault(t, []).append(f)
+        else: print("Watch screenshot", f, png_size(os.path.join(watch_dir, f)), "is not an App Store size; skipped")
+    for t, fs in by_type.items():
+        upload_set(t, watch_dir, fs)
 print("Listing updated. Nothing was submitted for review.")

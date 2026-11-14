@@ -297,6 +297,9 @@ targets:
           - CFBundleURLName: com.troydunn.stillpoint
             CFBundleURLSchemes: [stillpoint]
         ProProductID: com.troydunn.stillpoint.pro
+        SubscriptionProductIDs:
+          - com.troydunn.stillpoint.pro.yearly
+          - com.troydunn.stillpoint.pro.monthly
         PaidUntilBuild: 0
         NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate and HRV to show how your practice is going.
         NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes.

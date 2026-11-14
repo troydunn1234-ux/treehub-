@@ -65,5 +65,36 @@
         "Pay once, own it"
       ]
     }
+  ],
+  "bundle": "com.troydunn.natalorbit",
+  "scheme": "NatalOrbit",
+  "copyright": "2026 Troy Dunn",
+  "reviewNotes": "No account or sign-in; works fully offline. On first launch, enter any birth date, time and city (for example 1 January 1990, 12:00, London) to draw a chart. Sections: Chart, Today, Big Three, Compare and Share. All calculations run on the device; nothing is uploaded. The app is for reflection and entertainment and makes no predictions.",
+  "capture": [
+    {
+      "file": "natal-1-chart.png",
+      "args": "-demo -section chart",
+      "wait": 9
+    },
+    {
+      "file": "natal-2-today.png",
+      "args": "-demo -section today",
+      "wait": 8
+    },
+    {
+      "file": "natal-3-three.png",
+      "args": "-demo -section three",
+      "wait": 8
+    },
+    {
+      "file": "natal-4-compare.png",
+      "args": "-demo -section compare",
+      "wait": 8
+    },
+    {
+      "file": "natal-5-share.png",
+      "args": "-demo -section share",
+      "wait": 10
+    }
   ]
 }

@@ -1,12 +1,12 @@
 # Still Pointz Privacy Policy
 
-_Last updated: November 13, 2026_
+_Last updated: November 14, 2026_
 
 Still Pointz is a breathing, stillness, movement and sauna/steam guide for iPhone and Apple Watch. It is built to collect nothing.
 
 **What stays on your devices**
 - Your sessions, journey, notes, favorites and settings are stored on your iPhone and Apple Watch, and synced between them directly.
-- With your permission, Still Pointz reads heart rate and heart-rate variability from Apple Health and saves Mindful Minutes to it. Health data never leaves your devices and is never used for advertising.
+- With your permission, Still Pointz reads heart rate and heart-rate variability from Apple Health and saves your sessions to it as Mindful Minutes (movement routines and sauna/steam sessions as workouts). Health data never leaves your devices and is never used for advertising.
 
 **What Still Pointz does not do**
 - No accounts, sign-ups or logins.

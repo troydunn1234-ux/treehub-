@@ -1,0 +1,123 @@
+{
+  "copyright": "2026 Troy Dunn",
+  "bundle": "com.troydunn.pulselab",
+  "scheme": "PulseLab",
+  "name": "Pulse Lab: Tracker Face-Off",
+  "subtitle": "Compare sleep, HRV & recovery",
+  "promotionalText": "Wear a smartwatch and a WHOOP? See which one you can trust: resting heart rate, HRV, sleep, SpO₂ and calories side by side, day by day.",
+  "keywords": "wearable,hrv,sleep tracker,heart rate,recovery,strain,resting hr,spo2,compare,supplements,readiness",
+  "description": "Pulse Lab puts your Apple Watch data and your WHOOP data side by side, so you can finally see where they agree, where they split, and which one to trust for each number.\n\nTODAY AT A GLANCE\nRecovery, readiness, sleep, resting heart rate, HRV and strain from both trackers on one screen, with a plain-English Lab note about what stands out today.\n\nSLEEP, HEART AND MOVES\nSleep stages and duration, resting heart rate, HRV, respiratory rate, blood oxygen, wrist temperature, steps, active calories and workouts. Every chart shows both trackers in their own colors.\n\nTHE VS LAB\nDay-by-day agreement scores for resting heart rate, HRV, sleep, SpO₂, respiratory rate, temperature and calories, and a running scoreboard of who's winning. \"Who to trust\" explains which tracker is the better source for each metric, backed by your own numbers.\n\nYOUR SUPPLEMENT STACK\nList what you take, check it off each day and Pulse Lab saves it to the Health app as nutrients (vitamin D, magnesium and more). Stack insights compare the next morning's recovery after days you took something versus days you didn't.\n\nEVERY NUMBER, IN ONE PLACE\nThe All data screen lists every metric Pulse Lab syncs with a 7-day sparkline and where it came from. Data check shows exactly what is arriving from the Health app and from WHOOP, so an empty chart is never a mystery.\n\nLOG WHOOP BY HAND\nNo WHOOP connection? Type in the morning's recovery, sleep and strain in seconds, from a morning reminder or with Siri.\n\nSHARE AND EXPORT\nPost the VS scoreboard as a clean card, or export everything as a CSV for your own spreadsheet. Widgets keep today's scores on your Home Screen.\n\nFREE AND PRO\nToday, Sleep, Heart, Moves and Stack, with both trackers side by side for 30 days, are free. Pulse Lab Pro adds the VS lab, Who to trust, 90-day and 1-year history, share cards and CSV export. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics, no servers. Health data and WHOOP data go straight to your iPhone and stay there.\n\nPulse Lab needs the Health app data your watch records; WHOOP data needs a WHOOP membership. Pulse Lab is an independent app, not affiliated with or endorsed by WHOOP. It is for general wellness and is not a medical device.",
+  "primaryCategory": "HEALTH_AND_FITNESS",
+  "secondaryCategory": "LIFESTYLE",
+  "price": "0.0",
+  "ageRating": {
+    "healthOrWellnessTopics": true
+  },
+  "reviewNotes": "No account or sign-in for Pulse Lab itself.\n\nHealthKit: Pulse Lab reads heart, sleep, activity and workout data to compare trackers, and writes only the supplements a person checks off in the Stack tab (as dietary nutrients). On a device with no Health data the screens show empty states; launch on a phone paired with an Apple Watch for real data.\n\nWHOOP is optional: Settings › Connect WHOOP uses WHOOP's own OAuth sign-in (a WHOOP membership is required). Without WHOOP, every screen still works with Health data, and Log WHOOP lets you enter numbers by hand.\n\nPro: auto-renewable monthly (com.troydunn.pulselab.pro.monthly) and yearly (com.troydunn.pulselab.pro.yearly) with a 1-week free trial as Apple's introductory offer, plus the one-time lifetime unlock (com.troydunn.pulselab.pro). Tap the VS tab, any lock icon, or Settings › Pulse Lab Pro to see the plans; Restore and Manage Subscription are on the same screen.",
+  "capture": [
+    {
+      "file": "pl-1-today.png",
+      "args": "-demo -pro -tab today",
+      "wait": 9
+    },
+    {
+      "file": "pl-2-vs.png",
+      "args": "-demo -pro -tab vs",
+      "wait": 9
+    },
+    {
+      "file": "pl-3-sleep.png",
+      "args": "-demo -pro -tab sleep",
+      "wait": 9
+    },
+    {
+      "file": "pl-4-heart.png",
+      "args": "-demo -pro -tab heart",
+      "wait": 9
+    },
+    {
+      "file": "pl-5-stack.png",
+      "args": "-demo -pro -tab stack",
+      "wait": 9
+    },
+    {
+      "file": "pl-6-moves.png",
+      "args": "-demo -pro -tab moves",
+      "wait": 9
+    }
+  ],
+  "paywall": {
+    "args": "-demo -paywall -demoPrice 2.99 -demoPlans 19.99,2.99",
+    "wait": 9
+  },
+  "shots": [
+    {
+      "file": "pl-1-today.png",
+      "eyebrow": "Pulse Lab",
+      "line1": "Two trackers.",
+      "line2": "One truth.",
+      "sub": "Your watch and your WHOOP, side by side.",
+      "chips": [
+        "Recovery + readiness",
+        "Daily Lab note"
+      ]
+    },
+    {
+      "file": "pl-2-vs.png",
+      "eyebrow": "The VS lab",
+      "line1": "Who's",
+      "line2": "right?",
+      "sub": "Day-by-day agreement on every metric.",
+      "chips": [
+        "Resting HR, HRV, SpO₂",
+        "Who to trust"
+      ]
+    },
+    {
+      "file": "pl-3-sleep.png",
+      "eyebrow": "Sleep",
+      "line1": "Every night,",
+      "line2": "compared.",
+      "sub": "Stages and duration from both trackers.",
+      "chips": [
+        "Deep, REM, core",
+        "90-day trends"
+      ]
+    },
+    {
+      "file": "pl-4-heart.png",
+      "eyebrow": "Heart",
+      "line1": "Know your",
+      "line2": "baseline.",
+      "sub": "Resting heart rate, HRV and breathing rate.",
+      "chips": [
+        "7, 30, 90 days",
+        "Both in one chart"
+      ]
+    },
+    {
+      "file": "pl-5-stack.png",
+      "eyebrow": "Stack",
+      "line1": "Does it",
+      "line2": "work?",
+      "sub": "Check off supplements, see what moves recovery.",
+      "chips": [
+        "Saved to Health",
+        "Stack insights"
+      ]
+    },
+    {
+      "file": "pl-6-moves.png",
+      "eyebrow": "Moves",
+      "line1": "Strain vs",
+      "line2": "calories.",
+      "sub": "Steps, workouts and burn, both ways.",
+      "chips": [
+        "Workouts",
+        "Share + CSV"
+      ]
+    }
+  ],
+  "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/pulselab/PRIVACY.md",
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/pulselab/SUPPORT.md"
+}

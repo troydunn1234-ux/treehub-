@@ -1,24 +1,42 @@
 name: Update App Store listing
 
-# Run by hand: takes clean screenshots in the simulator, captions them, and fills in
-# the App Store listing (text + screenshots). It never submits anything for review.
+# Run by hand: takes clean demo-mode screenshots in the simulator (iPhone 6.9", Apple Watch when the app has one,
+# and the paywall for in-app purchase review), captions the iPhone ones, and fills in the App Store page from
+# store/<app>/metadata.json: text, screenshots, price, age rating, availability, review notes, build, and the
+# review screenshot on every in-app purchase / subscription. It never submits anything for review.
 on:
   workflow_dispatch:
     inputs:
       app:
         description: Which app
         type: choice
-        options: [Clicker, NatalOrbit]
+        options: [Clicker, NatalOrbit, StillPoint, PulseLab, Rootbound, Roamr, RideQuest]
         default: Clicker
+      upload:
+        description: Send to App Store Connect (off = screenshots only)
+        type: boolean
+        default: true
 
 permissions:
   contents: write
 
+concurrency:
+  group: listing-${{ inputs.app }}
+  cancel-in-progress: false
+
 jobs:
   listing:
     runs-on: macos-15-intel
+    timeout-minutes: 75
     steps:
       - uses: actions/checkout@v4
+
+      - name: Pick app settings
+        run: |
+          STORE=store/$(echo "${{ inputs.app }}" | tr A-Z a-z)
+          echo "STORE=$STORE" >> $GITHUB_ENV
+          echo "BUNDLE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json'))['bundle'])")" >> $GITHUB_ENV
+          echo "HAS_WATCH=$(python3 -c "import json;print('1' if json.load(open('$STORE/metadata.json')).get('watch') else '')")" >> $GITHUB_ENV
 
       - name: Pick newest Xcode
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
@@ -29,88 +47,39 @@ jobs:
       - name: Generate Xcode project
         run: |
           brew install xcodegen
+          # Store screenshots use made-up demo data only. Ride Quest starts from a demo save file.
           for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
+          if [ "${{ inputs.app }}" = RideQuest ]; then python3 store/ridequest/demo_seed.py > WebApps/QuestApp/seed.json; fi
           xcodegen generate
-
-      - name: Pick app settings
-        run: |
-          case "${{ inputs.app }}" in
-            Clicker) echo "BUNDLE=com.troydunn.clicker" >> $GITHUB_ENV; echo "STORE=store/clicker" >> $GITHUB_ENV ;;
-            NatalOrbit) echo "BUNDLE=com.troydunn.natalorbit" >> $GITHUB_ENV; echo "STORE=store/natalorbit" >> $GITHUB_ENV ;;
-          esac
 
       - name: Build for the simulator
         run: |
           set -o pipefail
           xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} \
             -destination 'generic/platform=iOS Simulator' -configuration Release -derivedDataPath build \
-            CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+            CODE_SIGNING_ALLOWED=NO | tee build.log | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
           ls build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app > /dev/null
 
-      - name: Clean screenshots on the largest iPhone
+      - name: Build the Apple Watch app for its simulator
+        if: env.HAS_WATCH == '1'
         run: |
-          UDID=$(xcrun simctl list devices available -j | python3 -c '
-          import json,sys,re
-          d=json.load(sys.stdin)["devices"]; best=None
-          for rt,devs in d.items():
-              if "iOS" not in rt: continue
-              ver=tuple(int(x) for x in re.findall(r"\d+",rt.split("iOS")[-1]))
-              for dv in devs:
-                  n=dv["name"]
-                  if not n.startswith("iPhone"): continue
-                  s=(ver,"Pro Max" in n,"Pro" in n)
-                  if best is None or s>best[0]: best=(s,dv["udid"])
-          print(best[1])')
-          xcrun simctl boot "$UDID" || true
-          xcrun simctl bootstatus "$UDID" -b
-          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 --operatorName ""
-          xcrun simctl install "$UDID" build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app
-          mkdir -p raw
-          case "${{ inputs.app }}" in
-          Clicker)
-            xcrun simctl launch "$UDID" $BUNDLE -demo > /dev/null; sleep 6
-            xcrun simctl io "$UDID" screenshot raw/clicker-1-apps.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -remote > /dev/null; sleep 6
-            xcrun simctl io "$UDID" screenshot raw/clicker-2-remote.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -picker > /dev/null; sleep 7
-            xcrun simctl io "$UDID" screenshot raw/clicker-5-picker.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -pc > /dev/null; sleep 6
-            xcrun simctl io "$UDID" screenshot raw/clicker-3-pc.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -switcher > /dev/null; sleep 7
-            xcrun simctl io "$UDID" screenshot raw/clicker-4-switcher.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE > /dev/null; sleep 6
-            xcrun simctl io "$UDID" screenshot raw/clicker-0-setup.png
-          ;;
-          NatalOrbit)
-            xcrun simctl launch "$UDID" $BUNDLE -demo -section chart > /dev/null; sleep 8
-            xcrun simctl io "$UDID" screenshot raw/natal-1-chart.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -section today > /dev/null; sleep 7
-            xcrun simctl io "$UDID" screenshot raw/natal-2-today.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -section three > /dev/null; sleep 7
-            xcrun simctl io "$UDID" screenshot raw/natal-3-three.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -section compare > /dev/null; sleep 7
-            xcrun simctl io "$UDID" screenshot raw/natal-4-compare.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-            xcrun simctl launch "$UDID" $BUNDLE -demo -section share > /dev/null; sleep 9
-            xcrun simctl io "$UDID" screenshot raw/natal-5-share.png
-            xcrun simctl terminate "$UDID" $BUNDLE
-          ;;
-          esac
+          W=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json'))['watch']['product'])")
+          if [ ! -d build/Build/Products/Release-watchsimulator/$W.app ]; then
+            xcodebuild build -project TreeHub.xcodeproj -target $W -sdk watchsimulator -configuration Release \
+              SYMROOT=$PWD/build/Build/Products CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          fi
+          ls -d build/Build/Products/Release-watchsimulator/*.app || true
 
-      - name: Caption the screenshots
+      - name: Screenshots (demo data only)
+        run: python3 .github/scripts/store_capture.py $STORE/metadata.json build/Build/Products shots
+
+      - name: Caption the iPhone screenshots
         run: |
-          pip3 install --quiet --break-system-packages pillow pyjwt[crypto] || pip3 install --quiet pillow "pyjwt[crypto]"
-          python3 .github/scripts/marketing_shots.py $STORE/metadata.json raw store-shots
+          pip3 install --quiet --break-system-packages pillow "pyjwt[crypto]" || pip3 install --quiet pillow "pyjwt[crypto]"
+          python3 .github/scripts/marketing_shots.py $STORE/metadata.json shots/raw store-shots
 
-      - name: Fill in the App Store listing
+      - name: Fill in the App Store page
+        if: inputs.upload
         env:
           P8: ${{ secrets.ASC_KEY_P8 }}
           KID: ${{ secrets.ASC_KEY_ID }}
@@ -118,20 +87,29 @@ jobs:
         run: |
           mkdir -p ~/private_keys
           printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
-          KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8 python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots
+          export KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8
+          python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots shots/watch || echo "::warning::listing step failed"
           PRICE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json')).get('price',''))")
-          [ -n "$PRICE" ] && KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8 python3 .github/scripts/asc_price.py $BUNDLE $PRICE || true
+          [ -n "$PRICE" ] && { python3 .github/scripts/asc_price.py $BUNDLE $PRICE || echo "::warning::price step failed"; }
+          python3 .github/scripts/asc_ready.py $BUNDLE $STORE/metadata.json || echo "::warning::ready step failed"
+          if [ -f shots/paywall/iap-review.png ]; then
+            python3 .github/scripts/asc_review_shots.py $BUNDLE shots/paywall/iap-review.png || echo "::warning::review screenshot step failed"
+          fi
 
       - name: Remove key
         if: always()
         run: rm -rf ~/private_keys
 
-      - name: Publish the screenshots to the store-shots branch
+      - name: Publish the screenshots to the store-shots-<app> branch
         if: always()
         run: |
-          [ -d store-shots ] || exit 0
-          TMP=$(mktemp -d); cp -R store-shots/. raw/. "$TMP"/ 2>/dev/null || true
-          cd "$TMP"; git init -q -b store-shots
+          [ -d shots ] || exit 0
+          TMP=$(mktemp -d); mkdir -p "$TMP/raw"
+          cp -R store-shots/. "$TMP"/ 2>/dev/null || true
+          cp -R shots/. "$TMP/raw"/ 2>/dev/null || true
+          grep -E "error:" build.log | head -40 > "$TMP/build-errors.txt" 2>/dev/null || true
+          BR=store-shots-$(echo "${{ inputs.app }}" | tr A-Z a-z)
+          cd "$TMP"; git init -q -b $BR
           git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
           git add -A; git commit -q -m "Store screenshots for ${GITHUB_SHA::7}"
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" store-shots
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $BR
