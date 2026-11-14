@@ -16,7 +16,8 @@ struct BreatheNowControlIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         // The practice the app last suggested (WidgetBridge.publish), else the quick resonance breath.
-        let suggested = UserDefaults(suiteName: "group.com.troydunn.stillpoint")?.string(forKey: "suggestedId") ?? ""
+        let group = UserDefaults(suiteName: "group.com.troydunn.stillpoint")
+        let suggested = group?.string(forKey: "breatheId") ?? group?.string(forKey: "suggestedId") ?? ""
         let id = suggested.isEmpty ? "resonance" : suggested
         UserDefaults.standard.set(id, forKey: "sp.pendingPractice")                         // Router.pendingKey
         NotificationCenter.default.post(name: Notification.Name("sp.pendingPractice"), object: nil) // Router.pendingNote

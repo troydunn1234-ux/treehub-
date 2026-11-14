@@ -3,6 +3,7 @@ import Charts
 
 struct JourneyView: View {
     @EnvironmentObject var log: SessionLog
+    @EnvironmentObject var router: Router
     @State private var healthWeek: Double? = nil
     @State private var external: [ExternalMindfulSession] = []
     @State private var selectedDay: DayPick? = nil
@@ -16,6 +17,8 @@ struct JourneyView: View {
                     Text("Journey").font(SP.serif(34, .light)).foregroundStyle(SP.ink).padding(.top, 8)
 
                     StreakGoalCard()
+
+                    ProgressEntryCard()
 
                     HStack(spacing: 12) {
                         tile(String(format: "%.0f", max(healthWeek ?? 0, log.weekMinutes)), "mindful minutes\nthis week")
@@ -43,8 +46,14 @@ struct JourneyView: View {
                             }
                         }
                     } else {
-                        Text("Your sessions will gather here, like stones on a path.")
-                            .font(SP.serif(17, .light)).foregroundStyle(SP.dim)
+                        VStack(alignment: .leading, spacing: 10) {
+                            Text("Your sessions will gather here, like stones on a path.")
+                                .font(SP.serif(17, .light)).foregroundStyle(SP.dim)
+                            Button { router.tab = 0 } label: {
+                                Label("Begin a first practice", systemImage: "sun.horizon")
+                                    .font(SP.rounded(14, .medium)).foregroundStyle(SP.amber)
+                            }
+                        }
                     }
                 }
                 .padding(.horizontal, 22)
@@ -52,6 +61,7 @@ struct JourneyView: View {
             }
             .background(DuskBackground())
             .navigationDestination(for: UUID.self) { id in SessionDetailView(recordId: id) }
+            .navigationDestination(for: ProgressRoute.self) { _ in PracticeProgressView() }
             .sheet(item: $selectedDay) { pick in
                 DaySessionsSheet(day: pick.day)
                     .environmentObject(log)
@@ -106,6 +116,8 @@ struct JourneyView: View {
         .padding(14)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(SP.card))
         .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(value) \(label.replacingOccurrences(of: "\n", with: " "))")
     }
 
     private func row(_ r: SessionRecord) -> some View {
@@ -127,9 +139,20 @@ struct JourneyView: View {
                 }
             }
             Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(SP.faint)
+                .accessibilityHidden(true)
         }
         .padding(14)
         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(rowLabel(r))
+        .accessibilityHint("Opens the session")
+    }
+
+    private func rowLabel(_ r: SessionRecord) -> String {
+        var parts = [r.title, r.start.formatted(.dateTime.weekday(.wide).hour().minute()),
+                     "\(Int(max(1, r.minutes.rounded()))) minutes", "on \(r.device == "Watch" ? "Watch" : "iPhone")"]
+        if let drop = r.hrDrop, drop > 0 { parts.append("heart rate down \(Int(drop)) beats per minute") }
+        return parts.joined(separator: ", ")
     }
 }
 

@@ -17,6 +17,7 @@ final class WatchHeat: ObservableObject {
             // Anything older than 3 hours was forgotten; drop it.
             active = Date().timeIntervalSince(a.start) < 3 * 3600 ? a : nil
         }
+        WidgetBridge.publishHeat(kind: active?.kind, start: active?.start)
     }
 
     private func save() {
@@ -25,6 +26,14 @@ final class WatchHeat: ObservableObject {
         } else {
             UserDefaults.standard.removeObject(forKey: key)
         }
+        // The heat complication shows the running clock, or the quick-start when nothing is running.
+        WidgetBridge.publishHeat(kind: active?.kind, start: active?.start)
+    }
+
+    /// From a complication tap (stillpoint://heat/<kind>): start unless something is already running.
+    func startFromLink(_ kind: HeatKind) {
+        guard active == nil else { return }
+        start(kind)
     }
 
     func start(_ kind: HeatKind) {
@@ -44,6 +53,8 @@ final class WatchHeat: ObservableObject {
         save()
         WatchRuntime.shared.end(discard: true)
         if end.timeIntervalSince(a.start) >= 60 {
+            // Counts toward the streak on the wrist straight away.
+            SessionLog.shared.addHeat(HeatEntry(start: a.start, minutes: end.timeIntervalSince(a.start) / 60, kind: a.kind))
             send(["heatKind": a.kind.rawValue, "heatStart": a.start.timeIntervalSince1970, "heatEnd": end.timeIntervalSince1970])
         } else {
             send(["heatKind": a.kind.rawValue, "heatStart": a.start.timeIntervalSince1970, "heatCancel": true])

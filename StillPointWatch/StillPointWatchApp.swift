@@ -119,6 +119,13 @@ struct WatchRoot: View {
         .onChange(of: link.pendingStart?.practiceId) { _, _ in consumePending() }
         // Complication tap: stillpoint://practice/<id>. Locked practices open their page instead.
         .onOpenURL { url in
+            // Heat complication: stillpoint://heat/<kind> starts the timer (if none is running) and opens it.
+            if let kind = WidgetBridge.heatKind(from: url) {
+                guard running == nil else { return }
+                WatchHeat.shared.startFromLink(kind)
+                showHeat = true
+                return
+            }
             guard let id = WidgetBridge.practiceId(from: url), let p = lib.practice(id), running == nil else { return }
             if lib.isLocked(p) {
                 path = NavigationPath()

@@ -16,6 +16,7 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         WCSession.default.activate()
         Prefs.shared.onChange = { [weak self] in self?.pushSettings() }
         SessionLog.shared.onGoalChange = { [weak self] in self?.pushSettings() }
+        SessionLog.shared.onActivityChange = { [weak self] in self?.pushSettings() }
     }
 
     var canUseWatch: Bool { watchPaired && watchAppInstalled }
@@ -26,6 +27,11 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         ctx[SyncKey.favorites] = Prefs.shared.favorites
         ctx[SyncKey.pro] = Prefs.shared.pro
         ctx[SyncKey.weekGoal] = SessionLog.shared.weeklyGoal
+        // The phone sees every session (Watch ones too) and the heat log, so its streak is the real one.
+        let log = SessionLog.shared
+        ctx[SyncKey.streak] = log.localStreak
+        ctx[SyncKey.bestStreak] = log.bestStreak
+        if let last = log.lastActiveDay { ctx[SyncKey.streakDay] = last.timeIntervalSince1970 }
         try? WCSession.default.updateApplicationContext(ctx)
     }
 

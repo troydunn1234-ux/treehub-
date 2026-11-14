@@ -32,6 +32,8 @@ struct StillPointApp: App {
                 // Widget / complication taps: stillpoint://practice/<id>
                 .onOpenURL { url in
                     if let id = WidgetBridge.practiceId(from: url) { router.handle(practiceId: id) }
+                    // Widget heat buttons: stillpoint://heat/<sauna|steam>
+                    if let kind = WidgetBridge.heatKind(from: url) { router.handle(heat: kind) }
                 }
         }
         .onChange(of: scenePhase) { _, phase in
@@ -51,6 +53,8 @@ final class Router: ObservableObject {
     @Published var showSettings = false
     /// Navigation inside the Today tab, so deep links can push a practice page.
     @Published var homePath = NavigationPath()
+    /// The sauna / steam guide, opened from a widget link.
+    @Published var showHeatGuide = false
 
     /// Where Siri / Shortcuts leave the practice they want started; picked up on launch and foreground.
     static let pendingKey = "sp.pendingPractice"
@@ -80,6 +84,16 @@ final class Router: ObservableObject {
         let usual = Prefs.shared.settings.defaultMinutes
         let mins = p.minutes.contains(usual) ? usual : p.defaultMinutes
         run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: mins))
+    }
+
+    /// Start a sauna / steam timer (unless one is running) and open the guide. Ignored during a session.
+    @MainActor
+    func handle(heat kind: HeatKind) {
+        guard running == nil else { return }
+        showSettings = false
+        tab = 0
+        if HeatStore.shared.active == nil { HeatStore.shared.start(kind) }
+        showHeatGuide = true
     }
 
     /// Queue a practice to start (from an App Intent); the app picks it up when it is in front.
@@ -119,9 +133,16 @@ struct RootView: View {
             PhoneRunView(plan: plan) { router.running = nil }
                 .environmentObject(prefs)
         }
+        .background {
+            Color.clear.fullScreenCover(isPresented: $router.showHeatGuide) {
+                HeatGuideView().environmentObject(HeatStore.shared)
+            }
+        }
         .sheet(isPresented: $router.showSettings) {
             SettingsView().environmentObject(prefs).environmentObject(link).environmentObject(log)
         }
+        // Its own host so it never competes with the Settings sheet (opens for screenshots: "-demo -paywall").
+        .background { Color.clear.paywallHost(spec: StillPointPro.spec) }
         .onReceive(NotificationCenter.default.publisher(for: Router.pendingNote)) { _ in router.consumePending() }
         .onAppear {
             Reminders.onOpen = { router.tab = 0 }

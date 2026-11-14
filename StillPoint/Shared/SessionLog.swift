@@ -122,8 +122,77 @@ final class SessionLog: ObservableObject {
            let r = try? JSONDecoder().decode([SessionRecord].self, from: d) {
             records = r
         }
-        if ProcessInfo.processInfo.arguments.contains("-demo") && records.isEmpty { records = Self.demo() }
+        if let d = UserDefaults.standard.data(forKey: heatKey),
+           let h = try? JSONDecoder().decode([HeatEntry].self, from: d) {
+            heatEntries = h
+        }
+        if ProcessInfo.processInfo.arguments.contains("-demo") && records.isEmpty {
+            records = Self.demo()
+            if heatEntries.isEmpty { heatEntries = Self.demoHeat() }
+        }
     }
+
+    // MARK: - Sauna / steam days (for the streak and Progress)
+
+    /// Finished heat sessions (≥ 1 min). The iPhone mirrors its heat log here; the Watch adds the ones it times.
+    @Published private(set) var heatEntries: [HeatEntry] = []
+    private let heatKey = "sp.heatEntries"
+
+    /// Replace with the iPhone's heat log (HeatStore is the source of truth there).
+    func replaceHeat(_ items: [HeatEntry]) {
+        let kept = items.filter { $0.minutes >= 1 }.sorted { $0.start > $1.start }
+        guard kept != heatEntries else { return }
+        heatEntries = Array(kept.prefix(500))
+        persistHeat()
+    }
+
+    /// Add one finished heat session (Watch).
+    func addHeat(_ e: HeatEntry) {
+        guard e.minutes >= 1, !heatEntries.contains(where: { abs($0.start.timeIntervalSince(e.start)) < 5 }) else { return }
+        heatEntries.insert(e, at: 0)
+        if heatEntries.count > 500 { heatEntries = Array(heatEntries.prefix(500)) }
+        persistHeat()
+    }
+
+    private func persistHeat() {
+        if let d = try? JSONEncoder().encode(heatEntries) { UserDefaults.standard.set(d, forKey: heatKey) }
+        WidgetBridge.publish()
+        onActivityChange?()
+    }
+
+    /// Called after sessions or heat change (the iPhone uses it to send its streak to the Watch).
+    var onActivityChange: (() -> Void)?
+
+    // MARK: - Streak from the other device
+
+    /// The Watch only sees its own sessions; the iPhone sends its streak so the wrist shows the real one.
+    private let remoteKey = "sp.remoteStreak"
+    private struct RemoteStreak: Codable { var count: Int; var best: Int; var lastDay: Date }
+    private lazy var remote: RemoteStreak? = {
+        guard let d = UserDefaults.standard.data(forKey: remoteKey) else { return nil }
+        return try? JSONDecoder().decode(RemoteStreak.self, from: d)
+    }()
+
+    func applyRemoteStreak(count: Int, best: Int, lastDay: Date) {
+        let r = RemoteStreak(count: count, best: best, lastDay: lastDay)
+        remote = r
+        if let d = try? JSONEncoder().encode(r) { UserDefaults.standard.set(d, forKey: remoteKey) }
+        objectWillChange.send()
+        WidgetBridge.publish()
+    }
+
+    /// The other device's streak, if it is still alive today.
+    private var remoteCurrent: Int {
+        guard let r = remote, r.count > 0 else { return 0 }
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: Date())
+        let last = cal.startOfDay(for: r.lastDay)
+        guard let gap = cal.dateComponents([.day], from: last, to: today).day, gap <= 1, gap >= 0 else { return 0 }
+        return r.count
+    }
+
+    /// Last day with any activity on this device (sent to the Watch with the streak).
+    var lastActiveDay: Date? { activeDays.max() }
 
     /// Sessions the person discarded; ignored if the other device sends them again.
     private let deletedKey = "sp.sessions.deleted"
@@ -170,6 +239,7 @@ final class SessionLog: ObservableObject {
     private func persist() {
         if let d = try? JSONEncoder().encode(records) { UserDefaults.standard.set(d, forKey: key) }
         WidgetBridge.publish()
+        onActivityChange?()
     }
 
     // MARK: - Streak & weekly goal
@@ -227,15 +297,25 @@ final class SessionLog: ObservableObject {
 
     /// At least one session today, so the streak is safe for another day.
     var practicedToday: Bool {
+        if activeDays.contains(Calendar.current.startOfDay(for: Date())) { return true }
+        guard let r = remote else { return false }
+        return Calendar.current.isDateInToday(r.lastDay)
+    }
+
+    /// Days (start of day) with at least one finished session of a minute or more, sauna and steam included.
+    var activeDays: Set<Date> {
         let cal = Calendar.current
-        return records.contains { cal.isDateInToday($0.start) }
+        var days = Set(records.filter { $0.seconds >= 60 }.map { cal.startOfDay(for: $0.start) })
+        for h in heatEntries where h.minutes >= 1 { days.insert(cal.startOfDay(for: h.start)) }
+        return days
     }
 
     /// Longest run of consecutive days ever.
     var bestStreak: Int {
         let cal = Calendar.current
-        let days = Set(records.map { cal.startOfDay(for: $0.start) }).sorted()
-        var best = 0, run = 0
+        let days = activeDays.sorted()
+        var best = remote?.best ?? 0
+        var run = 0
         var prev: Date? = nil
         for d in days {
             if let p = prev, let next = cal.date(byAdding: .day, value: 1, to: p), cal.isDate(next, inSameDayAs: d) {
@@ -259,9 +339,12 @@ final class SessionLog: ObservableObject {
     }
 
     /// Consecutive days (ending today or yesterday) with at least one session.
-    var streak: Int {
+    var streak: Int { max(localStreak, remoteCurrent) }
+
+    /// The streak from this device's own sessions and heat log.
+    var localStreak: Int {
         let cal = Calendar.current
-        let days = Set(records.map { cal.startOfDay(for: $0.start) })
+        let days = activeDays
         var day = cal.startOfDay(for: Date())
         if !days.contains(day) { day = cal.date(byAdding: .day, value: -1, to: day) ?? day }
         var n = 0
@@ -342,6 +425,14 @@ final class SessionLog: ObservableObject {
                                      respiratoryRate: hasHR ? 6 + Double(back % 3) : nil))
         }
         return out
+    }
+
+    private static func demoHeat() -> [HeatEntry] {
+        let cal = Calendar.current
+        return [1, 4, 8, 15, 22].compactMap { back in
+            guard let d = cal.date(byAdding: .day, value: -back, to: Date()) else { return nil }
+            return HeatEntry(start: d.addingTimeInterval(-7200), minutes: back % 2 == 0 ? 15 : 18, kind: back % 3 == 0 ? .steam : .sauna)
+        }
     }
 
     /// A gentle, slightly wobbly descent for demo screenshots.

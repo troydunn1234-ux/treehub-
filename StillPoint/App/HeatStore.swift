@@ -33,12 +33,23 @@ final class HeatStore: ObservableObject {
             active = saved.active
             history = saved.history
         }
+        mirrorToLog()
     }
 
     private func save() {
         if let data = try? JSONEncoder().encode(Saved(active: active, history: history)) {
             UserDefaults.standard.set(data, forKey: key)
         }
+        mirrorToLog()
+    }
+
+    /// Finished sessions count toward the streak and Progress (SessionLog keeps a light copy).
+    private func mirrorToLog() {
+        guard !ProcessInfo.processInfo.arguments.contains("-demo") || !history.isEmpty else { return }
+        SessionLog.shared.replaceHeat(history.compactMap { s in
+            guard s.end != nil else { return nil }
+            return HeatEntry(start: s.start, minutes: s.minutes, kind: s.kind)
+        })
     }
 
     /// Start timing. If another session is running it is finished first.

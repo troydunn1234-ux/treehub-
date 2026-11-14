@@ -31,6 +31,10 @@ final class WatchLink: NSObject, ObservableObject, WCSessionDelegate {
                 Prefs.shared.applyRemote(s, favorites: dict[SyncKey.favorites] as? [String], pro: dict[SyncKey.pro] as? Bool)
             }
             if let g = dict[SyncKey.weekGoal] as? Double { SessionLog.shared.applyRemoteGoal(g) }
+            if let n = dict[SyncKey.streak] as? Int, let day = dict[SyncKey.streakDay] as? Double {
+                SessionLog.shared.applyRemoteStreak(count: n, best: dict[SyncKey.bestStreak] as? Int ?? n,
+                                                    lastDay: Date(timeIntervalSince1970: day))
+            }
             if dict[SyncKey.command] as? String == SyncKey.start, let id = dict[SyncKey.practiceId] as? String {
                 let mins = dict[SyncKey.minutes] as? Int ?? Prefs.shared.settings.defaultMinutes
                 self.pendingStart = (id, mins, dict["warmUpId"] as? String)
