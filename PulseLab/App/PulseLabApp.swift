@@ -57,6 +57,7 @@ enum LabTab: String, CaseIterable, Identifiable {
 
 struct RootView: View {
     @Environment(LabStore.self) private var store
+    @Environment(\.modelContext) private var modelContext
     @ObservedObject private var unlock = Unlock.shared
     @Environment(\.scenePhase) private var phase
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -143,6 +144,16 @@ struct RootView: View {
     /// callback, consumed by ASWebAuthenticationSession, so anything else is ignored here.
     private func open(_ url: URL) {
         guard url.scheme?.lowercased() == "pulselab", let host = url.host?.lowercased() else { return }
+        // Food Book handing over its supplement stack.
+        if host == "stack-import" {
+            withAnimation(.snappy) { tab = .stack }
+            if let n = StackImport.run(url, into: modelContext) {
+                store.toast = n > 0 ? "Brought over \(n) supplement\(n == 1 ? "" : "s") from Food Book" : "Your stack was already here"
+            } else {
+                store.toast = "Couldn't read the stack from Food Book. Try again."
+            }
+            return
+        }
         guard host != "whoop", let t = LabTab.named(host) else { return }
         withAnimation(.snappy) { tab = t }
     }
