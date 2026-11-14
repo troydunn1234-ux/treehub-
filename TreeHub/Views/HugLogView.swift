@@ -105,6 +105,8 @@ struct HugLogView: View {
     @State private var guessing = false
     @State private var guessNote = ""
     @State private var showExtras = false
+    @ObservedObject private var unlock = Unlock.shared
+    @State private var showPlans = false
 
     private static let speciesSuggestions = [
         "Coast Redwood", "Coast Live Oak", "Valley Oak", "California Sycamore", "Eucalyptus", "Monterey Pine",
@@ -180,6 +182,7 @@ struct HugLogView: View {
             }
         }
         .onAppear(perform: setup)
+        .paywall(isPresented: $showPlans, spec: RootboundPro.spec, context: "Tree selfies")
         .fullScreenCover(item: $celebration) { c in
             CelebrationView(data: c) {
                 celebration = nil
@@ -199,7 +202,9 @@ struct HugLogView: View {
                         readPhotoMetadata(data)
                         Task { await guessSpecies(data) }
                     }
-                    PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto, tilt: 2) { data in
+                    // Rootbound Pro: the second photo (tree selfie). A selfie that's already on a hug always stays.
+                    PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto, tilt: 2,
+                              locked: !unlock.isPro, onLocked: { showPlans = true }) { data in
                         if d.treePhoto == nil { readPhotoMetadata(data) }
                     }
                 }
@@ -750,6 +755,9 @@ struct PhotoSlot: View {
     let symbol: String
     @Binding var data: Data?
     var tilt: Double = 0
+    /// Pro-only slot: when empty, a tap opens the paywall instead of the picker.
+    var locked: Bool = false
+    var onLocked: () -> Void = {}
     var onPicked: (Data) -> Void
 
     @State private var item: PhotosPickerItem?
@@ -758,6 +766,16 @@ struct PhotoSlot: View {
     @State private var loading = false
 
     var body: some View {
+        if locked && data == nil {
+            Button(action: onLocked) { polaroid }
+                .buttonStyle(.plain)
+                .accessibilityLabel("\(title), Rootbound Pro")
+        } else {
+            picker
+        }
+    }
+
+    private var picker: some View {
         Menu {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
                 Button { showCamera = true } label: { Label("Take photo", systemImage: "camera") }
@@ -767,30 +785,7 @@ struct PhotoSlot: View {
                 Button(role: .destructive) { data = nil } label: { Label("Remove", systemImage: "trash") }
             }
         } label: {
-            VStack(spacing: 6) {
-                ZStack {
-                    if let data, let ui = UIImage(data: data) {
-                        Image(uiImage: ui).resizable().scaledToFill()
-                    } else {
-                        Color.white.opacity(0.06)
-                        VStack(spacing: 6) {
-                            Image(systemName: loading ? "hourglass" : symbol).font(.system(size: 24, weight: .semibold))
-                            Image(systemName: "plus.circle.fill").font(.system(size: 14))
-                        }
-                        .foregroundStyle(Theme.glow)
-                    }
-                }
-                .frame(height: 110)
-                .frame(maxWidth: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                Text(title).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(Theme.forestDeep)
-                    .lineLimit(1).minimumScaleFactor(0.8)
-            }
-            .padding(6)
-            .padding(.bottom, 2)
-            .background(Theme.cream, in: RoundedRectangle(cornerRadius: 8))
-            .rotationEffect(.degrees(tilt))
-            .shadow(color: .black.opacity(0.35), radius: 6, y: 3)
+            polaroid
         }
         .photosPicker(isPresented: $showLibrary, selection: $item, matching: .images, photoLibrary: .shared())
         .onChange(of: item) { _, newItem in
@@ -811,6 +806,38 @@ struct PhotoSlot: View {
             }, onClose: { showCamera = false })
             .ignoresSafeArea()
         }
+    }
+
+    private var polaroid: some View {
+            VStack(spacing: 6) {
+                ZStack {
+                    if let data, let ui = UIImage(data: data) {
+                        Image(uiImage: ui).resizable().scaledToFill()
+                    } else {
+                        Color.white.opacity(0.06)
+                        VStack(spacing: 6) {
+                            Image(systemName: loading ? "hourglass" : symbol).font(.system(size: 24, weight: .semibold))
+                            if locked {
+                                Label("Pro", systemImage: "lock.fill").font(.system(size: 12, weight: .heavy, design: .rounded))
+                                    .foregroundStyle(Theme.gold)
+                            } else {
+                                Image(systemName: "plus.circle.fill").font(.system(size: 14))
+                            }
+                        }
+                        .foregroundStyle(Theme.glow)
+                    }
+                }
+                .frame(height: 110)
+                .frame(maxWidth: .infinity)
+                .clipShape(RoundedRectangle(cornerRadius: 6))
+                Text(title).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(Theme.forestDeep)
+                    .lineLimit(1).minimumScaleFactor(0.8)
+            }
+            .padding(6)
+            .padding(.bottom, 2)
+            .background(Theme.cream, in: RoundedRectangle(cornerRadius: 8))
+            .rotationEffect(.degrees(tilt))
+            .shadow(color: .black.opacity(0.35), radius: 6, y: 3)
     }
 }
 

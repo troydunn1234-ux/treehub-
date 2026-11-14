@@ -6,14 +6,14 @@
   "subtitle": "Tree hugs, XP & forest walks",
   "promotionalText": "Turn time with trees into a game. Log each hug with a photo and map pin, earn XP and rare leaves, and grow a grove of tree friends you can walk back to.",
   "keywords": "tree,nature,forest bathing,grounding,barefoot,earthing,mindfulness,walk,hike,outdoors,journal,game",
-  "description": "Rootbound turns hugging trees into a calm little game. Step outside, find a tree, slow down, and log the moment. Every hug earns XP, grows your grove and brings you back to the trees that ground you.\n\nLOG A TREE HUG\nSnap the tree and a tree selfie, pin it on the map (live, from the photo, or from a pasted map link) and tag the moment: hike, chill, park, sunrise, sunset, trail, beach, solo or with someone. Flip on barefoot for grounding, note how stressed you felt before and after, and write what the tree told you.\n\nBREATHWORK, AUTO-FILLED\nDid a breathing session at the tree? Rootbound reads your heart rate, breathing rate and mindful minutes from the Health app and adds them to the hug. You can attach a screenshot from your watch app too.\n\nWHAT TREE IS THIS?\nRootbound suggests the species from your photo using on-device image recognition, then shares a fact about it.\n\nXP, LEVELS AND RARE LEAVES\nClimb from Seedling to Ancient One. Earn badges for streaks, seasons, sunrises, long sits and loyal friendships, and collect 12 leaves, from the Oak Leaf to the Golden Elder Leaf said to fall once a century.\n\nYOUR GROVE\nEvery tree you've hugged lives in your grove, with friendship hearts, hug history and a map of all your trees. Tap one to get walking directions back.\n\nSTROLLS AND HIKES\nStart a stroll or hike and lock your phone. Rootbound records the route, distance, time and climb, with a Live Activity on the Lock Screen.\n\nSIRI AND WIDGETS\n\"Log a tree hug\" and \"Start a stroll\" with Siri, and keep your streak on your Home Screen.\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your hugs live on your iPhone and in your own private iCloud, so they follow you to a new phone and nobody else can read them.\n\nFree, with nothing to buy.",
+  "description": "Rootbound turns hugging trees into a calm little game. Step outside, find a tree, slow down, and log the moment. Every hug earns XP, grows your grove and brings you back to the trees that ground you.\n\nLOG A TREE HUG\nSnap the tree (plus a tree selfie with Pro), pin it on the map (live, from the photo, or from a pasted map link) and tag the moment: hike, chill, park, sunrise, sunset, trail, beach, solo or with someone. Flip on barefoot for grounding, note how stressed you felt before and after, and write what the tree told you.\n\nBREATHWORK, AUTO-FILLED\nDid a breathing session at the tree? Rootbound reads your heart rate, breathing rate and mindful minutes from the Health app and adds them to the hug. You can attach a screenshot from your watch app too.\n\nWHAT TREE IS THIS?\nRootbound suggests the species from your photo using on-device image recognition, then shares a fact about it.\n\nXP, LEVELS AND RARE LEAVES\nClimb from Seedling to Ancient One. Earn badges for streaks, seasons, sunrises, long sits and loyal friendships, and collect 12 leaves, from the Oak Leaf to the Golden Elder Leaf said to fall once a century.\n\nYOUR GROVE\nEvery tree you've hugged lives in your grove, with friendship hearts, hug history and a map of all your trees. Tap one to get walking directions back.\n\nSTROLLS AND HIKES\nStart a stroll or hike and lock your phone. Rootbound records the route, distance, time and climb, with a Live Activity on the Lock Screen.\n\nSIRI AND WIDGETS\n\"Log a tree hug\" and \"Start a stroll\" with Siri, and keep your streak on your Home Screen.\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your hugs live on your iPhone and in your own private iCloud, so they follow you to a new phone and nobody else can read them.\n\nROOTBOUND PRO\nLogging hugs, the map, your grove, strolls, XP and every badge and leaf are free. One optional payment unlocks Rootbound Pro forever, with no subscription: tree selfies (a second photo on every hug), tree insights (mood lift, stress drop, heart rate and your favorite time of day with each tree), and CSV and GPX export of your hugs and routes.",
   "primaryCategory": "HEALTH_AND_FITNESS",
   "secondaryCategory": "LIFESTYLE",
   "price": "0.0",
   "ageRating": {
     "healthOrWellnessTopics": true
   },
-  "reviewNotes": "No account or sign-in, nothing to buy.\n\nTo try it: tap the big Hug button on Home, add a photo (or skip), and save; the celebration screen shows the XP. The Grove and Collection tabs fill up as hugs are logged. The Track tab records a stroll or hike.\n\nPermissions: location (pin the tree, record strolls; Always only keeps a stroll recording while the phone is locked), motion (stroll vs hike), camera and photos (tree photos), HealthKit read-only (heart rate, breathing rate, mindful minutes, workouts). Data syncs only to the user's own private iCloud (CloudKit private database).",
+  "reviewNotes": "No account or sign-in.\n\nTo try it: tap the big Hug button on Home, add a photo (or skip), and save; the celebration screen shows the XP. The Grove and Collection tabs fill up as hugs are logged. The Track tab records a stroll or hike.\n\nIn-app purchase: Rootbound Pro (com.troydunn.rootbound.pro) is a one-time non-consumable, no subscription. It unlocks the second \"You + Tree\" selfie photo on a hug, the Tree insights card on each tree in the Grove, and CSV / GPX export in Settings. To see the paywall: tap the \"You + Tree\" photo slot when logging a hug, open a tree in the Grove and tap Tree insights, or open Settings (gear on Home) and tap Rootbound Pro. Restore Purchases is in Settings and on the paywall. Logging hugs with a tree photo, the map, strolls, badges, leaves and the JSON export stay free.\n\nPermissions: location (pin the tree, record strolls; Always only keeps a stroll recording while the phone is locked), motion (stroll vs hike), camera and photos (tree photos), HealthKit read-only (heart rate, breathing rate, mindful minutes, workouts). Data syncs only to the user's own private iCloud (CloudKit private database).",
   "location": "37.7772,-122.4500",
   "grant": [
     "location",
@@ -24,32 +24,32 @@
   "capture": [
     {
       "file": "rb-1-home.png",
-      "args": "-demo -tab home",
+      "args": "-demo -pro -tab home",
       "wait": 9
     },
     {
       "file": "rb-2-log.png",
-      "args": "-demo -hugLog",
+      "args": "-demo -pro -hugLog",
       "wait": 9
     },
     {
       "file": "rb-3-celebrate.png",
-      "args": "-demo -celebrate",
+      "args": "-demo -pro -celebrate",
       "wait": 10
     },
     {
       "file": "rb-4-grove.png",
-      "args": "-demo -tab trees",
+      "args": "-demo -pro -tab trees",
       "wait": 9
     },
     {
       "file": "rb-5-collection.png",
-      "args": "-demo -tab collection",
+      "args": "-demo -pro -tab collection",
       "wait": 9
     },
     {
       "file": "rb-6-track.png",
-      "args": "-demo -tab track",
+      "args": "-demo -pro -tab track",
       "wait": 9
     }
   ],
@@ -122,5 +122,9 @@
     }
   ],
   "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/PRIVACY.md",
-  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/SUPPORT.md"
+  "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/SUPPORT.md",
+  "paywall": {
+    "args": "-demo -paywall -demoPrice 4.99",
+    "wait": 8
+  }
 }

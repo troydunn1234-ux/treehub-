@@ -16,6 +16,9 @@ Rootbound is a tree-hugging game with strolls and hikes. It has no accounts, no 
 - No analytics, tracking, advertising or third-party SDKs.
 - No servers of our own: nothing you do is sent to us.
 
+**Purchases**
+Rootbound Pro is a one-time purchase handled entirely by Apple. We never see your payment details.
+
 **Deleting your data**
 Delete a hug in the app, or delete the app and its iCloud data (Settings › your name › iCloud › Manage Storage) to remove everything.
 

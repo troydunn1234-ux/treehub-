@@ -194,6 +194,8 @@ struct TreeDetailView: View {
 
                     TreeFactCard(species: tree.species)
 
+                    TreeInsightsCard(tree: tree)
+
                     if let c = tree.coordinate {
                         Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 500, longitudinalMeters: 500))) {
                             Annotation(tree.name, coordinate: c) { TreePin(photo: tree.coverPhoto) }
@@ -285,5 +287,54 @@ struct TreeDetailView: View {
 
     private func bondLabel(_ b: Int) -> String {
         ["", "New friend", "Getting close", "Good friends", "Best friends", "Soulmates"][max(0, min(5, b))]
+    }
+}
+
+/// Rootbound Pro: what time with this tree does for you, from the hugs you've logged.
+struct TreeInsightsCard: View {
+    let tree: TreeSummary
+    @ObservedObject private var unlock = Unlock.shared
+
+    private static func avg(_ v: [Double]) -> Double? { v.isEmpty ? nil : v.reduce(0, +) / Double(v.count) }
+
+    private var moodLift: Double? {
+        Self.avg(tree.hugs.filter { $0.moodBefore > 0 && $0.moodAfter > 0 }.map { Double($0.moodAfter - $0.moodBefore) })
+    }
+    private var stressDrop: Double? {
+        Self.avg(tree.hugs.compactMap { h in
+            guard let a = h.stressStart, let b = h.stressEnd else { return nil }
+            return a - b
+        })
+    }
+    private var avgHR: Double? { Self.avg(tree.hugs.compactMap(\.avgHR)) }
+    private var avgMinutes: Double? { Self.avg(tree.hugs.map(\.durationMin).filter { $0 > 0 }) }
+    private var barefootShare: Double? {
+        tree.hugs.isEmpty ? nil : Double(tree.hugs.filter(\.barefoot).count) / Double(tree.hugs.count)
+    }
+    private var favoriteTime: String? {
+        let counts = tree.hugs.reduce(into: [String: Int]()) { $0[Format.partOfDay($1.date), default: 0] += 1 }
+        return counts.max { $0.value < $1.value }?.key
+    }
+
+    var body: some View {
+        if unlock.isPro {
+            GlassCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionHeader(title: "Tree insights", symbol: "chart.line.uptrend.xyaxis")
+                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                        StatTile(value: moodLift.map { String(format: "%+.1f", $0) } ?? "--", label: "Mood lift", symbol: "face.smiling")
+                        StatTile(value: stressDrop.map { String(format: "%.0f", $0) } ?? "--", label: "Stress drop", symbol: "waveform.path.ecg")
+                        StatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", symbol: "heart.fill")
+                        StatTile(value: avgMinutes.map { Format.minutes($0) } ?? "--", label: "Avg hug", symbol: "timer")
+                        StatTile(value: barefootShare.map { "\(Int(($0 * 100).rounded()))%" } ?? "--", label: "Barefoot", symbol: "shoeprints.fill")
+                        StatTile(value: favoriteTime ?? "--", label: "Favorite time", symbol: "sun.horizon.fill")
+                    }
+                }
+            }
+        } else {
+            RootboundProLock(symbol: "chart.line.uptrend.xyaxis", title: "Tree insights",
+                             message: "See your mood lift, stress drop and heart rate with \(tree.name).",
+                             context: "Tree insights")
+        }
     }
 }
