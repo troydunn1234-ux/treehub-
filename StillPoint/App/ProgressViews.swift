@@ -78,6 +78,7 @@ struct PracticeProgressView: View {
                 StreakPairCard()
                 CategoryWeekCard()
                 HeatmapCard(selectedDay: $selectedDay)
+                if !log.heatEntries.isEmpty { RecoveryCard() }
                 MilestonesCard()
             }
             .padding(.horizontal, 22)

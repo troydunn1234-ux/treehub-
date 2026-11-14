@@ -123,6 +123,80 @@ struct StartHeatIntent: AppIntent {
     }
 }
 
+/// "Start sauna in Still Pointz": no questions asked.
+struct StartSaunaIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Sauna"
+    static var description = IntentDescription("Starts timing a sauna session. Heart rate for that time is read from the Health app when you finish.")
+    static var openAppWhenRun = false
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        HeatStore.shared.start(.sauna)
+        return .result(dialog: "Sauna timer started. Enjoy the heat.")
+    }
+}
+
+/// "Start steam in Still Pointz".
+struct StartSteamIntent: AppIntent {
+    static var title: LocalizedStringResource = "Start Steam Room"
+    static var description = IntentDescription("Starts timing a steam-room session. Heart rate for that time is read from the Health app when you finish.")
+    static var openAppWhenRun = false
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        HeatStore.shared.start(.steam)
+        return .result(dialog: "Steam room timer started. Breathe slow and easy.")
+    }
+}
+
+enum LoggedActivity: String, AppEnum {
+    case sauna, steam, breathing
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Activity"
+    static var caseDisplayRepresentations: [LoggedActivity: DisplayRepresentation] = [
+        .sauna: "Sauna",
+        .steam: "Steam",
+        .breathing: "Breathing",
+    ]
+}
+
+/// "Log a session in Still Pointz": record one done away from the app, ending now.
+struct LogSessionIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log a Session"
+    static var description = IntentDescription("Adds a sauna, steam or breathing session you already did, ending now.")
+    static var openAppWhenRun = false
+
+    @Parameter(title: "Activity", default: .sauna)
+    var activity: LoggedActivity
+
+    @Parameter(title: "Minutes", inclusiveRange: (1, 240), requestValueDialog: "How many minutes?")
+    var minutes: Int
+
+    static var parameterSummary: some ParameterSummary { Summary("Log \(\.$minutes) minutes of \(\.$activity)") }
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let mins = max(1, min(240, minutes))
+        switch activity {
+        case .sauna:
+            HeatStore.shared.logPast(.sauna, minutes: mins)
+        case .steam:
+            HeatStore.shared.logPast(.steam, minutes: mins)
+        case .breathing:
+            let p = PracticeLibrary.shared.quickPractice
+            let end = Date()
+            let start = end.addingTimeInterval(-Double(mins) * 60)
+            let r = SessionRecord(practiceId: p.id, title: String(localized: "Breathing (logged)"), start: start,
+                                  seconds: Double(mins) * 60, cycles: 0, device: "iPhone",
+                                  kind: "breath", minutesPlanned: mins)
+            SessionLog.shared.add(r)
+            MindfulHealth.shared.saveMindful(start: start, end: end)
+        }
+        return .result(dialog: "Logged \(mins) minutes. Nice work.")
+    }
+}
+
 /// "I'm out of the sauna": ends the running heat session.
 struct EndHeatIntent: AppIntent {
     static var title: LocalizedStringResource = "End Sauna or Steam"
@@ -151,6 +225,8 @@ struct StillPointShortcuts: AppShortcutsProvider {
                 "Start \(.applicationName) breathing",
                 "Breathe with \(.applicationName)",
                 "Start a \(.applicationName) session",
+                "Start a breathing session in \(.applicationName)",
+                "Start a breathing session with \(.applicationName)",
                 "Open \(.applicationName) and breathe",
             ],
             shortTitle: "Breathe now",
@@ -168,14 +244,36 @@ struct StillPointShortcuts: AppShortcutsProvider {
             systemImageName: "leaf"
         )
         AppShortcut(
-            intent: StartHeatIntent(),
+            intent: StartSaunaIntent(),
             phrases: [
-                "Start \(\.$room) in \(.applicationName)",
-                "Start the \(\.$room) timer in \(.applicationName)",
-                "I'm in the \(\.$room) \(.applicationName)",
+                "Start sauna in \(.applicationName)",
+                "Start the sauna in \(.applicationName)",
+                "Start a sauna session in \(.applicationName)",
+                "I'm in the sauna \(.applicationName)",
             ],
-            shortTitle: "Start sauna / steam",
+            shortTitle: "Start sauna",
             systemImageName: "flame.fill"
+        )
+        AppShortcut(
+            intent: StartSteamIntent(),
+            phrases: [
+                "Start steam in \(.applicationName)",
+                "Start the steam room in \(.applicationName)",
+                "Start a steam session in \(.applicationName)",
+                "I'm in the steam room \(.applicationName)",
+            ],
+            shortTitle: "Start steam",
+            systemImageName: "cloud.fog.fill"
+        )
+        AppShortcut(
+            intent: LogSessionIntent(),
+            phrases: [
+                "Log a session in \(.applicationName)",
+                "Log a \(\.$activity) session in \(.applicationName)",
+                "Log \(\.$activity) in \(.applicationName)",
+            ],
+            shortTitle: "Log a session",
+            systemImageName: "square.and.pencil"
         )
         AppShortcut(
             intent: EndHeatIntent(),

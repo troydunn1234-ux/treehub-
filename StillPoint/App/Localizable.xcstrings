@@ -1,0 +1,2326 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%lld %@ higher": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@ más"
+          }
+        }
+      }
+    },
+    "%lld %@ lower": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld %2$@ menos"
+          }
+        }
+      }
+    },
+    "%lld breaths": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld respiraciones"
+          }
+        }
+      }
+    },
+    "%lld days in a row": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días seguidos"
+          }
+        }
+      }
+    },
+    "%lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min"
+          }
+        }
+      }
+    },
+    ", left side": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", lado izquierdo"
+          }
+        }
+      }
+    },
+    ", right side": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": ", lado derecho"
+          }
+        }
+      }
+    },
+    "12 WEEKS": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "12 SEMANAS"
+          }
+        }
+      }
+    },
+    "A calm voice names each move and counts the breath, in sessions and in the sauna & steam guide. It keeps going with the screen locked, and music only gets quieter. The speaker button in a session switches it for that session. On the Watch, the count is tapped on your wrist instead.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una voz tranquila nombra cada movimiento y cuenta la respiración, en las sesiones y en la guía de sauna y vapor. Sigue con la pantalla bloqueada y la música solo baja de volumen. El botón del altavoz en una sesión la activa o desactiva solo para esa sesión. En el Watch, la cuenta se marca con toques en la muñeca."
+          }
+        }
+      }
+    },
+    "A fresh week. Every kind of practice gets its own bar here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una semana nueva. Cada tipo de práctica tiene aquí su propia barra."
+          }
+        }
+      }
+    },
+    "A pattern, not proof: sleep, training, alcohol and illness move these numbers too.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es una tendencia, no una prueba: el sueño, el entrenamiento, el alcohol y las enfermedades también mueven estas cifras."
+          }
+        }
+      }
+    },
+    "A quiet nudge once a day, at a time you choose. Nothing else, ever.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un aviso discreto una vez al día, a la hora que elijas. Nada más, nunca."
+          }
+        }
+      }
+    },
+    "A simple estimate from how far your heart rate settled below where it began. Not a medical measure.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una estimación sencilla de cuánto bajó tu frecuencia cardiaca desde el inicio. No es una medida médica."
+          }
+        }
+      }
+    },
+    "ALONG THE WAY": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EN EL CAMINO"
+          }
+        }
+      }
+    },
+    "About this practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sobre esta práctica"
+          }
+        }
+      }
+    },
+    "Activity": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Actividad"
+          }
+        }
+      }
+    },
+    "Adds a sauna, steam or breathing session you already did, ending now.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añade una sesión de sauna, vapor o respiración que ya hiciste, terminando ahora."
+          }
+        }
+      }
+    },
+    "After heat": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras el calor"
+          }
+        }
+      }
+    },
+    "After sauna or steam days your %@ averaged %lld %@ (%lld mornings), against %lld %@ on other days (%lld mornings).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras los días de sauna o vapor, tu %1$@ fue de %2$lld %3$@ de media (%4$lld mañanas), frente a %5$lld %6$@ en otros días (%7$lld mañanas)."
+          }
+        }
+      }
+    },
+    "Also save as a workout": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar también como entrenamiento"
+          }
+        }
+      }
+    },
+    "Another round": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otra ronda"
+          }
+        }
+      }
+    },
+    "Any session of a minute or more keeps the streak, sauna and steam included.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cualquier sesión de un minuto o más mantiene la racha, sauna y vapor incluidos."
+          }
+        }
+      }
+    },
+    "Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salud"
+          }
+        }
+      }
+    },
+    "Apple Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch"
+          }
+        }
+      }
+    },
+    "Begin a first practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza una primera práctica"
+          }
+        }
+      }
+    },
+    "Best: %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejor: %lld días"
+          }
+        }
+      }
+    },
+    "Breathe": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respirar"
+          }
+        }
+      }
+    },
+    "Breathe Now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respirar ahora"
+          }
+        }
+      }
+    },
+    "Breathe now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respirar ahora"
+          }
+        }
+      }
+    },
+    "Breathing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración"
+          }
+        }
+      }
+    },
+    "Breathing (logged)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración (registrada)"
+          }
+        }
+      }
+    },
+    "Breathwork, stillness and gentle warm-ups from a dozen traditions, each with where it comes from and why it works. Turn on the voice guide and just listen.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración, quietud y calentamientos suaves de una docena de tradiciones, cada uno con su origen y por qué funciona. Activa la guía de voz y solo escucha."
+          }
+        }
+      }
+    },
+    "CALM": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CALMA"
+          }
+        }
+      }
+    },
+    "Cancel": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cancelar"
+          }
+        }
+      }
+    },
+    "Changes your journey and streak. Apple Health keeps the original Mindful Minutes.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambia tu recorrido y tu racha. Salud conserva los Minutos de atención plena originales."
+          }
+        }
+      }
+    },
+    "Check": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobar"
+          }
+        }
+      }
+    },
+    "Check Apple Health again": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a comprobar Salud"
+          }
+        }
+      }
+    },
+    "Close guide": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerrar guía"
+          }
+        }
+      }
+    },
+    "Connect Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar con Salud"
+          }
+        }
+      }
+    },
+    "Count the out-breath": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Contar la exhalación"
+          }
+        }
+      }
+    },
+    "Daily reminder": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorio diario"
+          }
+        }
+      }
+    },
+    "Delete": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar"
+          }
+        }
+      }
+    },
+    "Delete session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eliminar sesión"
+          }
+        }
+      }
+    },
+    "Delete this session?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Eliminar esta sesión?"
+          }
+        }
+      }
+    },
+    "Descriptions are summaries for orientation, not religious instruction or medical advice.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las descripciones son resúmenes orientativos, no instrucción religiosa ni consejo médico."
+          }
+        }
+      }
+    },
+    "Did you know": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Sabías que…?"
+          }
+        }
+      }
+    },
+    "Dim after a few seconds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atenuar tras unos segundos"
+          }
+        }
+      }
+    },
+    "Discard": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descartar"
+          }
+        }
+      }
+    },
+    "Discard this session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descartar esta sesión"
+          }
+        }
+      }
+    },
+    "Discard this session?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Descartar esta sesión?"
+          }
+        }
+      }
+    },
+    "Done": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Listo"
+          }
+        }
+      }
+    },
+    "Dotted words open the glossary.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las palabras punteadas abren el glosario."
+          }
+        }
+      }
+    },
+    "Edit time & length": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar hora y duración"
+          }
+        }
+      }
+    },
+    "End Sauna or Steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminar sauna o vapor"
+          }
+        }
+      }
+    },
+    "End sauna / steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminar sauna / vapor"
+          }
+        }
+      }
+    },
+    "End session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminar sesión"
+          }
+        }
+      }
+    },
+    "Every %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada %lld min"
+          }
+        }
+      }
+    },
+    "Every day with a reading was a heat day, so there's nothing to compare with yet.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los días con datos fueron días de calor, así que aún no hay con qué comparar."
+          }
+        }
+      }
+    },
+    "Feel": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sensación"
+          }
+        }
+      }
+    },
+    "Find a practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar una práctica"
+          }
+        }
+      }
+    },
+    "Free to use.\nOne unlock for everything.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gratis para usar.\nUn desbloqueo para todo."
+          }
+        }
+      }
+    },
+    "From: %@. ": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuentes: %@. "
+          }
+        }
+      }
+    },
+    "GET": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "OBTENER"
+          }
+        }
+      }
+    },
+    "Glossary": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Glosario"
+          }
+        }
+      }
+    },
+    "Guide": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guía"
+          }
+        }
+      }
+    },
+    "Guided": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guiada"
+          }
+        }
+      }
+    },
+    "HEART RATE": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FRECUENCIA CARDIACA"
+          }
+        }
+      }
+    },
+    "HRV": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC"
+          }
+        }
+      }
+    },
+    "Haptics": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vibración"
+          }
+        }
+      }
+    },
+    "Health and Watch, when you want them.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salud y Watch, cuando tú quieras."
+          }
+        }
+      }
+    },
+    "Heart rate and HRV come from your Apple Watch via Apple Health. Nothing leaves your devices.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La frecuencia cardiaca y la VFC vienen de tu Apple Watch a través de Salud. Nada sale de tus dispositivos."
+          }
+        }
+      }
+    },
+    "Heart rate on Apple Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia cardiaca en el Apple Watch"
+          }
+        }
+      }
+    },
+    "Heat": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calor"
+          }
+        }
+      }
+    },
+    "Heat log": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro de calor"
+          }
+        }
+      }
+    },
+    "Heat room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sala de calor"
+          }
+        }
+      }
+    },
+    "Hold": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén"
+          }
+        }
+      }
+    },
+    "How many minutes?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Cuántos minutos?"
+          }
+        }
+      }
+    },
+    "I'm out": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ya salí"
+          }
+        }
+      }
+    },
+    "In": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhala"
+          }
+        }
+      }
+    },
+    "In for %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inhala en %lld"
+          }
+        }
+      }
+    },
+    "Install Still Point on your Apple Watch to start from here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instala Still Point en tu Apple Watch para empezar desde aquí."
+          }
+        }
+      }
+    },
+    "Interval bell": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campana de intervalo"
+          }
+        }
+      }
+    },
+    "It's removed from your journey and from Mindful Minutes in Apple Health.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se elimina de tu recorrido y de los Minutos de atención plena en Salud."
+          }
+        }
+      }
+    },
+    "Journey": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recorrido"
+          }
+        }
+      }
+    },
+    "LENGTH": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "DURACIÓN"
+          }
+        }
+      }
+    },
+    "Length": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duración"
+          }
+        }
+      }
+    },
+    "Length by": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duración por"
+          }
+        }
+      }
+    },
+    "Less": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Menos"
+          }
+        }
+      }
+    },
+    "Let's go": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vamos"
+          }
+        }
+      }
+    },
+    "Loading plans from the App Store…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando planes del App Store…"
+          }
+        }
+      }
+    },
+    "Log a Session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrar una sesión"
+          }
+        }
+      }
+    },
+    "Log a session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrar una sesión"
+          }
+        }
+      }
+    },
+    "Logged %lld minutes. Nice work.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registrados %lld minutos. Buen trabajo."
+          }
+        }
+      }
+    },
+    "MILESTONES": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LOGROS"
+          }
+        }
+      }
+    },
+    "MINUTES OF HEAT vs NEXT MORNING": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MINUTOS DE CALOR vs MAÑANA SIGUIENTE"
+          }
+        }
+      }
+    },
+    "MOVE %lld OF %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MOVIMIENTO %1$lld DE %2$lld"
+          }
+        }
+      }
+    },
+    "Made for the sauna and steam room.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hecha para la sauna y la sala de vapor."
+          }
+        }
+      }
+    },
+    "Manage": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestionar"
+          }
+        }
+      }
+    },
+    "Manage subscription": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gestionar suscripción"
+          }
+        }
+      }
+    },
+    "Measure": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Medida"
+          }
+        }
+      }
+    },
+    "Minutes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutos"
+          }
+        }
+      }
+    },
+    "Minutes of practice for each of the last seven days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutos de práctica de cada uno de los últimos siete días"
+          }
+        }
+      }
+    },
+    "Mode": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Modo"
+          }
+        }
+      }
+    },
+    "More": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más"
+          }
+        }
+      }
+    },
+    "More apps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más apps"
+          }
+        }
+      }
+    },
+    "More from Troy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más de Troy"
+          }
+        }
+      }
+    },
+    "Move": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Moverse"
+          }
+        }
+      }
+    },
+    "NOTES": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "NOTAS"
+          }
+        }
+      }
+    },
+    "Next": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente"
+          }
+        }
+      }
+    },
+    "Next move": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente movimiento"
+          }
+        }
+      }
+    },
+    "Next-morning numbers after heat days, compared with other days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datos de la mañana siguiente tras los días de calor, comparados con otros días."
+          }
+        }
+      }
+    },
+    "Next: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siguiente: %@"
+          }
+        }
+      }
+    },
+    "No HRV or resting heart rate in Apple Health yet. Wear your Watch or WHOOP to sleep and this fills in by itself.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay VFC ni frecuencia cardiaca en reposo en Salud. Duerme con tu Watch o tu WHOOP y esto se rellenará solo."
+          }
+        }
+      }
+    },
+    "No breath-holds or fast breathing in the heat. Step out if you feel dizzy, sick or your heart pounds. Phones can overheat, so keep it on a towel out of the hottest air, or use Siri.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada de retener la respiración ni respirar rápido con calor. Sal si te mareas, te sientes mal o el corazón te late con fuerza. Los teléfonos pueden sobrecalentarse: déjalo sobre una toalla lejos del aire más caliente, o usa Siri."
+          }
+        }
+      }
+    },
+    "No heart rate for this session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin frecuencia cardiaca para esta sesión"
+          }
+        }
+      }
+    },
+    "No sauna or steam days with a reading the next morning yet. Log a few sessions and sleep with your tracker on.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay días de sauna o vapor con datos a la mañana siguiente. Registra algunas sesiones y duerme con tu pulsera puesta."
+          }
+        }
+      }
+    },
+    "No sessions yet. Tap Sauna or Steam on the Today screen as you walk in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay sesiones. Toca Sauna o Vapor en la pantalla Hoy al entrar."
+          }
+        }
+      }
+    },
+    "No warm-up": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin calentamiento"
+          }
+        }
+      }
+    },
+    "Not timing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin cronometrar"
+          }
+        }
+      }
+    },
+    "Nothing here yet, and that's fine.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aquí no hay nada todavía, y está bien."
+          }
+        }
+      }
+    },
+    "Notifications are off for Still Point. Turn them on in the Settings app to get the reminder.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Still Point están desactivadas. Actívalas en la app Ajustes para recibir el recordatorio."
+          }
+        }
+      }
+    },
+    "Off": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivado"
+          }
+        }
+      }
+    },
+    "One minute of breathing, a few joint circles or a round in the sauna lights the first square of your calendar.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un minuto de respiración, unos círculos articulares o una ronda de sauna encienden el primer cuadro de tu calendario."
+          }
+        }
+      }
+    },
+    "One payment. No subscription. Yours on every device signed in to your Apple ID.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un solo pago. Sin suscripción. Tuyo en todos los dispositivos con tu Apple ID."
+          }
+        }
+      }
+    },
+    "One practice from every tradition and two warm-up routines, free forever.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una práctica de cada tradición y dos rutinas de calentamiento, gratis para siempre."
+          }
+        }
+      }
+    },
+    "Only a few mornings so far, so treat this as an early hint.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De momento hay pocas mañanas, tómalo como una primera pista."
+          }
+        }
+      }
+    },
+    "Opens streaks, minutes by kind and milestones": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre rachas, minutos por tipo y logros"
+          }
+        }
+      }
+    },
+    "Opens the session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la sesión"
+          }
+        }
+      }
+    },
+    "Other days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Otros días"
+          }
+        }
+      }
+    },
+    "Other side next.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora, el otro lado."
+          }
+        }
+      }
+    },
+    "Out": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Exhala"
+          }
+        }
+      }
+    },
+    "PROGRESS": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PROGRESO"
+          }
+        }
+      }
+    },
+    "Play all %lld moves": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reproducir los %lld movimientos"
+          }
+        }
+      }
+    },
+    "Practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Práctica"
+          }
+        }
+      }
+    },
+    "Previous move": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movimiento anterior"
+          }
+        }
+      }
+    },
+    "Pro opens every practice, routine and the sauna & steam guide for": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pro desbloquea todas las prácticas, rutinas y la guía de sauna y vapor por"
+          }
+        }
+      }
+    },
+    "Progress": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Progreso"
+          }
+        }
+      }
+    },
+    "Rest": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descansa"
+          }
+        }
+      }
+    },
+    "Resting HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo"
+          }
+        }
+      }
+    },
+    "Restore": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar"
+          }
+        }
+      }
+    },
+    "Restore purchase": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        }
+      }
+    },
+    "Rhythm": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ritmo"
+          }
+        }
+      }
+    },
+    "Room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sala"
+          }
+        }
+      }
+    },
+    "Round done": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda terminada"
+          }
+        }
+      }
+    },
+    "Round done. Step out, cool down slowly and drink some water.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda terminada. Sal, enfríate despacio y bebe agua."
+          }
+        }
+      }
+    },
+    "SAUNA & RECOVERY": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SAUNA Y RECUPERACIÓN"
+          }
+        }
+      }
+    },
+    "SEC": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SEG"
+          }
+        }
+      }
+    },
+    "SESSIONS": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "SESIONES"
+          }
+        }
+      }
+    },
+    "SOURCES": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FUENTES"
+          }
+        }
+      }
+    },
+    "STEP %lld OF %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PASO %1$lld DE %2$lld"
+          }
+        }
+      }
+    },
+    "STEPS": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "PASOS"
+          }
+        }
+      }
+    },
+    "Sauna": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauna"
+          }
+        }
+      }
+    },
+    "Sauna timer started. Enjoy the heat.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporizador de sauna iniciado. Disfruta del calor."
+          }
+        }
+      }
+    },
+    "Save": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guardar"
+          }
+        }
+      }
+    },
+    "Session options": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Opciones de sesión"
+          }
+        }
+      }
+    },
+    "Sessions": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesiones"
+          }
+        }
+      }
+    },
+    "Sessions are saved on your phone and as Mindful Minutes in Apple Health. Heart rate is read from Apple Health; nothing leaves your devices.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las sesiones se guardan en tu teléfono y como Minutos de atención plena en Salud. La frecuencia cardiaca se lee de Salud; nada sale de tus dispositivos."
+          }
+        }
+      }
+    },
+    "Sessions can go to Health as Mindful Minutes, with heart rate from your Watch or WHOOP. You'll be asked the first time it's needed. Nothing leaves your devices.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las sesiones pueden ir a Salud como Minutos de atención plena, con la frecuencia cardiaca de tu Watch o tu WHOOP. Te lo pediremos la primera vez que haga falta. Nada sale de tus dispositivos."
+          }
+        }
+      }
+    },
+    "Settings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ajustes"
+          }
+        }
+      }
+    },
+    "Shaded band: the calmest few beats of the session.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Franja sombreada: los latidos más tranquilos de la sesión."
+          }
+        }
+      }
+    },
+    "Show numbers": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar números"
+          }
+        }
+      }
+    },
+    "Sip in more": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un poco más de aire"
+          }
+        }
+      }
+    },
+    "Skip": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltar"
+          }
+        }
+      }
+    },
+    "Skip to the next step": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Saltar al siguiente paso"
+          }
+        }
+      }
+    },
+    "Small, private apps made by one person. No ads, no tracking.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apps pequeñas y privadas hechas por una sola persona. Sin anuncios ni rastreo."
+          }
+        }
+      }
+    },
+    "Speaks each step and counts the breath": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dice cada paso y cuenta la respiración"
+          }
+        }
+      }
+    },
+    "Start & end bells": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Campanas de inicio y fin"
+          }
+        }
+      }
+    },
+    "Start 1 week free trial": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar 1 semana de prueba gratis"
+          }
+        }
+      }
+    },
+    "Start Sauna": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sauna"
+          }
+        }
+      }
+    },
+    "Start Sauna or Steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sauna o vapor"
+          }
+        }
+      }
+    },
+    "Start Steam Room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sala de vapor"
+          }
+        }
+      }
+    },
+    "Start a Practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar una práctica"
+          }
+        }
+      }
+    },
+    "Start a practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar una práctica"
+          }
+        }
+      }
+    },
+    "Start on Apple Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar en el Apple Watch"
+          }
+        }
+      }
+    },
+    "Start sauna": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar sauna"
+          }
+        }
+      }
+    },
+    "Start steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar vapor"
+          }
+        }
+      }
+    },
+    "Start timer": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar temporizador"
+          }
+        }
+      }
+    },
+    "Started": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicio"
+          }
+        }
+      }
+    },
+    "Starts timing a sauna session. Heart rate for that time is read from the Health app when you finish.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza a cronometrar una sesión de sauna. Al terminar, se lee la frecuencia cardiaca de ese rato desde la app Salud."
+          }
+        }
+      }
+    },
+    "Starts timing a steam-room session. Heart rate for that time is read from the Health app when you finish.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza a cronometrar una sesión en la sala de vapor. Al terminar, se lee la frecuencia cardiaca de ese rato desde la app Salud."
+          }
+        }
+      }
+    },
+    "Steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vapor"
+          }
+        }
+      }
+    },
+    "Steam room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sala de vapor"
+          }
+        }
+      }
+    },
+    "Steam room timer started. Breathe slow and easy.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temporizador de vapor iniciado. Respira despacio y con calma."
+          }
+        }
+      }
+    },
+    "Step out, cool down slowly, drink some water. Go again after a break if you feel good.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sal, enfríate despacio y bebe agua. Repite tras un descanso si te sientes bien."
+          }
+        }
+      }
+    },
+    "Still Point on Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still Point en el Watch"
+          }
+        }
+      }
+    },
+    "Still Pointz Pro": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still Pointz Pro"
+          }
+        }
+      }
+    },
+    "Stillness from everywhere.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quietud de todas partes."
+          }
+        }
+      }
+    },
+    "Stop": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detener"
+          }
+        }
+      }
+    },
+    "Streaks, minutes by kind, milestones": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rachas, minutos por tipo, logros"
+          }
+        }
+      }
+    },
+    "THIS WEEK": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ESTA SEMANA"
+          }
+        }
+      }
+    },
+    "THIS WEEK BY KIND": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ESTA SEMANA POR TIPO"
+          }
+        }
+      }
+    },
+    "Tap Sauna or Steam as you walk in. Heat-safe breathing, bench moves and a timer, then see how your mornings look after a heat day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Sauna o Vapor al entrar. Respiración segura para el calor, movimientos en el banco y un temporizador; después mira cómo son tus mañanas tras un día de calor."
+          }
+        }
+      }
+    },
+    "Tap as you walk in: a timer starts and a guide opens with breathing and gentle moves for the heat. Heart rate from WHOOP fills in after.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tócalo al entrar: empieza un temporizador y se abre una guía con respiraciones y movimientos suaves para el calor. La frecuencia cardiaca de WHOOP se añade después."
+          }
+        }
+      }
+    },
+    "Tap the count, in & out": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Marcar la cuenta con toques, al inhalar y exhalar"
+          }
+        }
+      }
+    },
+    "That was under a minute. Keep it in your journey?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duró menos de un minuto. ¿La guardas en tu recorrido?"
+          }
+        }
+      }
+    },
+    "That's %@, which can mean the heat is still taking something out of you.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son %@, lo que puede indicar que el calor todavía te pasa factura."
+          }
+        }
+      }
+    },
+    "That's %@, which usually points to better recovery.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Son %@, lo que suele indicar una mejor recuperación."
+          }
+        }
+      }
+    },
+    "That's about the same.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es más o menos lo mismo."
+          }
+        }
+      }
+    },
+    "That's all the moves.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esos son todos los movimientos."
+          }
+        }
+      }
+    },
+    "There's no sauna or steam session running.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay ninguna sesión de sauna o vapor en marcha."
+          }
+        }
+      }
+    },
+    "These settings are shared with your Watch automatically.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estos ajustes se comparten con tu Watch automáticamente."
+          }
+        }
+      }
+    },
+    "This session is no longer here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta sesión ya no está aquí."
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hora"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        }
+      }
+    },
+    "Traditions": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tradiciones"
+          }
+        }
+      }
+    },
+    "Turn voice guide off": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desactivar la guía de voz"
+          }
+        }
+      }
+    },
+    "Turn voice guide on": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activar la guía de voz"
+          }
+        }
+      }
+    },
+    "Using WHOOP? Turn on the Apple Health integration in the WHOOP app and allow Heart Rate. Still Point reads the readings that fall inside each sauna or steam session. An Apple Watch or Garmin works the same way.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Usas WHOOP? Activa la integración con Salud en la app de WHOOP y permite Frecuencia cardiaca. Still Point lee las mediciones que caen dentro de cada sesión de sauna o vapor. Un Apple Watch o un Garmin funcionan igual."
+          }
+        }
+      }
+    },
+    "Usual length": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duración habitual"
+          }
+        }
+      }
+    },
+    "Vibration only on Watch (no sound)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo vibración en el Watch (sin sonido)"
+          }
+        }
+      }
+    },
+    "Voice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Voz"
+          }
+        }
+      }
+    },
+    "Voice guide": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Guía de voz"
+          }
+        }
+      }
+    },
+    "WARM UP · STEP %lld OF %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CALENTAMIENTO · PASO %1$lld DE %2$lld"
+          }
+        }
+      }
+    },
+    "WHAT SETTLES YOU MOST": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "LO QUE MÁS TE CALMA"
+          }
+        }
+      }
+    },
+    "WHOOP's recovery score isn't shared with Apple Health, but the HRV and resting heart rate it measures are, so they count here. HRV is the morning average (midnight to noon).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La puntuación de recuperación de WHOOP no se comparte con Salud, pero la VFC y la frecuencia cardiaca en reposo que mide sí, así que cuentan aquí. La VFC es la media de la mañana (de medianoche a mediodía)."
+          }
+        }
+      }
+    },
+    "Warm-ups count as mindful minutes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los calentamientos cuentan como minutos de atención plena"
+          }
+        }
+      }
+    },
+    "Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch"
+          }
+        }
+      }
+    },
+    "Ways of breathing and sitting, gathered from around the world.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Formas de respirar y de sentarse, reunidas de todo el mundo."
+          }
+        }
+      }
+    },
+    "Weekly goal": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo semanal"
+          }
+        }
+      }
+    },
+    "Well done.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bien hecho."
+          }
+        }
+      }
+    },
+    "You're Pro": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres Pro"
+          }
+        }
+      }
+    },
+    "Your sessions will gather here, like stones on a path.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus sesiones se irán reuniendo aquí, como piedras en un camino."
+          }
+        }
+      }
+    },
+    "end": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "fin"
+          }
+        }
+      }
+    },
+    "hold for %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mantén %lld"
+          }
+        }
+      }
+    },
+    "min of sauna / steam that day": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "min de sauna / vapor ese día"
+          }
+        }
+      }
+    },
+    "morning HRV": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC matinal"
+          }
+        }
+      }
+    },
+    "n = %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "n = %lld"
+          }
+        }
+      }
+    },
+    "of %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de %lld min"
+          }
+        }
+      }
+    },
+    "out for %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "exhala en %lld"
+          }
+        }
+      }
+    },
+    "rest for %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "descansa %lld"
+          }
+        }
+      }
+    },
+    "resting heart rate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "frecuencia cardiaca en reposo"
+          }
+        }
+      }
+    },
+    "start": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "inicio"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

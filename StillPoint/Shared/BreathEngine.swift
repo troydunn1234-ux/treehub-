@@ -222,7 +222,7 @@ final class BreathSession: ObservableObject {
             didTopUp = true
             feedback?.topUp(style: style)
         }
-        if settings.exhaleTicks, st.phase == .exhale {
+        if (settings.exhaleTicks && st.phase == .exhale) || (settings.countTaps && (st.phase == .exhale || st.phase == .inhale)) {
             let sec = Int(t)
             if sec != lastTickSecond, st.phaseProgress > 0.05 {
                 lastTickSecond = sec

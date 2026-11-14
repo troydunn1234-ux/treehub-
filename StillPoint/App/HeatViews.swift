@@ -210,6 +210,7 @@ struct HeatLogView: View {
                     Text("No sessions yet. Tap Sauna or Steam on the Today screen as you walk in.")
                         .font(SP.rounded(14)).foregroundStyle(SP.faint)
                 }
+                if !heat.history.isEmpty { RecoveryCard() }
                 WhoopNote()
             }
             .padding(22)

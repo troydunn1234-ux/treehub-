@@ -55,6 +55,8 @@ final class HeatStore: ObservableObject {
     /// Start timing. If another session is running it is finished first.
     func start(_ kind: HeatKind, at date: Date = Date()) {
         if active != nil { finish() }
+        // First heat session: ask for Health access now (heart rate for the window, the workout).
+        MindfulHealth.shared.requestAuthorization()
         active = HeatSession(kind: kind, start: date)
         save()
         scheduleCheckIn(kind)
@@ -92,6 +94,17 @@ final class HeatStore: ObservableObject {
         lookUpHeart(s.id)
         // WHOOP often syncs a few minutes late; ask again shortly.
         DispatchQueue.main.asyncAfter(deadline: .now() + 180) { [weak self] in self?.lookUpHeart(s.id) }
+    }
+
+    /// Log a session after the fact (Siri / Shortcuts: "Log a session"), ending now.
+    func logPast(_ kind: HeatKind, minutes: Int, end: Date = Date()) {
+        let mins = max(1, min(240, minutes))
+        let s = HeatSession(kind: kind, start: end.addingTimeInterval(-Double(mins) * 60), end: end)
+        history.insert(s, at: 0)
+        history.sort { $0.start > $1.start }
+        save()
+        MindfulHealth.shared.saveWorkout(.preparationAndRecovery, start: s.start, end: end, title: kind.title)
+        lookUpHeart(s.id)
     }
 
     func cancel() {

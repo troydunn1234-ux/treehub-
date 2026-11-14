@@ -1,0 +1,4 @@
+/* Permission prompts and name, English (same as Info.plist) */
+"CFBundleDisplayName" = "Still Point";
+"NSHealthShareUsageDescription" = "Still Point reads your mindful minutes, heart rate, HRV and resting heart rate to show how your practice and sauna sessions affect your recovery.";
+"NSHealthUpdateUsageDescription" = "Still Point saves your sessions to Apple Health as Mindful Minutes, and movement routines and sauna/steam sessions as workouts.";

@@ -204,6 +204,12 @@ struct SettingsView: View {
                         Text("A quiet nudge once a day, at a time you choose. Nothing else, ever.")
                     }
                 }
+                Section {
+                    Toggle("Voice guide", isOn: $prefs.settings.voiceGuide)
+                    Toggle("Tap the count, in & out", isOn: $prefs.settings.countTaps)
+                } header: { Text("Voice") } footer: {
+                    Text("A calm voice names each move and counts the breath, in sessions and in the sauna & steam guide. It keeps going with the screen locked, and music only gets quieter. The speaker button in a session switches it for that session. On the Watch, the count is tapped on your wrist instead.")
+                }
                 Section("Feel") {
                     Picker("Haptics", selection: $prefs.settings.haptics) {
                         ForEach(HapticStyle.allCases) { h in Text(h.label).tag(h) }

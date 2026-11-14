@@ -1,0 +1,4 @@
+/* Permission prompts and name, Spanish */
+"CFBundleDisplayName" = "Still Point";
+"NSHealthShareUsageDescription" = "Still Point lee tus minutos de atención plena, frecuencia cardiaca, VFC y frecuencia cardiaca en reposo para mostrarte cómo tu práctica y tus sesiones de sauna afectan a tu recuperación.";
+"NSHealthUpdateUsageDescription" = "Still Point guarda tus sesiones en Salud como Minutos de atención plena, y las rutinas de movimiento y las sesiones de sauna o vapor como entrenamientos.";

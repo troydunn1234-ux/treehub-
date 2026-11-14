@@ -163,7 +163,7 @@ struct RootView: View {
             if let i = args.firstIndex(of: "-session"), i + 1 < args.count, let p = lib.practice(args[i + 1]) {
                 router.run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: p.defaultMinutes))
             }
-            if !args.contains("-demo") { MindfulHealth.shared.requestAuthorization() }
+            // Apple Health is asked for in context (first session, first sauna, the recovery chart), not at launch.
         }
     }
 }

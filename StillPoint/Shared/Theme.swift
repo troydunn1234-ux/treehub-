@@ -34,16 +34,28 @@ enum SP {
 
     /// New York serif for titles.
     static func serif(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .serif)
+        .system(size: scaled(size), weight: weight, design: .serif)
     }
 
     /// SF Rounded for everything else.
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .rounded)
+        .system(size: scaled(size), weight: weight, design: .rounded)
     }
 
     static func numbers(_ size: CGFloat) -> Font {
-        .system(size: size, weight: .light, design: .rounded).monospacedDigit()
+        .system(size: scaled(size), weight: .light, design: .rounded).monospacedDigit()
+    }
+
+    /// Follows the person's text size (Dynamic Type, accessibility sizes included) on iPhone.
+    /// Body-sized text can grow a lot; big display numbers grow less so they still fit their rings.
+    static func scaled(_ size: CGFloat) -> CGFloat {
+        #if os(iOS)
+        let raw = UIFontMetrics(forTextStyle: .body).scaledValue(for: size)
+        let cap: CGFloat = size <= 20 ? 2.6 : (size <= 30 ? 1.6 : 1.25)
+        return min(raw, size * cap)
+        #else
+        return size
+        #endif
     }
 }
 

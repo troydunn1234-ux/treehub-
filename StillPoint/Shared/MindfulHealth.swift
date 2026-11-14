@@ -154,6 +154,65 @@ final class MindfulHealth {
 
     static let bpm = HKUnit.count().unitDivided(by: .minute())
 
+    // MARK: Recovery (next-morning HRV and resting heart rate)
+
+    private var restingHR: HKQuantityType { HKQuantityType(.restingHeartRate) }
+
+    /// Read access just for the recovery chart: asked for the first time the chart is opened.
+    func requestRecoveryAccess(_ done: @escaping (Bool) -> Void) {
+        guard isAvailable, !ProcessInfo.processInfo.arguments.contains("-demo") else { done(false); return }
+        store.requestAuthorization(toShare: [], read: [hrv, restingHR]) { ok, _ in
+            DispatchQueue.main.async { done(ok) }
+        }
+    }
+
+    /// Per day (start of day): average HRV (SDNN, ms) recorded between midnight and noon (the whole day if
+    /// none in the morning) and average resting heart rate. Every source counts (Apple Watch, WHOOP, Oura…).
+    func morningRecovery(since: Date, _ done: @escaping ([Date: MorningRecovery]) -> Void) {
+        guard isAvailable else { done([:]); return }
+        let pred = HKQuery.predicateForSamples(withStart: since, end: Date(), options: [])
+        let group = DispatchGroup()
+        var hrvSamples: [HKQuantitySample] = []
+        var rhrSamples: [HKQuantitySample] = []
+        group.enter()
+        store.execute(HKSampleQuery(sampleType: hrv, predicate: pred, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, s, _ in
+            hrvSamples = (s as? [HKQuantitySample]) ?? []
+            group.leave()
+        })
+        group.enter()
+        store.execute(HKSampleQuery(sampleType: restingHR, predicate: pred, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, s, _ in
+            rhrSamples = (s as? [HKQuantitySample]) ?? []
+            group.leave()
+        })
+        group.notify(queue: .main) {
+            let cal = Calendar.current
+            var morning: [Date: [Double]] = [:], allDay: [Date: [Double]] = [:], rhr: [Date: [Double]] = [:]
+            var sources: [Date: Set<String>] = [:]
+            for q in hrvSamples {
+                let d = cal.startOfDay(for: q.startDate)
+                let v = q.quantity.doubleValue(for: .secondUnit(with: .milli))
+                allDay[d, default: []].append(v)
+                if cal.component(.hour, from: q.startDate) < 12 { morning[d, default: []].append(v) }
+                sources[d, default: []].insert(q.sourceRevision.source.name)
+            }
+            for q in rhrSamples {
+                let d = cal.startOfDay(for: q.startDate)
+                rhr[d, default: []].append(q.quantity.doubleValue(for: MindfulHealth.bpm))
+                sources[d, default: []].insert(q.sourceRevision.source.name)
+            }
+            func avg(_ a: [Double]?) -> Double? {
+                guard let a, !a.isEmpty else { return nil }
+                return a.reduce(0, +) / Double(a.count)
+            }
+            var out: [Date: MorningRecovery] = [:]
+            for d in Set(allDay.keys).union(rhr.keys) {
+                out[d] = MorningRecovery(hrv: avg(morning[d]) ?? avg(allDay[d]), restingHR: avg(rhr[d]),
+                                         sources: Array(sources[d] ?? []).sorted())
+            }
+            done(out)
+        }
+    }
+
     /// Heart rate from every source in Apple Health (WHOOP, Apple Watch, Garmin…) inside a time window.
     /// Nil when nothing was recorded (yet: WHOOP can take a few minutes to sync).
     func heartRateStats(start: Date, end: Date, _ done: @escaping (HeartWindow?) -> Void) {
@@ -178,6 +237,13 @@ final class MindfulHealth {
         }
         store.execute(q)
     }
+}
+
+/// One morning's recovery numbers from Apple Health.
+struct MorningRecovery: Hashable {
+    var hrv: Double?
+    var restingHR: Double?
+    var sources: [String] = []
 }
 
 /// Heart-rate summary for one stretch of time, from Apple Health.

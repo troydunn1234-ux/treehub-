@@ -40,6 +40,10 @@ struct SessionSettings: Codable, Equatable {
     var saveAsWorkout: Bool = false
     /// Count warm-up / movement minutes as Mindful Minutes in Apple Health.
     var logMovementAsMindful: Bool = false
+    /// iPhone: a calm spoken voice names each move and counts the breath ("in… 2… 3… 4").
+    var voiceGuide: Bool = false
+    /// A light tap on every second of the in- and out-breath, so the count can be felt (handy on the Watch).
+    var countTaps: Bool = false
 
     static let key = "sp.settings"
 
@@ -83,6 +87,8 @@ struct SessionSettings: Codable, Equatable {
         trackHeartRate = (try? c.decode(Bool.self, forKey: .trackHeartRate)) ?? d.trackHeartRate
         saveAsWorkout = (try? c.decode(Bool.self, forKey: .saveAsWorkout)) ?? d.saveAsWorkout
         logMovementAsMindful = (try? c.decode(Bool.self, forKey: .logMovementAsMindful)) ?? false
+        voiceGuide = (try? c.decode(Bool.self, forKey: .voiceGuide)) ?? false
+        countTaps = (try? c.decode(Bool.self, forKey: .countTaps)) ?? false
     }
 
     private struct Defaults {

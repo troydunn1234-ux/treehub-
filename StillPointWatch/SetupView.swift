@@ -95,6 +95,7 @@ struct SetupView: View {
                         }
                         Toggle("Vibration only (no sound)", isOn: $prefs.settings.silentHaptics)
                         Toggle("Count the out-breath", isOn: $prefs.settings.exhaleTicks)
+                        Toggle("Tap the count, in & out", isOn: $prefs.settings.countTaps)
                         Toggle("Start & end bells", isOn: $prefs.settings.bells)
                         Picker("Interval bell", selection: $prefs.settings.intervalMinutes) {
                             Text("Off").tag(0)

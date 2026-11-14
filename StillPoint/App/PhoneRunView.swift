@@ -12,7 +12,7 @@ struct PhoneRunView: View {
     @State private var movement: MovementSession? = nil
     @State private var breath: BreathSession? = nil
     @State private var records: [SessionRecord] = []
-    @State private var haptics = PhoneHaptics()
+    @State private var guide = GuidedFeedback()
     @State private var started = false
 
     var body: some View {
@@ -30,12 +30,16 @@ struct PhoneRunView: View {
         .statusBarHidden(stage != .done)
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = true
+            // Health access is asked for here, the first time a session runs, rather than at launch.
+            MindfulHealth.shared.requestAuthorization()
+            VoiceGuide.shared.begin()
             setUp()
         }
         .onDisappear {
             UIApplication.shared.isIdleTimerDisabled = false
             movement?.finish()
             breath?.finish()
+            VoiceGuide.shared.end()
         }
     }
 
@@ -56,7 +60,7 @@ struct PhoneRunView: View {
     private func runMovement(_ p: Practice, minutes: Int, then next: @escaping () -> Void) {
         let s = prefs.settings
         let m = MovementSession(practice: p, minutes: minutes, settings: s)
-        m.feedback = haptics
+        guide.attach(m)
         m.onFinish = { ms in
             var r = ms.record(device: "iPhone")
             r.kind = "movement"; r.minutesPlanned = minutes
@@ -71,7 +75,7 @@ struct PhoneRunView: View {
     private func startPractice() {
         let b = BreathSession(practice: plan.practice, minutes: plan.minutes, settings: prefs.settings,
                               patternOverride: plan.patternOverride)
-        b.feedback = haptics
+        guide.attach(b)
         b.onFinish = { bs in
             var r = bs.record(device: "iPhone")
             r.kind = plan.practice.kind; r.minutesPlanned = plan.minutes; r.warmUpId = plan.warmUp?.id
@@ -79,13 +83,13 @@ struct PhoneRunView: View {
             DispatchQueue.main.async { complete() }
         }
         breath = b
-        withAnimation(.easeInOut(duration: 1.2)) { stage = .practice }
+        withAnimation(UIAccessibility.isReduceMotionEnabled ? nil : .easeInOut(duration: 1.2)) { stage = .practice }
         b.start()
     }
 
     private func complete() {
         UIApplication.shared.isIdleTimerDisabled = false
-        withAnimation(.easeInOut(duration: 1.8)) { stage = .done }
+        withAnimation(UIAccessibility.isReduceMotionEnabled ? nil : .easeInOut(duration: 1.8)) { stage = .done }
     }
 
     private func log(_ r: SessionRecord, mindful: Bool) {
@@ -107,6 +111,7 @@ struct PhoneBreathView: View {
     @EnvironmentObject var prefs: Prefs
     @State private var dimmed = false
     @State private var lastTouch = Date()
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var accent: Color? { PracticeLibrary.shared.tradition(session.practice.traditionId)?.tint }
 
@@ -145,7 +150,7 @@ struct PhoneBreathView: View {
                     Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
                         .font(SP.serif(28, .light)).foregroundStyle(SP.ink.opacity(dimmed ? 0.5 : 1))
                         .multilineTextAlignment(.center)
-                        .animation(.easeInOut(duration: 1.2), value: st.label)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 1.2), value: st.label)
                     if let n = st.nostril {
                         SideIndicator(left: n == .left, right: n == .right, color: SP.amber)
                     }
@@ -156,13 +161,14 @@ struct PhoneBreathView: View {
                 }
                 .frame(minHeight: 110)
 
-                HStack(spacing: 40) {
+                HStack(spacing: 28) {
                     Button { session.isPaused ? session.resume() : session.pause() } label: {
                         Image(systemName: session.isPaused ? "play" : "pause")
                             .font(.system(size: 20, weight: .light)).frame(width: 56, height: 56)
                             .background(Circle().fill(.ultraThinMaterial))
                     }
                     .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
+                    VoiceToggleButton()
                     Button(action: onEnd) {
                         Image(systemName: "xmark")
                             .font(.system(size: 18, weight: .light)).frame(width: 56, height: 56)
@@ -250,11 +256,12 @@ struct PhoneMovementView: View {
                     }
                 }
                 Spacer()
-                HStack(spacing: 34) {
+                HStack(spacing: 22) {
                     roundButton(session.isPaused ? "play" : "pause", label: session.isPaused ? "Resume" : "Pause") {
                         session.isPaused ? session.resume() : session.pause()
                     }
                     roundButton("forward.end", label: "Next step") { session.skip() }
+                    VoiceToggleButton().foregroundStyle(SP.ink)
                     roundButton("xmark", label: "End warm-up", action: onEnd)
                 }
                 .padding(.bottom, 30)
