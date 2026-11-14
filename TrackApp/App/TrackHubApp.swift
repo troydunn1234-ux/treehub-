@@ -8,7 +8,7 @@ struct TrackHubApp: App {
     @State private var tracker: RouteTracker
 
     let container: ModelContainer = {
-        let schema = Schema([Activity.self])
+        let schema = Schema([Activity.self, GasVehicle.self, FillUp.self])
         if TrackDemo.isOn {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
@@ -26,18 +26,21 @@ struct TrackHubApp: App {
         UNUserNotificationCenter.current().delegate = DriveNotificationRouter.shared
         DriveDetector.registerCategory()
         DriveFinishedNotifier.shared.start()
+        RoamrIntro.prepare()
         #if DEBUG
         if TrackDemo.isOn { CrashTrace.install() }
         #endif
         let t = RouteTracker()
         _tracker = State(initialValue: t)
+        RoamrContext.tracker = t
+        RoamrContext.container = container
         // Apple Watch: live stats out, start/stop in.
         if !TrackDemo.isOn { RoamrWatchBridge.shared.attach(tracker: t, container: container) }
     }
 
     var body: some Scene {
         WindowGroup {
-            LaunchGate { TrackRootView() }
+            LaunchGate { RoamrIntroGate { TrackRootView() } }
                 .environment(tracker)
                 // "Go together" invite links: roamr://join?c=CODE (and the https join page form).
                 .onOpenURL { url in Task { @MainActor in GroupSession.shared.handle(url: url) } }
@@ -58,14 +61,18 @@ struct TrackRootView: View {
     @State private var tab: String = "track"
     @State private var detector = DriveDetector.shared
     @State private var autoFinish = AutoFinish.shared
+    @State private var showGas = false
+    @State private var gasAdding = false
+    /// Theme fonts read Dynamic Type when drawn; rebuilding the screens picks up a text-size change.
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var tabItems: [TabBarItem] {
         [
             TabBarItem(id: "track", symbol: tracker.isActive ? "record.circle" : "location.north.circle.fill",
-                       label: "Track", alert: tracker.isActive),
-            TabBarItem(id: "history", symbol: "clock.arrow.circlepath", label: "History"),
-            TabBarItem(id: "stats", symbol: "chart.bar.fill", label: "Stats"),
-            TabBarItem(id: "settings", symbol: "gearshape.fill", label: "Settings"),
+                       label: String(localized: "Track"), alert: tracker.isActive),
+            TabBarItem(id: "history", symbol: "clock.arrow.circlepath", label: String(localized: "History")),
+            TabBarItem(id: "stats", symbol: "chart.bar.fill", label: String(localized: "Stats")),
+            TabBarItem(id: "settings", symbol: "gearshape.fill", label: String(localized: "Settings")),
         ]
     }
 
@@ -82,6 +89,7 @@ struct TrackRootView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .transition(.opacity)
+            .id(dynamicTypeSize)
 
             FloatingTabBar(items: tabItems, selection: $tab)
         }
@@ -133,6 +141,14 @@ struct TrackRootView: View {
         .onChange(of: tracker.isActive) { _, active in
             if !active { detector.trackingEnded() } else { detector.showBanner = false }
         }
+        // Hard-stop alert: motion is only sampled while a drive is recording (and the setting is on).
+        .onChange(of: tracker.state) { _, _ in HardStopMonitor.shared.update(tracker: tracker) }
+        .onChange(of: tracker.kind) { _, _ in HardStopMonitor.shared.update(tracker: tracker) }
+        .sheet(isPresented: $showGas) { GasLogView(startAdding: gasAdding) }
+        .onReceive(NotificationCenter.default.publisher(for: GasLogRequest.note)) { note in
+            gasAdding = (note.object as? Bool) ?? false
+            showGas = true
+        }
         .animation(.spring(response: 0.38, dampingFraction: 0.85), value: tab)
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist() }
@@ -143,6 +159,7 @@ struct TrackRootView: View {
         }
         .onAppear {
             autoFinish.attach(tracker)
+            HardStopMonitor.shared.update(tracker: tracker)
             detector.isTracking = { [tracker] in tracker.isActive }
             detector.refresh()
             consumePendingStart()
@@ -186,6 +203,8 @@ struct TrackRootView: View {
         switch action {
         case .history: tab = "history"; return
         case .stats: tab = "stats"; return
+        case .stop: RoamrContext.finishAndSave(); return
+        case .gas: gasAdding = true; showGas = true; return
         case .walk: kind = .walk
         case .run: kind = .run
         case .hike: kind = .hike
@@ -208,6 +227,12 @@ struct TrackRootView: View {
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         tracker.start(kind: .drive)
     }
+}
+
+/// Opens the Gas & MPG log from anywhere (Settings row).
+enum GasLogRequest {
+    static let note = Notification.Name("roamr.openGasLog")
+    static func open(adding: Bool = false) { NotificationCenter.default.post(name: note, object: adding) }
 }
 
 /// "Looks like your drive ended" banner with a countdown; finishes on its own unless you say keep going.

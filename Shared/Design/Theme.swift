@@ -39,7 +39,13 @@ enum Theme {
     static let leafGradient = LinearGradient(colors: [glow, leaf], startPoint: .topLeading, endPoint: .bottomTrailing)
 
     #if TRACK_APP
-    static func title(_ size: CGFloat = 30) -> Font { .system(size: size, weight: .heavy, design: .rounded) }
+    static func title(_ size: CGFloat = 30) -> Font { .system(size: scaled(size), weight: .heavy, design: .rounded) }
+    /// Roamr follows Dynamic Type: sizes scale with the text-size setting, capped so the big
+    /// fixed-layout numbers (speedometer, HUD) don't overflow.
+    static func scaled(_ size: CGFloat) -> CGFloat {
+        let s = UIFontMetrics(forTextStyle: .body).scaledValue(for: size)
+        return min(s, size * (size >= 28 ? 1.15 : 1.6))
+    }
     #else
     static func title(_ size: CGFloat = 30) -> Font { .system(size: size, weight: .bold, design: .serif) }
     #endif
@@ -48,7 +54,11 @@ enum Theme {
     static let pad: CGFloat = 20
     static let gap: CGFloat = 14
     static let radius: CGFloat = 26
+    #if TRACK_APP
+    static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
+    #else
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: size, weight: weight, design: .rounded) }
+    #endif
 }
 
 // MARK: - Background with drifting leaves

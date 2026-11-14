@@ -19,6 +19,27 @@ struct RoamrShortcuts: AppShortcutsProvider {
             systemImageName: "location.north.circle.fill"
         )
         AppShortcut(
+            intent: StopRoamrTrackingIntent(),
+            phrases: [
+                "Stop \(.applicationName)",
+                "Stop tracking in \(.applicationName)",
+                "Stop my drive in \(.applicationName)",
+                "Finish my trip in \(.applicationName)",
+            ],
+            shortTitle: "Stop & save",
+            systemImageName: "stop.circle.fill"
+        )
+        AppShortcut(
+            intent: LogGasIntent(),
+            phrases: [
+                "Log gas in \(.applicationName)",
+                "Log a fill-up in \(.applicationName)",
+                "Add gas to \(.applicationName)",
+            ],
+            shortTitle: "Log gas",
+            systemImageName: "fuelpump.fill"
+        )
+        AppShortcut(
             intent: OpenRoamrSectionIntent(),
             phrases: [
                 "Open my \(\.$section) in \(.applicationName)",

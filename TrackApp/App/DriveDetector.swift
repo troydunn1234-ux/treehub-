@@ -96,7 +96,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         let keep = UNNotificationAction(identifier: AutoFinish.keepActionID, title: "Keep going", options: [])
         let fin = UNNotificationCategory(identifier: AutoFinish.categoryID, actions: [finishNow, keep], intentIdentifiers: [], options: [])
         let done = UNNotificationCategory(identifier: DriveFinishedNotifier.categoryID, actions: [], intentIdentifiers: [], options: [])
-        UNUserNotificationCenter.current().setNotificationCategories([cat, fin, done])
+        UNUserNotificationCenter.current().setNotificationCategories([cat, fin, done, HardStopMonitor.makeCategory()])
     }
 
     /// Called when the toggle turns on: asks for notifications, Always location and motion.
@@ -288,6 +288,12 @@ final class DriveNotificationRouter: NSObject, UNUserNotificationCenterDelegate 
         } else if id == DriveFinishedNotifier.categoryID {
             if let raw = response.notification.request.content.userInfo[DriveFinishedNotifier.activityKey] as? String {
                 DispatchQueue.main.async { DriveFinishedNotifier.requestOpen(raw) }
+            }
+        } else if id == HardStopMonitor.categoryID {
+            let action = response.actionIdentifier
+            guard action != UNNotificationDismissActionIdentifier else { completionHandler(); return }
+            DispatchQueue.main.async {
+                MainActor.assumeIsolated { HardStopMonitor.shared.handleNotification(action: action) }
             }
         } else if id == AutoFinish.categoryID {
             let action = response.actionIdentifier

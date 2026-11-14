@@ -121,6 +121,19 @@ targets:
         NSMotionUsageDescription: Roamr uses motion data to tell whether you were walking, running, biking or driving.
         NSHealthShareUsageDescription: Roamr reads the workouts and heart rate that your Apple Watch and WHOOP save to Apple Health.
         ITSAppUsesNonExemptEncryption: false
+        CFBundleLocalizations:
+          - en
+          - es
+        # CarPlay dashboard (TrackApp/CarPlay). Harmless without the CarPlay entitlement: iOS only
+        # connects this scene once Apple has granted com.apple.developer.carplay-driving-task.
+        # SwiftUI still owns the iPhone window scene.
+        UIApplicationSceneManifest:
+          UIApplicationSupportsMultipleScenes: true
+          UISceneConfigurations:
+            CPTemplateApplicationSceneSessionRoleApplication:
+              - UISceneClassName: CPTemplateApplicationScene
+                UISceneConfigurationName: CarPlay
+                UISceneDelegateClassName: RoamrCarPlaySceneDelegate
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr

@@ -51,6 +51,13 @@ struct TrackSettingsView: View {
                     autoDriveCard.cardAppear()
                     footnote("When you're moving faster than \(Int(autoDriveMph)) mph and not recording, \(AppInfo.name) asks \"Start drive?\". It uses motion and a quick GPS check, never constant GPS, so it's easy on battery.")
 
+                    sectionLabel(String(localized: "Gas & MPG"))
+                    gasCard.cardAppear()
+
+                    sectionLabel(String(localized: "Hard-stop alert"))
+                    HardStopSettingsCard().cardAppear()
+                    footnote(String(localized: "While you record a drive, Roamr watches for a sudden jolt with a stop from over 25 mph. It then asks \"Are you OK?\" for 30 seconds and, if you don't answer, opens a text to your emergency contact with your location. iOS doesn't let apps send texts on their own, so someone has to tap Send. This is not a replacement for your iPhone's built-in Crash Detection or for calling 911."))
+
                     sectionLabel("Garmin · Whoop")
                     healthCard.cardAppear()
                     footnote("In Garmin Connect: More → Settings → Connected Apps → Apple Health. \(AppInfo.name) then lists those workouts so you can add them with one tap.")
@@ -328,6 +335,24 @@ struct TrackSettingsView: View {
         }
     }
 
+    // MARK: Gas
+
+    private var gasCard: some View {
+        GlassCard(padding: 0) {
+            Button { GasLogRequest.open() } label: {
+                row(symbol: "fuelpump.fill", tint: Theme.gold,
+                    title: String(localized: "Gas & MPG"),
+                    subtitle: String(localized: "Log fill-ups, see MPG and monthly fuel spend")) {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(Theme.textDim)
+                }
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
     // MARK: Data
 
     private var dataCard: some View {
@@ -431,7 +456,7 @@ struct TrackSettingsView: View {
     // MARK: Building blocks
 
     private func sectionLabel(_ text: String) -> some View {
-        Text(text.uppercased())
+        Text(NSLocalizedString(text, comment: "").uppercased())
             .font(Theme.rounded(12, .bold))
             .tracking(1.4)
             .foregroundStyle(Theme.textDim)
@@ -440,7 +465,7 @@ struct TrackSettingsView: View {
     }
 
     private func footnote(_ text: String) -> some View {
-        Text(text)
+        Text(NSLocalizedString(text, comment: ""))
             .font(Theme.rounded(12, .medium))
             .foregroundStyle(Theme.textDim.opacity(0.85))
             .fixedSize(horizontal: false, vertical: true)
@@ -463,11 +488,11 @@ struct TrackSettingsView: View {
                 .frame(width: 36, height: 36)
                 .background(tint.opacity(0.16), in: Circle())
             VStack(alignment: .leading, spacing: 2) {
-                Text(title)
+                Text(NSLocalizedString(title, comment: ""))
                     .font(Theme.rounded(15, .bold))
                     .foregroundStyle(.white)
                 if let subtitle {
-                    Text(subtitle)
+                    Text(NSLocalizedString(subtitle, comment: ""))
                         .font(Theme.rounded(12, .medium))
                         .foregroundStyle(Theme.textDim)
                         .contentTransition(.interpolate)

@@ -7,7 +7,7 @@ import Foundation
 // action in UserDefaults and TrackRootView (TrackHubApp.swift) acts on it as soon as it is on screen.
 
 enum RoamrAction: String {
-    case walk, run, hike, ride, drive, history, stats
+    case walk, run, hike, ride, drive, history, stats, stop, gas
 }
 
 enum RoamrPending {
@@ -43,7 +43,7 @@ enum RoamrKindOption: String, AppEnum {
         .walk: DisplayRepresentation(title: "Walk", image: .init(systemName: "figure.walk")),
         .run: DisplayRepresentation(title: "Run", image: .init(systemName: "figure.run")),
         .hike: DisplayRepresentation(title: "Hike", image: .init(systemName: "figure.hiking")),
-        .ride: DisplayRepresentation(title: "Ride", image: .init(systemName: "bicycle")),
+        .ride: DisplayRepresentation(title: "Ride", image: .init(systemName: "bicycle"), synonyms: ["Bike", "Bike ride", "Bike Ride"]),
         .drive: DisplayRepresentation(title: "Drive", image: .init(systemName: "car.fill")),
     ]
 
@@ -104,6 +104,34 @@ struct OpenRoamrSectionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         RoamrPending.queue(section == .stats ? .stats : .history)
+        return .result()
+    }
+}
+
+struct StopRoamrTrackingIntent: AppIntent {
+    static var title: LocalizedStringResource = "Stop Tracking"
+    static var description = IntentDescription("Finishes and saves the walk, run, hike, ride or drive Roamr is recording.")
+    static var openAppWhenRun = true
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        RoamrPending.queue(.stop)
+        return .result()
+    }
+}
+
+struct LogGasIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log Gas"
+    static var description = IntentDescription("Opens Roamr to log a fill-up: gallons, price and odometer.")
+    static var openAppWhenRun = true
+
+    init() {}
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        RoamrPending.queue(.gas)
         return .result()
     }
 }
