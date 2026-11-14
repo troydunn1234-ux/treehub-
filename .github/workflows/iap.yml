@@ -5,7 +5,7 @@ on:
       app:
         description: Which app
         type: choice
-        options: [StillPoint, PulseLab, Clicker, Roamr]
+        options: [StillPoint, PulseLab, Clicker, Roamr, Rootbound]
         default: StillPoint
       product:
         description: Which product
@@ -26,7 +26,8 @@ jobs:
           printf '%s\n' "$P8" > /tmp/key.p8
           case "${{ inputs.app }}" in
             StillPoint) B=com.troydunn.stillpoint; P=39.99; N="Still Pointz Lifetime"; D="Every Pro feature, forever. One payment."; export FORCE_PRICE=1 ;;
-            PulseLab)   B=com.troydunn.pulselab;   P=2.99; N="Pulse Lab Pro";   D="VS lab, 90-day history, share + CSV export." ;;
+            PulseLab)   B=com.troydunn.pulselab;   P=39.99; N="Pulse Lab Lifetime"; D="Every Pro feature, forever. One payment."; export FORCE_PRICE=1 ;;
+            Rootbound)  B=com.troydunn.rootbound;  P=4.99; N="Rootbound Pro";   D="Every Pro feature, forever. One payment." ;;
             Roamr)      B=com.troydunn.roamr;      P=39.99; N="Roamr Lifetime";   D="Every Pro feature, forever. One payment." ;;
             Clicker)    B=com.troydunn.clicker;    P=2.99; N="Couch Remote Pro"; D="Unlimited TVs, TV keyboard and PC remote." ;;
           esac
