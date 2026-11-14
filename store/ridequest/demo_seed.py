@@ -41,7 +41,7 @@ subs = [
     {"id": uid(), "n": "Language app", "amt": 59.99, "cyc": "yearly", "next": (today + dt.timedelta(days=40)).isoformat(), "st": "cancel", "note": "Haven't opened it in months"},
 ]
 state = {
-    "start": {"savings": 3200, "checking": 900, "cash": 80},
+    "start": {"savings": 3200, "checking": 900, "cash": 600},
     "goal": {"name": "Dream car", "amount": 15000, "by": f"{today.year + 1}-08"},
     "weekGoal": 200, "weekStart": 5, "rev": 1, "boot": 0, "theme": "neon", "sound": 0,
     "budgets": [{"n": n_, "l": l} for n_, l in budgets],
