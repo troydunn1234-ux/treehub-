@@ -59,7 +59,8 @@ if not err and not any(l["attributes"]["locale"] == "en-US" for l in res["data"]
 
 # 3. Price (USA base; Apple matches the rest)
 res, err = call(f"/v2/inAppPurchases/{iap_id}/iapPriceSchedule")
-if err or not res.get("data"):
+# FORCE_PRICE=1 replaces an existing price (posting a new schedule supersedes the old one).
+if err or not res.get("data") or os.environ.get("FORCE_PRICE"):
     point, url = None, f"/v2/inAppPurchases/{iap_id}/pricePoints?filter[territory]=USA&limit=200"
     while url and not point:
         res, err = call(url)

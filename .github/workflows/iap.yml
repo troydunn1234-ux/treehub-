@@ -25,7 +25,7 @@ jobs:
           pip install --quiet "pyjwt[crypto]"
           printf '%s\n' "$P8" > /tmp/key.p8
           case "${{ inputs.app }}" in
-            StillPoint) B=com.troydunn.stillpoint; P=1.99; N="Still Point Pro"; D="All practices, routines and Watch library." ;;
+            StillPoint) B=com.troydunn.stillpoint; P=39.99; N="Still Pointz Lifetime"; D="Every Pro feature, forever. One payment."; export FORCE_PRICE=1 ;;
             PulseLab)   B=com.troydunn.pulselab;   P=2.99; N="Pulse Lab Pro";   D="VS lab, 90-day history, share + CSV export." ;;
             Clicker)    B=com.troydunn.clicker;    P=2.99; N="Couch Remote Pro"; D="Unlimited TVs, TV keyboard and PC remote." ;;
           esac
