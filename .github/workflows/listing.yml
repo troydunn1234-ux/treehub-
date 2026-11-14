@@ -58,7 +58,7 @@ jobs:
           xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} \
             -destination 'generic/platform=iOS Simulator' -configuration Release -derivedDataPath build \
             CODE_SIGNING_ALLOWED=NO | tee build.log | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
-          ls build/Build/Products/Release-iphonesimulator/${{ inputs.app }}.app > /dev/null
+          grep -q "BUILD SUCCEEDED" build.log || { grep -E "error:" build.log | head -30; exit 1; }
 
       - name: Build the Apple Watch app for its simulator
         if: env.HAS_WATCH == '1'
