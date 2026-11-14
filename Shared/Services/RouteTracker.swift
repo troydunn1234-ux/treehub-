@@ -207,6 +207,10 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private var splitsAnnounced = 0
     @ObservationIgnored private var lastSplitElapsed: TimeInterval = 0
     @ObservationIgnored private var stillTimer: Timer?
+    @ObservationIgnored private var autoPausedAt: Date?
+    /// After this long auto-paused, GPS turns off (it becomes a normal pause) so the
+    /// location arrow doesn't stay on if you forget to finish.
+    private static let autoPauseGPSLimit: TimeInterval = 15 * 60
 
     private let manager = CLLocationManager()
     private let motion = CMMotionActivityManager()
@@ -276,7 +280,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
             // Turning an auto-pause into a manual one: stop GPS and never resume on our own.
             autoPaused = false
             lastAccepted = nil
-            manager.stopUpdatingLocation()
+            releaseLocation()
             persist()
             LiveActivityController.shared.update(tracker: self, force: true)
             return
@@ -288,7 +292,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         autoPaused = false
         lastAccepted = nil
         slowSince = nil
-        manager.stopUpdatingLocation()
+        releaseLocation()
         persist()
         LiveActivityController.shared.update(tracker: self, force: true)
     }
@@ -325,6 +329,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         resumedAt = nil
         state = .paused
         autoPaused = true
+        autoPausedAt = Date()
         fastFixes = 0
         currentSpeed = 0
         persist()
@@ -501,6 +506,11 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
     private func stillCheck() {
         idleCheck()
+        if state == .paused, autoPaused, let at = autoPausedAt,
+           Date().timeIntervalSince(at) >= Self.autoPauseGPSLimit {
+            pause()   // auto-pause → manual pause: GPS and the background arrow go off
+            return
+        }
         // Wait for a first GPS fix, so a slow start doesn't look like a stop.
         guard state == .recording, autoPauseEnabled, let resumedAt, let raw = lastRaw else { return }
         let lastFix = max(raw.timestamp, resumedAt)
@@ -522,16 +532,22 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         manager.startUpdatingLocation()
     }
 
-    private func stopUpdates() {
+    /// Turns GPS fully off: no updates, no background session, no blue location pill.
+    private func releaseLocation() {
         stopLaneWatch()
         stillTimer?.invalidate()
         stillTimer = nil
+        autoPausedAt = nil
         manager.stopUpdatingLocation()
         manager.allowsBackgroundLocationUpdates = false
         if #available(iOS 17.0, *), let s = backgroundSession as? CLBackgroundActivitySession {
             s.invalidate()
         }
         backgroundSession = nil
+    }
+
+    private func stopUpdates() {
+        releaseLocation()
         motion.stopActivityUpdates()
         clearPersisted()
     }

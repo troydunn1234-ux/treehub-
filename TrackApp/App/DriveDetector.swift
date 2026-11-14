@@ -64,6 +64,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
     @ObservationIgnored private var fastReadings = 0
     @ObservationIgnored private var lastBurst: Date?
     @ObservationIgnored private var wantsAlways = false
+    @ObservationIgnored private var lastAutomotive: Date?
 
     override init() {
         super.init()
@@ -71,6 +72,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         manager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
         manager.activityType = .automotiveNavigation
         manager.pausesLocationUpdatesAutomatically = true
+        manager.showsBackgroundLocationIndicator = false
         authorization = manager.authorizationStatus
     }
 
@@ -149,7 +151,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         if CMMotionActivityManager.isActivityAvailable() {
             motion.startActivityUpdates(to: .main) { [weak self] activity in
                 guard let activity, activity.automotive, activity.confidence != .low else { return }
-                MainActor.assumeIsolated { self?.maybeBurst() }
+                MainActor.assumeIsolated { self?.lastAutomotive = Date(); self?.maybeBurst() }
             }
         }
     }
@@ -174,7 +176,8 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
     /// A short GPS burst to read the speed. Never more often than once a minute.
     private func maybeBurst() {
         guard enabled, watching, !bursting, !quiet else { return }
-        if let lastBurst, Date().timeIntervalSince(lastBurst) < 60 { return }
+        // At most one short GPS check every 3 minutes, so the location arrow isn't constantly on.
+        if let lastBurst, Date().timeIntervalSince(lastBurst) < 180 { return }
         lastBurst = Date()
         bursting = true
         fastReadings = 0
@@ -245,8 +248,9 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
             if self.bursting {
                 for l in locs { self.handle(l) }
             } else {
-                // Woken by a significant location change: check whether we're moving fast.
-                self.maybeBurst()
+                // Woken by a significant location change: only check speed if the motion chip
+                // says we're in a vehicle (walking around town shouldn't turn GPS on).
+                if let t = self.lastAutomotive, Date().timeIntervalSince(t) < 120 { self.maybeBurst() }
             }
         }
     }
