@@ -72,6 +72,11 @@
   "reviewNotes": "No account or sign-in; works fully offline. On first launch, enter any birth date, time and city (for example 1 January 1990, 12:00, London) to draw a chart. Sections: Chart, Today, Big Three, Compare and Share. All calculations run on the device; nothing is uploaded. The app is for reflection and entertainment and makes no predictions.",
   "capture": [
     {
+      "file": "warmup.png",
+      "args": "-demo -section chart",
+      "wait": 40
+    },
+    {
       "file": "natal-1-chart.png",
       "args": "-demo -section chart",
       "wait": 20

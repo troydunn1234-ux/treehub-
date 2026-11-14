@@ -17,6 +17,11 @@
   "reviewNotes": "No account or sign-in, nothing to buy. Everything works offline by hand: Setup sets the goal and balances, Quick add (+) logs a purchase.\n\nBank sync is optional and needs the user's own SimpleFIN Bridge account (a third-party paid service, simplefin.org). The setup token is exchanged on the device; the access URL is stored only in the Keychain. Reviewers can skip it: every feature works without it.\n\nThe Arcade games (including a slot-machine style reward spinner) use no real money, have no prizes and cannot be paid for.",
   "capture": [
     {
+      "file": "warmup.png",
+      "args": "-demo",
+      "wait": 40
+    },
+    {
       "file": "rq-1-quest.png",
       "args": "-demo",
       "wait": 12
