@@ -63,13 +63,13 @@ def boot(udid):
 
 
 def blank(path):
-    """True when everything below the status bar is (nearly) one flat color."""
+    """True when there's nothing drawn below the status bar yet (launch screen): almost no edges."""
     try:
-        from PIL import Image
+        from PIL import Image, ImageFilter, ImageStat
         im = Image.open(path).convert("L")
         w, h = im.size
-        lo, hi = im.crop((0, int(h * 0.08), w, h)).getextrema()
-        return hi - lo < 12
+        im = im.crop((0, int(h * 0.08), w, h)).resize((max(1, w // 4), max(1, int(h * 0.92) // 4))).filter(ImageFilter.FIND_EDGES)
+        return ImageStat.Stat(im).mean[0] < 1.0
     except Exception:
         return False
 
@@ -91,7 +91,7 @@ def shoot(udid, bundle, args, wait, path, route=None, section=None):
     ok = is_running(udid, bundle)
     sh("xcrun", "simctl", "io", udid, "screenshot", path)
     # Still on the plain launch screen (a slow cold start)? Give it longer and take it again.
-    for _ in range(4):
+    for _ in range(6):
         if not blank(path): break
         print("  (still loading, waiting)")
         time.sleep(10)
