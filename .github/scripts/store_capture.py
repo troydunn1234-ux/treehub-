@@ -17,7 +17,8 @@ metadata.json keys used (all optional except capture):
 Writes raw iPhone shots to <out>/raw, watch shots to <out>/watch, the paywall to <out>/paywall.
 Only demo data is ever shown: every launch passes -demo.
 """
-import json, os, re, subprocess, sys, time
+import functools, json, os, re, subprocess, sys, time
+print = functools.partial(print, flush=True)
 
 meta = json.load(open(sys.argv[1]))
 products, out = sys.argv[2], sys.argv[3]
@@ -25,8 +26,14 @@ for d in ("raw", "watch", "paywall"):
     os.makedirs(os.path.join(out, d), exist_ok=True)
 
 
-def sh(*cmd, check=False, quiet=False):
-    r = subprocess.run(list(cmd), capture_output=True, text=True)
+def sh(*cmd, check=False, quiet=False, timeout=240):
+    print("  $", " ".join(cmd[:6]), flush=True)
+    try:
+        r = subprocess.run(list(cmd), capture_output=True, text=True, timeout=timeout)
+    except subprocess.TimeoutExpired:
+        print("  ! timed out:", " ".join(cmd[:6]), flush=True)
+        if check: sys.exit(f"timed out: {' '.join(cmd)}")
+        return subprocess.CompletedProcess(cmd, 1, "", "timeout")
     if r.returncode and not quiet:
         print("  !", " ".join(cmd[:4]), "->", (r.stderr or r.stdout).strip()[:300])
     if check and r.returncode:
@@ -52,7 +59,7 @@ def pick(platform, prefer):
 
 def boot(udid):
     sh("xcrun", "simctl", "boot", udid, quiet=True)
-    sh("xcrun", "simctl", "bootstatus", udid, "-b", quiet=True)
+    sh("xcrun", "simctl", "bootstatus", udid, "-b", quiet=True, timeout=900)
 
 
 def is_running(udid, bundle):

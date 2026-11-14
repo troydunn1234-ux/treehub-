@@ -71,6 +71,7 @@ jobs:
           ls -d build/Build/Products/Release-watchsimulator/*.app || true
 
       - name: Screenshots (demo data only)
+        env: { PYTHONUNBUFFERED: "1" }
         run: python3 .github/scripts/store_capture.py $STORE/metadata.json build/Build/Products shots
 
       - name: Caption the iPhone screenshots
