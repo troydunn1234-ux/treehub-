@@ -116,7 +116,7 @@ struct ProOnboardingView: View {
             Text("Free to use.\nOne unlock for everything.").font(.system(size: 30, weight: .bold, design: .serif)).foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
             row("checkmark.circle.fill", spec.freeLine)
-            row("sparkles", unlock.isPro ? "You already have \(spec.appName) Pro — thank you." : spec.proLine + (unlock.priceText.isEmpty ? "" : " \(unlock.priceText), once. No subscription."))
+            row("sparkles", unlock.isPro ? "You already have \(spec.appName) Pro — thank you." : spec.proLine + (unlock.usesSubscriptions ? " Free for 7 days, then monthly, yearly or lifetime." : (unlock.priceText.isEmpty ? "" : " \(unlock.priceText), once. No subscription.")))
             Spacer()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
