@@ -74,27 +74,27 @@
     {
       "file": "natal-1-chart.png",
       "args": "-demo -section chart",
-      "wait": 9
+      "wait": 20
     },
     {
       "file": "natal-2-today.png",
       "args": "-demo -section today",
-      "wait": 8
+      "wait": 20
     },
     {
       "file": "natal-3-three.png",
       "args": "-demo -section three",
-      "wait": 8
+      "wait": 12
     },
     {
       "file": "natal-4-compare.png",
       "args": "-demo -section compare",
-      "wait": 8
+      "wait": 12
     },
     {
       "file": "natal-5-share.png",
       "args": "-demo -section share",
-      "wait": 10
+      "wait": 12
     }
   ]
 }
