@@ -87,6 +87,8 @@ final class Unlock: ObservableObject {
     /// "-demo -paywall": opens the paywall at launch for the in-app purchase review screenshot. The simulator has no
     /// App Store, so prices come from "-demoPrice 2.99" (one-time unlock) and "-demoPlans 19.99,2.99" (yearly, monthly).
     static let demoPaywall = ProcessInfo.processInfo.arguments.contains("-demo") && ProcessInfo.processInfo.arguments.contains("-paywall")
+    /// Simulator screenshots never touch StoreKit (its "Sign in to Apple Account" prompt would cover the shot).
+    static let screenshots = ProcessInfo.processInfo.arguments.contains("-demo") || ProcessInfo.processInfo.arguments.contains("-noOnboarding")
     static func demoArg(_ flag: String) -> String? {
         let args = ProcessInfo.processInfo.arguments
         guard let i = args.firstIndex(of: flag), i + 1 < args.count else { return nil }
@@ -112,6 +114,7 @@ final class Unlock: ObservableObject {
 
     /// Fetch the product so the paywall can show the localized price.
     func load() async {
+        if Self.screenshots { return }
         guard product == nil || trialProduct == nil || (usesSubscriptions && plans.isEmpty) else { return }
         let found = (try? await Product.products(for: [productID, trialProductID] + subscriptionIDs)) ?? []
         if product == nil { product = found.first { $0.id == productID } }
@@ -137,7 +140,7 @@ final class Unlock: ObservableObject {
 
     /// Re-check entitlements: current purchases, then the paid-upfront grandfather clause.
     func refresh() async {
-        if Self.demoPro || Self.demoPaywall { return }
+        if Self.screenshots { return }
         var pro = false
         var trialStart: Date?
         var sub: StoreKit.Transaction?

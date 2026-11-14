@@ -96,7 +96,7 @@ jobs:
           [ -n "$PRICE" ] && { python3 .github/scripts/asc_price.py $BUNDLE $PRICE || echo "::warning::price step failed"; }
           python3 .github/scripts/asc_ready.py $BUNDLE $STORE/metadata.json || echo "::warning::ready step failed"
           if [ -f shots/paywall/iap-review.png ]; then
-            python3 .github/scripts/asc_review_shots.py $BUNDLE shots/paywall/iap-review.png || echo "::warning::review screenshot step failed"
+            FORCE=1 python3 .github/scripts/asc_review_shots.py $BUNDLE shots/paywall/iap-review.png || echo "::warning::review screenshot step failed"
           fi
 
       - name: Remove key
