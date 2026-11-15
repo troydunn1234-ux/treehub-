@@ -20,13 +20,19 @@ def call(path, method="GET", body=None, quiet=False):
     url = path if path.startswith("http") else API + path
     req = urllib.request.Request(url, method=method, data=json.dumps(body).encode() if body is not None else None,
                                  headers={"Authorization": f"Bearer {token}", "Content-Type": "application/json"})
-    try:
-        with urllib.request.urlopen(req) as r:
-            raw = r.read()
-            return json.loads(raw) if raw else {}
-    except urllib.error.HTTPError as e:
-        if not quiet: print(f"  ! {method} {path.split('?')[0]} -> {e.code}: {e.read()[:400].decode(errors='replace')}")
-        return None
+    tries = 1 if method == "POST" else 4  # a dropped connection is retried (not a POST, which could make a duplicate)
+    for attempt in range(tries):
+        try:
+            with urllib.request.urlopen(req) as r:
+                raw = r.read()
+                return json.loads(raw) if raw else {}
+        except urllib.error.HTTPError as e:
+            if not quiet: print(f"  ! {method} {path.split('?')[0]} -> {e.code}: {e.read()[:400].decode(errors='replace')}")
+            return None
+        except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
+            print(f"  ! {method} {path.split('?')[0]} -> {e!r}; " + ("retrying" if attempt < tries - 1 else "giving up"))
+            time.sleep(10 * (attempt + 1))
+    return None
 
 app = call(f"/apps?filter[bundleId]={bundle}")["data"][0]
 app_id = app["id"]
@@ -104,7 +110,14 @@ def upload_set(display, folder, files):
             part = data[op["offset"]:op["offset"] + op["length"]]
             req = urllib.request.Request(op["url"], method=op["method"], data=part,
                                          headers={h["name"]: h["value"] for h in op.get("requestHeaders", [])})
-            urllib.request.urlopen(req).read()
+            for attempt in range(4):
+                try:
+                    urllib.request.urlopen(req).read(); break
+                except urllib.error.HTTPError:
+                    raise
+                except (urllib.error.URLError, TimeoutError, ConnectionError, OSError) as e:
+                    print("  ! upload part:", repr(e), "retrying" if attempt < 3 else "giving up")
+                    _t.sleep(10 * (attempt + 1))
         done = call(f"/appScreenshots/{sid}", "PATCH", {"data": {"type": "appScreenshots", "id": sid,
                     "attributes": {"uploaded": True, "sourceFileChecksum": hashlib.md5(data).hexdigest()}}})
         print(display, "uploaded", f if done else f + " (commit failed)")
