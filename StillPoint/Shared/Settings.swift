@@ -2,10 +2,10 @@ import Foundation
 import Combine
 
 enum HapticStyle: String, Codable, CaseIterable, Identifiable {
-    case subtle, strong, off
+    case subtle, strong, alarm, off
     var id: String { rawValue }
     var label: String {
-        switch self { case .subtle: return "Subtle"; case .strong: return "Strong"; case .off: return "Off" }
+        switch self { case .subtle: return "Subtle"; case .strong: return "Strong"; case .alarm: return "Alarm (strongest)"; case .off: return "Off" }
     }
 }
 
@@ -17,7 +17,7 @@ enum SessionMode: String, Codable, CaseIterable, Identifiable {
 
 /// Everything the user can tune about how a session feels. Shared by iPhone and Watch and synced between them.
 struct SessionSettings: Codable, Equatable {
-    var haptics: HapticStyle = .strong
+    var haptics: HapticStyle = .alarm
     /// A gentle click every second of the exhale, so you can count without looking.
     var exhaleTicks: Bool = false
     /// Start / end bells (felt as haptics on the Watch).

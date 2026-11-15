@@ -26,7 +26,7 @@ final class PhoneHaptics: BreathFeedback {
     func phaseBegan(_ phase: BreathPhase, duration: Double, style: HapticStyle) {
         guard style != .off else { return }
         stopPlayer()
-        let strength: Float = style == .strong ? 0.75 : 0.4
+        let strength: Float = style == .alarm ? 1.0 : (style == .strong ? 0.75 : 0.4)
         switch phase {
         case .inhale: swell(rising: true, duration: duration, peak: strength)
         case .exhale: swell(rising: false, duration: duration, peak: strength)

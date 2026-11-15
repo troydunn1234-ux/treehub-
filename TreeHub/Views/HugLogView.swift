@@ -861,16 +861,21 @@ struct PhotoSlot: View {
     private var picker: some View {
         Menu {
             if UIImagePickerController.isSourceTypeAvailable(.camera) {
-                Button { showCamera = true } label: { Label("Take photo", systemImage: "camera") }
+                Button { after { showCamera = true } } label: { Label("Take photo", systemImage: "camera") }
             }
-            Button { showLibrary = true } label: { Label("Choose from library", systemImage: "photo.on.rectangle") }
+            Button { after { showLibrary = true } } label: { Label("Choose from camera roll", systemImage: "photo.on.rectangle") }
             if data != nil {
                 Button(role: .destructive) { data = nil } label: { Label("Remove", systemImage: "trash") }
             }
         } label: {
             polaroid
         }
-        .photosPicker(isPresented: $showLibrary, selection: $item, matching: .images, photoLibrary: .shared())
+        .background {
+            // Present the picker from a plain view, not from the menu that is still closing (that's what froze it).
+            Color.clear
+                .photosPicker(isPresented: $showLibrary, selection: $item, matching: .images,
+                              preferredItemEncoding: .current, photoLibrary: .shared())
+        }
         .onChange(of: item) { _, newItem in
             guard let newItem else { return }
             loading = true
@@ -885,10 +890,16 @@ struct PhotoSlot: View {
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker(onImage: { raw in
+                onPicked(raw)
                 data = ImageTools.compressed(raw)
             }, onClose: { showCamera = false })
             .ignoresSafeArea()
         }
+    }
+
+    /// Let the menu finish closing before presenting a picker.
+    private func after(_ action: @escaping () -> Void) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35, execute: action)
     }
 
     private var polaroid: some View {

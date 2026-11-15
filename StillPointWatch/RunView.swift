@@ -231,11 +231,12 @@ struct BreathRunView: View {
         .accessibilityAction(named: "End") { onEnd() }
     }
 
+    /// Hides the buttons after a few seconds, but never fades the screen: the orb, cue and count stay
+    /// bright so you can always see what's happening (the old dark "sleep" layer looked frozen).
     private func scheduleDim() {
-        guard prefs.settings.dimScreen else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 8) {
             guard !session.isFinished else { return }
-            withAnimation(.easeInOut(duration: 3)) { showControls = false; dimmed = true }
+            withAnimation(.easeInOut(duration: 1)) { showControls = false }
         }
     }
 }

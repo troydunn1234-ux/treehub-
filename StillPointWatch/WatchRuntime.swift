@@ -16,7 +16,24 @@ final class WatchHaptics: BreathFeedback {
         }
     }
 
+    /// Hard, alarm-like buzzes (the strongest taptic patterns watchOS offers), repeated so they're unmistakable.
+    private func buzz(_ type: WKHapticType, times: Int, gap: Double = 0.45) {
+        for i in 0..<times {
+            DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * gap) { [device] in device.play(type) }
+        }
+    }
+
     func phaseBegan(_ phase: BreathPhase, duration: Double, style: HapticStyle) {
+        if style == .strong || style == .alarm {
+            let n = style == .alarm ? 2 : 1
+            switch phase {
+            case .inhale: buzz(.notification, times: n)
+            case .exhale: buzz(.retry, times: n + 1, gap: 0.35)
+            case .holdIn, .holdOut: buzz(.failure, times: 1)
+            case .still: break
+            }
+            return
+        }
         if silent {
             guard style != .off else { return }
             switch phase {
@@ -34,7 +51,7 @@ final class WatchHaptics: BreathFeedback {
             case .inhale, .exhale: device.play(.click)
             default: break
             }
-        case .strong:
+        case .strong, .alarm:
             switch phase {
             case .inhale: device.play(.directionUp)
             case .exhale: device.play(.directionDown)
@@ -56,18 +73,10 @@ final class WatchHaptics: BreathFeedback {
     }
 
     func bell(_ kind: BellKind) {
-        if silent {
-            switch kind {
-            case .start: taps(3, gap: 0.22)
-            case .interval: taps(2, gap: 0.22)
-            case .end: taps(4, gap: 0.22)
-            }
-            return
-        }
         switch kind {
-        case .start: device.play(.start)
-        case .interval: device.play(.notification)
-        case .end: device.play(.success)
+        case .start: buzz(.notification, times: 2)
+        case .interval: buzz(.notification, times: 1)
+        case .end: buzz(.success, times: 3, gap: 0.5)
         }
     }
 
