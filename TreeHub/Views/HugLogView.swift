@@ -22,6 +22,8 @@ struct HugDraft {
     var legacyPhoto: Data? = nil
     var tags: Set<String> = []
     var barefoot = false
+    var feetInWater = false
+    var waterSetting = ""
     var weather = ""
     var moodBefore = 0
     var moodAfter = 0
@@ -53,7 +55,7 @@ struct HugDraft {
         latitude = h.latitude; longitude = h.longitude; placeName = h.placeName
         locationSource = h.latitude != nil ? "Saved pin" : ""
         treePhoto = h.treePhoto; selfiePhoto = h.selfiePhoto; legacyPhoto = h.garminPhoto
-        tags = Set(h.tags); barefoot = h.barefoot; weather = h.weather
+        tags = Set(h.tags); barefoot = h.barefoot; feetInWater = h.feetInWater; waterSetting = h.waterSetting; weather = h.weather
         moodBefore = h.moodBefore; moodAfter = h.moodAfter; notes = h.notes
         exercise = h.exercise; durationMin = h.durationMin > 0 ? h.durationMin : nil
         avgHR = h.avgHR; minHR = h.minHR; maxHR = h.maxHR; respRate = h.respRate
@@ -77,7 +79,7 @@ struct HugDraft {
         h.latitude = latitude; h.longitude = longitude; h.placeName = placeName
         h.treePhoto = treePhoto; h.selfiePhoto = selfiePhoto; h.garminPhoto = legacyPhoto
         h.tags = HugTag.all.map(\.id).filter { tags.contains($0) }
-        h.barefoot = barefoot; h.weather = weather
+        h.barefoot = barefoot; h.feetInWater = feetInWater; h.waterSetting = waterSetting; h.weather = weather
         h.moodBefore = moodBefore; h.moodAfter = moodAfter
         h.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         h.exercise = exercise; h.durationMin = max(0, durationMin ?? 0)
@@ -136,8 +138,8 @@ struct HugLogView: View {
     @State private var guesses: [SpeciesGuess] = []
     @State private var guessing = false
     @State private var guessNote = ""
-    @State private var showHeartDetails = false
-    @State private var showTags = false
+    @State private var showHeartDetails = true
+    @State private var showTags = true
     @ObservedObject private var unlock = Unlock.shared
     @State private var showPlans = false
     /// The multi-select session sheet (sessions within ±60 min of the photo / hug time).
@@ -551,25 +553,16 @@ struct HugLogView: View {
                     moodRow("Before", value: $d.moodBefore)
                     moodRow("After", value: $d.moodAfter)
                 }
-                Button {
-                    withAnimation(.snappy) { d.barefoot.toggle() }
-                } label: {
-                    HStack(spacing: 12) {
-                        Image(systemName: "shoeprints.fill").font(.system(size: 20))
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("Barefoot").font(Theme.rounded(15, .bold))
-                            Text("Shoes off, feet on the earth (+25 XP)").font(Theme.rounded(12, .medium)).opacity(0.75)
-                        }
-                        Spacer()
-                        Image(systemName: d.barefoot ? "checkmark.circle.fill" : "circle").font(.system(size: 22))
+                groundingToggle("Barefoot", "Shoes off, feet on the earth (+25 XP)", "shoeprints.fill", on: $d.barefoot)
+                groundingToggle("Feet in water", "Toes in a creek, lake or the ocean (+25 XP)", "drop.fill", on: $d.feetInWater)
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Where the tree stands").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
+                    HStack(spacing: 8) {
+                        waterChip("land", "On land", "tree.fill")
+                        waterChip("edge", "Water's edge", "water.waves.and.arrow.down")
+                        waterChip("water", "Water tree", "water.waves")
                     }
-                    .foregroundStyle(d.barefoot ? Theme.glow : .white)
-                    .padding(12)
-                    .background(d.barefoot ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
                 }
-                .buttonStyle(.plain)
-                .haptic()
-                .accessibilityAddTraits(d.barefoot ? .isSelected : [])
 
                 TextField("", text: $d.notes, prompt: Text("How did it feel? Anything the tree told you?").foregroundStyle(Theme.textDim), axis: .vertical)
                     .lineLimit(3...8)
@@ -754,6 +747,47 @@ struct HugLogView: View {
     }
 
     /// When the photo was taken, from its EXIF data (with its time-zone offset when present).
+    private func groundingToggle(_ title: String, _ detail: String, _ symbol: String, on: Binding<Bool>) -> some View {
+        Button {
+            withAnimation(.snappy) { on.wrappedValue.toggle() }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: symbol).font(.system(size: 20)).frame(width: 26)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(Theme.rounded(15, .bold))
+                    Text(detail).font(Theme.rounded(12, .medium)).opacity(0.75)
+                }
+                Spacer()
+                Image(systemName: on.wrappedValue ? "checkmark.circle.fill" : "circle").font(.system(size: 22))
+            }
+            .foregroundStyle(on.wrappedValue ? Theme.glow : .white)
+            .padding(12)
+            .background(on.wrappedValue ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+        }
+        .buttonStyle(.plain)
+        .haptic()
+        .accessibilityAddTraits(on.wrappedValue ? .isSelected : [])
+    }
+
+    private func waterChip(_ value: String, _ label: String, _ symbol: String) -> some View {
+        let on = d.waterSetting == value
+        return Button {
+            withAnimation(.snappy) { d.waterSetting = on ? "" : value }
+        } label: {
+            VStack(spacing: 4) {
+                Image(systemName: symbol).font(.system(size: 18))
+                Text(label).font(Theme.rounded(12, .bold)).lineLimit(1).minimumScaleFactor(0.8)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 10)
+            .foregroundStyle(on ? Theme.glow : .white)
+            .background(on ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+        }
+        .buttonStyle(.plain)
+        .haptic()
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+
     static func photoDate(_ props: [String: Any]) -> Date? {
         guard let exif = props[kCGImagePropertyExifDictionary as String] as? [String: Any],
               let raw = (exif[kCGImagePropertyExifDateTimeOriginal as String] ?? exif[kCGImagePropertyExifDateTimeDigitized as String]) as? String

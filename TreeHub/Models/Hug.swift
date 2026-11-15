@@ -28,6 +28,10 @@ final class Hug {
     // Vibe
     var tagsRaw: String = ""
     var barefoot: Bool = false
+    /// Feet in a creek, lake or the ocean during the hug.
+    var feetInWater: Bool = false
+    /// Where the tree stands: "" (not set), "land", "edge" (water's edge / roots in water) or "water" (the whole tree is in water).
+    var waterSetting: String = ""
     var weather: String = ""
     var moodBefore: Int = 0
     var moodAfter: Int = 0

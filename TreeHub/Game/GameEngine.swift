@@ -141,6 +141,8 @@ enum GameEngine {
         b.add("Tree hug", 50)
         if hug.durationMin > 0 { b.add("Breathwork \(Format.minutes(hug.durationMin))", min(Int(hug.durationMin.rounded()) * 5, 150)) }
         if hug.barefoot { b.add("Barefoot grounding", 25) }
+        if hug.feetInWater { b.add("Feet in water", 25) }
+        if hug.waterSetting == "water" { b.add("Water tree", 20) } else if hug.waterSetting == "edge" { b.add("Water's edge tree", 10) }
         if hug.treePhoto != nil { b.add("Tree photo", 10) }
         if hug.selfiePhoto != nil { b.add("Tree selfie", 10) }
         if hug.hasStats || !hug.linkedSessions.isEmpty || hug.garminPhoto != nil { b.add("Heart stats", 15) }
@@ -313,6 +315,9 @@ enum GameEngine {
             b("hugs-100", "Forest Guardian", "Hug 100 times", "shield.lefthalf.filled", .legendary, Double(hugs.count), 100),
             flag("barefoot", "Grounded", "Hug a tree barefoot", "shoeprints.fill", .common, hugs.contains { $0.barefoot }),
             b("barefoot-10", "Earth Connected", "10 barefoot hugs", "globe.americas.fill", .epic, Double(hugs.filter(\.barefoot).count), 10),
+            flag("feet-water", "Toes in the Current", "Hug a tree with your feet in water", "drop.fill", .common, hugs.contains { $0.feetInWater }),
+            flag("water-tree", "Water Tree", "Hug a tree that stands in water", "water.waves", .rare, hugs.contains { $0.waterSetting == "water" }),
+            flag("edge-tree", "Between Two Worlds", "Hug a tree at the water's edge", "water.waves.and.arrow.down", .common, hugs.contains { $0.waterSetting == "edge" }),
             flag("stats", "Breath of the Forest", "Log a hug with Apple Watch heart data", "wind", .common, hugs.contains { $0.hasStats || !$0.linkedSessions.isEmpty || $0.garminPhoto != nil }),
             b("twelve", "Twelve-Minute Stillness", "A 12+ minute session", "hourglass", .rare, longest, 12, unit: " min"),
             b("twenty", "Deep Roots", "A 20+ minute session", "arrow.down.to.line.compact", .epic, longest, 20, unit: " min"),

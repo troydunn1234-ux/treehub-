@@ -26,6 +26,9 @@ struct HugDetailView: View {
                 FlowLayout(spacing: 8) {
                     Chip(label: "+\(hug.xp) XP", symbol: "star.fill", selected: true)
                     if hug.barefoot { Chip(label: "Barefoot", symbol: "shoeprints.fill") }
+                    if hug.feetInWater { Chip(label: "Feet in water", symbol: "drop.fill") }
+                    if hug.waterSetting == "water" { Chip(label: "Water tree", symbol: "water.waves") }
+                    if hug.waterSetting == "edge" { Chip(label: "Water's edge", symbol: "water.waves.and.arrow.down") }
                     if hug.strollID != nil { Chip(label: "On a stroll", symbol: "figure.walk") }
                     ForEach(hug.tags, id: \.self) { t in Chip(label: HugTag.label(t), symbol: HugTag.symbol(t)) }
                     if !hug.weather.isEmpty { Chip(label: hug.weather, symbol: "cloud.sun") }
