@@ -11,6 +11,9 @@ metadata.json keys used (all optional except capture):
                 "route": ["lat,lng", ...] (optional: drive the simulated GPS along these points first),
                 "section": "arcade" (optional, web-app shells: open this section)}]
   "paywall":  {"args": "-demo -paywall -demoPrice 2.99", "wait": 6}   -> <out>/paywall/iap-review.png
+  "ipad":     {"shots": ["roamr-1.png", ...]} (optional: which of the "shots" files to also take on the
+              13-inch iPad; default the first 5). iPad shots are only taken when the built app supports iPad
+              (UIDeviceFamily contains 2) -> <out>/ipad/
   "watch":    {"product": "RoamrWatch", "bundle": "com.troydunn.roamr.watchkitapp",
                "capture": [{"file": "w1.png", "args": "-demo", "wait": 6}]}   -> <out>/watch/
 
@@ -22,7 +25,7 @@ print = functools.partial(print, flush=True)
 
 meta = json.load(open(sys.argv[1]))
 products, out = sys.argv[2], sys.argv[3]
-for d in ("raw", "watch", "paywall"):
+for d in ("raw", "watch", "paywall", "ipad"):
     os.makedirs(os.path.join(out, d), exist_ok=True)
 
 
@@ -140,6 +143,62 @@ if meta.get("paywall"):
     fails += not shoot(udid, bundle, p["args"], p.get("wait", 7), os.path.join(out, "paywall", "iap-review.png"))
 sh("xcrun", "simctl", "shutdown", udid, quiet=True)
 
+# ---- iPad Pro 13-inch (2064x2752), only when the app runs on iPad (App Store Connect then requires a 13" set)
+import plistlib
+try:
+    family = plistlib.load(open(os.path.join(app, "Info.plist"), "rb")).get("UIDeviceFamily", [1])
+except Exception as e:
+    print("::warning::couldn't read UIDeviceFamily:", e); family = [1]
+print("UIDeviceFamily:", family)
+if 2 in family:
+    def ipad13():
+        best = None
+        for rt, devs in devices().items():
+            if "iOS" not in rt: continue
+            ver = tuple(int(x) for x in re.findall(r"\d+", rt.split("iOS")[-1]))
+            for dv in devs:
+                n = dv["name"]
+                if not (n.startswith("iPad Pro") and ("13-inch" in n or "12.9-inch" in n)): continue
+                score = (ver, "13-inch" in n, n)
+                if best is None or score > best[0]: best = (score, dv["udid"], n, rt)
+        return best
+    ip = ipad13()
+    if not ip or "13-inch" not in ip[2]:
+        rts = [r for r in json.loads(sh("xcrun", "simctl", "list", "runtimes", "-j").stdout)["runtimes"]
+               if r.get("platform") == "iOS" and r.get("isAvailable")]
+        types = sorted([t for t in json.loads(sh("xcrun", "simctl", "list", "devicetypes", "-j").stdout)["devicetypes"]
+                        if t["name"].startswith("iPad Pro 13-inch")], key=lambda t: t["name"])
+        if rts and types:
+            sh("xcrun", "simctl", "create", "Store iPad 13", types[-1]["identifier"], rts[-1]["identifier"])
+            ip = ipad13()
+    if not ip:
+        print("::warning::no 13-inch iPad simulator available")
+    else:
+        iid = ip[1]
+        print("iPad simulator:", ip[2], ip[3])
+        boot(iid)
+        sh("xcrun", "simctl", "status_bar", iid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100",
+           "--wifiBars", "3", "--operatorName", "")
+        sh("xcrun", "simctl", "install", iid, app, check=True)
+        for svc in meta.get("grant", []):
+            sh("xcrun", "simctl", "privacy", iid, "grant", svc, bundle, quiet=True)
+        if meta.get("location"):
+            sh("xcrun", "simctl", "location", iid, "set", meta["location"], quiet=True)
+        shot_files = [s["file"] for s in meta.get("shots", [])]
+        want = set((meta.get("ipad") or {}).get("shots") or shot_files[:5])
+        for c in meta.get("capture", []):
+            if c["file"] in shot_files and c["file"] not in want: continue   # warm-up shots (not in "shots") still run
+            if c.get("fresh"):
+                sh("xcrun", "simctl", "uninstall", iid, bundle, quiet=True)
+                sh("xcrun", "simctl", "install", iid, app, check=True)
+                for svc in meta.get("grant", []):
+                    sh("xcrun", "simctl", "privacy", iid, "grant", svc, bundle, quiet=True)
+            if not shoot(iid, bundle, c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "ipad", c["file"]), c.get("route"), c.get("section")):
+                print("::warning::iPad shot", c["file"], "- the app was not running when it was taken")
+        sh("xcrun", "simctl", "shutdown", iid, quiet=True)
+else:
+    print("iPhone-only app: no iPad screenshots")
+
 # ---- Apple Watch
 w = meta.get("watch")
 if w:
@@ -170,5 +229,5 @@ if w:
                 fails += not shoot(wid, w["bundle"], c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "watch", c["file"]))
             sh("xcrun", "simctl", "shutdown", wid, quiet=True)
 
-print("captured:", {d: sorted(os.listdir(os.path.join(out, d))) for d in ("raw", "watch", "paywall")})
+print("captured:", {d: sorted(os.listdir(os.path.join(out, d))) for d in ("raw", "watch", "paywall", "ipad")})
 sys.exit(1 if fails else 0)

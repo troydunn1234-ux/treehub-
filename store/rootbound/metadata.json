@@ -121,6 +121,15 @@
       ]
     }
   ],
+  "ipad": {
+    "shots": [
+      "rb-1-home.png",
+      "rb-2-log.png",
+      "rb-3-celebrate.png",
+      "rb-4-grove.png",
+      "rb-5-collection.png"
+    ]
+  },
   "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/PRIVACY.md",
   "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/SUPPORT.md",
   "paywall": {

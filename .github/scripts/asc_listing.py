@@ -1,7 +1,7 @@
 """Fill in an app's App Store listing from store/<app>/metadata.json and upload
 marketing screenshots. Never submits anything for review.
 
-usage: asc_listing.py <bundle id> <metadata.json> <screenshots dir> [apple watch screenshots dir]
+usage: asc_listing.py <bundle id> <metadata.json> <screenshots dir> [apple watch screenshots dir] [13-inch iPad screenshots dir]
 """
 import hashlib, json, os, sys, time, urllib.request, urllib.error
 import jwt
@@ -10,6 +10,7 @@ socket.setdefaulttimeout(120)  # never hang the job on one stuck request
 
 bundle, meta_path, shots_dir = sys.argv[1], sys.argv[2], sys.argv[3]
 watch_dir = sys.argv[4] if len(sys.argv) > 4 else None
+ipad_dir = sys.argv[5] if len(sys.argv) > 5 else None
 meta = json.load(open(meta_path))
 token = jwt.encode({"iss": os.environ["ISS"], "iat": int(time.time()), "exp": int(time.time()) + 1200, "aud": "appstoreconnect-v1"},
                    open(os.environ["KEY_PATH"]).read(), algorithm="ES256", headers={"kid": os.environ["KID"], "typ": "JWT"})
@@ -127,6 +128,11 @@ if files:
     upload_set("APP_IPHONE_67", shots_dir, files)
 else:
     print("No iPhone screenshots to upload")
+# 13-inch iPad (2064x2752 or 2048x2732): App Store Connect requires this set for apps that run on iPad.
+ipad = sorted(f for f in os.listdir(ipad_dir) if f.endswith(".png")) if ipad_dir and os.path.isdir(ipad_dir) else []
+ipad = [f for f in ipad if png_size(os.path.join(ipad_dir, f)) in ((2064, 2752), (2048, 2732))]
+if ipad:
+    upload_set("APP_IPAD_PRO_3GEN_129", ipad_dir, ipad)
 if watch_dir and os.path.isdir(watch_dir):
     by_type = {}
     for f in sorted(x for x in os.listdir(watch_dir) if x.endswith(".png")):

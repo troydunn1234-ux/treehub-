@@ -1,6 +1,7 @@
 name: Update App Store listing
 
-# Run by hand: takes clean demo-mode screenshots in the simulator (iPhone 6.9", Apple Watch when the app has one,
+# Run by hand: takes clean demo-mode screenshots in the simulator (iPhone 6.9", iPad 13" when the app runs on iPad,
+# Apple Watch when the app has one,
 # and the paywall for in-app purchase review), captions the iPhone ones, and fills in the App Store page from
 # store/<app>/metadata.json: text, screenshots, price, age rating, availability, review notes, build, and the
 # review screenshot on every in-app purchase / subscription. It never submits anything for review.
@@ -27,7 +28,7 @@ concurrency:
 jobs:
   listing:
     runs-on: macos-15-intel
-    timeout-minutes: 75
+    timeout-minutes: 95
     steps:
       - uses: actions/checkout@v4
 
@@ -80,6 +81,9 @@ jobs:
         run: |
           pip3 install --quiet --break-system-packages pillow "pyjwt[crypto]" || pip3 install --quiet pillow "pyjwt[crypto]"
           python3 .github/scripts/marketing_shots.py $STORE/metadata.json shots/raw store-shots
+          if ls shots/ipad/*.png >/dev/null 2>&1; then
+            python3 .github/scripts/marketing_shots.py $STORE/metadata.json shots/ipad store-shots-ipad --ipad
+          fi
 
       - name: Fill in the App Store page
         if: inputs.upload
@@ -91,7 +95,7 @@ jobs:
           mkdir -p ~/private_keys
           printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
           export KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8
-          python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots shots/watch || echo "::warning::listing step failed"
+          python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots shots/watch store-shots-ipad || echo "::warning::listing step failed"
           PRICE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json')).get('price',''))")
           [ -n "$PRICE" ] && { python3 .github/scripts/asc_price.py $BUNDLE $PRICE || echo "::warning::price step failed"; }
           python3 .github/scripts/asc_ready.py $BUNDLE $STORE/metadata.json || echo "::warning::ready step failed"
@@ -109,6 +113,7 @@ jobs:
           [ -d shots ] || exit 0
           TMP=$(mktemp -d); mkdir -p "$TMP/raw"
           cp -R store-shots/. "$TMP"/ 2>/dev/null || true
+          [ -d store-shots-ipad ] && { mkdir -p "$TMP/ipad"; cp -R store-shots-ipad/. "$TMP/ipad"/; } || true
           cp -R shots/. "$TMP/raw"/ 2>/dev/null || true
           grep -E "error:" build.log | head -40 > "$TMP/build-errors.txt" 2>/dev/null || true
           BR=store-shots-$(echo "${{ inputs.app }}" | tr A-Z a-z)

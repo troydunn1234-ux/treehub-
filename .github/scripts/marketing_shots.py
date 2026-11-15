@@ -6,14 +6,17 @@ short subline, then the screenshot inside a drawn iPhone (titanium rim,
 Dynamic Island) with floating glass feature chips.
 
 metadata.json "shots": [{file, eyebrow, line1, line2, sub, chips: [..], tilt}]
-usage: marketing_shots.py metadata.json shots_dir out_dir
+usage: marketing_shots.py metadata.json shots_dir out_dir [--ipad]
+  --ipad: 13-inch iPad set (2064x2752) from raw iPad shots, drawn in an iPad frame;
+          only the "shots" entries whose raw file exists are made.
 """
 import json, math, os, random, sys
 from PIL import Image, ImageDraw, ImageFilter, ImageFont
 
 meta, shots, out = sys.argv[1], sys.argv[2], sys.argv[3]
+IPAD = "--ipad" in sys.argv[4:]
 os.makedirs(out, exist_ok=True)
-W, H = 1320, 2868
+W, H = (2064, 2752) if IPAD else (1320, 2868)
 HERE = os.path.dirname(os.path.abspath(__file__))
 FONT_DIR = os.path.normpath(os.path.join(HERE, "..", "..", "store", "fonts"))
 
@@ -147,6 +150,33 @@ def phone(shot, width):
     # side buttons
     return ph_img
 
+def tablet(shot, width):
+    """Draw an iPad Pro (thin even bezels, rounded corners, no notch) around the screenshot."""
+    bez, rim = int(width * .028), int(width * .008)
+    sw = width - 2 * (bez + rim)
+    sh = int(shot.height * sw / shot.width)
+    shot = shot.resize((sw, sh), Image.LANCZOS)
+    pw, ph = width, sh + 2 * (bez + rim)
+    R = int(width * .06)
+    t_img = Image.new("RGBA", (pw, ph), (0, 0, 0, 0))
+    rim_layer = Image.new("RGBA", (pw, ph))
+    rd = ImageDraw.Draw(rim_layer)
+    for y in range(ph):
+        v = int(150 + 40 * math.sin(y / ph * math.pi * 2) ** 2)
+        rd.line([(0, y), (pw, y)], fill=(v, v, v + 6, 255))
+    m = Image.new("L", (pw, ph), 0)
+    ImageDraw.Draw(m).rounded_rectangle([0, 0, pw - 1, ph - 1], R, fill=255)
+    t_img.paste(rim_layer, (0, 0), m)
+    d = ImageDraw.Draw(t_img)
+    d.rounded_rectangle([rim, rim, pw - rim - 1, ph - rim - 1], R - rim, fill=(6, 6, 9, 255))
+    sm = Image.new("L", (sw, sh), 0)
+    ImageDraw.Draw(sm).rounded_rectangle([0, 0, sw - 1, sh - 1], max(8, R - rim - bez), fill=255)
+    t_img.paste(shot.convert("RGBA"), (rim + bez, rim + bez), sm)
+    cam = max(6, bez // 5)  # front camera on the top bezel
+    d.ellipse([pw // 2 - cam, rim + bez // 2 - cam, pw // 2 + cam, rim + bez // 2 + cam], fill=(28, 28, 36, 255))
+    d.rounded_rectangle([1, 1, pw - 2, ph - 2], R, outline=(255, 255, 255, 90), width=3)
+    return t_img
+
 def chip(img, x, y, text, accent, f):
     d = ImageDraw.Draw(img)
     tw = d.textlength(text, font=f)
@@ -173,7 +203,8 @@ accents = [MAGENTA, CYAN, VIOLET]
 for i, s in enumerate(m["shots"]):
     src = os.path.join(shots, s["file"])
     if not os.path.exists(src):
-        print("missing", src); continue
+        if not IPAD: print("missing", src)
+        continue
     acc = accents[i % 3]
     img = background(i)
     pill(img, W / 2, 168, s["eyebrow"].upper(), BOLD(34), acc)
@@ -183,7 +214,7 @@ for i, s in enumerate(m["shots"]):
     while size > 38 and ImageDraw.Draw(img).textlength(s["sub"], font=SEMI(size)) > W - 90: size -= 2
     centered_text(img, 650 + (54 - size) // 2, s["sub"], SEMI(size), fill=(222, 216, 255, 210))
 
-    ph = phone(Image.open(src), int(W * .80))
+    ph = tablet(Image.open(src), int(W * .76)) if IPAD else phone(Image.open(src), int(W * .80))
     tilt = s.get("tilt", 0)
     if tilt:
         ph = ph.rotate(tilt, resample=Image.BICUBIC, expand=True)
@@ -199,8 +230,8 @@ for i, s in enumerate(m["shots"]):
         f = BOLD(46)
         tw = ImageDraw.Draw(img).textlength(text, font=f) + 120
         left = k % 2 == 0
-        x = 28 if left else W - tw - 28
-        y = 1960 + k * 540
+        x = (60 if left else W - tw - 60) if IPAD else (28 if left else W - tw - 28)
+        y = (1640 + k * 420) if IPAD else (1960 + k * 540)
         chip(img, x, y, text, accents[(i + k + 1) % 3], f)
 
     path = os.path.join(out, f"{i + 1:02d}-{s['file']}")
