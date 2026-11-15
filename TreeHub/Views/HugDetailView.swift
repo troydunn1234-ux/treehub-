@@ -29,7 +29,7 @@ struct HugDetailView: View {
                     if hug.feetInWater { Chip(label: "Feet in water", symbol: "drop.fill") }
                     if hug.waterSetting == "water" { Chip(label: "Water tree", symbol: "water.waves") }
                     if hug.waterSetting == "edge" { Chip(label: "Water's edge", symbol: "water.waves.and.arrow.down") }
-                    if hug.strollID != nil { Chip(label: "On a stroll", symbol: "figure.walk") }
+                    if hug.strollID != nil || !hug.linkedWalks.isEmpty { Chip(label: "On a walk", symbol: "figure.walk") }
                     ForEach(hug.tags, id: \.self) { t in Chip(label: HugTag.label(t)) }
                     if !hug.weather.isEmpty { Chip(label: hug.weather, symbol: "cloud.sun") }
                 }
@@ -55,6 +55,8 @@ struct HugDetailView: View {
                 }
 
                 breathworkSection
+
+                walksSection
 
                 if hug.moodBefore > 0 || hug.moodAfter > 0 {
                     GlassCard {
@@ -219,6 +221,19 @@ struct HugDetailView: View {
                         Text("Looking for breath sessions around this hug…")
                             .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
                     }
+                }
+            }
+        }
+    }
+
+    /// Walks attached to this hug (Roamr / Apple Health), each as a stat block.
+    @ViewBuilder private var walksSection: some View {
+        let walks = hug.linkedWalks
+        if !walks.isEmpty {
+            GlassCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    SectionHeader(title: walks.count == 1 ? "Walk" : "Walks", symbol: walks.first?.symbol ?? "figure.walk")
+                    ForEach(walks) { w in LinkedWalkCard(walk: w) }
                 }
             }
         }

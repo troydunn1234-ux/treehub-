@@ -62,8 +62,13 @@ final class Hug {
     /// an empty array = the user linked none.
     var linkedSessionsData: Data?
 
-    // The stroll or hike this hug happened on (Activity.id), if any
+    // Legacy: the stroll or hike recorded in Rootbound that this hug happened on (Activity.id). Rootbound no
+    // longer records walks (they come from Roamr / Apple Health now); kept so older hugs and badges stay.
     var strollID: UUID?
+
+    /// Walks / hikes / runs attached to this hug (JSON of [LinkedWalk]) from Roamr or Apple Health.
+    /// nil = not looked at yet (auto-sync may attach overlapping walks); an empty array = the user chose none.
+    var linkedWalksData: Data?
 
     // Game
     var xp: Int = 0
@@ -100,6 +105,19 @@ final class Hug {
         }
         set { linkedSessionsData = try? JSONEncoder().encode(newValue.sorted { $0.start < $1.start }) }
     }
+
+    /// Walks attached to this hug, oldest first.
+    var linkedWalks: [LinkedWalk] {
+        get {
+            guard let linkedWalksData,
+                  let list = try? JSONDecoder().decode([LinkedWalk].self, from: linkedWalksData) else { return [] }
+            return list.sorted { $0.start < $1.start }
+        }
+        set { linkedWalksData = try? JSONEncoder().encode(newValue.sorted { $0.start < $1.start }) }
+    }
+
+    /// True once walks were attached or the user picked none.
+    var hasWalkList: Bool { linkedWalksData != nil }
 
     /// True once the user picked sessions for this hug (even none); older hugs fall back to time overlap.
     var hasLinkList: Bool { linkedSessionsData != nil }

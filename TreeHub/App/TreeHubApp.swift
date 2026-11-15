@@ -41,7 +41,7 @@ struct TreeHubApp: App {
     }
 }
 
-enum AppTab: String, Hashable { case home, track, trees, collection }
+enum AppTab: String, Hashable { case home, trees, collection }
 
 struct WatchHugLog: Identifiable {
     let id = UUID()
@@ -50,6 +50,7 @@ struct WatchHugLog: Identifiable {
 }
 
 struct RootView: View {
+    /// Only the location-permission helper now (onboarding); Rootbound no longer records walks (Roamr does).
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
@@ -68,7 +69,6 @@ struct RootView: View {
             Group {
                 switch tab {
                 case .home: HomeView(tab: $tab, showHugLog: $showHugLog, openWatchHug: openWatchHug)
-                case .track: TrackView(onHug: { showHugLog = true })
                 case .trees: TreesView()
                 case .collection: CollectionView()
                 }
@@ -78,7 +78,6 @@ struct RootView: View {
             FloatingTabBar(
                 items: [
                     TabBarItem(id: "home", symbol: "house.fill", label: "Home"),
-                    TabBarItem(id: "track", symbol: tracker.isActive ? "record.circle" : "figure.walk", label: "Stroll", alert: tracker.isActive),
                     TabBarItem(id: "trees", symbol: "tree.fill", label: "Grove"),
                     TabBarItem(id: "collection", symbol: "sparkles", label: "Collection"),
                 ],
@@ -89,7 +88,7 @@ struct RootView: View {
             )
         }
         .sheet(isPresented: $showHugLog) {
-            HugLogView(editing: nil, strollID: tracker.isActive ? tracker.sessionID : nil)
+            HugLogView(editing: nil)
         }
         .sheet(item: $watchPrompt) { h in
             WatchHugPrompt(hug: h, onPick: { tree in
@@ -105,8 +104,12 @@ struct RootView: View {
         }
         .onChange(of: watchInbox.pending.count) { old, new in if new > old { openWatchHug() } }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { tracker.persist(); RootboundWellness.publish(hugs: hugs) }
-            if phase == .active { consumePendingAction(); RootboundWellness.publish(hugs: hugs); NatureRollStore.shared.scanIfAllowed() }
+            if phase != .active { RootboundWellness.publish(hugs: hugs) }
+            if phase == .active {
+                consumePendingAction(); RootboundWellness.publish(hugs: hugs); NatureRollStore.shared.scanIfAllowed()
+                // Walks from Roamr / Apple Health onto the hugs they passed (no prompt).
+                Task { await RoamrWalks.sync(hugs, context: context) }
+            }
         }
         // Share hugs with Still Pointz (Shared/Wellness/WellnessBridge.swift).
         .onChange(of: hugs.count) { _, _ in RootboundWellness.publish(hugs: hugs) }
@@ -144,7 +147,8 @@ struct RootView: View {
             }
         }
         .onAppear {
-            if tracker.recoveredFromCrash { tab = .track }
+            saveLeftoverStroll()
+            if !DemoData.isOn { Task { await RoamrWalks.sync(hugs, context: context) } }
             if DemoData.isOn { setUpDemo() }
             consumePendingAction()
             if !DemoData.isOn { openWatchHug() }
@@ -166,12 +170,6 @@ struct RootView: View {
         switch action {
         case .logHug:
             showHugLog = true
-        case .stroll, .hike:
-            tab = .track
-            guard !tracker.isActive else { return }
-            if !tracker.canTrack { tracker.requestPermission(); return }
-            UINotificationFeedbackGenerator().notificationOccurred(.success)
-            tracker.start(kind: action == .hike ? .hike : .walk)
         case .home:
             showHugLog = false
             tab = .home
@@ -184,19 +182,24 @@ struct RootView: View {
         }
     }
 
+    /// A stroll that was still recording when Rootbound stopped recording walks: save it so nothing is lost
+    /// (it shows under Settings › Past strolls).
+    private func saveLeftoverStroll() {
+        guard tracker.isActive, !DemoData.isOn, let a = tracker.finish(trimIdle: true) else { return }
+        if a.distanceM > 10 || a.end.timeIntervalSince(a.start) > 60 {
+            context.insert(a)
+            try? context.save()
+        }
+    }
+
     private func setUpDemo() {
         DemoData.seed(context)
         switch DemoData.argument(after: "-tab") {
-        case "track": tab = .track
         case "trees": tab = .trees
         case "collection": tab = .collection
         default: tab = .home
         }
         if ProcessInfo.processInfo.arguments.contains("-hugLog") { showHugLog = true }
-        if ProcessInfo.processInfo.arguments.contains("-autostart") {
-            tab = .track
-            tracker.start(kind: .walk)
-        }
         if ProcessInfo.processInfo.arguments.contains("-celebrate") {
             var b = XPBreakdown()
             b.add("Tree hug", 50); b.add("Breathwork 12 min", 60); b.add("Barefoot grounding", 25)

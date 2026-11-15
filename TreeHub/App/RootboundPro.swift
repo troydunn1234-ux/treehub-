@@ -15,13 +15,13 @@ enum RootboundPro {
             .init(icon: "chart.line.uptrend.xyaxis", title: "Tree insights",
                   detail: "Mood lift, stress drop, heart rate and your favorite time of day with each tree."),
             .init(icon: "square.and.arrow.up.on.square", title: "CSV and GPX export",
-                  detail: "Spreadsheet-ready hug history, and every stroll and hike route as GPX for maps and trail apps."),
+                  detail: "Spreadsheet-ready hug history with the walks under each hug, and your past stroll routes as GPX."),
             .init(icon: "photo.stack.fill", title: "\(NatureRoll.title) map and albums",
                   detail: "Your nature photos on a map, and saved into albums in the Photos app."),
             .init(icon: "heart.fill", title: "Support an indie app",
                   detail: "No ads, no tracking, no accounts. Pro keeps it that way."),
         ],
-        freeNote: "Logging hugs with a tree photo, the map, your grove, strolls, XP, every badge and leaf, and the JSON export stay free. Photos you already added never get locked.",
+        freeNote: "Logging hugs with a tree photo, the map, your grove, walks from Roamr, XP, every badge and leaf, and the JSON export stay free. Photos you already added never get locked.",
         privacyURL: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/PRIVACY.md")
     )
 }

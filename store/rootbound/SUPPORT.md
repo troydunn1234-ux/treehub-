@@ -12,8 +12,11 @@ Add the tree photo: Rootbound finds every Still Pointz and mindful session withi
 **Breathwork stats are empty**
 Rootbound reads heart rate, HRV, breathing rate and mindful minutes that your Apple Watch saves to Apple Health. Allow access in iPhone Settings › Health › Data Access & Devices › Rootbound. Watch data can take a few minutes to sync; it fills in by itself the next time you open the hug or the tree.
 
-**Strolls stop recording when the phone is locked**
-Allow location "Always" (Settings › Rootbound › Location) so a stroll keeps recording in your pocket.
+**How do walks show up under a hug?**
+Rootbound doesn't record walks any more. Record them in Roamr (or any app that saves walks and hikes to Apple Health), then tap Sync Roamr on Home or in the hug logger. Walks within two hours of a hug show up under it as a stat (Walk · 2.3 mi · 48 min · +410 ft) and add to the tree's miles. Rootbound also syncs on its own each time you open it. To pick different walks, open the hug, tap Edit hug and tap Change walks.
+
+**Where are the strolls I recorded in Rootbound?**
+They're kept: Settings (gear on Home) › Walks › Past strolls.
 
 **My hugs aren't on my new phone**
 Sign in to the same iCloud account and keep iCloud Drive on. Syncing can take a few minutes.

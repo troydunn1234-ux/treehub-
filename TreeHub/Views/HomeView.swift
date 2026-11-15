@@ -12,6 +12,10 @@ struct HomeView: View {
     @Query(sort: \Hug.date, order: .reverse) private var hugs: [Hug]
     @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
     @State private var showSettings = false
+    @Environment(\.modelContext) private var context
+    /// "Sync Roamr": walks from Roamr / Apple Health onto the hugs they passed.
+    @State private var syncing = false
+    @State private var syncNote = ""
 
     private var level: LevelInfo { GameEngine.level(for: GameEngine.totalXP(hugs: hugs, activities: activities)) }
     private var streak: Int { GameEngine.currentStreak(hugs) }
@@ -25,6 +29,7 @@ struct HomeView: View {
                         // 1. You: level + streak, then the two things to do.
                         levelCard.offset(y: -54).padding(.bottom, -54)
                         quickActions
+                        if !syncNote.isEmpty { syncResult }
                         if !watchInbox.pending.isEmpty { watchHugCard }
                         // 2. Your numbers, always recomputed from the hugs + linked sessions.
                         statsGrid
@@ -33,7 +38,6 @@ struct HomeView: View {
                         if hugs.isEmpty { firstHugCard } else { recentHugs }
                         if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         nextBadges
-                        if !activities.isEmpty { recentMoves }
                         NatureRollEntryCard()
                     }
                     .padding(.horizontal, Theme.pad)
@@ -46,7 +50,6 @@ struct HomeView: View {
             .toolbar(.hidden, for: .navigationBar)
             .navigationDestination(for: UUID.self) { id in
                 if let h = hugs.first(where: { $0.id == id }) { HugDetailView(hug: h) }
-                else if let a = activities.first(where: { $0.id == id }) { ActivityDetailView(activity: a) }
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
         }
@@ -128,8 +131,12 @@ struct HomeView: View {
                     .shadow(color: Theme.glow.opacity(0.25), radius: 10, y: 4)
             }
             .pressable()
-            Button { withAnimation(.spring(response: 0.38, dampingFraction: 0.8)) { tab = .track } } label: {
-                Label("Go for a stroll", systemImage: "figure.walk")
+            Button { Task { await syncRoamr() } } label: {
+                HStack(spacing: 8) {
+                    if syncing { ProgressView().controlSize(.small).tint(.white) }
+                    else { Image(systemName: "arrow.triangle.2.circlepath") }
+                    Text(syncing ? "Syncing…" : "Sync Roamr")
+                }
                     .font(Theme.rounded(16, .bold))
                     .lineLimit(1).minimumScaleFactor(0.75)
                     .foregroundStyle(.white)
@@ -139,6 +146,35 @@ struct HomeView: View {
                     .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
             }
             .pressable()
+            .disabled(syncing)
+            .accessibilityHint("Adds walks from Roamr and Apple Health to the hugs they passed")
+        }
+    }
+
+    /// What the last "Sync Roamr" did, and where to get Roamr when it isn't there.
+    private var syncResult: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            Label(syncNote, systemImage: "figure.walk")
+                .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.textDim)
+                .fixedSize(horizontal: false, vertical: true)
+            if !WellnessLinks.roamrInstalled { GetRoamrCard() }
+        }
+        .transition(.opacity.combined(with: .move(edge: .top)))
+    }
+
+    private func syncRoamr() async {
+        syncing = true
+        let added = await RoamrWalks.sync(hugs, context: context, ask: true)
+        syncing = false
+        UINotificationFeedbackGenerator().notificationOccurred(added > 0 ? .success : .warning)
+        withAnimation(.snappy) {
+            if added > 0 {
+                syncNote = "Added \(added) walk\(added == 1 ? "" : "s") to your hugs."
+            } else if hugs.isEmpty {
+                syncNote = "Log a hug first. Walks within 2 hours of it show up under it."
+            } else {
+                syncNote = "Up to date. Walks within 2 hours of a hug show up under it; pick others in Edit hug."
+            }
         }
     }
 
@@ -182,12 +218,12 @@ struct HomeView: View {
     private var statsGrid: some View {
         let trees = Set(hugs.map(\.treeID)).count
         let minutes = hugs.reduce(0) { $0 + $1.breathMinutes }
-        let moved = activities.reduce(0) { $0 + $1.distanceM }
+        let walked = GameEngine.uniqueWalks(hugs).reduce(0) { $0 + $1.distanceM }
         return LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
             StatTile(value: "\(hugs.count)", label: "Hugs", symbol: "heart.fill")
             StatTile(value: "\(trees)", label: "Tree friends", symbol: "tree.fill")
             StatTile(value: Format.minutes((minutes * 10).rounded() / 10), label: "Breathwork at trees", symbol: "wind", tint: Theme.sky)
-            StatTile(value: Format.distance(moved), label: "Strolled", symbol: "figure.walk")
+            StatTile(value: LinkedWalk.distance(walked), label: "Walked to trees", symbol: "figure.walk")
         }
     }
 
@@ -285,18 +321,6 @@ struct HomeView: View {
                         }
                     }
                 }
-            }
-        }
-    }
-
-    private var recentMoves: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                SectionHeader(title: "Recent strolls", symbol: "figure.walk")
-                Button { tab = .track } label: { Text("All").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow) }
-            }
-            ForEach(activities.prefix(3)) { a in
-                NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
             }
         }
     }

@@ -1,6 +1,6 @@
 # Roamr Privacy Policy
 
-_Last updated: November 14, 2026_
+_Last updated: November 15, 2026_
 
 Roamr records your walks, runs, hikes, rides and drives and maps them. It has no accounts, no ads and no analytics.
 
@@ -8,6 +8,7 @@ Roamr records your walks, runs, hikes, rides and drives and maps them. It has no
 - Your trips (routes, times, distances, notes) are stored on your iPhone and in your own private iCloud, so they follow you to a new phone. Nobody else can read them, including us.
 - With your permission, Roamr reads workouts and heart rate from Apple Health. Health data never leaves your devices and is never used for advertising.
 - Location is used only to record a trip you start (or to notice a drive and ask whether to record it).
+- **Rootbound** (our tree-hugging app): Roamr keeps a summary of your last 60 days of trips in an App Group container on your iPhone that only our own apps can read, so Rootbound can show a walk under a tree hug. Each entry has the trip type, start and end time, distance, moving time, climb, speeds, average heart rate and a start / end point rounded to about 100 m. Routes are not shared, and nothing leaves your iPhone.
 
 **Go together (group trips)**
 When you start or join a group, your chosen name, live position, speed and heading are shared with the people in that group through Apple's iCloud, only while the group is on. Leaving or ending the group stops sharing.

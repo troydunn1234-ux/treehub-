@@ -130,6 +130,47 @@ final class HealthService {
         }.sorted { $0.start > $1.start }
     }
 
+    /// A walk, hike or run from any app in Apple Health (read-only), with what Rootbound shows under a hug.
+    struct FootWorkout: Identifiable {
+        let id: UUID
+        var kind: ActivityKind
+        var start: Date
+        var end: Date
+        var distanceM: Double
+        var elevGainM: Double
+        var avgHR: Double?
+        var source: String
+        var bundleID: String
+    }
+
+    /// Walking, hiking and running workouts that touch `from...to`, oldest first.
+    func footWorkouts(from start: Date, to end: Date) async -> [FootWorkout] {
+        let raw = await samples(of: HKObjectType.workoutType(), start: start, end: end, limit: 300)
+        return raw.compactMap { $0 as? HKWorkout }.compactMap { w -> FootWorkout? in
+            let kind: ActivityKind
+            switch w.workoutActivityType {
+            case .walking: kind = .walk
+            case .hiking: kind = .hike
+            case .running: kind = .run
+            default: return nil
+            }
+            var dist = 0.0
+            if let t = HKQuantityType.quantityType(forIdentifier: .distanceWalkingRunning),
+               let q = w.statistics(for: t)?.sumQuantity() {
+                dist = q.doubleValue(for: .meter())
+            }
+            let climb = (w.metadata?[HKMetadataKeyElevationAscended] as? HKQuantity)?.doubleValue(for: .meter()) ?? 0
+            var hr: Double? = nil
+            if let t = HKQuantityType.quantityType(forIdentifier: .heartRate),
+               let q = w.statistics(for: t)?.averageQuantity() {
+                hr = q.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+            }
+            return FootWorkout(id: w.uuid, kind: kind, start: w.startDate, end: w.endDate, distanceM: dist,
+                               elevGainM: climb, avgHR: hr, source: w.sourceRevision.source.name,
+                               bundleID: w.sourceRevision.source.bundleIdentifier)
+        }.sorted { $0.start < $1.start }
+    }
+
     static func describe(_ t: HKWorkoutActivityType) -> (ActivityKind?, String) {
         switch t {
         case .running: return (.run, "Run")

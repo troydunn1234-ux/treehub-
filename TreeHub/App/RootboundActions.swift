@@ -7,7 +7,7 @@ import Foundation
 // action in UserDefaults and RootView (TreeHubApp.swift) acts on it as soon as it is on screen.
 
 enum RootboundAction: String {
-    case logHug, stroll, hike, home, grove, collection
+    case logHug, home, grove, collection
 }
 
 enum RootboundPending {
@@ -43,36 +43,6 @@ struct LogTreeHugIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         RootboundPending.queue(.logHug)
-        return .result()
-    }
-}
-
-enum StrollKindOption: String, AppEnum {
-    case stroll, hike
-
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Outing"
-    static var caseDisplayRepresentations: [StrollKindOption: DisplayRepresentation] = [
-        .stroll: DisplayRepresentation(title: "Stroll", image: .init(systemName: "figure.walk")),
-        .hike: DisplayRepresentation(title: "Hike", image: .init(systemName: "figure.hiking")),
-    ]
-}
-
-struct StartStrollIntent: AppIntent {
-    static var title: LocalizedStringResource = "Start a Stroll"
-    static var description = IntentDescription("Opens Rootbound and starts recording a stroll or a hike.")
-    static var openAppWhenRun = true
-
-    @Parameter(title: "Outing", default: .stroll)
-    var kind: StrollKindOption
-
-    static var parameterSummary: some ParameterSummary { Summary("Start a \(\.$kind)") }
-
-    init() {}
-    init(kind: StrollKindOption) { self.kind = kind }
-
-    @MainActor
-    func perform() async throws -> some IntentResult {
-        RootboundPending.queue(kind == .hike ? .hike : .stroll)
         return .result()
     }
 }

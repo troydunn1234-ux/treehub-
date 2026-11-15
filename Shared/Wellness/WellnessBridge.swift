@@ -1,13 +1,15 @@
 import Foundation
 import UIKit
 
-// Rootbound <-> Still Pointz: a tiny shared "activity feed" plus the deep links between the two apps.
-// Compiled into BOTH apps (project.yml: Rootbound gets all of Shared/, Still Point gets Shared/Wellness).
+// Rootbound <-> Still Pointz (and Roamr -> Rootbound): a tiny shared "activity feed" plus the deep links between the apps.
+// Compiled into all three (project.yml: Rootbound and Roamr get Shared/, Still Point gets Shared/Wellness).
 //
 // The feed lives in the shared App Group `group.com.troydunn.wellness` as two small JSON files, one per app,
 // so each app only ever writes its own file (no races) and reads the other's:
 //   rootbound.json   recent tree hugs (date, minutes, tree name, species; never coordinates) + hug streak
 //   stillpoint.json  recent Still Pointz sessions (date, kind, minutes) + practice streak
+//   roamr.json       recent Roamr trips (last 60 days: kind, times, distance, climb, speeds, avg HR, start/end
+//                    rounded to ~100 m; never the route itself). Rootbound attaches the walks to tree hugs.
 // Apple Health is NOT touched here: each app keeps writing only its own data there, so nothing is counted twice.
 // When the other app isn't installed (or the group isn't provisioned) the feed is simply empty.
 
@@ -51,6 +53,41 @@ enum WellnessBridge {
         /// Guided practice (anything but sauna / steam): what Rootbound shows as "Calm minutes".
         var isCalm: Bool { !["sauna", "steam"].contains(kind.lowercased()) }
     }
+
+    /// One Roamr recording (walk, run, hike, ride or drive). Only what Rootbound shows under a hug.
+    struct Trip: Codable, Hashable, Identifiable {
+        var id: UUID
+        /// ActivityKind raw value: walk, run, hike, bike, drive.
+        var kind: String
+        var start: Date
+        var end: Date
+        var distanceM: Double
+        /// Moving time (s).
+        var movingSec: Double
+        var elevGainM: Double
+        /// m/s
+        var avgSpeed: Double
+        var topSpeed: Double
+        var avgHR: Double? = nil
+        /// Coarse start / end (rounded to 0.001°, ~100 m). Optional so a trip without GPS still decodes.
+        var startLat: Double? = nil
+        var startLng: Double? = nil
+        var endLat: Double? = nil
+        var endLng: Double? = nil
+
+        var isOnFoot: Bool { ["walk", "run", "hike"].contains(kind) }
+    }
+
+    struct RoamrPart: Codable {
+        var updated = Date()
+        var trips: [Trip] = []
+    }
+
+    /// Roamr publishes this many days of trips.
+    static let roamrKeepDays = 60
+
+    /// ~100 m grid for the coarse start / end points.
+    static func coarse(_ v: Double) -> Double { (v * 1000).rounded() / 1000 }
 
     struct RootboundPart: Codable {
         var updated = Date()
@@ -113,6 +150,18 @@ enum WellnessBridge {
     /// Rootbound reads this.
     static func stillPoint() -> StillPointPart? { load("stillpoint.json", as: StillPointPart.self) }
 
+    // MARK: Roamr side
+
+    /// Roamr: replace its part of the feed (last 60 days, newest first).
+    static func publishRoamr(trips: [Trip]) {
+        let since = Date().addingTimeInterval(-Double(roamrKeepDays) * 86400)
+        let kept = trips.filter { $0.start >= since }.sorted { $0.start > $1.start }.prefix(maxItems)
+        save(RoamrPart(updated: Date(), trips: Array(kept)), "roamr.json")
+    }
+
+    /// Rootbound reads this.
+    static func roamr() -> RoamrPart? { load("roamr.json", as: RoamrPart.self) }
+
     // MARK: Helpers
 
     /// Days (start of day) in `items` dates.
@@ -134,6 +183,11 @@ enum WellnessBridge {
 enum WellnessLinks {
     static let rootboundBundleID = "com.troydunn.rootbound"
     static let stillPointBundleID = "com.troydunn.stillpoint"
+    static let roamrBundleID = "com.troydunn.roamr"
+
+    /// Roamr, just opened (its History tab shows the walk).
+    static let roamrHome = URL(string: "roamr://history")!
+    static var roamrInstalled: Bool { UIApplication.shared.canOpenURL(URL(string: "roamr://")!) }
 
     /// Still Pointz: a short grounding breath with a tree. `treeID` lets the session sync back under that tree.
     static func breatheWithTree(_ name: String, treeID: UUID? = nil, practice: String = "resonance", minutes: Int = 3) -> URL {

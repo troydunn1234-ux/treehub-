@@ -280,6 +280,14 @@ enum GameEngine {
 
     // MARK: Badges
 
+    /// Every walk attached to a hug, once each (one walk can pass several trees).
+    static func uniqueWalks(_ hugs: [Hug]) -> [LinkedWalk] {
+        var seen = Set<UUID>()
+        var out: [LinkedWalk] = []
+        for h in hugs { for w in h.linkedWalks where seen.insert(w.id).inserted { out.append(w) } }
+        return out
+    }
+
     static func badges(hugs: [Hug], activities: [Activity]) -> [BadgeState] {
         let cal = Calendar.current
         let trees = TreeSummary.build(from: hugs)
@@ -303,14 +311,21 @@ enum GameEngine {
             for i in 0..<coords.count { for j in (i + 1)..<coords.count { farthest = max(farthest, Geo.distance(coords[i], coords[j])) } }
         }
 
-        let movedMiles = activities.reduce(0) { $0 + $1.distanceM } / 1609.344
-        let bestClimbFt = activities.map(\.elevGainM).max().map { $0 * 3.28084 } ?? 0
-        let hikeIDs = Set(activities.filter { $0.kind == .hike }.map(\.id))
-        let strollHugs = hugs.filter { $0.strollID != nil }
-        let strollHugCount = strollHugs.count
-        let trailHugs = strollHugs.filter { hikeIDs.contains($0.strollID!) }.count
+        // Walks: older strolls recorded in Rootbound plus walks synced from Roamr / Apple Health onto hugs.
+        let walks = uniqueWalks(hugs).filter { w in !activities.contains { $0.id == w.id } }
+        let walkCount = activities.count + walks.count
+        let movedMiles = (activities.reduce(0) { $0 + $1.distanceM } + walks.reduce(0) { $0 + $1.distanceM }) / 1609.344
+        let bestClimbFt = (activities.map(\.elevGainM) + walks.map(\.elevGainM)).max().map { $0 * 3.28084 } ?? 0
+        let hikeIDs = Set(activities.filter { $0.kind == .hike }.map(\.id) + walks.filter { $0.kind == "hike" }.map(\.id))
         var perStroll: [UUID: Int] = [:]
-        for h in strollHugs { perStroll[h.strollID!, default: 0] += 1 }
+        var strollHugCount = 0, trailHugs = 0
+        for h in hugs {
+            let ids = Set((h.strollID.map { [$0] } ?? []) + h.linkedWalks.map(\.id))
+            guard !ids.isEmpty else { continue }
+            strollHugCount += 1
+            if !ids.isDisjoint(with: hikeIDs) { trailHugs += 1 }
+            for id in ids { perStroll[id, default: 0] += 1 }
+        }
         let maxHugsOneStroll = perStroll.values.max() ?? 0
 
         func b(_ id: String, _ name: String, _ detail: String, _ symbol: String, _ r: Rarity, _ value: Double, _ goal: Double, unit: String = "") -> BadgeState {
@@ -367,13 +382,13 @@ enum GameEngine {
             flag("breath-bark", "Breath & Bark", "Hug a tree and breathe in Still Pointz on the same day", "tree.circle.fill", .rare,
                  !hugs.isEmpty && BreathBark.earned),
             // Strolls & hikes
-            b("first-track", "First Steps", "Record your first stroll or hike", "figure.walk", .common, Double(activities.count), 1),
-            b("strolls-10", "Wanderlust", "Record 10 strolls or hikes", "shoe.2.fill", .rare, Double(activities.count), 10),
-            b("miles-100", "Hundred Miles", "Stroll or hike 100 miles", "figure.walk.motion", .epic, movedMiles, 100, unit: " mi"),
+            b("first-track", "First Steps", "Walk or hike to a tree", "figure.walk", .common, Double(walkCount), 1),
+            b("strolls-10", "Wanderlust", "10 walks or hikes with your trees", "shoe.2.fill", .rare, Double(walkCount), 10),
+            b("miles-100", "Hundred Miles", "Walk or hike 100 miles to your trees", "figure.walk.motion", .epic, movedMiles, 100, unit: " mi"),
             b("climb", "Trailblazer", "Climb 1,000 ft in one hike", "mountain.2.fill", .rare, bestClimbFt, 1000, unit: " ft"),
-            b("stroll-hug", "Stroll Hug", "Hug a tree during a stroll", "figure.walk.circle.fill", .common, Double(strollHugCount), 1),
-            b("stroll-hugs-3", "Tree Hopper", "Hug 3 trees on one stroll", "arrow.triangle.branch", .epic, Double(maxHugsOneStroll), 3),
-            b("trail-hug", "Trail Hug", "Hug a tree during a recorded hike", "point.topleft.down.to.point.bottomright.curvepath.fill",
+            b("stroll-hug", "Walk Hug", "Hug a tree on a walk", "figure.walk.circle.fill", .common, Double(strollHugCount), 1),
+            b("stroll-hugs-3", "Tree Hopper", "Hug 3 trees on one walk", "arrow.triangle.branch", .epic, Double(maxHugsOneStroll), 3),
+            b("trail-hug", "Trail Hug", "Hug a tree on a hike", "point.topleft.down.to.point.bottomright.curvepath.fill",
               .rare, Double(trailHugs), 1),
             // Rare trees
             flag("rare-find", "Rare Find", "Hug a rare species", "sparkle.magnifyingglass", .rare,

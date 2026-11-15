@@ -42,6 +42,10 @@ struct HugDraft {
     var linked: [LinkedSession] = []
     /// False for an older hug whose sessions haven't been looked at yet: saving then keeps its "no list" state.
     var hasLinkList = true
+    /// Walks attached to this hug (Roamr / Apple Health).
+    var walks: [LinkedWalk] = []
+    /// False until walks are attached or the user picks none: app-open sync can still attach them later.
+    var hasWalkList = false
 
     var coordinate: CLLocationCoordinate2D? {
         guard let latitude, let longitude else { return nil }
@@ -61,6 +65,7 @@ struct HugDraft {
         avgHR = h.avgHR; minHR = h.minHR; maxHR = h.maxHR; respRate = h.respRate
         hrStart = h.hrStart; hrEnd = h.hrEnd; hrv = h.hrv; fromWatch = h.fromWatch
         linked = h.linkedSessions; hasLinkList = h.hasLinkList
+        walks = h.linkedWalks; hasWalkList = h.hasWalkList
     }
 
     init(watch w: WatchHug) {
@@ -86,6 +91,7 @@ struct HugDraft {
         h.avgHR = avgHR; h.minHR = minHR; h.maxHR = maxHR; h.respRate = respRate
         h.hrStart = hrStart; h.hrEnd = hrEnd; h.hrv = hrv; h.fromWatch = fromWatch
         if hasLinkList { h.linkedSessions = linked }
+        if hasWalkList { h.linkedWalks = walks }
     }
 }
 
@@ -111,8 +117,6 @@ struct CelebrationData: Identifiable {
 @MainActor
 struct HugLogView: View {
     let editing: Hug?
-    /// Set when the hug happens during a stroll or hike that's being recorded.
-    var strollID: UUID? = nil
     /// Nature Roll "Make this a hug": a camera-roll photo (PHAsset id) to start the hug with (NatureRoll/).
     var prefillAssetID: String? = nil
     /// A hug timed on the Rootbound Watch app (WatchHugs.swift): its time and heart data fill the form.
@@ -146,6 +150,18 @@ struct HugLogView: View {
     @State private var picker: SessionPickRequest?
     /// Bumped by every Health pull; an older pull still in flight (e.g. the one on open) never overwrites a newer one (the photo's).
     @State private var pullToken = 0
+
+    /// "Sync Roamr": the walk picker (walks overlapping or within ±2 h of the hug).
+    @State private var walkPicker: WalkPickRequest?
+    @State private var walkBusy = false
+    @State private var walkMessage = ""
+
+    struct WalkPickRequest: Identifiable {
+        let id = UUID()
+        let around: Date
+        let candidates: [LinkedWalk]
+        let selected: Set<UUID>
+    }
 
     struct SessionPickRequest: Identifiable {
         let id = UUID()
@@ -181,9 +197,6 @@ struct HugLogView: View {
             ZStack {
                 ScrollView {
                     VStack(spacing: 14) {
-                        if editing == nil && strollID != nil {
-                            banner("This hug gets pinned on your stroll", symbol: "figure.walk")
-                        }
                         if d.fromWatch && editing == nil {
                             banner("Timed on your Watch", symbol: "applewatch")
                         }
@@ -221,6 +234,12 @@ struct HugLogView: View {
             .sheet(item: $picker) { req in
                 SessionPickerSheet(around: req.around, candidates: req.candidates, selected: req.selected) { chosen in
                     Task { await applyLinked(chosen) }
+                }
+            }
+            .sheet(item: $walkPicker) { req in
+                WalkPickerSheet(around: req.around, candidates: req.candidates, selected: req.selected) { chosen in
+                    d.walks = chosen.sorted { $0.start < $1.start }
+                    d.hasWalkList = true
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
@@ -473,7 +492,23 @@ struct HugLogView: View {
                     }
                 }
 
-                // 2. When + how long
+                // 2. The walk (Roamr / Apple Health), shown as a stat under the hug
+                VStack(alignment: .leading, spacing: 8) {
+                    groupLabel(d.walks.isEmpty ? "Walk" : "\(d.walks.count) walk\(d.walks.count == 1 ? "" : "s")")
+                    ForEach(d.walks) { w in LinkedWalkCard(walk: w, compact: true) }
+                    Button { Task { await openWalkPicker() } } label: {
+                        SyncRoamrLabel(busy: walkBusy, title: d.walks.isEmpty ? "Sync Roamr" : "Change walks")
+                    }
+                    .buttonStyle(.plain)
+                    .disabled(walkBusy)
+                    if !walkMessage.isEmpty {
+                        Text(walkMessage).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    if d.walks.isEmpty && !WellnessLinks.roamrInstalled && !walkMessage.isEmpty { GetRoamrCard() }
+                }
+
+                // 3. When + how long
                 VStack(alignment: .leading, spacing: 8) {
                     groupLabel("The hug")
                     DatePicker("Started", selection: $d.date, in: ...Date().addingTimeInterval(3600))
@@ -497,7 +532,7 @@ struct HugLogView: View {
                     }
                 }
 
-                // 3. Fill from Apple Health (Apple Watch heart data)
+                // 4. Fill from Apple Health (Apple Watch heart data)
                 Button {
                     Task { await pullFromHealth() }
                 } label: {
@@ -518,7 +553,7 @@ struct HugLogView: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
 
-                // 4. Rarely edited heart numbers, collapsed
+                // 5. Rarely edited heart numbers, collapsed
                 DisclosureGroup(isExpanded: $showHeartDetails) {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                         NumberField(label: "Lowest HR", value: $d.minHR)
@@ -818,6 +853,26 @@ struct HugLogView: View {
         picker = SessionPickRequest(around: date, candidates: list, selected: selected)
     }
 
+    /// "Sync Roamr": walks overlapping or within ±2 h of the hug. Attached ones stay checked; when none are
+    /// attached yet, the ones that overlap the hug itself are preselected.
+    private func openWalkPicker() async {
+        walkBusy = true
+        var found = await RoamrWalks.candidates(start: d.date, minutes: d.durationMin ?? 12)
+        walkBusy = false
+        for w in d.walks where !found.contains(where: { $0.sameWalk(as: w) }) { found.append(w) }
+        guard !found.isEmpty else {
+            walkMessage = "No walks within 2 hours of \(d.date.formatted(date: .omitted, time: .shortened)). Record one with Roamr, or any app that saves walks to Apple Health."
+            return
+        }
+        walkMessage = ""
+        let list = found.map { f in d.walks.first(where: { $0.sameWalk(as: f) }) ?? f }
+        let hugEnd = d.date.addingTimeInterval(max(d.durationMin ?? 12, 1) * 60)
+        let selected = d.walks.isEmpty
+            ? Set(list.filter { $0.start <= hugEnd && $0.end >= d.date }.map(\.id))
+            : Set(list.filter { s in d.walks.contains { $0.id == s.id } }.map(\.id))
+        walkPicker = WalkPickRequest(around: d.date, candidates: list, selected: selected)
+    }
+
     /// Link the chosen sessions; the hug then takes their time span (unless it was timed on the Watch) and heart data.
     private func applyLinked(_ chosen: [LinkedSession]) async {
         d.hasLinkList = true
@@ -926,7 +981,6 @@ struct HugLogView: View {
         }
         let isNew = editing == nil
         if isNew {
-            hug.strollID = strollID
             hug.leafKey = GameEngine.rollLeaf(for: hug).id
             context.insert(hug)
         }
@@ -951,10 +1005,6 @@ struct HugLogView: View {
         let levelAfter = GameEngine.level(for: GameEngine.totalXP(hugs: after, activities: activities))
         let newBadges = GameEngine.badges(hugs: after, activities: activities).filter { $0.earned && !badgesBefore.contains($0.id) }
 
-        if isNew, let strollID {
-            let onStroll = after.filter { $0.strollID == strollID }.count
-            LiveActivityController.shared.setHugs(onStroll)
-        }
         if isNew {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
             let sp = hug.species.lowercased().trimmingCharacters(in: .whitespaces)

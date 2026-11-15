@@ -278,6 +278,9 @@ struct TreeDetailView: View {
 
                     TreeInsightsCard(tree: tree, breaths: breaths)
 
+                    // Walks synced from Roamr / Apple Health onto this tree's hugs.
+                    TreeWalksCard(hugs: tree.hugs)
+
                     TreeFactCard(species: tree.species)
 
                     if let c = tree.coordinate {
@@ -310,6 +313,8 @@ struct TreeDetailView: View {
                                         let n = h.linkedSessions.count
                                         if n > 0 { Label("\(n)", systemImage: "wind").labelStyle(.titleAndIcon) }
                                         if let hr = h.avgHR { Label("\(Int(hr))", systemImage: "heart.fill").labelStyle(.titleAndIcon) }
+                                        let walked = h.linkedWalks.reduce(0) { $0 + $1.distanceM }
+                                        if walked > 0 { Label(LinkedWalk.distance(walked), systemImage: "figure.walk").labelStyle(.titleAndIcon) }
                                         if h.barefoot { Image(systemName: "shoeprints.fill") }
                                         ForEach(h.tags.prefix(2), id: \.self) { Text(HugTag.label($0)) }
                                     }

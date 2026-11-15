@@ -64,7 +64,14 @@ enum DemoData {
             h.weather = "Sunny"
             h.notes = i == 0 ? "Socks off, cold grass, twelve minutes of Tranquility. Felt the whole trunk breathing with me." : ""
             h.leafKey = leaves[i % leaves.count]
-            if i == 1 { h.strollID = hikeID }
+            // Walks synced from Roamr (the stat block under a hug).
+            let walkPlan: [Int: (String, Double, Double, Double)] = [0: ("walk", 2100, 34, 18), 1: ("hike", 3700, 62, 125), 3: ("hike", 6400, 118, 290)]
+            if let w = walkPlan[i] {
+                h.linkedWalks = [LinkedWalk(id: i == 1 ? hikeID : UUID(), kind: w.0, start: h.date.addingTimeInterval(-w.2 * 45),
+                                            end: h.date.addingTimeInterval(w.2 * 15), distanceM: w.1, movingSec: w.2 * 55,
+                                            elevGainM: w.3, avgSpeed: w.1 / (w.2 * 55), topSpeed: 1.9, avgHR: 96 + Double(i),
+                                            source: "Roamr", fromRoamr: true)]
+            }
             h.xp = GameEngine.xp(for: h, existing: []).total
             context.insert(h)
         }

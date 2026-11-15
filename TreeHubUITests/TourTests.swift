@@ -112,26 +112,10 @@ final class TourTests: XCTestCase {
         if app.buttons["pill-Leaves"].waitForExistence(timeout: 2) { app.buttons["pill-Leaves"].tap() }
         pause(3)
 
-        // Stroll, hugging a tree along the way
-        tab("Stroll")
-        tap("Start Stroll")
-        pause(12)
-        peekAtDynamicIsland()
-        tap("Hug a tree here")
+        // Walks come from Roamr: sync them under the hugs from Home
+        tab("Home")
+        tap("Sync Roamr")
         pause(3)
-        tap("Barefoot")
-        scrollDown(3, pauseEach: 0.6)
-        tap("Save this hug")
-        pause(6)
-        tap("Back to the forest")
-        pause(6)
-        tap("Finish")
-        pause(1.5)
-        tap("Save it")
-        pause(4)
-        scrollDown(1, pauseEach: 2.5)
-        if !tap("Done") { app.swipeUp(velocity: .fast); pause(1); tap("Done") }
-        pause(2)
 
         // Back home with everything
         tab("Home")

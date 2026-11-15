@@ -2,13 +2,14 @@
 
 _Last updated: November 15, 2026_
 
-Rootbound is a tree-hugging game with strolls and hikes. It has no accounts, no ads and no analytics.
+Rootbound is a tree-hugging game. It has no accounts, no ads and no analytics.
 
 **What stays with you**
-- Your hugs (photos, tree selfies, map pins, tags, notes, how you felt) and your strolls are stored on your iPhone and in your own private iCloud, so they follow you to a new phone. Nobody else can read them, including us.
-- **Location** is used to pin the trees you hug and to record strolls and hikes you start.
+- Your hugs (photos, tree selfies, map pins, tags, notes, how you felt), the walks attached to them, and any strolls recorded by earlier versions are stored on your iPhone and in your own private iCloud, so they follow you to a new phone. Nobody else can read them, including us.
+- **Location** is used only while you log a hug, to pin the tree you hugged. Rootbound does not record walks or track you in the background.
 - **Camera and photos** are used only for the pictures you choose to add.
-- **Apple Health** (with your permission): the iPhone app only reads heart rate, HRV, breathing rate, mindful minutes and workouts, to fill in your hug and breath-session stats. The optional Rootbound Apple Watch app measures your heart rate during a hug and saves that hug to Apple Health as a Mind & Body workout; it sends the hug's time and heart-rate summary to your iPhone over Apple's Watch connection. Health data never leaves your devices and is never used for advertising.
+- **Apple Health** (with your permission): the iPhone app only reads heart rate, HRV, breathing rate, mindful minutes and workouts (including walking, hiking and running workouts from any app), to fill in your hug, breath-session and walk stats. The optional Rootbound Apple Watch app measures your heart rate during a hug and saves that hug to Apple Health as a Mind & Body workout; it sends the hug's time and heart-rate summary to your iPhone over Apple's Watch connection. Health data never leaves your devices and is never used for advertising.
+- **Roamr** (our separate walk-tracking app, if you have it): Roamr shares a summary of your recent trips with Rootbound on your iPhone, through an App Group container that only our apps can read. Each trip has its type, start and end time, distance, moving time, climb, speeds, average heart rate and a start / end point rounded to about 100 m, never the route. Rootbound uses it only to show a walk under the hugs it passed. Nothing is uploaded.
 - Tree species suggestions are made on your iPhone by Apple's built-in image recognition. Photos are not uploaded.
 - **Nature Roll** (only if you turn it on): Rootbound looks through your photo library on your iPhone with Apple's built-in image recognition to find nature photos (trees, flowers, mountains, water, sky, animals, trails). The list of what it found, with each photo's date and place, is kept only on your iPhone and is not backed up or synced. No photo, label or location is ever uploaded. It works with "Limited" photo access, and it only creates or changes albums in the Photos app when you tap the button to do so.
 

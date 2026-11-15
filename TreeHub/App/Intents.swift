@@ -20,17 +20,6 @@ struct RootboundShortcuts: AppShortcutsProvider {
             systemImageName: "heart.fill"
         )
         AppShortcut(
-            intent: StartStrollIntent(),
-            phrases: [
-                "Start a \(\.$kind) in \(.applicationName)",
-                "Start a \(\.$kind) with \(.applicationName)",
-                "Go for a \(\.$kind) with \(.applicationName)",
-                "Start recording in \(.applicationName)",
-            ],
-            shortTitle: "Start a stroll",
-            systemImageName: "figure.walk"
-        )
-        AppShortcut(
             intent: OpenRootboundSectionIntent(),
             phrases: [
                 "Open my \(\.$section) in \(.applicationName)",

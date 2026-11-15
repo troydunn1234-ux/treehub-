@@ -45,7 +45,13 @@ struct TrackHubApp: App {
                 .paywallHost(spec: RoamrPro.spec)
                 .environment(tracker)
                 // "Go together" invite links: roamr://join?c=CODE (and the https join page form).
-                .onOpenURL { url in Task { @MainActor in GroupSession.shared.handle(url: url) } }
+                .onOpenURL { url in
+                    Task { @MainActor in
+                        // roamr://trip?id=… / roamr://history (from Rootbound), else a group invite.
+                        if RoamrWellness.handle(url: url) { return }
+                        _ = GroupSession.shared.handle(url: url)
+                    }
+                }
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)
                 // Pro: start listening for purchases / renewals right away.
@@ -151,13 +157,19 @@ struct TrackRootView: View {
         }
         .animation(.spring(response: 0.38, dampingFraction: 0.85), value: tab)
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { tracker.persist() }
+            if phase != .active { tracker.persist(); RoamrWellness.publish(context, force: true) }
             if phase == .active {
+                RoamrWellness.publish(context)
                 consumePendingStart(); consumePendingAction(); detector.refresh()
                 if UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) != nil { tab = "history" }
             }
         }
+        // Share recent trips with Rootbound (walks under tree hugs).
+        .onReceive(NotificationCenter.default.publisher(for: .activitySaved)) { _ in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) { RoamrWellness.publish(context, force: true) }
+        }
         .onAppear {
+            RoamrWellness.publish(context, force: true)
             autoFinish.attach(tracker)
             HardStopMonitor.shared.update(tracker: tracker)
             detector.isTracking = { [tracker] in tracker.isActive }

@@ -20,18 +20,3 @@ struct LogTreeHugControl: ControlWidget {
         .description("Opens Rootbound straight to the tree hug logger.")
     }
 }
-
-@available(iOS 18.0, *)
-struct StartStrollControl: ControlWidget {
-    static let kind = "com.troydunn.rootbound.control.stroll"
-
-    var body: some ControlWidgetConfiguration {
-        StaticControlConfiguration(kind: Self.kind) {
-            ControlWidgetButton(action: StartStrollIntent(kind: .stroll)) {
-                Label("Start Stroll", systemImage: "figure.walk")
-            }
-        }
-        .displayName("Start a Stroll")
-        .description("Opens Rootbound and starts recording a stroll.")
-    }
-}

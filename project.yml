@@ -15,7 +15,7 @@ settings:
     DEVELOPMENT_TEAM: ""
     ENABLE_PREVIEWS: YES
 targets:
-  # Rootbound: tree-hugging game (with Stroll / Hike)
+  # Rootbound: tree-hugging game (walks come from Roamr / Apple Health)
   Rootbound:
     type: application
     platform: iOS
@@ -51,12 +51,11 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: com.troydunn.rootbound
             CFBundleURLSchemes: [rootbound]
-        # "Breathe with this tree" checks whether Still Pointz is installed.
-        LSApplicationQueriesSchemes: [stillpoint]
+        # "Breathe with this tree" checks whether Still Pointz is installed; "Open in Roamr" checks Roamr.
+        LSApplicationQueriesSchemes: [stillpoint, roamr]
         ProProductID: com.troydunn.rootbound.pro
         PaidUntilBuild: 0
         TrialProductID: com.troydunn.rootbound.none
-        NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
         NSHealthUpdateUsageDescription: Rootbound on iPhone does not write to Apple Health; the Rootbound Watch app saves each timed hug as a Mind & Body workout.
         UILaunchScreen:
@@ -64,15 +63,14 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         UIBackgroundModes:
-          - location
           - remote-notification
-        NSLocationWhenInUseUsageDescription: Rootbound uses your location to record your strolls and hikes and to pin the trees you hug.
-        NSLocationAlwaysAndWhenInUseUsageDescription: Rootbound keeps recording your stroll while your phone is locked.
-        NSMotionUsageDescription: Rootbound uses motion data to tell a stroll from a hike.
+        NSLocationWhenInUseUsageDescription: Rootbound uses your location while you log a hug to pin the tree you hugged.
+        # Kept for the shared location helper compiled into the app; Rootbound itself no longer reads motion (walks come from Roamr).
+        NSMotionUsageDescription: Rootbound does not read motion data. Your walks are recorded in Roamr.
         NSCameraUsageDescription: Rootbound uses the camera to snap your tree and your tree selfie.
         NSPhotoLibraryUsageDescription: Rootbound lets you pick tree photos from your library, and sorts your nature photos on your iPhone. Nothing is uploaded.
         NSPhotoLibraryAddUsageDescription: Rootbound adds your nature photos to albums in Photos, only when you ask it to.
-        NSHealthShareUsageDescription: Rootbound reads the heart rate, HRV, breathing rate and mindful minutes your Apple Watch saves to Apple Health, to show how each tree hug calms you.
+        NSHealthShareUsageDescription: Rootbound reads the heart rate, HRV, breathing rate and mindful minutes your Apple Watch saves to Apple Health, to show how each tree hug calms you, and your walking and hiking workouts, to show the walk that brought you to a tree.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:
@@ -87,7 +85,6 @@ targets:
     sources:
       - path: TrackApp
       - path: Shared
-        excludes: ["Wellness/**"]
     dependencies:
       - target: RoamrWidgets
       - target: RoamrWatch
@@ -105,6 +102,8 @@ targets:
         com.apple.developer.icloud-services:
           - CloudKit
         aps-environment: development
+        # Recent trips for Rootbound (Shared/Wellness/WellnessBridge.swift, roamr.json): walks under tree hugs.
+        com.apple.security.application-groups: [group.com.troydunn.wellness]
     info:
       path: TrackApp/Info.plist
       properties:
@@ -158,7 +157,7 @@ targets:
         SWIFT_ACTIVE_COMPILATION_CONDITIONS: "$(inherited) TRACK_APP"
 
 
-  # Lock Screen / Dynamic Island live activity for Rootbound
+  # Control Center control for Rootbound (Log a Tree Hug)
   RootboundWidgets:
     type: app-extension
     platform: iOS

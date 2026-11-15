@@ -51,7 +51,7 @@ struct SettingsView: View {
                         Text(m).font(.footnote).foregroundStyle(.secondary)
                     }
                 } footer: {
-                    Text("Logging hugs, the map, your grove, strolls, every badge and leaf, and the JSON export are free forever.")
+                    Text("Logging hugs, the map, your grove, walks from Roamr, every badge and leaf, and the JSON export are free forever.")
                 }
                 Section("Units") {
                     Toggle("Metric (km, m)", isOn: $useMetric)
@@ -68,6 +68,18 @@ struct SettingsView: View {
                     Text("Apple Watch")
                 } footer: {
                     Text("Your Apple Watch saves heart rate, HRV, breathing rate and mindful minutes to Apple Health. Rootbound reads them to show how each hug and breath session calms you. Open Rootbound on your Watch and tap Start hug to time a hug with live heart rate; your iPhone then asks which tree it was.")
+                }
+                Section {
+                    OpenInRoamrButton()
+                    if !activities.isEmpty {
+                        NavigationLink { PastStrollsView(activities: Array(activities.reversed())) } label: {
+                            LabeledContent("Past strolls", value: "\(activities.count)")
+                        }
+                    }
+                } header: {
+                    Text("Walks")
+                } footer: {
+                    Text("Record walks and hikes in Roamr (walks other apps save to Apple Health count too). Tap Sync Roamr on Home or in the hug logger and each walk shows up under the hugs it passed. Strolls Rootbound recorded before stay under Past strolls.")
                 }
                 Section {
                     if let exportURL {
@@ -148,6 +160,16 @@ enum DataExport {
             if let v = h.hrEnd { r["hrEnd"] = v }
             if let v = h.hrv { r["hrv"] = v }
             if h.fromWatch { r["fromWatch"] = true }
+            let walks = h.linkedWalks
+            if !walks.isEmpty {
+                r["walks"] = walks.map { w -> [String: Any] in
+                    var o: [String: Any] = ["id": w.id.uuidString, "kind": w.kind, "start": iso.string(from: w.start),
+                                            "end": iso.string(from: w.end), "distanceM": w.distanceM, "movingSec": w.movingSec,
+                                            "elevGainM": w.elevGainM, "source": w.source]
+                    if let v = w.avgHR { o["avgHR"] = v }
+                    return o
+                }
+            }
             let sessions = h.linkedSessions
             if !sessions.isEmpty {
                 r["breathSessions"] = sessions.map { s -> [String: Any] in
