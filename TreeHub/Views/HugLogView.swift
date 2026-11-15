@@ -114,6 +114,8 @@ struct HugLogView: View {
     @State private var showExtras = false
     @ObservedObject private var unlock = Unlock.shared
     @State private var showPlans = false
+    @State private var sessionChoices: [HealthService.MindfulSession] = []
+    @State private var choosingSession = false
 
     private static let speciesSuggestions = [
         "Coast Redwood", "Coast Live Oak", "Valley Oak", "California Sycamore", "Eucalyptus", "Monterey Pine",
@@ -180,6 +182,14 @@ struct HugLogView: View {
             }
             .forestScreen()
             .navigationTitle(editing == nil ? "Hug a Tree" : "Edit Hug")
+            .confirmationDialog("Which session goes with this hug?", isPresented: $choosingSession, titleVisibility: .visible) {
+                ForEach(Array(sessionChoices.enumerated()), id: \.offset) { _, s in
+                    Button(Self.sessionLabel(s)) { Task { await applySession(s) } }
+                }
+                Button("None of these", role: .cancel) {}
+            } message: {
+                Text("You did a few sessions around the time of this hug.")
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
@@ -576,6 +586,10 @@ struct HugLogView: View {
     private func readPhotoMetadata(_ data: Data) {
         guard let src = CGImageSourceCreateWithData(data as CFData, nil),
               let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [String: Any] else { return }
+        if editing == nil, let shot = Self.photoDate(props) {
+            d.date = shot
+            Task { await pullFromHealth(quiet: true, pickAround: shot) }
+        }
         if let gps = props[kCGImagePropertyGPSDictionary as String] as? [String: Any],
            var lat = (gps[kCGImagePropertyGPSLatitude as String] as? NSNumber)?.doubleValue,
            var lng = (gps[kCGImagePropertyGPSLongitude as String] as? NSNumber)?.doubleValue {
@@ -607,7 +621,49 @@ struct HugLogView: View {
         }
     }
 
-    private func pullFromHealth(quiet: Bool = false) async {
+    /// When the photo was taken, from its EXIF data (with its time-zone offset when present).
+    static func photoDate(_ props: [String: Any]) -> Date? {
+        guard let exif = props[kCGImagePropertyExifDictionary as String] as? [String: Any],
+              let raw = (exif[kCGImagePropertyExifDateTimeOriginal as String] ?? exif[kCGImagePropertyExifDateTimeDigitized as String]) as? String
+        else { return nil }
+        let f = DateFormatter()
+        f.locale = Locale(identifier: "en_US_POSIX")
+        if let off = exif[kCGImagePropertyExifOffsetTimeOriginal as String] as? String {
+            f.dateFormat = "yyyy:MM:dd HH:mm:ssxxx"
+            if let d = f.date(from: raw + off) { return d }
+        }
+        f.dateFormat = "yyyy:MM:dd HH:mm:ss"
+        f.timeZone = .current
+        return f.date(from: raw)
+    }
+
+    static func sessionLabel(_ s: HealthService.MindfulSession) -> String {
+        let t = s.start.formatted(date: .omitted, time: .shortened)
+        return "\(s.source) · \(Format.minutes((s.minutes * 10).rounded() / 10)) · \(t)"
+    }
+
+    /// Every breath/mindful session within an hour of a moment: Still Pointz (with practice names) plus anything in Apple Health.
+    private func sessionsNear(_ date: Date) async -> [HealthService.MindfulSession] {
+        let hs = HealthService.shared
+        let window: TimeInterval = 60 * 60
+        var out: [HealthService.MindfulSession] = (WellnessBridge.stillPoint()?.sessions ?? [])
+            .filter { $0.isCalm && $0.minutes >= 1 && abs($0.date.timeIntervalSince(date)) <= window }
+            .map { HealthService.MindfulSession(start: $0.date, end: $0.end ?? $0.date.addingTimeInterval($0.minutes * 60),
+                                                source: $0.practice ?? "Still Pointz") }
+        let health = await hs.mindfulSessions(around: date, hours: 1) + hs.breathworkWorkouts(around: date, hours: 1)
+        for h in health where h.minutes >= 1 && !out.contains(where: { abs($0.start.timeIntervalSince(h.start)) < 90 }) {
+            out.append(h)
+        }
+        return out.sorted { abs($0.start.timeIntervalSince(date)) < abs($1.start.timeIntervalSince(date)) }
+    }
+
+    private func applySession(_ s: HealthService.MindfulSession) async {
+        d.date = s.start
+        d.durationMin = (s.minutes * 10).rounded() / 10
+        await pullFromHealth(quiet: true, skipSession: true, label: "\(Format.minutes(d.durationMin ?? 0)) \(s.source) session")
+    }
+
+    private func pullFromHealth(quiet: Bool = false, pickAround: Date? = nil, skipSession: Bool = false, label: String? = nil) async {
         healthBusy = true
         defer { healthBusy = false }
         let hs = HealthService.shared
@@ -616,10 +672,19 @@ struct HugLogView: View {
             return
         }
         var found: [String] = []
-        if let s = await hs.nearestBreathSession(around: d.date) {
-            d.date = s.start
-            d.durationMin = (s.minutes * 10).rounded() / 10
-            found.append("\(Format.minutes(d.durationMin ?? 0)) session from \(s.source)")
+        if let label { found.append(label) }
+        if !skipSession {
+            let near = await sessionsNear(pickAround ?? d.date)
+            if near.count > 1 {
+                // Several sessions around this hug: let the user pick the right one.
+                sessionChoices = Array(near.prefix(6))
+                choosingSession = true
+                return
+            } else if let s = near.first {
+                d.date = s.start
+                d.durationMin = (s.minutes * 10).rounded() / 10
+                found.append("\(Format.minutes(d.durationMin ?? 0)) \(s.source) session")
+            }
         }
         let start = d.date
         let end = d.date.addingTimeInterval(max(1, d.durationMin ?? 12) * 60)
