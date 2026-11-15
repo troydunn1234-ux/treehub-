@@ -13,6 +13,7 @@ extension ActivityCategory {
         case .breathe: return BodyFocus.breathe.tint
         case .sauna: return HeatKind.sauna.tint
         case .steam: return HeatKind.steam.tint
+        case .trees: return Color(spHex: "#8CCB7E")
         }
     }
 }
@@ -65,7 +66,8 @@ struct PracticeProgressView: View {
             VStack(alignment: .leading, spacing: 22) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("Progress").font(SP.serif(34, .light)).foregroundStyle(SP.ink)
-                    Text("Any session of a minute or more keeps the streak, sauna and steam included.")
+                    Text(log.treeEntries.isEmpty ? "Any session of a minute or more keeps the streak, sauna and steam included."
+                         : "Any session of a minute or more keeps the streak: sauna, steam and Rootbound tree hugs included.")
                         .font(SP.rounded(13)).foregroundStyle(SP.faint)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -192,7 +194,7 @@ struct CategoryWeekCard: View {
             }
             .chartYScale(domain: 0...max(10, (rows.map(\.minutes).max() ?? 0) * 1.2))
             .frame(height: 170)
-            // Six labels share the width: past xLarge they run into each other (the spoken summary covers big text).
+            // Six or seven labels share the width: past xLarge they run into each other (the spoken summary covers big text).
             .dynamicTypeSize(...DynamicTypeSize.xLarge)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilitySummary(rows))

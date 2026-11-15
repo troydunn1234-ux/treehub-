@@ -45,6 +45,7 @@ struct RootView: View {
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
+    @Query(sort: \Hug.date, order: .reverse) private var hugs: [Hug]
     @State private var tab: AppTab = .home
     @State private var showHugLog = false
     @State private var demoCelebration: CelebrationData?
@@ -79,14 +80,22 @@ struct RootView: View {
             HugLogView(editing: nil, strollID: tracker.isActive ? tracker.sessionID : nil)
         }
         .onChange(of: scenePhase) { _, phase in
-            if phase != .active { tracker.persist() }
-            if phase == .active { consumePendingAction() }
+            if phase != .active { tracker.persist(); RootboundWellness.publish(hugs: hugs) }
+            if phase == .active { consumePendingAction(); RootboundWellness.publish(hugs: hugs) }
         }
+        // Share hugs with Still Pointz (Shared/Wellness/WellnessBridge.swift).
+        .onChange(of: hugs.count) { _, _ in RootboundWellness.publish(hugs: hugs) }
         .onReceive(NotificationCenter.default.publisher(for: RootboundPending.note)) { _ in
             consumePendingAction()
         }
         // rootbound://friends?c=RB1-… (a friend's shared trees, from a link or their QR code)
         .onOpenURL { url in
+            // From Still Pointz: rootbound://hug opens the hug logger, rootbound://home just opens Home.
+            if url.scheme == FriendShare.scheme, url.host == "hug" {
+                if !showHugLog { tab = .home; showHugLog = true }
+                return
+            }
+            if url.scheme == FriendShare.scheme, url.host == "home" { return }
             guard url.scheme == FriendShare.scheme, url.host == "friends",
                   let c = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "c" })?.value
             else { return }

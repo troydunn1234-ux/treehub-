@@ -14,6 +14,7 @@ struct RootboundShortcuts: AppShortcutsProvider {
                 "Log a hug in \(.applicationName)",
                 "I hugged a tree \(.applicationName)",
                 "Hug a tree with \(.applicationName)",
+                "Log a hug and breathe in \(.applicationName)",
             ],
             shortTitle: "Log a tree hug",
             systemImageName: "heart.fill"

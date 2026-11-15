@@ -22,9 +22,9 @@ struct PhoneRunView: View {
             case .warmUp:
                 if let m = movement { PhoneMovementView(session: m) { m.finish() } }
             case .practice:
-                if let b = breath { PhoneBreathView(session: b) { b.finish() } }
+                if let b = breath { PhoneBreathView(session: b, treeName: plan.treeName) { b.finish() } }
             case .done:
-                PhoneSummaryView(records: records, onDone: onClose)
+                PhoneSummaryView(records: records, treeName: plan.treeName, onDone: onClose)
             }
         }
         .statusBarHidden(stage != .done)
@@ -79,6 +79,7 @@ struct PhoneRunView: View {
         b.onFinish = { bs in
             var r = bs.record(device: "iPhone")
             r.kind = plan.practice.kind; r.minutesPlanned = plan.minutes; r.warmUpId = plan.warmUp?.id
+            if let tree = plan.treeName, r.notes == nil { r.notes = "Breathing with \(tree)" }
             log(r, mindful: true)
             DispatchQueue.main.async { complete() }
         }
@@ -107,6 +108,8 @@ struct PhoneRunView: View {
 
 struct PhoneBreathView: View {
     @ObservedObject var session: BreathSession
+    /// "Breathing with <tree>" when Rootbound started the session.
+    var treeName: String? = nil
     let onEnd: () -> Void
     @EnvironmentObject var prefs: Prefs
     @State private var dimmed = false
@@ -122,6 +125,10 @@ struct PhoneBreathView: View {
             Motes(color: accent ?? SP.amber).opacity(dimmed ? 0 : 0.8)
             VStack(spacing: 22) {
                 VStack(spacing: 4) {
+                    if let treeName {
+                        Label("Breathing with \(treeName)", systemImage: "tree")
+                            .font(SP.rounded(13, .medium)).foregroundStyle(Color(spHex: "#8CCB7E"))
+                    }
                     Text(session.practice.title).font(SP.serif(20, .light)).foregroundStyle(SP.dim)
                     if prefs.settings.showNumbers {
                         Text(spFormatClock(session.remaining)).font(SP.rounded(14)).foregroundStyle(SP.faint).monospacedDigit()
@@ -281,6 +288,8 @@ struct PhoneMovementView: View {
 
 struct PhoneSummaryView: View {
     let records: [SessionRecord]
+    /// Set when Rootbound started the session for a tree.
+    var treeName: String? = nil
     let onDone: () -> Void
     @State private var bloom = false
     @State private var confirmDiscard = false
@@ -318,6 +327,13 @@ struct PhoneSummaryView: View {
                     if streak > 0 { stat("\(streak)", streak == 1 ? "day" : "days in a row") }
                 }
                 Spacer()
+                if !short && !records.isEmpty {
+                    // Rootbound link: back to the tree you just breathed with, or out to hug one.
+                    RootboundLinkCard(title: treeName.map { "Back to \($0) in Rootbound" } ?? "Go hug a tree",
+                                      subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "Your hug is waiting in Rootbound.",
+                                      url: treeName == nil ? WellnessLinks.hugLogger : WellnessLinks.rootboundHome)
+                        .padding(.horizontal, 40)
+                }
                 if short && !records.isEmpty {
                     Text("That was under a minute. Keep it in your journey?")
                         .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.8))

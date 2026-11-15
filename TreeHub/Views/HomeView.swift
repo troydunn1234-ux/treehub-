@@ -23,6 +23,7 @@ struct HomeView: View {
                         if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         quickActions
                         statsGrid
+                        CalmMinutesCard(hugs: hugs)
                         if hugs.isEmpty { firstHugCard } else { recentHugs }
                         nextBadges
                         if !activities.isEmpty { recentMoves }

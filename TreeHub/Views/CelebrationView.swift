@@ -127,6 +127,11 @@ struct CelebrationView: View {
                         .transition(.scale.combined(with: .opacity))
                     }
 
+                    if step >= 1 {
+                        BreatheWithTreeButton(treeName: data.treeName)
+                            .transition(.opacity)
+                    }
+
                     Button("Back to the forest", action: onDone)
                         .buttonStyle(PrimaryButtonStyle())
                         .padding(.top, 8)

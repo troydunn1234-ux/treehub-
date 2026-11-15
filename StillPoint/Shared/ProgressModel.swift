@@ -10,9 +10,17 @@ struct HeatEntry: Codable, Hashable {
     var kind: HeatKind
 }
 
+/// A tree hug logged in Rootbound (read from the shared wellness feed on iPhone).
+struct TreeEntry: Codable, Hashable, Identifiable {
+    var id: UUID
+    var start: Date
+    var minutes: Double
+    var name: String
+}
+
 /// What a minute of practice counts as on the Progress screen.
 enum ActivityCategory: String, CaseIterable, Identifiable, Hashable {
-    case joint, lymph, stretch, breathe, sauna, steam
+    case joint, lymph, stretch, breathe, sauna, steam, trees
 
     var id: String { rawValue }
 
@@ -24,6 +32,7 @@ enum ActivityCategory: String, CaseIterable, Identifiable, Hashable {
         case .breathe: return "Breathe"
         case .sauna: return "Sauna"
         case .steam: return "Steam"
+        case .trees: return "Trees"
         }
     }
 
@@ -35,6 +44,7 @@ enum ActivityCategory: String, CaseIterable, Identifiable, Hashable {
         case .breathe: return BodyFocus.breathe.symbol
         case .sauna: return HeatKind.sauna.symbol
         case .steam: return HeatKind.steam.symbol
+        case .trees: return "tree"
         }
     }
 
@@ -84,16 +94,21 @@ extension SessionLog {
         for h in heatEntries where h.minutes >= 1 && h.start >= start && h.start < end {
             out[ActivityCategory(h.kind), default: 0] += h.minutes
         }
+        for t in treeEntries where t.minutes >= 1 && t.start >= start && t.start < end {
+            out[.trees, default: 0] += t.minutes
+        }
         return out
     }
 
     /// This calendar week, every category (zeros included), in display order.
     func thisWeekByCategory() -> [CategoryMinutes] {
         let m = minutesByCategory(from: weekStartDate)
-        return ActivityCategory.allCases.map { CategoryMinutes(category: $0, minutes: m[$0] ?? 0) }
+        // "Trees" only once Rootbound has shared a hug, so people without it never see an empty bar.
+        return ActivityCategory.allCases.filter { $0 != .trees || !treeEntries.isEmpty }
+            .map { CategoryMinutes(category: $0, minutes: m[$0] ?? 0) }
     }
 
-    /// Minutes per day (start of day → minutes) since `start`, guided sessions and heat together.
+    /// Minutes per day (start of day → minutes) since `start`, guided sessions, heat and tree hugs together.
     func dailyActivity(since start: Date) -> [Date: Double] {
         let cal = Calendar.current
         var out: [Date: Double] = [:]
@@ -102,6 +117,9 @@ extension SessionLog {
         }
         for h in heatEntries where h.minutes >= 1 && h.start >= start {
             out[cal.startOfDay(for: h.start), default: 0] += h.minutes
+        }
+        for t in treeEntries where t.minutes >= 1 && t.start >= start {
+            out[cal.startOfDay(for: t.start), default: 0] += t.minutes
         }
         return out
     }

@@ -109,6 +109,8 @@ struct SessionPlan: Hashable, Identifiable {
     var practice: Practice
     var minutes: Int
     var patternOverride: BreathPattern? = nil
+    /// Set when Rootbound opened the session for a tree ("Breathing with <tree>").
+    var treeName: String? = nil
 
     var id: String { (warmUp?.id ?? "") + ">" + practice.id + "\(minutes)" }
 }

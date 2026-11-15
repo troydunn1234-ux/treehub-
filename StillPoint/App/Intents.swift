@@ -214,6 +214,19 @@ struct EndHeatIntent: AppIntent {
     }
 }
 
+/// "Breathe with a tree": a short grounding breath named after the last tree hugged in Rootbound (if any).
+struct BreatheWithTreeIntent: AppIntent {
+    static var title: LocalizedStringResource = "Breathe with a Tree"
+    static var description = IntentDescription("Opens Still Point for a short grounding breath with a tree, named after the last tree you hugged in Rootbound.")
+    static var openAppWhenRun = true
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        Router.queueTreeBreath(name: StillPointWellness.lastTreeName ?? "a tree")
+        return .result()
+    }
+}
+
 /// Phrases Siri understands out of the box.
 struct StillPointShortcuts: AppShortcutsProvider {
     static var shortcutTileColor: ShortcutTileColor = .navy
@@ -231,6 +244,15 @@ struct StillPointShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Breathe now",
             systemImageName: "wind"
+        )
+        AppShortcut(
+            intent: BreatheWithTreeIntent(),
+            phrases: [
+                "Breathe with a tree in \(.applicationName)",
+                "Breathe with a tree with \(.applicationName)",
+            ],
+            shortTitle: "Breathe with a tree",
+            systemImageName: "tree"
         )
         AppShortcut(
             intent: StartPracticeIntent(),

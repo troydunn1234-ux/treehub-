@@ -9,6 +9,7 @@
 	<key>com.apple.security.application-groups</key>
 	<array>
 		<string>group.com.troydunn.stillpoint</string>
+		<string>group.com.troydunn.wellness</string>
 	</array>
 </dict>
 </plist>

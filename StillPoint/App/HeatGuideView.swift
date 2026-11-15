@@ -221,6 +221,9 @@ struct HeatGuideView: View {
                         .font(SP.rounded(15)).foregroundStyle(.white.opacity(0.8)).multilineTextAlignment(.center)
                     Button("Another round") { roundStart = Date(); roundDone = false; refreshVoice() }
                         .font(SP.rounded(15, .semibold)).foregroundStyle(kind.tint).padding(.top, 6)
+                    RootboundLinkCard(title: "Cool down outside",
+                                      subtitle: "Fresh air and a tree hug between rounds. Rootbound logs it.")
+                        .padding(.top, 8)
                 }
                 .padding(.vertical, 30)
             } else {

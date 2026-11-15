@@ -173,7 +173,8 @@ enum GameEngine {
     }
 
     static func totalXP(hugs: [Hug], activities: [Activity]) -> Int {
-        hugs.reduce(0) { $0 + $1.xp } + activities.reduce(0) { $0 + xp(for: $1) }
+        // + Breath & Bark: days with a hug and a Still Pointz session (StillPointLink.swift).
+        hugs.reduce(0) { $0 + $1.xp } + activities.reduce(0) { $0 + xp(for: $1) } + (hugs.isEmpty ? 0 : BreathBark.totalBonus)
     }
 
     /// Level n starts at 75·n·(n−1) XP: 0, 150, 450, 900, 1500…
@@ -340,6 +341,8 @@ enum GameEngine {
             b("chill-10", "Certified Chill", "10 hugs tagged Chill", "cloud.sun.fill", .rare, Double(tagCount("chill")), 10),
             b("sober-10", "Clear Mind", "10 hugs tagged Sober", "drop.fill", .rare, Double(tagCount("sober")), 10),
             b("park-10", "Park Regular", "10 hugs tagged Park", "leaf.circle.fill", .rare, Double(tagCount("park")), 10),
+            flag("breath-bark", "Breath & Bark", "Hug a tree and breathe in Still Pointz on the same day", "tree.circle.fill", .rare,
+                 !hugs.isEmpty && BreathBark.earned),
             // Strolls & hikes
             b("first-track", "First Steps", "Record your first stroll or hike", "figure.walk", .common, Double(activities.count), 1),
             b("strolls-10", "Wanderlust", "Record 10 strolls or hikes", "shoe.2.fill", .rare, Double(activities.count), 10),

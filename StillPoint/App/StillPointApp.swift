@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 @main
 struct StillPointApp: App {
@@ -34,11 +35,17 @@ struct StillPointApp: App {
                     if let id = WidgetBridge.practiceId(from: url) { router.handle(practiceId: id) }
                     // Widget heat buttons: stillpoint://heat/<sauna|steam>
                     if let kind = WidgetBridge.heatKind(from: url) { router.handle(heat: kind) }
+                    // Rootbound "Breathe with this tree": stillpoint://session?practice=…&minutes=3&context=tree&name=…
+                    if let req = StillPointWellness.sessionRequest(from: url) { router.handle(session: req) }
                 }
+                // Share sessions with Rootbound and pull in its tree hugs (Shared/Wellness/WellnessBridge.swift).
+                .onReceive(log.$records.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }
+                .onReceive(heat.$history.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
                 router.consumePending()
+                StillPointWellness.sync()
                 WidgetBridge.publish()
                 heat.refreshMissing()
             }
@@ -103,6 +110,7 @@ final class Router: ObservableObject {
     }
 
     func consumePending() {
+        consumePendingTree()
         guard let id = UserDefaults.standard.string(forKey: Self.pendingKey), !id.isEmpty else { return }
         UserDefaults.standard.removeObject(forKey: Self.pendingKey)
         handle(practiceId: id)

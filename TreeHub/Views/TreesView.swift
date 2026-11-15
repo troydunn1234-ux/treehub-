@@ -247,6 +247,8 @@ struct TreeDetailView: View {
 
                     TreeInsightsCard(tree: tree)
 
+                    BreatheWithTreeButton(treeName: tree.name)
+
                     if let c = tree.coordinate {
                         Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 500, longitudinalMeters: 500))) {
                             Annotation(tree.name, coordinate: c) { TreePin(photo: tree.coverPhoto) }

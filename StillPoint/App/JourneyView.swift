@@ -21,6 +21,8 @@ struct JourneyView: View {
 
                     ProgressEntryCard()
 
+                    RootboundLinkCard()
+
                     HStack(spacing: 12) {
                         tile(String(format: "%.0f", max(healthWeek ?? 0, log.weekMinutes)), "mindful minutes\nthis week")
                         tile("\(log.streak)", log.streak == 1 ? "day\nin a row" : "days\nin a row")

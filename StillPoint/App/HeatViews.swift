@@ -41,6 +41,11 @@ struct HeatCard: View {
                     }
                     Text("Tap as you walk in: a timer starts and a guide opens with breathing and gentle moves for the heat. Heart rate from WHOOP fills in after.")
                         .font(SP.rounded(12)).foregroundStyle(SP.faint)
+                    // Just finished a round: suggest cooling down outside with a tree (Rootbound).
+                    if let last = heat.history.first, let end = last.end, Date().timeIntervalSince(end) < 45 * 60 {
+                        RootboundLinkCard(title: "Cool down outside",
+                                          subtitle: "Step out, breathe the fresh air and hug a tree. Rootbound logs it.")
+                    }
                 }
             }
         }

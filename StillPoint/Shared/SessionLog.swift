@@ -126,6 +126,10 @@ final class SessionLog: ObservableObject {
            let h = try? JSONDecoder().decode([HeatEntry].self, from: d) {
             heatEntries = h
         }
+        if let d = UserDefaults.standard.data(forKey: treeKey),
+           let t = try? JSONDecoder().decode([TreeEntry].self, from: d) {
+            treeEntries = t
+        }
         if ProcessInfo.processInfo.arguments.contains("-demo") && records.isEmpty {
             records = Self.demo()
             if heatEntries.isEmpty { heatEntries = Self.demoHeat() }
@@ -156,6 +160,31 @@ final class SessionLog: ObservableObject {
 
     private func persistHeat() {
         if let d = try? JSONEncoder().encode(heatEntries) { UserDefaults.standard.set(d, forKey: heatKey) }
+        WidgetBridge.publish()
+        onActivityChange?()
+    }
+
+    // MARK: - Tree hugs from Rootbound (iPhone only, via the shared wellness feed)
+
+    /// Tree hugs of a minute or more logged in Rootbound: they count as mindful moments here (Progress "Trees"
+    /// and the streak). Never written to Apple Health from Still Pointz; Rootbound owns that data.
+    @Published private(set) var treeEntries: [TreeEntry] = []
+    private let treeKey = "sp.treeEntries"
+
+    /// Merge what Rootbound published (kept by id, so older hugs stay counted after the feed trims them).
+    /// `window` = the period the feed covers: hugs in it that are no longer in the feed were deleted in Rootbound.
+    func mergeTrees(_ items: [TreeEntry], window since: Date) {
+        let incoming = items.filter { $0.minutes >= 1 }
+        let ids = Set(incoming.map(\.id))
+        var merged = treeEntries.filter { $0.start < since || ids.contains($0.id) }
+        for t in incoming {
+            if let i = merged.firstIndex(where: { $0.id == t.id }) { merged[i] = t } else { merged.append(t) }
+        }
+        merged.sort { $0.start > $1.start }
+        merged = Array(merged.prefix(500))
+        guard merged != treeEntries else { return }
+        treeEntries = merged
+        if let d = try? JSONEncoder().encode(merged) { UserDefaults.standard.set(d, forKey: treeKey) }
         WidgetBridge.publish()
         onActivityChange?()
     }
@@ -302,11 +331,12 @@ final class SessionLog: ObservableObject {
         return Calendar.current.isDateInToday(r.lastDay)
     }
 
-    /// Days (start of day) with at least one finished session of a minute or more, sauna and steam included.
+    /// Days (start of day) with at least one finished session of a minute or more, sauna, steam and Rootbound tree hugs included.
     var activeDays: Set<Date> {
         let cal = Calendar.current
         var days = Set(records.filter { $0.seconds >= 60 }.map { cal.startOfDay(for: $0.start) })
         for h in heatEntries where h.minutes >= 1 { days.insert(cal.startOfDay(for: h.start)) }
+        for t in treeEntries where t.minutes >= 1 { days.insert(cal.startOfDay(for: t.start)) }
         return days
     }
 

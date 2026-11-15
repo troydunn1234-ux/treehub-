@@ -641,6 +641,7 @@ struct HugLogView: View {
     private func save() {
         hideKeyboard()
         let all = hugs
+        BreathBark.sync(hugs: all)   // count earlier Breath & Bark days first, so only this hug's shows as new
         let levelBefore = GameEngine.level(for: GameEngine.totalXP(hugs: all, activities: activities))
         let badgesBefore = Set(GameEngine.badges(hugs: all, activities: activities).filter(\.earned).map(\.id))
 
@@ -675,6 +676,9 @@ struct HugLogView: View {
         }
 
         let after = isNew ? all + [hug] : all
+        // Hug + a Still Pointz session today = Breath & Bark (bonus XP lives in BreathBark, not in hug.xp).
+        let breathBarkNew = BreathBark.sync(hugs: after).contains(WellnessBridge.dayKey(hug.date))
+        RootboundWellness.publish(hugs: after)
         let levelAfter = GameEngine.level(for: GameEngine.totalXP(hugs: after, activities: activities))
         let newBadges = GameEngine.badges(hugs: after, activities: activities).filter { $0.earned && !badgesBefore.contains($0.id) }
 
@@ -687,7 +691,9 @@ struct HugLogView: View {
             let sp = hug.species.lowercased().trimmingCharacters(in: .whitespaces)
             let firstOfSpecies = !sp.isEmpty && !all.contains { $0.id != hug.id && $0.species.lowercased().trimmingCharacters(in: .whitespaces) == sp }
             let r = SpeciesRarity.rarity(for: hug.species)
-            celebration = CelebrationData(breakdown: breakdown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,
+            var shown = breakdown
+            if breathBarkNew { shown.add("Breath & Bark (Still Pointz today)", BreathBark.bonusXP) }
+            celebration = CelebrationData(breakdown: shown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,
                                           levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName,
                                           rareFind: firstOfSpecies && r > .common ? r : nil, species: hug.species,
                                           event: SeasonalEvent.active(on: hug.date))
