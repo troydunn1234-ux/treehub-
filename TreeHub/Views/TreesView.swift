@@ -8,6 +8,7 @@ struct TreesView: View {
     @State private var camera: MapCameraPosition = .automatic
     @State private var selectedTree: UUID?
     @State private var showFriends = false
+    @State private var showNatureRoll = false
     @State private var incomingCode: String?
     @State private var friends = FriendShare.friends
     @State private var showFriendTrees = true
@@ -33,6 +34,14 @@ struct TreesView: View {
                             .background(Color.white.opacity(0.08), in: Circle())
                     }
                     .accessibilityLabel("Friends map: share and import trees")
+                    Button { showNatureRoll = true } label: {
+                        Image(systemName: NatureRoll.symbol)
+                            .font(.system(size: 15, weight: .bold))
+                            .foregroundStyle(Theme.glow)
+                            .frame(width: 40, height: 40)
+                            .background(Color.white.opacity(0.08), in: Circle())
+                    }
+                    .accessibilityLabel(NatureRoll.title)
                     PillSwitcher(options: [.init(id: 0, label: "Grid", symbol: "square.grid.2x2.fill"),
                                            .init(id: 1, label: "Map", symbol: "map.fill")],
                                  selection: $mode)
@@ -60,6 +69,7 @@ struct TreesView: View {
             }
             .forestScreen()
             .toolbar(.hidden, for: .navigationBar)
+            .sheet(isPresented: $showNatureRoll) { NatureRollView() }
             .sheet(isPresented: $showFriends, onDismiss: { friends = FriendShare.friends }) {
                 FriendsView(incoming: incomingCode)
             }

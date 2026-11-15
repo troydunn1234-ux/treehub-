@@ -92,6 +92,8 @@ struct HugLogView: View {
     let editing: Hug?
     /// Set when the hug happens during a stroll or hike that's being recorded.
     var strollID: UUID? = nil
+    /// Nature Roll "Make this a hug": a camera-roll photo (PHAsset id) to start the hug with (NatureRoll/).
+    var prefillAssetID: String? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -553,6 +555,14 @@ struct HugLogView: View {
             // Your watch's breathwork syncs to Apple Health; grab it straight away (no session picker yet:
             // a camera-roll photo usually follows and asks around its own time).
             Task { await pullFromHealth(quiet: true, prompt: false) }
+            if let prefillAssetID {
+                Task {
+                    guard let p = await NatureRollPhotos.original(prefillAssetID) else { return }
+                    readPhotoMetadata(p.data, info: p.info)
+                    d.treePhoto = ImageTools.compressed(p.data)
+                    await guessSpecies(p.data)
+                }
+            }
         }
     }
 

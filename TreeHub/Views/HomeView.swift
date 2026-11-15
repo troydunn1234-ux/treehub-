@@ -22,6 +22,7 @@ struct HomeView: View {
                         levelCard.offset(y: -54).padding(.bottom, -54)
                         if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         quickActions
+                        NatureRollEntryCard()
                         statsGrid
                         CalmMinutesCard(hugs: hugs)
                         if hugs.isEmpty { firstHugCard } else { recentHugs }

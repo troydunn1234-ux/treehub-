@@ -1,6 +1,6 @@
 # Rootbound Privacy Policy
 
-_Last updated: November 14, 2026_
+_Last updated: November 15, 2026_
 
 Rootbound is a tree-hugging game with strolls and hikes. It has no accounts, no ads and no analytics.
 
@@ -10,6 +10,7 @@ Rootbound is a tree-hugging game with strolls and hikes. It has no accounts, no 
 - **Camera and photos** are used only for the pictures you choose to add.
 - **Apple Health** (with your permission, read only): heart rate, breathing rate, mindful minutes and workouts, to fill in your breathwork stats. Health data never leaves your devices and is never used for advertising.
 - Tree species suggestions are made on your iPhone by Apple's built-in image recognition. Photos are not uploaded.
+- **Nature Roll** (only if you turn it on): Rootbound looks through your photo library on your iPhone with Apple's built-in image recognition to find nature photos (trees, flowers, mountains, water, sky, animals, trails). The list of what it found, with each photo's date and place, is kept only on your iPhone and is not backed up or synced. No photo, label or location is ever uploaded. It works with "Limited" photo access, and it only creates or changes albums in the Photos app when you tap the button to do so.
 
 **What Rootbound does not do**
 - No accounts, sign-ups or logins.

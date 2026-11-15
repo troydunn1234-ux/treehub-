@@ -16,6 +16,8 @@ enum RootboundPro {
                   detail: "Mood lift, stress drop, heart rate and your favorite time of day with each tree."),
             .init(icon: "square.and.arrow.up.on.square", title: "CSV and GPX export",
                   detail: "Spreadsheet-ready hug history, and every stroll and hike route as GPX for maps and trail apps."),
+            .init(icon: "photo.stack.fill", title: "\(NatureRoll.title) map and albums",
+                  detail: "Your nature photos on a map, and saved into albums in the Photos app."),
             .init(icon: "heart.fill", title: "Support an indie app",
                   detail: "No ads, no tracking, no accounts. Pro keeps it that way."),
         ],

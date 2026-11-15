@@ -64,7 +64,8 @@ targets:
         NSLocationAlwaysAndWhenInUseUsageDescription: Rootbound keeps recording your stroll while your phone is locked.
         NSMotionUsageDescription: Rootbound uses motion data to tell a stroll from a hike.
         NSCameraUsageDescription: Rootbound uses the camera to snap your tree and your tree selfie.
-        NSPhotoLibraryUsageDescription: Rootbound lets you pick tree photos and Garmin screenshots from your library.
+        NSPhotoLibraryUsageDescription: Rootbound lets you pick tree photos and Garmin screenshots from your library, and sorts your nature photos on your iPhone. Nothing is uploaded.
+        NSPhotoLibraryAddUsageDescription: Rootbound adds your nature photos to albums in Photos, only when you ask it to.
         NSHealthShareUsageDescription: Rootbound reads heart rate, breathing rate and mindful minutes that your Apple Watch and WHOOP save to Apple Health.
         ITSAppUsesNonExemptEncryption: false
     settings:

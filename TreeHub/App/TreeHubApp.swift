@@ -81,7 +81,7 @@ struct RootView: View {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist(); RootboundWellness.publish(hugs: hugs) }
-            if phase == .active { consumePendingAction(); RootboundWellness.publish(hugs: hugs) }
+            if phase == .active { consumePendingAction(); RootboundWellness.publish(hugs: hugs); NatureRollStore.shared.scanIfAllowed() }
         }
         // Share hugs with Still Pointz (Shared/Wellness/WellnessBridge.swift).
         .onChange(of: hugs.count) { _, _ in RootboundWellness.publish(hugs: hugs) }
