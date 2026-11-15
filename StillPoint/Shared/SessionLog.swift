@@ -34,6 +34,9 @@ struct SessionRecord: Codable, Identifiable, Hashable {
     var hrAvg: Double? = nil
     var respiratoryRate: Double? = nil
     var notes: String? = nil
+    /// Set when Rootbound started the session for a tree: that tree's stable id (UUID string) and name.
+    var treeID: String? = nil
+    var treeName: String? = nil
 
     var minutes: Double { seconds / 60 }
     var end: Date { start.addingTimeInterval(seconds) }
@@ -76,6 +79,7 @@ struct SessionRecord: Codable, Identifiable, Hashable {
     enum CodingKeys: String, CodingKey {
         case id, practiceId, title, start, seconds, cycles, hrStart, hrEnd, hrv, device
         case kind, minutesPlanned, warmUpId, hrSamples, hrMin, hrAvg, respiratoryRate, notes
+        case treeID, treeName
     }
 
     // Tolerant decoding: anything missing in an old record is simply nil.
@@ -99,6 +103,8 @@ struct SessionRecord: Codable, Identifiable, Hashable {
         hrAvg = try? c.decode(Double.self, forKey: .hrAvg)
         respiratoryRate = try? c.decode(Double.self, forKey: .respiratoryRate)
         notes = try? c.decode(String.self, forKey: .notes)
+        treeID = try? c.decode(String.self, forKey: .treeID)
+        treeName = try? c.decode(String.self, forKey: .treeName)
     }
 }
 
@@ -245,6 +251,9 @@ final class SessionLog: ObservableObject {
             if merged.notes == nil { merged.notes = records[i].notes }
             if merged.hrv == nil { merged.hrv = records[i].hrv }
             if merged.hrSamples == nil { merged.hrSamples = records[i].hrSamples }
+            if merged.treeID == nil { merged.treeID = records[i].treeID; merged.treeName = records[i].treeName }
+            if merged.hrAvg == nil { merged.hrAvg = records[i].hrAvg; merged.hrMin = merged.hrMin ?? records[i].hrMin }
+            if merged.hrStart == nil { merged.hrStart = records[i].hrStart; merged.hrEnd = merged.hrEnd ?? records[i].hrEnd }
             records[i] = merged
         } else {
             records.insert(r, at: 0)

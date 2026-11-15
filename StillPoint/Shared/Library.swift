@@ -371,6 +371,8 @@ final class PracticeLibrary {
         var ids = Set<String>()
         for t in traditions { if let first = practices.first(where: { $0.traditionId == t.id && !$0.isMovement }) { ids.insert(first.id) } }
         for m in practices.filter(\.isMovement).prefix(2) { ids.insert(m.id) }
+        // Tree Hugs are always free (Rootbound's "Breathe with this tree" opens them).
+        for t in practices where t.focus == .trees { ids.insert(t.id) }
         return ids
     }()
     func isFree(_ p: Practice) -> Bool { freeIDs.contains(p.id) }
@@ -472,7 +474,7 @@ enum Fallback {
 
 /// The four body sections on the Today screen.
 enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
-    case joint, lymph, stretch, breathe
+    case joint, lymph, stretch, breathe, trees
 
     var id: String { rawValue }
 
@@ -482,6 +484,7 @@ enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
         case .lymph: return "Lymph flow"
         case .stretch: return "Stretch"
         case .breathe: return "Breathe"
+        case .trees: return "Tree Hugs"
         }
     }
 
@@ -491,6 +494,7 @@ enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
         case .lymph: return "drop.fill"
         case .stretch: return "figure.flexibility"
         case .breathe: return "wind"
+        case .trees: return "tree"
         }
     }
 
@@ -501,6 +505,7 @@ enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
         case .lymph: return "Pump, tap, drain"
         case .stretch: return "Long, slow lines"
         case .breathe: return "Paced breathing"
+        case .trees: return "Ground yourself with a tree"
         }
     }
 
@@ -511,6 +516,7 @@ enum BodyFocus: String, CaseIterable, Identifiable, Hashable {
         case .lymph: return "Lymph has no pump of its own; it moves when you breathe deeply and squeeze muscles. Light strokes, tapping and calf pumps get it flowing, which is good after sitting, flying or a sauna."
         case .stretch: return "Held shapes and flowing sequences that lengthen the big muscle chains: hamstrings, hips, spine and shoulders. Breathe out into each stretch; never bounce."
         case .breathe: return "Paced breathing patterns from yoga, Zen and modern research. Longer out-breaths calm you; even counts steady you; quick top-ups wake you up."
+        case .trees: return "Short breaths for grounding yourself with nature: hands on the bark, arms around a trunk, feet on the ground. Open one from Rootbound's \"Breathe with this tree\" and it's saved under that tree."
         }
     }
 }

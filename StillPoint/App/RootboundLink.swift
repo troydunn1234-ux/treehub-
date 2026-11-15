@@ -9,14 +9,27 @@ import SwiftUI
 enum StillPointWellness {
     /// Publish our half of the feed and pull in Rootbound's hugs. Cheap; called on launch, foreground and log changes.
     @MainActor
-    static func sync(log: SessionLog = .shared, heat: HeatStore = .shared) {
+    static func sync() {
+        let log = SessionLog.shared
+        let heat = HeatStore.shared
+        enrichTreeSessions(log)
         if let rb = WellnessBridge.rootbound() {
             let since = Date().addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
             let trees = rb.hugs.map { TreeEntry(id: $0.id, start: $0.date, minutes: $0.minutes, name: $0.tree) }
             log.mergeTrees(trees, window: since)
         }
-        var out: [WellnessBridge.Session] = log.records.filter { $0.seconds >= 60 }.map {
-            WellnessBridge.Session(id: $0.id, date: $0.start, kind: ($0.kind ?? "breath").lowercased(), minutes: $0.minutes)
+        var out: [WellnessBridge.Session] = log.records.filter { $0.seconds >= 60 }.map { r in
+            var s = WellnessBridge.Session(id: r.id, date: r.start, kind: (r.kind ?? "breath").lowercased(), minutes: r.minutes)
+            s.end = r.end
+            s.practice = r.practiceId
+            s.treeID = r.treeID
+            s.treeName = r.treeName
+            s.avgHR = r.hrAvg
+            s.minHR = r.hrMin
+            s.startHR = r.hrStart
+            s.hrDrop = r.hrDrop
+            s.hrv = r.hrv
+            return s
         }
         out += heat.history.filter { $0.end != nil && $0.minutes >= 1 }.map {
             WellnessBridge.Session(id: $0.id, date: $0.start, kind: $0.kind.rawValue, minutes: $0.minutes)
@@ -24,17 +37,68 @@ enum StillPointWellness {
         WellnessBridge.publishStillPoint(sessions: out, streak: log.streak)
     }
 
-    /// The tree a "Breathe with a tree" request should name: the last one hugged in Rootbound, if any.
-    static var lastTreeName: String? {
-        let n = WellnessBridge.rootbound()?.hugs.first?.tree.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        return n.isEmpty ? nil : n
+    /// The tree a "Breathe with a tree" request should use: the last one hugged in Rootbound, if any.
+    static var lastTree: (name: String, id: String?)? {
+        guard let h = WellnessBridge.rootbound()?.hugs.first else { return nil }
+        let n = h.tree.trimmingCharacters(in: .whitespacesAndNewlines)
+        return (n.isEmpty ? "a tree" : n, h.treeID?.uuidString)
     }
 
-    /// stillpoint://session?practice=<id>&minutes=<n>&context=tree&name=<tree>
+    // MARK: Heart data for tree sessions
+
+    /// Last time each tree session was looked up in Apple Health (WHOOP / Watch data can arrive minutes later).
+    private static var lastLookup: [UUID: Date] = [:]
+
+    /// Fill heart rate (avg, lowest, start, end), the curve and HRV for recent tree sessions from Apple Health
+    /// (read-only; the session's mindful minutes were already saved once when it finished). The updated record is
+    /// re-published to the feed, so Rootbound shows the stats under the tree.
+    @MainActor
+    static func enrichTreeSessions(_ log: SessionLog = .shared) {
+        let since = Date().addingTimeInterval(-2 * 86400)
+        for r in log.records where r.treeID != nil && r.start >= since && (r.hrAvg == nil || r.hrv == nil) {
+            if let t = lastLookup[r.id], Date().timeIntervalSince(t) < 90 { continue }
+            lastLookup[r.id] = Date()
+            let id = r.id
+            if r.hrAvg == nil {
+                MindfulHealth.shared.heartRateStats(start: r.start, end: r.end) { w in
+                    guard let w else { return }
+                    log.update(id) { rec in
+                        rec.hrAvg = (w.avg * 10).rounded() / 10
+                        rec.hrMin = w.min
+                        if rec.hrStart == nil { rec.hrStart = w.points.first?.bpm }
+                        if rec.hrEnd == nil { rec.hrEnd = w.points.last?.bpm }
+                        if rec.hrSamples == nil, w.points.count >= 2 { rec.hrSamples = w.points }
+                    }
+                }
+            }
+            if r.hrv == nil {
+                MindfulHealth.shared.sessionHRV(start: r.start, end: r.end) { v in
+                    guard let v else { return }
+                    log.update(id) { $0.hrv = (v * 10).rounded() / 10 }
+                }
+            }
+        }
+    }
+
+    /// Right after a tree session ends: publish at once (so "Back to <tree>" shows it), then fill heart data now
+    /// and again in a few minutes.
+    @MainActor
+    static func treeSessionFinished() {
+        sync()
+        for delay in [20.0, 180.0] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                lastLookup = [:]
+                enrichTreeSessions()
+            }
+        }
+    }
+
+    /// stillpoint://session?practice=<id>&minutes=<n>&context=tree&name=<tree>&tree=<id>
     struct SessionRequest {
         var practiceId: String
         var minutes: Int
         var treeName: String?
+        var treeID: String? = nil
     }
 
     static func sessionRequest(from url: URL) -> SessionRequest? {
@@ -47,7 +111,8 @@ enum StillPointWellness {
             let n = (q("name") ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
             tree = n.isEmpty ? "a tree" : String(n.prefix(40))
         }
-        return SessionRequest(practiceId: q("practice") ?? "resonance", minutes: max(1, min(20, mins)), treeName: tree)
+        let treeID = tree == nil ? nil : q("tree").flatMap { UUID(uuidString: $0)?.uuidString }
+        return SessionRequest(practiceId: q("practice") ?? "rooted-breath", minutes: max(1, min(20, mins)), treeName: tree, treeID: treeID)
     }
 
     /// A calm breathing practice this person can run right now: the one asked for if it's open, else the free
@@ -55,7 +120,7 @@ enum StillPointWellness {
     static func calmPractice(preferred id: String) -> Practice {
         let lib = PracticeLibrary.shared
         if let p = lib.practice(id), !p.isMovement, !lib.isLocked(p) { return p }
-        for alt in ["resonance", "box", "physiological-sigh"] {
+        for alt in ["rooted-breath", "resonance", "box", "sigh"] {
             if let p = lib.practice(alt), !lib.isLocked(p) { return p }
         }
         return lib.quickPractice
@@ -66,8 +131,8 @@ extension Router {
     /// Pending "Breathe with a tree" from Siri (tree name; picked up like the practice queue).
     static let pendingTreeKey = "sp.pendingTree"
 
-    static func queueTreeBreath(name: String) {
-        UserDefaults.standard.set(name, forKey: pendingTreeKey)
+    static func queueTreeBreath(name: String, treeID: String?) {
+        UserDefaults.standard.set(name + "\n" + (treeID ?? ""), forKey: pendingTreeKey)
         NotificationCenter.default.post(name: pendingNote, object: nil)
     }
 
@@ -80,13 +145,17 @@ extension Router {
         let p = StillPointWellness.calmPractice(preferred: req.practiceId)
         var plan = SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: req.minutes)
         plan.treeName = req.treeName
+        plan.treeID = req.treeID
         run(plan)
     }
 
     func consumePendingTree() {
-        guard let name = UserDefaults.standard.string(forKey: Self.pendingTreeKey) else { return }
+        guard let raw = UserDefaults.standard.string(forKey: Self.pendingTreeKey) else { return }
         UserDefaults.standard.removeObject(forKey: Self.pendingTreeKey)
-        handle(session: .init(practiceId: "resonance", minutes: 3, treeName: name.isEmpty ? "a tree" : name))
+        let parts = raw.components(separatedBy: "\n")
+        let name = parts.first ?? ""
+        let id = parts.count > 1 && !parts[1].isEmpty ? parts[1] : nil
+        handle(session: .init(practiceId: "rooted-breath", minutes: 3, treeName: name.isEmpty ? "a tree" : name, treeID: id))
     }
 }
 
@@ -114,8 +183,8 @@ struct RootboundLinkCard: View {
                     .frame(width: 40, height: 40)
                     .background(Circle().fill(Color(spHex: "#8CCB7E").opacity(0.14)))
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(title).font(SP.serif(17)).foregroundStyle(SP.ink)
-                    Text(installed ? subtitle : "Get Rootbound on the App Store, a tree-hugging companion to Still Pointz.")
+                    Text(LocalizedStringKey(title)).font(SP.serif(17)).foregroundStyle(SP.ink)
+                    Text(installed ? LocalizedStringKey(subtitle) : "Get Rootbound on the App Store, a tree-hugging companion to Still Pointz.")
                         .font(SP.rounded(12)).foregroundStyle(SP.faint)
                         .fixedSize(horizontal: false, vertical: true)
                 }

@@ -151,6 +151,39 @@ final class HealthService {
         }
     }
 
+    /// Heart numbers for one breath session (read-only): average and lowest heart rate, the first reading
+    /// (so "start -> lowest" gives the calm effect) and average HRV. Nil fields when nothing was recorded.
+    struct BreathStats {
+        var avgHR: Double?
+        var minHR: Double?
+        var startHR: Double?
+        var hrv: Double?
+        var hrDrop: Double? {
+            guard let a = startHR, let b = minHR else { return nil }
+            return a - b
+        }
+    }
+
+    func breathStats(from start: Date, to end: Date) async -> BreathStats {
+        var out = BreathStats()
+        let unit = HKUnit.count().unitDivided(by: .minute())
+        if let hr = HKQuantityType.quantityType(forIdentifier: .heartRate) {
+            let s = await quantitySamples(hr, start: start, end: end).sorted { $0.startDate < $1.startDate }
+            let v = s.map { $0.quantity.doubleValue(for: unit) }.filter { $0 > 25 && $0 < 230 }
+            if !v.isEmpty {
+                out.avgHR = v.reduce(0, +) / Double(v.count)
+                out.minHR = v.min()
+                out.startHR = v.first
+            }
+        }
+        if let hrvType = HKQuantityType.quantityType(forIdentifier: .heartRateVariabilitySDNN) {
+            let s = await quantitySamples(hrvType, start: start.addingTimeInterval(-60), end: end.addingTimeInterval(180))
+            let v = s.map { $0.quantity.doubleValue(for: .secondUnit(with: .milli)) }.filter { $0 > 0 }
+            if !v.isEmpty { out.hrv = v.reduce(0, +) / Double(v.count) }
+        }
+        return out
+    }
+
     // MARK: - Query helpers
 
     private func quantitySamples(_ type: HKQuantityType, start: Date, end: Date) async -> [HKQuantitySample] {

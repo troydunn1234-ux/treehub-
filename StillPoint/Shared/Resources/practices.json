@@ -96,6 +96,14 @@
    "origin": "Evening practices gathered from yoga nidra, prāṇāyāma, Zen and the mettā tradition, chosen for the hour before sleep.",
    "summary": "Slow, low-effort practices for the last hour of the day: a lying-down body scan, a long-exhale breath, a counting-down breath and a loving-kindness that ends with you. Dim the lights; nothing here needs effort.",
    "color": "#7B6FB0"
+  },
+  {
+   "id": "nature",
+   "name": "Tree Hugs",
+   "region": "Any forest, park or backyard",
+   "origin": "Original Still Pointz practices for grounding yourself with a tree, built on well-studied breathing patterns.",
+   "summary": "Short breaths to do with your hands on bark, your arms around a trunk or your feet on the ground. Slow out-breaths, the senses and the stillness of a tree do the grounding. Pairs with Rootbound.",
+   "color": "#6FAF6B"
   }
  ],
  "practices": [
@@ -2415,6 +2423,319 @@
    ],
    "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
    "sources": []
+  },
+  {
+   "id": "rooted-breath",
+   "title": "Rooted Breath",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Stand close to your tree, feet hip-width, knees soft. Breathe low into the belly for four, then out for six, and picture roots growing down from your feet into the soil a little further with every out-breath.",
+   "why": "A longer out-breath than in-breath is one of the simplest ways to slow the heart and settle the nervous system. Picturing roots gives the mind somewhere quiet to rest.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Feet on the ground. Breathe into your belly."
+    },
+    {
+     "at": 30,
+     "text": "Out-breath long, like roots reaching down."
+    },
+    {
+     "at": 70,
+     "text": "Feel the ground holding you up."
+    },
+    {
+     "at": 110,
+     "text": "Each breath, the roots go a little deeper."
+    },
+    {
+     "at": 160,
+     "text": "Steady as the trunk beside you."
+    },
+    {
+     "at": 230,
+     "text": "Let the breath find its own pace."
+    }
+   ],
+   "sources": [
+    "lehrer-2014",
+    "shinrin-yoku"
+   ],
+   "focus": "trees"
+  },
+  {
+   "id": "bark-breath",
+   "title": "Bark & Breath",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Rest both palms on the bark. Breathe in for four, hold for four, out for four, hold for four, and use each count to notice the bark: ridges, cracks, warmth or cold, dry or damp.",
+   "why": "Even counts steady a racing mind, and giving your hands something real to feel keeps attention in the present instead of in your head.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 4,
+    "exhale": 4,
+    "holdOut": 4,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Palms on the bark. In four, hold four, out four, hold four."
+    },
+    {
+     "at": 32,
+     "text": "Feel the ridges under your fingers."
+    },
+    {
+     "at": 64,
+     "text": "Is the bark warm or cool? Rough or smooth?"
+    },
+    {
+     "at": 112,
+     "text": "Let your hands soften on the tree."
+    },
+    {
+     "at": 176,
+     "text": "Keep the holds easy, never strained."
+    }
+   ],
+   "sources": [
+    "box-breathing"
+   ],
+   "focus": "trees",
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy."
+  },
+  {
+   "id": "canopy-sigh",
+   "title": "Canopy Sigh",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Lean back against the trunk or stand beneath it and let your eyes drift up into the leaves. Breathe in through the nose, sip in a little more at the top, then let it all go in a long, slow sigh.",
+   "why": "The double inhale and long exhale of a physiological sigh is one of the fastest ways to calm down. Looking up into a canopy widens your view and softens the eyes.",
+   "pattern": {
+    "inhale": 3,
+    "holdIn": 0,
+    "exhale": 7,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": true
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Eyes up to the leaves. Two sniffs in, one long sigh out."
+    },
+    {
+     "at": 30,
+     "text": "Watch the light move through the branches."
+    },
+    {
+     "at": 70,
+     "text": "Let the shoulders drop with every sigh."
+    },
+    {
+     "at": 120,
+     "text": "Soft eyes. Long out-breath."
+    },
+    {
+     "at": 180,
+     "text": "Let the canopy hold your gaze."
+    }
+   ],
+   "sources": [
+    "balban-2023",
+    "shinrin-yoku"
+   ],
+   "focus": "trees"
+  },
+  {
+   "id": "earth-count",
+   "title": "Earth Count",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "A five-four-three-two-one walk through the senses, paced by slow breathing. Notice five things you see, four you can touch, three you hear, two you smell and one you can taste, one sense every few breaths.",
+   "why": "Naming what the senses pick up pulls attention out of worry and into the place you're standing; slow breathing keeps the body following along.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Breathe slowly. Find five things you can see."
+    },
+    {
+     "at": 25,
+     "text": "Four things you can touch. The bark is one."
+    },
+    {
+     "at": 55,
+     "text": "Three things you can hear."
+    },
+    {
+     "at": 85,
+     "text": "Two things you can smell."
+    },
+    {
+     "at": 110,
+     "text": "One thing you can taste."
+    },
+    {
+     "at": 135,
+     "text": "Rest here. Just breathe with the tree."
+    }
+   ],
+   "sources": [
+    "shinrin-yoku"
+   ],
+   "focus": "trees"
+  },
+  {
+   "id": "heartbeat-hug",
+   "title": "Heartbeat Hug",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "Wrap your arms around the trunk, rest your cheek or chest against it and breathe at an easy six breaths a minute: five in, five out. Let your heartbeat settle against the stillness of the tree.",
+   "why": "Breathing near six breaths a minute is called resonance breathing; studies link it to higher heart-rate variability, a sign the body is in rest mode.",
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Arms around the trunk. In five, out five."
+    },
+    {
+     "at": 30,
+     "text": "Feel your chest move against the bark."
+    },
+    {
+     "at": 70,
+     "text": "Let your heart slow down with the breath."
+    },
+    {
+     "at": 120,
+     "text": "Nothing to do. Just hold on."
+    },
+    {
+     "at": 180,
+     "text": "The tree isn't in a hurry. Neither are you."
+    }
+   ],
+   "sources": [
+    "lehrer-2014",
+    "zaccaro-2018"
+   ],
+   "focus": "trees"
+  },
+  {
+   "id": "walking-roots",
+   "title": "Walking Roots",
+   "traditionId": "nature",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "about": "For a stroll: slow barefoot steps if the ground is safe, shoes if not. Breathe in for four steps and out for four steps, placing each foot heel, then sole, then toes, as if it were putting down roots.",
+   "why": "Linking breath to slow steps calms the mind the way sitting practice does, and bare feet on grass or soil add a gentle, grounding texture.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Slow steps. In for four steps, out for four."
+    },
+    {
+     "at": 30,
+     "text": "Heel, sole, toes. Feel each part touch down."
+    },
+    {
+     "at": 70,
+     "text": "Notice the ground: grass, soil, roots, stone."
+    },
+    {
+     "at": 120,
+     "text": "If your mind wanders, come back to your feet."
+    },
+    {
+     "at": 180,
+     "text": "Walk toward a tree you'd like to hug."
+    }
+   ],
+   "sources": [
+    "shinrin-yoku"
+   ],
+   "focus": "trees",
+   "safety": "Only go barefoot where the ground is safe. Keep your eyes open and watch your footing."
   }
  ],
  "intentions": [

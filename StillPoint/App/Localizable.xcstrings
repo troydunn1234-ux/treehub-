@@ -221,6 +221,16 @@
         }
       }
     },
+    "Any session of a minute or more keeps the streak: sauna, steam and Rootbound tree hugs included.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cualquier sesión de un minuto o más mantiene la racha: sauna, vapor y abrazos a árboles de Rootbound incluidos."
+          }
+        }
+      }
+    },
     "Apple Health": {
       "localizations": {
         "es": {
@@ -311,6 +321,16 @@
         }
       }
     },
+    "Breathing with %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respirando con %@"
+          }
+        }
+      }
+    },
     "Breathwork, stillness and gentle warm-ups from a dozen traditions, each with where it comes from and why it works. Turn on the voice guide and just listen.": {
       "localizations": {
         "es": {
@@ -387,6 +407,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Conectar con Salud"
+          }
+        }
+      }
+    },
+    "Cool down outside": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Refréscate al aire libre"
           }
         }
       }
@@ -611,6 +641,16 @@
         }
       }
     },
+    "Fresh air and a tree hug between rounds. Rootbound logs it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aire fresco y un abrazo a un árbol entre rondas. Rootbound lo registra."
+          }
+        }
+      }
+    },
     "From: %@. ": {
       "localizations": {
         "es": {
@@ -631,12 +671,32 @@
         }
       }
     },
+    "Get Rootbound on the App Store, a tree-hugging companion to Still Pointz.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consigue Rootbound en la App Store, el compañero de Still Pointz para abrazar árboles."
+          }
+        }
+      }
+    },
     "Glossary": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Glosario"
+          }
+        }
+      }
+    },
+    "Go hug a tree": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ve a abrazar un árbol"
           }
         }
       }
@@ -911,12 +971,32 @@
         }
       }
     },
+    "Log a hug in Rootbound. It counts here too.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registra un abrazo en Rootbound. También cuenta aquí."
+          }
+        }
+      }
+    },
     "Log a session": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Registrar una sesión"
+          }
+        }
+      }
+    },
+    "Log it in Rootbound. Hugs of a minute or more count here too.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Regístralo en Rootbound. Los abrazos de un minuto o más también cuentan aquí."
           }
         }
       }
@@ -1831,6 +1911,16 @@
         }
       }
     },
+    "Step out, breathe the fresh air and hug a tree. Rootbound logs it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sal, respira aire fresco y abraza un árbol. Rootbound lo registra."
+          }
+        }
+      }
+    },
     "Step out, cool down slowly, drink some water. Go again after a break if you feel good.": {
       "localizations": {
         "es": {
@@ -2007,6 +2097,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estos ajustes se comparten con tu Watch automáticamente."
+          }
+        }
+      }
+    },
+    "This breath is saved under the tree, with your heart data.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esta respiración se guarda con el árbol, junto con tus datos del corazón."
           }
         }
       }

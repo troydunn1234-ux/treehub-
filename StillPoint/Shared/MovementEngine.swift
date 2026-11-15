@@ -111,6 +111,8 @@ struct SessionPlan: Hashable, Identifiable {
     var patternOverride: BreathPattern? = nil
     /// Set when Rootbound opened the session for a tree ("Breathing with <tree>").
     var treeName: String? = nil
+    /// Rootbound's stable id for that tree, so the finished session syncs back under it.
+    var treeID: String? = nil
 
     var id: String { (warmUp?.id ?? "") + ">" + practice.id + "\(minutes)" }
 }

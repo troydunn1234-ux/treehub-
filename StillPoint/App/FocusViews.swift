@@ -7,6 +7,7 @@ extension BodyFocus {
         case .lymph: return SP.teal
         case .stretch: return SP.rose
         case .breathe: return SP.violet
+        case .trees: return Color(spHex: "#8CCB7E")
         }
     }
     var tint2: Color {
@@ -15,6 +16,7 @@ extension BodyFocus {
         case .lymph: return Color(spHex: "#5B9BD6")
         case .stretch: return SP.plum
         case .breathe: return SP.indigo
+        case .trees: return Color(spHex: "#3F7D4E")
         }
     }
 }
@@ -25,9 +27,17 @@ struct FocusGrid: View {
     private let cols = [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)]
 
     var body: some View {
-        LazyVGrid(columns: cols, spacing: 12) {
-            ForEach(BodyFocus.allCases) { f in
-                NavigationLink(value: f) { FocusTile(focus: f, count: lib.practices(focus: f).count) }
+        VStack(spacing: 12) {
+            LazyVGrid(columns: cols, spacing: 12) {
+                ForEach(BodyFocus.allCases.filter { $0 != .trees }) { f in
+                    NavigationLink(value: f) { FocusTile(focus: f, count: lib.practices(focus: f).count) }
+                        .buttonStyle(SoftPress())
+                }
+            }
+            // Tree Hugs: its own full-width tile under the four body sections.
+            let trees = lib.practices(focus: .trees).count
+            if trees > 0 {
+                NavigationLink(value: BodyFocus.trees) { FocusTile(focus: .trees, count: trees) }
                     .buttonStyle(SoftPress())
             }
         }

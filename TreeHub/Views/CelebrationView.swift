@@ -128,8 +128,17 @@ struct CelebrationView: View {
                     }
 
                     if step >= 1 {
-                        BreatheWithTreeButton(treeName: data.treeName)
-                            .transition(.opacity)
+                        VStack(spacing: 8) {
+                            BreatheWithTreeButton(treeName: data.treeName, treeID: data.treeID)
+                            if let id = data.treeID {
+                                let b = TreeBreaths.tagged(for: id)
+                                if !b.isEmpty {
+                                    Text("\(b.count) breath session\(b.count == 1 ? "" : "s") with \(data.treeName) · \(Format.minutes(b.reduce(0) { $0 + $1.minutes })) mindful")
+                                        .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+                                }
+                            }
+                        }
+                        .transition(.opacity)
                     }
 
                     Button("Back to the forest", action: onDone)

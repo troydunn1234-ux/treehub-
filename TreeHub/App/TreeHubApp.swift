@@ -96,6 +96,18 @@ struct RootView: View {
                 return
             }
             if url.scheme == FriendShare.scheme, url.host == "home" { return }
+            // rootbound://tree?id=<tree id>: that tree's page (back from a Still Pointz breath with it).
+            if url.scheme == FriendShare.scheme, url.host == "tree" {
+                let id = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
+                    .first(where: { $0.name == "id" })?.value.flatMap(UUID.init(uuidString:))
+                showHugLog = false
+                tab = .trees
+                TreeBreaths.pendingTreeID = id
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                    NotificationCenter.default.post(name: TreeBreaths.openTree, object: nil)
+                }
+                return
+            }
             guard url.scheme == FriendShare.scheme, url.host == "friends",
                   let c = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?.first(where: { $0.name == "c" })?.value
             else { return }

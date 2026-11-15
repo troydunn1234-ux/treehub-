@@ -54,6 +54,7 @@ enum ActivityCategory: String, CaseIterable, Identifiable, Hashable {
         case .lymph: self = .lymph
         case .stretch: self = .stretch
         case .breathe: self = .breathe
+        case .trees: self = .trees
         }
     }
 
@@ -104,7 +105,7 @@ extension SessionLog {
     func thisWeekByCategory() -> [CategoryMinutes] {
         let m = minutesByCategory(from: weekStartDate)
         // "Trees" only once Rootbound has shared a hug, so people without it never see an empty bar.
-        return ActivityCategory.allCases.filter { $0 != .trees || !treeEntries.isEmpty }
+        return ActivityCategory.allCases.filter { $0 != .trees || !treeEntries.isEmpty || (m[.trees] ?? 0) > 0 }
             .map { CategoryMinutes(category: $0, minutes: m[$0] ?? 0) }
     }
 

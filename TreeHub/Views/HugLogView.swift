@@ -83,6 +83,8 @@ struct CelebrationData: Identifiable {
     var species: String = ""
     /// The seasonal event running when the hug was logged.
     var event: SeasonalEvent? = nil
+    /// The tree's stable id ("Breathe with this tree" syncs the Still Pointz session back under it).
+    var treeID: UUID? = nil
 }
 
 @MainActor
@@ -696,7 +698,7 @@ struct HugLogView: View {
             celebration = CelebrationData(breakdown: shown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,
                                           levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName,
                                           rareFind: firstOfSpecies && r > .common ? r : nil, species: hug.species,
-                                          event: SeasonalEvent.active(on: hug.date))
+                                          event: SeasonalEvent.active(on: hug.date), treeID: hug.treeID)
         } else {
             dismiss()
         }

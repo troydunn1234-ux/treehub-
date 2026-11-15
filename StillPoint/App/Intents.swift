@@ -222,7 +222,8 @@ struct BreatheWithTreeIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        Router.queueTreeBreath(name: StillPointWellness.lastTreeName ?? "a tree")
+        let tree = StillPointWellness.lastTree
+        Router.queueTreeBreath(name: tree?.name ?? "a tree", treeID: tree?.id)
         return .result()
     }
 }

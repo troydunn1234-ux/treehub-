@@ -23,6 +23,8 @@ enum WellnessBridge {
         var minutes: Double
         var tree: String
         var species: String
+        /// The tree's stable id in Rootbound (every hug of one tree shares it).
+        var treeID: UUID? = nil
     }
 
     struct Session: Codable, Hashable, Identifiable {
@@ -31,6 +33,20 @@ enum WellnessBridge {
         /// breath, mantra, movement, sauna, steam … (Still Pointz' own kind names).
         var kind: String
         var minutes: Double
+
+        // A breath "with a tree" (Rootbound -> Still Pointz -> back): which tree, and how the body settled.
+        // All optional so older feeds still decode. Heart data comes from Apple Health (read-only here).
+        var treeID: String? = nil
+        var treeName: String? = nil
+        var end: Date? = nil
+        var avgHR: Double? = nil
+        var minHR: Double? = nil
+        var startHR: Double? = nil
+        /// Start -> lowest heart rate (bpm); positive = calmer.
+        var hrDrop: Double? = nil
+        /// Average HRV (SDNN, ms) in the window, when a Watch took one.
+        var hrv: Double? = nil
+        var practice: String? = nil
 
         /// Guided practice (anything but sauna / steam): what Rootbound shows as "Calm minutes".
         var isCalm: Bool { !["sauna", "steam"].contains(kind.lowercased()) }
@@ -119,8 +135,8 @@ enum WellnessLinks {
     static let rootboundBundleID = "com.troydunn.rootbound"
     static let stillPointBundleID = "com.troydunn.stillpoint"
 
-    /// Still Pointz: a short grounding breath with a tree.
-    static func breatheWithTree(_ name: String, practice: String = "resonance", minutes: Int = 3) -> URL {
+    /// Still Pointz: a short grounding breath with a tree. `treeID` lets the session sync back under that tree.
+    static func breatheWithTree(_ name: String, treeID: UUID? = nil, practice: String = "resonance", minutes: Int = 3) -> URL {
         var c = URLComponents()
         c.scheme = "stillpoint"
         c.host = "session"
@@ -129,7 +145,7 @@ enum WellnessLinks {
             URLQueryItem(name: "minutes", value: "\(minutes)"),
             URLQueryItem(name: "context", value: "tree"),
             URLQueryItem(name: "name", value: name),
-        ]
+        ] + (treeID.map { [URLQueryItem(name: "tree", value: $0.uuidString)] } ?? [])
         return c.url ?? URL(string: "stillpoint://session")!
     }
 
@@ -137,6 +153,15 @@ enum WellnessLinks {
     static let hugLogger = URL(string: "rootbound://hug")!
     /// Rootbound, just opened.
     static let rootboundHome = URL(string: "rootbound://home")!
+
+    /// Rootbound's page for one tree (its Breath sessions show the session just finished).
+    static func rootboundTree(_ id: String) -> URL {
+        var c = URLComponents()
+        c.scheme = "rootbound"
+        c.host = "tree"
+        c.queryItems = [URLQueryItem(name: "id", value: id)]
+        return c.url ?? rootboundHome
+    }
 
     static var stillPointInstalled: Bool { UIApplication.shared.canOpenURL(URL(string: "stillpoint://")!) }
     static var rootboundInstalled: Bool { UIApplication.shared.canOpenURL(URL(string: "rootbound://")!) }

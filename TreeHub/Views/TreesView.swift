@@ -11,11 +11,12 @@ struct TreesView: View {
     @State private var incomingCode: String?
     @State private var friends = FriendShare.friends
     @State private var showFriendTrees = true
+    @State private var path = NavigationPath()
 
     private var trees: [TreeSummary] { TreeSummary.build(from: hugs) }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             VStack(alignment: .leading, spacing: 14) {
                 HStack(alignment: .bottom) {
                     VStack(alignment: .leading, spacing: 2) {
@@ -64,12 +65,23 @@ struct TreesView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.changed)) { _ in friends = FriendShare.friends }
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.incoming)) { _ in openIncoming() }
-            .onAppear { openIncoming() }
+            .onAppear { openIncoming(); openPendingTree() }
+            // rootbound://tree?id=… (back from a Still Pointz breath with this tree)
+            .onReceive(NotificationCenter.default.publisher(for: TreeBreaths.openTree)) { _ in openPendingTree() }
             .navigationDestination(for: UUID.self) { id in
                 if let t = trees.first(where: { $0.id == id }) { TreeDetailView(treeID: t.id) }
                 else if let h = hugs.first(where: { $0.id == id }) { HugDetailView(hug: h) }
             }
         }
+    }
+
+    private func openPendingTree() {
+        guard let id = TreeBreaths.pendingTreeID else { return }
+        TreeBreaths.pendingTreeID = nil
+        guard trees.contains(where: { $0.id == id }) else { return }
+        var p = NavigationPath()
+        p.append(id)
+        path = p
     }
 
     /// A rootbound://friends?c=… link was opened (TreeHubApp): show it in the Friends sheet.
@@ -220,8 +232,12 @@ struct TreeDetailView: View {
     @Query(sort: \Hug.date, order: .reverse) private var allHugs: [Hug]
     @State private var renaming = false
     @State private var newName = ""
+    /// Breath sessions with this tree (Still Pointz + overlapping Health mindful sessions).
+    @State private var breaths: [TreeBreath] = []
+    @Environment(\.scenePhase) private var scenePhase
 
     private var tree: TreeSummary? { TreeSummary.build(from: allHugs.filter { $0.treeID == treeID }).first }
+    private var taggedMinutes: Double { breaths.filter(\.tagged).reduce(0) { $0 + $1.minutes } }
 
     var body: some View {
         ScrollView {
@@ -239,15 +255,17 @@ struct TreeDetailView: View {
 
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                         StatTile(value: "\(tree.hugCount)", label: "Hugs")
-                        StatTile(value: Format.minutes(tree.totalMinutes), label: "Together")
+                        StatTile(value: Format.minutes(tree.totalMinutes + taggedMinutes), label: "Together")
                         StatTile(value: Format.day(tree.firstHug), label: "Met")
                     }
 
                     TreeFactCard(species: tree.species)
 
-                    TreeInsightsCard(tree: tree)
+                    TreeInsightsCard(tree: tree, breaths: breaths)
 
-                    BreatheWithTreeButton(treeName: tree.name)
+                    BreatheWithTreeButton(treeName: tree.name, treeID: tree.id)
+
+                    TreeBreathSection(treeName: tree.name, breaths: breaths)
 
                     if let c = tree.coordinate {
                         Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 500, longitudinalMeters: 500))) {
@@ -298,6 +316,9 @@ struct TreeDetailView: View {
         .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
+        .task(id: tree?.hugCount ?? 0) { await reloadBreaths() }
+        .onReceive(NotificationCenter.default.publisher(for: TreeBreaths.openTree)) { _ in Task { await reloadBreaths() } }
+        .onChange(of: scenePhase) { _, p in if p == .active { Task { await reloadBreaths() } } }
         .alert("Rename tree", isPresented: $renaming) {
             TextField("Name", text: $newName)
             Button("Save") {
@@ -308,6 +329,11 @@ struct TreeDetailView: View {
             }
             Button("Cancel", role: .cancel) {}
         }
+    }
+
+    private func reloadBreaths() async {
+        guard let tree else { return }
+        breaths = await TreeBreaths.load(for: tree)
     }
 
     private func treeHero(_ tree: TreeSummary) -> some View {
@@ -350,6 +376,8 @@ struct TreeDetailView: View {
 /// Rootbound Pro: what time with this tree does for you, from the hugs you've logged.
 struct TreeInsightsCard: View {
     let tree: TreeSummary
+    /// Breath sessions with this tree (Still Pointz / Health), for the calm-effect tiles.
+    var breaths: [TreeBreath] = []
     @ObservedObject private var unlock = Unlock.shared
 
     private static func avg(_ v: [Double]) -> Double? { v.isEmpty ? nil : v.reduce(0, +) / Double(v.count) }
@@ -385,6 +413,11 @@ struct TreeInsightsCard: View {
                         StatTile(value: avgMinutes.map { Format.minutes($0) } ?? "--", label: "Avg hug", symbol: "timer")
                         StatTile(value: barefootShare.map { "\(Int(($0 * 100).rounded()))%" } ?? "--", label: "Barefoot", symbol: "shoeprints.fill")
                         StatTile(value: favoriteTime ?? "--", label: "Favorite time", symbol: "sun.horizon.fill")
+                        if !breaths.isEmpty {
+                            StatTile(value: Format.minutes(breaths.reduce(0) { $0 + $1.minutes }), label: "Breathing here", symbol: "wind", tint: Theme.sky)
+                            StatTile(value: Self.avg(breaths.compactMap(\.hrDrop)).map { String(format: "−%.0f bpm", $0) } ?? "--",
+                                     label: "Calm effect", symbol: "arrow.down.heart.fill", tint: Theme.sky)
+                        }
                     }
                 }
             }

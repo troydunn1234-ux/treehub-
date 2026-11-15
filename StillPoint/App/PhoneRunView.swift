@@ -24,7 +24,7 @@ struct PhoneRunView: View {
             case .practice:
                 if let b = breath { PhoneBreathView(session: b, treeName: plan.treeName) { b.finish() } }
             case .done:
-                PhoneSummaryView(records: records, treeName: plan.treeName, onDone: onClose)
+                PhoneSummaryView(records: records, treeName: plan.treeName, treeID: plan.treeID, onDone: onClose)
             }
         }
         .statusBarHidden(stage != .done)
@@ -79,7 +79,11 @@ struct PhoneRunView: View {
         b.onFinish = { bs in
             var r = bs.record(device: "iPhone")
             r.kind = plan.practice.kind; r.minutesPlanned = plan.minutes; r.warmUpId = plan.warmUp?.id
-            if let tree = plan.treeName, r.notes == nil { r.notes = "Breathing with \(tree)" }
+            if let tree = plan.treeName {
+                if r.notes == nil { r.notes = "Breathing with \(tree)" }
+                r.treeName = tree
+                r.treeID = plan.treeID
+            }
             log(r, mindful: true)
             DispatchQueue.main.async { complete() }
         }
@@ -97,6 +101,8 @@ struct PhoneRunView: View {
         guard r.seconds >= 10 else { return }
         records.append(r)
         SessionLog.shared.add(r)
+        // Breathing with a Rootbound tree: publish now and fill heart data from Health, so it shows under the tree.
+        if r.treeID != nil || r.treeName != nil { DispatchQueue.main.async { StillPointWellness.treeSessionFinished() } }
         Reviews.noteWin()
         if mindful { MindfulHealth.shared.saveMindful(start: r.start, end: r.end) }
         // Movement routines also count as exercise in Health.
@@ -290,6 +296,7 @@ struct PhoneSummaryView: View {
     let records: [SessionRecord]
     /// Set when Rootbound started the session for a tree.
     var treeName: String? = nil
+    var treeID: String? = nil
     let onDone: () -> Void
     @State private var bloom = false
     @State private var confirmDiscard = false
@@ -330,8 +337,9 @@ struct PhoneSummaryView: View {
                 if !short && !records.isEmpty {
                     // Rootbound link: back to the tree you just breathed with, or out to hug one.
                     RootboundLinkCard(title: treeName.map { "Back to \($0) in Rootbound" } ?? "Go hug a tree",
-                                      subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "Your hug is waiting in Rootbound.",
-                                      url: treeName == nil ? WellnessLinks.hugLogger : WellnessLinks.rootboundHome)
+                                      subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "This breath is saved under the tree, with your heart data.",
+                                      url: treeName == nil ? WellnessLinks.hugLogger
+                                          : treeID.map { WellnessLinks.rootboundTree($0) } ?? WellnessLinks.rootboundHome)
                         .padding(.horizontal, 40)
                 }
                 if short && !records.isEmpty {
