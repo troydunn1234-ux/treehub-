@@ -148,7 +148,7 @@ final class Unlock: ObservableObject {
         for await result in Transaction.currentEntitlements {
             guard case .verified(let t) = result, t.revocationDate == nil else { continue }
             if t.productID == productID { pro = true }
-            if subscriptionIDs.contains(t.productID), (t.expirationDate ?? .distantFuture) > Date() { sub = t }
+            if subscriptionIDs.contains(t.productID) { sub = t }   // currentEntitlements already covers expiry + billing grace period
             if t.productID == trialProductID { trialStart = t.originalPurchaseDate }
         }
         trialEnds = trialStart.map { $0.addingTimeInterval(Double(Self.trialDays) * 86_400) }
