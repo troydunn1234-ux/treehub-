@@ -150,6 +150,18 @@ struct HugLogView: View {
     @State private var picker: SessionPickRequest?
     /// Bumped by every Health pull; an older pull still in flight (e.g. the one on open) never overwrites a newer one (the photo's).
     @State private var pullToken = 0
+    /// The tree was picked automatically from where the phone is (not tapped): a camera-roll photo's own location
+    /// can still change it, so logging later from home doesn't stick the hug on a tree near the house.
+    @State private var autoPickedTree = false
+    /// A tree was tapped (here or in the Watch prompt, "New tree" included): nothing automatic changes it.
+    @State private var userPickedTree = false
+    /// Sessions linked automatically on open (around "now"), and the length they set: a photo taken at another
+    /// time replaces them, and drops them when nothing is near the photo's time.
+    @State private var autoLinked = false
+    @State private var autoMinutes: Double? = nil
+    /// Sessions chosen in the picker, or the saved list of the hug being edited: "Refresh from Apple Watch" only
+    /// refreshes their data and never swaps them for whatever is near.
+    @State private var userLinked = false
 
     /// "Sync Roamr": the walk picker (walks overlapping or within ±2 h of the hug).
     @State private var walkPicker: WalkPickRequest?
@@ -397,6 +409,8 @@ struct HugLogView: View {
     }
 
     private func selectTree(_ id: UUID?) {
+        autoPickedTree = false
+        userPickedTree = true
         d.treeID = id
         if let id, let t = trees.first(where: { $0.id == id }) {
             d.treeName = t.name
@@ -679,6 +693,7 @@ struct HugLogView: View {
         loaded = true
         if let editing {
             d = HugDraft(editing)
+            userLinked = true   // an existing hug keeps its sessions (and its time) unless the picker changes them
             // Older hug (no list yet): show the sessions that overlap its time so they can be kept or changed;
             // refresh the data of the ones already linked.
             Task {
@@ -689,8 +704,9 @@ struct HugLogView: View {
             }
         } else if let watchHug {
             d = HugDraft(watch: watchHug)
-            if let preselectTree { selectTree(preselectTree) }
-            Task { await useCurrentLocation(autoPickTree: preselectTree == nil) }
+            if let preselectTree { selectTree(preselectTree) } else { userPickedTree = true }
+            // The tree was chosen in "Hug from Watch — pick tree" ("New tree" included): only fill the pin.
+            Task { await useCurrentLocation(autoPickTree: true, pickTree: false) }
             // HRV, breathing rate and any Still Pointz sessions done during the Watch hug.
             Task { await pullFromHealth(quiet: true, prompt: false) }
         } else {
@@ -720,22 +736,35 @@ struct HugLogView: View {
         }
     }
 
-    private func useCurrentLocation(autoPickTree: Bool = false) async {
+    /// `autoPickTree`: the automatic lookup on open (quiet, never replaces a pin). `pickTree`: also select the
+    /// nearest known tree within 40 m.
+    private func useCurrentLocation(autoPickTree: Bool = false, pickTree: Bool = true) async {
         locating = true
         defer { locating = false }
         guard let loc = await fetcher.current() else {
             if !autoPickTree { errorText = "Couldn't get your location. Check that Rootbound has Location access in Settings." }
             return
         }
-        // Don't overwrite a pin the user already chose while we were waiting.
+        // Don't overwrite a pin the user already chose (or a photo's) while we were waiting.
         if autoPickTree && d.coordinate != nil { return }
         setCoordinate(loc.coordinate, source: "GPS ±\(Int(loc.horizontalAccuracy)) m")
-        if autoPickTree, d.treeID == nil,
-           let first = nearbyTrees.first, let dist = first.1, dist < 40 {
+        if autoPickTree, pickTree, !userPickedTree, d.treeID == nil { autoPickNearestTree() }
+    }
+
+    /// Select the known tree within 40 m of the pin (automatic picks only; a tapped tree is never replaced).
+    private func autoPickNearestTree() {
+        if let first = nearbyTrees.first, let dist = first.1, dist < 40 {
             let t = first.0
             d.treeID = t.id
             d.treeName = t.name
             d.species = t.species
+            autoPickedTree = true
+        } else if autoPickedTree {
+            // The earlier automatic pick doesn't match the new pin: back to a new tree.
+            d.treeID = nil
+            d.treeName = ""
+            d.species = ""
+            autoPickedTree = false
         }
     }
 
@@ -758,7 +787,11 @@ struct HugLogView: View {
         if let c = coord ?? info?.coordinate {
             photoCoord = c
             // A photo's own location beats "where I'm sitting now", but never a pin the user pasted.
-            if d.locationSource != "Pasted pin" { setCoordinate(c, source: "From photo") }
+            if d.locationSource != "Pasted pin" {
+                setCoordinate(c, source: "From photo")
+                // Logged later from the camera roll: the photo's spot, not where the phone is now, says which tree.
+                if editing == nil, !userPickedTree, d.treeID == nil || autoPickedTree { autoPickNearestTree() }
+            }
         }
     }
 
@@ -875,6 +908,8 @@ struct HugLogView: View {
 
     /// Link the chosen sessions; the hug then takes their time span (unless it was timed on the Watch) and heart data.
     private func applyLinked(_ chosen: [LinkedSession]) async {
+        autoLinked = false
+        userLinked = true
         d.hasLinkList = true
         d.linked = chosen.sorted { $0.start < $1.start }
         if let first = d.linked.first, !d.fromWatch {
@@ -901,18 +936,28 @@ struct HugLogView: View {
         guard token == pullToken else { return }
         var found: [String] = []
         if let label { found.append(label) }
-        if !skipSession {
+        // A list the user chose stays as it is unless a new photo moves the hug to another time.
+        if !skipSession, !(userLinked && pickAround == nil) {
             let around = pickAround ?? d.date
             let near = await HugSessions.candidates(near: around)
             guard token == pullToken else { return }
+            if near.isEmpty, pickAround != nil, autoLinked {
+                // The photo was taken at another time than "now": the sessions found on open don't belong to it.
+                d.linked = []
+                if !d.fromWatch, d.durationMin == autoMinutes { d.durationMin = HugDraft().durationMin }
+                autoLinked = false
+                autoMinutes = nil
+            }
             if !near.isEmpty {
                 // Every session within the hour is preselected; with several, the sheet opens so any that don't
                 // belong can be unchecked. Present only once the photo picker has finished going away.
                 d.hasLinkList = true
                 d.linked = near.sorted { $0.start < $1.start }
+                autoLinked = true
                 if !d.fromWatch, let first = d.linked.first {
                     d.date = first.start
                     d.durationMin = (d.linked.totalMinutes * 10).rounded() / 10
+                    autoMinutes = d.durationMin
                 }
                 found.append("\(near.count) breath session\(near.count == 1 ? "" : "s")")
                 if near.count > 1 && prompt {
@@ -997,6 +1042,12 @@ struct HugLogView: View {
             return
         }
         if let watchHug { WatchHugInbox.shared.remove(watchHug.id) }
+        // Walks weren't looked at in the logger: attach the Roamr / Health walks around this hug now, the same way
+        // app-open sync does (no prompt), so the hug page shows them without leaving the app first.
+        if !hug.hasWalkList, !DemoData.isOn {
+            let ctx = context
+            Task { await RoamrWalks.sync([hug], context: ctx) }
+        }
 
         let after = isNew ? all + [hug] : all
         // Hug + a Still Pointz session today = Breath & Bark (bonus XP lives in BreathBark, not in hug.xp).
