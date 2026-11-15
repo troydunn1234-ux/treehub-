@@ -192,6 +192,8 @@ struct CategoryWeekCard: View {
             }
             .chartYScale(domain: 0...max(10, (rows.map(\.minutes).max() ?? 0) * 1.2))
             .frame(height: 170)
+            // Six labels share the width: past xLarge they run into each other (the spoken summary covers big text).
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(accessibilitySummary(rows))
             if total < 0.5 {
@@ -257,6 +259,8 @@ struct HeatmapCard: View {
                     .frame(maxWidth: .infinity)
                 }
             }
+            // Rows are fixed 18 pt squares; bigger labels would push the weekday column out of line.
+            .dynamicTypeSize(...DynamicTypeSize.xLarge)
             HStack(spacing: 6) {
                 Text("Less").font(SP.rounded(10)).foregroundStyle(SP.faint)
                 ForEach([0.0, 5, 15, 30, 45], id: \.self) { m in
