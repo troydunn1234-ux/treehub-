@@ -1,0 +1,5 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-15 01:55:49.111 Df RoamrWatch[50494:21ccd] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:294: ending suspended launch after 20.0 secs.
+2026-11-15 01:55:49.112 Df RoamrWatch[50494:21ccd] [com.apple.watchkit:default] -[SPExtensionConnection endSuspendedLaunch]:2114: Ending suspended launch
+2026-11-15 01:55:49.113 Df RoamrWatch[50494:21ccd] [com.apple.watchkit:default] -[SPExtensionConnection endSuspendedLaunch]_block_invoke:2121: Ended suspended launch
+2026-11-15 01:55:49.114 Df RoamrWatch[50494:21ccd] [com.apple.watchkit:default] -[SPApplicationDelegate _releaseActivityAssertion]:2881: _inSuspendedLaunch=1, _activatingUIAssertion=(null)

@@ -1,0 +1,3 @@
+2026-11-15 01:43:50.416 E  Roamr[33174:16c63] [com.apple.GeoServices:ResourceManifest] Failed to locate resource named "default.csv"
+2026-11-15 01:43:51.674 E  Roamr[33174:16c63] [com.apple.coreanimation:API] CAMetalLayer ignoring invalid setDrawableSize width=0.000000 height=0.000000
+2026-11-15 01:43:59.664 E  Roamr[33174:16c63] [com.apple.coreanimation:API] CAMetalLayer ignoring invalid setDrawableSize width=0.000000 height=0.000000

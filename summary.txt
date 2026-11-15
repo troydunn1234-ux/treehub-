@@ -1,0 +1,16 @@
+OK    01-stats  -demo -pro -tab stats  [2 error/fault log lines]
+OK    02-lifetime  -demo -pro -open lifetime
+OK    03-history-together  -demo -pro -tab history  [6 error/fault log lines]
+OK    04-monthly  -demo -pro -open monthly
+OK    05-activity  -demo -pro -open activity  [3 error/fault log lines]
+OK    06-recap  -demo -pro -open recap  [6 error/fault log lines]
+OK    07-settings  -demo -pro -tab settings  [9 error/fault log lines]
+OK    08-settings-free  -demo -free -tab settings  [5 error/fault log lines]
+OK    09-monthly-free  -demo -free -open monthly  [6 error/fault log lines]
+OK    10-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  [4 error/fault log lines]
+OK    11-moreapps  -demo -pro -tab stats -open moreapps  [4 error/fault log lines]
+OK    12-lifetime-largetype  -demo -pro -open lifetime  [4 error/fault log lines]
+OK    13-recap-largetype  -demo -pro -open recap  [5 error/fault log lines]
+OK    14-history-largetype  -demo -pro -tab history  [5 error/fault log lines]
+OK    watch-w1-home  -demo
+OK    watch-w2-nophone  
