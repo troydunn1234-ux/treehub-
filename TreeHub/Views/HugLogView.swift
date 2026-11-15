@@ -579,7 +579,7 @@ struct HugLogView: View {
                                         if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
                                     }
                                 } label: {
-                                    Chip(label: t.label, symbol: t.symbol, selected: d.tags.contains(t.id))
+                                    Chip(label: t.label, selected: d.tags.contains(t.id))
                                 }
                                 .buttonStyle(.plain)
                                 .haptic()
@@ -644,8 +644,6 @@ struct HugLogView: View {
         loaded = true
         if let editing {
             d = HugDraft(editing)
-            showHeartDetails = editing.hrv != nil || editing.hrStart != nil
-            showTags = !editing.tags.isEmpty || !editing.weather.isEmpty
             // Older hug (no list yet): show the sessions that overlap its time so they can be kept or changed;
             // refresh the data of the ones already linked.
             Task {
