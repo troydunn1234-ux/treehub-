@@ -341,12 +341,17 @@ enum NatureScore {
         guard let top = cats.values.max() else { return .out("no scene") }
 
         // 4. Score.
-        var score = 0.6 * top + 0.2 * min(context, 1)
+        var score: Float = 0.6 * top
+        score += 0.2 * min(context, 1)
         if cats.count > 1 { score += 0.05 }
-        if away { score += min(Float((s.kmFromHome ?? 0) / 100), 1) * 0.05 + 0.05 }
+        if away {
+            let far: Float = min(Float((s.kmFromHome ?? 0) / 100), 1)
+            score += 0.05 + 0.05 * far
+        }
         if golden == true && cats[.sunrises] != nil { score += 0.1 }
         if s.precise.contains(where: { landscapeLabels.contains($0) }) { score += 0.05 }
-        score -= 0.3 * yardish * (landscape < 0.7 ? 1 : 0.3)
+        let yardWeight: Float = landscape < 0.7 ? 1 : 0.3
+        score -= 0.3 * yardish * yardWeight
         score -= 0.3 * city
         score -= 0.15 * max(crowd - 0.5, 0)
         if let f = s.faceFraction { score -= min(f * 2, 0.2) }
@@ -355,7 +360,11 @@ enum NatureScore {
 
         // 5. Aesthetics (iOS 18+): blurry or accidental shots drop; the rest is weighted.
         if let a = s.aesthetic, a < t.minAesthetic { return .out("blurry") }
-        let looks = s.aesthetic.map { 0.55 + 0.45 * (min(max($0, -1), 1) + 1) / 2 } ?? 0.8
+        var looks: Float = 0.8
+        if let a = s.aesthetic {
+            let clamped: Float = min(max(a, -1), 1)
+            looks = 0.55 + 0.45 * (clamped + 1) / 2
+        }
         return NatureVerdict(score: score, categories: cats, excluded: nil, rank: score * looks)
     }
 

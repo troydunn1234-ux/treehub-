@@ -145,8 +145,13 @@ final class NatureRollStore: ObservableObject {
             let c = cal.dateComponents([.year, .month, .day], from: date)
             return c.month == m && c.day == d && (c.year ?? y) < y
         }
-        return Dictionary(grouping: hits) { cal.component(.year, from: $0.date!) }
-            .map { (year: $0.key, items: $0.value.sorted { (verdicts[$0.id]?.rank ?? 0) > (verdicts[$1.id]?.rank ?? 0) }) }
+        let v = verdicts
+        func rank(_ r: NatureRecord) -> Float { v[r.id]?.rank ?? 0 }
+        let groups = Dictionary(grouping: hits) { cal.component(.year, from: $0.date!) }
+        return groups
+            .map { entry -> (year: Int, items: [NatureRecord]) in
+                (year: entry.key, items: entry.value.sorted { rank($0) > rank($1) })
+            }
             .sorted { $0.year > $1.year }
     }
 
@@ -210,7 +215,12 @@ final class NatureRollStore: ObservableObject {
         verdicts = v
         let list = v.keys.compactMap { records[$0] }
         shown = list.sorted { ($0.date ?? .distantPast) > ($1.date ?? .distantPast) }
-        best = list.sorted { (v[$0.id]?.rank ?? 0, $0.date ?? .distantPast) > (v[$1.id]?.rank ?? 0, $1.date ?? .distantPast) }
+        best = list.sorted { a, b in
+            let ra: Float = v[a.id]?.rank ?? 0
+            let rb: Float = v[b.id]?.rank ?? 0
+            if ra != rb { return ra > rb }
+            return (a.date ?? .distantPast) > (b.date ?? .distantPast)
+        }
         var n: [NatureCategory: Int] = [:]
         for r in list { for c in categories(of: r.id) { n[c, default: 0] += 1 } }
         counts = n
@@ -389,7 +399,9 @@ enum NatureRollScanner {
         text.recognitionLevel = .fast
         text.usesLanguageCorrection = false
         if (try? handler.perform([text])) != nil {
-            s.textFraction = min((text.results ?? []).reduce(Float(0)) { $0 + Float($1.boundingBox.width * $1.boundingBox.height) }, 1)
+            var area: Float = 0
+            for o in text.results ?? [] { area += Float(o.boundingBox.width * o.boundingBox.height) }
+            s.textFraction = min(area, 1)
         }
         // Aesthetics (iOS 18+): blurry, accidental and utility shots.
         if #available(iOS 18.0, *) {
