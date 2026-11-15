@@ -126,7 +126,8 @@ final class LabStore {
     var readinessToday: Double? { readinessDetailToday?.score }
     /// True when this morning's readiness leans on yesterday's Watch HRV / resting HR.
     var readinessUsesYesterday: Bool { readinessDetailToday?.usedYesterday ?? false }
-    private var readinessDetailToday: Compare.ReadinessDetail? {
+    /// Today's readiness with every contributor itemised (the readiness detail screen).
+    var readinessDetailToday: Compare.ReadinessDetail? {
         Compare.readinessDetail(day: Date(), watch: watchDays, sleeps: sleeps, carryOver: true)
     }
     var recoveryToday: Double? { whoopDays.last(where: { $0.recovery != nil })?.recovery }
@@ -394,13 +395,13 @@ final class LabStore {
         whoopDays = whoop.values.sorted { $0.day < $1.day }
 
         // Readiness for every Watch day (so it can be charted against WHOOP recovery).
-        // Each day only needs itself, the 7 days before and that night, so hand it just those (2 years of days otherwise make this quadratic).
+        // Each day only needs itself, the 14 days before and that night, so hand it just those (2 years of days otherwise make this quadratic).
         var wd = watchDays
         let byDay = Dictionary(wd.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
         let watchNights = Dictionary(h.sleeps.filter { $0.source == .watch }.map { ($0.night, $0) }, uniquingKeysWith: { a, _ in a })
         for i in wd.indices {
             let d = wd[i].day
-            let window = (0...7).compactMap { byDay[d.adding(days: -$0)] }
+            let window = (0...Compare.readinessLookback).compactMap { byDay[d.adding(days: -$0)] }
             let night = watchNights[d].map { [$0] } ?? []
             wd[i].recovery = Compare.readiness(day: d, watch: window, sleeps: night)
         }

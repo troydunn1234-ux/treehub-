@@ -75,7 +75,7 @@ struct StatDef: Identifiable {
 enum AllStats {
     // MARK: Readers
 
-    private static func days(_ kp: KeyPath<DayStat, Double?>, sides: Set<Source> = [.watch, .whoop],
+    static func days(_ kp: KeyPath<DayStat, Double?>, sides: Set<Source> = [.watch, .whoop],
                              _ f: @escaping (Double) -> Double = { $0 }) -> @MainActor (LabStore) -> StatSeries {
         { store in
             var s = StatSeries()
@@ -151,7 +151,7 @@ enum AllStats {
             StatDef(id: "recovery", section: .recovery, title: "WHOOP recovery", unit: "%", preferWhoop: true,
                     note: "WHOOP's 0–100 recovery from HRV, resting HR, sleep and breathing.", read: days(\.recovery, sides: [.whoop])),
             StatDef(id: "readiness", section: .recovery, title: "Readiness (Watch)", unit: "score", appleBadge: "WATCH",
-                    note: "Pulse Lab's own 0–100 score from Watch HRV vs your 7-day baseline, resting HR and sleep.", read: days(\.recovery, sides: [.watch])),
+                    note: "Pulse Lab's own 1–99 score from Watch HRV and resting HR vs your baseline, plus sleep.", read: days(\.recovery, sides: [.watch])),
             StatDef(id: "hrv", section: .recovery, title: "Heart rate variability", unit: "ms", healthID: "HKQuantityTypeIdentifierHeartRateVariabilitySDNN",
                     note: "Watch: SDNN from spot readings. WHOOP: RMSSD through the night.", read: days(\.hrv)),
             StatDef(id: "rhr", section: .recovery, title: "Resting heart rate", unit: "bpm", healthID: "HKQuantityTypeIdentifierRestingHeartRate",
@@ -290,5 +290,47 @@ enum AllStats {
                     note: "Average sound level around you.", read: days(\.audioDb, sides: [.watch])),
         ]
         return recovery + sleep + strain + heart + zones + bodyDefs + mobility + nutrition
+    }
+
+    /// One metric by id: the catalogue, plus "recoveryVs" (WHOOP recovery and Watch readiness on one chart).
+    static func def(_ id: String) -> StatDef? {
+        if id == "recoveryVs" {
+            return StatDef(id: "recoveryVs", section: .recovery, title: "Recovery vs readiness", unit: "score",
+                           note: "WHOOP recovery (0–100%) and Pulse Lab's Watch readiness (1–99) side by side.", read: days(\.recovery))
+        }
+        return defs().first { $0.id == id }
+    }
+}
+
+extension StatDef {
+    /// The side whose newest value is most recent (ties go to the metric's preferred side).
+    func primary(_ s: StatSeries) -> Source? {
+        switch (s.watch.last, s.whoop.last) {
+        case (nil, nil): return nil
+        case (_, nil): return .watch
+        case (nil, _): return .whoop
+        case let (w?, h?):
+            if w.day == h.day { return preferWhoop ? .whoop : .watch }
+            return w.day > h.day ? .watch : .whoop
+        }
+    }
+}
+
+extension LabStore {
+    /// Where a side of a metric came from: "WHOOP", "WHOOP · MANUAL" (newest value typed in), or the
+    /// Health device / app ("WATCH", "IPHONE", an app name…).
+    func badge(_ def: StatDef, _ s: Source, series: StatSeries) -> String {
+        if s == .whoop {
+            if let f = ManualField.forStat(def.id), let d = series.whoop.last?.day, isManual(d, f) { return "WHOOP · MANUAL" }
+            return "WHOOP"
+        }
+        if let id = def.healthID, let o = appleOrigins[id] { return o }
+        return def.appleBadge
+    }
+
+    /// Days in a metric's WHOOP history that were typed in by hand.
+    func manualDays(_ def: StatDef, series: StatSeries) -> Int {
+        guard let f = ManualField.forStat(def.id) else { return 0 }
+        return series.whoop.filter { isManual($0.day, f) }.count
     }
 }

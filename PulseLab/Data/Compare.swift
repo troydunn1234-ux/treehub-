@@ -126,6 +126,12 @@ enum Stats {
         let trend = Agreement(metric: "t", unit: "u", tolerance: 1, trendOnly: true, pairs: pairs)
         assert(trend.agreePercent == 100, "same direction every day")
         assert(mean([]) == nil && sd([1]) == nil, "empty stats are nil, not 0")
+        // Readiness: a day exactly at baseline with no sleep scores the starting 55, and every point is itemised.
+        let today = Date().dayStart
+        let flat = (0...8).map { i -> DayStat in var s = DayStat(day: today.adding(days: -i)); s.hrv = 50; s.rhr = 55; return s }
+        let r = Compare.readinessDetail(day: today, watch: flat, sleeps: [], carryOver: false)
+        assert(r?.score == 55 && r?.baselineDays == 7, "baseline day scores 55 on a 7-day baseline")
+        assert(abs((r?.parts.map(\.points).reduce(0, +) ?? 1)) < 1e-9, "no points at baseline")
     }
     #endif
 }
@@ -205,40 +211,171 @@ enum Compare {
     }
 
     /// Pulse Lab's own "readiness" for the Apple Watch, built to sit next to WHOOP recovery:
-    /// HRV vs your 7-day baseline (biggest weight), resting HR vs baseline, and last night's sleep.
+    /// HRV vs your personal baseline (biggest weight), resting HR vs baseline, last night's sleep, and small
+    /// penalties for raised breathing rate or wrist temperature. Every point is itemised in `ReadinessDetail.parts`.
     static func readiness(day: Date, watch: [DayStat], sleeps: [SleepNight]) -> Double? {
         readinessDetail(day: day, watch: watch, sleeps: sleeps, carryOver: false)?.score
     }
 
-    struct ReadinessDetail { var score: Double; var usedYesterday: Bool }
+    /// Days of history `readinessDetail` looks back over (the day itself plus this many before it).
+    static let readinessLookback = 14
+
+    /// The score and exactly how it was reached, so the app can show every step.
+    struct ReadinessDetail {
+        /// One ingredient of the score.
+        struct Part: Identifiable {
+            enum Kind: String, CaseIterable { case hrv, rhr, sleep, resp, temp }
+            let kind: Kind
+            /// Today's value (display units), nil when the Watch has none.
+            var value: Double?
+            /// What it's compared with: your baseline average, or the 7 h sleep target.
+            var baseline: Double?
+            /// Points added (+) or taken away (−). 0 when the part couldn't be scored.
+            var points: Double = 0
+            /// The value came from yesterday (nothing recorded since midnight).
+            var fromYesterday = false
+            /// Most this part can move the score, each way, for the bar in the breakdown.
+            var maxUp: Double
+            var maxDown: Double
+            var id: String { kind.rawValue }
+            var scored: Bool { value != nil && baseline != nil }
+            var diff: Double? { guard let v = value, let b = baseline else { return nil }; return v - b }
+
+            var title: String {
+                switch kind {
+                case .hrv: String(localized: "Heart rate variability")
+                case .rhr: String(localized: "Resting heart rate")
+                case .sleep: String(localized: "Sleep (Watch)")
+                case .resp: String(localized: "Breathing rate")
+                case .temp: String(localized: "Wrist temperature")
+                }
+            }
+            var unit: String {
+                switch kind {
+                case .hrv: "ms"
+                case .rhr: "bpm"
+                case .sleep: "h"
+                case .resp: "br/min"
+                case .temp: Units.fahrenheit ? "°F" : "°C"
+                }
+            }
+            var decimals: Int { switch kind { case .hrv, .rhr: 0; case .sleep, .resp: 1; case .temp: 2 } }
+            var symbol: String {
+                switch kind {
+                case .hrv: "waveform.path.ecg"
+                case .rhr: "heart.fill"
+                case .sleep: "moon.zzz.fill"
+                case .resp: "lungs.fill"
+                case .temp: "thermometer.medium"
+                }
+            }
+            /// AllStats id, so the breakdown can open the metric's own detail.
+            var statID: String { switch kind { case .hrv: "hrv"; case .rhr: "rhr"; case .sleep: "asleep"; case .resp: "resp"; case .temp: "tempDev" } }
+            /// What "baseline" means for this part.
+            var baselineLabel: String {
+                switch kind {
+                case .sleep: String(localized: "Target")
+                case .temp: String(localized: "Your normal")
+                default: String(localized: "Baseline")
+                }
+            }
+            /// The rule, in one line.
+            var rule: String {
+                switch kind {
+                case .hrv: String(localized: "±22 points per standard deviation from your baseline, capped at ±1.6 SD (±35 points).")
+                case .rhr: String(localized: "−4 points per bpm above your baseline, +4 per bpm below (−20 to +16).")
+                case .sleep: String(localized: "±10 points per 1.2 h from 7 h asleep (−15 to +10). Needs the Watch worn to bed.")
+                case .resp: String(localized: "Penalty only: −3 points per br/min more than 0.5 above your baseline (up to −6).")
+                case .temp: String(localized: "Penalty only: −1 point per 0.1 °C more than 0.3 °C above your normal (up to −6).")
+                }
+            }
+        }
+
+        var score: Double
+        var usedYesterday: Bool
+        /// Score before it was clamped to 1–99.
+        var raw: Double = 55
+        /// 7 or 14: how many days the HRV / resting HR baseline covered.
+        var baselineDays = 7
+        /// How many earlier days actually had HRV or resting HR in that window.
+        var baselineSamples = 0
+        var parts: [Part] = []
+        /// What's missing, in plain words ("Wear your Watch to sleep for overnight HRV").
+        var missing: [String] = []
+        static let start = 55.0
+    }
 
     /// `carryOver`: for *today's* score, fall back to yesterday's HRV / resting HR when the Watch hasn't
     /// recorded any since midnight (it isn't worn to bed, and Apple writes resting HR late in the day).
     static func readinessDetail(day: Date, watch: [DayStat], sleeps: [SleepNight], carryOver: Bool) -> ReadinessDetail? {
+        let cal = Calendar.current
         let sorted = watch.sorted { $0.day < $1.day }
-        let todayStat = sorted.last(where: { Calendar.current.isDate($0.day, inSameDayAs: day) })
+        let todayStat = sorted.last(where: { cal.isDate($0.day, inSameDayAs: day) })
         if todayStat == nil && !carryOver { return nil }
-        let yesterday = carryOver ? sorted.last(where: { Calendar.current.isDate($0.day, inSameDayAs: day.adding(days: -1)) }) : nil
-        var hrv = todayStat?.hrv, rhr = todayStat?.rhr, used = false
-        if hrv == nil, let y = yesterday?.hrv { hrv = y; used = true }
-        if rhr == nil, let y = yesterday?.rhr { rhr = y; used = true }
+        let yesterday = carryOver ? sorted.last(where: { cal.isDate($0.day, inSameDayAs: day.adding(days: -1)) }) : nil
+        var hrv = todayStat?.hrv, rhr = todayStat?.rhr
+        var hrvOld = false, rhrOld = false
+        if hrv == nil, let y = yesterday?.hrv { hrv = y; hrvOld = true }
+        if rhr == nil, let y = yesterday?.rhr { rhr = y; rhrOld = true }
         guard hrv != nil || rhr != nil else { return nil }
-        // Baseline: the 7 days before the day the readings came from.
+        let used = hrvOld || rhrOld
+
+        // Baseline: the days before the day the readings came from. 14 days once at least 10 of them
+        // have readings (steadier), otherwise the last 7.
         let anchor = used ? day.dayStart.adding(days: -1) : day.dayStart
-        let prior = sorted.filter { $0.day < anchor && $0.day >= anchor.adding(days: -7) }
-        let hrvBase = Stats.mean(prior.compactMap(\.hrv)), hrvSD = Stats.sd(prior.compactMap(\.hrv))
-        let rhrBase = Stats.mean(prior.compactMap(\.rhr))
-        var score = 55.0
+        let prior14 = sorted.filter { $0.day < anchor && $0.day >= anchor.adding(days: -14) }
+        let filled14 = prior14.filter { $0.hrv != nil || $0.rhr != nil }.count
+        let window = filled14 >= 10 ? 14 : 7
+        let prior = prior14.filter { $0.day >= anchor.adding(days: -window) }
+        let hrvVals = prior.compactMap(\.hrv), rhrVals = prior.compactMap(\.rhr)
+        let hrvBase = Stats.mean(hrvVals), hrvSD = Stats.sd(hrvVals)
+        let rhrBase = Stats.mean(rhrVals)
+
+        typealias Part = ReadinessDetail.Part
+        var d = ReadinessDetail(score: 0, usedYesterday: used, baselineDays: window,
+                                baselineSamples: prior.filter { $0.hrv != nil || $0.rhr != nil }.count)
+        var score = ReadinessDetail.start
+
+        var pHRV = Part(kind: .hrv, value: hrv, baseline: hrvBase, fromYesterday: hrvOld, maxUp: 22 * 1.6, maxDown: 22 * 1.6)
         if let v = hrv, let b = hrvBase {
             let z = (v - b) / max(hrvSD ?? b * 0.15, 1)
-            score += 22 * max(-1.6, min(1.6, z))
+            pHRV.points = 22 * max(-1.6, min(1.6, z))
         }
+        var pRHR = Part(kind: .rhr, value: rhr, baseline: rhrBase, fromYesterday: rhrOld, maxUp: 16, maxDown: 20)
         if let r = rhr, let b = rhrBase {
-            score -= 4 * max(-4, min(5, r - b))
+            pRHR.points = -4 * max(-4, min(5, r - b))
         }
-        if let s = sleeps.last(where: { $0.source == .watch && Calendar.current.isDate($0.night, inSameDayAs: day) }) {
-            score += 10 * max(-1.5, min(1, (s.asleepMin / 60 - 7) / 1.2))
+        var pSleep = Part(kind: .sleep, baseline: 7, maxUp: 10, maxDown: 15)
+        if let s = sleeps.last(where: { $0.source == .watch && cal.isDate($0.night, inSameDayAs: day) }), s.asleepMin > 0 {
+            pSleep.value = s.asleepMin / 60
+            pSleep.points = 10 * max(-1.5, min(1, (s.asleepMin / 60 - 7) / 1.2))
         }
-        return ReadinessDetail(score: max(1, min(99, score.rounded())), usedYesterday: used)
+        // Overnight extras: only from the day itself (yesterday's night says nothing about this morning).
+        let respVals = prior.compactMap(\.resp)
+        var pResp = Part(kind: .resp, value: todayStat?.resp, baseline: respVals.count >= 3 ? Stats.mean(respVals) : nil, maxUp: 0, maxDown: 6)
+        if let v = pResp.value, let b = pResp.baseline, v - b > 0.5 {
+            pResp.points = -min(6, 3 * (v - b - 0.5))
+        }
+        var pTemp = Part(kind: .temp, value: todayStat?.tempDev.flatMap { Units.tempDelta($0).0 }, baseline: todayStat?.tempDev == nil ? nil : 0, maxUp: 0, maxDown: 6)
+        if let c = todayStat?.tempDev, c > 0.3 {
+            pTemp.points = -min(6, 10 * (c - 0.3))
+        }
+        d.parts = [pHRV, pRHR, pSleep]
+        if pResp.value != nil { d.parts.append(pResp) }
+        if pTemp.value != nil { d.parts.append(pTemp) }
+        for p in d.parts { score += p.points }
+
+        if hrv == nil { d.missing.append(String(localized: "No HRV from the Watch in the last day. Wear your Watch to sleep for overnight HRV, or take a Breathe session for a spot reading.")) }
+        else if hrvBase == nil { d.missing.append(String(localized: "Not enough earlier HRV for a baseline yet. It builds after a few days of wear.")) }
+        if rhr == nil { d.missing.append(String(localized: "No resting heart rate yet. Apple writes it after a few hours of wear, often later in the day.")) }
+        else if rhrBase == nil { d.missing.append(String(localized: "Not enough earlier resting heart rate for a baseline yet.")) }
+        if pSleep.value == nil { d.missing.append(String(localized: "No Watch sleep for last night, so sleep adds nothing. Wear your Watch to sleep with Sleep tracking on.")) }
+        if pResp.value == nil && pTemp.value == nil {
+            d.missing.append(String(localized: "Breathing rate and wrist temperature come from Watch sleep tracking; they only ever take points off, never add."))
+        }
+
+        d.raw = score.rounded()
+        d.score = max(1, min(99, score.rounded()))
+        return d
     }
 }

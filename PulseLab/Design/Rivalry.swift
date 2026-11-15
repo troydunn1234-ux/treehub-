@@ -51,6 +51,8 @@ struct RivalryHero: View {
     let readiness: Double?
     let recovery: Double?
     let note: String
+    /// Off on Today, where the Recovery vs Readiness card above already shows both scores.
+    var showGauges = true
 
     private var watchScore: Int { rounds.filter { $0.winner == .watch }.count }
     private var whoopScore: Int { rounds.filter { $0.winner == .whoop }.count }
@@ -66,6 +68,7 @@ struct RivalryHero: View {
             EKGStrip(watchBPM: watchBPM ?? 60, whoopBPM: whoopBPM ?? (watchBPM ?? 60) + 1)
                 .frame(height: 64)
             scoreboard
+            if showGauges {
             HStack(alignment: .top) {
                 VStack(spacing: 6) {
                     ArcGauge(value: readiness, label: "Readiness", color: Lab.watch, size: 128)
@@ -77,6 +80,7 @@ struct RivalryHero: View {
                     SourceChip(source: .whoop)
                 }
                 .frame(maxWidth: .infinity)
+            }
             }
             if !rounds.isEmpty { roundChips }
             Text(note)

@@ -50,9 +50,12 @@ struct AllDataScreen: View {
         .preferredColorScheme(.dark)
         .task(id: dataStamp) { rebuild() }
         .sheet(item: $selected) { def in
-            StatDetailSheet(def: def, series: series[def.id] ?? StatSeries(), badge: badge(def, .watch), whoopBadge: badge(def, .whoop))
-                .presentationDetents([.large])
-                .presentationBackground(Lab.bg)
+            Group {
+                if def.id == "readiness" { ReadinessSheet() } else { StatDetailSheet(def: def) }
+            }
+            .environment(store)
+            .presentationDetents([.large])
+            .presentationBackground(Lab.bg)
         }
     }
 
@@ -81,7 +84,7 @@ struct AllDataScreen: View {
                     Text("Hide metrics with no data").font(Lab.body(13, .semibold)).foregroundStyle(Lab.text)
                 }
                 .tint(Lab.violet)
-                Text("Tap any row for its 7-day, 30-day, 90-day and 1-year chart. Dimmed rows aren't arriving yet: check Sources or the Health permissions.")
+                Text("Tap any row for what it means, your normal range, its chart from 7 days to a year, and tips. Dimmed rows aren't arriving yet: check Sources or the Health permissions.")
                     .font(Lab.body(11)).foregroundStyle(Lab.faint)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -99,7 +102,8 @@ struct AllDataScreen: View {
                 VStack(alignment: .leading, spacing: 0) {
                     HStack {
                         Image(systemName: section.icon).foregroundStyle(section.tint)
-                        Text(section.title).font(Lab.display(18, .heavy)).foregroundStyle(Lab.text)
+                        Text(section.title).font(Lab.title(18)).foregroundStyle(Lab.text)
+                            .accessibilityAddTraits(.isHeader)
                         Spacer()
                         Text("\(filled.count)/\(all.count)").font(Lab.mono(11)).foregroundStyle(Lab.faint)
                     }
@@ -128,26 +132,10 @@ struct AllDataScreen: View {
         .disabled(s.isEmpty)
     }
 
-    /// The side whose newest value is most recent (ties go to the metric's preferred side).
-    private func primarySource(_ def: StatDef, _ s: StatSeries) -> Source? {
-        switch (s.watch.last, s.whoop.last) {
-        case (nil, nil): return nil
-        case (_, nil): return .watch
-        case (nil, _): return .whoop
-        case let (w?, h?):
-            if w.day == h.day { return def.preferWhoop ? .whoop : .watch }
-            return w.day > h.day ? .watch : .whoop
-        }
-    }
+    private func primarySource(_ def: StatDef, _ s: StatSeries) -> Source? { def.primary(s) }
 
     private func badge(_ def: StatDef, _ s: Source) -> String {
-        if s == .whoop {
-            // The newest WHOOP number was typed in (Log WHOOP), not synced.
-            if let f = ManualField.forStat(def.id), let d = series[def.id]?.whoop.last?.day, store.isManual(d, f) { return "WHOOP · MANUAL" }
-            return "WHOOP"
-        }
-        if let id = def.healthID, let o = store.appleOrigins[id] { return o }
-        return def.appleBadge
+        store.badge(def, s, series: series[def.id] ?? StatSeries())
     }
 
     private func badgeView(_ t: String) -> some View { SourceBadge(text: t) }
@@ -227,7 +215,7 @@ struct StatRowView: View {
         let spark = series.points(src).filter { $0.day >= Date().dayStart.adding(days: -6) }
         return HStack(spacing: Lab.S.s) {
             VStack(alignment: .leading, spacing: 4) {
-                Text(def.title).font(Lab.body(14, .semibold)).foregroundStyle(Lab.text).lineLimit(1).minimumScaleFactor(0.8)
+                Text(def.title).font(Lab.body(14, .semibold)).foregroundStyle(Lab.text).lineLimit(2).minimumScaleFactor(0.85)
                 HStack(spacing: 5) {
                     if let badge { SourceBadge(text: badge) }
                     Text(dayLabel(last.day)).font(Lab.label(8)).foregroundStyle(last.day.isToday ? Lab.good : Lab.faint)
@@ -257,7 +245,7 @@ struct StatRowView: View {
         .contentShape(Rectangle())
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(def.title): \(fmt(last.value)) \(def.unit), \(dayLabel(last.day).lowercased()), from \(badge ?? "")\(otherLast.map { ". Other tracker: \(fmt($0.value))" } ?? "")")
-        .accessibilityHint("Opens the chart")
+        .accessibilityHint("Opens details")
     }
 
     private var empty: some View {
@@ -392,123 +380,5 @@ struct ZoneBar: View {
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Heart rate zones: " + minutes.indices.filter { minutes[$0] >= 0.5 }.map { "zone \($0) \(Int(minutes[$0].rounded())) minutes" }.joined(separator: ", "))
-    }
-}
-
-// MARK: - Detail
-
-/// Any All-data metric over 7 days to a year (90D/1Y stay Pro, via RangePicker), both trackers, plus min/avg/max.
-struct StatDetailSheet: View {
-    let def: StatDef
-    let series: StatSeries
-    let badge: String
-    var whoopBadge = "WHOOP"
-    @Environment(\.dismiss) private var dismiss
-    @State private var days = 30
-    @State private var solo: Source?
-
-    private func inRange(_ s: Source) -> [StatPoint] {
-        let cut = Date().dayStart.adding(days: -(days - 1))
-        return series.points(s).filter { $0.day >= cut }
-    }
-
-    var body: some View {
-        let w = inRange(.watch), h = inRange(.whoop)
-        ZStack {
-            LabBackground()
-            ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack(alignment: .top) {
-                        ScreenTitle(kicker: def.section.title, title: def.title)
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 34, height: 34).background(Circle().fill(Color.white.opacity(0.07)))
-                        }
-                        .accessibilityLabel("Close")
-                    }
-                    RangePicker(days: $days)
-                    LabPanel(tint: def.section.tint) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            DuelLegend(solo: $solo)
-                            if w.isEmpty && h.isEmpty {
-                                EmptyNote(text: "No \(def.title.lowercased()) in the last \(days) days.")
-                            } else {
-                                DuelChart(watch: w.map { DuelPoint(day: $0.day, value: $0.value, source: .watch) },
-                                          whoop: h.map { DuelPoint(day: $0.day, value: $0.value, source: .whoop) },
-                                          unit: def.unit, decimals: def.decimals, height: 240, showPoints: days <= 30, solo: solo)
-                                    .accessibilityElement(children: .ignore)
-                                    .accessibilityLabel(summary(w, h))
-                            }
-                        }
-                    }
-                    table(w, h)
-                    LabPanel(tint: Lab.violet) {
-                        VStack(alignment: .leading, spacing: 8) {
-                            SectionTag("What it is · where it comes from")
-                            Text(def.note).font(Lab.body(14)).foregroundStyle(Lab.dim)
-                                .fixedSize(horizontal: false, vertical: true)
-                            HStack(spacing: 6) {
-                                if !series.watch.isEmpty { SourceBadge(text: badge) }
-                                if !series.whoop.isEmpty { SourceBadge(text: whoopBadge) }
-                                Spacer()
-                                if let first = [series.watch.first?.day, series.whoop.first?.day].compactMap({ $0 }).min() {
-                                    Text("History from \(first.formatted(.dateTime.month(.abbreviated).day().year()))")
-                                        .font(Lab.mono(10)).foregroundStyle(Lab.faint)
-                                }
-                            }
-                        }
-                    }
-                }
-                .padding(16)
-                .padding(.bottom, 30)
-            }
-            .scrollIndicators(.hidden)
-        }
-        .preferredColorScheme(.dark)
-    }
-
-    private func table(_ w: [StatPoint], _ h: [StatPoint]) -> some View {
-        LabPanel(tint: Lab.violet) {
-            VStack(spacing: 10) {
-                HStack {
-                    Text("").frame(maxWidth: .infinity, alignment: .leading)
-                    ForEach(["LATEST", "MIN", "AVG", "MAX", "DAYS"], id: \.self) { t in
-                        Text(t).font(Lab.label(8)).foregroundStyle(Lab.faint).frame(maxWidth: .infinity, alignment: .trailing)
-                    }
-                }
-                ForEach(Source.allCases) { s in
-                    let pts = s == .watch ? w : h
-                    if !series.points(s).isEmpty {
-                        let v = pts.map(\.value)
-                        HStack {
-                            SourceChip(source: s).frame(maxWidth: .infinity, alignment: .leading)
-                            cell(series.points(s).last?.value, s)
-                            cell(v.min(), s)
-                            cell(Stats.mean(v), s)
-                            cell(v.max(), s)
-                            Text("\(v.count)").font(Lab.mono(12)).foregroundStyle(Lab.dim).frame(maxWidth: .infinity, alignment: .trailing)
-                        }
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel("\(s.name): latest \(fmt(series.points(s).last?.value)), minimum \(fmt(v.min())), average \(fmt(Stats.mean(v))), maximum \(fmt(v.max())), \(v.count) days")
-                    }
-                }
-            }
-        }
-    }
-
-    private func cell(_ v: Double?, _ s: Source) -> some View {
-        Text(fmt(v)).font(Lab.mono(13, .heavy)).foregroundStyle(Lab.color(s))
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .minimumScaleFactor(0.6).lineLimit(1)
-    }
-
-    private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(def.decimals))) } ?? "––" }
-
-    private func summary(_ w: [StatPoint], _ h: [StatPoint]) -> String {
-        [(Source.watch, w), (Source.whoop, h)].map { s, p in
-            guard let m = Stats.mean(p.map(\.value)) else { return "\(s.name): no data" }
-            return "\(s.name) averages \(fmt(m)) \(def.unit) over \(p.count) days"
-        }
-        .joined(separator: ". ")
     }
 }

@@ -169,7 +169,9 @@ struct RootView: View {
                     store.jump = nil
                 }
                 .sheet(item: Binding(get: { store.detail }, set: { store.detail = $0 })) { m in
-                    MetricDetailSheet(metric: m)
+                    Group {
+                        if m == .readiness { ReadinessSheet() } else { MetricDetailSheet(metric: m) }
+                    }
                         .environment(store)
                         .presentationDetents([.large])
                         .presentationBackground(Lab.bg)

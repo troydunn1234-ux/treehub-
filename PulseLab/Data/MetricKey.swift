@@ -2,7 +2,7 @@ import Foundation
 
 /// Every metric that has a detail sheet: how to read it from a day, how to show it, and what it means.
 enum MetricKey: String, CaseIterable, Identifiable {
-    case rhr, hrv, resp, spo2, temp, calories, recovery, sleep, steps, activeKcal
+    case rhr, hrv, resp, spo2, temp, calories, recovery, sleep, steps, activeKcal, readiness
 
     var id: String { rawValue }
 
@@ -18,6 +18,24 @@ enum MetricKey: String, CaseIterable, Identifiable {
         case .sleep: "Sleep"
         case .steps: "Steps"
         case .activeKcal: "Active calories"
+        case .readiness: "Watch readiness"
+        }
+    }
+
+    /// The All-data stat this metric opens (same detail screen everywhere).
+    var statID: String {
+        switch self {
+        case .rhr: "rhr"
+        case .hrv: "hrv"
+        case .resp: "resp"
+        case .spo2: "spo2"
+        case .temp: "tempDev"
+        case .calories: "totalKcal"
+        case .recovery: "recoveryVs"
+        case .sleep: "asleep"
+        case .steps: "steps"
+        case .activeKcal: "activeKcal"
+        case .readiness: "readiness"
         }
     }
 
@@ -43,7 +61,7 @@ enum MetricKey: String, CaseIterable, Identifiable {
         case .spo2: "%"
         case .temp: Units.fahrenheit ? "°F" : "°C"
         case .calories, .activeKcal: "kcal"
-        case .recovery: "score"
+        case .recovery, .readiness: "score"
         case .sleep: "h"
         case .steps: "steps"
         }
@@ -67,7 +85,7 @@ enum MetricKey: String, CaseIterable, Identifiable {
         case .spo2: d.spo2
         case .temp: Units.tempDelta(d.tempDev).0
         case .calories: d.totalKcal
-        case .recovery: d.recovery
+        case .recovery, .readiness: d.recovery
         case .sleep: nil   // sleep lives on nights, see `nightValue`
         case .steps: d.steps
         case .activeKcal: d.activeKcal
@@ -82,7 +100,7 @@ enum MetricKey: String, CaseIterable, Identifiable {
     var lowerIsBetter: Bool? {
         switch self {
         case .rhr, .resp: true
-        case .hrv, .spo2, .recovery, .sleep, .steps: false
+        case .hrv, .spo2, .recovery, .readiness, .sleep, .steps: false
         default: nil
         }
     }
@@ -102,7 +120,9 @@ enum MetricKey: String, CaseIterable, Identifiable {
         case .calories:
             "Everything you burned in the day (active + resting). WHOOP estimates from heart rate alone; Apple Watch combines heart rate, motion and your profile. Expect gaps of a few hundred kcal."
         case .recovery:
-            "WHOOP recovery (0–100) blends HRV, resting HR, sleep and breathing. Readiness is Pulse Lab's own Watch score built the same way from HRV vs your 7-day baseline, resting HR and sleep, so you can put them side by side."
+            "WHOOP recovery (0–100) blends HRV, resting HR, sleep and breathing. Readiness is Pulse Lab's own Watch score built the same way from HRV and resting HR vs your 7- or 14-day baseline, plus sleep, so you can put them side by side."
+        case .readiness:
+            "Pulse Lab's own 1–99 score from your Apple Watch: HRV and resting HR vs your baseline, last night's sleep, and small penalties for raised breathing rate or wrist temperature."
         case .sleep:
             "Time actually asleep (light + deep + REM), credited to the morning you woke up. Trackers disagree most on where light sleep ends and awake begins."
         case .steps:

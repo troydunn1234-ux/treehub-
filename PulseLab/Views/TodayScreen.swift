@@ -3,7 +3,10 @@ import Charts
 
 struct TodayScreen: View {
     @Environment(LabStore.self) private var store
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showAllData = false
+    /// A stat with no `MetricKey` (WHOOP strain), opened in place.
+    @State private var statSheet: StatDef?
 
     var body: some View {
         let notes = Insights.build(store)
@@ -11,22 +14,24 @@ struct TodayScreen: View {
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
             BriefingCard()
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
-                          sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday) {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
-            }
+                          sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday,
+                          onReadiness: { openDetail(.readiness) },
+                          onRecovery: { openDetail(.recovery) },
+                          action: {
+                              UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                              if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
+                          })
             LogWhoopCard()
+            numbersHeader
+            quickTiles
+            if streak >= 2 { StreakChip(days: streak) }
+            sleepDuel
             RivalryHero(rounds: Rivalry.rounds(store),
                         watchBPM: store.today(.watch)?.rhr, whoopBPM: store.today(.whoop)?.rhr,
                         readiness: store.readinessToday, recovery: store.recoveryToday,
-                        note: gaugeNote)
-            if streak >= 2 { StreakChip(days: streak) }
-            quickTiles
-            seeAllButton
+                        note: gaugeNote, showGauges: false)
             InsightsButton()
             LabNotesCard(insights: notes)
-            hero
-            sleepDuel
             sparkCard
             ShareVSButton()
             if !store.whoopConnected { whoopNudge }
@@ -34,29 +39,56 @@ struct TodayScreen: View {
         .sheet(isPresented: $showAllData) {
             AllDataScreen().environment(store).presentationBackground(Lab.bg)
         }
+        .sheet(item: $statSheet) { def in
+            StatDetailSheet(def: def).environment(store).presentationBackground(Lab.bg)
+        }
     }
 
-    /// Opens the All data screen: every synced metric, including the ones without a card here.
-    private var seeAllButton: some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            showAllData = true
-        } label: {
-            HStack(spacing: Lab.S.s) {
-                Image(systemName: "square.grid.3x3.fill").font(.system(size: 14, weight: .bold)).foregroundStyle(Lab.violet)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text("See all stats").font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
-                    Text("Every metric from WHOOP, Watch and Health").font(Lab.mono(10)).foregroundStyle(Lab.faint)
-                }
+    private func openDetail(_ m: MetricKey) {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        store.detail = m
+    }
+
+    /// "Your numbers" with the way into All data, plus why a side is blank when it is.
+    private var numbersHeader: some View {
+        VStack(alignment: .leading, spacing: Lab.S.s) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Your numbers").font(Lab.title(20)).foregroundStyle(Lab.text)
+                    .accessibilityAddTraits(.isHeader)
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    showAllData = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Text("See all stats").font(Lab.body(13, .bold))
+                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .heavy))
+                    }
+                    .foregroundStyle(Lab.violet)
+                    .padding(.vertical, 6)
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(PressScale())
+                .accessibilityHint("Opens every synced metric")
             }
-            .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.violet.opacity(0.35)))
+            HStack(spacing: Lab.S.s) {
+                Label("Watch", systemImage: "circle.fill").foregroundStyle(Lab.watch)
+                Label("WHOOP", systemImage: "circle.fill").foregroundStyle(Lab.whoop)
+                Text("· tap a tile for details").foregroundStyle(Lab.faint)
+                Spacer(minLength: 0)
+            }
+            .font(Lab.label(9))
+            .labelStyle(DotLabelStyle())
+            if store.reason(.watch) != nil || store.reason(.whoop) != nil {
+                HStack(spacing: Lab.S.s) {
+                    ForEach(Source.allCases) { s in
+                        if let r = store.reason(s) { ReasonChip(source: s, text: r) }
+                    }
+                    Spacer(minLength: 0)
+                }
+            }
         }
-        .buttonStyle(PressScale())
-        .accessibilityHint("Opens every synced metric")
+        .padding(.top, Lab.S.s)
     }
 
     /// Every number people check, Watch over WHOOP, in one scannable grid. A value from an
@@ -64,7 +96,8 @@ struct TodayScreen: View {
     private var quickTiles: some View {
         let wn = store.lastNight(.watch), hn = store.lastNight(.whoop)
         let kcalW = store.latest(.watch, \.totalKcal), kcalH = store.latest(.whoop, \.totalKcal)
-        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s), count: 3), spacing: Lab.S.s) {
+        let cols = typeSize.isAccessibilitySize ? 2 : 3
+        return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s), count: cols), spacing: Lab.S.s) {
             tile("Resting HR", "bpm", store.latest(.watch, \.rhr), store.latest(.whoop, \.rhr), .rhr)
             tile("HRV", "ms", store.latest(.watch, \.hrv), store.latest(.whoop, \.hrv), .hrv, note: "SDNN · RMSSD")
             tile("Sleep", "h", wn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, hn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, .sleep, decimals: 1)
@@ -72,18 +105,19 @@ struct TodayScreen: View {
             tile("Blood O₂", "%", store.latest(.watch, \.spo2), store.latest(.whoop, \.spo2), .spo2)
             tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, .temp, decimals: 1, signed: true)
             tile("Calories", "kcal", kcalW, kcalH, .calories)
-            tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), .recovery, decimals: 1, only: .whoop)
+            tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), nil, decimals: 1, only: .whoop)
             tile("Steps", "steps", store.latest(.watch, \.steps), store.latest(.whoop, \.steps), .steps,
                  only: store.latest(.whoop, \.steps) == nil ? .watch : nil)
         }
     }
 
     /// `a` / `b` are (value, isToday). `only` = the other tracker doesn't measure this at all.
-    private func tile(_ title: String, _ unit: String, _ a: (Double, Bool)?, _ b: (Double, Bool)?, _ m: MetricKey,
+    /// `m` nil = WHOOP strain, which has no `MetricKey` and opens its All-data detail directly.
+    private func tile(_ title: String, _ unit: String, _ a: (Double, Bool)?, _ b: (Double, Bool)?, _ m: MetricKey?,
                       decimals: Int = 0, signed: Bool = false, note: String? = nil, only: Source? = nil) -> some View {
         Button {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            store.detail = m
+            if let m { store.detail = m } else { statSheet = AllStats.def("strain") }
         } label: {
             VStack(alignment: .leading, spacing: Lab.S.xs) {
                 HStack(spacing: 4) {
@@ -95,14 +129,14 @@ struct TodayScreen: View {
                 if only == .watch { notMeasured(.whoop) } else { tileValue(b, .whoop, decimals, signed: signed) }
                 Text(note ?? unit).font(Lab.label(8)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(Lab.S.m - 4)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
+            .frame(maxWidth: .infinity, minHeight: 92, alignment: .topLeading)
+            .padding(12)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.9)))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.08)))
         }
         .buttonStyle(PressScale())
         .accessibilityLabel("\(title): Apple Watch \(a.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit), WHOOP \(b.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit)")
-        .accessibilityHint("Opens the \(title.lowercased()) chart")
+        .accessibilityHint("Opens \(title.lowercased()) details")
     }
 
     /// Watch − WHOOP, coloured by who reads higher. Small on purpose.
@@ -140,58 +174,11 @@ struct TodayScreen: View {
 
     private var gaugeNote: String {
         guard let a = store.readinessToday, let b = store.recoveryToday else {
-            return "Readiness is Pulse Lab's score from your Watch: HRV vs your 7-day baseline, resting HR and sleep."
+            return "Readiness is Pulse Lab's score from your Watch: HRV and resting HR vs your own baseline, plus sleep. Tap it for the breakdown."
         }
         let d = Int((a - b).rounded())
         if abs(d) <= 8 { return "Both trackers agree on how ready you are today." }
         return d > 0 ? "Your Watch thinks you're \(d) points fresher than WHOOP does." : "WHOOP rates you \(-d) points more recovered than your Watch."
-    }
-
-    private var hero: some View {
-        let w = store.today(.watch), h = store.today(.whoop)
-        return LabPanel(tint: Lab.watch) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack {
-                    SourceChip(source: .watch)
-                    Spacer()
-                    SectionTag("Head to head")
-                    Spacer()
-                    SourceChip(source: .whoop)
-                }
-                tap(.rhr) { VSRow(title: "Resting HR", unit: "bpm", watch: w?.rhr, whoop: h?.rhr) }
-                Divider().overlay(Lab.line)
-                tap(.hrv) { VSRow(title: "HRV", unit: "ms", watch: w?.hrv, whoop: h?.hrv, note: "SDNN vs RMSSD") }
-                Divider().overlay(Lab.line)
-                tap(.resp) { VSRow(title: "Respiratory", unit: "br/min", watch: w?.resp, whoop: h?.resp, decimals: 1) }
-                Divider().overlay(Lab.line)
-                tap(.calories) { VSRow(title: "Calories", unit: "kcal", watch: w?.totalKcal, whoop: h?.totalKcal) }
-                if store.reason(.watch) == nil && store.reason(.whoop) == nil {
-                    Text("Tap a row for the full chart").font(Lab.label(9)).foregroundStyle(Lab.faint)
-                        .frame(maxWidth: .infinity, alignment: .center)
-                } else {
-                    HStack(spacing: Lab.S.s) {
-                        ForEach(Source.allCases) { s in
-                            if let r = store.reason(s) { ReasonChip(source: s, text: r) }
-                        }
-                        Spacer()
-                    }
-                }
-            }
-        }
-        .visualEffect { [still = Lab.reduceMotion] content, proxy in
-            // Gentle depth: the card eases back a touch as it scrolls under the top edge (off with Reduce Motion).
-            let y = proxy.frame(in: .scrollView).minY
-            return content.scaleEffect(still || y >= 0 ? 1 : max(0.94, 1 + y / 3000))
-        }
-    }
-
-    private func tap<V: View>(_ m: MetricKey, @ViewBuilder _ v: () -> V) -> some View {
-        Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
-            store.detail = m
-        } label: { v().contentShape(Rectangle()) }
-        .buttonStyle(PressScale())
-        .accessibilityHint("Opens the \(m.title.lowercased()) chart")
     }
 
     private var sleepDuel: some View {
@@ -288,44 +275,68 @@ struct ReadyDuelCard: View {
     let sleepHours: Double?
     /// Readiness is using yesterday's Watch readings (nothing recorded since midnight yet).
     var fromYesterday = false
+    /// Tap the readiness arc: how readiness was worked out.
+    var onReadiness: () -> Void = {}
+    /// Tap the recovery arc: the recovery chart.
+    var onRecovery: () -> Void = {}
+    /// The VS link: the Compare tab (Pro).
     let action: () -> Void
     @ObservedObject private var unlock = Unlock.shared
 
     var body: some View {
-        Button(action: action) {
-            LabPanel(tint: Lab.violet) {
-                VStack(spacing: 12) {
-                    HStack {
-                        SectionTag("Recovery vs Readiness")
-                        Spacer()
+        LabPanel(tint: Lab.violet) {
+            VStack(spacing: 12) {
+                HStack {
+                    SectionTag("Recovery vs Readiness")
+                    Spacer()
+                    Button(action: action) {
                         HStack(spacing: 4) {
                             if !unlock.isPro { Image(systemName: "lock.fill").font(.system(size: 9, weight: .heavy)) }
                             Text("VS").font(Lab.label(9)).tracking(1.5)
                             Image(systemName: "chevron.right").font(.system(size: 9, weight: .heavy))
                         }
                         .foregroundStyle(Lab.watch)
+                        .padding(.vertical, 6).padding(.leading, 10)
+                        .contentShape(Rectangle())
                     }
-                    HStack(spacing: 0) {
-                        FacingArc(value: readiness, label: "Readiness", source: .watch, color: Lab.watch, opensRight: true)
-                        VStack(spacing: 2) {
-                            Text("VS").font(Lab.display(22)).foregroundStyle(Lab.duel)
-                            Text(gapText).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.faint)
-                        }
-                        .frame(width: 72)
-                        FacingArc(value: recovery, label: "Recovery", source: .whoop, color: recovery.map(Lab.band) ?? Lab.whoop, opensRight: false)
-                    }
-                    Text(read)
-                        .font(Lab.body(13, .semibold)).foregroundStyle(Lab.dim)
-                        .multilineTextAlignment(.center).frame(maxWidth: .infinity)
-                        .fixedSize(horizontal: false, vertical: true)
+                    .buttonStyle(PressScale())
+                    .accessibilityLabel("Compare tab")
+                    .accessibilityHint(unlock.isPro ? "Opens the VS tab" : "Opens the Pro unlock")
                 }
+                HStack(spacing: 0) {
+                    Button(action: onReadiness) {
+                        FacingArc(value: readiness, label: "Readiness", source: .watch, color: Lab.watch, opensRight: true)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PressScale())
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Apple Watch readiness \(fmt(readiness))")
+                    .accessibilityHint("Shows how readiness was worked out")
+                    .accessibilityAddTraits(.isButton)
+                    VStack(spacing: 2) {
+                        Text("VS").font(Lab.display(22)).foregroundStyle(Lab.duel)
+                        Text(gapText).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.faint)
+                    }
+                    .frame(width: 72)
+                    .accessibilityHidden(true)
+                    Button(action: onRecovery) {
+                        FacingArc(value: recovery, label: "Recovery", source: .whoop, color: recovery.map(Lab.band) ?? Lab.whoop, opensRight: false)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PressScale())
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("WHOOP recovery \(fmt(recovery))")
+                    .accessibilityHint("Opens the recovery chart")
+                    .accessibilityAddTraits(.isButton)
+                }
+                Text(read)
+                    .font(Lab.body(13, .semibold)).foregroundStyle(Lab.dim)
+                    .multilineTextAlignment(.center).frame(maxWidth: .infinity)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("Tap a score for the breakdown").font(Lab.label(8)).tracking(1).foregroundStyle(Lab.faint)
+                    .accessibilityHidden(true)
             }
-            .contentShape(Rectangle())
         }
-        .buttonStyle(PressScale())
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Recovery versus readiness. Apple Watch readiness \(fmt(readiness)), WHOOP recovery \(fmt(recovery)). \(read)")
-        .accessibilityHint(unlock.isPro ? "Opens the VS tab" : "Opens the Pro unlock")
     }
 
     private func fmt(_ v: Double?) -> String { v.map { "\(Int($0.rounded())) percent" } ?? "no score" }
@@ -434,5 +445,15 @@ struct HalfArc: Shape {
             p.addArc(center: c, radius: radius, startAngle: start, endAngle: end, clockwise: false)
         }
         return p
+    }
+}
+
+/// A small coloured dot before the title (legend labels).
+struct DotLabelStyle: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 4) {
+            configuration.icon.font(.system(size: 6))
+            configuration.title
+        }
     }
 }

@@ -28,6 +28,8 @@ struct DuelChart: View {
     var showPoints = false
     /// When set, only this source is drawn (tap a legend chip to isolate).
     var solo: Source? = nil
+    /// Shaded horizontal band (your personal normal range), drawn behind the lines.
+    var band: ClosedRange<Double>? = nil
 
     @State private var rawSelection: Date?
     @State private var selectedDay: Date?
@@ -38,7 +40,8 @@ struct DuelChart: View {
 
     private var domain: ClosedRange<Double> {
         let v = all.map(\.value)
-        guard let lo = v.min(), let hi = v.max() else { return 0...1 }
+        guard var lo = v.min(), var hi = v.max() else { return 0...1 }
+        if let band { lo = Swift.min(lo, band.lowerBound); hi = Swift.max(hi, band.upperBound) }
         let pad = Swift.max((hi - lo) * 0.2, Swift.max(abs(hi) * 0.02, 0.1))
         let low = includeZero ? Swift.min(0, lo) : lo - pad
         return low...(hi + pad)
@@ -52,6 +55,15 @@ struct DuelChart: View {
         let wAvg = Stats.mean(watchShown.map(\.value)), hAvg = Stats.mean(whoopShown.map(\.value))
         let watch = watchShown, whoop = whoopShown
         Chart {
+            if let band, let first = all.map(\.day).min(), let last = all.map(\.day).max() {
+                RectangleMark(xStart: .value("From", first, unit: .day), xEnd: .value("To", last, unit: .day),
+                              yStart: .value("Low", band.lowerBound), yEnd: .value("High", band.upperBound))
+                    .foregroundStyle(Color.white.opacity(0.07))
+                RuleMark(y: .value("Normal low", band.lowerBound))
+                    .foregroundStyle(Color.white.opacity(0.18)).lineStyle(StrokeStyle(lineWidth: 0.6, dash: [2, 3]))
+                RuleMark(y: .value("Normal high", band.upperBound))
+                    .foregroundStyle(Color.white.opacity(0.18)).lineStyle(StrokeStyle(lineWidth: 0.6, dash: [2, 3]))
+            }
             ForEach(areaPoints) { p in
                 AreaMark(x: .value("Day", p.day, unit: .day),
                          yStart: .value("Base", d.lowerBound),

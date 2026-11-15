@@ -17,7 +17,14 @@ struct BriefingCard: View {
                         .font(Lab.label(10)).foregroundStyle(Lab.faint)
                         .accessibilityHidden(true)
                 }
-                recoveryRow(b)
+                Button {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                    store.detail = b.recoveryKind == .readiness ? .readiness : .recovery
+                } label: {
+                    recoveryRow(b).contentShape(Rectangle())
+                }
+                .buttonStyle(PressScale())
+                .accessibilityHint(b.recoveryKind == .readiness ? String(localized: "Shows how readiness was worked out") : String(localized: "Opens the recovery chart"))
                 let cols = typeSize.isAccessibilitySize ? 1 : 2
                 LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: cols), alignment: .leading, spacing: 10) {
                     stat(String(localized: "Sleep"), b.sleepMin.map { fmtHM($0) },
@@ -72,6 +79,7 @@ struct BriefingCard: View {
                 }
             }
             Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.faint)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(b.recovery.map { "\(b.recoveryLabel) \(Int($0.rounded())), \(band($0))" } ?? String(localized: "\(b.recoveryLabel): no score yet"))
