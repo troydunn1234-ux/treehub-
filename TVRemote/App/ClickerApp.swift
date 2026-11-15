@@ -231,10 +231,12 @@ struct AboutView: View {
                             .padding(Look.S.m)
                             .glass(16, tint: Look.cyan)
                     }
-                    MoreAppsRow(tint: Look.cyan)
-                        .foregroundStyle(.white)
-                        .padding(Look.S.m)
-                        .glass(16, tint: Look.cyan)
+                    MoreAppsGate {
+                        MoreAppsRow(tint: Look.cyan)
+                            .foregroundStyle(.white)
+                            .padding(Look.S.m)
+                            .glass(16, tint: Look.cyan)
+                    }
                     section("Works with", "VIZIO SmartCast, Roku TVs and players, Samsung (Tizen), LG (webOS), and Google TV / Android TV, on the same Wi-Fi as your phone.")
                     section("Privacy", "Couch Remote talks only to your TV (and your PC, if you use it), directly over your Wi-Fi. It has no account, no tracking and no servers. Pairing keys stay in your phone's Keychain.")
                     section("Not affiliated", "Couch Remote is an independent app. It is not made, endorsed or supported by VIZIO, Roku, Samsung, LG or Google. Those names, and the names of the streaming services shown, are trademarks of their owners and are used only to identify which TVs work and what opens on your TV.")

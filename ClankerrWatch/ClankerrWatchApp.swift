@@ -215,7 +215,8 @@ struct PadPage: View {
         }
         .navigationTitle {
             HStack(spacing: 4) {
-                Circle().fill(link.state.reachable ? Color.green : Color.orange).frame(width: 6, height: 6)
+                Circle().fill(link.phoneReachable && link.state.reachable ? Color.green : Color.orange).frame(width: 6, height: 6)
+                    .accessibilityLabel(link.phoneReachable ? (link.state.reachable ? "Connected" : "TV not answering") : "iPhone not reachable")
                 Text(link.state.now.isEmpty ? (link.state.tv.isEmpty ? "Couch Remote" : link.state.tv) : link.state.now)
                     .font(CW.font(14, .heavy)).lineLimit(1)
             }

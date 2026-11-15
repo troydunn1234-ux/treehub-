@@ -20,6 +20,8 @@ html{scroll-behavior:smooth}
 body{background:radial-gradient(1100px 520px at 12% -6%,rgba(124,77,255,.13),transparent 62%),radial-gradient(900px 480px at 100% 4%,rgba(47,211,192,.08),transparent 60%),var(--void);color:var(--ink);font-family:var(--body);font-size:15px;line-height:1.55;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 56px}
 .wrap{max-width:1120px;margin:0 auto;display:flex;flex-direction:column;gap:36px}
+/* In the app the page runs edge to edge: keep scrolled text from showing through the status bar. */
+body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--void);z-index:30;pointer-events:none}
 header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px}
 .eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold)}
 h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,56px);line-height:1;margin:6px 0 0;letter-spacing:-.02em;text-wrap:balance}
@@ -1635,7 +1637,9 @@ function launchFlags(){const h=(location.hash||'').slice(1);if(!h.startsWith('de
 function goSection(sec){const map={chart:null,today:'today-sec',three:'three-h',year:'year-sec',sky:'sky',aspects:'asplist',compare:'match',own:'own'};
   if(sec==='share'){setTimeout(()=>$('act-card').click(),600);return;}
   const id=map[sec];if(id===undefined)return;if(id===null){scrollTo(0,0);return;}
-  const el=$(id);if(el)setTimeout(()=>el.scrollIntoView({block:'start',behavior:'auto'}),400);}
+  const go=()=>{const el=$(id);if(el)el.scrollIntoView({block:'start',behavior:'auto'});};
+  /* Again once the 3D sky has sized itself (the first jump can land short while the page is still growing). */
+  setTimeout(go,400);setTimeout(go,1600);}
 /* Siri / Shortcuts: the app shell calls this with a section name (today, year, sky, compare, chart, share). */
 window.__shellOpen=function(sec){if(typeof sec==='string')goSection(sec);};
 

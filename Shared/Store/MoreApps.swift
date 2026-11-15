@@ -71,6 +71,8 @@ final class MoreAppsStore: ObservableObject {
         } else {
             live = [:]
         }
+        // First use (a settings screen with the More apps row): find out which apps are live.
+        Task { await refresh() }
     }
 
     var apps: [MoreApp] { MoreApps.others.filter { app in app.appStoreID.map { live[$0] != nil } ?? false } }
@@ -228,11 +230,22 @@ private final class StoreProductDismisser: NSObject, SKStoreProductViewControlle
 }
 
 /// A plain "More apps" row for settings screens. Tapping it presents `MoreAppsView`.
+/// Hidden until at least one other app is live on the App Store (so App Review never sees an empty
+/// "More apps are on the way" screen); wrap any panel around it in `MoreAppsGate` so the panel hides too.
 struct MoreAppsRow: View {
     var tint: Color = .accentColor
     @State private var show = false
+    @ObservedObject private var store = MoreAppsStore.shared
 
     var body: some View {
+        if !store.apps.isEmpty {
+            row
+        } else {
+            EmptyView()
+        }
+    }
+
+    private var row: some View {
         Button { show = true } label: {
             HStack(spacing: 12) {
                 Image(systemName: "square.grid.2x2.fill")
@@ -250,6 +263,20 @@ struct MoreAppsRow: View {
         }
         .buttonStyle(.plain)
         .sheet(isPresented: $show) { MoreAppsView() }
+    }
+}
+
+/// Shows its content (a panel holding `MoreAppsRow`) only once another app is live on the App Store.
+struct MoreAppsGate<Content: View>: View {
+    @ObservedObject private var store = MoreAppsStore.shared
+    @ViewBuilder var content: Content
+
+    var body: some View {
+        if !store.apps.isEmpty {
+            content
+        } else {
+            EmptyView()
+        }
     }
 }
 

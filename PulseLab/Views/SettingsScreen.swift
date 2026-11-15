@@ -36,7 +36,7 @@ struct SettingsScreen: View {
             weeklySummary
             units
             export
-            LabPanel(tint: Lab.violet) { MoreAppsRow(tint: Lab.violet).foregroundStyle(Lab.text) }
+            MoreAppsGate { LabPanel(tint: Lab.violet) { MoreAppsRow(tint: Lab.violet).foregroundStyle(Lab.text) } }
             about
         }
         .sheet(isPresented: $showPlans) { PaywallView(spec: PulseLabPro.spec) }

@@ -414,11 +414,13 @@ struct TrackSettingsView: View {
                 }
                 .buttonStyle(.plain)
                 divider
-                MoreAppsRow(tint: Theme.sky)
-                    .foregroundStyle(.white)
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 11)
-                divider
+                MoreAppsGate {
+                    MoreAppsRow(tint: Theme.sky)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 11)
+                    divider
+                }
                 row(symbol: "info.circle.fill", tint: Theme.glow,
                     title: "Version",
                     subtitle: nil) {

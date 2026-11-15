@@ -136,6 +136,9 @@ form.row, .row { display: grid; grid-template-columns: repeat(auto-fit, minmax(1
 label.f { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
 input, select { background: var(--panel2); border: 2px solid var(--line); padding: 9px 10px; width: 100%; min-width: 0; color: var(--fg); border-radius: 0; }
 input:focus, select:focus { border-color: var(--green); outline: none; }
+/* iOS draws date/month fields wider than their box (they overflowed the Setup panel); keep them inside. */
+input[type=month], input[type=date] { -webkit-appearance: none; appearance: none; box-sizing: border-box; display: block; max-width: 100%; min-height: 2.6em; text-align: left; }
+input[type=month]::-webkit-date-and-time-value, input[type=date]::-webkit-date-and-time-value { text-align: left; }
 .btn { font-family: var(--font-display); font-size: 9px; letter-spacing: .05em; text-transform: uppercase; padding: 12px 14px; border: 2px solid var(--green); background: var(--green); color: var(--bg); }
 .btn:hover { filter: brightness(1.12); }
 .btn.ghost { background: transparent; color: var(--green); }
