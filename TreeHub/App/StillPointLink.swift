@@ -274,17 +274,26 @@ enum TreeBreaths {
                 fill(out[i].id, with: st)
             }
         }
-        // Untagged: mindful sessions in Health that overlap a hug of this tree.
+        // Untagged: sessions that actually overlap a hug of this tree. The hug logger sets the hug's time and length
+        // to the session picked for it, so only that one shows here (not the others done the same half hour).
+        // Still Pointz' own feed first (practice names; covers sessions not saved to Health), then Apple Health
+        // mindful sessions (older Still Pointz builds, Watch, Garmin) and Garmin-style breathwork workouts.
         var seen = out.map(\.start)
+        let feed = (WellnessBridge.stillPoint()?.sessions ?? []).filter { $0.isCalm && $0.treeID == nil && $0.minutes >= 1 }
         for hug in tree.hugs.prefix(15) {
-            let from = hug.date.addingTimeInterval(-20 * 60)
-            let to = hug.date.addingTimeInterval(max(hug.durationMin, 1) * 60 + 20 * 60)
-            for m in await hs.mindfulSessions(around: hug.date, hours: 1) where m.minutes >= 1 && m.end > from && m.start < to {
+            let from = hug.date.addingTimeInterval(30)
+            let to = hug.date.addingTimeInterval(max(hug.durationMin, 1) * 60 - 30)
+            var near: [(m: HealthService.MindfulSession, practice: String?)] = feed
+                .map { (m: HealthService.MindfulSession(start: $0.date, end: $0.end ?? $0.date.addingTimeInterval($0.minutes * 60),
+                                                       source: "Still Pointz"), practice: $0.practice) }
+            near += (await hs.mindfulSessions(around: hug.date, hours: 1) + hs.breathworkWorkouts(around: hug.date, hours: 1))
+                .map { (m: $0, practice: String?.none) }
+            for (m, practice) in near where m.minutes >= 1 && m.end > from && m.start < to {
                 guard !seen.contains(where: { abs($0.timeIntervalSince(m.start)) < 120 }) else { continue }
                 seen.append(m.start)
                 let st = await hs.breathStats(from: m.start, to: m.end)
                 out.append(TreeBreath(id: UUID(), start: m.start, minutes: m.minutes, avgHR: st.avgHR, minHR: st.minHR,
-                                      hrDrop: st.hrDrop, hrv: st.hrv, source: m.source, practice: nil, tagged: false))
+                                      hrDrop: st.hrDrop, hrv: st.hrv, source: m.source, practice: practice, tagged: false))
             }
         }
         return out.sorted { $0.start > $1.start }

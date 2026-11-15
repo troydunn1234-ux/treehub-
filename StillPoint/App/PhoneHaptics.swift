@@ -55,7 +55,7 @@ final class PhoneHaptics: BreathFeedback {
 
     func stepBegan(style: HapticStyle) {
         guard style != .off else { return }
-        medium.impactOccurred(intensity: style == .strong ? 0.8 : 0.45)
+        medium.impactOccurred(intensity: style == .alarm ? 1.0 : (style == .strong ? 0.8 : 0.45))
     }
 
     func sideSwitchSoon(style: HapticStyle) {

@@ -116,6 +116,8 @@ struct HugLogView: View {
     @State private var showPlans = false
     @State private var sessionChoices: [HealthService.MindfulSession] = []
     @State private var choosingSession = false
+    /// Bumped by every Health pull; an older pull still in flight (e.g. the one on open) never overwrites a newer one (the photo's).
+    @State private var pullToken = 0
 
     private static let speciesSuggestions = [
         "Coast Redwood", "Coast Live Oak", "Valley Oak", "California Sycamore", "Eucalyptus", "Monterey Pine",
@@ -215,14 +217,14 @@ struct HugLogView: View {
             VStack(alignment: .leading, spacing: 12) {
                 SectionHeader(title: "Photos", symbol: "camera.fill")
                 HStack(spacing: 10) {
-                    PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -3) { data in
-                        readPhotoMetadata(data)
+                    PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -3) { data, info in
+                        readPhotoMetadata(data, info: info)
                         Task { await guessSpecies(data) }
                     }
                     // Rootbound Pro: the second photo (tree selfie). A selfie that's already on a hug always stays.
                     PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto, tilt: 2,
-                              locked: !unlock.isPro, onLocked: { showPlans = true }) { data in
-                        if d.treePhoto == nil { readPhotoMetadata(data) }
+                              locked: !unlock.isPro, onLocked: { showPlans = true }) { data, info in
+                        if d.treePhoto == nil { readPhotoMetadata(data, info: info) }
                     }
                 }
             }
@@ -548,8 +550,9 @@ struct HugLogView: View {
             showExtras = editing.stressStart != nil || editing.stressEnd != nil || editing.bodyBattery != nil
         } else {
             Task { await useCurrentLocation(autoPickTree: true) }
-            // Your watch's breathwork syncs to Apple Health; grab it straight away.
-            Task { await pullFromHealth(quiet: true) }
+            // Your watch's breathwork syncs to Apple Health; grab it straight away (no session picker yet:
+            // a camera-roll photo usually follows and asks around its own time).
+            Task { await pullFromHealth(quiet: true, prompt: false) }
         }
     }
 
@@ -583,24 +586,26 @@ struct HugLogView: View {
         }
     }
 
-    private func readPhotoMetadata(_ data: Data) {
-        guard let src = CGImageSourceCreateWithData(data as CFData, nil),
-              let props = CGImageSourceCopyPropertiesAtIndex(src, 0, nil) as? [String: Any] else { return }
-        if editing == nil, let shot = Self.photoDate(props) {
+    private func readPhotoMetadata(_ data: Data, info: PhotoAssetInfo? = nil) {
+        let props = CGImageSourceCreateWithData(data as CFData, nil)
+            .flatMap { CGImageSourceCopyPropertiesAtIndex($0, 0, nil) as? [String: Any] } ?? [:]
+        // EXIF first; the Photos library's own date / place when the file carries none.
+        if editing == nil, let shot = Self.photoDate(props) ?? info?.date {
             d.date = shot
             Task { await pullFromHealth(quiet: true, pickAround: shot) }
         }
+        var coord: CLLocationCoordinate2D? = nil
         if let gps = props[kCGImagePropertyGPSDictionary as String] as? [String: Any],
            var lat = (gps[kCGImagePropertyGPSLatitude as String] as? NSNumber)?.doubleValue,
            var lng = (gps[kCGImagePropertyGPSLongitude as String] as? NSNumber)?.doubleValue {
             if (gps[kCGImagePropertyGPSLatitudeRef as String] as? String)?.uppercased() == "S" { lat = -abs(lat) }
             if (gps[kCGImagePropertyGPSLongitudeRef as String] as? String)?.uppercased() == "W" { lng = -abs(lng) }
-            if !(lat == 0 && lng == 0) {
-                let c = CLLocationCoordinate2D(latitude: lat, longitude: lng)
-                photoCoord = c
-                // A photo's own location beats "where I'm sitting now", but never a pin the user pasted.
-                if d.locationSource != "Pasted pin" { setCoordinate(c, source: "From photo") }
-            }
+            if !(lat == 0 && lng == 0) { coord = CLLocationCoordinate2D(latitude: lat, longitude: lng) }
+        }
+        if let c = coord ?? info?.coordinate {
+            photoCoord = c
+            // A photo's own location beats "where I'm sitting now", but never a pin the user pasted.
+            if d.locationSource != "Pasted pin" { setCoordinate(c, source: "From photo") }
         }
     }
 
@@ -663,21 +668,35 @@ struct HugLogView: View {
         await pullFromHealth(quiet: true, skipSession: true, label: "\(Format.minutes(d.durationMin ?? 0)) \(s.source) session")
     }
 
-    private func pullFromHealth(quiet: Bool = false, pickAround: Date? = nil, skipSession: Bool = false, label: String? = nil) async {
+    private func pullFromHealth(quiet: Bool = false, pickAround: Date? = nil, skipSession: Bool = false, label: String? = nil,
+                                prompt: Bool = true) async {
+        pullToken += 1
+        let token = pullToken
         healthBusy = true
-        defer { healthBusy = false }
+        defer { if token == pullToken { healthBusy = false } }
         let hs = HealthService.shared
         guard hs.isAvailable, await hs.requestAccess() else {
             if !quiet { healthMessage = "Apple Health isn't available. You can type the numbers in." }
             return
         }
+        guard token == pullToken else { return }
         var found: [String] = []
         if let label { found.append(label) }
         if !skipSession {
             let near = await sessionsNear(pickAround ?? d.date)
+            guard token == pullToken else { return }
             if near.count > 1 {
-                // Several sessions around this hug: let the user pick the right one.
-                sessionChoices = Array(near.prefix(6))
+                guard prompt else {
+                    healthMessage = "You did \(near.count) breath sessions around now. Tap Fill from Apple Health to pick the one for this hug."
+                    return
+                }
+                // Several sessions around this hug: let the user pick the right one. Present only once the photo
+                // picker (or a dialog already up) has finished going away, or the dialog never shows.
+                choosingSession = false
+                healthMessage = ""
+                sessionChoices = Array(near.prefix(10))
+                try? await Task.sleep(for: .milliseconds(650))
+                guard token == pullToken else { return }
                 choosingSession = true
                 return
             } else if let s = near.first {
@@ -688,13 +707,16 @@ struct HugLogView: View {
         }
         let start = d.date
         let end = d.date.addingTimeInterval(max(1, d.durationMin ?? 12) * 60)
-        if let hr = await hs.heartRate(from: start, to: end) {
+        let hrFound = await hs.heartRate(from: start, to: end)
+        let rrFound = await hs.respiratoryRate(from: start, to: end)
+        guard token == pullToken else { return }
+        if let hr = hrFound {
             d.avgHR = hr.avg.rounded()
             d.minHR = hr.min.rounded()
             d.maxHR = hr.max.rounded()
             found.append("heart rate (\(hr.samples) readings)")
         }
-        if let rr = await hs.respiratoryRate(from: start, to: end) {
+        if let rr = rrFound {
             d.respRate = (rr * 10).rounded() / 10
             found.append("breathing rate")
         }
@@ -832,6 +854,25 @@ struct NumberField: View {
     }
 }
 
+/// When / where the Photos library says a picked photo was taken. Only looked up when the file itself has no
+/// EXIF capture time (saved from another app, some edits): then Rootbound asks for library access once.
+struct PhotoAssetInfo {
+    var date: Date?
+    var coordinate: CLLocationCoordinate2D?
+
+    @MainActor
+    static func lookup(_ identifier: String?, raw: Data) async -> PhotoAssetInfo? {
+        let props = CGImageSourceCreateWithData(raw as CFData, nil)
+            .flatMap { CGImageSourceCopyPropertiesAtIndex($0, 0, nil) as? [String: Any] } ?? [:]
+        guard HugLogView.photoDate(props) == nil, let identifier else { return nil }
+        var status = PHPhotoLibrary.authorizationStatus(for: .readWrite)
+        if status == .notDetermined { status = await PHPhotoLibrary.requestAuthorization(for: .readWrite) }
+        guard status == .authorized || status == .limited,
+              let asset = PHAsset.fetchAssets(withLocalIdentifiers: [identifier], options: nil).firstObject else { return nil }
+        return PhotoAssetInfo(date: asset.creationDate, coordinate: asset.location?.coordinate)
+    }
+}
+
 /// Polaroid-style photo slot: camera or library.
 struct PhotoSlot: View {
     let title: String
@@ -841,7 +882,7 @@ struct PhotoSlot: View {
     /// Pro-only slot: when empty, a tap opens the paywall instead of the picker.
     var locked: Bool = false
     var onLocked: () -> Void = {}
-    var onPicked: (Data) -> Void
+    var onPicked: (Data, PhotoAssetInfo?) -> Void
 
     @State private var item: PhotosPickerItem?
     @State private var showCamera = false
@@ -880,8 +921,10 @@ struct PhotoSlot: View {
             guard let newItem else { return }
             loading = true
             Task {
+                // .current encoding: the original file (HEIC/JPEG) with its EXIF time and GPS.
                 if let raw = try? await newItem.loadTransferable(type: Data.self) {
-                    onPicked(raw)
+                    let info = await PhotoAssetInfo.lookup(newItem.itemIdentifier, raw: raw)
+                    onPicked(raw, info)
                     data = ImageTools.compressed(raw)
                 }
                 loading = false
@@ -890,7 +933,7 @@ struct PhotoSlot: View {
         }
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker(onImage: { raw in
-                onPicked(raw)
+                onPicked(raw, nil)
                 data = ImageTools.compressed(raw)
             }, onClose: { showCamera = false })
             .ignoresSafeArea()
