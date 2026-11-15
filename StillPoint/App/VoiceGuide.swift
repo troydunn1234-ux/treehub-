@@ -79,7 +79,7 @@ final class VoiceGuide: NSObject, ObservableObject {
         u.volume = 0.9
         u.preUtteranceDelay = 0.05
         u.postUtteranceDelay = 0.1
-        if let voice { u.voice = voice }
+        if let v = voice { u.voice = v }
         synth.speak(u)
     }
 

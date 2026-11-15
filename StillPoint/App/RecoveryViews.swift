@@ -85,7 +85,8 @@ final class RecoveryModel: ObservableObject {
     /// Plain-English summary of the comparison.
     func caption(_ m: RecoveryMetric) -> String {
         let g = groups(m)
-        let heat = g.first { $0.heat }, other = g.first { !$0.heat }
+        let heat = g.first(where: { $0.heat })
+        let other = g.first(where: { !$0.heat })
         let name = m == .hrv ? String(localized: "morning HRV") : String(localized: "resting heart rate")
         guard hasAnyReading else {
             return String(localized: "No HRV or resting heart rate in Apple Health yet. Wear your Watch or WHOOP to sleep and this fills in by itself.")
@@ -218,7 +219,7 @@ struct RecoveryCard: View {
                     .symbolSize(d.isHeatDay ? 60 : 30)
             }
             .chartYScale(domain: .automatic(includesZero: false))
-            .chartXAxisLabel(Text("min of sauna / steam that day"), alignment: .center)
+            .chartXAxisLabel("min of sauna / steam that day", alignment: .center)
             .chartXAxis {
                 AxisMarks { _ in
                     AxisGridLine().foregroundStyle(Color.white.opacity(0.05))
