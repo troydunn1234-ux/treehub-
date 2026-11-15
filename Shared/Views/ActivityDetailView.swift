@@ -17,6 +17,13 @@ struct ActivityDetailView: View {
     #if TRACK_APP
     @State private var showRecap = false
     @ObservedObject private var groups = GroupHistory.shared
+    // Map-first layout
+    @State var sheetDetent: TripSheetDetent = .peek
+    @State var sheetDrag: CGFloat = 0
+    @State var headerHeight: CGFloat = 150
+    @State var camera: MapCameraPosition = .automatic
+    @State var visibleSpan: Double?
+    @AppStorage("roamr.tripMapStyle") var mapStyleRaw = TripMapStyle.day.rawValue
     #endif
     #if !TRACK_APP
     @Query(sort: \Hug.date) private var allHugs: [Hug]
@@ -26,31 +33,108 @@ struct ActivityDetailView: View {
     private var coords: [CLLocationCoordinate2D] { activity.route.map(\.coordinate) }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: Theme.gap + 4) {
-                hero
-                VStack(alignment: .leading, spacing: Theme.gap + 4) {
-                if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty {
-                    GlassCard(padding: 14) {
-                        VStack(alignment: .leading, spacing: 10) {
-                            placeRow("Started", activity.startPlace, "circle.fill", .white)
-                            placeRow("Ended", activity.endPlace, "flag.checkered", Theme.gold)
-                        }
+        layout
+        .forestScreen()
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if coords.count > 1, let gpxURL {
+                ToolbarItem(placement: .topBarTrailing) {
+                    ShareLink(item: gpxURL, preview: SharePreview(activity.displayTitle, image: Image(systemName: activity.kind.symbol))) {
+                        toolbarIcon("square.and.arrow.up.circle.fill")
                     }
+                    .accessibilityLabel("Share GPX")
                 }
-
-                LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
-                    StatTile(value: Format.distance(activity.distanceM), label: "Distance", symbol: "point.topleft.down.to.point.bottomright.curvepath")
-                    StatTile(value: Format.duration(activity.elapsedSec), label: "Total time", symbol: "clock")
-                    StatTile(value: Format.paceOrSpeed(distance: activity.distanceM, seconds: max(activity.movingSec, 1), kind: activity.kind),
-                             label: activity.kind.isOnFoot ? "Avg pace" : "Avg speed", symbol: "speedometer")
-                    StatTile(value: activity.kind.isOnFoot ? Format.elevation(activity.elevGainM) : Format.speed(activity.maxSpeed),
-                             label: activity.kind.isOnFoot ? "Climb" : "Top speed",
-                             symbol: activity.kind.isOnFoot ? "mountain.2.fill" : "gauge.with.dots.needle.67percent")
+            }
+            if coords.count > 2 {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Button { showTrim = true } label: { Label("Trim start or end", systemImage: "scissors") }
+                    } label: {
+                        toolbarIcon("pencil.circle.fill")
+                    }
+                    .accessibilityLabel("Edit")
                 }
+            }
+        }
+        #if TRACK_APP
+        .onAppear {
+            if TrackDemo.open == "recap" { DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { showRecap = true } }
+            if isNew { sheetDetent = .medium }
+        }
+        .sheet(isPresented: $showRecap) {
+            RecapShareView(activity: activity)
+                .presentationDragIndicator(.visible)
+        }
+        #endif
+        .sheet(isPresented: $showTrim) {
+            TrimSheet(activity: activity) { startT, endT in
+                activity.trim(startT: startT, endT: endT)
+                try? context.save()
+                gpxURL = GPX.write(activity)
+            }
+            .presentationDetents([.large])
+            .presentationDragIndicator(.visible)
+        }
+        .onAppear { gpxURL = GPX.write(activity) }
+        .onDisappear { try? context.save() }
+        .alert("Delete this activity?", isPresented: $confirmDelete) {
+            Button("Delete", role: .destructive) {
+                UINotificationFeedbackGenerator().notificationOccurred(.warning)
+                let target = activity
+                dismiss()
+                // Delete after the screen closes so nothing draws a deleted object.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    context.delete(target)
+                    try? context.save()
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        }
+    }
 
-                if activity.kind == .drive { speedCard; laneCard }
+    @ViewBuilder private var layout: some View {
+        #if TRACK_APP
+        mapFirstLayout
+        #else
+        classicLayout
+        #endif
+    }
 
+    @ViewBuilder private func toolbarIcon(_ name: String) -> some View {
+        #if TRACK_APP
+        // Dark disc behind a white glyph so it reads over a bright map.
+        Image(systemName: name).font(.system(size: 26))
+            .symbolRenderingMode(.palette)
+            .foregroundStyle(.white, Color.black.opacity(0.55))
+            .shadow(color: .black.opacity(0.25), radius: 4, y: 1)
+        #else
+        Image(systemName: name).font(.system(size: 22)).foregroundStyle(.white)
+        #endif
+    }
+
+    private var placesCard: some View {
+        GlassCard(padding: 14) {
+            VStack(alignment: .leading, spacing: 10) {
+                placeRow("Started", activity.startPlace, "circle.fill", .white)
+                placeRow("Ended", activity.endPlace, "flag.checkered", Theme.gold)
+            }
+        }
+    }
+
+    private var statGrid: some View {
+        LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
+            StatTile(value: Format.distance(activity.distanceM), label: "Distance", symbol: "point.topleft.down.to.point.bottomright.curvepath")
+            StatTile(value: Format.duration(activity.elapsedSec), label: "Total time", symbol: "clock")
+            StatTile(value: Format.paceOrSpeed(distance: activity.distanceM, seconds: max(activity.movingSec, 1), kind: activity.kind),
+                     label: activity.kind.isOnFoot ? "Avg pace" : "Avg speed", symbol: "speedometer")
+            StatTile(value: activity.kind.isOnFoot ? Format.elevation(activity.elevGainM) : Format.speed(activity.maxSpeed),
+                     label: activity.kind.isOnFoot ? "Climb" : "Top speed",
+                     symbol: activity.kind.isOnFoot ? "mountain.2.fill" : "gauge.with.dots.needle.67percent")
+        }
+    }
+
+    /// Kind picker, notes, recap / GPX sharing, Done and Delete: the rest of the page, same in both layouts.
+    @ViewBuilder private var lowerSections: some View {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
@@ -130,6 +214,18 @@ struct ActivityDetailView: View {
                     Label("Delete", systemImage: "trash").font(Theme.rounded(15, .bold)).frame(maxWidth: .infinity)
                 }
                 .padding(.top, 4)
+    }
+
+    /// Rootbound (and the original Roamr) layout: hero map on top, everything else scrolls under it.
+    private var classicLayout: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                hero
+                VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                    if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty { placesCard }
+                    statGrid
+                    if activity.kind == .drive { speedCard; laneCard }
+                    lowerSections
                 }
                 .padding(.horizontal, Theme.pad)
             }
@@ -137,62 +233,8 @@ struct ActivityDetailView: View {
         }
         .ignoresSafeArea(edges: isNew ? Edge.Set() : Edge.Set.top)
         .scrollIndicators(.hidden)
-        .forestScreen()
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            if coords.count > 1, let gpxURL {
-                ToolbarItem(placement: .topBarTrailing) {
-                    ShareLink(item: gpxURL, preview: SharePreview(activity.displayTitle, image: Image(systemName: activity.kind.symbol))) {
-                        Image(systemName: "square.and.arrow.up.circle.fill").font(.system(size: 22)).foregroundStyle(.white)
-                    }
-                    .accessibilityLabel("Share GPX")
-                }
-            }
-            if coords.count > 2 {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Button { showTrim = true } label: { Label("Trim start or end", systemImage: "scissors") }
-                    } label: {
-                        Image(systemName: "pencil.circle.fill").font(.system(size: 22)).foregroundStyle(.white)
-                    }
-                    .accessibilityLabel("Edit")
-                }
-            }
-        }
-        #if TRACK_APP
-        .onAppear {
-            if TrackDemo.open == "recap" { DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) { showRecap = true } }
-        }
-        .sheet(isPresented: $showRecap) {
-            RecapShareView(activity: activity)
-                .presentationDragIndicator(.visible)
-        }
-        #endif
-        .sheet(isPresented: $showTrim) {
-            TrimSheet(activity: activity) { startT, endT in
-                activity.trim(startT: startT, endT: endT)
-                try? context.save()
-                gpxURL = GPX.write(activity)
-            }
-            .presentationDetents([.large])
-            .presentationDragIndicator(.visible)
-        }
-        .onAppear { gpxURL = GPX.write(activity) }
-        .onDisappear { try? context.save() }
-        .alert("Delete this activity?", isPresented: $confirmDelete) {
-            Button("Delete", role: .destructive) {
-                UINotificationFeedbackGenerator().notificationOccurred(.warning)
-                let target = activity
-                dismiss()
-                // Delete after the screen closes so nothing draws a deleted object.
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    context.delete(target)
-                    try? context.save()
-                }
-            }
-            Button("Cancel", role: .cancel) {}
-        }
     }
+
 
     /// Full-bleed route map that fades into the page, with the title on top.
     private var hero: some View {
@@ -411,6 +453,470 @@ struct ActivityDetailView: View {
         }
     }
 }
+
+#if TRACK_APP
+// MARK: - Roamr: map-first trip detail
+
+enum TripSheetDetent: Int, CaseIterable { case peek, medium, large }
+
+enum TripMapStyle: Int, CaseIterable, Identifiable {
+    case day, night, satellite, hybrid
+    var id: Int { rawValue }
+    var title: String {
+        switch self {
+        case .day: String(localized: "Day")
+        case .night: String(localized: "Night")
+        case .satellite: String(localized: "Satellite")
+        case .hybrid: String(localized: "Hybrid")
+        }
+    }
+    var symbol: String {
+        switch self {
+        case .day: "sun.max.fill"
+        case .night: "moon.fill"
+        case .satellite: "globe.americas.fill"
+        case .hybrid: "map.fill"
+        }
+    }
+    var style: MapStyle {
+        switch self {
+        case .day, .night: .standard(elevation: .realistic, pointsOfInterest: .excludingAll)
+        case .satellite: .imagery(elevation: .realistic)
+        case .hybrid: .hybrid(elevation: .realistic, pointsOfInterest: .excludingAll)
+        }
+    }
+}
+
+private struct TripHeaderHeightKey: PreferenceKey {
+    static let defaultValue: CGFloat = 0
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) { value = max(value, nextValue()) }
+}
+
+/// Nearby over-the-limit bubbles merged into one so they don't pile up when zoomed out.
+private struct ZoneCluster: Identifiable {
+    let id: Int
+    let coord: CLLocationCoordinate2D
+    let peakOverMph: Double
+    var count: Int
+}
+
+extension ActivityDetailView {
+    private var tripMapStyle: TripMapStyle { TripMapStyle(rawValue: mapStyleRaw) ?? .day }
+
+    /// Room the app's floating tab bar takes at the bottom (it stays on screen over pushed pages).
+    private var tabBarReserve: CGFloat { isNew ? 0 : 84 }
+
+    /// The map fills the screen; stats float on its edge; details live in a draggable sheet.
+    var mapFirstLayout: some View {
+        GeometryReader { geo in
+            let inset = geo.safeAreaInsets
+            let fullW = geo.size.width + inset.leading + inset.trailing
+            let fullH = geo.size.height + inset.top + inset.bottom
+            let landscape = fullW > fullH
+            let sheetW = landscape ? min(440, fullW * 0.48) : fullW
+            let heights = sheetHeights(fullH: fullH, top: inset.top, bottom: inset.bottom, landscape: landscape)
+            let base = heights[sheetDetent.rawValue]
+            let live = min(max(base - sheetDrag, heights[0]), heights[2])
+            // Where the route is fitted: below the nav bar, above the sheet (or beside it in landscape), clear of the stat rail.
+            let showRail = sheetDetent == .peek || landscape
+            let mapInsets = EdgeInsets(top: inset.top + 8,
+                                       leading: (landscape ? sheetW : 0) + inset.leading + 16,
+                                       bottom: (landscape ? tabBarReserve : base) + 16,
+                                       trailing: inset.trailing + (showRail ? 96 : 16))
+
+            ZStack(alignment: .bottomLeading) {
+                Group {
+                    if coords.count > 1 { bigMap.safeAreaPadding(mapInsets) } else { noRouteBackdrop }
+                }
+                .frame(width: fullW, height: fullH)
+
+                // Light scrim only behind the status bar / back button, never over the route.
+                LinearGradient(colors: [.black.opacity(0.32), .clear], startPoint: .top, endPoint: .bottom)
+                    .frame(height: inset.top + 24)
+                    .frame(maxHeight: .infinity, alignment: .top)
+                    .allowsHitTesting(false)
+
+                if showRail {
+                    statRail
+                        .padding(.top, inset.top + 10)
+                        .padding(.trailing, inset.trailing + 10)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                        .transition(.move(edge: .trailing).combined(with: .opacity))
+                }
+
+                if sheetDetent != .large && coords.count > 1 {
+                    mapButtons
+                        .padding(.leading, (landscape ? sheetW : 0) + inset.leading + 12)
+                        .padding(.bottom, (landscape ? tabBarReserve : live) + 12)
+                        .transition(.opacity)
+                }
+
+                tripSheet(height: live, heights: heights, bottomInset: inset.bottom)
+                    .frame(width: sheetW)
+                    .padding(.leading, landscape ? inset.leading + 8 : 0)
+            }
+            .frame(width: fullW, height: fullH)
+            .ignoresSafeArea()
+            .animation(.spring(response: 0.4, dampingFraction: 0.86), value: sheetDetent)
+            .onPreferenceChange(TripHeaderHeightKey.self) { h in
+                if h > 0, abs(h - headerHeight) > 0.5 { headerHeight = h }
+            }
+        }
+    }
+
+    /// Peek (title + date + start → end), medium (stats + speeding), large (everything).
+    private func sheetHeights(fullH: CGFloat, top: CGFloat, bottom: CGFloat, landscape: Bool) -> [CGFloat] {
+        let large = fullH - top - (landscape ? 4 : 10)
+        let peek = min(headerHeight + bottom + tabBarReserve, large)
+        let medium = min(max(peek + 250, fullH * 0.55), large)
+        return [peek, medium, large]
+    }
+
+    private var noRouteBackdrop: some View {
+        ZStack {
+            LinearGradient(colors: [Theme.moss, Theme.forestDeep], startPoint: .top, endPoint: .bottom)
+            Image(systemName: activity.kind.symbol)
+                .font(.system(size: 90, weight: .bold))
+                .foregroundStyle(Theme.leafGradient)
+                .opacity(0.3)
+        }
+    }
+
+    // MARK: Map
+
+    private var routeLatSpan: Double {
+        let lats = coords.map(\.latitude)
+        guard let lo = lats.min(), let hi = lats.max() else { return 0.01 }
+        return max(hi - lo, 0.002)
+    }
+
+    private func clusters(_ zones: [OverZone]) -> [ZoneCluster] {
+        // Roughly one bubble's height (~8% of the visible map) in degrees.
+        let span = visibleSpan ?? routeLatSpan * 1.6
+        let dLat = span * 0.08
+        var out: [ZoneCluster] = []
+        for z in zones.sorted(by: { $0.peakOverMph > $1.peakOverMph }) {
+            let dLng = dLat / max(cos(z.peak.latitude * .pi / 180), 0.2)
+            if let i = out.firstIndex(where: { abs($0.coord.latitude - z.peak.latitude) < dLat && abs($0.coord.longitude - z.peak.longitude) < dLng * 1.6 }) {
+                out[i].count += 1
+            } else {
+                out.append(ZoneCluster(id: z.id, coord: z.peak, peakOverMph: z.peakOverMph, count: 1))
+            }
+        }
+        return out
+    }
+
+    /// Turn / lane-change icons only once you've zoomed in (or when there are just a few).
+    private var showLaneMarkers: Bool {
+        let n = activity.laneChanges.count
+        if n <= 6 { return true }
+        guard let v = visibleSpan else { return false }
+        return v < routeLatSpan * 0.5
+    }
+
+    private var bigMap: some View {
+        let night = tripMapStyle == .night
+        let casing: Color = night ? .black.opacity(0.75) : .white
+        return MapReader { proxy in
+            Map(position: $camera, interactionModes: .all) {
+                if activity.kind == .drive {
+                    MapPolyline(coordinates: coords)
+                        .stroke(casing, style: StrokeStyle(lineWidth: 11, lineCap: .round, lineJoin: .round))
+                    ForEach(SpeedZones.segments(activity.route)) { seg in
+                        MapPolyline(coordinates: seg.coords)
+                            .stroke(seg.band.color, style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
+                    }
+                    if showLaneMarkers {
+                        ForEach(activity.laneChanges, id: \.t) { c in
+                            Annotation("", coordinate: CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)) {
+                                LaneMarker(change: c).scaleEffect(0.72)
+                            }
+                            .annotationTitles(.hidden)
+                        }
+                    }
+                    ForEach(clusters(SpeedZones.overZones(activity.route))) { z in
+                        Annotation("", coordinate: z.coord, anchor: .bottom) {
+                            OverZoneBadge(overMph: z.peakOverMph)
+                                .scaleEffect(0.88, anchor: .bottom)
+                                .overlay(alignment: .topTrailing) {
+                                    if z.count > 1 {
+                                        Text("×\(z.count)")
+                                            .font(.system(size: 9, weight: .black, design: .rounded))
+                                            .foregroundStyle(.white)
+                                            .padding(.horizontal, 4).padding(.vertical, 1)
+                                            .background(Capsule().fill(.black.opacity(0.85)))
+                                            .offset(x: 8, y: -6)
+                                    }
+                                }
+                                .accessibilityLabel(z.count > 1 ? "\(z.count) stretches over the limit" : "Over the limit")
+                        }
+                        .annotationTitles(.hidden)
+                    }
+                } else {
+                    MapPolyline(coordinates: coords)
+                        .stroke(casing, style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                    MapPolyline(coordinates: coords)
+                        .stroke(Theme.leafGradient, style: StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
+                }
+                if let s = coords.first {
+                    Annotation("Start", coordinate: s) {
+                        Circle().fill(.white).frame(width: 16, height: 16)
+                            .overlay(Circle().stroke(Color(red: 0.1, green: 0.65, blue: 0.3), lineWidth: 4))
+                            .shadow(color: .black.opacity(0.35), radius: 3)
+                    }
+                }
+                if let e = coords.last {
+                    Annotation("Finish", coordinate: e) {
+                        Image(systemName: "flag.checkered.circle.fill").font(.system(size: 24))
+                            .foregroundStyle(Theme.forestDeep, Theme.gold)
+                            .shadow(color: .black.opacity(0.35), radius: 3)
+                    }
+                }
+                if let p = probe {
+                    Annotation("", coordinate: p.coordinate, anchor: .bottom) {
+                        SpeedCallout(point: p).environment(\.colorScheme, .dark)
+                    }
+                    .annotationTitles(.hidden)
+                }
+            }
+            .mapStyle(tripMapStyle.style)
+            .mapControls {
+                MapCompass()
+                MapScaleView()
+            }
+            .environment(\.colorScheme, night ? .dark : .light)
+            .onMapCameraChange(frequency: .onEnd) { ctx in
+                visibleSpan = ctx.region.span.latitudeDelta
+            }
+            .onTapGesture { pt in
+                guard activity.kind == .drive else { return }
+                let p = RouteProbe.nearest(activity.route, tap: pt, proxy: proxy)
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) { probe = p }
+                if let p {
+                    UISelectionFeedbackGenerator().selectionChanged()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 4) {
+                        if probe?.t == p.t { withAnimation(.easeOut) { probe = nil } }
+                    }
+                }
+            }
+        }
+    }
+
+    /// Map style menu + recenter, floating just above the sheet.
+    private var mapButtons: some View {
+        HStack(spacing: 10) {
+            Menu {
+                Picker("Map style", selection: $mapStyleRaw) {
+                    ForEach(TripMapStyle.allCases) { s in
+                        Label(s.title, systemImage: s.symbol).tag(s.rawValue)
+                    }
+                }
+            } label: {
+                mapButtonFace(tripMapStyle.symbol)
+            }
+            .accessibilityLabel("Map style, \(tripMapStyle.title)")
+
+            Button {
+                UISelectionFeedbackGenerator().selectionChanged()
+                withAnimation(.easeInOut(duration: 0.6)) { camera = .automatic }
+            } label: {
+                mapButtonFace("scope")
+            }
+            .accessibilityLabel("Recenter on route")
+        }
+        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+    }
+
+    private func mapButtonFace(_ symbol: String) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 17, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 44, height: 44)
+            .background(.ultraThinMaterial, in: Circle())
+            .background(Theme.forestDeep.opacity(0.55), in: Circle())
+            .overlay(Circle().strokeBorder(.white.opacity(0.18)))
+            .shadow(color: .black.opacity(0.3), radius: 6, y: 2)
+            .environment(\.colorScheme, .dark)
+    }
+
+    // MARK: Stat rail
+
+    private var statRail: some View {
+        let onFoot = activity.kind.isOnFoot
+        return VStack(alignment: .leading, spacing: 10) {
+            railItem(Format.distance(activity.distanceM), "Distance", "point.topleft.down.to.point.bottomright.curvepath")
+            railItem(Format.duration(activity.elapsedSec), "Time", "clock")
+            railItem(Format.paceOrSpeed(distance: activity.distanceM, seconds: max(activity.movingSec, 1), kind: activity.kind),
+                     onFoot ? "Pace" : "Avg", "speedometer")
+            if !onFoot { railItem(Format.speed(activity.maxSpeed), "Top", "gauge.with.dots.needle.67percent") }
+            if onFoot || activity.elevGainM >= 1 { railItem(Format.elevation(activity.elevGainM), "Climb", "mountain.2.fill") }
+        }
+        .padding(.horizontal, 10).padding(.vertical, 12)
+        .frame(maxWidth: 104, alignment: .leading)
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .background(Theme.forestDeep.opacity(0.55), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(.white.opacity(0.14)))
+        .shadow(color: .black.opacity(0.3), radius: 10, y: 4)
+        .environment(\.colorScheme, .dark)
+        .dynamicTypeSize(...DynamicTypeSize.xLarge)
+        .accessibilityElement(children: .combine)
+        .onTapGesture { sheetDetent = .medium }
+    }
+
+    private func railItem(_ value: String, _ label: String, _ symbol: String) -> some View {
+        VStack(alignment: .leading, spacing: 1) {
+            HStack(spacing: 4) {
+                Image(systemName: symbol).font(.system(size: 9, weight: .heavy)).foregroundStyle(Theme.glow)
+                Text(label.uppercased()).font(.system(size: 9, weight: .heavy, design: .rounded)).tracking(0.6)
+                    .foregroundStyle(Theme.textDim)
+            }
+            Text(value)
+                .font(.system(size: 16, weight: .heavy, design: .rounded)).monospacedDigit()
+                .foregroundStyle(.white)
+                .lineLimit(1).minimumScaleFactor(0.6)
+        }
+    }
+
+    // MARK: Sheet
+
+    private func tripSheet(height: CGFloat, heights: [CGFloat], bottomInset: CGFloat) -> some View {
+        let drag = DragGesture(minimumDistance: 8, coordinateSpace: .global)
+            .onChanged { v in sheetDrag = v.translation.height }
+            .onEnded { v in
+                let base = heights[sheetDetent.rawValue]
+                let projected = base - v.predictedEndTranslation.height
+                let target = TripSheetDetent.allCases.min { abs(heights[$0.rawValue] - projected) < abs(heights[$1.rawValue] - projected) } ?? .peek
+                withAnimation(.spring(response: 0.4, dampingFraction: 0.86)) {
+                    sheetDetent = target
+                    sheetDrag = 0
+                }
+            }
+
+        return VStack(spacing: 0) {
+            sheetHeader
+                .background(GeometryReader { g in Color.clear.preference(key: TripHeaderHeightKey.self, value: g.size.height) })
+                .contentShape(Rectangle())
+                .gesture(drag)
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: Theme.gap + 4) {
+                    statGrid
+                    if activity.kind == .drive { speedCard; laneCard }
+                    if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty { placesCard }
+                    lowerSections
+                }
+                .padding(.horizontal, Theme.pad)
+                .padding(.top, 4)
+                .padding(.bottom, tabBarReserve + bottomInset + 24)
+            }
+            .scrollIndicators(.hidden)
+            .scrollDisabled(sheetDetent != .large)
+        }
+        .frame(height: height, alignment: .top)
+        .frame(maxWidth: .infinity)
+        .background {
+            UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28, style: .continuous)
+                .fill(.ultraThinMaterial)
+            UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28, style: .continuous)
+                .fill(Theme.forestDeep.opacity(0.82))
+        }
+        .clipShape(UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28, style: .continuous))
+        .overlay {
+            UnevenRoundedRectangle(topLeadingRadius: 28, topTrailingRadius: 28, style: .continuous)
+                .strokeBorder(LinearGradient(colors: [.white.opacity(0.2), .clear], startPoint: .top, endPoint: .center), lineWidth: 1)
+                .allowsHitTesting(false)
+        }
+        .shadow(color: .black.opacity(0.35), radius: 18, y: -4)
+        .environment(\.colorScheme, .dark)
+        // Below full height the whole sheet drags; at full height the content scrolls and the header drags.
+        .gesture(drag, including: sheetDetent == .large ? .subviews : .all)
+    }
+
+    private var sheetHeader: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Button {
+                let next = TripSheetDetent(rawValue: (sheetDetent.rawValue + 1) % 3) ?? .peek
+                sheetDetent = next
+            } label: {
+                Capsule().fill(.white.opacity(0.4)).frame(width: 40, height: 5)
+                    .frame(maxWidth: .infinity).padding(.vertical, 6)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Trip details")
+            .accessibilityValue(sheetDetent == .peek ? "Collapsed" : sheetDetent == .medium ? "Half" : "Expanded")
+            .accessibilityAdjustableAction { dir in
+                switch dir {
+                case .increment: sheetDetent = TripSheetDetent(rawValue: min(sheetDetent.rawValue + 1, 2)) ?? .large
+                case .decrement: sheetDetent = TripSheetDetent(rawValue: max(sheetDetent.rawValue - 1, 0)) ?? .peek
+                @unknown default: break
+                }
+            }
+
+            HStack(spacing: 8) {
+                Image(systemName: activity.kind.symbol)
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(width: 24, height: 24)
+                    .background(Theme.leafGradient, in: Circle())
+                Text(Format.dayTime(activity.start).uppercased())
+                    .font(.system(size: Theme.scaled(11), weight: .heavy, design: .rounded)).tracking(1.2)
+                    .foregroundStyle(.white.opacity(0.8))
+                    .lineLimit(1).minimumScaleFactor(0.8)
+                Spacer(minLength: 0)
+                if isNew {
+                    Button("Done") { try? context.save(); dismiss() }
+                        .font(Theme.rounded(14, .heavy))
+                        .foregroundStyle(Theme.forestDeep)
+                        .padding(.horizontal, 14).padding(.vertical, 6)
+                        .background(Theme.leafGradient, in: Capsule())
+                }
+            }
+
+            TextField("", text: $activity.title, prompt: Text(activity.displayTitle).foregroundStyle(.white))
+                .font(Theme.title(26))
+                .foregroundStyle(.white)
+                .lineLimit(1)
+                .accessibilityLabel("Title")
+
+            if !activity.startPlace.isEmpty || !activity.endPlace.isEmpty {
+                HStack(spacing: 6) {
+                    Circle().fill(.white).frame(width: 7, height: 7)
+                    Text(activity.startPlace.isEmpty ? "—" : activity.startPlace).lineLimit(1)
+                    Image(systemName: "arrow.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Theme.textDim)
+                    Image(systemName: "flag.checkered").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.gold)
+                    Text(activity.endPlace.isEmpty ? "—" : activity.endPlace).lineLimit(1)
+                }
+                .font(Theme.rounded(13, .semibold))
+                .foregroundStyle(.white.opacity(0.85))
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("From \(activity.startPlace) to \(activity.endPlace)")
+            }
+
+            let together = groups.log(for: activity.id)
+            let trimmed = activity.trimmedSec >= 60 || activity.autoFinished
+            if isNew || trimmed || together != nil {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        if isNew { savedBadge }
+                        if let g = together {
+                            Label(g.withLabel, systemImage: "person.2.fill")
+                                .font(Theme.rounded(13, .bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 10).padding(.vertical, 5)
+                                .background(.white.opacity(0.12), in: Capsule())
+                                .accessibilityLabel("Go together \(g.withLabel)")
+                        }
+                        if trimmed { trimBadge }
+                    }
+                }
+            }
+        }
+        .padding(.horizontal, Theme.pad)
+        .padding(.bottom, 12)
+    }
+}
+#endif
 
 enum GPX {
     static func write(_ a: Activity) -> URL? {

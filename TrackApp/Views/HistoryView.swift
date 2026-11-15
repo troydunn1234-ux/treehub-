@@ -99,7 +99,10 @@ struct HistoryView: View {
                 guard let open = TrackDemo.open, ["monthly", "activity", "recap"].contains(open) else { return }
                 try? await Task.sleep(for: .seconds(1))
                 guard path.isEmpty else { return }
-                if open == "monthly" { path.append("monthly") } else if let a = activities.first { path.append(a.id) }
+                // "-openDrive" picks the first drive, so QA can see the speed-colored route.
+                let wantsDrive = ProcessInfo.processInfo.arguments.contains("-openDrive")
+                if open == "monthly" { path.append("monthly") }
+                else if let a = wantsDrive ? (activities.first { $0.kind == .drive } ?? activities.first) : activities.first { path.append(a.id) }
             }
             .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
                 openPendingActivity()
