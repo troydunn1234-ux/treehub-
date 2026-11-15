@@ -14,9 +14,12 @@ enum HugSessions {
     }
 
     private static func fromFeed(_ f: WellnessBridge.Session) -> LinkedSession {
-        LinkedSession(feedID: f.id, start: f.date, end: f.end ?? f.date.addingTimeInterval(f.minutes * 60),
-                      source: "Still Pointz", practice: f.practice, avgHR: f.avgHR, minHR: f.minHR,
-                      startHR: f.startHR, hrDrop: f.hrDrop, hrv: f.hrv)
+        var s = LinkedSession(feedID: f.id, start: f.date, end: f.end ?? f.date.addingTimeInterval(f.minutes * 60),
+                              source: "Still Pointz", practice: f.practice, avgHR: f.avgHR, minHR: f.minHR,
+                              startHR: f.startHR, hrDrop: f.hrDrop, hrv: f.hrv, respRate: f.respRate)
+        // Still Pointz' end heart rate (newer builds); older feeds leave it nil and Apple Health fills it.
+        s.endHR = f.endHR
+        return s
     }
 
     /// Every breath session within ±60 min of `date`: Still Pointz' feed first (practice names), then Apple Health
@@ -52,6 +55,7 @@ enum HugSessions {
             if out.source.isEmpty || out.feedID != nil { out.source = "Still Pointz" }
             out.avgHR = ff.avgHR ?? out.avgHR; out.minHR = ff.minHR ?? out.minHR
             out.startHR = ff.startHR ?? out.startHR; out.hrDrop = ff.hrDrop ?? out.hrDrop; out.hrv = ff.hrv ?? out.hrv
+            out.endHR = ff.endHR ?? out.endHR; out.respRate = ff.respRate ?? out.respRate
         }
         let hs = HealthService.shared
         guard hs.isAvailable, !DemoData.isOn else { return out }

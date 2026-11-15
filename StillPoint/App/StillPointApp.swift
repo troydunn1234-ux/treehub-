@@ -49,6 +49,8 @@ struct StillPointApp: App {
                 .onReceive(heat.$history.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }
         }
         .onChange(of: scenePhase) { _, phase in
+            // Leaving for Rootbound right after a session: publish now, not after the 1 s debounce.
+            if phase == .background { StillPointWellness.sync() }
             if phase == .active {
                 router.consumePending()
                 StillPointWellness.sync()

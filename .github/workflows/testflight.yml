@@ -44,6 +44,31 @@ jobs:
             echo "::error::App Intent text mentions 'Apple'. Reword it (say 'Watch' or 'Health') or App Store Connect will reject the build."
             exit 1
           fi
+
+      - name: InfoPlist strings check (every key needs a real English value, ITMS-90738)
+        run: |
+          # A key without an "en" value ships the raw key name as the English permission prompt, and Apple flags it.
+          python3 - <<'PY'
+          import json, pathlib, re, sys
+          bad = []
+          for f in pathlib.Path('.').rglob('InfoPlist.xcstrings'):
+              if any(p in ('node_modules', 'build', 'DerivedData') for p in f.parts): continue
+              try:
+                  strings = json.loads(f.read_text(encoding='utf-8')).get('strings', {})
+              except Exception as e:
+                  bad.append(f"{f}: not valid JSON ({e})"); continue
+              for key, entry in strings.items():
+                  unit = ((entry or {}).get('localizations', {}).get('en') or {}).get('stringUnit') or {}
+                  value = unit.get('value')
+                  if not isinstance(value, str) or not value.strip() or value.strip() == key:
+                      bad.append(f"{f}: '{key}' has no English value")
+          for f in pathlib.Path('.').rglob('en.lproj/InfoPlist.strings'):
+              for m in re.finditer(r'"([^"]+)"\s*=\s*"((?:[^"\\]|\\.)*)"\s*;', f.read_text(encoding='utf-8', errors='replace')):
+                  if not m.group(2).strip() or m.group(2).strip() == m.group(1):
+                      bad.append(f"{f}: '{m.group(1)}' has no English value")
+          for b in bad: print(f"::error::{b}")
+          sys.exit(1 if bad else 0)
+          PY
       - name: Pick newest Xcode
         run: |
           sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
