@@ -38,27 +38,33 @@ enum Theme {
                                              startPoint: .topLeading, endPoint: .bottomTrailing)
     static let leafGradient = LinearGradient(colors: [glow, leaf], startPoint: .topLeading, endPoint: .bottomTrailing)
 
-    #if TRACK_APP
-    static func title(_ size: CGFloat = 30) -> Font { .system(size: scaled(size), weight: .heavy, design: .rounded) }
-    /// Roamr follows Dynamic Type: sizes scale with the text-size setting, capped so the big
-    /// fixed-layout numbers (speedometer, HUD) don't overflow.
+    /// Both apps follow Dynamic Type: sizes scale with the text-size setting, capped so big fixed-layout
+    /// numbers (speedometer, HUD, hero titles) don't overflow.
     static func scaled(_ size: CGFloat) -> CGFloat {
         let s = UIFontMetrics(forTextStyle: .body).scaledValue(for: size)
+        #if TRACK_APP
         return min(s, size * (size >= 28 ? 1.15 : 1.6))
+        #else
+        return min(s, size * (size >= 28 ? 1.15 : 1.45))
+        #endif
     }
+    #if TRACK_APP
+    static func title(_ size: CGFloat = 30) -> Font { .system(size: scaled(size), weight: .heavy, design: .rounded) }
     #else
-    static func title(_ size: CGFloat = 30) -> Font { .system(size: size, weight: .bold, design: .serif) }
+    static func title(_ size: CGFloat = 30) -> Font { .system(size: scaled(size), weight: .bold, design: .serif) }
     #endif
 
     /// Spacing scale (8-pt grid) so every screen lines up.
     static let pad: CGFloat = 20
     static let gap: CGFloat = 14
-    static let radius: CGFloat = 26
     #if TRACK_APP
-    static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
+    static let radius: CGFloat = 26
     #else
-    static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: size, weight: weight, design: .rounded) }
+    /// Rootbound: one corner radius for cards, a smaller one for tiles and rows inside them.
+    static let radius: CGFloat = 22
+    static let innerRadius: CGFloat = 14
     #endif
+    static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
 }
 
 // MARK: - Background with drifting leaves
@@ -164,7 +170,7 @@ struct GlassCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: Theme.radius, style: .continuous)
                     .strokeBorder(LinearGradient(colors: [Color.white.opacity(0.22), Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom), lineWidth: 1)
             }
-            .shadow(color: .black.opacity(0.28), radius: 18, y: 10)
+            .shadow(color: .black.opacity(0.22), radius: 14, y: 8)
     }
 }
 
@@ -201,14 +207,15 @@ struct StatTile: View {
             }
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.system(size: Theme.scaled(22), weight: .bold, design: .rounded))
                     .foregroundStyle(.white)
                     .contentTransition(.numericText())
                     .minimumScaleFactor(0.6).lineLimit(1)
                 Text(label.uppercased())
-                    .font(.system(size: 10, weight: .bold, design: .rounded)).tracking(1)
+                    .font(.system(size: Theme.scaled(10), weight: .bold, design: .rounded)).tracking(0.8)
                     .foregroundStyle(Theme.textDim)
-                    .lineLimit(1)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.8)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

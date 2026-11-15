@@ -6,6 +6,9 @@ import MapKit
 struct HomeView: View {
     @Binding var tab: AppTab
     @Binding var showHugLog: Bool
+    /// Opens "Hug from Watch — pick tree" (RootView owns it).
+    var openWatchHug: () -> Void = {}
+    @ObservedObject private var watchInbox = WatchHugInbox.shared
     @Query(sort: \Hug.date, order: .reverse) private var hugs: [Hug]
     @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
     @State private var showSettings = false
@@ -19,15 +22,19 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: Theme.gap + 6) {
                     hero
                     Group {
+                        // 1. You: level + streak, then the two things to do.
                         levelCard.offset(y: -54).padding(.bottom, -54)
-                        if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         quickActions
-                        NatureRollEntryCard()
+                        if !watchInbox.pending.isEmpty { watchHugCard }
+                        // 2. Your numbers, always recomputed from the hugs + linked sessions.
                         statsGrid
                         CalmMinutesCard(hugs: hugs)
+                        // 3. Memories and goals.
                         if hugs.isEmpty { firstHugCard } else { recentHugs }
+                        if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         nextBadges
                         if !activities.isEmpty { recentMoves }
+                        NatureRollEntryCard()
                     }
                     .padding(.horizontal, Theme.pad)
                 }
@@ -113,21 +120,23 @@ struct HomeView: View {
             Button { showHugLog = true } label: {
                 Label("Hug a tree", systemImage: "heart.fill")
                     .font(Theme.rounded(16, .bold))
+                    .lineLimit(1).minimumScaleFactor(0.75)
                     .foregroundStyle(Theme.forestDeep)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(Theme.leafGradient, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .shadow(color: Theme.glow.opacity(0.35), radius: 12, y: 4)
+                    .padding(.vertical, 15)
+                    .background(Theme.leafGradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .shadow(color: Theme.glow.opacity(0.25), radius: 10, y: 4)
             }
             .pressable()
             Button { withAnimation(.spring(response: 0.38, dampingFraction: 0.8)) { tab = .track } } label: {
                 Label("Go for a stroll", systemImage: "figure.walk")
                     .font(Theme.rounded(16, .bold))
+                    .lineLimit(1).minimumScaleFactor(0.75)
                     .foregroundStyle(.white)
                     .frame(maxWidth: .infinity)
-                    .padding(.vertical, 16)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+                    .padding(.vertical, 15)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
             }
             .pressable()
         }
@@ -172,14 +181,36 @@ struct HomeView: View {
 
     private var statsGrid: some View {
         let trees = Set(hugs.map(\.treeID)).count
-        let minutes = hugs.reduce(0) { $0 + $1.durationMin }
+        let minutes = hugs.reduce(0) { $0 + $1.breathMinutes }
         let moved = activities.reduce(0) { $0 + $1.distanceM }
-        return LazyVGrid(columns: [GridItem(.flexible(), spacing: 12), GridItem(.flexible(), spacing: 12)], spacing: 12) {
-            StatTile(value: "\(hugs.count)", label: "Hugs", symbol: "heart.fill", tint: Color(red: 1, green: 0.5, blue: 0.6))
+        return LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+            StatTile(value: "\(hugs.count)", label: "Hugs", symbol: "heart.fill")
             StatTile(value: "\(trees)", label: "Tree friends", symbol: "tree.fill")
-            StatTile(value: Format.minutes(minutes), label: "Breathwork", symbol: "wind", tint: Theme.sky)
-            StatTile(value: Format.distance(moved), label: "Strolled", symbol: "figure.walk", tint: Theme.gold)
+            StatTile(value: Format.minutes((minutes * 10).rounded() / 10), label: "Breathwork at trees", symbol: "wind", tint: Theme.sky)
+            StatTile(value: Format.distance(moved), label: "Strolled", symbol: "figure.walk")
         }
+    }
+
+    /// A hug timed on the Watch that still needs its tree.
+    private var watchHugCard: some View {
+        Button(action: openWatchHug) {
+            GlassCard(padding: 14) {
+                HStack(spacing: 12) {
+                    Image(systemName: "applewatch")
+                        .font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.forestDeep)
+                        .frame(width: 40, height: 40)
+                        .background(Theme.leafGradient, in: Circle())
+                    VStack(alignment: .leading, spacing: 2) {
+                        let n = watchInbox.pending.count
+                        Text(n == 1 ? "Hug from Watch" : "\(n) hugs from Watch").font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                        Text("Pick the tree to log it").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.glow)
+                }
+            }
+        }
+        .pressable()
     }
 
     private var firstHugCard: some View {
@@ -189,7 +220,7 @@ struct HomeView: View {
                     Image(systemName: "tree.fill").font(.system(size: 40)).foregroundStyle(Theme.leafGradient)
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Log your first hug").font(Theme.rounded(18, .bold)).foregroundStyle(.white)
-                        Text("Snap the tree, a selfie, and your breathwork stats.")
+                        Text("Snap the tree; your Apple Watch and Still Pointz sessions fill in the rest.")
                             .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     }
                     Spacer()

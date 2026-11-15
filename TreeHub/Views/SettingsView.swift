@@ -65,9 +65,9 @@ struct SettingsView: View {
                     }
                     if !healthStatus.isEmpty { Text(healthStatus).font(.footnote).foregroundStyle(.secondary) }
                 } header: {
-                    Text("Garmin · Whoop · Strava")
+                    Text("Apple Watch")
                 } footer: {
-                    Text("These apps share into Apple Health. In Garmin Connect: More → Settings → Connected Apps → Apple Health. In Whoop and Strava, turn on Apple Health in their settings. Rootbound then reads heart rate, breathing rate, mindful minutes and workouts.")
+                    Text("Your Apple Watch saves heart rate, HRV, breathing rate and mindful minutes to Apple Health. Rootbound reads them to show how each hug and breath session calms you. Open Rootbound on your Watch and tap Start hug to time a hug with live heart rate; your iPhone then asks which tree it was.")
                 }
                 Section {
                     if let exportURL {
@@ -144,9 +144,25 @@ enum DataExport {
             if let v = h.minHR { r["minHR"] = v }
             if let v = h.maxHR { r["maxHR"] = v }
             if let v = h.respRate { r["respRate"] = v }
-            if let v = h.stressStart { r["stressStart"] = v }
-            if let v = h.stressEnd { r["stressEnd"] = v }
-            if let v = h.bodyBattery { r["bodyBattery"] = v }
+            if let v = h.hrStart { r["hrStart"] = v }
+            if let v = h.hrEnd { r["hrEnd"] = v }
+            if let v = h.hrv { r["hrv"] = v }
+            if h.fromWatch { r["fromWatch"] = true }
+            let sessions = h.linkedSessions
+            if !sessions.isEmpty {
+                r["breathSessions"] = sessions.map { s -> [String: Any] in
+                    var o: [String: Any] = ["start": iso.string(from: s.start), "end": iso.string(from: s.end),
+                                            "minutes": s.minutes, "source": s.source]
+                    if let v = s.practice { o["practice"] = v }
+                    if let v = s.avgHR { o["avgHR"] = v }
+                    if let v = s.minHR { o["minHR"] = v }
+                    if let v = s.startHR { o["startHR"] = v }
+                    if let v = s.hrDrop { o["hrDrop"] = v }
+                    if let v = s.hrv { o["hrv"] = v }
+                    if let v = s.respRate { o["respRate"] = v }
+                    return o
+                }
+            }
             return r
         }
         let actRows: [[String: Any]] = activities.map { a in
@@ -179,7 +195,7 @@ extension DataExport {
     /// Two spreadsheet-ready files: every hug, and every stroll or hike.
     static func csv(hugs: [Hug], activities: [Activity]) -> [URL] {
         let iso = ISO8601DateFormatter()
-        var h = "date,tree,species,place,lat,lng,minutes,barefoot,tags,weather,mood_before,mood_after,exercise,avg_hr,min_hr,max_hr,resp_rate,stress_start,stress_end,body_battery,xp,leaf,notes\n"
+        var h = "date,tree,species,place,lat,lng,minutes,barefoot,tags,weather,mood_before,mood_after,exercise,avg_hr,min_hr,max_hr,resp_rate,hr_start,hr_end,hrv_ms,breath_sessions,breath_minutes,xp,leaf,notes\n"
         for x in hugs {
             let row: [String] = [
                 iso.string(from: x.date), x.treeName, x.species, x.placeName,
@@ -187,7 +203,8 @@ extension DataExport {
                 x.barefoot ? "yes" : "no", x.tags.joined(separator: " "), x.weather,
                 x.moodBefore > 0 ? "\(x.moodBefore)" : "", x.moodAfter > 0 ? "\(x.moodAfter)" : "", x.exercise,
                 num(x.avgHR, "%.0f"), num(x.minHR, "%.0f"), num(x.maxHR, "%.0f"), num(x.respRate),
-                num(x.stressStart, "%.0f"), num(x.stressEnd, "%.0f"), num(x.bodyBattery, "%.0f"),
+                num(x.hrStart, "%.0f"), num(x.hrEnd, "%.0f"), num(x.hrv, "%.0f"),
+                x.linkedSessions.map(\.title).joined(separator: " + "), num(x.linkedSessions.isEmpty ? nil : x.linkedSessions.totalMinutes),
                 "\(x.xp)", LeafType.find(x.leafKey)?.name ?? x.leafKey, x.notes,
             ]
             h += row.map(cell).joined(separator: ",") + "\n"

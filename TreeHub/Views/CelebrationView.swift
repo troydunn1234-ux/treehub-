@@ -69,6 +69,17 @@ struct CelebrationView: View {
                         }
                     }
 
+                    if !data.sessions.isEmpty {
+                        GlassCard {
+                            VStack(alignment: .leading, spacing: 10) {
+                                SectionHeader(title: data.sessions.count == 1 ? "Your breath session" : "Your \(data.sessions.count) breath sessions",
+                                              symbol: "wind")
+                                if data.sessions.count > 1 { LinkedSessionTotals(sessions: data.sessions) }
+                                ForEach(data.sessions) { s in LinkedSessionCard(session: s) }
+                            }
+                        }
+                    }
+
                     if let leaf = data.leaf, step >= 1 {
                         VStack(spacing: 10) {
                             Text(leafFlipped ? "You found a leaf!" : "A leaf is falling…")

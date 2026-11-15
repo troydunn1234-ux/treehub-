@@ -149,6 +149,9 @@ enum WellnessLinks {
         return c.url ?? URL(string: "stillpoint://session")!
     }
 
+    /// Still Pointz' Journey tab (Rootbound Home "calm minutes" card).
+    static let stillPointJourney = URL(string: "stillpoint://journey")!
+
     /// Rootbound's hug logger.
     static let hugLogger = URL(string: "rootbound://hug")!
     /// Rootbound, just opened.

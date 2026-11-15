@@ -11,9 +11,10 @@ struct HugDetailView: View {
     @State private var editing = false
     @State private var confirmDelete = false
     @State private var fullPhoto: IdentifiedData?
+    @State private var refreshing = false
 
     private var photos: [(String, Data)] {
-        [("Tree", hug.treePhoto), ("You + Tree", hug.selfiePhoto), ("Garmin", hug.garminPhoto)]
+        [("Tree", hug.treePhoto), ("You + Tree", hug.selfiePhoto), ("Screenshot", hug.garminPhoto)]
             .compactMap { label, d in d.map { (label, $0) } }
     }
 
@@ -33,25 +34,24 @@ struct HugDetailView: View {
                 if hug.durationMin > 0 || hug.hasStats {
                     GlassCard {
                         VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: hug.exercise.isEmpty ? "Breathwork" : hug.exercise, symbol: "wind")
-                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
+                            SectionHeader(title: "The hug", symbol: hug.fromWatch ? "applewatch" : "heart.fill")
+                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
                                 if hug.durationMin > 0 { StatTile(value: Format.minutes(hug.durationMin), label: "Time") }
                                 if hug.avgHR != nil { StatTile(value: Format.number(hug.avgHR), label: "Avg HR") }
                                 if hug.minHR != nil { StatTile(value: Format.number(hug.minHR), label: "Low HR") }
                                 if hug.maxHR != nil { StatTile(value: Format.number(hug.maxHR), label: "Max HR") }
+                                if let drop = hug.hrDrop { StatTile(value: String(format: "%+.0f", -drop), label: "HR change", tint: Theme.sky) }
+                                if let v = hug.hrv { StatTile(value: String(format: "%.0f ms", v), label: "HRV", tint: Theme.sky) }
                                 if hug.respRate != nil { StatTile(value: Format.number(hug.respRate), label: "Breaths/min") }
-                                if let a = hug.stressStart, let b = hug.stressEnd {
-                                    StatTile(value: "\(Format.number(a))→\(Format.number(b))", label: "Stress", tint: Theme.sky)
-                                } else if hug.stressStart != nil || hug.stressEnd != nil {
-                                    StatTile(value: Format.number(hug.stressEnd ?? hug.stressStart), label: "Stress")
-                                }
-                                if let bb = hug.bodyBattery {
-                                    StatTile(value: (bb > 0 ? "+" : "") + Format.number(bb), label: "Body Battery")
-                                }
+                            }
+                            if hug.fromWatch {
+                                Text("Timed on your Apple Watch").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
                             }
                         }
                     }
                 }
+
+                breathworkSection
 
                 if hug.moodBefore > 0 || hug.moodAfter > 0 {
                     GlassCard {
@@ -103,7 +103,9 @@ struct HugDetailView: View {
         .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
-        .sheet(isPresented: $editing) { HugLogView(editing: hug) }
+        .sheet(isPresented: $editing, onDismiss: { Task { await refresh() } }) { HugLogView(editing: hug) }
+        // Re-read Still Pointz and Apple Health for the linked sessions (late Watch heart data fills in).
+        .task { await refresh() }
         .fullScreenCover(item: $fullPhoto) { item in
             ZStack(alignment: .topTrailing) {
                 Color.black.ignoresSafeArea()
@@ -129,6 +131,12 @@ struct HugDetailView: View {
         } message: {
             Text("Its XP and leaf go with it.")
         }
+    }
+
+    private func refresh() async {
+        refreshing = true
+        await HugSessions.refresh(hug, context: context)
+        refreshing = false
     }
 
     /// Swipeable full-bleed photos with the tree's name over them.
@@ -189,6 +197,27 @@ struct HugDetailView: View {
             }
             .padding(.horizontal, Theme.pad)
             .padding(.bottom, 4)
+        }
+    }
+
+    /// Every Still Pointz / Health session linked to this hug, one card each, with totals. Refreshed on open.
+    @ViewBuilder private var breathworkSection: some View {
+        let sessions = hug.linkedSessions
+        if !sessions.isEmpty || refreshing {
+            GlassCard {
+                VStack(alignment: .leading, spacing: 12) {
+                    HStack {
+                        SectionHeader(title: "Breathwork", symbol: "wind")
+                        if refreshing { ProgressView().controlSize(.small) }
+                    }
+                    if sessions.count > 1 { LinkedSessionTotals(sessions: sessions) }
+                    ForEach(sessions) { s in LinkedSessionCard(session: s) }
+                    if sessions.isEmpty {
+                        Text("Looking for breath sessions around this hug…")
+                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    }
+                }
+            }
         }
     }
 

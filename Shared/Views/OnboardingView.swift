@@ -203,8 +203,8 @@ struct OnboardingView: View {
         return [
             OnboardingFeature(id: "hug", symbol: "tree.fill", title: "Hug & log trees",
                               detail: "Snap the tree and a selfie, then pin it on the map.", tint: Theme.leaf),
-            OnboardingFeature(id: "breathe", symbol: "wind", title: "Breathe with your Garmin",
-                              detail: "Heart rate and breathing from Apple Health.", tint: Theme.sky),
+            OnboardingFeature(id: "breathe", symbol: "applewatch", title: "Hug with your Apple Watch",
+                              detail: "Live heart rate during the hug, plus your breath sessions.", tint: Theme.sky),
             OnboardingFeature(id: "grow", symbol: "leaf.fill", title: "Grow your grove",
                               detail: "Earn XP, badges and collectible leaves.", tint: Theme.gold),
         ]
@@ -347,7 +347,7 @@ struct OnboardingView: View {
     private var healthFlow: some View {
         GlassCard(padding: 16) {
             HStack(alignment: .top, spacing: 6) {
-                flowNode("Garmin Connect", symbol: "applewatch", tint: Theme.sky)
+                flowNode(Copy.watchSource, symbol: "applewatch", tint: Theme.sky)
                 flowArrow
                 flowNode("Apple Health", symbol: "heart.fill", tint: Color.pink)
                 flowArrow
@@ -355,7 +355,7 @@ struct OnboardingView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Garmin Connect → Apple Health → \(AppInfo.name)")
+        .accessibilityLabel("\(Copy.watchSource) → Apple Health → \(AppInfo.name)")
     }
 
     private func flowNode(_ title: String, symbol: String, tint: Color) -> some View {
@@ -499,6 +499,7 @@ private enum Copy {
     static let locationMessage: String = "Roamr uses GPS to draw your route as you go, and keeps recording with your phone in your pocket."
     static let healthHeadline: String = "Bring your\nGarmin along."
     static let healthMessage: String = "Garmin and Whoop sync workouts and heart rate into Apple Health. Roamr reads them so your Garmin workouts land in your history."
+    static let watchSource: String = "Garmin Connect"
     #else
     static let appSymbol: String = "tree.fill"
     static let welcomeHeadline: String = "Grow a grove,\none hug at a time."
@@ -507,8 +508,9 @@ private enum Copy {
     static let featuresMessage: String = "Everything you need to make time outside count."
     static let locationHeadline: String = "Pin every tree,\ntrace every stroll."
     static let locationMessage: String = "Rootbound uses GPS to pin the trees you hug and draw your strolls and hikes, even with your phone locked."
-    static let healthHeadline: String = "Bring your\nGarmin along."
-    static let healthMessage: String = "Garmin and Whoop sync heart rate, breathing and mindful minutes into Apple Health. Rootbound reads them to show your breathwork with every hug."
+    static let healthHeadline: String = "Bring your\nApple Watch along."
+    static let healthMessage: String = "Your Apple Watch saves heart rate, HRV, breathing and mindful minutes to Apple Health. Rootbound reads them to show how every hug and breath session calms you."
+    static let watchSource: String = "Apple Watch"
     #endif
 }
 

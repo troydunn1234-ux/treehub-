@@ -37,6 +37,12 @@ struct StillPointApp: App {
                     if let kind = WidgetBridge.heatKind(from: url) { router.handle(heat: kind) }
                     // Rootbound "Breathe with this tree": stillpoint://session?practice=…&minutes=3&context=tree&name=…
                     if let req = StillPointWellness.sessionRequest(from: url) { router.handle(session: req) }
+                    // Rootbound Home "calm minutes" card: stillpoint://journey opens the Journey tab.
+                    if url.scheme?.lowercased() == "stillpoint", url.host?.lowercased() == "journey" {
+                        router.showSettings = false
+                        router.homePath = NavigationPath()
+                        router.tab = 2
+                    }
                 }
                 // Share sessions with Rootbound and pull in its tree hugs (Shared/Wellness/WellnessBridge.swift).
                 .onReceive(log.$records.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }

@@ -109,20 +109,56 @@ struct BreatheWithTreeButton: View {
     }
 }
 
+extension BreatheWithTreeButton {
+    /// "Get Still Pointz" card with its App Store link (when Still Pointz isn't installed).
+    @MainActor
+    static func storeCard(title: String, openURL: OpenURLAction) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: "wind")
+                .font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.sky)
+                .frame(width: 40, height: 40)
+                .background(Theme.sky.opacity(0.15), in: Circle())
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                Text("Still Pointz isn't on this iPhone yet. It guides short breaths and keeps your Journey.")
+                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+            if let store = WellnessLinks.storeURL(bundleID: WellnessLinks.stillPointBundleID) {
+                Button("Get") { openURL(store) }
+                    .font(Theme.rounded(14, .heavy))
+                    .foregroundStyle(Theme.forestDeep)
+                    .padding(.horizontal, 14).padding(.vertical, 7)
+                    .background(Theme.sky, in: Capsule())
+                    .accessibilityLabel("Get Still Pointz on the App Store")
+            }
+        }
+        .padding(12)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+    }
+}
+
 /// Home: Still Pointz minutes this week and today's Breath & Bark. Hidden entirely when Still Pointz has shared nothing.
 struct CalmMinutesCard: View {
     let hugs: [Hug]
     @State private var sessions: [WellnessBridge.Session] = []
+    @State private var showGet = false
+    @Environment(\.openURL) private var openURL
     @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
-        Group {
+        VStack(spacing: 8) {
             if !sessions.isEmpty {
                 let weekAgo = Calendar.current.date(byAdding: .day, value: -6, to: Calendar.current.startOfDay(for: Date())) ?? Date()
                 let week = sessions.filter { $0.date >= weekAgo }.reduce(0) { $0 + $1.minutes }
                 let todayKey = WellnessBridge.dayKey(Date())
                 let breathedToday = sessions.contains { WellnessBridge.dayKey($0.date) == todayKey }
                 let huggedToday = hugs.contains { WellnessBridge.dayKey($0.date) == todayKey }
+                // Tap: Still Pointz opens on its Journey tab (App Store card when it isn't installed).
+                Button {
+                    if !WellnessLinks.open(WellnessLinks.stillPointJourney) { showGet = true }
+                } label: {
                 GlassCard(padding: 16) {
                     HStack(spacing: 14) {
                         Image(systemName: "wind")
@@ -132,7 +168,7 @@ struct CalmMinutesCard: View {
                         VStack(alignment: .leading, spacing: 3) {
                             Text("\(Format.minutes(week)) calm minutes")
                                 .font(Theme.rounded(17, .bold)).foregroundStyle(.white)
-                            Text("This week in Still Pointz")
+                            Text("This week in Still Pointz · Open Journey")
                                 .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
                             if let t = latestTree {
                                 Text(t).font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.sky)
@@ -144,9 +180,15 @@ struct CalmMinutesCard: View {
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 0)
+                        Image(systemName: "chevron.right")
+                            .font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.textDim)
                     }
                 }
                 .accessibilityElement(children: .combine)
+                }
+                .buttonStyle(.plain)
+                .accessibilityHint("Opens your Journey in Still Pointz")
+                if showGet { BreatheWithTreeButton.storeCard(title: "Open in Still Pointz", openURL: openURL) }
             }
         }
         .onAppear(perform: reload)
@@ -190,7 +232,7 @@ struct TreeBreath: Identifiable, Hashable {
     var minHR: Double?
     var hrDrop: Double?
     var hrv: Double?
-    /// "Still Pointz" or the Health source (Garmin Connect, Mindfulness…).
+    /// "Still Pointz" or the Health source (Mindfulness, a watch app…).
     var source: String
     var practice: String?
     var tagged: Bool
@@ -277,7 +319,7 @@ enum TreeBreaths {
         // Untagged: sessions that actually overlap a hug of this tree. The hug logger sets the hug's time and length
         // to the session picked for it, so only that one shows here (not the others done the same half hour).
         // Still Pointz' own feed first (practice names; covers sessions not saved to Health), then Apple Health
-        // mindful sessions (older Still Pointz builds, Watch, Garmin) and Garmin-style breathwork workouts.
+        // mindful sessions (older Still Pointz builds, Apple Watch) and Mind & Body breathwork workouts.
         var seen = out.map(\.start)
         let feed = (WellnessBridge.stillPoint()?.sessions ?? []).filter { $0.isCalm && $0.treeID == nil && $0.minutes >= 1 }
         for hug in tree.hugs.prefix(15) {

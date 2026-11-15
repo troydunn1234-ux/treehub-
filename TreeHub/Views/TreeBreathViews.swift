@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// "Breath sessions" on a tree's page: Still Pointz breaths done with this tree (and Health mindful sessions
-/// that overlapped its hugs), with heart data and totals.
+/// "Breath sessions" on a tree's page: Still Pointz breaths done with this tree plus every session linked to
+/// its hugs, with heart data and totals.
 struct TreeBreathSection: View {
     let treeName: String
     let breaths: [TreeBreath]
@@ -10,6 +10,10 @@ struct TreeBreathSection: View {
     private var avgDrop: Double? {
         let d = breaths.compactMap(\.hrDrop)
         return d.isEmpty ? nil : d.reduce(0, +) / Double(d.count)
+    }
+    private var avgHR: Double? {
+        let v = breaths.compactMap(\.avgHR)
+        return v.isEmpty ? nil : v.reduce(0, +) / Double(v.count)
     }
     private var avgHRV: Double? {
         let v = breaths.compactMap(\.hrv)
@@ -20,14 +24,15 @@ struct TreeBreathSection: View {
         VStack(alignment: .leading, spacing: 12) {
             SectionHeader(title: "Breath sessions", symbol: "wind")
             if breaths.isEmpty {
-                Text("Tap \"Breathe with this tree\" for a short grounding breath in Still Pointz. It lands here with your heart rate.")
+                Text("Link Still Pointz sessions when you log a hug, or tap \"Breathe with this tree\". They land here with your heart rate.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    StatTile(value: Format.minutes(totalMinutes), label: "Mindful")
-                    StatTile(value: avgDrop.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Calm effect")
-                    StatTile(value: avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "Avg HRV")
+                LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
+                    StatTile(value: Format.minutes((totalMinutes * 10).rounded() / 10), label: "\(breaths.count) session\(breaths.count == 1 ? "" : "s")", tint: Theme.sky)
+                    StatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", tint: Theme.sky)
+                    StatTile(value: avgDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "HR drop", tint: Theme.sky)
+                    StatTile(value: avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "Avg HRV", tint: Theme.sky)
                 }
                 ForEach(breaths.prefix(20)) { b in TreeBreathRow(breath: b) }
             }
@@ -58,8 +63,8 @@ struct TreeBreathRow: View {
             }
             Spacer(minLength: 0)
         }
-        .padding(10)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+        .padding(12)
+        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
         .accessibilityElement(children: .combine)
     }
 

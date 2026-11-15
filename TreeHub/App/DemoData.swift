@@ -52,9 +52,13 @@ enum DemoData {
             h.minHR = 51 + Double(i)
             h.maxHR = 72
             h.respRate = 5.5 + Double(i) * 0.3
-            h.stressStart = 41
-            h.stressEnd = 19
-            h.bodyBattery = 4
+            h.hrStart = 68 + Double(i)
+            h.hrEnd = 55 + Double(i)
+            h.hrv = 48 - Double(i) * 2
+            h.linkedSessions = [LinkedSession(start: h.date, end: h.date.addingTimeInterval(p.3 * 60), source: "Still Pointz",
+                                              practice: "rooted-breath", avgHR: 58 + Double(i), minHR: 51 + Double(i),
+                                              startHR: 68 + Double(i), hrDrop: 17, hrv: 48 - Double(i) * 2,
+                                              respRate: 5.5 + Double(i) * 0.3)]
             h.moodBefore = 3
             h.moodAfter = p.6
             h.weather = "Sunny"

@@ -24,6 +24,8 @@ struct TreeHubApp: App {
 
     init() {
         UserDefaults.standard.register(defaults: ["useMetric": false])
+        // Hugs timed on the Rootbound Watch app arrive here (WatchHugs.swift).
+        WatchHugInbox.shared.activate()
     }
 
     var body: some Scene {
@@ -41,6 +43,12 @@ struct TreeHubApp: App {
 
 enum AppTab: String, Hashable { case home, track, trees, collection }
 
+struct WatchHugLog: Identifiable {
+    let id = UUID()
+    let hug: WatchHug
+    let treeID: UUID?
+}
+
 struct RootView: View {
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.scenePhase) private var scenePhase
@@ -49,13 +57,17 @@ struct RootView: View {
     @State private var tab: AppTab = .home
     @State private var showHugLog = false
     @State private var demoCelebration: CelebrationData?
+    @ObservedObject private var watchInbox = WatchHugInbox.shared
+    /// "Hug from Watch — pick tree", then the hug logger filled in with the Watch data.
+    @State private var watchPrompt: WatchHug?
+    @State private var watchLog: WatchHugLog?
 
     var body: some View {
         ZStack(alignment: .bottom) {
             Theme.forestDeep.ignoresSafeArea()
             Group {
                 switch tab {
-                case .home: HomeView(tab: $tab, showHugLog: $showHugLog)
+                case .home: HomeView(tab: $tab, showHugLog: $showHugLog, openWatchHug: openWatchHug)
                 case .track: TrackView(onHug: { showHugLog = true })
                 case .trees: TreesView()
                 case .collection: CollectionView()
@@ -79,6 +91,19 @@ struct RootView: View {
         .sheet(isPresented: $showHugLog) {
             HugLogView(editing: nil, strollID: tracker.isActive ? tracker.sessionID : nil)
         }
+        .sheet(item: $watchPrompt) { h in
+            WatchHugPrompt(hug: h, onPick: { tree in
+                watchPrompt = nil
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { watchLog = WatchHugLog(hug: h, treeID: tree) }
+            }, onDiscard: {
+                watchInbox.remove(h.id)
+                watchPrompt = nil
+            })
+        }
+        .sheet(item: $watchLog) { w in
+            HugLogView(editing: nil, watchHug: w.hug, preselectTree: w.treeID)
+        }
+        .onChange(of: watchInbox.pending.count) { old, new in if new > old { openWatchHug() } }
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist(); RootboundWellness.publish(hugs: hugs) }
             if phase == .active { consumePendingAction(); RootboundWellness.publish(hugs: hugs); NatureRollStore.shared.scanIfAllowed() }
@@ -122,10 +147,17 @@ struct RootView: View {
             if tracker.recoveredFromCrash { tab = .track }
             if DemoData.isOn { setUpDemo() }
             consumePendingAction()
+            if !DemoData.isOn { openWatchHug() }
         }
         .fullScreenCover(item: $demoCelebration) { c in
             CelebrationView(data: c) { demoCelebration = nil }
         }
+    }
+
+    /// Shows the newest Watch hug that still needs a tree (unless another sheet is already up).
+    private func openWatchHug() {
+        guard let h = watchInbox.pending.first, watchPrompt == nil, watchLog == nil, !showHugLog else { return }
+        watchPrompt = h
     }
 
     /// Siri / Shortcuts / Control Center actions (RootboundActions.swift).

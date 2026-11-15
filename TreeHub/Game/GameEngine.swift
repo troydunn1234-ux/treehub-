@@ -143,7 +143,7 @@ enum GameEngine {
         if hug.barefoot { b.add("Barefoot grounding", 25) }
         if hug.treePhoto != nil { b.add("Tree photo", 10) }
         if hug.selfiePhoto != nil { b.add("Tree selfie", 10) }
-        if hug.hasStats || hug.garminPhoto != nil { b.add("Garmin stats", 15) }
+        if hug.hasStats || !hug.linkedSessions.isEmpty || hug.garminPhoto != nil { b.add("Heart stats", 15) }
         if hug.coordinate != nil { b.add("Pinned on the map", 5) }
         let others = existing.filter { $0.id != hug.id }
         if !others.contains(where: { $0.treeID == hug.treeID }) { b.add("New tree friend", 40) }
@@ -264,16 +264,16 @@ enum GameEngine {
         let cal = Calendar.current
         let trees = TreeSummary.build(from: hugs)
         let species = Set(hugs.map { $0.species.lowercased().trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty })
-        let totalMin = hugs.reduce(0) { $0 + $1.durationMin }
+        let totalMin = hugs.reduce(0) { $0 + $1.breathMinutes }
         let longest = hugs.map(\.durationMin).max() ?? 0
         let maxSameTree = trees.map(\.hugCount).max() ?? 0
         let best = bestStreak(hugs)
         let hours = hugs.map { cal.component(.hour, from: $0.date) }
         let seasons = Set(hugs.map { season(of: $0.date) })
         let tagCount: (String) -> Int = { tag in hugs.filter { $0.tags.contains(tag) }.count }
-        let stressDrop = hugs.compactMap { h -> Double? in
-            guard let a = h.stressStart, let b = h.stressEnd else { return nil }
-            return a - b
+        // Biggest heart-rate drop during a hug (Apple Watch start -> end, or its linked breath sessions).
+        let heartDrop = hugs.compactMap { h -> Double? in
+            [h.hrDrop, h.linkedSessions.compactMap(\.hrDrop).max()].compactMap { $0 }.max()
         }.max() ?? 0
 
         // Farthest apart two trees (km)
@@ -313,7 +313,7 @@ enum GameEngine {
             b("hugs-100", "Forest Guardian", "Hug 100 times", "shield.lefthalf.filled", .legendary, Double(hugs.count), 100),
             flag("barefoot", "Grounded", "Hug a tree barefoot", "shoeprints.fill", .common, hugs.contains { $0.barefoot }),
             b("barefoot-10", "Earth Connected", "10 barefoot hugs", "globe.americas.fill", .epic, Double(hugs.filter(\.barefoot).count), 10),
-            flag("stats", "Breath of the Forest", "Log a hug with Garmin stats", "wind", .common, hugs.contains { $0.hasStats || $0.garminPhoto != nil }),
+            flag("stats", "Breath of the Forest", "Log a hug with Apple Watch heart data", "wind", .common, hugs.contains { $0.hasStats || !$0.linkedSessions.isEmpty || $0.garminPhoto != nil }),
             b("twelve", "Twelve-Minute Stillness", "A 12+ minute session", "hourglass", .rare, longest, 12, unit: " min"),
             b("twenty", "Deep Roots", "A 20+ minute session", "arrow.down.to.line.compact", .epic, longest, 20, unit: " min"),
             b("min-60", "Hour of Breath", "60 total breathwork minutes", "lungs.fill", .rare, totalMin, 60, unit: " min"),
@@ -337,7 +337,7 @@ enum GameEngine {
                  hugs.contains { ($0.avgHR ?? 999) <= 60 }),
             flag("slow-breath", "Slow Breather", "Average breathing 6 per minute or lower", "aqi.low", .epic,
                  hugs.contains { ($0.respRate ?? 99) <= 6 }),
-            b("stress", "Stress Melter", "Drop your stress score by 15+", "thermometer.snowflake", .rare, stressDrop, 15),
+            b("stress", "Heart Settler", "Heart rate drops 10+ bpm during a hug", "arrow.down.heart.fill", .rare, heartDrop, 10, unit: " bpm"),
             b("chill-10", "Certified Chill", "10 hugs tagged Chill", "cloud.sun.fill", .rare, Double(tagCount("chill")), 10),
             b("sober-10", "Clear Mind", "10 hugs tagged Sober", "drop.fill", .rare, Double(tagCount("sober")), 10),
             b("park-10", "Park Regular", "10 hugs tagged Park", "leaf.circle.fill", .rare, Double(tagCount("park")), 10),

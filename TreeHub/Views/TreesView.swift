@@ -269,13 +269,16 @@ struct TreeDetailView: View {
                         StatTile(value: Format.day(tree.firstHug), label: "Met")
                     }
 
-                    TreeFactCard(species: tree.species)
+                    GlassCard(padding: 16) {
+                        VStack(alignment: .leading, spacing: 12) {
+                            TreeBreathSection(treeName: tree.name, breaths: breaths)
+                            BreatheWithTreeButton(treeName: tree.name, treeID: tree.id)
+                        }
+                    }
 
                     TreeInsightsCard(tree: tree, breaths: breaths)
 
-                    BreatheWithTreeButton(treeName: tree.name, treeID: tree.id)
-
-                    TreeBreathSection(treeName: tree.name, breaths: breaths)
+                    TreeFactCard(species: tree.species)
 
                     if let c = tree.coordinate {
                         Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 500, longitudinalMeters: 500))) {
@@ -304,8 +307,11 @@ struct TreeDetailView: View {
                                     Text(Format.dayTime(h.date)).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
                                     HStack(spacing: 6) {
                                         if h.durationMin > 0 { Text(Format.minutes(h.durationMin)) }
+                                        let n = h.linkedSessions.count
+                                        if n > 0 { Label("\(n)", systemImage: "wind").labelStyle(.titleAndIcon) }
+                                        if let hr = h.avgHR { Label("\(Int(hr))", systemImage: "heart.fill").labelStyle(.titleAndIcon) }
                                         if h.barefoot { Image(systemName: "shoeprints.fill") }
-                                        ForEach(h.tags.prefix(3), id: \.self) { Text(HugTag.label($0)) }
+                                        ForEach(h.tags.prefix(2), id: \.self) { Text(HugTag.label($0)) }
                                     }
                                     .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
                                 }
@@ -313,7 +319,7 @@ struct TreeDetailView: View {
                                 if let leaf = LeafType.find(h.leafKey) { LeafView(leaf: leaf, size: 28) }
                             }
                             .padding(10)
-                            .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+                            .background(Theme.card, in: RoundedRectangle(cornerRadius: Theme.innerRadius + 2, style: .continuous))
                         }
                         .buttonStyle(.plain)
                     }
@@ -326,7 +332,8 @@ struct TreeDetailView: View {
         .scrollIndicators(.hidden)
         .forestScreen()
         .navigationBarTitleDisplayMode(.inline)
-        .task(id: tree?.hugCount ?? 0) { await reloadBreaths() }
+        // Recomputed whenever this tree's hugs or their linked sessions change (no stale totals).
+        .task(id: signature) { await reloadBreaths() }
         .onReceive(NotificationCenter.default.publisher(for: TreeBreaths.openTree)) { _ in Task { await reloadBreaths() } }
         .onChange(of: scenePhase) { _, p in if p == .active { Task { await reloadBreaths() } } }
         .alert("Rename tree", isPresented: $renaming) {
@@ -341,9 +348,37 @@ struct TreeDetailView: View {
         }
     }
 
+    /// Changes when any hug of this tree is added, edited or gets new session data.
+    private var signature: Int {
+        var h = Hasher()
+        for x in allHugs where x.treeID == treeID {
+            h.combine(x.id); h.combine(x.date); h.combine(x.durationMin); h.combine(x.linkedSessionsData)
+        }
+        return h.finalize()
+    }
+
+    /// Breathe-with-this-tree sessions (tagged in Still Pointz) plus every session linked to this tree's hugs.
+    /// Each hug's sessions are refreshed from Still Pointz + Apple Health first, so late Watch data fills in;
+    /// older hugs get theirs by matching the hug's time window.
     private func reloadBreaths() async {
-        guard let tree else { return }
-        breaths = await TreeBreaths.load(for: tree)
+        guard var tree else { return }
+        let hugs = tree.hugs
+        breaths = Self.combine(tagged: breaths.filter(\.tagged), hugs: hugs)   // show what's known straight away
+        await HugSessions.refresh(Array(hugs.prefix(30)), context: context)
+        tree.hugs = []   // tagged sessions only; the hugs' own sessions come from their links below
+        let tagged = await TreeBreaths.load(for: tree)
+        breaths = Self.combine(tagged: tagged, hugs: hugs)
+    }
+
+    private static func combine(tagged: [TreeBreath], hugs: [Hug]) -> [TreeBreath] {
+        var out = tagged
+        for h in hugs {
+            for s in h.linkedSessions where !out.contains(where: { $0.id == s.feedID || abs($0.start.timeIntervalSince(s.start)) < 90 }) {
+                out.append(TreeBreath(id: s.feedID ?? s.id, start: s.start, minutes: s.minutes, avgHR: s.avgHR, minHR: s.minHR,
+                                      hrDrop: s.hrDrop, hrv: s.hrv, source: s.source, practice: s.practice, tagged: false))
+            }
+        }
+        return out.sorted { $0.start > $1.start }
     }
 
     private func treeHero(_ tree: TreeSummary) -> some View {
@@ -395,12 +430,9 @@ struct TreeInsightsCard: View {
     private var moodLift: Double? {
         Self.avg(tree.hugs.filter { $0.moodBefore > 0 && $0.moodAfter > 0 }.map { Double($0.moodAfter - $0.moodBefore) })
     }
-    private var stressDrop: Double? {
-        Self.avg(tree.hugs.compactMap { h in
-            guard let a = h.stressStart, let b = h.stressEnd else { return nil }
-            return a - b
-        })
-    }
+    /// Apple Watch: average start -> end heart-rate drop during hugs with this tree.
+    private var hrDrop: Double? { Self.avg(tree.hugs.compactMap(\.hrDrop)) }
+    private var avgHRV: Double? { Self.avg(tree.hugs.compactMap(\.hrv) + breaths.compactMap(\.hrv)) }
     private var avgHR: Double? { Self.avg(tree.hugs.compactMap(\.avgHR)) }
     private var avgMinutes: Double? { Self.avg(tree.hugs.map(\.durationMin).filter { $0 > 0 }) }
     private var barefootShare: Double? {
@@ -418,11 +450,14 @@ struct TreeInsightsCard: View {
                     SectionHeader(title: "Tree insights", symbol: "chart.line.uptrend.xyaxis")
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
                         StatTile(value: moodLift.map { String(format: "%+.1f", $0) } ?? "--", label: "Mood lift", symbol: "face.smiling")
-                        StatTile(value: stressDrop.map { String(format: "%.0f", $0) } ?? "--", label: "Stress drop", symbol: "waveform.path.ecg")
+                        StatTile(value: hrDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "Heart settles", symbol: "arrow.down.heart.fill")
                         StatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", symbol: "heart.fill")
                         StatTile(value: avgMinutes.map { Format.minutes($0) } ?? "--", label: "Avg hug", symbol: "timer")
                         StatTile(value: barefootShare.map { "\(Int(($0 * 100).rounded()))%" } ?? "--", label: "Barefoot", symbol: "shoeprints.fill")
                         StatTile(value: favoriteTime ?? "--", label: "Favorite time", symbol: "sun.horizon.fill")
+                        if let v = avgHRV {
+                            StatTile(value: String(format: "%.0f ms", v), label: "Avg HRV", symbol: "waveform.path.ecg")
+                        }
                         if !breaths.isEmpty {
                             StatTile(value: Format.minutes(breaths.reduce(0) { $0 + $1.minutes }), label: "Breathing here", symbol: "wind", tint: Theme.sky)
                             StatTile(value: Self.avg(breaths.compactMap(\.hrDrop)).map { String(format: "−%.0f bpm", $0) } ?? "--",
@@ -433,7 +468,7 @@ struct TreeInsightsCard: View {
             }
         } else {
             RootboundProLock(symbol: "chart.line.uptrend.xyaxis", title: "Tree insights",
-                             message: "See your mood lift, stress drop and heart rate with \(tree.name).",
+                             message: "See your mood lift, how your heart settles and your favorite time with \(tree.name).",
                              context: "Tree insights")
         }
     }

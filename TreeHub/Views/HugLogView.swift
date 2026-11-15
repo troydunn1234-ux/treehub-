@@ -18,7 +18,8 @@ struct HugDraft {
     var placeName = ""
     var treePhoto: Data? = nil
     var selfiePhoto: Data? = nil
-    var garminPhoto: Data? = nil
+    /// Legacy third photo of an older hug (kept as is; not offered for new hugs).
+    var legacyPhoto: Data? = nil
     var tags: Set<String> = []
     var barefoot = false
     var weather = ""
@@ -31,9 +32,14 @@ struct HugDraft {
     var minHR: Double? = nil
     var maxHR: Double? = nil
     var respRate: Double? = nil
-    var stressStart: Double? = nil
-    var stressEnd: Double? = nil
-    var bodyBattery: Double? = nil
+    var hrStart: Double? = nil
+    var hrEnd: Double? = nil
+    var hrv: Double? = nil
+    var fromWatch = false
+    /// Breath sessions linked to this hug.
+    var linked: [LinkedSession] = []
+    /// False for an older hug whose sessions haven't been looked at yet: saving then keeps its "no list" state.
+    var hasLinkList = true
 
     var coordinate: CLLocationCoordinate2D? {
         guard let latitude, let longitude else { return nil }
@@ -46,12 +52,22 @@ struct HugDraft {
         date = h.date; treeID = h.treeID; treeName = h.treeName; species = h.species
         latitude = h.latitude; longitude = h.longitude; placeName = h.placeName
         locationSource = h.latitude != nil ? "Saved pin" : ""
-        treePhoto = h.treePhoto; selfiePhoto = h.selfiePhoto; garminPhoto = h.garminPhoto
+        treePhoto = h.treePhoto; selfiePhoto = h.selfiePhoto; legacyPhoto = h.garminPhoto
         tags = Set(h.tags); barefoot = h.barefoot; weather = h.weather
         moodBefore = h.moodBefore; moodAfter = h.moodAfter; notes = h.notes
         exercise = h.exercise; durationMin = h.durationMin > 0 ? h.durationMin : nil
         avgHR = h.avgHR; minHR = h.minHR; maxHR = h.maxHR; respRate = h.respRate
-        stressStart = h.stressStart; stressEnd = h.stressEnd; bodyBattery = h.bodyBattery
+        hrStart = h.hrStart; hrEnd = h.hrEnd; hrv = h.hrv; fromWatch = h.fromWatch
+        linked = h.linkedSessions; hasLinkList = h.hasLinkList
+    }
+
+    init(watch w: WatchHug) {
+        date = w.start
+        durationMin = (w.minutes * 10).rounded() / 10
+        avgHR = w.avgHR; minHR = w.minHR; maxHR = w.maxHR
+        hrStart = w.startHR; hrEnd = w.endHR
+        fromWatch = true
+        exercise = "Free breathing"
     }
 
     func apply(to h: Hug) {
@@ -59,14 +75,15 @@ struct HugDraft {
         h.treeName = treeName.trimmingCharacters(in: .whitespacesAndNewlines)
         h.species = species.trimmingCharacters(in: .whitespacesAndNewlines)
         h.latitude = latitude; h.longitude = longitude; h.placeName = placeName
-        h.treePhoto = treePhoto; h.selfiePhoto = selfiePhoto; h.garminPhoto = garminPhoto
+        h.treePhoto = treePhoto; h.selfiePhoto = selfiePhoto; h.garminPhoto = legacyPhoto
         h.tags = HugTag.all.map(\.id).filter { tags.contains($0) }
         h.barefoot = barefoot; h.weather = weather
         h.moodBefore = moodBefore; h.moodAfter = moodAfter
         h.notes = notes.trimmingCharacters(in: .whitespacesAndNewlines)
         h.exercise = exercise; h.durationMin = max(0, durationMin ?? 0)
         h.avgHR = avgHR; h.minHR = minHR; h.maxHR = maxHR; h.respRate = respRate
-        h.stressStart = stressStart; h.stressEnd = stressEnd; h.bodyBattery = bodyBattery
+        h.hrStart = hrStart; h.hrEnd = hrEnd; h.hrv = hrv; h.fromWatch = fromWatch
+        if hasLinkList { h.linkedSessions = linked }
     }
 }
 
@@ -85,6 +102,8 @@ struct CelebrationData: Identifiable {
     var event: SeasonalEvent? = nil
     /// The tree's stable id ("Breathe with this tree" syncs the Still Pointz session back under it).
     var treeID: UUID? = nil
+    /// Breath sessions linked to the hug just logged (shown with all their data).
+    var sessions: [LinkedSession] = []
 }
 
 @MainActor
@@ -94,6 +113,10 @@ struct HugLogView: View {
     var strollID: UUID? = nil
     /// Nature Roll "Make this a hug": a camera-roll photo (PHAsset id) to start the hug with (NatureRoll/).
     var prefillAssetID: String? = nil
+    /// A hug timed on the Rootbound Watch app (WatchHugs.swift): its time and heart data fill the form.
+    var watchHug: WatchHug? = nil
+    /// The tree picked in "Hug from Watch — pick tree" (nil = new tree).
+    var preselectTree: UUID? = nil
 
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
@@ -113,13 +136,21 @@ struct HugLogView: View {
     @State private var guesses: [SpeciesGuess] = []
     @State private var guessing = false
     @State private var guessNote = ""
-    @State private var showExtras = false
+    @State private var showHeartDetails = false
+    @State private var showTags = false
     @ObservedObject private var unlock = Unlock.shared
     @State private var showPlans = false
-    @State private var sessionChoices: [HealthService.MindfulSession] = []
-    @State private var choosingSession = false
+    /// The multi-select session sheet (sessions within ±60 min of the photo / hug time).
+    @State private var picker: SessionPickRequest?
     /// Bumped by every Health pull; an older pull still in flight (e.g. the one on open) never overwrites a newer one (the photo's).
     @State private var pullToken = 0
+
+    struct SessionPickRequest: Identifiable {
+        let id = UUID()
+        let around: Date
+        let candidates: [LinkedSession]
+        let selected: Set<UUID>
+    }
 
     private static let speciesSuggestions = [
         "Coast Redwood", "Coast Live Oak", "Valley Oak", "California Sycamore", "Eucalyptus", "Monterey Pine",
@@ -147,19 +178,18 @@ struct HugLogView: View {
         NavigationStack {
             ZStack {
                 ScrollView {
-                    VStack(spacing: 16) {
+                    VStack(spacing: 14) {
                         if editing == nil && strollID != nil {
-                            Label("This hug gets pinned on your stroll", systemImage: "figure.walk")
-                                .font(Theme.rounded(14, .bold))
-                                .foregroundStyle(Theme.forestDeep)
-                                .padding(.horizontal, 14).padding(.vertical, 8)
-                                .background(Theme.leafGradient, in: Capsule())
+                            banner("This hug gets pinned on your stroll", symbol: "figure.walk")
+                        }
+                        if d.fromWatch && editing == nil {
+                            banner("Timed on your Watch", symbol: "applewatch")
                         }
                         photosCard.cardAppear()
                         treeCard.cardAppear()
-                        locationCard.cardAppear()
                         breathCard.cardAppear()
-                        vibeCard.cardAppear()
+                        feelCard.cardAppear()
+                        locationCard.cardAppear()
                         if !errorText.isEmpty {
                             Text(errorText).font(Theme.rounded(14)).foregroundStyle(.red)
                         }
@@ -186,13 +216,10 @@ struct HugLogView: View {
             }
             .forestScreen()
             .navigationTitle(editing == nil ? "Hug a Tree" : "Edit Hug")
-            .confirmationDialog("Which session goes with this hug?", isPresented: $choosingSession, titleVisibility: .visible) {
-                ForEach(Array(sessionChoices.enumerated()), id: \.offset) { _, s in
-                    Button(Self.sessionLabel(s)) { Task { await applySession(s) } }
+            .sheet(item: $picker) { req in
+                SessionPickerSheet(around: req.around, candidates: req.candidates, selected: req.selected) { chosen in
+                    Task { await applyLinked(chosen) }
                 }
-                Button("None of these", role: .cancel) {}
-            } message: {
-                Text("You did a few sessions around the time of this hug.")
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -212,14 +239,30 @@ struct HugLogView: View {
         }
     }
 
+    private func banner(_ text: String, symbol: String) -> some View {
+        Label(text, systemImage: symbol)
+            .font(Theme.rounded(14, .bold))
+            .foregroundStyle(Theme.forestDeep)
+            .padding(.horizontal, 14).padding(.vertical, 8)
+            .background(Theme.leafGradient, in: Capsule())
+    }
+
+    /// Small grey label above a group of fields.
+    private func groupLabel(_ text: String) -> some View {
+        Text(text.uppercased())
+            .font(.system(size: 11, weight: .bold, design: .rounded)).tracking(0.8)
+            .foregroundStyle(Theme.textDim)
+            .accessibilityAddTraits(.isHeader)
+    }
+
     // MARK: Sections
 
     private var photosCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
                 SectionHeader(title: "Photos", symbol: "camera.fill")
-                HStack(spacing: 10) {
-                    PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -3) { data, info in
+                HStack(spacing: 12) {
+                    PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -2) { data, info in
                         readPhotoMetadata(data, info: info)
                         Task { await guessSpecies(data) }
                     }
@@ -229,6 +272,9 @@ struct HugLogView: View {
                         if d.treePhoto == nil { readPhotoMetadata(data, info: info) }
                     }
                 }
+                Text("The tree photo's time finds your breath sessions; its location pins the tree.")
+                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
@@ -236,7 +282,7 @@ struct HugLogView: View {
     private var treeCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "The Tree", symbol: "leaf.fill")
+                SectionHeader(title: "The tree", symbol: "leaf.fill")
                 if !trees.isEmpty {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: 10) {
@@ -256,7 +302,7 @@ struct HugLogView: View {
                         Text("Hug #\(t.hugCount + 1) with \(t.name)").font(Theme.rounded(14)).foregroundStyle(Theme.textDim)
                     }
                 }
-                field("Name your tree", text: $d.treeName, prompt: d.treeID == nil ? "e.g. Grandpa Oak" : "Tree name")
+                field("Name", text: $d.treeName, prompt: d.treeID == nil ? "e.g. Grandpa Oak" : "Tree name")
                 field("Species", text: $d.species, prompt: "What kind of tree?")
                 if guessing || !guesses.isEmpty || !guessNote.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -278,6 +324,7 @@ struct HugLogView: View {
                         }
                         if !guessNote.isEmpty {
                             Text(guessNote).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                                .fixedSize(horizontal: false, vertical: true)
                         }
                     }
                     .padding(12)
@@ -303,42 +350,45 @@ struct HugLogView: View {
     private func treeChoice(id: UUID?, name: String, sub: String, photo: Data?, symbol: String?) -> some View {
         let selected = d.treeID == id
         return Button {
-            withAnimation(.snappy) {
-                d.treeID = id
-                if let id, let t = trees.first(where: { $0.id == id }) {
-                    d.treeName = t.name
-                    d.species = t.species
-                    if d.coordinate == nil, let c = t.coordinate {
-                        d.latitude = c.latitude; d.longitude = c.longitude
-                        d.locationSource = "Same spot as last time"
-                        d.placeName = t.placeName
-                    }
-                } else {
-                    d.treeName = ""
-                    d.species = ""
-                }
-            }
+            withAnimation(.snappy) { selectTree(id) }
         } label: {
             VStack(alignment: .leading, spacing: 6) {
                 ZStack {
                     if let symbol {
-                        RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.08))
+                        RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.08))
                         Image(systemName: symbol).font(.system(size: 22, weight: .bold)).foregroundStyle(Theme.glow)
                     } else {
                         PhotoView(data: photo)
                     }
                 }
                 .frame(width: 92, height: 72)
-                .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
                 Text(name).font(Theme.rounded(13, .bold)).foregroundStyle(.white).lineLimit(1)
                 Text(sub).font(Theme.rounded(11, .medium)).foregroundStyle(Theme.textDim).lineLimit(1)
             }
             .frame(width: 92)
             .padding(8)
-            .background(selected ? Theme.leaf.opacity(0.25) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 18))
-            .overlay(RoundedRectangle(cornerRadius: 18).stroke(selected ? Theme.glow : Color.clear, lineWidth: 2))
+            .background(selected ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 16))
+            .overlay(RoundedRectangle(cornerRadius: 16).stroke(selected ? Theme.glow : Color.clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+
+    private func selectTree(_ id: UUID?) {
+        d.treeID = id
+        if let id, let t = trees.first(where: { $0.id == id }) {
+            d.treeName = t.name
+            d.species = t.species
+            if d.coordinate == nil, let c = t.coordinate {
+                d.latitude = c.latitude; d.longitude = c.longitude
+                d.locationSource = "Same spot as last time"
+                d.placeName = t.placeName
+            }
+        } else {
+            d.treeName = ""
+            d.species = ""
+        }
     }
 
     private var locationCard: some View {
@@ -353,8 +403,8 @@ struct HugLogView: View {
                         }
                     }
                     .mapStyle(.hybrid(elevation: .realistic))
-                    .frame(height: 150)
-                    .clipShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    .frame(height: 140)
+                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                     .id("\(c.latitude),\(c.longitude)")
                     VStack(alignment: .leading, spacing: 2) {
                         if !d.placeName.isEmpty { Text(d.placeName).font(Theme.rounded(15, .bold)) }
@@ -382,7 +432,7 @@ struct HugLogView: View {
                             setCoordinate(c, source: "Pasted pin")
                             pinText = ""
                         } else {
-                            errorText = "Couldn't find coordinates in that. Try \"37.77, -122.45\" or an Apple Maps pin link."
+                            errorText = "Couldn't find coordinates in that. Try \"37.77, -122.45\" or a map pin link."
                         }
                     }
                     .font(Theme.rounded(14, .bold))
@@ -396,137 +446,189 @@ struct HugLogView: View {
 
     private var breathCard: some View {
         GlassCard {
-            VStack(alignment: .leading, spacing: 12) {
+            VStack(alignment: .leading, spacing: 14) {
                 SectionHeader(title: "Breathwork", symbol: "wind")
-                Menu {
-                    ForEach(Self.exercises, id: \.self) { e in Button(e) { d.exercise = e } }
-                } label: {
+
+                // 1. Linked Still Pointz / Health sessions
+                VStack(alignment: .leading, spacing: 8) {
                     HStack {
-                        Text(d.exercise.isEmpty ? "Exercise" : d.exercise).font(Theme.rounded(16, .bold))
-                        Image(systemName: "chevron.up.chevron.down").font(.system(size: 12, weight: .bold))
+                        groupLabel(d.linked.isEmpty ? "Breath sessions" : "\(d.linked.count) linked session\(d.linked.count == 1 ? "" : "s")")
                         Spacer()
+                        Button {
+                            Task { await openPicker(around: d.date) }
+                        } label: {
+                            Label(d.linked.isEmpty ? "Find" : "Change", systemImage: "checklist")
+                                .font(Theme.rounded(13, .bold))
+                        }
+                        .disabled(healthBusy)
                     }
-                    .foregroundStyle(.white)
-                    .padding(12)
-                    .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    if d.linked.isEmpty {
+                        Text("No Still Pointz or Health sessions linked. Tap Find to look within an hour of the hug.")
+                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    } else {
+                        ForEach(d.linked) { s in LinkedSessionCard(session: s, compact: true) }
+                    }
                 }
-                DatePicker("Started", selection: $d.date, in: ...Date().addingTimeInterval(3600))
-                    .font(Theme.rounded(15))
+
+                // 2. When + how long
+                VStack(alignment: .leading, spacing: 8) {
+                    groupLabel("The hug")
+                    DatePicker("Started", selection: $d.date, in: ...Date().addingTimeInterval(3600))
+                        .font(Theme.rounded(15))
+                    HStack(spacing: 10) {
+                        NumberField(label: "Minutes", value: $d.durationMin)
+                        NumberField(label: "Avg heart rate", value: $d.avgHR)
+                    }
+                    Menu {
+                        ForEach(Self.exercises, id: \.self) { e in Button(e) { d.exercise = e } }
+                    } label: {
+                        HStack {
+                            Text("Practice").font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
+                            Spacer()
+                            Text(d.exercise.isEmpty ? "Choose" : d.exercise).font(Theme.rounded(15, .bold))
+                            Image(systemName: "chevron.up.chevron.down").font(.system(size: 11, weight: .bold))
+                        }
+                        .foregroundStyle(.white)
+                        .padding(12)
+                        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    }
+                }
+
+                // 3. Fill from Apple Health (Apple Watch heart data)
                 Button {
                     Task { await pullFromHealth() }
                 } label: {
                     HStack {
-                        Image(systemName: healthBusy ? "hourglass" : "heart.text.square.fill")
-                        Text(healthBusy ? "Reading Apple Health…" : (healthMessage.isEmpty ? "Fill from Apple Health" : "Refresh from Apple Health"))
+                        Image(systemName: healthBusy ? "hourglass" : "applewatch")
+                        Text(healthBusy ? "Reading Apple Health…" : (healthMessage.isEmpty ? "Fill from Apple Watch" : "Refresh from Apple Watch"))
                     }
                     .font(Theme.rounded(15, .bold))
                     .frame(maxWidth: .infinity)
                     .padding(.vertical, 11)
-                    .background(Color(red: 1, green: 0.3, blue: 0.4).opacity(0.22), in: RoundedRectangle(cornerRadius: 12))
-                    .foregroundStyle(Color(red: 1, green: 0.6, blue: 0.65))
+                    .background(Theme.glow.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
+                    .foregroundStyle(Theme.glow)
                 }
                 .buttonStyle(.plain)
                 .disabled(healthBusy)
                 if !healthMessage.isEmpty {
                     Text(healthMessage).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                    NumberField(label: "Minutes", value: $d.durationMin)
-                    NumberField(label: "Breaths / min", value: $d.respRate)
-                    NumberField(label: "Avg heart rate", value: $d.avgHR)
-                    NumberField(label: "Lowest HR", value: $d.minHR)
-                    NumberField(label: "Max HR", value: $d.maxHR)
-                }
-                DisclosureGroup(isExpanded: $showExtras) {
+
+                // 4. Rarely edited heart numbers, collapsed
+                DisclosureGroup(isExpanded: $showHeartDetails) {
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                        NumberField(label: "Stress before", value: $d.stressStart)
-                        NumberField(label: "Stress after", value: $d.stressEnd)
-                        NumberField(label: "Body Battery ±", value: $d.bodyBattery, allowNegative: true)
+                        NumberField(label: "Lowest HR", value: $d.minHR)
+                        NumberField(label: "Max HR", value: $d.maxHR)
+                        NumberField(label: "HR at start", value: $d.hrStart)
+                        NumberField(label: "HR at end", value: $d.hrEnd)
+                        NumberField(label: "HRV (ms)", value: $d.hrv)
+                        NumberField(label: "Breaths / min", value: $d.respRate)
                     }
                     .padding(.top, 8)
                 } label: {
-                    Text("Stress & Body Battery (optional)").font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
+                    Text(heartSummary).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
                 }
                 .tint(Theme.glow)
             }
         }
     }
 
-    private var vibeCard: some View {
+    private var heartSummary: String {
+        var parts: [String] = []
+        if let a = d.hrStart, let b = d.hrEnd { parts.append(String(format: "HR %+.0f", b - a)) }
+        if let v = d.hrv { parts.append(String(format: "HRV %.0f ms", v)) }
+        if let r = d.respRate { parts.append(String(format: "%.1f br/min", r)) }
+        return parts.isEmpty ? "More heart data" : "More heart data · " + parts.joined(separator: " · ")
+    }
+
+    private var feelCard: some View {
         GlassCard {
             VStack(alignment: .leading, spacing: 14) {
-                SectionHeader(title: "The Vibe", symbol: "sparkles")
+                SectionHeader(title: "How it felt", symbol: "sparkles")
+                VStack(spacing: 6) {
+                    moodRow("Before", value: $d.moodBefore)
+                    moodRow("After", value: $d.moodAfter)
+                }
                 Button {
                     withAnimation(.snappy) { d.barefoot.toggle() }
                 } label: {
                     HStack(spacing: 12) {
-                        Image(systemName: "shoeprints.fill").font(.system(size: 22))
-                            .foregroundStyle(d.barefoot ? Theme.forestDeep : Theme.glow)
+                        Image(systemName: "shoeprints.fill").font(.system(size: 20))
                         VStack(alignment: .leading, spacing: 2) {
-                            Text("Barefoot · grounded").font(Theme.rounded(16, .bold))
-                            Text("Shoes and socks off, feet on the earth").font(Theme.rounded(12, .medium)).opacity(0.75)
+                            Text("Barefoot").font(Theme.rounded(15, .bold))
+                            Text("Shoes off, feet on the earth (+25 XP)").font(Theme.rounded(12, .medium)).opacity(0.75)
                         }
                         Spacer()
-                        Image(systemName: d.barefoot ? "checkmark.circle.fill" : "circle").font(.system(size: 24))
+                        Image(systemName: d.barefoot ? "checkmark.circle.fill" : "circle").font(.system(size: 22))
                     }
-                    .foregroundStyle(d.barefoot ? Theme.forestDeep : .white)
-                    .padding(14)
-                    .background(d.barefoot ? AnyShapeStyle(Theme.leafGradient) : AnyShapeStyle(Color.white.opacity(0.06)),
-                                in: RoundedRectangle(cornerRadius: 16))
+                    .foregroundStyle(d.barefoot ? Theme.glow : .white)
+                    .padding(12)
+                    .background(d.barefoot ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
                 }
                 .buttonStyle(.plain)
                 .haptic()
-
-                Text("Tags").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
-                FlowLayout(spacing: 8) {
-                    ForEach(HugTag.all) { t in
-                        Button {
-                            withAnimation(.snappy) {
-                                if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
-                            }
-                        } label: {
-                            Chip(label: t.label, symbol: t.symbol, selected: d.tags.contains(t.id))
-                        }
-                        .buttonStyle(.plain)
-                        .haptic()
-                    }
-                }
-
-                Text("Weather").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(Self.weathers, id: \.1) { w in
-                            Button { d.weather = d.weather == w.1 ? "" : w.1 } label: {
-                                Chip(label: w.1, symbol: w.0, selected: d.weather == w.1)
-                            }
-                            .buttonStyle(.plain)
-                        }
-                    }
-                }
-
-                moodRow("Before", value: $d.moodBefore)
-                moodRow("After", value: $d.moodAfter)
+                .accessibilityAddTraits(d.barefoot ? .isSelected : [])
 
                 TextField("", text: $d.notes, prompt: Text("How did it feel? Anything the tree told you?").foregroundStyle(Theme.textDim), axis: .vertical)
                     .lineLimit(3...8)
                     .font(Theme.rounded(15, .regular))
                     .padding(12)
                     .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+
+                DisclosureGroup(isExpanded: $showTags) {
+                    VStack(alignment: .leading, spacing: 10) {
+                        FlowLayout(spacing: 8) {
+                            ForEach(HugTag.all) { t in
+                                Button {
+                                    withAnimation(.snappy) {
+                                        if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
+                                    }
+                                } label: {
+                                    Chip(label: t.label, symbol: t.symbol, selected: d.tags.contains(t.id))
+                                }
+                                .buttonStyle(.plain)
+                                .haptic()
+                            }
+                        }
+                        groupLabel("Weather")
+                        FlowLayout(spacing: 8) {
+                            ForEach(Self.weathers, id: \.1) { w in
+                                Button { d.weather = d.weather == w.1 ? "" : w.1 } label: {
+                                    Chip(label: w.1, symbol: w.0, selected: d.weather == w.1)
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                    }
+                    .padding(.top, 8)
+                } label: {
+                    Text(tagSummary).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
+                }
+                .tint(Theme.glow)
             }
         }
     }
 
+    private var tagSummary: String {
+        let n = d.tags.count + (d.weather.isEmpty ? 0 : 1)
+        return n == 0 ? "Tags & weather" : "Tags & weather · \(n) chosen"
+    }
+
     private func moodRow(_ label: String, value: Binding<Int>) -> some View {
         HStack {
-            Text(label).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim).frame(width: 56, alignment: .leading)
+            Text(label).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim).frame(minWidth: 56, alignment: .leading)
             ForEach(1...5, id: \.self) { i in
                 Button { value.wrappedValue = value.wrappedValue == i ? 0 : i } label: {
                     Text(Self.moods[i - 1])
-                        .font(.system(size: value.wrappedValue == i ? 32 : 24))
+                        .font(.system(size: value.wrappedValue == i ? 30 : 24))
                         .opacity(value.wrappedValue == 0 || value.wrappedValue == i ? 1 : 0.4)
-                        .frame(maxWidth: .infinity)
+                        .frame(maxWidth: .infinity, minHeight: 40)
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("\(label): \(i) of 5")
+                .accessibilityAddTraits(value.wrappedValue == i ? .isSelected : [])
             }
         }
         .animation(.spring(response: 0.3), value: value.wrappedValue)
@@ -534,7 +636,7 @@ struct HugLogView: View {
 
     private func field(_ label: String, text: Binding<String>, prompt: String) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label).font(Theme.rounded(12, .bold)).foregroundStyle(Theme.textDim)
+            groupLabel(label)
             TextField("", text: text, prompt: Text(prompt).foregroundStyle(Color.white.opacity(0.35)))
                 .font(Theme.rounded(16, .semibold))
                 .padding(12)
@@ -549,10 +651,25 @@ struct HugLogView: View {
         loaded = true
         if let editing {
             d = HugDraft(editing)
-            showExtras = editing.stressStart != nil || editing.stressEnd != nil || editing.bodyBattery != nil
+            showHeartDetails = editing.hrv != nil || editing.hrStart != nil
+            showTags = !editing.tags.isEmpty || !editing.weather.isEmpty
+            // Older hug (no list yet): show the sessions that overlap its time so they can be kept or changed;
+            // refresh the data of the ones already linked.
+            Task {
+                let list = d.hasLinkList ? d.linked : await HugSessions.overlapping(editing)
+                let rich = await HugSessions.enrich(list)
+                if !d.hasLinkList { d.hasLinkList = true }
+                d.linked = rich
+            }
+        } else if let watchHug {
+            d = HugDraft(watch: watchHug)
+            if let preselectTree { selectTree(preselectTree) }
+            Task { await useCurrentLocation(autoPickTree: preselectTree == nil) }
+            // HRV, breathing rate and any Still Pointz sessions done during the Watch hug.
+            Task { await pullFromHealth(quiet: true, prompt: false) }
         } else {
             Task { await useCurrentLocation(autoPickTree: true) }
-            // Your watch's breathwork syncs to Apple Health; grab it straight away (no session picker yet:
+            // Your watch's breathwork syncs to Apple Health; grab it straight away (no session sheet yet:
             // a camera-roll photo usually follows and asks around its own time).
             Task { await pullFromHealth(quiet: true, prompt: false) }
             if let prefillAssetID {
@@ -600,7 +717,7 @@ struct HugLogView: View {
         let props = CGImageSourceCreateWithData(data as CFData, nil)
             .flatMap { CGImageSourceCopyPropertiesAtIndex($0, 0, nil) as? [String: Any] } ?? [:]
         // EXIF first; the Photos library's own date / place when the file carries none.
-        if editing == nil, let shot = Self.photoDate(props) ?? info?.date {
+        if editing == nil, !d.fromWatch, let shot = Self.photoDate(props) ?? info?.date {
             d.date = shot
             Task { await pullFromHealth(quiet: true, pickAround: shot) }
         }
@@ -652,30 +769,35 @@ struct HugLogView: View {
         return f.date(from: raw)
     }
 
-    static func sessionLabel(_ s: HealthService.MindfulSession) -> String {
-        let t = s.start.formatted(date: .omitted, time: .shortened)
-        return "\(s.source) · \(Format.minutes((s.minutes * 10).rounded() / 10)) · \(t)"
-    }
-
-    /// Every breath/mindful session within an hour of a moment: Still Pointz (with practice names) plus anything in Apple Health.
-    private func sessionsNear(_ date: Date) async -> [HealthService.MindfulSession] {
-        let hs = HealthService.shared
-        let window: TimeInterval = 60 * 60
-        var out: [HealthService.MindfulSession] = (WellnessBridge.stillPoint()?.sessions ?? [])
-            .filter { $0.isCalm && $0.minutes >= 1 && abs($0.date.timeIntervalSince(date)) <= window }
-            .map { HealthService.MindfulSession(start: $0.date, end: $0.end ?? $0.date.addingTimeInterval($0.minutes * 60),
-                                                source: $0.practice ?? "Still Pointz") }
-        let health = await hs.mindfulSessions(around: date, hours: 1) + hs.breathworkWorkouts(around: date, hours: 1)
-        for h in health where h.minutes >= 1 && !out.contains(where: { abs($0.start.timeIntervalSince(h.start)) < 90 }) {
-            out.append(h)
+    /// The multi-select sheet for sessions within an hour of `date`. Already-linked ones stay checked; when
+    /// nothing is linked yet, every session found is preselected.
+    private func openPicker(around date: Date) async {
+        healthBusy = true
+        var found = await HugSessions.candidates(near: date)
+        healthBusy = false
+        for s in d.linked where !found.contains(where: { $0.sameSession(as: s) }) { found.append(s) }
+        guard !found.isEmpty else {
+            healthMessage = "No Still Pointz or Health breath sessions within an hour of \(date.formatted(date: .omitted, time: .shortened))."
+            return
         }
-        return out.sorted { abs($0.start.timeIntervalSince(date)) < abs($1.start.timeIntervalSince(date)) }
+        // Keep the linked copies (with their data) in the list so their ids stay checked.
+        let list = found.map { f in d.linked.first(where: { $0.sameSession(as: f) }) ?? f }
+        let selected = d.linked.isEmpty ? Set(list.map(\.id)) : Set(list.filter { s in d.linked.contains { $0.id == s.id } }.map(\.id))
+        picker = SessionPickRequest(around: date, candidates: list, selected: selected)
     }
 
-    private func applySession(_ s: HealthService.MindfulSession) async {
-        d.date = s.start
-        d.durationMin = (s.minutes * 10).rounded() / 10
-        await pullFromHealth(quiet: true, skipSession: true, label: "\(Format.minutes(d.durationMin ?? 0)) \(s.source) session")
+    /// Link the chosen sessions; the hug then takes their time span (unless it was timed on the Watch) and heart data.
+    private func applyLinked(_ chosen: [LinkedSession]) async {
+        d.hasLinkList = true
+        d.linked = chosen.sorted { $0.start < $1.start }
+        if let first = d.linked.first, !d.fromWatch {
+            d.date = first.start
+            d.durationMin = (d.linked.totalMinutes * 10).rounded() / 10
+        }
+        let label = chosen.isEmpty ? nil : "\(chosen.count) session\(chosen.count == 1 ? "" : "s") (\(Format.minutes((d.linked.totalMinutes * 10).rounded() / 10)))"
+        await pullFromHealth(quiet: true, skipSession: true, label: label)
+        let rich = await HugSessions.enrich(d.linked)
+        if rich.map(\.id) == d.linked.map(\.id) { d.linked = rich }
     }
 
     private func pullFromHealth(quiet: Bool = false, pickAround: Date? = nil, skipSession: Bool = false, label: String? = nil,
@@ -693,31 +815,36 @@ struct HugLogView: View {
         var found: [String] = []
         if let label { found.append(label) }
         if !skipSession {
-            let near = await sessionsNear(pickAround ?? d.date)
+            let around = pickAround ?? d.date
+            let near = await HugSessions.candidates(near: around)
             guard token == pullToken else { return }
-            if near.count > 1 {
-                guard prompt else {
-                    healthMessage = "You did \(near.count) breath sessions around now. Tap Fill from Apple Health to pick the one for this hug."
-                    return
+            if !near.isEmpty {
+                // Every session within the hour is preselected; with several, the sheet opens so any that don't
+                // belong can be unchecked. Present only once the photo picker has finished going away.
+                d.hasLinkList = true
+                d.linked = near.sorted { $0.start < $1.start }
+                if !d.fromWatch, let first = d.linked.first {
+                    d.date = first.start
+                    d.durationMin = (d.linked.totalMinutes * 10).rounded() / 10
                 }
-                // Several sessions around this hug: let the user pick the right one. Present only once the photo
-                // picker (or a dialog already up) has finished going away, or the dialog never shows.
-                choosingSession = false
-                healthMessage = ""
-                sessionChoices = Array(near.prefix(10))
-                try? await Task.sleep(for: .milliseconds(650))
-                guard token == pullToken else { return }
-                choosingSession = true
-                return
-            } else if let s = near.first {
-                d.date = s.start
-                d.durationMin = (s.minutes * 10).rounded() / 10
-                found.append("\(Format.minutes(d.durationMin ?? 0)) \(s.source) session")
+                found.append("\(near.count) breath session\(near.count == 1 ? "" : "s")")
+                if near.count > 1 && prompt {
+                    let list = d.linked
+                    Task {
+                        try? await Task.sleep(for: .milliseconds(650))
+                        guard token == pullToken else { return }
+                        picker = SessionPickRequest(around: around, candidates: list, selected: Set(list.map(\.id)))
+                    }
+                } else if near.count > 1 {
+                    found.append("tap Change to review them")
+                }
             }
         }
         let start = d.date
         let end = d.date.addingTimeInterval(max(1, d.durationMin ?? 12) * 60)
-        let hrFound = await hs.heartRate(from: start, to: end)
+        var hrFound: HealthService.HeartStats? = nil
+        if !(d.fromWatch && d.avgHR != nil) { hrFound = await hs.heartRate(from: start, to: end) }
+        let st = await hs.breathStats(from: start, to: end)
         let rrFound = await hs.respiratoryRate(from: start, to: end)
         guard token == pullToken else { return }
         if let hr = hrFound {
@@ -726,12 +853,22 @@ struct HugLogView: View {
             d.maxHR = hr.max.rounded()
             found.append("heart rate (\(hr.samples) readings)")
         }
+        if d.hrStart == nil, let a = st.startHR { d.hrStart = a.rounded() }
+        if d.hrEnd == nil, let b = st.endHR { d.hrEnd = b.rounded() }
+        if let v = st.hrv {
+            d.hrv = v.rounded()
+            found.append("HRV")
+        }
         if let rr = rrFound {
             d.respRate = (rr * 10).rounded() / 10
             found.append("breathing rate")
         }
+        if !d.linked.isEmpty {
+            let rich = await HugSessions.enrich(d.linked)
+            if token == pullToken, rich.map(\.id) == d.linked.map(\.id) { d.linked = rich }
+        }
         if found.isEmpty {
-            healthMessage = quiet ? "" : "Nothing in Apple Health for that time yet. Garmin Connect can take a few minutes to sync after a session, so try Refresh in a bit."
+            healthMessage = quiet ? "" : "Nothing in Apple Health for that time yet. Your Apple Watch can take a few minutes to sync after a session, so try Refresh in a bit."
         } else {
             healthMessage = "Filled from Apple Health: " + found.joined(separator: ", ") + "."
         }
@@ -773,6 +910,7 @@ struct HugLogView: View {
             errorText = "Couldn't save: \(error.localizedDescription)"
             return
         }
+        if let watchHug { WatchHugInbox.shared.remove(watchHug.id) }
 
         let after = isNew ? all + [hug] : all
         // Hug + a Still Pointz session today = Breath & Bark (bonus XP lives in BreathBark, not in hug.xp).
@@ -795,12 +933,14 @@ struct HugLogView: View {
             celebration = CelebrationData(breakdown: shown, leaf: LeafType.find(hug.leafKey), newBadges: newBadges,
                                           levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName,
                                           rareFind: firstOfSpecies && r > .common ? r : nil, species: hug.species,
-                                          event: SeasonalEvent.active(on: hug.date), treeID: hug.treeID)
+                                          event: SeasonalEvent.active(on: hug.date), treeID: hug.treeID,
+                                          sessions: hug.linkedSessions)
         } else {
             dismiss()
         }
     }
 }
+
 
 func hideKeyboard() {
     UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)

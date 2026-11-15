@@ -4,7 +4,7 @@ Troy's personal hub: a tree-hugging game, a GPS tracker for walks, runs, hikes, 
 
 ## What's inside
 
-- **Tree Hugger game**: tree photo, tree selfie and Garmin screenshot; GPS pin (live, from the photo, or a pasted map link); tags (Hike · Chill · Park · Sober · Solo · Sunrise …); barefoot toggle; mood before/after; breathwork stats, auto-filled from Apple Health. Earns XP, levels (Seedling → Ancient One), 38 badges and 12 collectible leaves.
+- **Tree Hugger game (Rootbound)**: tree photo and tree selfie; GPS pin (live, from the photo, or a pasted map link); tags (Hike · Chill · Park · Sober · Solo · Sunrise …); barefoot toggle; mood before/after; breathwork stats from Apple Watch via Apple Health, with any number of Still Pointz / mindful sessions linked per hug; a Rootbound Apple Watch app times a hug with live heart rate and sends it to the iPhone. Earns XP, levels (Seedling → Ancient One), 38 badges and 12 collectible leaves.
 - **Grove**: every tree you've hugged, with friendship hearts, hug history, a map of all your trees and walking directions back to them.
 - **Tracker**: start a walk, run, hike, ride or drive and lock your phone. It records the route on a street map with distance, time, pace or speed and climb, plus the start and end streets. It detects driving versus walking and survives the app being closed. Each route can be shared as GPX to Strava or Garmin.
 - **Apple Health**: reads heart rate, breathing rate, mindful minutes and workouts that Garmin Connect, Whoop and Strava save to Health. You can bring those workouts into the hub with one tap.
