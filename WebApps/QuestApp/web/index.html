@@ -504,6 +504,8 @@ body { padding-block-end: 100px; }
 /* scanlines, glitch, shake, pops, banners */
 body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 9999; background: repeating-linear-gradient(0deg, rgba(0,0,0,.15) 0 1px, transparent 1px 3px), radial-gradient(ellipse at center, transparent 62%, rgba(0,0,0,.35) 100%); }
 html[data-crt="0"] body::after { display: none; }
+/* In the app the page runs edge to edge: keep scrolled panels from showing through the status bar (under the XP bar). */
+body::before { content: ""; position: fixed; top: 0; left: 0; right: 0; height: env(safe-area-inset-top, 0px); background: var(--bg); z-index: 85; pointer-events: none; }
 .xpbar { position: fixed; top: 0; left: 0; right: 0; height: 5px; z-index: 90; background: rgba(0,0,0,.4); pointer-events: none; }
 .xpbar i { display: block; height: 100%; width: 0; background: var(--gold); box-shadow: 0 0 10px var(--gold); transition: width .8s ease; }
 @keyframes glitch { 0% { text-shadow: 3px 0 var(--red), -3px 0 var(--cyan); transform: translateX(2px) skewX(-6deg); } 25% { text-shadow: -4px 0 var(--red), 4px 0 var(--cyan); transform: translateX(-3px); } 50% { text-shadow: 2px 0 var(--cyan), -2px 0 var(--red); transform: translateX(2px) skewX(5deg); } 75% { text-shadow: -3px 0 var(--cyan), 3px 0 var(--red); transform: translateX(-1px); } 100% { transform: none; } }
