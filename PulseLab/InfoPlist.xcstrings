@@ -8,6 +8,12 @@
             "state": "translated",
             "value": "Pulse Lab"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab"
+          }
         }
       }
     },
@@ -18,6 +24,12 @@
             "state": "translated",
             "value": "Pulse Lab lee tus datos de corazón, sueño, actividad y entrenamientos de Salud (incluido lo que WHOOP guarda allí) para comparar tu Watch y WHOOP lado a lado."
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side."
+          }
         }
       }
     },
@@ -27,6 +39,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Pulse Lab guarda en Salud los suplementos que marcas en tu Stack como nutrientes (como vitamina D o magnesio). Nunca cambia tus datos de corazón, sueño o entrenamientos."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab saves the supplements you check off in your Stack to Apple Health as nutrients (like vitamin D or magnesium). It never changes your heart, sleep or workout data."
           }
         }
       }

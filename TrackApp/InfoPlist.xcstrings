@@ -9,6 +9,12 @@
             "state": "translated",
             "value": "Roamr"
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr"
+          }
         }
       }
     },
@@ -19,6 +25,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Roamr lee los entrenamientos y la frecuencia cardíaca que tu Apple Watch y WHOOP guardan en Salud."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr reads the workouts and heart rate that your Apple Watch and WHOOP save to Apple Health."
           }
         }
       }
@@ -31,6 +43,12 @@
             "state": "translated",
             "value": "Roamr no escribe en Salud; solo lee tus entrenamientos y datos del corazón."
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr does not write to Apple Health; it only reads your workouts and heart data."
+          }
         }
       }
     },
@@ -41,6 +59,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Roamr sigue grabando tu ruta con el teléfono bloqueado y nota cuando empiezas a manejar para ofrecerte grabar el viaje."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr keeps recording your route while your phone is locked, and notices when you start driving so it can offer to track the drive."
           }
         }
       }
@@ -53,6 +77,12 @@
             "state": "translated",
             "value": "Roamr usa tu ubicación para grabar la ruta de tus caminatas, carreras, excursiones, paseos en bici y viajes en auto."
           }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr uses your location to record the route of your walks, runs, hikes, rides and drives."
+          }
         }
       }
     },
@@ -63,6 +93,12 @@
           "stringUnit": {
             "state": "translated",
             "value": "Roamr usa los datos de movimiento para saber si caminabas, corrías, andabas en bici o manejabas."
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr uses motion data to tell whether you were walking, running, biking or driving."
           }
         }
       }
