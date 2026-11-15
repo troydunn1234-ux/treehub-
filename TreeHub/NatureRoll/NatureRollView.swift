@@ -33,8 +33,12 @@ struct NatureRollView: View {
                             PillSwitcher(options: [.init(id: 0, label: "Photos", symbol: "square.grid.3x3.fill"),
                                                    .init(id: 1, label: "Map", symbol: "map.fill")],
                                          selection: $mode)
+                            strictnessRow
                             chips
-                            if mode == 0 { grid } else { mapSection }
+                            if store.shown.isEmpty {
+                                Text("Nothing passes \(store.strictness.name) right now. Try Balanced or Everything above.")
+                                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                            } else if mode == 0 { grid } else { mapSection }
                             albumsCard
                         } else if !store.scanning {
                             emptyCard
@@ -63,7 +67,7 @@ struct NatureRollView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
             Text(NatureRoll.title).font(Theme.title(34)).foregroundStyle(.white)
-            Text(store.records.isEmpty ? "The nature in your camera roll" : "\(store.records.count) nature photos")
+            Text(store.shown.isEmpty ? "The nature in your camera roll" : "\(store.shown.count) nature photos")
                 .font(Theme.rounded(14, .semibold)).foregroundStyle(Theme.textDim)
         }
         .padding(.top, 8)
@@ -73,7 +77,7 @@ struct NatureRollView: View {
         GlassCard {
             VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: NatureRoll.symbol).font(.system(size: 34)).foregroundStyle(Theme.leafGradient)
-                Text("Find the trees, flowers, peaks and sunsets you've already shot.")
+                Text("Find the trails, peaks, sunsets and wildlife you've already shot.")
                     .font(Theme.rounded(17, .bold)).foregroundStyle(.white)
                 Label("Sorted on this iPhone by its built-in image recognition. Nothing is uploaded.", systemImage: "lock.shield.fill")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
@@ -137,7 +141,7 @@ struct NatureRollView: View {
             VStack(spacing: 8) {
                 Image(systemName: "leaf").font(.system(size: 36)).foregroundStyle(Theme.glow.opacity(0.7))
                 Text("No nature found yet").font(Theme.rounded(17, .bold)).foregroundStyle(.white)
-                Text("Snap a tree, a trail or a sunset and it shows up here next time you open Rootbound.")
+                Text("Shoot a trail, a view or a sunset and it shows up here next time you open Rootbound.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim).multilineTextAlignment(.center)
             }
             .frame(maxWidth: .infinity)
@@ -175,11 +179,36 @@ struct NatureRollView: View {
         }
     }
 
+    private var strictnessRow: some View {
+        HStack(spacing: 10) {
+            Menu {
+                Picker("Strictness", selection: $store.strictness) {
+                    ForEach(NatureStrictness.allCases) { s in
+                        Text(s.name).tag(s)
+                    }
+                }
+                if !store.corrections.notNature.isEmpty || !store.corrections.moved.isEmpty {
+                    Divider()
+                    Button(role: .destructive) { store.clearCorrections() } label: {
+                        Label("Undo my \(store.corrections.notNature.count + store.corrections.moved.count) fixes", systemImage: "arrow.uturn.backward")
+                    }
+                }
+            } label: {
+                Label(store.strictness.name, systemImage: "slider.horizontal.3")
+                    .font(Theme.rounded(13, .bold))
+            }
+            Text(store.strictness.blurb)
+                .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                .lineLimit(2)
+            Spacer(minLength: 0)
+        }
+    }
+
     private var chips: some View {
         ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 8) {
                 Button { withAnimation(.snappy) { category = nil } } label: {
-                    Chip(label: "All · \(store.records.count)", symbol: "leaf.fill", selected: category == nil)
+                    Chip(label: "Best of · \(store.shown.count)", symbol: "star.fill", selected: category == nil)
                 }
                 .buttonStyle(.plain)
                 ForEach(NatureCategory.allCases) { c in
@@ -207,6 +236,7 @@ struct NatureRollView: View {
                         .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
                 }
                 .buttonStyle(.plain)
+                .contextMenu { NatureFixMenu(id: r.id) }
             }
         }
     }
@@ -228,7 +258,7 @@ struct NatureRollView: View {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(title: "Save to Photos albums", symbol: "rectangle.stack.badge.plus")
                 Text(category.map { "Adds these \(store.count($0)) photos to \"\(NatureRoll.albumName($0))\" in the Photos app." }
-                     ?? "Makes an album per category in the Photos app, like \"\(NatureRoll.albumName(.trees))\". Photos already there are skipped.")
+                     ?? "Makes an album per category in the Photos app, like \"\(NatureRoll.albumName(.mountains))\". Photos already there are skipped.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                 Button {
                     guard unlock.isPro else { planContext = "\(NatureRoll.title) albums"; showPlans = true; return }
@@ -275,6 +305,34 @@ struct NatureRollView: View {
         while let p = top.presentedViewController { top = p }
         PHPhotoLibrary.shared().presentLimitedLibraryPicker(from: top) { _ in
             Task { @MainActor in await NatureRollStore.shared.scanNow() }
+        }
+    }
+}
+
+// MARK: - Fixing a wrong call (long-press)
+
+/// "Not nature", "Move to…", "Also in…": remembered by photo, never undone by a rescan.
+struct NatureFixMenu: View {
+    let id: String
+    var onHidden: () -> Void = {}
+    @ObservedObject private var store = NatureRollStore.shared
+
+    var body: some View {
+        Button(role: .destructive) { store.markNotNature(id); onHidden() } label: {
+            Label("Not nature", systemImage: "eye.slash")
+        }
+        Menu {
+            ForEach(NatureCategory.allCases) { c in
+                Button { store.move(id, to: c) } label: { Label(c.name, systemImage: c.symbol) }
+            }
+        } label: { Label("Move to…", systemImage: "folder") }
+        Menu {
+            ForEach(NatureCategory.allCases.filter { !store.categories(of: id).contains($0) }) { c in
+                Button { store.add(id, to: c) } label: { Label(c.name, systemImage: c.symbol) }
+            }
+        } label: { Label("Also in…", systemImage: "plus.square.on.square") }
+        if store.isCorrected(id) {
+            Button { store.undoCorrection(id) } label: { Label("Undo my change", systemImage: "arrow.uturn.backward") }
         }
     }
 }
@@ -341,6 +399,7 @@ struct NatureRollPhotoView: View {
     let record: NatureRecord
     @Environment(\.dismiss) private var dismiss
     @ObservedObject private var unlock = Unlock.shared
+    @ObservedObject private var store = NatureRollStore.shared
     @State private var image: UIImage?
     @State private var place = ""
     @State private var makeHug = false
@@ -367,14 +426,14 @@ struct NatureRollPhotoView: View {
                         }
                     }
                     FlowLayout {
-                        ForEach(record.categories) { c in Chip(label: c.short, symbol: c.symbol) }
+                        ForEach(store.categories(of: record.id)) { c in Chip(label: c.short, symbol: c.symbol) }
                     }
 
                     Button { makeHug = true } label: { Label("Make this a hug", systemImage: "heart.fill") }
                         .buttonStyle(PrimaryButtonStyle())
 
                     Menu {
-                        ForEach(record.categories) { c in
+                        ForEach(store.categories(of: record.id)) { c in
                             Button(NatureRoll.albumName(c)) { Task { await add(to: c) } }
                         }
                     } label: {
@@ -384,6 +443,14 @@ struct NatureRollPhotoView: View {
                             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                     }
                     if !note.isEmpty { Text(note).font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.glow) }
+
+                    Menu {
+                        NatureFixMenu(id: record.id) { dismiss() }
+                    } label: {
+                        Label("Wrong? Fix it", systemImage: "hand.thumbsdown.fill")
+                            .font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
+                            .frame(maxWidth: .infinity).padding(.vertical, 10)
+                    }
                 }
                 .padding(Theme.pad)
             }
@@ -446,8 +513,8 @@ struct NatureRollEntryCard: View {
 
     private var subtitle: String {
         if store.scanning { return "Scanning your photos… \(store.done.formatted()) of \(store.total.formatted())" }
-        if store.records.isEmpty { return "Sort the nature in your camera roll, on this iPhone" }
+        if store.shown.isEmpty { return "Sort the nature in your camera roll, on this iPhone" }
         let today = store.onThisDay().reduce(0) { $0 + $1.items.count }
-        return today > 0 ? "\(store.records.count) nature photos · \(today) on this day" : "\(store.records.count) nature photos"
+        return today > 0 ? "\(store.shown.count) nature photos · \(today) on this day" : "\(store.shown.count) nature photos"
     }
 }
