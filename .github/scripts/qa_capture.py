@@ -47,6 +47,17 @@ def executable(app):
         return os.path.basename(app)[:-4]
 
 
+def flat(path):
+    """True when everything below the status bar is one colour (the launch screen)."""
+    try:
+        from PIL import Image, ImageStat
+        im = Image.open(path).convert("L")
+        w, h = im.size
+        return max(ImageStat.Stat(im.crop((0, int(h * 0.1), w, h))).stddev) < 1.0
+    except Exception:
+        return False
+
+
 def running(udid, bundle):
     r = sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", timeout=60)
     return r.stderr == "timeout" or bundle in r.stdout
@@ -67,7 +78,14 @@ def run(udid, bundle, exe, shots, prefix=""):
             sh("xcrun", "simctl", "openurl", udid, s["url"])
         time.sleep(float(s.get("wait", 8)))
         ok = running(udid, bundle)
-        sh("xcrun", "simctl", "io", udid, "screenshot", os.path.join(out, name + ".png"))
+        shot = os.path.join(out, name + ".png")
+        sh("xcrun", "simctl", "io", udid, "screenshot", shot)
+        # Still on the plain launch screen (slow cold start on the CI Mac)? Wait and take it again.
+        for _ in range(4):
+            if not flat(shot): break
+            print("  (still on the launch screen, waiting)")
+            time.sleep(8)
+            sh("xcrun", "simctl", "io", udid, "screenshot", shot)
         secs = int(time.time() - t0) + 5
         log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--last", f"{secs}s", "--style", "compact",
                  "--predicate", f'process == "{exe}"', timeout=180)

@@ -47,7 +47,7 @@
     }
   ],
   "paywall": {
-    "args": "-demo -paywall -demoPrice 2.99 -demoPlans 19.99,2.99",
+    "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99",
     "wait": 9
   },
   "shots": [

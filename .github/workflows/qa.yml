@@ -73,7 +73,9 @@ jobs:
 
       - name: Launch every screen and capture
         env: { PYTHONUNBUFFERED: "1" }
-        run: python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
+        run: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
+          python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
 
       - name: Publish to the qa-<app> branch (artifacts can't always be downloaded)
         if: always()

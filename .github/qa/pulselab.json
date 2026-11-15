@@ -7,7 +7,7 @@
   {"name": "05-logwhoop-morning", "args": "-demo -pro -open logwhoopauto", "wait": 9},
   {"name": "06-settings", "args": "-demo -pro -tab settings", "wait": 9},
   {"name": "07-vs-free-teaser", "args": "-demo -free -tab vs", "wait": 9},
-  {"name": "08-paywall", "args": "-demo -paywall -demoPrice 2.99 -demoPlans 19.99,2.99", "wait": 10},
+  {"name": "08-paywall", "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99", "wait": 10},
   {"name": "09-moreapps", "args": "-demo -pro -tab today -open moreapps", "wait": 12},
   {"name": "10-today-largetype", "args": "-demo -pro -tab today", "wait": 9, "size": "accessibility-large"},
   {"name": "11-logwhoop-largetype", "args": "-demo -pro -open logwhoop", "wait": 9, "size": "accessibility-large"},

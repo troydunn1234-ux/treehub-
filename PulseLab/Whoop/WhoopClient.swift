@@ -274,7 +274,7 @@ final class WhoopClient {
         isDemo = true
         isConnected = true
         lastSync = Date()
-        profile = WhoopProfile(userId: 1, email: nil, firstName: "Troy", lastName: nil)
+        profile = WhoopProfile(userId: 1, email: nil, firstName: "Alex", lastName: nil)
         body = WhoopBody(heightMeter: 1.80, weightKilogram: 80, maxHeartRate: 194)
         var rng = SeededRandom(seed: 42)
         let cal = Calendar.current
