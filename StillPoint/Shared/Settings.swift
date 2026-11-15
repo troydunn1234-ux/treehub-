@@ -170,4 +170,6 @@ enum SyncKey {
     static let streak = "streak"
     static let bestStreak = "bestStreak"
     static let streakDay = "streakDay"
+    /// The iPhone's "Right now" suggestion (JSON-encoded Suggestion).
+    static let rightNow = "rightNow"
 }

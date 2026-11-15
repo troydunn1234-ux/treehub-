@@ -10,6 +10,7 @@ struct StillPointWatchApp: App {
         WatchLink.shared.activate()
         MindfulHealth.shared.requestAuthorization()
         WidgetBridge.publish()
+        MainActor.assumeIsolated { RightNow.shared.startObserving() }
     }
 
     var body: some Scene {
@@ -47,6 +48,8 @@ struct WatchRoot: View {
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 12) {
+                    WatchRightNowCard(onStart: start)
+
                     Button { start(beginPractice, minutes: preferredMinutes(beginPractice)) } label: {
                         VStack(spacing: 4) {
                             ZStack {
@@ -105,7 +108,7 @@ struct WatchRoot: View {
                 PracticeList(title: i.name, practices: lib.practices(for: i), onStart: start)
             }
             .navigationDestination(for: String.self) { key in
-                if key == "journey" { WatchJourneyView() } else { MoreView(onStart: start) }
+                if key == "journey" { WatchJourneyView() } else if key == "why" { WatchWhyView() } else { MoreView(onStart: start) }
             }
             .navigationDestination(for: Practice.self) { p in SetupView(practice: p, onStart: startPlan) }
         }

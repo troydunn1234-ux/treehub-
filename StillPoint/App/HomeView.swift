@@ -41,6 +41,9 @@ struct HomeView: View {
                     .opacity(appeared ? 1 : 0)
                     .offset(y: appeared ? 0 : 10)
 
+                    // One practice for this moment, from WHOOP / Watch numbers in Health and Pulse Lab.
+                    RightNowCard()
+
                     // Sauna / steam sits right under the greeting so it's one tap as you walk in.
                     HeatCard()
 

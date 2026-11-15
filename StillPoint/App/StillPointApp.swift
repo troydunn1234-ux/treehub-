@@ -16,6 +16,8 @@ struct StillPointApp: App {
         PhoneLink.shared.activate()
         Reminders.shared.activate()
         WidgetBridge.publish()
+        // "Right now" card: Health observers must start at launch so background delivery can wake the app.
+        MainActor.assumeIsolated { StillPointRightNow.setup() }
     }
 
     var body: some Scene {
@@ -46,7 +48,14 @@ struct StillPointApp: App {
                 }
                 // Share sessions with Rootbound and pull in its tree hugs (Shared/Wellness/WellnessBridge.swift).
                 .onReceive(log.$records.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }
-                .onReceive(heat.$history.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in StillPointWellness.sync() }
+                .onReceive(heat.$history.debounce(for: .seconds(1), scheduler: RunLoop.main)) { _ in
+                    StillPointWellness.sync()
+                    RightNow.shared.scheduleRefresh(after: 2)
+                }
+                // A finished session changes "what you just did" (no repeats) and Works best for you.
+                .onReceive(log.$records.dropFirst().debounce(for: .seconds(2), scheduler: RunLoop.main)) { _ in
+                    RightNow.shared.scheduleRefresh(after: 1)
+                }
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
@@ -54,6 +63,8 @@ struct StillPointApp: App {
                 StillPointWellness.sync()
                 WidgetBridge.publish()
                 heat.refreshMissing()
+                DailyMoments.shared.refreshStatus()
+                Task { await RightNow.shared.refresh(force: true) }
             }
         }
     }
@@ -72,6 +83,7 @@ final class Router: ObservableObject {
     /// Where Siri / Shortcuts leave the practice they want started; picked up on launch and foreground.
     static let pendingKey = "sp.pendingPractice"
     static let pendingNote = Notification.Name("sp.pendingPractice")
+    static let pendingMinutesKey = "sp.pendingMinutes"
 
     func run(_ plan: SessionPlan) {
         Prefs.shared.markRecent(plan.practice.id)
@@ -88,13 +100,13 @@ final class Router: ObservableObject {
 
     /// Start a practice straight away at the usual length; locked ones go to their page instead.
     /// Does nothing while a session is already running, so a stray link never cuts one short.
-    func handle(practiceId id: String) {
+    func handle(practiceId id: String, minutes: Int? = nil) {
         guard let p = PracticeLibrary.shared.practice(id) else { return }
         if PracticeLibrary.shared.isLocked(p) { show(p); return }
         guard running == nil else { return }
         showSettings = false
         tab = 0
-        let usual = Prefs.shared.settings.defaultMinutes
+        let usual = minutes ?? Prefs.shared.settings.defaultMinutes
         let mins = p.minutes.contains(usual) ? usual : p.defaultMinutes
         run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: mins))
     }
@@ -110,7 +122,8 @@ final class Router: ObservableObject {
     }
 
     /// Queue a practice to start (from an App Intent); the app picks it up when it is in front.
-    static func queue(practiceId id: String) {
+    static func queue(practiceId id: String, minutes: Int? = nil) {
+        if let minutes { UserDefaults.standard.set(minutes, forKey: pendingMinutesKey) } else { UserDefaults.standard.removeObject(forKey: pendingMinutesKey) }
         UserDefaults.standard.set(id, forKey: pendingKey)
         NotificationCenter.default.post(name: pendingNote, object: nil)
     }
@@ -119,7 +132,9 @@ final class Router: ObservableObject {
         consumePendingTree()
         guard let id = UserDefaults.standard.string(forKey: Self.pendingKey), !id.isEmpty else { return }
         UserDefaults.standard.removeObject(forKey: Self.pendingKey)
-        handle(practiceId: id)
+        let mins = UserDefaults.standard.object(forKey: Self.pendingMinutesKey) as? Int
+        UserDefaults.standard.removeObject(forKey: Self.pendingMinutesKey)
+        handle(practiceId: id, minutes: mins)
     }
 }
 

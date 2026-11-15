@@ -206,6 +206,7 @@ struct SettingsView: View {
                         Text("A quiet nudge once a day, at a time you choose. Nothing else, ever.")
                     }
                 }
+                DailyMomentsSettings()
                 Section {
                     Toggle("Voice guide", isOn: $prefs.settings.voiceGuide)
                     Toggle("Tap the count, in & out", isOn: $prefs.settings.countTaps)

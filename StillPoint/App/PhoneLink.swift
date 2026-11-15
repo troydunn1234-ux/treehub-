@@ -9,6 +9,8 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
     @Published private(set) var watchPaired = false
     @Published private(set) var watchAppInstalled = false
     @Published private(set) var reachable = false
+    /// Latest "Right now" suggestion, JSON-encoded, sent with the settings.
+    var rightNowData: Data?
 
     func activate() {
         guard WCSession.isSupported() else { return }
@@ -32,6 +34,7 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         ctx[SyncKey.streak] = log.localStreak
         ctx[SyncKey.bestStreak] = log.bestStreak
         if let last = log.lastActiveDay { ctx[SyncKey.streakDay] = last.timeIntervalSince1970 }
+        if let d = rightNowData { ctx[SyncKey.rightNow] = d }
         try? WCSession.default.updateApplicationContext(ctx)
     }
 

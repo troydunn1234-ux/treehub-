@@ -349,6 +349,7 @@ final class LabStore {
         MorningBriefing.whoopAPI = WhoopAdapter.connected
         MorningBriefing.usesWhoop = whoopConnected || !whoopDays.isEmpty || !manual.isEmpty
         WidgetBridge.publish(self)
+        PulseLabWellness.publish(self)
         WatchSync.shared.push(self)
         Notify.reschedule(agreements: agreements30)
         let logged = hasWhoopRecoveryToday

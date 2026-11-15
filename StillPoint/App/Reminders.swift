@@ -110,6 +110,11 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
     /// A tap on the reminder simply brings the app to the Today tab.
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse,
                                 withCompletionHandler completionHandler: @escaping () -> Void) {
+        // Stress nudge: open straight into the suggested practice.
+        let info = response.notification.request.content.userInfo
+        if let id = info["practiceId"] as? String {
+            Router.queue(practiceId: id, minutes: info["minutes"] as? Int)
+        }
         DispatchQueue.main.async { Reminders.onOpen?() }
         completionHandler()
     }

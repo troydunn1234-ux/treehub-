@@ -245,6 +245,8 @@ targets:
     sources:
       - path: PulseLab
       - path: Shared/Store
+      # Publishes today's WHOOP / readiness summary (pulselab.json) for Still Pointz' "Right now" card.
+      - path: Shared/Wellness
     dependencies:
       - target: PulseLabWidgets
         embed: true
@@ -259,7 +261,7 @@ targets:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
         com.apple.developer.healthkit.background-delivery: true
-        com.apple.security.application-groups: [group.com.troydunn.pulselab]
+        com.apple.security.application-groups: [group.com.troydunn.pulselab, group.com.troydunn.wellness]
         # iCloud sync (Stack + hand-typed WHOOP). Turn on only after the iCloud container exists in the
         # Apple Developer portal: uncomment these four lines, set PLCloudSync to true below and add
         # "remote-notification" to UIBackgroundModes, all in the same commit.
@@ -332,6 +334,8 @@ targets:
       properties:
         com.apple.developer.healthkit: true
         com.apple.developer.healthkit.access: []
+        # New sleep / HRV / workout data wakes the app to refresh the two daily "Right now" reminders.
+        com.apple.developer.healthkit.background-delivery: true
         com.apple.security.application-groups: [group.com.troydunn.stillpoint, group.com.troydunn.wellness]
     info:
       path: StillPoint/Info.plist
@@ -349,7 +353,7 @@ targets:
           - com.troydunn.stillpoint.pro.yearly
           - com.troydunn.stillpoint.pro.monthly
         PaidUntilBuild: 0
-        NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate, HRV and resting heart rate to show how your practice and sauna sessions affect your recovery.
+        NSHealthShareUsageDescription: Still Point reads your mindful minutes, heart rate, HRV, resting heart rate, breathing rate, sleep, steps and workouts (including what WHOOP saves to Health) to show how your practice and sauna sessions affect your recovery, and to suggest one practice that fits right now. Nothing leaves your devices.
         NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes, and movement routines and sauna/steam sessions as workouts.
         UIBackgroundModes:
           - audio
@@ -400,7 +404,7 @@ targets:
         WKBackgroundModes:
           - mindfulness
           - workout-processing
-        NSHealthShareUsageDescription: Still Point reads your heart rate and HRV during sessions to show how you settle.
+        NSHealthShareUsageDescription: Still Point reads your heart rate, HRV, breathing rate, sleep, steps and workouts to show how you settle and to suggest one practice that fits right now.
         NSHealthUpdateUsageDescription: Still Point saves your sessions to Apple Health as Mindful Minutes.
         ITSAppUsesNonExemptEncryption: false
     settings:

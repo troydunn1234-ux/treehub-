@@ -8,6 +8,8 @@ import UIKit
 // so each app only ever writes its own file (no races) and reads the other's:
 //   rootbound.json   recent tree hugs (date, minutes, tree name, species; never coordinates) + hug streak
 //   stillpoint.json  recent Still Pointz sessions (date, kind, minutes) + practice streak
+//   pulselab.json    Pulse Lab's daily summary (WHOOP recovery / strain / sleep performance, readiness, HRV,
+//                    resting HR) so Still Pointz can suggest one practice from it. Numbers only, today's day.
 //   roamr.json       recent Roamr trips (last 60 days: kind, times, distance, climb, speeds, avg HR, start/end
 //                    rounded to ~100 m; never the route itself). Rootbound attaches the walks to tree hugs.
 // Apple Health is NOT touched here: each app keeps writing only its own data there, so nothing is counted twice.
@@ -167,6 +169,44 @@ enum WellnessBridge {
 
     /// Rootbound reads this.
     static func roamr() -> RoamrPart? { load("roamr.json", as: RoamrPart.self) }
+
+    // MARK: Pulse Lab side
+
+    /// Pulse Lab's summary of today (one record, replaced on every refresh). Every number optional.
+    struct PulseLabPart: Codable, Hashable {
+        var updated = Date()
+        /// dayKey of the day these numbers belong to ("2026-11-15").
+        var date: String
+        /// WHOOP recovery % (0–100) for this morning.
+        var whoopRecovery: Double? = nil
+        /// WHOOP day strain (0–21), today's cycle or yesterday's when today's hasn't started.
+        var whoopStrain: Double? = nil
+        /// WHOOP sleep performance % for last night.
+        var sleepPerformance: Double? = nil
+        /// Pulse Lab readiness (0–100) built from the Watch.
+        var readiness: Double? = nil
+        /// HRV (ms) and resting heart rate (bpm) behind the numbers above.
+        var hrv: Double? = nil
+        var rhr: Double? = nil
+        /// Last night's sleep (minutes asleep).
+        var sleepMinutes: Double? = nil
+        /// Where the numbers came from.
+        var fromWhoopAPI = false
+        var fromWhoopManual = false
+        var fromWhoopHealth = false
+        var fromWatch = false
+
+        /// True when these numbers are for today (local calendar).
+        var isToday: Bool { date == WellnessBridge.dayKey(Date()) }
+    }
+
+    /// Pulse Lab: replace its summary.
+    static func publishPulseLab(_ part: PulseLabPart) {
+        save(part, "pulselab.json")
+    }
+
+    /// Still Pointz reads this (nil when Pulse Lab isn't installed or hasn't published yet).
+    static func pulseLab() -> PulseLabPart? { load("pulselab.json", as: PulseLabPart.self) }
 
     // MARK: Helpers
 
