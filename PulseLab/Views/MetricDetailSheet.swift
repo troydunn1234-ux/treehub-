@@ -33,6 +33,7 @@ struct StatDetailSheet: View {
     @State private var days = 30
     @State private var solo: Source?
     @State private var showReadiness = false
+    @State private var quickEdit: WhoopQuickEdit?
 
     init(def: StatDef) { _def = State(initialValue: def) }
 
@@ -58,6 +59,7 @@ struct StatDetailSheet: View {
                                 }
                             }
                         }
+                        if let edit = whoopEdit { whoopEditButton(edit, series) }
                         chartPanel(series, primary, band)
                         statsPanel(series)
                         if let name = StatGuide.compareName(def.id), let a = agreement(name) { agreementCard(a) }
@@ -80,6 +82,45 @@ struct StatDetailSheet: View {
         .sheet(isPresented: $showReadiness) {
             ReadinessSheet().environment(store).presentationBackground(Lab.bg)
         }
+        .sheet(item: $quickEdit) { r in
+            WhoopQuickEditSheet(request: r).environment(store).presentationBackground(Lab.bg)
+        }
+    }
+
+    /// Steps and calories can be typed in for WHOOP (it doesn't share them).
+    private var whoopEdit: WhoopQuickEdit? {
+        switch def.id {
+        case "steps": .steps()
+        case "totalKcal": .kcal()
+        default: nil
+        }
+    }
+
+    private func whoopEditButton(_ edit: WhoopQuickEdit, _ series: StatSeries) -> some View {
+        let today = series.whoop.last { $0.day.isToday }
+        let what = edit.field == .steps ? String(localized: "steps") : String(localized: "calories")
+        return Button {
+            Lab.tick()
+            quickEdit = WhoopQuickEdit(field: edit.field, day: Date().dayStart)
+        } label: {
+            HStack(spacing: Lab.S.s) {
+                Image(systemName: today == nil ? "plus.circle.fill" : "pencil.circle.fill").font(.system(size: 18, weight: .bold))
+                VStack(alignment: .leading, spacing: 1) {
+                    Text(today == nil ? String(localized: "Add today's WHOOP \(what)") : String(localized: "Edit WHOOP \(what)"))
+                        .font(Lab.body(15, .bold))
+                    if let t = today {
+                        Text("Today: \(Int(t.value.rounded()).formatted())").font(Lab.mono(10)).opacity(0.8)
+                    }
+                }
+                Spacer()
+                Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy))
+            }
+            .foregroundStyle(Lab.whoop)
+            .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.whoop.opacity(0.1)))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.whoop.opacity(0.3)))
+        }
+        .buttonStyle(PressScale())
     }
 
     // MARK: Header

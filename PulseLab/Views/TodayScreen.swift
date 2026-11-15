@@ -23,6 +23,7 @@ struct TodayScreen: View {
                           })
             LogWhoopCard()
             numbersHeader
+            headToHead
             quickTiles
             if streak >= 2 { StreakChip(days: streak) }
             sleepDuel
@@ -91,23 +92,133 @@ struct TodayScreen: View {
         .padding(.top, Lab.S.s)
     }
 
+    // MARK: Head to head
+
+    /// The five numbers both trackers report, Watch on the left, WHOOP on the right. Each side shows its most
+    /// relevant recent value (last night / newest reading / today / yesterday) with a caption saying which;
+    /// "––" only when there's nothing from the last day and a half, with a one-line hint.
+    private var headToHead: some View {
+        LabPanel(tint: Lab.watch) {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack {
+                    SourceChip(source: .watch)
+                    Spacer()
+                    SectionTag("Head to head")
+                    Spacer()
+                    SourceChip(source: .whoop)
+                }
+                h2hRow("Resting HR", "bpm", .rhr,
+                       store.reading(.watch, \.rhr, recent: "rhr"), store.reading(.whoop, \.rhr, manual: .rhr),
+                       watchHint: String(localized: "Arrives after a few hours of wear"), whoopHint: String(localized: "Not in yet"))
+                Divider().overlay(Lab.line)
+                h2hRow("HRV", "ms", .hrv,
+                       store.reading(.watch, \.hrv, recent: "hrv"), store.reading(.whoop, \.hrv, manual: .hrv),
+                       note: "SDNN vs RMSSD",
+                       watchHint: String(localized: "Wear your Watch to bed for overnight HRV"), whoopHint: String(localized: "Not in yet"))
+                Divider().overlay(Lab.line)
+                h2hRow("Respiratory", "br/min", .resp,
+                       store.reading(.watch, \.resp, recent: "resp"), store.reading(.whoop, \.resp, manual: .resp), decimals: 1,
+                       watchHint: String(localized: "Needs Watch sleep tracking"), whoopHint: String(localized: "Not in yet"))
+                Divider().overlay(Lab.line)
+                h2hRow("Calories", "kcal", .calories,
+                       store.reading(.watch, \.totalKcal), store.reading(.whoop, \.totalKcal, manual: .kcal),
+                       watchHint: String(localized: "Not in yet"), whoopHint: String(localized: "Not shared by WHOOP · tap to add"),
+                       edit: .kcal())
+                Divider().overlay(Lab.line)
+                h2hRow("Steps", "steps", .steps,
+                       store.reading(.watch, \.steps), store.reading(.whoop, \.steps, manual: .steps),
+                       watchHint: String(localized: "Not in yet"), whoopHint: String(localized: "Tap to add WHOOP steps"),
+                       edit: .steps())
+                Text("Tap a row for its chart · tap WHOOP steps or calories to type them in")
+                    .font(Lab.label(8)).foregroundStyle(Lab.faint)
+                    .frame(maxWidth: .infinity, alignment: .center).multilineTextAlignment(.center)
+            }
+        }
+    }
+
+    private func h2hRow(_ title: String, _ unit: String, _ m: MetricKey, _ w: LabStore.Reading?, _ h: LabStore.Reading?,
+                        decimals: Int = 0, note: String? = nil, watchHint: String, whoopHint: String,
+                        edit: WhoopQuickEdit? = nil) -> some View {
+        let f: (Double) -> String = { $0.formatted(.number.precision(.fractionLength(decimals))) }
+        return VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(L(title).uppercased()).font(Lab.label(10)).tracking(1.6).foregroundStyle(Lab.dim)
+                Spacer()
+                if let note { Text(note).font(Lab.label(8)).foregroundStyle(Lab.faint) }
+            }
+            HStack(alignment: .top, spacing: Lab.S.s) {
+                h2hSide(w, .watch, unit, f, hint: watchHint)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                if let w, let h {
+                    let d = w.value - h.value
+                    Text((d >= 0 ? "+" : "−") + f(abs(d)))
+                        .font(Lab.mono(11, .bold)).foregroundStyle(Lab.dim)
+                        .padding(.horizontal, 7).padding(.vertical, 3)
+                        .background(Capsule().strokeBorder(Color.white.opacity(0.12)))
+                        .padding(.top, 6)
+                        .accessibilityHidden(true)
+                }
+                if let edit {
+                    Button {
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                        store.quickWhoop = WhoopQuickEdit(field: edit.field, day: Date().dayStart)
+                    } label: {
+                        h2hSide(h, .whoop, unit, f, hint: whoopHint, editable: true)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .contentShape(Rectangle())
+                    }
+                    .buttonStyle(PressScale())
+                    .accessibilityHint("Type in today's WHOOP \(L(title).lowercased())")
+                } else {
+                    h2hSide(h, .whoop, unit, f, hint: whoopHint)
+                        .frame(maxWidth: .infinity, alignment: .trailing)
+                }
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            store.detail = m
+        }
+        .accessibilityAction(named: Text("Open chart")) { store.detail = m }
+    }
+
+    private func h2hSide(_ r: LabStore.Reading?, _ s: Source, _ unit: String, _ f: (Double) -> String, hint: String, editable: Bool = false) -> some View {
+        let lead = s == .watch
+        return VStack(alignment: lead ? .leading : .trailing, spacing: 2) {
+            if let r {
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    if editable && !lead { Image(systemName: "pencil").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.faint) }
+                    Text(f(r.value)).font(Lab.number(26, .black)).foregroundStyle(Lab.color(s))
+                        .lineLimit(1).minimumScaleFactor(0.6)
+                    Text(unit).font(Lab.label(8)).foregroundStyle(Lab.color(s).opacity(0.7))
+                }
+                Text(r.caption).font(Lab.label(7)).tracking(0.8).foregroundStyle(r.manual ? Lab.whoop.opacity(0.8) : Lab.faint)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+            } else {
+                HStack(spacing: 4) {
+                    if editable { Image(systemName: "plus.circle.fill").font(.system(size: 14, weight: .bold)).foregroundStyle(Lab.whoop) }
+                    Text("––").font(Lab.number(26, .black)).foregroundStyle(Lab.faint)
+                }
+                Text(hint).font(Lab.body(10)).foregroundStyle(editable ? Lab.whoop.opacity(0.85) : Lab.faint)
+                    .multilineTextAlignment(lead ? .leading : .trailing)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(s.name): \(r.map { f($0.value) + " " + unit + ", " + $0.caption.lowercased() } ?? hint)")
+    }
+
     /// Every number people check, Watch over WHOOP, in one scannable grid. A value from an
     /// earlier day (today's isn't in yet) is shown dimmer with a "yday"-style tag instead of a dash.
     private var quickTiles: some View {
         let wn = store.lastNight(.watch), hn = store.lastNight(.whoop)
-        let kcalW = store.latest(.watch, \.totalKcal), kcalH = store.latest(.whoop, \.totalKcal)
-        let cols = typeSize.isAccessibilitySize ? 2 : 3
+        let cols = typeSize.isAccessibilitySize ? 1 : 2
         return LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s), count: cols), spacing: Lab.S.s) {
-            tile("Resting HR", "bpm", store.latest(.watch, \.rhr), store.latest(.whoop, \.rhr), .rhr)
-            tile("HRV", "ms", store.latest(.watch, \.hrv), store.latest(.whoop, \.hrv), .hrv, note: "SDNN · RMSSD")
             tile("Sleep", "h", wn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, hn.map { ($0.asleepMin / 60, $0.night >= Date().dayStart.adding(days: -1)) }, .sleep, decimals: 1)
-            tile("Resp rate", "br/min", store.latest(.watch, \.resp), store.latest(.whoop, \.resp), .resp, decimals: 1)
             tile("Blood O₂", "%", store.latest(.watch, \.spo2), store.latest(.whoop, \.spo2), .spo2)
             tile("Skin temp", Units.fahrenheit ? "°F vs base" : "°C vs base", store.latest(.watch, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, store.latest(.whoop, \.tempDev).map { (Units.tempDelta($0.0).0 ?? $0.0, $0.1) }, .temp, decimals: 1, signed: true)
-            tile("Calories", "kcal", kcalW, kcalH, .calories)
             tile("Strain", "/ 21", nil, store.latest(.whoop, \.strain), nil, decimals: 1, only: .whoop)
-            tile("Steps", "steps", store.latest(.watch, \.steps), store.latest(.whoop, \.steps), .steps,
-                 only: store.latest(.whoop, \.steps) == nil ? .watch : nil)
         }
     }
 

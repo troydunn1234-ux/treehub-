@@ -184,6 +184,14 @@ struct RootView: View {
                                 .environment(store)
                                 .presentationBackground(Lab.bg)
                         }
+                        .background {
+                            Color.clear
+                                .sheet(item: Binding(get: { store.quickWhoop }, set: { store.quickWhoop = $0 })) { r in
+                                    WhoopQuickEditSheet(request: r)
+                                        .environment(store)
+                                        .presentationBackground(Lab.bg)
+                                }
+                        }
                 }
             }
             if splash && !reduceMotion {

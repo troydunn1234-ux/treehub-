@@ -42,6 +42,25 @@ struct ActivityScreen: View {
         }
     }
 
+    /// Today's WHOOP steps (typed in by hand: WHOOP doesn't share steps); tap to add or edit.
+    private var whoopStepsButton: some View {
+        let v = store.whoopDays.stat(on: Date())?.steps
+        return Button {
+            Lab.tick()
+            store.quickWhoop = .steps()
+        } label: {
+            HStack(spacing: 5) {
+                Image(systemName: v == nil ? "plus.circle.fill" : "pencil").font(.system(size: 11, weight: .heavy))
+                Text(v.map { "WHOOP \(Int($0.rounded()).formatted())" } ?? "WHOOP steps").font(Lab.label(9)).tracking(1)
+            }
+            .foregroundStyle(Lab.whoop)
+            .padding(.horizontal, 9).padding(.vertical, 6)
+            .background(Capsule().fill(Lab.whoop.opacity(0.13)))
+        }
+        .buttonStyle(PressScale())
+        .accessibilityLabel(v == nil ? "Add today's WHOOP steps" : "Edit today's WHOOP steps")
+    }
+
     /// "Watch 412 · iPhone 204" under today's steps.
     private var stepsToday: String {
         let m = store.stepsByDevice[Date().dayStart] ?? [:]
@@ -118,9 +137,9 @@ struct ActivityScreen: View {
         let rows: [(day: Date, device: String, v: Double)] = byDevice.flatMap { day, m in m.map { (day, $0.key, $0.value) } }.sorted { $0.day < $1.day }
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                HStack { SectionTag("Steps · by device"); Spacer(); SourceChip(source: .watch) }
+                HStack { SectionTag("Steps · by device"); Spacer(); whoopStepsButton }
                 if w.isEmpty && rows.isEmpty {
-                    EmptyNote(text: "No steps in this range. WHOOP doesn't count steps, so this is Watch/iPhone only.")
+                    EmptyNote(text: "No steps in this range. WHOOP doesn't share steps; tap WHOOP steps above to type them in.")
                 } else {
                 Chart {
                     ForEach(Array(rows.enumerated()), id: \.offset) { _, r in

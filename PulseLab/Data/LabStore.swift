@@ -263,9 +263,45 @@ final class LabStore {
         }
         let h = await health
         merge(health: h ?? healthCache ?? HealthPull.Result())
+        if h != nil {
+            let n = lastNight(.watch)
+            recentWatch = await HealthPull.shared.recent(sleepStart: n?.start, sleepEnd: n?.end)
+        }
         lastPull = Date()
         afterRefresh()
     }
+
+    // MARK: - Most relevant recent reading (Today's head to head)
+
+    /// Watch resting HR / HRV / breathing rate from the last 36 h (sample-level, see `HealthPull.recent`).
+    private(set) var recentWatch: [String: HealthPull.Recent] = [:]
+
+    /// A value with a short caption saying when it's from ("LAST NIGHT", "3H AGO", "YESTERDAY", "MANUAL").
+    struct Reading { let value: Double; let caption: String; let manual: Bool }
+
+    /// The most relevant recent value for one side: last night's / the newest sample (Watch overnight metrics),
+    /// else today's daily value, else yesterday's. Nil only when there's nothing from today or yesterday.
+    func reading(_ s: Source, _ kp: KeyPath<DayStat, Double?>, recent key: String? = nil, manual field: ManualField? = nil) -> Reading? {
+        if s == .watch, let key, let r = recentWatch[key], r.at > Date().addingTimeInterval(-36 * 3600) {
+            return Reading(value: r.value, caption: r.overnight ? String(localized: "LAST NIGHT") : Self.ago(r.at), manual: false)
+        }
+        let yesterday = Date().dayStart.adding(days: -1)
+        guard let d = days(s).last(where: { $0[keyPath: kp] != nil }), d.day >= yesterday, let v = d[keyPath: kp] else { return nil }
+        let manual = field.map { isManual(d.day, $0) } ?? false
+        let when = d.day.isToday ? String(localized: "TODAY") : String(localized: "YESTERDAY")
+        return Reading(value: v, caption: manual ? when + " · " + String(localized: "MANUAL") : when, manual: manual)
+    }
+
+    static func ago(_ t: Date, now: Date = Date()) -> String {
+        let m = Int(now.timeIntervalSince(t) / 60)
+        if m < 60 { return m < 2 ? String(localized: "JUST NOW") : String(localized: "\(m)M AGO") }
+        if Calendar.current.isDateInToday(t) { return String(localized: "\(m / 60)H AGO") }
+        if Calendar.current.isDateInYesterday(t) { return String(localized: "YESTERDAY") }
+        return t.formatted(.dateTime.weekday(.abbreviated)).uppercased()
+    }
+
+    /// Quick edit for one WHOOP number (steps / calories) shown from the root.
+    var quickWhoop: WhoopQuickEdit?
 
     /// Reads Apple Health: the full history once, then only from the earliest day that can have changed
     /// (3 days back, the last successful read, or a day a late sample landed on), spliced into the cache.

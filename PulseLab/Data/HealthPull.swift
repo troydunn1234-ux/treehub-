@@ -135,6 +135,47 @@ final class HealthPull: @unchecked Sendable {
         return .other
     }
 
+    // MARK: - Recent readings (Today's head to head)
+
+    /// One overnight or latest reading with when it was taken.
+    struct Recent: Codable, Equatable {
+        var value: Double
+        var at: Date
+        /// Averaged over last night's Watch sleep.
+        var overnight: Bool
+    }
+
+    /// Resting HR, HRV and breathing rate from the Watch in the last 36 hours, keyed "rhr" / "hrv" / "resp".
+    /// Daily totals miss these in the morning: Apple stamps each sample with its own time (overnight ones
+    /// before midnight land on yesterday) and writes resting HR late in the day. Prefers the average across
+    /// last night's sleep window; otherwise the newest sample.
+    func recent(sleepStart: Date?, sleepEnd: Date?) async -> [String: Recent] {
+        guard Self.available else { return [:] }
+        let since = Date().addingTimeInterval(-36 * 3600)
+        let bpm = HKUnit.count().unitDivided(by: .minute())
+        let kinds: [(String, HKQuantityTypeIdentifier, HKUnit)] = [
+            ("rhr", .restingHeartRate, bpm), ("hrv", .heartRateVariabilitySDNN, .secondUnit(with: .milli)), ("resp", .respiratoryRate, bpm),
+        ]
+        var out: [String: Recent] = [:]
+        for (key, id, unit) in kinds {
+            guard let t = HKQuantityType.quantityType(forIdentifier: id) else { continue }
+            let all = await samples(t, from: since).compactMap { $0 as? HKQuantitySample }
+            var mine = all.filter { Self.origin($0) == .watch }
+            if mine.isEmpty { mine = all.filter { Self.origin($0) == .other } }
+            guard let newest = mine.max(by: { $0.endDate < $1.endDate }) else { continue }
+            if key != "rhr", let s = sleepStart, let e = sleepEnd, e > since {
+                let night = mine.filter { $0.startDate >= s.addingTimeInterval(-1800) && $0.startDate <= e.addingTimeInterval(1800) }
+                let v = night.map { $0.quantity.doubleValue(for: unit) }
+                if !v.isEmpty {
+                    out[key] = Recent(value: v.reduce(0, +) / Double(v.count), at: e, overnight: true)
+                    continue
+                }
+            }
+            out[key] = Recent(value: newest.quantity.doubleValue(for: unit), at: newest.endDate, overnight: false)
+        }
+        return out
+    }
+
     // MARK: - Full pull
 
     struct Result: Codable {

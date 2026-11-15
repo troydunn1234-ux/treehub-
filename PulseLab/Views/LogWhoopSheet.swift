@@ -39,6 +39,7 @@ struct LogWhoopSheet: View {
                     VStack(alignment: .leading, spacing: Lab.S.m) {
                         header
                         dateRow
+                        slider(.steps, "Steps", "steps", range: 0...40_000, step: 500, decimals: 0, tint: Lab.whoop)
                         openWhoopButton
                         slider(.recovery, "Recovery", "%", range: 0...100, step: 1, decimals: 0, tint: band)
                         slider(.strain, "Day strain", "/ 21", range: 0...21, step: 0.1, decimals: 1, tint: Lab.watch)
@@ -48,7 +49,6 @@ struct LogWhoopSheet: View {
                             stepper(.hrv, "HRV", "ms", range: 0...300, step: 1, decimals: 0)
                             stepper(.rhr, "Resting HR", "bpm", range: 20...150, step: 1, decimals: 0)
                             stepper(.resp, "Respiratory", "br/min", range: 5...40, step: 0.1, decimals: 1)
-                            stepper(.steps, "Steps", "steps", range: 0...100_000, step: 500, decimals: 0)
                             stepper(.kcal, "Calories", "kcal · optional", range: 0...10_000, step: 50, decimals: 0)
                         }
                         saveButton

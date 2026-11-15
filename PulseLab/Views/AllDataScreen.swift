@@ -12,6 +12,7 @@ struct AllDataScreen: View {
     @State private var series: [String: StatSeries] = [:]
     @State private var selected: StatDef?
     @State private var workoutLimit = 15
+    @State private var quickEdit: WhoopQuickEdit?
 
     /// Changes whenever the store's data does, so the catalogue is rebuilt once per sync, not per frame.
     private var dataStamp: String {
@@ -56,6 +57,9 @@ struct AllDataScreen: View {
             .environment(store)
             .presentationDetents([.large])
             .presentationBackground(Lab.bg)
+        }
+        .sheet(item: $quickEdit) { r in
+            WhoopQuickEditSheet(request: r).environment(store).presentationBackground(Lab.bg)
         }
     }
 
@@ -117,7 +121,28 @@ struct AllDataScreen: View {
         }
     }
 
-    private func row(_ def: StatDef) -> some View {
+    /// Steps and calories get a pencil for typing in WHOOP's number (WHOOP doesn't share them).
+    @ViewBuilder private func row(_ def: StatDef) -> some View {
+        let field: ManualField? = def.id == "steps" ? .steps : def.id == "totalKcal" ? .kcal : nil
+        if let field {
+            HStack(spacing: Lab.S.s) {
+                rowButton(def)
+                Button {
+                    Lab.tick()
+                    quickEdit = WhoopQuickEdit(field: field, day: Date().dayStart)
+                } label: {
+                    Image(systemName: "pencil.circle.fill").font(.system(size: 22)).foregroundStyle(Lab.whoop)
+                        .frame(width: 36, height: 44)
+                }
+                .buttonStyle(PressScale())
+                .accessibilityLabel(field == .steps ? "Type in WHOOP steps" : "Type in WHOOP calories")
+            }
+        } else {
+            rowButton(def)
+        }
+    }
+
+    private func rowButton(_ def: StatDef) -> some View {
         let s = series[def.id] ?? StatSeries()
         let primary = primarySource(def, s)
         return Button {
