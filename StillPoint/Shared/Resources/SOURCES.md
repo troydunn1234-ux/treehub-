@@ -54,3 +54,23 @@ Short reference list behind the practice descriptions in `practices.json`. Descr
 - **ruesi-watpho** — Thailand Foundation, "Exercising in (Ancient) Style: Hermit Statues of Wat Pho." https://thailandfoundation.or.th/?p=961
 - **do-in** — Jacques de Langre, *The First Book of Do-In* (1971).
 - **lu-jong** — Tulku Lobsang, *Lu Jong: The Power of Tibetan Yoga*; Yoga Journal, "Five Elements Tibetan Lu Jong Yoga Practice." https://www.yogajournal.com/practice/five-elements-tibetan-lu-jong-yoga-practice
+
+## Mind–body medicine, sport & Stoic (added with the expanded library)
+
+- **jacobson-pmr** — Jacobson E (1938). *Progressive Relaxation*. University of Chicago Press.
+- **kabat-zinn** — Kabat-Zinn J (1990). *Full Catastrophe Living* (mindfulness-based stress reduction: body scan, mountain meditation).
+- **benson-1975** — Benson H (1975). *The Relaxation Response*. William Morrow.
+- **schultz-autogenic** — Schultz JH, Luthe W (1959). *Autogenic Training: A Psychophysiologic Approach in Psychotherapy*.
+- **neff-2011** — Neff K (2011). *Self-Compassion: The Proven Power of Being Kind to Yourself*. William Morrow.
+- **brown-gerbarg** — Brown RP, Gerbarg PL (2012). *The Healing Power of the Breath* (coherent breathing, about 5 breaths a minute).
+- **kox-2014** — Kox M et al. (2014). Voluntary activation of the sympathetic nervous system and attenuation of the innate immune response in humans. *PNAS* 111:7379–7384.
+- **tipton-2017** — Tipton MJ et al. (2017). Cold water immersion: kill or cure? *Experimental Physiology* 102:1335–1355.
+- **laukkanen-2018** — Laukkanen JA, Laukkanen T, Kunutsor SK (2018). Cardiovascular and other health benefits of sauna bathing: a review of the evidence. *Mayo Clinic Proceedings* 93:1111–1121.
+- **mahasi** — Mahasi Sayadaw, *Practical Insight Meditation* (mental noting; walking meditation).
+- **omori-zen** — Omori Sogen, *An Introduction to Zen Training* (hara / tanden breathing).
+- **liuzijue** — Chinese Health Qigong Association, *Health Qigong: Liu Zi Jue* (Six Healing Sounds, standardised 2003).
+- **ignatius-examen** — Ignatius of Loyola, *Spiritual Exercises* (the daily Examen).
+- **epictetus** — Epictetus, *Enchiridion* 1 (what is and isn't up to us).
+- **marcus-meditations** — Marcus Aurelius, *Meditations* 2.1 (preparing for the day) and 9.30 (the view from above).
+- **seneca-ira** — Seneca, *De Ira* 3.36 (the evening review).
+- **beaudoin** — Beaudoin LP, serial diverse imagining ("cognitive shuffle") for sleep onset, Simon Fraser University.

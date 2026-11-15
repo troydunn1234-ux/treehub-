@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "traditions": [
   {
    "id": "zen",
@@ -7,7 +7,8 @@
    "region": "Japan",
    "origin": "Chan Buddhism reached Japan from China in the 12th–13th centuries (Rinzai, Sōtō).",
    "summary": "Zen centres practice on zazen, seated meditation in an upright, alert posture. Sōtō emphasises 'just sitting'; Rinzai adds kōan study. Breath counting is a classic starting point for beginners in both.",
-   "color": "#C9B79C"
+   "color": "#C9B79C",
+   "short": "Upright sitting, breath counting and walking meditation from Japan."
   },
   {
    "id": "theravada",
@@ -15,7 +16,8 @@
    "region": "Sri Lanka · Thailand · Myanmar",
    "origin": "The oldest surviving Buddhist school, based on the Pāli Canon; Thai and Burmese forest and insight lineages revived intensive meditation in the 20th century.",
    "summary": "Theravāda meditation pairs calm (samatha) with insight (vipassanā). Mindfulness of breathing, body scanning and loving-kindness are its best-known practices.",
-   "color": "#E0A458"
+   "color": "#E0A458",
+   "short": "Mindfulness of breathing, body sweeps and loving-kindness."
   },
   {
    "id": "tibetan",
@@ -23,7 +25,8 @@
    "region": "Tibet · Himalaya",
    "origin": "Vajrayāna Buddhism and the Bön tradition of the Tibetan plateau, now taught worldwide.",
    "summary": "Tibetan practice blends calm abiding, visualisation and compassion training. Breath practices like the nine purification breaths prepare the mind for meditation.",
-   "color": "#C0392B"
+   "color": "#C0392B",
+   "short": "Purifying breaths, calm abiding and compassion training."
   },
   {
    "id": "yoga",
@@ -31,7 +34,8 @@
    "region": "India",
    "origin": "Hindu and yogic traditions recorded in the Upaniṣads, Yoga Sūtras and medieval haṭha texts such as the Haṭha Yoga Pradīpikā.",
    "summary": "Prāṇāyāma means extending or regulating the breath. Nostril, rhythm and sound techniques are used to settle the body before meditation and mantra.",
-   "color": "#F39C12"
+   "color": "#F39C12",
+   "short": "Breath control from India: nostrils, rhythm and sound."
   },
   {
    "id": "sufi",
@@ -39,7 +43,8 @@
    "region": "Persia · Turkey · North Africa · South Asia",
    "origin": "The contemplative tradition within Islam, carried by orders such as the Naqshbandi, Mevlevi and Chishti.",
    "summary": "Sufi practice centres on dhikr, remembrance, often paired with the breath and the heart. Awareness of each breath (hush dar dam) is a core Naqshbandi principle.",
-   "color": "#2E8B57"
+   "color": "#2E8B57",
+   "short": "Remembrance (dhikr) paired with breath and the heart."
   },
   {
    "id": "christian",
@@ -47,7 +52,8 @@
    "region": "Mount Athos · Egypt · Europe",
    "origin": "Desert fathers and mothers, Eastern Orthodox hesychasm and Western monastic prayer.",
    "summary": "Contemplative Christianity uses short prayer words, sacred reading and silence to rest attention. Centering prayer and the Jesus Prayer are its most practiced forms today.",
-   "color": "#5B7DB1"
+   "color": "#5B7DB1",
+   "short": "Prayer words, sacred reading and resting in silence."
   },
   {
    "id": "taoist",
@@ -55,7 +61,8 @@
    "region": "China",
    "origin": "Daoist inner cultivation (neidan, daoyin, qigong) developed over two thousand years.",
    "summary": "Taoist practice works with breath, posture and the circulation of qi. Slow, quiet breathing and standing meditation build calm and steadiness.",
-   "color": "#16A085"
+   "color": "#16A085",
+   "short": "Quiet breathing, standing and gentle qigong from China."
   },
   {
    "id": "japan-nature",
@@ -63,7 +70,8 @@
    "region": "Japan",
    "origin": "A 1980s Japanese public-health practice rooted in Shinto reverence for nature.",
    "summary": "Forest bathing means slowly taking in the forest through all the senses. It is walking without a destination.",
-   "color": "#4F9D69"
+   "color": "#4F9D69",
+   "short": "Forest bathing: slowing down with all your senses."
   },
   {
    "id": "modern",
@@ -71,7 +79,8 @@
    "region": "Labs & clinics worldwide",
    "origin": "Techniques studied or popularised by physiologists, clinicians and military trainers.",
    "summary": "Simple paced-breathing patterns that research has looked at for stress, focus and sleep. Good for quick, structured sessions.",
-   "color": "#00BCD4"
+   "color": "#00BCD4",
+   "short": "Lab-studied patterns for calm, focus and energy."
   },
   {
    "id": "thai",
@@ -79,7 +88,8 @@
    "region": "Thailand",
    "origin": "Thai healing arts (nuad thai, ruesi dat ton) shaped by Buddhist, Ayurvedic and local traditions.",
    "summary": "Thai traditional medicine joins massage, herbal care and self-stretching. The hermit exercises are its self-care practice, preserved in the statues of Wat Pho.",
-   "color": "#B5651D"
+   "color": "#B5651D",
+   "short": "Hermit stretches from Thai traditional medicine."
   },
   {
    "id": "japan",
@@ -87,7 +97,8 @@
    "region": "Japan",
    "origin": "Everyday Japanese health practices from Buddhist bowing, East Asian medicine and 20th-century public health.",
    "summary": "Japan blends meditative movement into daily life, from morning radio exercises to floor stretches and self-massage. These short routines prepare the body for sitting.",
-   "color": "#D96C75"
+   "color": "#D96C75",
+   "short": "Japanese stretching, calisthenics and self-massage."
   },
   {
    "id": "wind-down",
@@ -95,7 +106,8 @@
    "region": "For the end of the day",
    "origin": "Evening practices gathered from yoga nidra, prāṇāyāma, Zen and the mettā tradition, chosen for the hour before sleep.",
    "summary": "Slow, low-effort practices for the last hour of the day: a lying-down body scan, a long-exhale breath, a counting-down breath and a loving-kindness that ends with you. Dim the lights; nothing here needs effort.",
-   "color": "#7B6FB0"
+   "color": "#7B6FB0",
+   "short": "Evening practices to help you drift off."
   },
   {
    "id": "nature",
@@ -103,7 +115,35 @@
    "region": "Any forest, park or backyard",
    "origin": "Original Still Pointz practices for grounding yourself with a tree, built on well-studied breathing patterns.",
    "summary": "Short breaths to do with your hands on bark, your arms around a trunk or your feet on the ground. Slow out-breaths, the senses and the stillness of a tree do the grounding. Pairs with Rootbound.",
-   "color": "#6FAF6B"
+   "color": "#6FAF6B",
+   "short": "Breaths to share with a tree: ground yourself outside."
+  },
+  {
+   "id": "mindbody",
+   "name": "Mind–Body Medicine",
+   "region": "Clinics & hospitals worldwide",
+   "origin": "Relaxation methods developed by physicians and psychologists from the 1920s onward: progressive relaxation, autogenic training, the relaxation response, body scans.",
+   "summary": "Plain, well-tested ways to relax the body and quiet worry. No beliefs needed: just attention, breath and muscles.",
+   "short": "Clinic-tested relaxation: muscles, body scans, soothing images.",
+   "color": "#7FB3D5"
+  },
+  {
+   "id": "performance",
+   "name": "Sport & Recovery",
+   "region": "Gyms, saunas, cold tubs",
+   "origin": "Breathing used by athletes, coaches and recovery clinics around training, heat and cold.",
+   "summary": "Short breaths to switch on before training and switch off after it, plus calm ways into and out of the cold plunge and the sauna.",
+   "short": "Switch on before training, switch off after; cold and sauna.",
+   "color": "#E07A5F"
+  },
+  {
+   "id": "stoic",
+   "name": "Stoic",
+   "region": "Greece · Rome",
+   "origin": "Greek and Roman philosophy (Zeno, Epictetus, Seneca, Marcus Aurelius), 3rd c. BCE to 2nd c. CE.",
+   "summary": "Stoic exercises are short reflections: preparing for the day, reviewing it at night, sorting what is in your control from what isn't.",
+   "short": "Short reflections: prepare the day, review it, let go of what you can't control.",
+   "color": "#B0A18F"
   }
  ],
  "practices": [
@@ -118,6 +158,19 @@
     20
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Count your out-breaths from one to ten to calm a busy mind and train focus.",
+   "goodFor": [
+    "Busy mind",
+    "Learning to meditate",
+    "Focus"
+   ],
+   "howItWorks": "Counting gives racing thoughts one simple job. When you lose count, you notice and start again, and that noticing is what trains attention.",
+   "categories": [
+    "focus",
+    "calm",
+    "beginner"
+   ],
    "about": "Susokukan, counting the breath, is the first practice given to new students in both Sōtō and Rinzai Zen; Dōgen's Fukanzazengi sets out the posture. Sit upright on a cushion, hands in the cosmic mudrā, eyes lowered and half-open. Count each out-breath from one to ten, then begin again. When you lose count or pass ten, return to one without comment.",
    "why": "Counting gives a busy mind something simple to do, and noticing when the count is lost trains attention. Reviews of slow, attentive breathing link it with calmer arousal.",
    "pattern": {
@@ -165,9 +218,18 @@
     30
    ],
    "level": "deep",
+   "whatItDoes": "Just sit, upright and aware, with nothing to do and nothing to achieve.",
+   "goodFor": [
+    "Experienced meditators",
+    "Deep stillness",
+    "Letting go of effort"
+   ],
+   "howItWorks": "Instead of focusing on one thing, you rest in open awareness and let everything come and go. It's simple but not easy; posture does a lot of the work.",
+   "categories": [
+    "focus"
+   ],
    "about": "Shikantaza, 'just sitting', is the heart of Sōtō Zen as taught by Dōgen (1200–1253) and, in the West, by Shunryu Suzuki. There is no object and no counting: sit upright, breathe naturally, and let thoughts arise and pass without following or pushing them away. Dōgen called it 'thinking not-thinking'; the posture itself is the practice.",
    "why": "Open-awareness meditation is studied for how it shifts attention away from mind-wandering. Practitioners describe a growing ease with whatever arises.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -197,6 +259,18 @@
     10
    ],
    "level": "easy",
+   "whatItDoes": "Slow, mindful walking between sits to stretch your legs without losing calm.",
+   "goodFor": [
+    "Stiff legs",
+    "Restlessness",
+    "Between sitting sessions"
+   ],
+   "howItWorks": "Each step is matched to the breath, so you keep meditating while the body moves. Good when sitting feels too hard.",
+   "categories": [
+    "focus",
+    "nature",
+    "beginner"
+   ],
    "about": "Kinhin is the walking meditation done between periods of zazen. In the Sōtō form the left hand makes a loose fist at the chest, covered by the right (shashu). Take a half-step forward with each full breath, moving slowly clockwise; Rinzai temples walk briskly instead. Attention stays with the soles, the breath and the posture.",
    "why": "Walking meditation keeps practice going when sitting feels heavy. It brings mindfulness into movement and daily life.",
    "pattern": {
@@ -228,6 +302,63 @@
    ]
   },
   {
+   "id": "hara-breath",
+   "title": "Hara Breathing (Tanden)",
+   "traditionId": "zen",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "whatItDoes": "Breathe low into the belly below the navel to feel steady, grounded and calm.",
+   "goodFor": [
+    "Feeling scattered",
+    "Courage before a challenge",
+    "Grounding"
+   ],
+   "howItWorks": "Settling the breath and attention low in the belly drops tension out of the chest and shoulders. Zen and martial arts use it to feel centred.",
+   "categories": [
+    "calm",
+    "focus",
+    "nature"
+   ],
+   "howTo": [
+    "Sit upright, hands resting in your lap.",
+    "Put attention two fingers below the navel.",
+    "Breathe in for 4, letting the low belly fill.",
+    "Long, slow breath out for 8, belly firm but relaxed."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Attention low in the belly."
+    },
+    {
+     "at": 90,
+     "text": "Long out-breath. Feel your weight."
+    },
+    {
+     "at": 240,
+     "text": "Heavy, steady, upright."
+    }
+   ],
+   "sources": [
+    "omori-zen"
+   ]
+  },
+  {
    "id": "anapanasati",
    "title": "Mindfulness of Breathing (Ānāpānasati)",
    "traditionId": "theravada",
@@ -239,9 +370,21 @@
     30
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Rest your attention on the natural breath to settle the mind.",
+   "goodFor": [
+    "Everyday calm",
+    "Learning mindfulness",
+    "Stress"
+   ],
+   "howItWorks": "You don't control the breath, you just feel it. Coming back to it each time the mind wanders builds calm, steady attention.",
+   "categories": [
+    "calm",
+    "focus",
+    "beginner"
+   ],
    "about": "Ānāpānasati is the breath meditation taught by the Buddha in the Ānāpānasati Sutta (MN 118). Sit comfortably and feel the breath at the nostrils or belly, knowing a long breath as long and a short breath as short. The sutta's next steps widen awareness to the whole body and let it calm. Ajahn Buddhadāsa and Thich Nhat Hanh are among its best-known modern teachers.",
    "why": "It is the foundation practice of almost every Buddhist school. Reviews of slow, attentive breathing link it with calmer physiology and better mood, though effects vary between people.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -276,9 +419,19 @@
     30
    ],
    "level": "medium",
+   "whatItDoes": "Sweep attention slowly through the body to notice sensations without reacting.",
+   "goodFor": [
+    "Body awareness",
+    "Tension",
+    "Deeper practice"
+   ],
+   "howItWorks": "Moving attention part by part shows how sensations constantly change. Watching without reacting can make discomfort and stress feel less gripping.",
+   "categories": [
+    "healing",
+    "focus"
+   ],
    "about": "This body-sweeping method comes from the Burmese lineage of Ledi Sayadaw and Sayagyi U Ba Khin, made global by S. N. Goenka's ten-day courses. Attention moves part by part from the top of the head to the toes and back up, observing any sensation — warmth, tingling, pressure, or nothing. The key instruction is equanimity: notice without craving or aversion, and see that every sensation changes.",
    "why": "Body-scanning practices train non-reactive awareness. Many people find they relax deeply and notice tension they had missed.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -317,9 +470,21 @@
     20
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Send warm wishes to yourself and others to soften the heart and lift your mood.",
+   "goodFor": [
+    "Self-criticism",
+    "Loneliness",
+    "Anger or resentment"
+   ],
+   "howItWorks": "Repeating kind wishes like 'may you be well' builds warmth on purpose. Studies link it with more positive emotion and feeling connected.",
+   "categories": [
+    "healing",
+    "calm",
+    "beginner"
+   ],
    "about": "Mettā practice comes from the Karaṇīya Mettā Sutta and Buddhaghosa's Visuddhimagga; Sharon Salzberg popularised it in the West. Silently repeat simple wishes — may I be safe, happy, healthy, at ease — first for yourself, then a benefactor or loved one, a neutral person, a difficult person, and finally all beings. If the phrases feel dry, keep going gently; the intention matters more than the feeling.",
    "why": "Loving-kindness meditation has been studied for increasing positive emotion and feelings of social connection. Traditionally it is the antidote to ill-will and fear.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -362,6 +527,17 @@
     20
    ],
    "level": "easy",
+   "whatItDoes": "Silently say 'Bud' on the in-breath and 'dho' on the out-breath to steady the mind.",
+   "goodFor": [
+    "Wandering mind",
+    "Calm focus",
+    "Simple mantra"
+   ],
+   "howItWorks": "Pairing a short word with the breath gives the mind a gentle anchor. Thai forest monks use it as a first practice.",
+   "categories": [
+    "focus",
+    "calm"
+   ],
    "about": "Ajahn Mun and his student Ajahn Chah, founders of the modern Thai Forest tradition, taught pairing the breath with 'Buddho' — 'the one who knows', 'awake'. Silently say 'Bud-' on the in-breath and '-dho' on the out-breath. Once the mind is settled and knowing clearly, the word can be let go. Ajahn Chah's monasteries in Thailand and the UK still teach it as a first practice.",
    "why": "A breath-paired word keeps attention anchored and is easy to return to. It is one of the most widely taught Thai forest practices.",
    "pattern": {
@@ -393,6 +569,103 @@
    ]
   },
   {
+   "id": "noting",
+   "title": "Mental Noting",
+   "traditionId": "theravada",
+   "kind": "open",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "medium",
+   "whatItDoes": "Label whatever shows up (thinking, hearing, feeling) to see thoughts without getting lost in them.",
+   "goodFor": [
+    "Overthinking",
+    "Rumination",
+    "Learning to observe your mind"
+   ],
+   "howItWorks": "Giving a quick, quiet label to each experience creates a little distance from it. Over time it gets easier to notice a thought before it carries you off.",
+   "categories": [
+    "focus",
+    "calm"
+   ],
+   "howTo": [
+    "Sit comfortably and rest on the breath.",
+    "When something pulls your attention, note it softly: 'thinking', 'hearing', 'itching'.",
+    "Return to the breath.",
+    "Keep notes light and short."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Rest on the breath. Note what pulls you away."
+    },
+    {
+     "at": 120,
+     "text": "Thinking… thinking. Back to breath."
+    },
+    {
+     "at": 300,
+     "text": "Light notes. No judging."
+    },
+    {
+     "at": 600,
+     "text": "Notice the gaps between notes."
+    }
+   ],
+   "sources": [
+    "mahasi"
+   ]
+  },
+  {
+   "id": "walking-slow",
+   "title": "Slow Walking Meditation",
+   "traditionId": "theravada",
+   "kind": "walking",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "whatItDoes": "Walk very slowly and feel each step to calm a restless body and mind.",
+   "goodFor": [
+    "Restlessness",
+    "Too tired to sit",
+    "Grounding"
+   ],
+   "howItWorks": "Slow, deliberate walking gives restless energy somewhere to go while you train attention on the feet. Easier than sitting for many people.",
+   "categories": [
+    "focus",
+    "nature",
+    "beginner"
+   ],
+   "howTo": [
+    "Find a path of 10–20 steps, indoors or out.",
+    "Walk slowly: lifting, moving, placing each foot.",
+    "At the end, stop, turn, and walk back.",
+    "When the mind wanders, feel the next step."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Lifting… moving… placing."
+    },
+    {
+     "at": 120,
+     "text": "Feel the ground through your feet."
+    },
+    {
+     "at": 300,
+     "text": "Slower still."
+    }
+   ],
+   "sources": [
+    "mahasi"
+   ]
+  },
+  {
    "id": "tonglen",
    "title": "Tonglen (Giving & Taking)",
    "traditionId": "tibetan",
@@ -403,6 +676,17 @@
     20
    ],
    "level": "medium",
+   "free": true,
+   "whatItDoes": "Breathe in others' pain and breathe out relief to grow compassion and courage.",
+   "goodFor": [
+    "Caring for someone who suffers",
+    "Grief",
+    "Opening the heart"
+   ],
+   "howItWorks": "Instead of pushing pain away, you imagine taking it in and sending back ease. It turns helplessness into compassion and can make hard feelings easier to hold.",
+   "categories": [
+    "healing"
+   ],
    "about": "Tonglen, 'sending and taking', is a Tibetan lojong (mind-training) practice from Atiśa's 11th-century teachings, taught widely today by Pema Chödrön. On the in-breath imagine taking in suffering as hot, dark heaviness; on the out-breath send relief as cool, bright light. Chödrön teaches it in four stages: a flash of openness, the texture, a specific person, then widening to all who suffer the same way.",
    "why": "Tradition holds that tonglen dissolves self-centredness and builds courage around suffering. It is a core compassion practice.",
    "pattern": {
@@ -443,6 +727,18 @@
     5
    ],
    "level": "easy",
+   "whatItDoes": "Nine alternating-nostril breaths to clear the mind before meditating.",
+   "goodFor": [
+    "Start of meditation",
+    "Clearing the head",
+    "Quick reset"
+   ],
+   "howItWorks": "Breathing out through one nostril, then the other, then both, slows the breath and imagines releasing what you don't need. A short way to arrive.",
+   "categories": [
+    "calm",
+    "quick",
+    "focus"
+   ],
    "about": "A preliminary purification breath from Tibetan Bön and Buddhist yoga, taught by Tenzin Wangyal Rinpoche in Awakening the Sacred Body. Three rounds of three breaths: in through one nostril and out through the other, then the reverse, then in and out through both. Each exhale imagines releasing an obstacle — traditionally anger, attachment and ignorance. Teachers differ on which nostril begins; follow your teacher if you have one.",
    "why": "It's used to clear the mind before longer meditation. The slow nostril breathing also steadies the breath.",
    "pattern": {
@@ -484,9 +780,19 @@
     20
    ],
    "level": "medium",
+   "whatItDoes": "Rest attention on one object for calm, clear, stable focus.",
+   "goodFor": [
+    "Building concentration",
+    "Calm",
+    "Deeper practice"
+   ],
+   "howItWorks": "Calm abiding trains the mind to stay where you place it, gently and without strain. Over time attention becomes clearer and steadier.",
+   "categories": [
+    "focus",
+    "calm"
+   ],
    "about": "Shamatha, calm abiding, rests attention on one object — a small stone, an image of the Buddha, or the breath. When the mind wanders you notice and return, balancing relaxation with clarity. Kamalaśīla and Asaṅga describe nine stages of settling; B. Alan Wallace teaches it in The Attention Revolution.",
    "why": "Single-point focus training is the classic base for all deeper meditation. Studies of focused attention suggest it can improve sustained concentration.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -507,6 +813,214 @@
    ]
   },
   {
+   "id": "lujong-warmup",
+   "title": "Tibetan Joint Warm-up (Lu Jong-style)",
+   "traditionId": "tibetan",
+   "kind": "movement",
+   "focus": "joint",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "whatItDoes": "Tibetan joint loosening to release tension in the spine and limbs.",
+   "goodFor": [
+    "Stiff joints",
+    "Before meditation",
+    "Morning"
+   ],
+   "howItWorks": "Simple repeated movements with breath free up the joints and settle the mind.",
+   "categories": [
+    "energy",
+    "recovery"
+   ],
+   "about": "Lu Jong, 'body training', is a Tibetan Buddhist and Bön healing-movement system taught worldwide by Tulku Lobsang Rinpoche. Its key pattern is to move into a position on the out-breath, hold briefly, and release. This short routine applies that pattern to gentle joint warming; it is inspired by Lu Jong, not its official sequence.",
+   "why": "Warming the joints with slow, breath-led movement is a gentle way to begin the day or a sitting. The hold-and-release rhythm brings attention into the body.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Settle",
+     "seconds": 20,
+     "how": "Stand, feet hip-width. Three slow breaths.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Neck",
+     "seconds": 40,
+     "how": "Exhale, chin to chest; hold; inhale up. Then ear to shoulder.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Shoulders",
+     "seconds": 40,
+     "how": "Exhale, roll shoulders back and down; release.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Wrists & hands",
+     "seconds": 30,
+     "how": "Circle wrists, open and close the fingers.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Spine",
+     "seconds": 50,
+     "how": "Exhale, round forward; hold; inhale, rise and open.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Hips",
+     "seconds": 50,
+     "how": "Hands on hips, slow circles each way.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Knees & ankles",
+     "seconds": 40,
+     "how": "Soft knee circles, then lift and circle each ankle.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Shake out",
+     "seconds": 30,
+     "how": "Shake the whole body loosely, then stand still.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "lu-jong"
+   ],
+   "baseSeconds": 300
+  },
+  {
+   "id": "healing-light",
+   "title": "Healing Light Visualization",
+   "traditionId": "tibetan",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Picture warm, healing light filling the body on each in-breath to feel cared for and at ease.",
+   "goodFor": [
+    "Feeling unwell or worn down",
+    "Recovering from illness",
+    "Comfort"
+   ],
+   "howItWorks": "Tibetan practice often pairs breath with images of light. Gentle, kind imagery can help the body relax and the mind feel safe, which supports rest and recovery.",
+   "categories": [
+    "healing",
+    "calm",
+    "sleep"
+   ],
+   "howTo": [
+    "Lie or sit comfortably.",
+    "Breathe in and picture soft light entering where you need it.",
+    "Breathe out and picture tension or heaviness leaving as smoke.",
+    "Let the light fill your whole body."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Breathe in soft, warm light."
+    },
+    {
+     "at": 60,
+     "text": "Breathe out what you don't need."
+    },
+    {
+     "at": 180,
+     "text": "Light filling every cell."
+    },
+    {
+     "at": 420,
+     "text": "Rest in the glow."
+    }
+   ],
+   "safety": "A supportive practice, not medical advice or treatment.",
+   "sources": [
+    "nine-breaths"
+   ]
+  },
+  {
+   "id": "sky-gazing",
+   "title": "Sky Gazing",
+   "traditionId": "tibetan",
+   "kind": "open",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Rest your eyes on open sky and let your mind feel as wide and open as it.",
+   "goodFor": [
+    "Feeling boxed in",
+    "Big worries",
+    "Being outdoors"
+   ],
+   "howItWorks": "Looking at a wide, empty view relaxes the eyes and loosens narrow, worried focus. Tibetan teachers use the sky as an image for the open mind.",
+   "categories": [
+    "nature",
+    "calm"
+   ],
+   "howTo": [
+    "Sit or lie where you can see open sky (never look at the sun).",
+    "Let your gaze rest, unfocused.",
+    "Breathe out slowly and let thoughts pass like clouds.",
+    "Don't chase them; stay with the space."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Soft gaze into open sky."
+    },
+    {
+     "at": 90,
+     "text": "Thoughts pass like clouds."
+    },
+    {
+     "at": 240,
+     "text": "Mind as wide as the sky."
+    }
+   ],
+   "safety": "Never look at the sun.",
+   "sources": [
+    "goyal-2014"
+   ]
+  },
+  {
    "id": "nadi-shodhana",
    "title": "Alternate Nostril (Nāḍī Śodhana)",
    "traditionId": "yoga",
@@ -517,6 +1031,19 @@
     10
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Breathe through one nostril at a time to feel balanced and calm.",
+   "goodFor": [
+    "Anxiety",
+    "Before meditation",
+    "Feeling unbalanced"
+   ],
+   "howItWorks": "Switching sides each breath slows breathing and takes concentration, which calms the mind. Studies link it with lower heart rate and stress.",
+   "categories": [
+    "calm",
+    "focus",
+    "beginner"
+   ],
    "about": "Nāḍī śodhana, 'channel cleansing', is taught in the Haṭha Yoga Pradīpikā and by B. K. S. Iyengar. With the right hand in Viṣṇu mudrā, close the right nostril and inhale left, close the left and exhale right, inhale right, then exhale left — one round. Keep every breath slow, smooth and silent; beginners skip any hold.",
    "why": "Yoga traditions use it to balance and calm before meditation. Small studies report lower heart rate and blood pressure after slow alternate-nostril breathing.",
    "pattern": {
@@ -560,6 +1087,19 @@
     10
    ],
    "level": "easy",
+   "whatItDoes": "Hum like a bee on each out-breath to quiet the mind fast.",
+   "goodFor": [
+    "Anxiety",
+    "Racing thoughts",
+    "Before sleep"
+   ],
+   "howItWorks": "Humming makes a long, slow exhale and a soothing vibration in the head and chest. It also raises nitric oxide in the nose.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing",
+    "beginner"
+   ],
    "about": "Bhrāmarī, the bee breath, is one of the eight classical kumbhakas in the Haṭha Yoga Pradīpikā. Inhale through the nose, then exhale slowly with lips closed and teeth slightly apart, making a steady, high 'mmm' like a bee. Many teachers add ṣaṇmukhī mudrā: thumbs gently close the ears and fingers rest over the eyes.",
    "why": "The long humming exhale tends to feel deeply calming. Humming has been shown to raise nasal nitric oxide sharply compared with quiet breathing.",
    "pattern": {
@@ -602,6 +1142,18 @@
     10
    ],
    "level": "easy",
+   "whatItDoes": "Breathe with a soft ocean sound in the throat to slow down and focus.",
+   "goodFor": [
+    "Yoga practice",
+    "Focus",
+    "Calm energy"
+   ],
+   "howItWorks": "Gently narrowing the throat slows the airflow and makes a sound you can follow, keeping you steady and present.",
+   "categories": [
+    "focus",
+    "calm",
+    "energy"
+   ],
    "about": "Ujjāyī, the 'victorious' breath, is listed among the kumbhakas of the Haṭha Yoga Pradīpikā and is central to Iyengar and Ashtanga yoga. Gently narrow the back of the throat (glottis) so each nasal breath makes a soft, ocean-like whisper. Keep the face and jaw relaxed and make inhale and exhale smooth and even.",
    "why": "The sound gives the mind a steady anchor and naturally slows breathing. It is often used to steady attention during practice.",
    "pattern": {
@@ -644,6 +1196,19 @@
     10
    ],
    "level": "easy",
+   "whatItDoes": "Breathe in and out for the same count to feel even and balanced.",
+   "goodFor": [
+    "Beginners",
+    "Balance",
+    "Quick calm"
+   ],
+   "howItWorks": "Matching the in- and out-breath is the simplest paced breath. It slows breathing and gives the mind a rhythm.",
+   "categories": [
+    "calm",
+    "focus",
+    "beginner",
+    "quick"
+   ],
    "about": "Sama vṛtti, 'equal movement', makes the in-breath and out-breath the same length; Iyengar's Light on Prāṇāyāma treats it as the base of rhythmic breathing. Start at four counts each, then lengthen gradually without strain. It is the gentlest prāṇāyāma to learn first.",
    "why": "Even breathing settles the rhythm of the breath and is used as a base for other techniques.",
    "pattern": {
@@ -685,6 +1250,18 @@
     20
    ],
    "level": "easy",
+   "whatItDoes": "Silently hear 'So' on the in-breath and 'Hum' on the out-breath to quiet thoughts.",
+   "goodFor": [
+    "Busy mind",
+    "Mantra practice",
+    "Calm"
+   ],
+   "howItWorks": "A sound that follows the natural breath gives the mind a soft place to rest. Thoughts often quiet as the mantra becomes automatic.",
+   "categories": [
+    "calm",
+    "focus",
+    "beginner"
+   ],
    "about": "So'ham, 'I am That', is the natural mantra of the breath described in the Vijñāna Bhairava Tantra and taught as ajapa japa — repetition that happens by itself. Silently hear 'so' as you breathe in and 'hum' as you breathe out. Swami Muktananda and the Bihar School both teach it as a gateway to meditation.",
    "why": "Breath-linked mantra keeps attention gentle and continuous. Many find it an easy entry into meditation.",
    "pattern": {
@@ -726,9 +1303,18 @@
     10
    ],
    "level": "medium",
+   "whatItDoes": "Gaze at a candle flame to gather a scattered mind into one point.",
+   "goodFor": [
+    "Concentration",
+    "Scattered attention",
+    "Evening practice"
+   ],
+   "howItWorks": "Holding the eyes still on one point helps the mind go still too. Then you close your eyes and watch the afterimage.",
+   "categories": [
+    "focus"
+   ],
    "about": "Trāṭaka, steady gazing, is one of the six cleansing practices (ṣaṭkarma) of the Haṭha Yoga Pradīpikā. Place a candle at eye level an arm's length away. Gaze softly at the flame without blinking for as long as is comfortable, then close the eyes and watch the after-image at the brow. Repeat a few rounds; never force the eyes.",
    "why": "It's traditionally used to build concentration. Never stare to the point of strain.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -747,10 +1333,10 @@
      "text": "Palm the eyes. Rest."
     }
    ],
+   "safety": "Stop if your eyes hurt or water a lot. Not for people with epilepsy or eye conditions — use a dot instead of a flame.",
    "sources": [
     "hatha-yoga-pradipika"
-   ],
-   "safety": "Stop if your eyes hurt or water a lot. Not for people with epilepsy or eye conditions — use a dot instead of a flame."
+   ]
   },
   {
    "id": "yoga-nidra",
@@ -763,9 +1349,22 @@
     30
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Guided deep rest lying down: a body tour that leaves you refreshed.",
+   "goodFor": [
+    "Exhaustion",
+    "Restorative rest",
+    "Trouble sleeping"
+   ],
+   "howItWorks": "You move attention through the body and breath while staying just awake. Many people feel deeply rested afterwards.",
+   "categories": [
+    "healing",
+    "sleep",
+    "calm",
+    "beginner"
+   ],
    "about": "Yoga nidra, 'yogic sleep', was systematised in the 1960s by Swami Satyananda Saraswati of the Bihar School of Yoga; Richard Miller's iRest adapts it for clinical use. Lying in śavāsana, you set a saṅkalpa (short intention), rotate awareness quickly through the body, count breaths and feel pairs of opposites like heavy and light. You stay aware while the body rests deeply.",
    "why": "It's widely used for deep relaxation and before sleep. Many people find it easier than seated meditation.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -793,6 +1392,360 @@
    ]
   },
   {
+   "id": "surya-gentle",
+   "title": "Slow Sun Salutation (Sūrya Namaskār)",
+   "traditionId": "yoga",
+   "kind": "movement",
+   "focus": "stretch",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "A slow sun salutation to stretch the whole body and wake up.",
+   "goodFor": [
+    "Morning",
+    "Full-body stretch",
+    "Energy"
+   ],
+   "howItWorks": "Flowing through the poses with the breath stretches front and back body and gets blood moving.",
+   "categories": [
+    "energy",
+    "recovery"
+   ],
+   "about": "Sūrya Namaskār, the salutation to the sun, was popularised in the 20th century by the Raja of Aundh and Krishnamacharya; this follows the Bihar School's 12-position sequence. Each position is linked to one breath and held a few breaths in this slow version. Lead with the right leg on odd rounds and the left on even rounds; drop the knees in plank whenever needed.",
+   "why": "A complete warm-up for spine, hips and shoulders that also steadies the breath. Slowing it down turns it from cardio into moving meditation.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Prayer pose",
+     "seconds": 25,
+     "how": "Stand tall, palms together at the heart.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Raised arms",
+     "seconds": 25,
+     "how": "Sweep arms overhead, gentle backbend.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Forward fold",
+     "seconds": 25,
+     "how": "Fold forward, knees bent as needed.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Low lunge",
+     "seconds": 25,
+     "how": "Step one leg back, knee down, lift the chest.",
+     "breath": "in",
+     "side": "right"
+    },
+    {
+     "name": "Mountain / downward dog",
+     "seconds": 25,
+     "how": "Step back, hips high, heels toward the floor.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Eight-point bow",
+     "seconds": 25,
+     "how": "Knees, chest, chin down; hips lifted.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Cobra",
+     "seconds": 25,
+     "how": "Slide forward, lift the chest, elbows soft.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Mountain / downward dog",
+     "seconds": 25,
+     "how": "Tuck the toes and lift the hips back.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Low lunge",
+     "seconds": 25,
+     "how": "Step the same leg forward between the hands.",
+     "breath": "in",
+     "side": "right"
+    },
+    {
+     "name": "Forward fold",
+     "seconds": 25,
+     "how": "Bring the back foot forward, fold.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Raised arms",
+     "seconds": 25,
+     "how": "Rise slowly with a long spine, arms up.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Prayer pose",
+     "seconds": 25,
+     "how": "Palms to the heart. Feel the pulse.",
+     "breath": "out",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Skip the backbends with low-back pain; avoid head-down positions with uncontrolled high blood pressure or glaucoma.",
+   "sources": [
+    "surya",
+    "hatha-yoga-pradipika"
+   ],
+   "baseSeconds": 300
+  },
+  {
+   "id": "kapalabhati",
+   "title": "Skull-Shining Breath (Kapālabhāti, gentle)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    1,
+    2,
+    3
+   ],
+   "level": "medium",
+   "whatItDoes": "Short, sharp out-breaths from the belly to energize and clear the head.",
+   "goodFor": [
+    "Morning sluggishness",
+    "Mental fog",
+    "Before practice"
+   ],
+   "howItWorks": "Quick belly pumps push air out while the in-breath happens by itself. It is energizing and warming. Done gently, in short rounds, it wakes the body up.",
+   "categories": [
+    "energy"
+   ],
+   "howTo": [
+    "Sit tall.",
+    "Snap the belly in to push a short breath out through the nose.",
+    "Let the belly relax so air falls back in.",
+    "Do it slowly with the pacer; rest if you feel light-headed."
+   ],
+   "pattern": {
+    "inhale": 1,
+    "holdIn": 0,
+    "exhale": 1,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Short push out. Let it fall back in."
+    },
+    {
+     "at": 30,
+     "text": "Keep the shoulders still."
+    },
+    {
+     "at": 60,
+     "text": "Rest if you feel dizzy."
+    }
+   ],
+   "safety": "Skip it if you're pregnant, have high blood pressure, heart disease, epilepsy, a hernia or recent surgery. Never in water or driving. Stop if dizzy.",
+   "sources": [
+    "hatha-yoga-pradipika"
+   ]
+  },
+  {
+   "id": "sitali",
+   "title": "Cooling Breath (Śītalī)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Breathe in over a curled tongue to cool down when you feel hot, flushed or irritated.",
+   "goodFor": [
+    "Hot days",
+    "After the sauna",
+    "Irritation or anger"
+   ],
+   "howItWorks": "Air drawn over the wet tongue feels cool, and the slow pace calms you. If you can't curl your tongue, breathe in through closed teeth (Sītkārī) instead.",
+   "categories": [
+    "calm",
+    "recovery",
+    "quick"
+   ],
+   "howTo": [
+    "Curl the tongue into a tube (or rest it behind closed teeth).",
+    "Breathe in slowly through the mouth for 4.",
+    "Close the mouth and breathe out through the nose for 6.",
+    "Repeat."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "In through the curled tongue. Feel the cool."
+    },
+    {
+     "at": 40,
+     "text": "Out slowly through the nose."
+    },
+    {
+     "at": 100,
+     "text": "Cool and quiet."
+    }
+   ],
+   "safety": "Skip in very cold air or if you have asthma triggered by cold air.",
+   "sources": [
+    "light-on-pranayama"
+   ]
+  },
+  {
+   "id": "dirgha",
+   "title": "Three-Part Breath (Dīrgha)",
+   "traditionId": "yoga",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Fill the belly, ribs and chest in turn, the classic first breath in yoga.",
+   "goodFor": [
+    "Learning to breathe deeply",
+    "Shallow breathing",
+    "Calming down"
+   ],
+   "howItWorks": "Most people breathe high in the chest when stressed. Filling from the belly up uses the whole diaphragm, slows the breath, and is very settling.",
+   "categories": [
+    "calm",
+    "beginner"
+   ],
+   "howTo": [
+    "Lie down or sit, one hand on belly, one on chest.",
+    "Breathe into the belly, then ribs, then chest.",
+    "Breathe out chest, ribs, belly.",
+    "Smooth and unhurried."
+   ],
+   "pattern": {
+    "inhale": 6,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Belly… ribs… chest."
+    },
+    {
+     "at": 60,
+     "text": "And out: chest… ribs… belly."
+    },
+    {
+     "at": 150,
+     "text": "One smooth wave."
+    }
+   ],
+   "sources": [
+    "light-on-pranayama"
+   ]
+  },
+  {
+   "id": "aum",
+   "title": "Om Chanting (AUM)",
+   "traditionId": "yoga",
+   "kind": "mantra",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Chant a long 'Om' on each out-breath to quiet the mind and relax deeply.",
+   "goodFor": [
+    "Busy mind",
+    "Start of meditation",
+    "Stress"
+   ],
+   "howItWorks": "The long, steady sound stretches the exhale and vibrates the chest and head. Repeating it gives the mind one simple thing to rest on.",
+   "categories": [
+    "calm",
+    "focus"
+   ],
+   "howTo": [
+    "Sit tall and breathe in through the nose.",
+    "Out-breath: 'Aaa' from the belly, 'Ooo' in the chest, 'Mmm' in the head.",
+    "Let silence follow the sound.",
+    "Chant aloud, softly, or silently."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 10,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": true,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Aaa… ooo… mmm…"
+    },
+    {
+     "at": 60,
+     "text": "Rest in the silence after each sound."
+    },
+    {
+     "at": 180,
+     "text": "Softer each time."
+    }
+   ],
+   "sources": [
+    "so-hum"
+   ]
+  },
+  {
    "id": "dhikr-breath",
    "title": "Dhikr Breath Rhythm",
    "traditionId": "sufi",
@@ -803,6 +1756,18 @@
     20
    ],
    "level": "medium",
+   "free": true,
+   "whatItDoes": "Silently repeat a sacred phrase with the breath to quiet the mind and open the heart.",
+   "goodFor": [
+    "Devotion",
+    "Steady focus",
+    "Calm"
+   ],
+   "howItWorks": "Remembrance (dhikr) pairs a phrase with breathing. The rhythm slows the breath and keeps the heart and mind turned in one direction.",
+   "categories": [
+    "focus",
+    "calm"
+   ],
    "about": "Dhikr, remembrance, is the core practice of Sufism. The Naqshbandi order's principle of 'hush dar dam' — awareness in every breath — pairs a word or phrase with each breath, often silently in the heart (dhikr khafi). You can use a traditional phrase or a neutral word such as 'peace'. Keep the rhythm soft and steady rather than forced.",
    "why": "Rhythmic repetition with the breath focuses the heart and mind. Practitioners describe it as returning to presence again and again.",
    "pattern": {
@@ -843,6 +1808,18 @@
     10
    ],
    "level": "easy",
+   "whatItDoes": "Breathe as if through the heart to feel warm, calm and open.",
+   "goodFor": [
+    "Heavy heart",
+    "Gratitude",
+    "Calm"
+   ],
+   "howItWorks": "Placing attention at the chest with a slow, even breath brings warmth and steadiness. Many people find it softens stress.",
+   "categories": [
+    "calm",
+    "healing",
+    "beginner"
+   ],
    "about": "Hazrat Inayat Khan, who brought Sufism to the West in 1910, taught breath practices centred on the heart. Breathe slowly as if through the centre of the chest, and let warmth, love or gratitude gather there with each breath. It is close in spirit to modern heart-focused coherence breathing.",
    "why": "Pairing slow breathing with a warm feeling is a gentle way to settle. It's similar to modern heart-focused breathing exercises.",
    "pattern": {
@@ -875,6 +1852,65 @@
    ]
   },
   {
+   "id": "elements-breath",
+   "title": "Four Elements Breath",
+   "traditionId": "sufi",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "medium",
+   "whatItDoes": "Four rounds of breath, each imagining earth, water, fire and air, to feel refreshed and balanced.",
+   "goodFor": [
+    "Feeling stuck",
+    "Refreshing your energy",
+    "Morning practice"
+   ],
+   "howItWorks": "Sufi teachers paired breath with images of the elements to clear and renew. Changing the image every few minutes keeps the mind fresh and involved.",
+   "categories": [
+    "energy",
+    "nature"
+   ],
+   "howTo": [
+    "Earth: in and out through the nose, feeling solid and heavy.",
+    "Water: in through the nose, out through the mouth, like a stream.",
+    "Fire: in through the mouth, out through the nose, warmth at the heart.",
+    "Air: in and out through the mouth, light and open."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Earth: nose in, nose out. Solid."
+    },
+    {
+     "at": 75,
+     "text": "Water: nose in, mouth out. Flowing."
+    },
+    {
+     "at": 150,
+     "text": "Fire: mouth in, nose out. Warm."
+    },
+    {
+     "at": 225,
+     "text": "Air: mouth in, mouth out. Light."
+    }
+   ],
+   "sources": [
+    "heart-breath"
+   ]
+  },
+  {
    "id": "centering-prayer",
    "title": "Centering Prayer",
    "traditionId": "christian",
@@ -884,9 +1920,19 @@
     20
    ],
    "level": "medium",
+   "free": true,
+   "whatItDoes": "Rest in silence, using one sacred word to let go of thoughts.",
+   "goodFor": [
+    "Contemplative prayer",
+    "Letting go",
+    "Quiet"
+   ],
+   "howItWorks": "You choose a word as a sign of consent and return to it gently whenever you notice a thought. It's about resting, not concentrating.",
+   "categories": [
+    "calm"
+   ],
    "about": "Centering prayer was developed in the 1970s by Trappist monks Thomas Keating, William Meninger and Basil Pennington at St Joseph's Abbey, Massachusetts, drawing on The Cloud of Unknowing. Choose a short sacred word as a symbol of consent to God's presence. Sit with eyes closed; when you notice you're engaged with a thought, return ever so gently to the word. Twenty minutes, twice a day, is the traditional practice.",
    "why": "It's practiced as consent to God's presence rather than a technique. Practitioners report deeper stillness and acceptance.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -916,6 +1962,17 @@
     20
    ],
    "level": "medium",
+   "whatItDoes": "Repeat a short prayer with the breath to settle into quiet trust.",
+   "goodFor": [
+    "Prayer",
+    "Anxiety",
+    "Steadiness"
+   ],
+   "howItWorks": "Pairing words with the slow breath, as monks of Mount Athos do, calms the body and draws attention inward.",
+   "categories": [
+    "calm",
+    "healing"
+   ],
    "about": "The Jesus Prayer is the heart of Eastern Orthodox hesychasm, defended by St Gregory Palamas and preserved on Mount Athos and in the Philokalia. 'Lord Jesus Christ, Son of God' is prayed on the in-breath and 'have mercy on me' on the out-breath, slowly and attentively, often with a prayer rope (komboskini). The Way of a Pilgrim made it famous worldwide.",
    "why": "Hesychasts describe it as bringing the mind into the heart. The slow breath rhythm also naturally calms.",
    "pattern": {
@@ -956,9 +2013,18 @@
     20
    ],
    "level": "easy",
+   "whatItDoes": "Read a short text slowly, reflect, respond, and rest in silence.",
+   "goodFor": [
+    "Reflection",
+    "Spiritual reading",
+    "Quiet mornings"
+   ],
+   "howItWorks": "Slow, repeated reading lets one phrase stand out and sink in. It turns reading into a meditation.",
+   "categories": [
+    "focus"
+   ],
    "about": "Lectio divina is the Benedictine practice of sacred reading, framed by Guigo II the Carthusian in four rungs: lectio, meditatio, oratio, contemplatio. Read a short passage slowly twice, notice the word or phrase that stands out, reflect on it, respond in your own words, then rest in silence. Scripture is traditional; any meaningful text can be used.",
    "why": "It turns reading into contemplation. Any meaningful text can be used.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -986,6 +2052,112 @@
    ]
   },
   {
+   "id": "examen",
+   "title": "Evening Examen",
+   "traditionId": "christian",
+   "kind": "focus",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Look back over your day with gratitude and honesty, then set it down.",
+   "goodFor": [
+    "End of the day",
+    "Gratitude",
+    "Letting go before sleep"
+   ],
+   "howItWorks": "A structured review helps you notice good moments you'd forget and name what was hard, so the day feels finished instead of looping in your head.",
+   "categories": [
+    "sleep",
+    "calm",
+    "healing"
+   ],
+   "howTo": [
+    "Be still and ask for light on the day.",
+    "Give thanks for small good things.",
+    "Replay the day: where did you feel alive, where drained?",
+    "Name one thing to let go and one hope for tomorrow."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Be still. Ask to see the day clearly."
+    },
+    {
+     "at": 60,
+     "text": "What are you thankful for today?"
+    },
+    {
+     "at": 180,
+     "text": "Walk through the day, hour by hour."
+    },
+    {
+     "at": 360,
+     "text": "What can you set down? What do you hope for tomorrow?"
+    }
+   ],
+   "sources": [
+    "ignatius-examen"
+   ]
+  },
+  {
+   "id": "breath-prayer",
+   "title": "Breath Prayer",
+   "traditionId": "christian",
+   "kind": "mantra",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "A short phrase on the in-breath and another on the out-breath to rest in quiet trust.",
+   "goodFor": [
+    "Worry",
+    "Prayer when words won't come",
+    "Calm"
+   ],
+   "howItWorks": "Splitting a short prayer across the breath slows breathing and gives the mind a gentle anchor. Choose words that feel true for you, like 'Be still' / 'and know'.",
+   "categories": [
+    "calm"
+   ],
+   "howTo": [
+    "Choose a short phrase in two parts.",
+    "Say the first part silently as you breathe in.",
+    "Say the second part as you breathe out.",
+    "Return to it whenever you drift."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "In: 'Be still.' Out: 'and know.'"
+    },
+    {
+     "at": 60,
+     "text": "Or your own words."
+    },
+    {
+     "at": 180,
+     "text": "Rest between the words."
+    }
+   ],
+   "sources": [
+    "philokalia"
+   ]
+  },
+  {
    "id": "microcosmic-orbit",
    "title": "Microcosmic Orbit",
    "traditionId": "taoist",
@@ -996,6 +2168,18 @@
     20
    ],
    "level": "deep",
+   "free": true,
+   "whatItDoes": "Circle the breath and attention up the spine and down the front of the body.",
+   "goodFor": [
+    "Experienced practitioners",
+    "Energy",
+    "Deep focus"
+   ],
+   "howItWorks": "A Taoist visualisation that moves attention in a loop with the breath. It builds focus and a feeling of warmth and flow.",
+   "categories": [
+    "energy",
+    "focus"
+   ],
    "about": "The microcosmic orbit (xiao zhoutian) is a foundational practice of Daoist inner alchemy, taught widely by Mantak Chia. With the tongue touching the roof of the mouth, imagine warmth rising up the spine (the Du channel) on the in-breath and flowing down the front of the body (the Ren channel) to the lower dantian on the out-breath. Keep it light; if it feels uncomfortable, simply rest attention in the lower belly.",
    "why": "Daoist practitioners use it to circulate and gather energy. It also gives the attention a smooth, continuous path to follow.",
    "pattern": {
@@ -1037,6 +2221,18 @@
     20
    ],
    "level": "medium",
+   "whatItDoes": "Make the breath so soft and slow it's barely there, for deep calm.",
+   "goodFor": [
+    "Deep calm",
+    "Before sleep",
+    "Slowing down"
+   ],
+   "howItWorks": "Gradually quieter, longer breaths, with an exhale twice the inhale, lean the body strongly toward rest.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing"
+   ],
    "about": "Taixi, embryonic breathing, appears in Daoist texts from the Tang dynasty onward: the breath becomes so soft and slow that a feather under the nose wouldn't stir. Breathe into the lower belly, with the exhale longer than the inhale, until the breath seems to almost disappear. Never hold or strain.",
    "why": "Long, quiet exhales are associated with relaxation. Daoists saw it as a return to the effortless breathing of the womb.",
    "pattern": {
@@ -1079,9 +2275,20 @@
     10
    ],
    "level": "medium",
+   "whatItDoes": "Stand still like a tree, arms rounded, to build calm strength and grounding.",
+   "goodFor": [
+    "Grounding",
+    "Energy",
+    "Posture"
+   ],
+   "howItWorks": "Holding a relaxed standing posture builds steadiness in the legs and quiet in the mind. It's surprisingly energizing.",
+   "categories": [
+    "energy",
+    "nature",
+    "focus"
+   ],
    "about": "Zhan zhuang, 'standing like a post', was made famous by Wang Xiangzhai (1885–1963), founder of Yiquan, and is a pillar of qigong. Stand with feet shoulder-width apart, knees soft, arms rounded at chest height as if hugging a tree. Breathe naturally and release every muscle you don't need; let stillness do the work.",
    "why": "Standing meditation builds steadiness and body awareness. It can be surprisingly demanding — start short.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -1101,440 +2308,11 @@
    ]
   },
   {
-   "id": "forest-bathing",
-   "title": "Forest Bathing Senses Walk",
-   "traditionId": "japan-nature",
-   "kind": "walking",
-   "minutes": [
-    10,
-    20,
-    30
-   ],
-   "level": "easy",
-   "about": "Shinrin-yoku, forest bathing, was named by Japan's Forestry Agency in 1982, and Dr Qing Li's research made it famous. Walk slowly in nature with no destination, pausing to notice five things you see, four you hear, three you can touch, two you smell and one you taste or feel. A park or a single tree works too.",
-   "why": "Studies from Japan report lower stress markers after time in forests. Even a park can work.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Slow down. Nowhere to go."
-    },
-    {
-     "at": "minute:3",
-     "text": "Five things you can see."
-    },
-    {
-     "at": "minute:6",
-     "text": "Four things you can hear."
-    },
-    {
-     "at": "minute:9",
-     "text": "Three things you can touch."
-    },
-    {
-     "at": "end",
-     "text": "Breathe the air in deeply."
-    }
-   ],
-   "sources": [
-    "shinrin-yoku"
-   ]
-  },
-  {
-   "id": "box",
-   "title": "Box Breathing 4·4·4·4",
-   "traditionId": "modern",
-   "kind": "breath",
-   "minutes": [
-    2,
-    3,
-    5
-   ],
-   "level": "easy",
-   "about": "Box breathing — inhale 4, hold 4, exhale 4, hold 4 — is taught to military, police and first-responder teams as 'tactical breathing' for staying steady under pressure. Keep the holds relaxed rather than clenched. Shorten to three counts if four feels like strain.",
-   "why": "It gives structure when the mind is racing. A 2021 trial in soldiers found both tactical breathing and simple prolonged exhalation helped with stress.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 4,
-    "exhale": 4,
-    "holdOut": 4,
-    "cycles": null,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "In four, hold four, out four, hold four."
-    },
-    {
-     "at": "everyCycle",
-     "text": "Square."
-    },
-    {
-     "at": "end",
-     "text": "Breathe normally."
-    }
-   ],
-   "sources": [
-    "box-breathing"
-   ],
-   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water."
-  },
-  {
-   "id": "478",
-   "title": "4·7·8 Relaxing Breath",
-   "traditionId": "modern",
-   "kind": "breath",
-   "minutes": [
-    2,
-    3,
-    5
-   ],
-   "level": "easy",
-   "about": "Dr Andrew Weil adapted the 4-7-8 breath from prāṇāyāma. Rest the tongue behind the upper teeth, exhale fully, then inhale quietly through the nose for 4, hold for 7, and exhale through the mouth with a whoosh for 8. Weil recommends four cycles at first.",
-   "why": "The long exhale and hold are used as a wind-down before sleep. Start with four cycles.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 7,
-    "exhale": 8,
-    "holdOut": 0,
-    "cycles": 4,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "In for four, hold seven, whoosh out eight."
-    },
-    {
-     "at": "everyCycle",
-     "text": "Out slow."
-    },
-    {
-     "at": "end",
-     "text": "Notice how your body feels."
-    }
-   ],
-   "sources": [
-    "weil-478"
-   ],
-   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water."
-  },
-  {
-   "id": "resonance",
-   "title": "Resonance Breathing 5.5",
-   "traditionId": "modern",
-   "kind": "breath",
-   "minutes": [
-    5,
-    10,
-    20
-   ],
-   "level": "easy",
-   "about": "Resonance or coherent breathing slows the breath to about 5.5–6 breaths per minute — roughly 5.5 seconds in and 5.5 out. Paul Lehrer and Evgeny Vaschillo developed it for heart-rate-variability biofeedback. Breathe through the nose, gently into the belly.",
-   "why": "Breathing near six breaths a minute tends to maximise heart rate variability. Research on HRV biofeedback links this rhythm with calmer, more flexible stress responses.",
-   "pattern": {
-    "inhale": 5.5,
-    "holdIn": 0,
-    "exhale": 5.5,
-    "holdOut": 0,
-    "cycles": null,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "In and out, slow as a wave."
-    },
-    {
-     "at": "everyCycle",
-     "text": "Smooth."
-    },
-    {
-     "at": "end",
-     "text": "Let it go."
-    }
-   ],
-   "sources": [
-    "lehrer-2014",
-    "zaccaro-2018"
-   ]
-  },
-  {
-   "id": "sigh",
-   "title": "Physiological Sigh",
-   "traditionId": "modern",
-   "kind": "breath",
-   "minutes": [
-    1,
-    3,
-    5
-   ],
-   "level": "easy",
-   "about": "The physiological sigh is a double inhale through the nose — a full breath, then a short top-up sip — followed by a long, slow exhale through the mouth. Repeated for a few minutes it is called cyclic sighing, studied by Stanford's Huberman and Spiegel labs.",
-   "why": "In a 2023 Stanford study, five minutes a day of cyclic sighing improved mood and lowered breathing rate more than mindfulness meditation did. It's one of the fastest ways to calm down.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 0,
-    "exhale": 8,
-    "holdOut": 0,
-    "cycles": null,
-    "nostril": null,
-    "hum": false,
-    "sigh": true
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "Two sniffs in. One long sigh out."
-    },
-    {
-     "at": "everyCycle",
-     "text": "In, in… out."
-    },
-    {
-     "at": "end",
-     "text": "Breathe normally."
-    }
-   ],
-   "sources": [
-    "balban-2023"
-   ]
-  },
-  {
-   "id": "long-exhale",
-   "title": "Extended Exhale 4·6 / 4·8",
-   "traditionId": "modern",
-   "kind": "breath",
-   "minutes": [
-    3,
-    5,
-    10
-   ],
-   "level": "easy",
-   "about": "Simply make the exhale longer than the inhale: 4 in and 6 out, building to 4 in and 8 out. No holds, so it's safe almost anywhere.",
-   "why": "Longer exhales are linked with slowing the heart and relaxing. It's a gentle option for anxiety or before sleep.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 0,
-    "exhale": 6,
-    "holdOut": 0,
-    "cycles": null,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "In for four. Out for six."
-    },
-    {
-     "at": "everyCycle",
-     "text": "Lengthen the out-breath."
-    },
-    {
-     "at": "end",
-     "text": "Rest."
-    }
-   ],
-   "sources": [
-    "zaccaro-2018"
-   ]
-  },
-  {
-   "id": "wind-down-nidra",
-   "title": "Night Body Scan (Yoga Nidra)",
-   "traditionId": "wind-down",
-   "kind": "body",
-   "minutes": [
-    5,
-    10,
-    15
-   ],
-   "level": "easy",
-   "about": "A short yoga nidra for bed, in the style of Swami Satyananda's rotation of consciousness. Lie on your back, arms a little away from the body, palms up. Awareness moves quickly through the body — right hand, arm, shoulder, side, leg; then the left; then back, head and face — resting a breath on each part. There is nothing to fix or relax on purpose; naming each part is enough. If you fall asleep partway, that is the practice working.",
-   "why": "Yoga nidra is widely used for deep rest and before sleep; small trials report less time to fall asleep and better sleep quality. Moving attention through the body also pulls it out of the day's thinking.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Lie down. Let the bed hold your whole weight."
-    },
-    {
-     "at": "minute:1",
-     "text": "Right hand… arm… shoulder… down the right side."
-    },
-    {
-     "at": "minute:3",
-     "text": "Left hand… arm… shoulder… down the left side."
-    },
-    {
-     "at": "minute:5",
-     "text": "Back of the body. Back of the head. The face softens."
-    },
-    {
-     "at": "minute:8",
-     "text": "The whole body, heavy and warm."
-    },
-    {
-     "at": "end",
-     "text": "Stay here. Sleep is welcome."
-    }
-   ],
-   "sources": [
-    "yoga-nidra",
-    "yoga-nidra-sleep"
-   ]
-  },
-  {
-   "id": "wind-down-478",
-   "title": "4·7·8 for Sleep",
-   "traditionId": "wind-down",
-   "kind": "breath",
-   "minutes": [
-    2,
-    3,
-    5
-   ],
-   "level": "easy",
-   "about": "Dr Andrew Weil's 4-7-8 breath, paced for bed. Lying down, rest the tip of the tongue behind the upper front teeth. Breathe in quietly through the nose for 4, hold softly for 7, and let the breath out through the mouth for a slow 8. Four rounds is plenty at first; the hold should feel easy, never strained. Keep the eyes closed and let the count get vaguer as you go.",
-   "why": "A long exhale with a gentle hold leans the nervous system toward rest, which tends to slow the heart. Weil describes it as a natural tranquiliser for the nervous system; it works best as a nightly habit.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 7,
-    "exhale": 8,
-    "holdOut": 0,
-    "cycles": 4,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "Tongue behind the teeth. In four, hold seven, out eight."
-    },
-    {
-     "at": "everyCycle",
-     "text": "Let the out-breath be slow."
-    },
-    {
-     "at": "minute:2",
-     "text": "Soften the hold. Nothing to force."
-    },
-    {
-     "at": "end",
-     "text": "Breathe normally. Let the room fade."
-    }
-   ],
-   "sources": [
-    "weil-478",
-    "zaccaro-2018"
-   ],
-   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Keep the hold gentle; this is not a breath-holding contest."
-  },
-  {
-   "id": "wind-down-countdown",
-   "title": "Counting Down (Zen)",
-   "traditionId": "wind-down",
-   "kind": "breath",
-   "minutes": [
-    5,
-    10,
-    15
-   ],
-   "level": "easy",
-   "about": "A bedtime turn on Zen breath counting (susokukan). Instead of counting up to ten, count the out-breaths down from ten to one, then start again at ten. Each exhale is a little longer than the inhale. When you lose the count — and you will — simply pick it up again at ten, without comment. In bed, lying on your back or side, the numbers slowly lose their edges.",
-   "why": "Counting gives a racing mind one simple, boring job, and counting downward carries a feeling of settling. The longer out-breath is linked with calmer arousal in reviews of slow breathing.",
-   "pattern": {
-    "inhale": 4,
-    "holdIn": 0,
-    "exhale": 7,
-    "holdOut": 0,
-    "cycles": null,
-    "nostril": null,
-    "hum": false,
-    "sigh": false
-   },
-   "cues": [
-    {
-     "at": "start",
-     "text": "Ten on this out-breath. Then nine…"
-    },
-    {
-     "at": "everyCycle",
-     "text": "Count the exhale, down."
-    },
-    {
-     "at": "minute:4",
-     "text": "Lost the count? Begin again at ten."
-    },
-    {
-     "at": "minute:8",
-     "text": "Let the numbers blur. Just the out-breath."
-    },
-    {
-     "at": "end",
-     "text": "Let the counting go."
-    }
-   ],
-   "sources": [
-    "zen-susokukan",
-    "zaccaro-2018"
-   ]
-  },
-  {
-   "id": "wind-down-metta",
-   "title": "Loving-Kindness for Sleep",
-   "traditionId": "wind-down",
-   "kind": "loving",
-   "minutes": [
-    5,
-    10
-   ],
-   "level": "easy",
-   "about": "Mettā turned toward the end of the day. Lying down, bring to mind one person who was kind to you today and silently wish them well: may you rest, may you be at ease. Then someone you love, then whoever you crossed paths with, and finally yourself — may I rest, may I be at ease. There is no striving for a feeling; the wishes do the work, and the day is set down with them.",
-   "why": "Loving-kindness practice is associated with more positive emotion and less rumination, and the evening is when the mind replays the day. Ending with yourself gives the last thought before sleep a kind tone.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Someone kind today. May you rest easy."
-    },
-    {
-     "at": "minute:2",
-     "text": "Someone you love. May you be at ease."
-    },
-    {
-     "at": "minute:4",
-     "text": "Everyone you met today. May they sleep well."
-    },
-    {
-     "at": "minute:6",
-     "text": "And you. May I rest. May I be at ease."
-    },
-    {
-     "at": "end",
-     "text": "Set the day down. Goodnight."
-    }
-   ],
-   "sources": [
-    "metta-sutta",
-    "hofmann-2011-metta"
-   ]
-  },
-  {
    "id": "baduanjin",
    "title": "Eight Pieces of Brocade (Baduanjin)",
    "traditionId": "taoist",
    "kind": "movement",
+   "focus": "stretch",
    "minutes": [
     3,
     5,
@@ -1542,9 +2320,21 @@
     10
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Eight gentle qigong moves to stretch, strengthen and wake up the whole body.",
+   "goodFor": [
+    "Morning movement",
+    "Stiffness",
+    "Gentle exercise"
+   ],
+   "howItWorks": "Slow, flowing moves paired with breath loosen joints and build strength. Studies link it with better balance and mood.",
+   "categories": [
+    "energy",
+    "recovery",
+    "beginner"
+   ],
    "about": "Baduanjin is one of China's oldest qigong sets, recorded by the 12th century; the Chinese Health Qigong Association standardised today's form in 2003. Eight slow movements are each repeated several times, coordinated with calm breathing. It is practiced daily in parks across China.",
    "why": "It's gentle, needs no space or equipment, and is among the most-researched qigong forms. Studies suggest benefits for balance, flexibility and well-being.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -1555,7 +2345,6 @@
      "text": "Stand still. Feel the whole body."
     }
    ],
-   "baseSeconds": 480,
    "steps": [
     {
      "name": "Ready stance",
@@ -1632,22 +2421,35 @@
    "sources": [
     "baduanjin"
    ],
-   "focus": "stretch"
+   "baseSeconds": 480
   },
   {
    "id": "taichi-cloud",
    "title": "Tai Chi: Opening & Cloud Hands",
    "traditionId": "taoist",
    "kind": "movement",
+   "focus": "joint",
    "minutes": [
     3,
     5,
     10
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Slow tai chi opening and cloud hands to loosen joints and calm the mind.",
+   "goodFor": [
+    "Gentle movement",
+    "Balance",
+    "Stress"
+   ],
+   "howItWorks": "Flowing weight shifts and arm circles move every joint gently while keeping you focused and calm.",
+   "categories": [
+    "energy",
+    "calm",
+    "recovery"
+   ],
    "about": "Tai chi grew from Chen-village martial arts into a moving meditation; the Yang-style 24-form (1956) is the world's most practiced version. This short session uses its opening (Commencing Form) and Cloud Hands, a slow side-stepping movement with the hands circling past the face. Movements are continuous, rooted and unhurried.",
    "why": "Research on tai chi points to better balance and reduced stress, especially in older adults. Cloud Hands alone is a complete practice.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -1658,7 +2460,6 @@
      "text": "Stand still. Feel the whole body."
     }
    ],
-   "baseSeconds": 300,
    "steps": [
     {
      "name": "Wuji standing",
@@ -1701,21 +2502,1360 @@
     "taichi",
     "wayne-taichi"
    ],
-   "focus": "joint"
+   "baseSeconds": 300
+  },
+  {
+   "id": "six-sounds",
+   "title": "Six Healing Sounds (Liù Zì Jué)",
+   "traditionId": "taoist",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Breathe out six soft sounds to release tension and feel lighter.",
+   "goodFor": [
+    "Tension and frustration",
+    "Restoring calm",
+    "Gentle qigong"
+   ],
+   "howItWorks": "Each long exhale carries a whispered sound: xu, he, hu, si, chui, xi. Chinese medicine links each to an organ. The long, sounded out-breath is calming in itself.",
+   "categories": [
+    "healing",
+    "calm"
+   ],
+   "howTo": [
+    "Stand or sit, knees soft.",
+    "Breathe in quietly through the nose.",
+    "Breathe out slowly on the sound: xu (shoo), he (huh), hu (who), si (sss), chui (chway), xi (shee).",
+    "Do each sound for a few breaths."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Xu… (shoo) for the liver."
+    },
+    {
+     "at": 50,
+     "text": "He… (huh) for the heart."
+    },
+    {
+     "at": 100,
+     "text": "Hu… (who) for the spleen."
+    },
+    {
+     "at": 150,
+     "text": "Si… (sss) for the lungs."
+    },
+    {
+     "at": 200,
+     "text": "Chui… (chway) for the kidneys."
+    },
+    {
+     "at": 250,
+     "text": "Xi… (shee) to balance the whole body."
+    }
+   ],
+   "sources": [
+    "liuzijue"
+   ]
+  },
+  {
+   "id": "qigong-shake",
+   "title": "Qigong Shake-Out",
+   "traditionId": "taoist",
+   "kind": "movement",
+   "focus": "joint",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Bounce, shake and tap the body loose to shake off stiffness and stress.",
+   "goodFor": [
+    "Stiffness",
+    "Stress in the body",
+    "Waking up"
+   ],
+   "howItWorks": "Loose bouncing and tapping wake up circulation and release held muscle tension. It's simple, fun and quick.",
+   "categories": [
+    "energy",
+    "recovery",
+    "quick",
+    "beginner"
+   ],
+   "howTo": [
+    "Stand, knees soft.",
+    "Bounce gently through the knees.",
+    "Shake the hands, arms and shoulders.",
+    "Tap down the arms, chest and legs."
+   ],
+   "steps": [
+    {
+     "name": "Knee bounce",
+     "seconds": 30,
+     "how": "Small, loose bounces through the knees. Arms hang.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Shake hands",
+     "seconds": 20,
+     "how": "Shake the hands like flicking off water.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Shoulder shake",
+     "seconds": 20,
+     "how": "Let the shoulders and arms jiggle loose.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Tap arms",
+     "seconds": 25,
+     "how": "Loose fists tap down the inside and up the outside of each arm.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Tap legs",
+     "seconds": 25,
+     "how": "Tap down the outside of the legs and up the inside.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Stand still",
+     "seconds": 20,
+     "how": "Stand still and feel the tingling.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "sources": [
+    "baduanjin"
+   ]
+  },
+  {
+   "id": "forest-bathing",
+   "title": "Forest Bathing Senses Walk",
+   "traditionId": "japan-nature",
+   "kind": "walking",
+   "minutes": [
+    10,
+    20,
+    30
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Walk slowly among trees, taking in the forest with all your senses.",
+   "goodFor": [
+    "Stress",
+    "Screen fatigue",
+    "Weekends outdoors"
+   ],
+   "howItWorks": "Slowing down outdoors and using all your senses shifts you out of busy thinking. Forest time is linked with lower stress.",
+   "categories": [
+    "nature",
+    "calm",
+    "healing",
+    "beginner"
+   ],
+   "about": "Shinrin-yoku, forest bathing, was named by Japan's Forestry Agency in 1982, and Dr Qing Li's research made it famous. Walk slowly in nature with no destination, pausing to notice five things you see, four you hear, three you can touch, two you smell and one you taste or feel. A park or a single tree works too.",
+   "why": "Studies from Japan report lower stress markers after time in forests. Even a park can work.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Slow down. Nowhere to go."
+    },
+    {
+     "at": "minute:3",
+     "text": "Five things you can see."
+    },
+    {
+     "at": "minute:6",
+     "text": "Four things you can hear."
+    },
+    {
+     "at": "minute:9",
+     "text": "Three things you can touch."
+    },
+    {
+     "at": "end",
+     "text": "Breathe the air in deeply."
+    }
+   ],
+   "sources": [
+    "shinrin-yoku"
+   ]
+  },
+  {
+   "id": "sit-spot",
+   "title": "Sit Spot",
+   "traditionId": "japan-nature",
+   "kind": "open",
+   "minutes": [
+    10,
+    15,
+    20
+   ],
+   "level": "easy",
+   "whatItDoes": "Sit in one spot outside and simply notice what's alive around you.",
+   "goodFor": [
+    "Screen fatigue",
+    "Feeling disconnected",
+    "Slowing down"
+   ],
+   "howItWorks": "Staying still outdoors lets your senses widen. Time in green spaces is linked with lower stress and better mood.",
+   "categories": [
+    "nature",
+    "calm"
+   ],
+   "howTo": [
+    "Find a spot outside: park, garden, balcony.",
+    "Sit and get comfortable.",
+    "Notice sounds, then smells, then movement.",
+    "Stay still. Let nature come to you."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Settle in. Be part of the place."
+    },
+    {
+     "at": 120,
+     "text": "What can you hear?"
+    },
+    {
+     "at": 300,
+     "text": "What moves? Leaves, birds, light?"
+    },
+    {
+     "at": 600,
+     "text": "Feel the air on your skin."
+    }
+   ],
+   "sources": [
+    "shinrin-yoku"
+   ]
+  },
+  {
+   "id": "barefoot-earth",
+   "title": "Barefoot Earth Walk",
+   "traditionId": "japan-nature",
+   "kind": "walking",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Walk slowly barefoot on grass, sand or earth to feel grounded and present.",
+   "goodFor": [
+    "Feeling ungrounded",
+    "Getting out of your head",
+    "Sunny days"
+   ],
+   "howItWorks": "Bare feet send rich signals about texture and temperature, pulling attention out of thought and into the body and the ground beneath you.",
+   "categories": [
+    "nature",
+    "beginner"
+   ],
+   "howTo": [
+    "Find safe grass, sand or soil.",
+    "Take off your shoes.",
+    "Walk slowly, feeling each texture.",
+    "Pause and stand still now and then."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Shoes off. Feel the ground."
+    },
+    {
+     "at": 90,
+     "text": "Cool, warm, soft, rough?"
+    },
+    {
+     "at": 240,
+     "text": "Stand still. Feel rooted."
+    }
+   ],
+   "safety": "Check the ground for glass and sharp things. Skip if you have diabetes-related foot problems.",
+   "sources": [
+    "shinrin-yoku"
+   ]
+  },
+  {
+   "id": "box",
+   "title": "Box Breathing 4·4·4·4",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Breathe in, hold, out, hold for four counts each to calm nerves and sharpen focus.",
+   "goodFor": [
+    "Nerves before a big moment",
+    "Focus",
+    "Stress"
+   ],
+   "howItWorks": "Equal sides with gentle holds slow the breath and give the mind a clear job. Used by first responders to stay steady under pressure.",
+   "categories": [
+    "calm",
+    "focus",
+    "quick",
+    "beginner"
+   ],
+   "about": "Box breathing — inhale 4, hold 4, exhale 4, hold 4 — is taught to military, police and first-responder teams as 'tactical breathing' for staying steady under pressure. Keep the holds relaxed rather than clenched. Shorten to three counts if four feels like strain.",
+   "why": "It gives structure when the mind is racing. A 2021 trial in soldiers found both tactical breathing and simple prolonged exhalation helped with stress.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 4,
+    "exhale": 4,
+    "holdOut": 4,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In four, hold four, out four, hold four."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Square."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally."
+    }
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water.",
+   "sources": [
+    "box-breathing"
+   ]
+  },
+  {
+   "id": "478",
+   "title": "4·7·8 Relaxing Breath",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "In for 4, hold for 7, out for 8: a strong relaxer for stress and sleep.",
+   "goodFor": [
+    "Falling asleep",
+    "Anxiety",
+    "Calming down fast"
+   ],
+   "howItWorks": "The long hold and very long exhale slow everything down. Start with four rounds and build up.",
+   "categories": [
+    "calm",
+    "sleep",
+    "quick"
+   ],
+   "about": "Dr Andrew Weil adapted the 4-7-8 breath from prāṇāyāma. Rest the tongue behind the upper teeth, exhale fully, then inhale quietly through the nose for 4, hold for 7, and exhale through the mouth with a whoosh for 8. Weil recommends four cycles at first.",
+   "why": "The long exhale and hold are used as a wind-down before sleep. Start with four cycles.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 7,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": 4,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In for four, hold seven, whoosh out eight."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Out slow."
+    },
+    {
+     "at": "end",
+     "text": "Notice how your body feels."
+    }
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Never practice breath holds while driving or in water.",
+   "sources": [
+    "weil-478"
+   ]
+  },
+  {
+   "id": "resonance",
+   "title": "Resonance Breathing 5.5",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Breathe about 5.5 times a minute to sync heart and breath and feel deeply calm.",
+   "goodFor": [
+    "Daily stress",
+    "Raising HRV",
+    "Recovery"
+   ],
+   "howItWorks": "Near this pace, heart rate rises and falls in a smooth wave with each breath, linked with higher heart rate variability and calm.",
+   "categories": [
+    "calm",
+    "healing",
+    "recovery",
+    "focus",
+    "beginner"
+   ],
+   "about": "Resonance or coherent breathing slows the breath to about 5.5–6 breaths per minute — roughly 5.5 seconds in and 5.5 out. Paul Lehrer and Evgeny Vaschillo developed it for heart-rate-variability biofeedback. Breathe through the nose, gently into the belly.",
+   "why": "Breathing near six breaths a minute tends to maximise heart rate variability. Research on HRV biofeedback links this rhythm with calmer, more flexible stress responses.",
+   "pattern": {
+    "inhale": 5.5,
+    "holdIn": 0,
+    "exhale": 5.5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In and out, slow as a wave."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Smooth."
+    },
+    {
+     "at": "end",
+     "text": "Let it go."
+    }
+   ],
+   "sources": [
+    "lehrer-2014",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "sigh",
+   "title": "Physiological Sigh",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    1,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Double inhale, long sigh out: the fastest way to calm down in real time.",
+   "goodFor": [
+    "Sudden stress",
+    "Panic",
+    "Before speaking"
+   ],
+   "howItWorks": "The second short inhale reopens the lungs and the long exhale tells the body it's safe. A few rounds can help quickly.",
+   "categories": [
+    "calm",
+    "quick",
+    "beginner"
+   ],
+   "about": "The physiological sigh is a double inhale through the nose — a full breath, then a short top-up sip — followed by a long, slow exhale through the mouth. Repeated for a few minutes it is called cyclic sighing, studied by Stanford's Huberman and Spiegel labs.",
+   "why": "In a 2023 Stanford study, five minutes a day of cyclic sighing improved mood and lowered breathing rate more than mindfulness meditation did. It's one of the fastest ways to calm down.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": true
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Two sniffs in. One long sigh out."
+    },
+    {
+     "at": "everyCycle",
+     "text": "In, in… out."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally."
+    }
+   ],
+   "sources": [
+    "balban-2023"
+   ]
+  },
+  {
+   "id": "long-exhale",
+   "title": "Extended Exhale 4·6 / 4·8",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Make your out-breath longer than your in-breath to calm down.",
+   "goodFor": [
+    "Stress",
+    "Before sleep",
+    "Easy calm"
+   ],
+   "howItWorks": "A longer exhale leans the nervous system toward rest and slows the heart. Simple and safe for almost everyone.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing",
+    "beginner"
+   ],
+   "about": "Simply make the exhale longer than the inhale: 4 in and 6 out, building to 4 in and 8 out. No holds, so it's safe almost anywhere.",
+   "why": "Longer exhales are linked with slowing the heart and relaxing. It's a gentle option for anxiety or before sleep.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "In for four. Out for six."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Lengthen the out-breath."
+    },
+    {
+     "at": "end",
+     "text": "Rest."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "lymph-flow",
+   "title": "Lymph Flow Routine",
+   "traditionId": "modern",
+   "kind": "movement",
+   "focus": "lymph",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "whatItDoes": "Gentle moves and strokes to help lymph flow after sitting, flying or the sauna.",
+   "goodFor": [
+    "After sitting or flying",
+    "Puffy legs",
+    "After the sauna"
+   ],
+   "howItWorks": "Lymph moves when muscles squeeze and you breathe deeply. Light strokes and calf pumps help it along.",
+   "categories": [
+    "recovery",
+    "healing"
+   ],
+   "about": "A gentle head-to-toe sequence built from common self-care lymph techniques: slow belly breathing, light skin-stretch strokes toward the collarbones, and rhythmic muscle pumping in the arms and calves. The touch is feather-light; the lymph vessels sit just under the skin.",
+   "why": "Lymph has no pump of its own; it moves with breathing and muscle contraction. This routine strings those together so you finish feeling lighter and less puffy, especially after sitting, flying or a sauna.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand or sit tall. Light touch only, like stroking a cat."
+    },
+    {
+     "at": "end",
+     "text": "Sip some water. Notice how the body feels."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Belly breathing",
+     "seconds": 40,
+     "how": "Hands on the belly. Slow breaths that push the belly out, then let it fall.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Collarbone pumps",
+     "seconds": 30,
+     "how": "Fingertips just above the collarbones. Gently stretch the skin down and out, then release.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Neck sweeps",
+     "seconds": 30,
+     "how": "Flat hands stroke lightly from behind the ears down the sides of the neck.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Armpit pumps",
+     "seconds": 30,
+     "how": "Cup one hand in the opposite armpit; press in and up softly, release.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Arm sweeps",
+     "seconds": 40,
+     "how": "Stroke from the hand up the inside of the arm toward the armpit.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Belly circles",
+     "seconds": 30,
+     "how": "Slow clockwise circles around the navel with a flat hand.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Behind the knees",
+     "seconds": 30,
+     "how": "Hands cupped behind each knee; light pumping presses.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Calf pumps",
+     "seconds": 40,
+     "how": "Rise onto the toes, lower slowly. The calf muscle is the body's second heart.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Use very light pressure. Skip this or ask your doctor first if you have a blood clot (DVT), heart or kidney failure, an active infection, or are being treated for cancer or lymphoedema.",
+   "sources": []
+  },
+  {
+   "id": "joint-circles",
+   "title": "Joint Circles, Head to Toe",
+   "traditionId": "modern",
+   "kind": "movement",
+   "focus": "joint",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "whatItDoes": "Slow circles through every joint, head to toe, to undo stiffness.",
+   "goodFor": [
+    "Stiff mornings",
+    "Desk days",
+    "Warm-up"
+   ],
+   "howItWorks": "Moving each joint through its range brings fresh fluid to the cartilage, so joints feel looser fast.",
+   "categories": [
+    "recovery",
+    "energy",
+    "beginner"
+   ],
+   "about": "Slow, controlled circles through every major joint, top to bottom, the way mobility coaches warm people up. Each circle goes to the edge of comfortable range and no further.",
+   "why": "Moving a joint through its full range brings fresh synovial fluid to the cartilage, so stiff mornings and long desk days feel looser fast.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, knees soft. Slow circles, no forcing."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the space in the joints."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Neck",
+     "seconds": 30,
+     "how": "Half-circles chin to chest, ear to shoulder. Never roll the head back.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Shoulders",
+     "seconds": 30,
+     "how": "Big slow shoulder rolls, forward then back.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Elbows & wrists",
+     "seconds": 30,
+     "how": "Arms out; circle the forearms, then the wrists.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Spine waves",
+     "seconds": 30,
+     "how": "Hands on knees; round and arch the back slowly.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Hips",
+     "seconds": 40,
+     "how": "Hands on hips; draw wide circles with the pelvis.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Knees",
+     "seconds": 30,
+     "how": "Feet together, hands on knees; small gentle circles.",
+     "breath": "natural",
+     "side": "both"
+    },
+    {
+     "name": "Ankles",
+     "seconds": 30,
+     "how": "Lift one foot; circle the ankle each way.",
+     "breath": "natural",
+     "side": "both"
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": []
+  },
+  {
+   "id": "calm-sos",
+   "title": "1-Minute Calm SOS",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    1,
+    2,
+    3
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Two quick sniffs in and one long sigh out to take the edge off panic or a racing heart in about a minute.",
+   "goodFor": [
+    "Sudden anxiety or panic",
+    "Before a hard conversation",
+    "A racing heart"
+   ],
+   "howItWorks": "The second short inhale reopens tiny air sacs in the lungs, and the long, slow exhale is the body's own off-switch for stress. A few rounds can help your heart rate come down quickly.",
+   "categories": [
+    "calm",
+    "quick",
+    "beginner",
+    "healing"
+   ],
+   "howTo": [
+    "Breathe in through the nose until comfortably full.",
+    "Take one more short sniff on top.",
+    "Let it all go slowly through the mouth, like a long sigh.",
+    "Repeat for one to three minutes."
+   ],
+   "pattern": {
+    "inhale": 3,
+    "holdIn": 0,
+    "exhale": 7,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": true
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "In through the nose… then one more sip."
+    },
+    {
+     "at": 20,
+     "text": "Long, slow sigh out."
+    },
+    {
+     "at": 45,
+     "text": "Let the shoulders drop."
+    },
+    {
+     "at": 90,
+     "text": "You're safe. Keep the sigh long."
+    }
+   ],
+   "safety": "If you have chest pain, trouble breathing or feel faint, stop and get medical help.",
+   "sources": [
+    "balban-2023"
+   ]
+  },
+  {
+   "id": "coherent-5",
+   "title": "Coherent Breathing 5·5",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    15,
+    20
+   ],
+   "level": "easy",
+   "whatItDoes": "Breathe six times a minute to bring your heart rhythm and breath into step.",
+   "goodFor": [
+    "Everyday stress",
+    "Raising HRV",
+    "Steady energy"
+   ],
+   "howItWorks": "Around six breaths a minute, heart rate rises and falls in a smooth wave with each breath. This rhythm is linked with higher heart rate variability, a sign of a flexible, relaxed nervous system.",
+   "categories": [
+    "calm",
+    "focus",
+    "healing"
+   ],
+   "howTo": [
+    "Sit or lie comfortably.",
+    "Breathe in through the nose for 5.",
+    "Breathe out through the nose for 5.",
+    "Keep it soft and quiet; no strain."
+   ],
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Soft nose breathing. In five, out five."
+    },
+    {
+     "at": 60,
+     "text": "Smooth turns at the top and bottom."
+    },
+    {
+     "at": 180,
+     "text": "Let the belly move, not the shoulders."
+    },
+    {
+     "at": 420,
+     "text": "Just the wave of breath."
+    }
+   ],
+   "sources": [
+    "lehrer-2014",
+    "brown-gerbarg"
+   ]
+  },
+  {
+   "id": "box-long",
+   "title": "Long Box 5·5·5·5",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "medium",
+   "whatItDoes": "A slower box breath with five-count sides to settle nerves and sharpen focus.",
+   "goodFor": [
+    "Pressure moments",
+    "Focus before work",
+    "When 4·4·4·4 feels easy"
+   ],
+   "howItWorks": "Equal, slow sides with short holds give the mind a clear job and slow the breath to about three a minute. Many people find it steadying under pressure.",
+   "categories": [
+    "focus",
+    "calm"
+   ],
+   "howTo": [
+    "Breathe in for 5.",
+    "Hold gently for 5.",
+    "Breathe out for 5.",
+    "Hold empty for 5, then repeat."
+   ],
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 5,
+    "exhale": 5,
+    "holdOut": 5,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Four even sides. Hold without squeezing."
+    },
+    {
+     "at": 60,
+     "text": "Relax the jaw during the holds."
+    },
+    {
+     "at": 180,
+     "text": "Steady, like tracing a square."
+    }
+   ],
+   "safety": "Keep the holds soft. Skip the holds if you're pregnant or have high blood pressure.",
+   "sources": [
+    "box-breathing"
+   ]
+  },
+  {
+   "id": "triangle",
+   "title": "Triangle Breath 4·4·4",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "In, hold, out for four each: a quick reset that's easier than box breathing.",
+   "goodFor": [
+    "Nerves before a meeting",
+    "Quick reset",
+    "New to breathwork"
+   ],
+   "howItWorks": "Counting gives your attention something to hold on to, and the slower pace calms breathing. It's a gentle way in to paced breathing.",
+   "categories": [
+    "calm",
+    "focus",
+    "quick",
+    "beginner"
+   ],
+   "howTo": [
+    "Breathe in for 4.",
+    "Hold gently for 4.",
+    "Breathe out for 4.",
+    "Repeat."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 4,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "In four, hold four, out four."
+    },
+    {
+     "at": 40,
+     "text": "Hold softly; the throat stays open."
+    },
+    {
+     "at": 100,
+     "text": "Let the count carry you."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "power-breath",
+   "title": "Power Breathing (Wim Hof-style)",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    1,
+    2,
+    3
+   ],
+   "level": "medium",
+   "whatItDoes": "Deep, quick breaths to feel awake, warm and alert in a couple of minutes.",
+   "goodFor": [
+    "Morning energy",
+    "Afternoon slump",
+    "Before a workout"
+   ],
+   "howItWorks": "Fast, full breaths raise alertness and adrenaline for a short time. A short, easy breath-hold afterwards (on your own, never forced) is optional. Tingling or light-headedness is common; ease off if you feel it.",
+   "categories": [
+    "energy"
+   ],
+   "howTo": [
+    "Sit or lie down somewhere safe.",
+    "Breathe in fully through the nose or mouth, belly then chest.",
+    "Let go without pushing the air out.",
+    "Repeat with the pacer. When it ends, breathe normally."
+   ],
+   "pattern": {
+    "inhale": 2,
+    "holdIn": 0,
+    "exhale": 2,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Full breath in… let it go."
+    },
+    {
+     "at": 30,
+     "text": "Belly, then chest. Relaxed out."
+    },
+    {
+     "at": 60,
+     "text": "Tingling is normal. Ease off if dizzy."
+    },
+    {
+     "at": 120,
+     "text": "Last breaths. Then breathe normally."
+    }
+   ],
+   "safety": "Always sit or lie down. Never do this in or near water, while driving, or standing. Skip it if you're pregnant, have epilepsy, heart disease or high blood pressure. Stop if you feel faint.",
+   "sources": [
+    "kox-2014"
+   ]
+  },
+  {
+   "id": "focus-reset",
+   "title": "Two-Minute Focus Reset",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "A short, even breath with tiny pauses to clear a foggy head before your next task.",
+   "goodFor": [
+    "Between meetings",
+    "Before studying",
+    "Scattered attention"
+   ],
+   "howItWorks": "Even counts with brief pauses slow your breathing and give your attention one simple target, which can help it come back together.",
+   "categories": [
+    "focus",
+    "quick",
+    "beginner"
+   ],
+   "howTo": [
+    "Sit up, feet on the floor.",
+    "In for 4, pause 2.",
+    "Out for 4, pause 2.",
+    "Look at one point while you breathe."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 2,
+    "exhale": 4,
+    "holdOut": 2,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Eyes on one point. In four, pause."
+    },
+    {
+     "at": 40,
+     "text": "Out four, pause."
+    },
+    {
+     "at": 90,
+     "text": "Name your next task. Then begin."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "vagus-hum",
+   "title": "Vagus Hum",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Hum on a long out-breath to slow down and feel a gentle buzz of calm.",
+   "goodFor": [
+    "Stress",
+    "Tight chest or throat",
+    "Before sleep"
+   ],
+   "howItWorks": "Humming lengthens the exhale and vibrates the throat and chest, where the calming vagus nerve runs. It also raises nitric oxide in the nose. Many people find it soothing fast.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing",
+    "quick"
+   ],
+   "howTo": [
+    "Breathe in through the nose for 4.",
+    "Hum 'mmm' or 'voo' slowly for 8 as you breathe out.",
+    "Feel the vibration in your chest and face.",
+    "Repeat."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": true,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "In through the nose. Hum on the way out."
+    },
+    {
+     "at": 40,
+     "text": "Feel the buzz in your chest."
+    },
+    {
+     "at": 100,
+     "text": "Let the hum get softer and lower."
+    }
+   ],
+   "sources": [
+    "weitzberg-2002"
+   ]
+  },
+  {
+   "id": "morning-wake",
+   "title": "Morning Wake-up Breath",
+   "traditionId": "modern",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Longer in-breaths and short out-breaths to wake you up gently.",
+   "goodFor": [
+    "Getting out of bed",
+    "Groggy mornings",
+    "Before coffee"
+   ],
+   "howItWorks": "When the in-breath is longer than the out-breath, the body leans a little toward alertness. Paired with good posture and light, it helps shake off sleep.",
+   "categories": [
+    "energy",
+    "quick",
+    "beginner"
+   ],
+   "howTo": [
+    "Sit up, open a window or face the light.",
+    "Breathe in deep through the nose for 4.",
+    "Breathe out briskly for 2.",
+    "Stretch your arms up for a few breaths if you like."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 2,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Long breath in. Quick breath out."
+    },
+    {
+     "at": 40,
+     "text": "Lift the chest. Face the light."
+    },
+    {
+     "at": 90,
+     "text": "Arms up for a few breaths if you like."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "ruesi-dat-ton",
+   "title": "Thai Hermit Stretches (Ruesi Dat Ton)",
+   "traditionId": "thai",
+   "kind": "movement",
+   "focus": "stretch",
+   "minutes": [
+    3,
+    5,
+    8
+   ],
+   "level": "easy",
+   "whatItDoes": "Thai hermit stretches with breath to loosen stiff muscles and joints.",
+   "goodFor": [
+    "Stiffness",
+    "Recovery",
+    "Self-care"
+   ],
+   "howItWorks": "Slow stretches and self-massage from Thai traditional medicine release tension and improve mobility.",
+   "categories": [
+    "recovery",
+    "healing"
+   ],
+   "about": "Ruesi Dat Ton, the 'hermit's self-stretching', is a Thai tradition linked to ascetic rishis. In 1836 King Rama III had about 80 statues of hermits in these postures placed at Wat Pho in Bangkok, the home of Thai massage. Each posture combines a stretch, self-massage and a slow breath, held briefly then released.",
+   "why": "It's the self-care side of Thai traditional medicine and pairs well with sitting meditation. Movements are slow and suitable for most bodies.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Stand tall, soften the knees, breathe."
+    },
+    {
+     "at": "end",
+     "text": "Stand still. Feel the whole body."
+    }
+   ],
+   "steps": [
+    {
+     "name": "Face & eye massage",
+     "seconds": 40,
+     "how": "Rub palms warm; press over eyes, stroke the brow and cheeks.",
+     "breath": "natural",
+     "side": null
+    },
+    {
+     "name": "Neck stretch",
+     "seconds": 45,
+     "how": "Ear toward shoulder, opposite hand reaches down. Switch.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Shoulder & arm pull",
+     "seconds": 45,
+     "how": "Interlace fingers, push palms forward then overhead.",
+     "breath": "in",
+     "side": null
+    },
+    {
+     "name": "Twisting hermit",
+     "seconds": 50,
+     "how": "Seated, cross one leg and twist toward it. Switch.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Forward-reaching hermit",
+     "seconds": 50,
+     "how": "Seated legs out, reach toward the feet.",
+     "breath": "out",
+     "side": null
+    },
+    {
+     "name": "Knee-hug",
+     "seconds": 40,
+     "how": "Hug one knee to the chest, then the other.",
+     "breath": "out",
+     "side": "both"
+    },
+    {
+     "name": "Rest",
+     "seconds": 30,
+     "how": "Sit tall, hands on knees, breathe slowly.",
+     "breath": "natural",
+     "side": null
+    }
+   ],
+   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
+   "sources": [
+    "ruesi",
+    "ruesi-watpho"
+   ],
+   "baseSeconds": 300
   },
   {
    "id": "rajio-taiso",
    "title": "Radio Calisthenics (Rajio Taisō No. 1)",
    "traditionId": "japan",
    "kind": "movement",
+   "focus": "joint",
    "minutes": [
     3,
     5
    ],
    "level": "easy",
+   "whatItDoes": "Japan's classic morning calisthenics to wake up every joint.",
+   "goodFor": [
+    "Morning wake-up",
+    "Desk break",
+    "Stiffness"
+   ],
+   "howItWorks": "A quick, upbeat routine that warms up the whole body. Millions in Japan do it every morning.",
+   "categories": [
+    "energy",
+    "quick",
+    "recovery"
+   ],
    "about": "Rajio Taisō began in 1928 as a public-health broadcast by Japan's postal insurance bureau and NHK. Millions still do the three-minute Exercise No. 1 each morning at schools, workplaces and parks. It's 13 quick moves in a fixed order, done briskly to a count.",
    "why": "A fast, full-body wake-up that touches every major joint. Its long history in Japan makes it a beloved morning ritual.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -1726,7 +3866,6 @@
      "text": "Deep breath. Ready for the day."
     }
    ],
-   "baseSeconds": 180,
    "steps": [
     {
      "name": "Stretch up",
@@ -1824,22 +3963,33 @@
    "sources": [
     "rajio-taiso"
    ],
-   "focus": "joint"
+   "baseSeconds": 180
   },
   {
    "id": "makko-ho",
    "title": "Makkō-hō Stretches",
    "traditionId": "japan",
    "kind": "movement",
+   "focus": "stretch",
    "minutes": [
     3,
     5,
     8
    ],
    "level": "easy",
+   "whatItDoes": "Four simple floor stretches to open hips, legs and back.",
+   "goodFor": [
+    "Tight hips",
+    "Flexibility",
+    "After sitting"
+   ],
+   "howItWorks": "Gentle, repeated stretches loosen the big muscles around the hips and spine.",
+   "categories": [
+    "recovery",
+    "energy"
+   ],
    "about": "Makkō-hō is a set of four floor stretches popularised in 1930s Japan by Wataru Nagai, said to have regained mobility after a stroke through Buddhist bowing practice. Each stretch is done by bending forward on the out-breath and releasing on the in-breath, rhythmically, never forcing. It is still practiced by Makkō-hō societies across Japan.",
    "why": "A short, systematic opening for the hips, hamstrings and spine. The rhythmic exhale-and-fold gives it a meditative feel.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -1850,7 +4000,6 @@
      "text": "Stand still. Feel the whole body."
     }
    ],
-   "baseSeconds": 300,
    "steps": [
     {
      "name": "Butterfly bow",
@@ -1885,223 +4034,34 @@
    "sources": [
     "makko-ho"
    ],
-   "focus": "stretch"
-  },
-  {
-   "id": "surya-gentle",
-   "title": "Slow Sun Salutation (Sūrya Namaskār)",
-   "traditionId": "yoga",
-   "kind": "movement",
-   "minutes": [
-    3,
-    5,
-    10
-   ],
-   "level": "easy",
-   "about": "Sūrya Namaskār, the salutation to the sun, was popularised in the 20th century by the Raja of Aundh and Krishnamacharya; this follows the Bihar School's 12-position sequence. Each position is linked to one breath and held a few breaths in this slow version. Lead with the right leg on odd rounds and the left on even rounds; drop the knees in plank whenever needed.",
-   "why": "A complete warm-up for spine, hips and shoulders that also steadies the breath. Slowing it down turns it from cardio into moving meditation.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Stand tall, soften the knees, breathe."
-    },
-    {
-     "at": "end",
-     "text": "Stand still. Feel the whole body."
-    }
-   ],
-   "baseSeconds": 300,
-   "steps": [
-    {
-     "name": "Prayer pose",
-     "seconds": 25,
-     "how": "Stand tall, palms together at the heart.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Raised arms",
-     "seconds": 25,
-     "how": "Sweep arms overhead, gentle backbend.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Forward fold",
-     "seconds": 25,
-     "how": "Fold forward, knees bent as needed.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Low lunge",
-     "seconds": 25,
-     "how": "Step one leg back, knee down, lift the chest.",
-     "breath": "in",
-     "side": "right"
-    },
-    {
-     "name": "Mountain / downward dog",
-     "seconds": 25,
-     "how": "Step back, hips high, heels toward the floor.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Eight-point bow",
-     "seconds": 25,
-     "how": "Knees, chest, chin down; hips lifted.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Cobra",
-     "seconds": 25,
-     "how": "Slide forward, lift the chest, elbows soft.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Mountain / downward dog",
-     "seconds": 25,
-     "how": "Tuck the toes and lift the hips back.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Low lunge",
-     "seconds": 25,
-     "how": "Step the same leg forward between the hands.",
-     "breath": "in",
-     "side": "right"
-    },
-    {
-     "name": "Forward fold",
-     "seconds": 25,
-     "how": "Bring the back foot forward, fold.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Raised arms",
-     "seconds": 25,
-     "how": "Rise slowly with a long spine, arms up.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Prayer pose",
-     "seconds": 25,
-     "how": "Palms to the heart. Feel the pulse.",
-     "breath": "out",
-     "side": null
-    }
-   ],
-   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts. Skip the backbends with low-back pain; avoid head-down positions with uncontrolled high blood pressure or glaucoma.",
-   "sources": [
-    "surya",
-    "hatha-yoga-pradipika"
-   ],
-   "focus": "stretch"
-  },
-  {
-   "id": "ruesi-dat-ton",
-   "title": "Thai Hermit Stretches (Ruesi Dat Ton)",
-   "traditionId": "thai",
-   "kind": "movement",
-   "minutes": [
-    3,
-    5,
-    8
-   ],
-   "level": "easy",
-   "about": "Ruesi Dat Ton, the 'hermit's self-stretching', is a Thai tradition linked to ascetic rishis. In 1836 King Rama III had about 80 statues of hermits in these postures placed at Wat Pho in Bangkok, the home of Thai massage. Each posture combines a stretch, self-massage and a slow breath, held briefly then released.",
-   "why": "It's the self-care side of Thai traditional medicine and pairs well with sitting meditation. Movements are slow and suitable for most bodies.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Stand tall, soften the knees, breathe."
-    },
-    {
-     "at": "end",
-     "text": "Stand still. Feel the whole body."
-    }
-   ],
-   "baseSeconds": 300,
-   "steps": [
-    {
-     "name": "Face & eye massage",
-     "seconds": 40,
-     "how": "Rub palms warm; press over eyes, stroke the brow and cheeks.",
-     "breath": "natural",
-     "side": null
-    },
-    {
-     "name": "Neck stretch",
-     "seconds": 45,
-     "how": "Ear toward shoulder, opposite hand reaches down. Switch.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Shoulder & arm pull",
-     "seconds": 45,
-     "how": "Interlace fingers, push palms forward then overhead.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Twisting hermit",
-     "seconds": 50,
-     "how": "Seated, cross one leg and twist toward it. Switch.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Forward-reaching hermit",
-     "seconds": 50,
-     "how": "Seated legs out, reach toward the feet.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Knee-hug",
-     "seconds": 40,
-     "how": "Hug one knee to the chest, then the other.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Rest",
-     "seconds": 30,
-     "how": "Sit tall, hands on knees, breathe slowly.",
-     "breath": "natural",
-     "side": null
-    }
-   ],
-   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
-   "sources": [
-    "ruesi",
-    "ruesi-watpho"
-   ],
-   "focus": "stretch"
+   "baseSeconds": 300
   },
   {
    "id": "do-in",
    "title": "Do-in Self-Massage",
    "traditionId": "japan",
    "kind": "movement",
+   "focus": "lymph",
    "minutes": [
     2,
     5,
     8
    ],
    "level": "easy",
+   "whatItDoes": "Tap and rub the body to wake up and feel refreshed.",
+   "goodFor": [
+    "Morning",
+    "Tired eyes and face",
+    "Circulation"
+   ],
+   "howItWorks": "Light tapping and massage stimulate the skin and muscles, leaving you warm and alert.",
+   "categories": [
+    "energy",
+    "recovery",
+    "quick"
+   ],
    "about": "Do-in is a Japanese and Chinese tradition of self-massage and tapping along the meridians, taught in macrobiotic circles and by Jacques de Langre in the West. Using loose fists or fingertips, you tap and rub from head to feet, waking up the skin and muscles. Breathe out as you tap.",
    "why": "A quick, energising wake-up that needs no space. It's an easy bridge from sleep or a desk into meditation.",
-   "pattern": null,
    "cues": [
     {
      "at": "start",
@@ -2112,7 +4072,6 @@
      "text": "Stand still. Feel the whole body."
     }
    ],
-   "baseSeconds": 300,
    "steps": [
     {
      "name": "Scalp tapping",
@@ -2168,266 +4127,69 @@
    "sources": [
     "do-in"
    ],
-   "focus": "lymph"
+   "baseSeconds": 300
   },
   {
-   "id": "lujong-warmup",
-   "title": "Tibetan Joint Warm-up (Lu Jong-style)",
-   "traditionId": "tibetan",
-   "kind": "movement",
+   "id": "wind-down-nidra",
+   "title": "Night Body Scan (Yoga Nidra)",
+   "traditionId": "wind-down",
+   "kind": "body",
    "minutes": [
-    3,
     5,
-    8
+    10,
+    15
    ],
    "level": "easy",
-   "about": "Lu Jong, 'body training', is a Tibetan Buddhist and Bön healing-movement system taught worldwide by Tulku Lobsang Rinpoche. Its key pattern is to move into a position on the out-breath, hold briefly, and release. This short routine applies that pattern to gentle joint warming; it is inspired by Lu Jong, not its official sequence.",
-   "why": "Warming the joints with slow, breath-led movement is a gentle way to begin the day or a sitting. The hold-and-release rhythm brings attention into the body.",
-   "pattern": null,
+   "free": true,
+   "whatItDoes": "A short guided body scan in bed to let the body switch off for sleep.",
+   "goodFor": [
+    "Falling asleep",
+    "Waking at night",
+    "Restless body"
+   ],
+   "howItWorks": "Moving attention slowly through the body releases tension and gives the mind something calm to do instead of worrying.",
+   "categories": [
+    "sleep",
+    "healing",
+    "beginner"
+   ],
+   "about": "A short yoga nidra for bed, in the style of Swami Satyananda's rotation of consciousness. Lie on your back, arms a little away from the body, palms up. Awareness moves quickly through the body — right hand, arm, shoulder, side, leg; then the left; then back, head and face — resting a breath on each part. There is nothing to fix or relax on purpose; naming each part is enough. If you fall asleep partway, that is the practice working.",
+   "why": "Yoga nidra is widely used for deep rest and before sleep; small trials report less time to fall asleep and better sleep quality. Moving attention through the body also pulls it out of the day's thinking.",
    "cues": [
     {
      "at": "start",
-     "text": "Stand tall, soften the knees, breathe."
+     "text": "Lie down. Let the bed hold your whole weight."
+    },
+    {
+     "at": "minute:1",
+     "text": "Right hand… arm… shoulder… down the right side."
+    },
+    {
+     "at": "minute:3",
+     "text": "Left hand… arm… shoulder… down the left side."
+    },
+    {
+     "at": "minute:5",
+     "text": "Back of the body. Back of the head. The face softens."
+    },
+    {
+     "at": "minute:8",
+     "text": "The whole body, heavy and warm."
     },
     {
      "at": "end",
-     "text": "Stand still. Feel the whole body."
+     "text": "Stay here. Sleep is welcome."
     }
    ],
-   "baseSeconds": 300,
-   "steps": [
-    {
-     "name": "Settle",
-     "seconds": 20,
-     "how": "Stand, feet hip-width. Three slow breaths.",
-     "breath": "natural",
-     "side": null
-    },
-    {
-     "name": "Neck",
-     "seconds": 40,
-     "how": "Exhale, chin to chest; hold; inhale up. Then ear to shoulder.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Shoulders",
-     "seconds": 40,
-     "how": "Exhale, roll shoulders back and down; release.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Wrists & hands",
-     "seconds": 30,
-     "how": "Circle wrists, open and close the fingers.",
-     "breath": "natural",
-     "side": null
-    },
-    {
-     "name": "Spine",
-     "seconds": 50,
-     "how": "Exhale, round forward; hold; inhale, rise and open.",
-     "breath": "out",
-     "side": null
-    },
-    {
-     "name": "Hips",
-     "seconds": 50,
-     "how": "Hands on hips, slow circles each way.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Knees & ankles",
-     "seconds": 40,
-     "how": "Soft knee circles, then lift and circle each ankle.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Shake out",
-     "seconds": 30,
-     "how": "Shake the whole body loosely, then stand still.",
-     "breath": "natural",
-     "side": null
-    }
-   ],
-   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
    "sources": [
-    "lu-jong"
-   ],
-   "focus": "joint"
+    "yoga-nidra",
+    "yoga-nidra-sleep"
+   ]
   },
   {
-   "id": "lymph-flow",
-   "title": "Lymph Flow Routine",
-   "traditionId": "modern",
-   "kind": "movement",
-   "focus": "lymph",
-   "minutes": [
-    3,
-    5,
-    8
-   ],
-   "level": "easy",
-   "about": "A gentle head-to-toe sequence built from common self-care lymph techniques: slow belly breathing, light skin-stretch strokes toward the collarbones, and rhythmic muscle pumping in the arms and calves. The touch is feather-light; the lymph vessels sit just under the skin.",
-   "why": "Lymph has no pump of its own; it moves with breathing and muscle contraction. This routine strings those together so you finish feeling lighter and less puffy, especially after sitting, flying or a sauna.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Stand or sit tall. Light touch only, like stroking a cat."
-    },
-    {
-     "at": "end",
-     "text": "Sip some water. Notice how the body feels."
-    }
-   ],
-   "steps": [
-    {
-     "name": "Belly breathing",
-     "seconds": 40,
-     "how": "Hands on the belly. Slow breaths that push the belly out, then let it fall.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Collarbone pumps",
-     "seconds": 30,
-     "how": "Fingertips just above the collarbones. Gently stretch the skin down and out, then release.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Neck sweeps",
-     "seconds": 30,
-     "how": "Flat hands stroke lightly from behind the ears down the sides of the neck.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Armpit pumps",
-     "seconds": 30,
-     "how": "Cup one hand in the opposite armpit; press in and up softly, release.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Arm sweeps",
-     "seconds": 40,
-     "how": "Stroke from the hand up the inside of the arm toward the armpit.",
-     "breath": "out",
-     "side": "both"
-    },
-    {
-     "name": "Belly circles",
-     "seconds": 30,
-     "how": "Slow clockwise circles around the navel with a flat hand.",
-     "breath": "natural",
-     "side": null
-    },
-    {
-     "name": "Behind the knees",
-     "seconds": 30,
-     "how": "Hands cupped behind each knee; light pumping presses.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Calf pumps",
-     "seconds": 40,
-     "how": "Rise onto the toes, lower slowly. The calf muscle is the body's second heart.",
-     "breath": "natural",
-     "side": null
-    }
-   ],
-   "safety": "Use very light pressure. Skip this or ask your doctor first if you have a blood clot (DVT), heart or kidney failure, an active infection, or are being treated for cancer or lymphoedema.",
-   "sources": []
-  },
-  {
-   "id": "joint-circles",
-   "title": "Joint Circles, Head to Toe",
-   "traditionId": "modern",
-   "kind": "movement",
-   "focus": "joint",
-   "minutes": [
-    3,
-    5,
-    8
-   ],
-   "level": "easy",
-   "about": "Slow, controlled circles through every major joint, top to bottom, the way mobility coaches warm people up. Each circle goes to the edge of comfortable range and no further.",
-   "why": "Moving a joint through its full range brings fresh synovial fluid to the cartilage, so stiff mornings and long desk days feel looser fast.",
-   "pattern": null,
-   "cues": [
-    {
-     "at": "start",
-     "text": "Stand tall, knees soft. Slow circles, no forcing."
-    },
-    {
-     "at": "end",
-     "text": "Stand still. Feel the space in the joints."
-    }
-   ],
-   "steps": [
-    {
-     "name": "Neck",
-     "seconds": 30,
-     "how": "Half-circles chin to chest, ear to shoulder. Never roll the head back.",
-     "breath": "natural",
-     "side": null
-    },
-    {
-     "name": "Shoulders",
-     "seconds": 30,
-     "how": "Big slow shoulder rolls, forward then back.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Elbows & wrists",
-     "seconds": 30,
-     "how": "Arms out; circle the forearms, then the wrists.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Spine waves",
-     "seconds": 30,
-     "how": "Hands on knees; round and arch the back slowly.",
-     "breath": "in",
-     "side": null
-    },
-    {
-     "name": "Hips",
-     "seconds": 40,
-     "how": "Hands on hips; draw wide circles with the pelvis.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Knees",
-     "seconds": 30,
-     "how": "Feet together, hands on knees; small gentle circles.",
-     "breath": "natural",
-     "side": "both"
-    },
-    {
-     "name": "Ankles",
-     "seconds": 30,
-     "how": "Lift one foot; circle the ankle each way.",
-     "breath": "natural",
-     "side": "both"
-    }
-   ],
-   "safety": "Move within a pain-free range. If you are pregnant, recovering from surgery or injury, or have joint, back or blood-pressure problems, check with a clinician first and skip anything that hurts.",
-   "sources": []
-  },
-  {
-   "id": "rooted-breath",
-   "title": "Rooted Breath",
-   "traditionId": "nature",
+   "id": "wind-down-478",
+   "title": "4·7·8 for Sleep",
+   "traditionId": "wind-down",
    "kind": "breath",
    "minutes": [
     2,
@@ -2435,6 +4197,367 @@
     5
    ],
    "level": "easy",
+   "whatItDoes": "The 4·7·8 breath, slowed for bedtime, to help you drift off.",
+   "goodFor": [
+    "Falling asleep",
+    "Racing mind at night",
+    "Waking at night"
+   ],
+   "howItWorks": "The long hold and long exhale strongly slow the body down. Do four rounds, then breathe naturally.",
+   "categories": [
+    "sleep",
+    "calm",
+    "quick"
+   ],
+   "about": "Dr Andrew Weil's 4-7-8 breath, paced for bed. Lying down, rest the tip of the tongue behind the upper front teeth. Breathe in quietly through the nose for 4, hold softly for 7, and let the breath out through the mouth for a slow 8. Four rounds is plenty at first; the hold should feel easy, never strained. Keep the eyes closed and let the count get vaguer as you go.",
+   "why": "A long exhale with a gentle hold leans the nervous system toward rest, which tends to slow the heart. Weil describes it as a natural tranquiliser for the nervous system; it works best as a nightly habit.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 7,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": 4,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Tongue behind the teeth. In four, hold seven, out eight."
+    },
+    {
+     "at": "everyCycle",
+     "text": "Let the out-breath be slow."
+    },
+    {
+     "at": "minute:2",
+     "text": "Soften the hold. Nothing to force."
+    },
+    {
+     "at": "end",
+     "text": "Breathe normally. Let the room fade."
+    }
+   ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy. Keep the hold gentle; this is not a breath-holding contest.",
+   "sources": [
+    "weil-478",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "wind-down-countdown",
+   "title": "Counting Down (Zen)",
+   "traditionId": "wind-down",
+   "kind": "breath",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Count breaths down from 100 to settle into sleep.",
+   "goodFor": [
+    "Can't switch off",
+    "Waking at night",
+    "Busy mind"
+   ],
+   "howItWorks": "Counting backwards with a long exhale keeps the mind lightly busy and bored, which helps sleep come.",
+   "categories": [
+    "sleep"
+   ],
+   "about": "A bedtime turn on Zen breath counting (susokukan). Instead of counting up to ten, count the out-breaths down from ten to one, then start again at ten. Each exhale is a little longer than the inhale. When you lose the count — and you will — simply pick it up again at ten, without comment. In bed, lying on your back or side, the numbers slowly lose their edges.",
+   "why": "Counting gives a racing mind one simple, boring job, and counting downward carries a feeling of settling. The longer out-breath is linked with calmer arousal in reviews of slow breathing.",
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 7,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": null,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": "start",
+     "text": "Ten on this out-breath. Then nine…"
+    },
+    {
+     "at": "everyCycle",
+     "text": "Count the exhale, down."
+    },
+    {
+     "at": "minute:4",
+     "text": "Lost the count? Begin again at ten."
+    },
+    {
+     "at": "minute:8",
+     "text": "Let the numbers blur. Just the out-breath."
+    },
+    {
+     "at": "end",
+     "text": "Let the counting go."
+    }
+   ],
+   "sources": [
+    "zen-susokukan",
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "wind-down-metta",
+   "title": "Loving-Kindness for Sleep",
+   "traditionId": "wind-down",
+   "kind": "loving",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Send kind wishes to yourself and others as you fall asleep.",
+   "goodFor": [
+    "Ending the day kindly",
+    "Loneliness",
+    "Sleep"
+   ],
+   "howItWorks": "Warm feelings and slow breathing are a gentle bridge to sleep, and a kind way to end the day.",
+   "categories": [
+    "sleep",
+    "healing"
+   ],
+   "about": "Mettā turned toward the end of the day. Lying down, bring to mind one person who was kind to you today and silently wish them well: may you rest, may you be at ease. Then someone you love, then whoever you crossed paths with, and finally yourself — may I rest, may I be at ease. There is no striving for a feeling; the wishes do the work, and the day is set down with them.",
+   "why": "Loving-kindness practice is associated with more positive emotion and less rumination, and the evening is when the mind replays the day. Ending with yourself gives the last thought before sleep a kind tone.",
+   "cues": [
+    {
+     "at": "start",
+     "text": "Someone kind today. May you rest easy."
+    },
+    {
+     "at": "minute:2",
+     "text": "Someone you love. May you be at ease."
+    },
+    {
+     "at": "minute:4",
+     "text": "Everyone you met today. May they sleep well."
+    },
+    {
+     "at": "minute:6",
+     "text": "And you. May I rest. May I be at ease."
+    },
+    {
+     "at": "end",
+     "text": "Set the day down. Goodnight."
+    }
+   ],
+   "sources": [
+    "metta-sutta",
+    "hofmann-2011-metta"
+   ]
+  },
+  {
+   "id": "picture-shuffle",
+   "title": "Picture Shuffle for Sleep",
+   "traditionId": "wind-down",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Picture a random string of simple objects to drift off instead of worrying.",
+   "goodFor": [
+    "Racing thoughts at bedtime",
+    "Waking at night",
+    "Can't switch off"
+   ],
+   "howItWorks": "Imagining unrelated, neutral things (a cup, a cloud, a bicycle) keeps the mind busy with harmless pictures, mimicking the random imagery of falling asleep.",
+   "categories": [
+    "sleep"
+   ],
+   "howTo": [
+    "Lie in bed, eyes closed.",
+    "Pick a simple word, like 'bedtime'.",
+    "For each letter, picture objects starting with it: b… bird, bread, bucket.",
+    "Move on slowly. Don't try hard."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 7,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Pick a word. Start with its first letter."
+    },
+    {
+     "at": 90,
+     "text": "Picture each object clearly, then let it go."
+    },
+    {
+     "at": 240,
+     "text": "No effort. Drift."
+    }
+   ],
+   "sources": [
+    "beaudoin"
+   ]
+  },
+  {
+   "id": "sleep-pmr",
+   "title": "Bedtime Muscle Release",
+   "traditionId": "wind-down",
+   "kind": "body",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "A gentle tense-and-release from toes to face to help your body let go into sleep.",
+   "goodFor": [
+    "Restless body",
+    "Tension at night",
+    "Falling asleep"
+   ],
+   "howItWorks": "Muscle tension keeps the body alert. Tensing and releasing each area in bed helps you feel what relaxation is and sink into it.",
+   "categories": [
+    "sleep",
+    "healing"
+   ],
+   "howTo": [
+    "Lie on your back in bed.",
+    "Gently tense your feet as you breathe in, release as you breathe out.",
+    "Work up: legs, belly, hands, arms, shoulders, face.",
+    "Finish by letting the whole body sink."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Feet: gently tense… and let go."
+    },
+    {
+     "at": 50,
+     "text": "Legs… and let go."
+    },
+    {
+     "at": 100,
+     "text": "Belly… and soften."
+    },
+    {
+     "at": 150,
+     "text": "Hands and arms… and release."
+    },
+    {
+     "at": 200,
+     "text": "Shoulders… and drop."
+    },
+    {
+     "at": 250,
+     "text": "Face… and smooth."
+    },
+    {
+     "at": 300,
+     "text": "Sink into the bed."
+    }
+   ],
+   "safety": "Tense gently, especially if you get cramps.",
+   "sources": [
+    "jacobson-pmr"
+   ]
+  },
+  {
+   "id": "sleep-gratitude",
+   "title": "Three Good Things",
+   "traditionId": "wind-down",
+   "kind": "focus",
+   "minutes": [
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Recall three good things from today as you settle into bed.",
+   "goodFor": [
+    "Ending the day on a good note",
+    "Low mood",
+    "Before sleep"
+   ],
+   "howItWorks": "Ending the day by remembering three good moments, and why they happened, trains attention toward the positive and is linked with better mood.",
+   "categories": [
+    "sleep",
+    "calm",
+    "beginner"
+   ],
+   "howTo": [
+    "Lie down and take a few slow breaths.",
+    "Remember one good thing from today, however small.",
+    "Why did it happen? Feel it again.",
+    "Find a second and a third."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "One good thing from today."
+    },
+    {
+     "at": 60,
+     "text": "Why did it happen? Feel it."
+    },
+    {
+     "at": 120,
+     "text": "A second good thing."
+    },
+    {
+     "at": 180,
+     "text": "And a third."
+    }
+   ],
+   "sources": [
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "rooted-breath",
+   "title": "Rooted Breath",
+   "traditionId": "nature",
+   "kind": "breath",
+   "focus": "trees",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Stand by a tree and breathe long out-breaths, picturing roots going down.",
+   "goodFor": [
+    "Grounding",
+    "Stress",
+    "Time outdoors"
+   ],
+   "howItWorks": "A longer out-breath calms the body, and picturing roots gives the mind somewhere quiet to rest.",
+   "categories": [
+    "nature",
+    "calm",
+    "quick",
+    "beginner"
+   ],
    "about": "Stand close to your tree, feet hip-width, knees soft. Breathe low into the belly for four, then out for six, and picture roots growing down from your feet into the soil a little further with every out-breath.",
    "why": "A longer out-breath than in-breath is one of the simplest ways to slow the heart and settle the nervous system. Picturing roots gives the mind somewhere quiet to rest.",
    "pattern": {
@@ -2476,20 +4599,33 @@
    "sources": [
     "lehrer-2014",
     "shinrin-yoku"
-   ],
-   "focus": "trees"
+   ]
   },
   {
    "id": "bark-breath",
    "title": "Bark & Breath",
    "traditionId": "nature",
    "kind": "breath",
+   "focus": "trees",
    "minutes": [
     2,
     3,
     5
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Box breathing with your hands on the bark of a tree.",
+   "goodFor": [
+    "Grounding",
+    "Focus",
+    "Time outdoors"
+   ],
+   "howItWorks": "The feel of bark under your hands keeps you present while the even box rhythm steadies you.",
+   "categories": [
+    "nature",
+    "calm",
+    "quick"
+   ],
    "about": "Rest both palms on the bark. Breathe in for four, hold for four, out for four, hold for four, and use each count to notice the bark: ridges, cracks, warmth or cold, dry or damp.",
    "why": "Even counts steady a racing mind, and giving your hands something real to feel keeps attention in the present instead of in your head.",
    "pattern": {
@@ -2524,23 +4660,36 @@
      "text": "Keep the holds easy, never strained."
     }
    ],
+   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy.",
    "sources": [
     "box-breathing"
-   ],
-   "focus": "trees",
-   "safety": "Skip the breath holds if you're pregnant, have heart or blood-pressure problems, or feel dizzy."
+   ]
   },
   {
    "id": "canopy-sigh",
    "title": "Canopy Sigh",
    "traditionId": "nature",
    "kind": "breath",
+   "focus": "trees",
    "minutes": [
     2,
     3,
     5
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Look up into the branches and sigh out the stress.",
+   "goodFor": [
+    "Quick stress relief",
+    "Outdoors",
+    "Perspective"
+   ],
+   "howItWorks": "The physiological sigh calms you quickly, and looking up into the canopy widens your view.",
+   "categories": [
+    "nature",
+    "calm",
+    "quick"
+   ],
    "about": "Lean back against the trunk or stand beneath it and let your eyes drift up into the leaves. Breathe in through the nose, sip in a little more at the top, then let it all go in a long, slow sigh.",
    "why": "The double inhale and long exhale of a physiological sigh is one of the fastest ways to calm down. Looking up into a canopy widens your view and softens the eyes.",
    "pattern": {
@@ -2578,20 +4727,34 @@
    "sources": [
     "balban-2023",
     "shinrin-yoku"
-   ],
-   "focus": "trees"
+   ]
   },
   {
    "id": "earth-count",
    "title": "Earth Count",
    "traditionId": "nature",
    "kind": "breath",
+   "focus": "trees",
    "minutes": [
     2,
     3,
     5
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Count gentle breaths while sitting at the base of a tree.",
+   "goodFor": [
+    "Grounding",
+    "Busy mind",
+    "Outdoors"
+   ],
+   "howItWorks": "Counting breaths gives the mind a simple job while the ground and tree hold you.",
+   "categories": [
+    "nature",
+    "calm",
+    "quick",
+    "beginner"
+   ],
    "about": "A five-four-three-two-one walk through the senses, paced by slow breathing. Notice five things you see, four you can touch, three you hear, two you smell and one you can taste, one sense every few breaths.",
    "why": "Naming what the senses pick up pulls attention out of worry and into the place you're standing; slow breathing keeps the body following along.",
    "pattern": {
@@ -2632,20 +4795,33 @@
    ],
    "sources": [
     "shinrin-yoku"
-   ],
-   "focus": "trees"
+   ]
   },
   {
    "id": "heartbeat-hug",
    "title": "Heartbeat Hug",
    "traditionId": "nature",
    "kind": "breath",
+   "focus": "trees",
    "minutes": [
     2,
     3,
     5
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Hug a tree and breathe slowly, feeling your heartbeat settle.",
+   "goodFor": [
+    "Comfort",
+    "Loneliness",
+    "Grounding"
+   ],
+   "howItWorks": "Even, slow breathing and the steady pressure of a hug are calming and comforting.",
+   "categories": [
+    "nature",
+    "healing",
+    "quick"
+   ],
    "about": "Wrap your arms around the trunk, rest your cheek or chest against it and breathe at an easy six breaths a minute: five in, five out. Let your heartbeat settle against the stillness of the tree.",
    "why": "Breathing near six breaths a minute is called resonance breathing; studies link it to higher heart-rate variability, a sign the body is in rest mode.",
    "pattern": {
@@ -2683,20 +4859,32 @@
    "sources": [
     "lehrer-2014",
     "zaccaro-2018"
-   ],
-   "focus": "trees"
+   ]
   },
   {
    "id": "walking-roots",
    "title": "Walking Roots",
    "traditionId": "nature",
    "kind": "breath",
+   "focus": "trees",
    "minutes": [
     2,
     3,
     5
    ],
    "level": "easy",
+   "free": true,
+   "whatItDoes": "Walk slowly from tree to tree, matching steps to breath.",
+   "goodFor": [
+    "Restlessness",
+    "Outdoors",
+    "Grounding"
+   ],
+   "howItWorks": "Matching steps to an even breath brings you into the body and the place you're walking.",
+   "categories": [
+    "nature",
+    "quick"
+   ],
    "about": "For a stroll: slow barefoot steps if the ground is safe, shoes if not. Breathe in for four steps and out for four steps, placing each foot heel, then sole, then toes, as if it were putting down roots.",
    "why": "Linking breath to slow steps calms the mind the way sitting practice does, and bare feet on grass or soil add a gentle, grounding texture.",
    "pattern": {
@@ -2731,11 +4919,1402 @@
      "text": "Walk toward a tree you'd like to hug."
     }
    ],
+   "safety": "Only go barefoot where the ground is safe. Keep your eyes open and watch your footing.",
    "sources": [
     "shinrin-yoku"
+   ]
+  },
+  {
+   "id": "pmr",
+   "title": "Progressive Muscle Relaxation",
+   "traditionId": "mindbody",
+   "kind": "body",
+   "minutes": [
+    10,
+    15,
+    20
    ],
-   "focus": "trees",
-   "safety": "Only go barefoot where the ground is safe. Keep your eyes open and watch your footing."
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Tense and release each muscle group to melt away body tension you didn't know you had.",
+   "goodFor": [
+    "Physical tension",
+    "Anxiety",
+    "Trouble sleeping"
+   ],
+   "howItWorks": "Briefly tensing a muscle and then letting go makes the release easy to feel. Moving through the body this way is a long-studied method for lowering tension and anxiety.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing",
+    "beginner"
+   ],
+   "howTo": [
+    "Lie or sit comfortably.",
+    "Squeeze one muscle group for about 5 seconds as you breathe in.",
+    "Release all at once as you breathe out, and feel the difference for 15 seconds.",
+    "Move from feet to face."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Feet: curl the toes… and release."
+    },
+    {
+     "at": 60,
+     "text": "Calves and thighs: tense… and let go."
+    },
+    {
+     "at": 150,
+     "text": "Belly and back: tighten… and soften."
+    },
+    {
+     "at": 240,
+     "text": "Hands into fists… and open."
+    },
+    {
+     "at": 330,
+     "text": "Shoulders up to the ears… and drop."
+    },
+    {
+     "at": 420,
+     "text": "Face: scrunch… and smooth."
+    },
+    {
+     "at": 510,
+     "text": "Whole body loose and heavy."
+    }
+   ],
+   "safety": "Tense gently. Skip any area that is injured or painful.",
+   "sources": [
+    "jacobson-pmr"
+   ]
+  },
+  {
+   "id": "tension-release",
+   "title": "Quick Tension Release",
+   "traditionId": "mindbody",
+   "kind": "body",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Squeeze and drop shoulders, hands and jaw to let go of tension in two minutes.",
+   "goodFor": [
+    "Desk tension",
+    "Clenched jaw",
+    "Stress at work"
+   ],
+   "howItWorks": "A fast version of progressive relaxation: tensing the spots where stress hides, then letting go, makes relaxation easy to feel.",
+   "categories": [
+    "calm",
+    "quick",
+    "recovery"
+   ],
+   "howTo": [
+    "Lift shoulders to ears, hold, drop.",
+    "Make fists, hold, open.",
+    "Clench jaw lightly, hold, let it hang.",
+    "Repeat with a long out-breath each time."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Shoulders up… and drop."
+    },
+    {
+     "at": 30,
+     "text": "Fists tight… and open."
+    },
+    {
+     "at": 60,
+     "text": "Jaw tight… and let it hang."
+    },
+    {
+     "at": 90,
+     "text": "Once more, everything… and release."
+    }
+   ],
+   "safety": "Tense gently. Skip any area that is injured.",
+   "sources": [
+    "jacobson-pmr"
+   ]
+  },
+  {
+   "id": "body-scan",
+   "title": "Gentle Body Scan",
+   "traditionId": "mindbody",
+   "kind": "body",
+   "minutes": [
+    5,
+    10,
+    20
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Move your attention slowly from toes to head to relax and reconnect with your body.",
+   "goodFor": [
+    "Stress",
+    "Before sleep",
+    "Feeling disconnected from your body"
+   ],
+   "howItWorks": "Paying kind, curious attention to each part of the body interrupts worry and helps you notice and release tension. It's a core part of mindfulness-based stress reduction.",
+   "categories": [
+    "calm",
+    "sleep",
+    "healing",
+    "beginner"
+   ],
+   "howTo": [
+    "Lie down or sit back.",
+    "Start at the toes: notice whatever is there.",
+    "Move slowly up: feet, legs, hips, belly, back, chest, arms, neck, face.",
+    "If you drift, pick up where you left off."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Start at the toes. Just notice."
+    },
+    {
+     "at": 60,
+     "text": "Feet and ankles."
+    },
+    {
+     "at": 150,
+     "text": "Legs and hips."
+    },
+    {
+     "at": 240,
+     "text": "Belly and lower back."
+    },
+    {
+     "at": 330,
+     "text": "Chest and upper back."
+    },
+    {
+     "at": 420,
+     "text": "Arms and hands."
+    },
+    {
+     "at": 510,
+     "text": "Neck, face and scalp."
+    },
+    {
+     "at": 600,
+     "text": "The whole body, breathing."
+    }
+   ],
+   "sources": [
+    "kabat-zinn"
+   ]
+  },
+  {
+   "id": "pain-scan",
+   "title": "Soothing Scan for Discomfort",
+   "traditionId": "mindbody",
+   "kind": "body",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Breathe around an area of pain or discomfort to soften the tension that builds up around it.",
+   "goodFor": [
+    "Aches and pains",
+    "Recovering from injury",
+    "Chronic discomfort"
+   ],
+   "howItWorks": "We often brace around pain, which adds more tension. Slow breathing and kind attention can loosen the bracing and change how intense discomfort feels. It doesn't treat the cause.",
+   "categories": [
+    "healing",
+    "calm"
+   ],
+   "howTo": [
+    "Get as comfortable as you can.",
+    "Notice the area of discomfort without trying to fix it.",
+    "Breathe slowly, imagining the breath flowing around it.",
+    "Soften the muscles nearby on each out-breath."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Find a comfortable position."
+    },
+    {
+     "at": 60,
+     "text": "Notice the area, gently. Just look."
+    },
+    {
+     "at": 150,
+     "text": "Breathe around it. Soften what's near."
+    },
+    {
+     "at": 300,
+     "text": "Is it one solid thing, or changing?"
+    },
+    {
+     "at": 480,
+     "text": "Rest your attention somewhere that feels okay."
+    }
+   ],
+   "safety": "A supportive practice, not medical advice or treatment. New, severe or worsening pain needs a doctor.",
+   "sources": [
+    "kabat-zinn"
+   ]
+  },
+  {
+   "id": "relaxation-response",
+   "title": "Relaxation Response",
+   "traditionId": "mindbody",
+   "kind": "mantra",
+   "minutes": [
+    10,
+    15,
+    20
+   ],
+   "level": "easy",
+   "whatItDoes": "Repeat one calming word on every out-breath to switch on your body's natural relaxation.",
+   "goodFor": [
+    "Daily stress",
+    "Tension",
+    "Starting a habit"
+   ],
+   "howItWorks": "A quiet place, a repeated word and a passive attitude together trigger what researchers called the relaxation response: slower breathing, lower heart rate and less muscle tension.",
+   "categories": [
+    "calm",
+    "healing",
+    "beginner"
+   ],
+   "howTo": [
+    "Sit quietly, eyes closed.",
+    "Relax your muscles from feet to face.",
+    "Breathe through the nose. Silently say 'one' (or any calm word) on each out-breath.",
+    "When thoughts come, think 'oh well' and return to the word."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Relax the body. Say 'one' on each out-breath."
+    },
+    {
+     "at": 180,
+     "text": "Thoughts come. 'Oh well.' Back to the word."
+    },
+    {
+     "at": 480,
+     "text": "Easy, passive, no effort."
+    }
+   ],
+   "sources": [
+    "benson-1975"
+   ]
+  },
+  {
+   "id": "autogenic",
+   "title": "Autogenic Heaviness & Warmth",
+   "traditionId": "mindbody",
+   "kind": "body",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "medium",
+   "whatItDoes": "Silently repeat simple phrases ('my arms are heavy and warm') to relax deeply.",
+   "goodFor": [
+    "Deep relaxation",
+    "Trouble sleeping",
+    "Tension headaches"
+   ],
+   "howItWorks": "Repeating phrases about heaviness and warmth guides the body to relax muscles and open blood flow to the hands and feet. It's a structured method from German medicine.",
+   "categories": [
+    "healing",
+    "sleep",
+    "calm"
+   ],
+   "howTo": [
+    "Lie down or sit back.",
+    "Silently repeat each phrase slowly, several times.",
+    "'My right arm is heavy… my arms are heavy… my legs are heavy.'",
+    "'My arms and legs are warm… my breathing is calm… I am at peace.'"
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "My right arm is heavy."
+    },
+    {
+     "at": 60,
+     "text": "Both arms are heavy."
+    },
+    {
+     "at": 120,
+     "text": "My legs are heavy."
+    },
+    {
+     "at": 180,
+     "text": "My arms and legs are warm."
+    },
+    {
+     "at": 270,
+     "text": "My heartbeat is calm and steady."
+    },
+    {
+     "at": 330,
+     "text": "My breathing is calm. It breathes me."
+    },
+    {
+     "at": 420,
+     "text": "I am at peace."
+    }
+   ],
+   "safety": "If you have low blood pressure, get up slowly afterwards. Stop if it feels unpleasant.",
+   "sources": [
+    "schultz-autogenic"
+   ]
+  },
+  {
+   "id": "grounding-54321",
+   "title": "5-4-3-2-1 Grounding",
+   "traditionId": "mindbody",
+   "kind": "focus",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Name 5 things you see, 4 you feel, 3 you hear, 2 you smell and 1 you taste to come back to the present.",
+   "goodFor": [
+    "Panic or overwhelm",
+    "Spiralling thoughts",
+    "Feeling far away"
+   ],
+   "howItWorks": "Using all five senses pulls attention out of anxious thinking and into what's actually around you right now. You can do it anywhere, eyes open.",
+   "categories": [
+    "calm",
+    "nature",
+    "quick",
+    "beginner",
+    "healing"
+   ],
+   "howTo": [
+    "Look around: name 5 things you can see.",
+    "Notice 4 things you can feel (feet, chair, clothes, air).",
+    "Listen for 3 sounds.",
+    "Find 2 smells and 1 taste. Then take one slow breath."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Name 5 things you can see."
+    },
+    {
+     "at": 30,
+     "text": "4 things you can feel."
+    },
+    {
+     "at": 60,
+     "text": "3 things you can hear."
+    },
+    {
+     "at": 90,
+     "text": "2 things you can smell."
+    },
+    {
+     "at": 110,
+     "text": "1 thing you can taste."
+    },
+    {
+     "at": 130,
+     "text": "One long breath. You're here."
+    }
+   ],
+   "sources": [
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "self-compassion",
+   "title": "Self-Compassion Pause",
+   "traditionId": "mindbody",
+   "kind": "loving",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Meet a hard moment with the kindness you'd give a friend.",
+   "goodFor": [
+    "Self-criticism",
+    "Mistakes and setbacks",
+    "Feeling alone with it"
+   ],
+   "howItWorks": "Three steps: notice 'this is hard', remember everyone struggles, then offer yourself kind words. Self-compassion is linked with less anxiety and more resilience.",
+   "categories": [
+    "healing",
+    "calm"
+   ],
+   "howTo": [
+    "Put a hand on your heart.",
+    "Say to yourself: 'This is a hard moment.'",
+    "'Hard moments are part of being human.'",
+    "'May I be kind to myself right now.' Use words that fit."
+   ],
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Hand on heart. 'This is hard.'"
+    },
+    {
+     "at": 45,
+     "text": "'Everyone struggles sometimes.'"
+    },
+    {
+     "at": 90,
+     "text": "'May I be kind to myself.'"
+    },
+    {
+     "at": 150,
+     "text": "What would you say to a friend? Say it to you."
+    }
+   ],
+   "sources": [
+    "neff-2011"
+   ]
+  },
+  {
+   "id": "heartache",
+   "title": "Hand on Heart for Heartache",
+   "traditionId": "mindbody",
+   "kind": "loving",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "A warm hand and slow breath to comfort yourself when your heart hurts.",
+   "goodFor": [
+    "Heartache",
+    "Loneliness",
+    "After a breakup or argument"
+   ],
+   "howItWorks": "Gentle touch and slow, even breathing are simple ways the body comforts itself. It won't fix what happened, but it can help you feel held.",
+   "categories": [
+    "healing",
+    "calm",
+    "quick"
+   ],
+   "howTo": [
+    "Rest one or both hands over your heart.",
+    "Feel the warmth and gentle pressure.",
+    "Breathe in for 5 and out for 5.",
+    "Say silently: 'I'm here with you.'"
+   ],
+   "pattern": {
+    "inhale": 5,
+    "holdIn": 0,
+    "exhale": 5,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Hands on your heart. Feel the warmth."
+    },
+    {
+     "at": 40,
+     "text": "'I'm here with you.'"
+    },
+    {
+     "at": 100,
+     "text": "Let the breath rock you gently."
+    }
+   ],
+   "sources": [
+    "neff-2011"
+   ]
+  },
+  {
+   "id": "grief-holding",
+   "title": "Holding Grief Gently",
+   "traditionId": "mindbody",
+   "kind": "loving",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Make room for grief with slow breath and kindness, without pushing it away.",
+   "goodFor": [
+    "Grief and loss",
+    "Missing someone",
+    "Anniversaries"
+   ],
+   "howItWorks": "Grief often comes in waves. Breathing slowly while you let the feeling be there, with kindness, can make the waves easier to ride.",
+   "categories": [
+    "healing"
+   ],
+   "howTo": [
+    "Sit somewhere safe and quiet.",
+    "Let yourself think of who or what you've lost.",
+    "Notice where you feel it in your body. Breathe slowly around it.",
+    "Offer kindness: 'May I be gentle with this pain.'"
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "You don't have to fix anything."
+    },
+    {
+     "at": 90,
+     "text": "Where do you feel it? Breathe there."
+    },
+    {
+     "at": 210,
+     "text": "Let tears come if they come."
+    },
+    {
+     "at": 360,
+     "text": "'May I be gentle with this pain.'"
+    },
+    {
+     "at": 540,
+     "text": "Remember something you're grateful for in them."
+    }
+   ],
+   "safety": "A supportive practice, not medical advice or treatment. If grief feels overwhelming or you think of harming yourself, please reach out to someone or call a crisis line (988 in the US).",
+   "sources": [
+    "hofmann-2011-metta"
+   ]
+  },
+  {
+   "id": "safe-place",
+   "title": "Safe Place Visualization",
+   "traditionId": "mindbody",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Build a calm, safe place in your imagination that you can return to whenever you need it.",
+   "goodFor": [
+    "Anxiety",
+    "Comfort after a hard day",
+    "Falling asleep"
+   ],
+   "howItWorks": "Imagining a peaceful place in detail, with all your senses, can calm the body much like being there. The more you visit, the faster it works.",
+   "categories": [
+    "calm",
+    "healing",
+    "sleep"
+   ],
+   "howTo": [
+    "Close your eyes and breathe slowly.",
+    "Picture a place where you feel completely safe: real or imagined.",
+    "Add details: what you see, hear, smell, feel.",
+    "Rest there. Know you can come back anytime."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Picture a place where you feel safe."
+    },
+    {
+     "at": 60,
+     "text": "What do you see there?"
+    },
+    {
+     "at": 150,
+     "text": "What can you hear? Smell?"
+    },
+    {
+     "at": 240,
+     "text": "Feel the ground, the air, the temperature."
+    },
+    {
+     "at": 360,
+     "text": "Rest. You can return anytime."
+    }
+   ],
+   "sources": [
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "gratitude-breath",
+   "title": "Gratitude Breaths",
+   "traditionId": "mindbody",
+   "kind": "loving",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Think of one thing you're thankful for on each breath to lift your mood.",
+   "goodFor": [
+    "Low mood",
+    "Morning or evening",
+    "Perspective"
+   ],
+   "howItWorks": "Bringing to mind good things, one by one, shifts attention away from what's wrong. Regular gratitude practice is linked with better mood.",
+   "categories": [
+    "calm",
+    "quick",
+    "beginner"
+   ],
+   "howTo": [
+    "Breathe in slowly.",
+    "On the out-breath, think of one thing you're grateful for.",
+    "Small things count: coffee, sunshine, a friend.",
+    "Feel it for a moment before the next breath."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "One thing you're grateful for, each breath."
+    },
+    {
+     "at": 40,
+     "text": "Small things count."
+    },
+    {
+     "at": 100,
+     "text": "Let yourself feel it."
+    }
+   ],
+   "sources": [
+    "goyal-2014"
+   ]
+  },
+  {
+   "id": "mountain",
+   "title": "Mountain Meditation",
+   "traditionId": "mindbody",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Picture yourself as a mountain, steady while weather passes, to feel stable through hard times.",
+   "goodFor": [
+    "Stress that comes and goes",
+    "Feeling shaken",
+    "Building steadiness"
+   ],
+   "howItWorks": "Imagining a mountain that stays put through storms and sunshine gives the mind an image of steadiness. Moods are the weather; you are the mountain.",
+   "categories": [
+    "calm",
+    "focus",
+    "nature"
+   ],
+   "howTo": [
+    "Sit tall and still.",
+    "Picture a mountain you love.",
+    "Feel yourself become the mountain: solid base, still peak.",
+    "Let weather pass: storms, sun, snow. You stay."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Picture a great mountain."
+    },
+    {
+     "at": 90,
+     "text": "Become the mountain. Solid and still."
+    },
+    {
+     "at": 210,
+     "text": "Storms pass. The mountain stays."
+    },
+    {
+     "at": 360,
+     "text": "Moods are weather. You are the mountain."
+    }
+   ],
+   "sources": [
+    "kabat-zinn"
+   ]
+  },
+  {
+   "id": "between-sets",
+   "title": "Between-Sets Recovery",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    1,
+    2
+   ],
+   "level": "easy",
+   "whatItDoes": "Bring your breathing and heart rate down fast between sets or intervals.",
+   "goodFor": [
+    "Between sets",
+    "After a sprint",
+    "Catching your breath"
+   ],
+   "howItWorks": "A double inhale and long exhale clears the lungs and helps the heart settle sooner, so you start the next effort fresher.",
+   "categories": [
+    "recovery",
+    "quick"
+   ],
+   "howTo": [
+    "Stand tall or put hands on your head; don't bend over.",
+    "Two inhales through the nose.",
+    "Long exhale through the mouth.",
+    "Repeat until your next set."
+   ],
+   "pattern": {
+    "inhale": 3,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": true
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Hands on head. Double in, long out."
+    },
+    {
+     "at": 30,
+     "text": "Slow the exhale more each time."
+    }
+   ],
+   "sources": [
+    "balban-2023"
+   ]
+  },
+  {
+   "id": "pre-workout",
+   "title": "Pre-Workout Activation",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3
+   ],
+   "level": "easy",
+   "whatItDoes": "Brisk, rhythmic breathing to switch on before training.",
+   "goodFor": [
+    "Before lifting",
+    "Before a run",
+    "Low motivation"
+   ],
+   "howItWorks": "Quicker, fuller breaths with a strong posture raise alertness and get you ready to move. Short and safe when done seated or standing still.",
+   "categories": [
+    "energy",
+    "recovery",
+    "quick"
+   ],
+   "howTo": [
+    "Stand tall, feet planted.",
+    "Breathe in strongly through the nose for 3.",
+    "Out through the mouth for 2.",
+    "Shake out the arms and legs between breaths if you like."
+   ],
+   "pattern": {
+    "inhale": 3,
+    "holdIn": 0,
+    "exhale": 2,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Strong in, quick out."
+    },
+    {
+     "at": 40,
+     "text": "Shake out the hands."
+    },
+    {
+     "at": 100,
+     "text": "Ready. Go train."
+    }
+   ],
+   "safety": "Stop if you feel dizzy.",
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "post-workout",
+   "title": "Post-Workout Downshift",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Long out-breaths to shift your body from training mode into recovery mode.",
+   "goodFor": [
+    "After training",
+    "Wired after exercise",
+    "Better sleep after evening workouts"
+   ],
+   "howItWorks": "After hard exercise the nervous system stays revved up. A slow breath with a long exhale can help your heart rate come down and start the recovery process sooner.",
+   "categories": [
+    "recovery",
+    "calm",
+    "healing"
+   ],
+   "howTo": [
+    "Lie on your back, legs up on a bench or wall if you like.",
+    "Breathe in through the nose for 4.",
+    "Breathe out slowly for 8.",
+    "Let your whole body get heavy."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 8,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Lie back. Long, slow out-breaths."
+    },
+    {
+     "at": 60,
+     "text": "Let the legs and back sink."
+    },
+    {
+     "at": 150,
+     "text": "Heart slowing. Nothing to do now."
+    },
+    {
+     "at": 300,
+     "text": "Recovery has started."
+    }
+   ],
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "cold-prep",
+   "title": "Cold Plunge Prep",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    1,
+    2,
+    3
+   ],
+   "level": "medium",
+   "whatItDoes": "Calm, slow breathing to get ready for cold water without gasping or panic.",
+   "goodFor": [
+    "Before a cold plunge",
+    "Before a cold shower",
+    "Cold water nerves"
+   ],
+   "howItWorks": "The shock of cold makes you gasp and breathe fast. Practising a slow, steady exhale before you get in makes it easier to stay calm once you're in.",
+   "categories": [
+    "recovery",
+    "quick"
+   ],
+   "howTo": [
+    "Stand or sit by the tub.",
+    "Breathe in for 4, out slowly for 6.",
+    "Plan your first breath in the water: a long, slow out-breath.",
+    "Get in slowly, breathing out."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Slow and steady. Long out-breath."
+    },
+    {
+     "at": 40,
+     "text": "Picture getting in calmly."
+    },
+    {
+     "at": 80,
+     "text": "Get in on an out-breath."
+    }
+   ],
+   "safety": "Never do power breathing or breath-holds before or in cold water. Never plunge alone. Avoid cold plunges with heart conditions or high blood pressure unless your doctor has OK'd it.",
+   "sources": [
+    "tipton-2017"
+   ]
+  },
+  {
+   "id": "cold-recover",
+   "title": "After the Cold: Rewarm Breath",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    2,
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Steady breathing while you rewarm, so shivering settles and you feel good after.",
+   "goodFor": [
+    "After a cold plunge",
+    "After cold swimming",
+    "Shivering"
+   ],
+   "howItWorks": "Even breathing keeps you calm while your body warms itself back up. Moving lightly helps you rewarm from the inside.",
+   "categories": [
+    "recovery"
+   ],
+   "howTo": [
+    "Dry off and put on warm clothes.",
+    "Breathe in for 4, out for 4.",
+    "March gently or do slow squats.",
+    "Warm drink if you have one."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 4,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Dry off. Warm layers on."
+    },
+    {
+     "at": 30,
+     "text": "Even breaths. March in place."
+    },
+    {
+     "at": 90,
+     "text": "Notice the warmth returning."
+    }
+   ],
+   "safety": "Warm up gradually. Hot showers right away can make some people dizzy.",
+   "sources": [
+    "tipton-2017"
+   ]
+  },
+  {
+   "id": "sauna-cooldown",
+   "title": "Sauna Cool-Down Breath",
+   "traditionId": "performance",
+   "kind": "breath",
+   "minutes": [
+    3,
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Slow breathing between or after sauna rounds to cool down and relax deeply.",
+   "goodFor": [
+    "After the sauna",
+    "Between heat rounds",
+    "Deep relaxation"
+   ],
+   "howItWorks": "After the heat your heart is beating faster. Sitting still with a long out-breath helps it slow while you cool, which many people find deeply relaxing.",
+   "categories": [
+    "recovery",
+    "calm",
+    "healing"
+   ],
+   "howTo": [
+    "Sit somewhere cool after leaving the sauna.",
+    "Drink some water.",
+    "Breathe in for 4, out for 6.",
+    "Close your eyes and feel your skin cooling."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Sit down. Sip some water."
+    },
+    {
+     "at": 40,
+     "text": "Long breath out. Feel the cool air."
+    },
+    {
+     "at": 150,
+     "text": "Heart easing. Stay still."
+    }
+   ],
+   "safety": "Drink water. Stand up slowly. Skip the sauna if you've had alcohol or feel unwell.",
+   "sources": [
+    "laukkanen-2018"
+   ]
+  },
+  {
+   "id": "legs-up-rest",
+   "title": "Legs-Up Restorative Rest",
+   "traditionId": "performance",
+   "kind": "body",
+   "minutes": [
+    5,
+    10,
+    15
+   ],
+   "level": "easy",
+   "whatItDoes": "Rest with your legs up a wall and breathe slowly for deep, restorative rest.",
+   "goodFor": [
+    "Tired legs",
+    "After long standing",
+    "Restorative rest"
+   ],
+   "howItWorks": "Lying down with legs raised lets the body relax completely, and a slow exhale invites the nervous system to rest. Many people find it refreshing after a long day.",
+   "categories": [
+    "recovery",
+    "healing",
+    "sleep"
+   ],
+   "howTo": [
+    "Lie on your back near a wall.",
+    "Rest your legs up the wall, or on a chair.",
+    "Arms out to the sides, palms up.",
+    "Breathe slowly and let the floor hold you."
+   ],
+   "pattern": {
+    "inhale": 4,
+    "holdIn": 0,
+    "exhale": 6,
+    "holdOut": 0,
+    "cycles": null,
+    "nostril": false,
+    "hum": false,
+    "sigh": false
+   },
+   "cues": [
+    {
+     "at": 0,
+     "text": "Legs up. Arms wide. Let go."
+    },
+    {
+     "at": 90,
+     "text": "Feel the floor under your back."
+    },
+    {
+     "at": 240,
+     "text": "Nothing to do. Just rest."
+    },
+    {
+     "at": 480,
+     "text": "Slowly bend the knees when ready."
+    }
+   ],
+   "safety": "Skip this if you have glaucoma or are pregnant past the first trimester.",
+   "sources": [
+    "zaccaro-2018"
+   ]
+  },
+  {
+   "id": "stoic-morning",
+   "title": "Morning Preparation",
+   "traditionId": "stoic",
+   "kind": "focus",
+   "minutes": [
+    3,
+    5
+   ],
+   "level": "easy",
+   "whatItDoes": "Picture the day ahead, including the hard parts, and decide how you'll meet it.",
+   "goodFor": [
+    "Morning routine",
+    "A challenging day ahead",
+    "Staying calm with difficult people"
+   ],
+   "howItWorks": "Marcus Aurelius reminded himself each morning that he would meet difficult people and that he could still act well. Rehearsing the day makes surprises less upsetting.",
+   "categories": [
+    "focus",
+    "energy"
+   ],
+   "howTo": [
+    "Sit quietly with a slow breath.",
+    "Run through your day: meetings, tasks, people.",
+    "Expect a few things to go wrong. How will you respond?",
+    "Choose one quality to bring today: patience, courage, kindness."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "What does today hold?"
+    },
+    {
+     "at": 60,
+     "text": "What might go wrong? How will you meet it?"
+    },
+    {
+     "at": 150,
+     "text": "Pick one quality to bring today."
+    }
+   ],
+   "sources": [
+    "marcus-meditations"
+   ]
+  },
+  {
+   "id": "stoic-control",
+   "title": "What's in My Control",
+   "traditionId": "stoic",
+   "kind": "focus",
+   "minutes": [
+    3,
+    5
+   ],
+   "level": "easy",
+   "free": true,
+   "whatItDoes": "Sort a worry into what you can control and what you can't, then let go of the rest.",
+   "goodFor": [
+    "Worry and anxiety",
+    "Feeling overwhelmed",
+    "Decisions"
+   ],
+   "howItWorks": "Epictetus taught that our own choices are in our control and almost everything else isn't. Separating the two shows where to act and what to release.",
+   "categories": [
+    "calm",
+    "focus",
+    "healing"
+   ],
+   "howTo": [
+    "Name what's worrying you.",
+    "List the parts you can control: your effort, words, choices.",
+    "List the parts you can't: others, outcomes, the past.",
+    "Commit to one action. Breathe out the rest."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "What's on your mind?"
+    },
+    {
+     "at": 45,
+     "text": "What part is up to you?"
+    },
+    {
+     "at": 100,
+     "text": "What isn't? Let it go on the out-breath."
+    },
+    {
+     "at": 150,
+     "text": "One action you'll take."
+    }
+   ],
+   "sources": [
+    "epictetus"
+   ]
+  },
+  {
+   "id": "view-above",
+   "title": "View from Above",
+   "traditionId": "stoic",
+   "kind": "visual",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Zoom out in your imagination, from your room to the planet, to put problems in perspective.",
+   "goodFor": [
+    "Problems feel huge",
+    "Stress",
+    "Perspective"
+   ],
+   "howItWorks": "Stoics imagined looking down on life from high above. Seeing yourself as small in a vast world can shrink worries and make room for calm.",
+   "categories": [
+    "calm",
+    "focus"
+   ],
+   "howTo": [
+    "Close your eyes and see yourself where you are.",
+    "Rise up: the building, the town, the country.",
+    "Keep rising until you see the Earth turning in space.",
+    "Then slowly come back down, carrying that perspective."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "See yourself sitting here."
+    },
+    {
+     "at": 60,
+     "text": "Rise above the building, the street."
+    },
+    {
+     "at": 120,
+     "text": "The city, the country, the coastline."
+    },
+    {
+     "at": 200,
+     "text": "The whole Earth, turning quietly."
+    },
+    {
+     "at": 300,
+     "text": "Come back down, slowly."
+    }
+   ],
+   "sources": [
+    "marcus-meditations"
+   ]
+  },
+  {
+   "id": "stoic-evening",
+   "title": "Evening Review",
+   "traditionId": "stoic",
+   "kind": "focus",
+   "minutes": [
+    5,
+    10
+   ],
+   "level": "easy",
+   "whatItDoes": "Review your day kindly: what went well, what you'd do differently, then rest.",
+   "goodFor": [
+    "Before bed",
+    "Learning from the day",
+    "Letting go"
+   ],
+   "howItWorks": "Seneca reviewed each day before sleep without beating himself up. Naming lessons helps you close the day so it doesn't loop in your head.",
+   "categories": [
+    "sleep",
+    "focus"
+   ],
+   "howTo": [
+    "Lie down or sit with a slow breath.",
+    "Walk through your day from morning.",
+    "Ask: what did I do well? What could I do better?",
+    "Forgive yourself, and let the day end."
+   ],
+   "cues": [
+    {
+     "at": 0,
+     "text": "Look back at the day, from the start."
+    },
+    {
+     "at": 90,
+     "text": "What went well?"
+    },
+    {
+     "at": 180,
+     "text": "What would you do differently?"
+    },
+    {
+     "at": 270,
+     "text": "Let it go. The day is done."
+    }
+   ],
+   "sources": [
+    "seneca-ira"
+   ]
   }
  ],
  "intentions": [
@@ -2752,7 +6331,12 @@
     "bhramari",
     "embryonic-breath",
     "long-exhale",
-    "resonance"
+    "resonance",
+    "sleep-pmr",
+    "picture-shuffle",
+    "sleep-gratitude",
+    "stoic-evening",
+    "examen"
    ]
   },
   {
@@ -2765,7 +6349,12 @@
     "bhramari",
     "nadi-shodhana",
     "heart-breath",
-    "box"
+    "box",
+    "calm-sos",
+    "grounding-54321",
+    "vagus-hum",
+    "coherent-5",
+    "pmr"
    ]
   },
   {
@@ -2777,7 +6366,11 @@
     "trataka",
     "box",
     "buddho",
-    "ujjayi"
+    "ujjayi",
+    "focus-reset",
+    "triangle",
+    "noting",
+    "box-long"
    ]
   },
   {
@@ -2791,7 +6384,12 @@
     "microcosmic-orbit",
     "rajio-taiso",
     "do-in",
-    "baduanjin"
+    "baduanjin",
+    "morning-wake",
+    "power-breath",
+    "kapalabhati",
+    "pre-workout",
+    "qigong-shake"
    ]
   },
   {
@@ -2801,7 +6399,10 @@
     "heart-breath",
     "lectio",
     "forest-bathing",
-    "dhikr-breath"
+    "dhikr-breath",
+    "gratitude-breath",
+    "sleep-gratitude",
+    "examen"
    ]
   },
   {
@@ -2812,7 +6413,10 @@
     "centering-prayer",
     "metta",
     "jesus-prayer",
-    "long-exhale"
+    "long-exhale",
+    "grief-holding",
+    "heartache",
+    "self-compassion"
    ]
   },
   {
@@ -2822,7 +6426,9 @@
     "metta",
     "tonglen",
     "heart-breath",
-    "jesus-prayer"
+    "jesus-prayer",
+    "self-compassion",
+    "heartache"
    ]
   },
   {
@@ -2852,8 +6458,104 @@
     "do-in",
     "zhan-zhuang",
     "ujjayi",
-    "sigh"
+    "sigh",
+    "morning-wake",
+    "stoic-morning",
+    "qigong-shake"
    ]
+  },
+  {
+   "id": "healing",
+   "name": "Healing",
+   "practiceIds": [
+    "body-scan",
+    "pain-scan",
+    "healing-light",
+    "self-compassion",
+    "six-sounds",
+    "autogenic",
+    "yoga-nidra",
+    "legs-up-rest"
+   ]
+  },
+  {
+   "id": "recovery",
+   "name": "Recovery",
+   "practiceIds": [
+    "post-workout",
+    "sauna-cooldown",
+    "cold-prep",
+    "cold-recover",
+    "between-sets",
+    "legs-up-rest",
+    "lymph-flow"
+   ]
+  }
+ ],
+ "categories": [
+  {
+   "id": "healing",
+   "name": "Healing",
+   "symbol": "cross.case.fill",
+   "color": "#E8A6A6",
+   "summary": "Gentle practices for recovery, easing discomfort, grief and deep rest.",
+   "note": "Supportive practices, not medical advice. Keep following your care team."
+  },
+  {
+   "id": "calm",
+   "name": "Calm & Anxiety",
+   "symbol": "leaf.fill",
+   "color": "#8FD3CC",
+   "summary": "Slow the heart and quiet worry, from a 1-minute SOS to longer sits."
+  },
+  {
+   "id": "sleep",
+   "name": "Sleep",
+   "symbol": "moon.stars.fill",
+   "color": "#A99BE8",
+   "summary": "Unwind the body and mind at night so sleep comes more easily."
+  },
+  {
+   "id": "energy",
+   "name": "Energy",
+   "symbol": "sun.max.fill",
+   "color": "#EBC88E",
+   "summary": "Wake up, warm up and lift a flat mood without caffeine."
+  },
+  {
+   "id": "focus",
+   "name": "Focus",
+   "symbol": "scope",
+   "color": "#7FB3D5",
+   "summary": "Steady, clear attention for work, study or a big moment."
+  },
+  {
+   "id": "recovery",
+   "name": "Recovery",
+   "symbol": "figure.cooldown",
+   "color": "#E07A5F",
+   "summary": "Before and after training, the cold plunge and the sauna."
+  },
+  {
+   "id": "nature",
+   "name": "Nature & Grounding",
+   "symbol": "tree.fill",
+   "color": "#4F9D69",
+   "summary": "Get out of your head and back into your body and the world around you."
+  },
+  {
+   "id": "quick",
+   "name": "Quick",
+   "symbol": "timer",
+   "color": "#F6DDA8",
+   "summary": "Three minutes or less. Good for a busy day."
+  },
+  {
+   "id": "beginner",
+   "name": "Beginner",
+   "symbol": "sparkle",
+   "color": "#F4EFE6",
+   "summary": "Simple to learn and easy to enjoy. Start here."
   }
  ]
 }

@@ -103,6 +103,9 @@ struct PhoneRunView: View {
         SessionLog.shared.add(r)
         // Breathing with a Rootbound tree: publish now and fill heart data from Health, so it shows under the tree.
         if r.treeID != nil || r.treeName != nil { DispatchQueue.main.async { StillPointWellness.treeSessionFinished() } }
+        // Fill heart rate, HRV and breathing rate from Apple Health as they arrive (the results screen updates live).
+        let id = r.id
+        DispatchQueue.main.async { StillPointWellness.sessionFinished(id) }
         Reviews.noteWin()
         if mindful { MindfulHealth.shared.saveMindful(start: r.start, end: r.end) }
         // Movement routines also count as exercise in Health.
@@ -312,56 +315,70 @@ struct PhoneSummaryView: View {
     private var minutes: Double { records.reduce(0) { $0 + $1.minutes } }
     private var cycles: Int { records.reduce(0) { $0 + $1.cycles } }
 
+    /// The session to show results for: the practice itself rather than its warm-up.
+    private var main: SessionRecord? { records.last(where: { !$0.isMovement }) ?? records.last }
+    private var tint: Color {
+        let lib = PracticeLibrary.shared
+        return main.flatMap { lib.practice($0.practiceId) }.flatMap { lib.tradition($0.traditionId) }?.tint ?? SP.teal
+    }
+
     var body: some View {
         ZStack {
             SP.dawn.ignoresSafeArea()
             Grain(opacity: 0.06).ignoresSafeArea()
-            VStack(spacing: 26) {
-                Spacer()
-                ZStack {
-                    Circle()
-                        .fill(RadialGradient(colors: [Color.white.opacity(0.7), SP.amber.opacity(0.45), .clear],
-                                             center: .center, startRadius: 4, endRadius: 150))
-                        .frame(width: 300, height: 300)
-                        .scaleEffect(bloom ? 1 : 0.3)
-                        .opacity(bloom ? 1 : 0)
-                    Text("Well done.").font(SP.serif(44, .light)).foregroundStyle(SP.ink)
-                }
-                HStack(spacing: 40) {
-                    stat(String(format: "%.0f", max(1, minutes.rounded())), "minutes")
-                    if cycles > 0 { stat("\(cycles)", "breaths") }
-                    let streak = SessionLog.shared.streak
-                    if streak > 0 { stat("\(streak)", streak == 1 ? "day" : "days in a row") }
-                }
-                Spacer()
-                if !short && !records.isEmpty {
-                    // Rootbound link: back to the tree you just breathed with, or out to hug one.
-                    RootboundLinkCard(title: treeName.map { "Back to \($0) in Rootbound" } ?? "Go hug a tree",
-                                      subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "This breath is saved under the tree, with your heart data.",
-                                      url: treeName == nil ? WellnessLinks.hugLogger
-                                          : treeID.map { WellnessLinks.rootboundTree($0) } ?? WellnessLinks.rootboundHome)
-                        .padding(.horizontal, 40)
-                }
-                if short && !records.isEmpty {
-                    Text("That was under a minute. Keep it in your journey?")
-                        .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.8))
-                        .multilineTextAlignment(.center).padding(.horizontal, 30)
-                }
-                Button(action: onDone) {
-                    Text(short && !records.isEmpty ? "Keep it" : "Return").font(SP.rounded(17, .medium)).foregroundStyle(SP.ink)
-                        .frame(maxWidth: .infinity).padding(.vertical, 15)
-                        .background(Capsule().fill(.ultraThinMaterial))
-                }
-                .padding(.horizontal, 40)
-                if !records.isEmpty {
-                    Button {
-                        if short { discard() } else { confirmDiscard = true }
-                    } label: {
-                        Text("Discard this session").font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.7))
-                            .padding(.vertical, 8)
+            ScrollView {
+                VStack(spacing: 22) {
+                    ZStack {
+                        Circle()
+                            .fill(RadialGradient(colors: [Color.white.opacity(0.7), SP.amber.opacity(0.45), .clear],
+                                                 center: .center, startRadius: 4, endRadius: 120))
+                            .frame(width: 240, height: 240)
+                            .scaleEffect(bloom ? 1 : 0.3)
+                            .opacity(bloom ? 1 : 0)
+                        Text("Well done.").font(SP.serif(44, .light)).foregroundStyle(SP.ink)
                     }
+                    .padding(.top, 30)
+                    HStack(spacing: 40) {
+                        stat(String(format: "%.0f", max(1, minutes.rounded())), String(localized: "minutes"))
+                        if cycles > 0 { stat("\(cycles)", String(localized: "breaths")) }
+                        let streak = SessionLog.shared.streak
+                        if streak > 0 { stat("\(streak)", streak == 1 ? String(localized: "day") : String(localized: "days in a row")) }
+                    }
+                    if let m = main, !short {
+                        SessionResultsPanel(recordId: m.id, tint: tint)
+                            .padding(16)
+                            .background(RoundedRectangle(cornerRadius: 26, style: .continuous).fill(SP.nightBottom.opacity(0.55)))
+                            .padding(.horizontal, 18)
+                    }
+                    if !short && !records.isEmpty {
+                        // Rootbound link: back to the tree you just breathed with, or out to hug one.
+                        RootboundLinkCard(title: treeName.map { "Back to \($0) in Rootbound" } ?? "Go hug a tree",
+                                          subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "This breath is saved under the tree, with your heart data.",
+                                          url: treeName == nil ? WellnessLinks.hugLogger
+                                              : treeID.map { WellnessLinks.rootboundTree($0) } ?? WellnessLinks.rootboundHome)
+                            .padding(.horizontal, 40)
+                    }
+                    if short && !records.isEmpty {
+                        Text("That was under a minute. Keep it in your journey?")
+                            .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.8))
+                            .multilineTextAlignment(.center).padding(.horizontal, 30)
+                    }
+                    Button(action: onDone) {
+                        Text(short && !records.isEmpty ? "Keep it" : "Return").font(SP.rounded(17, .medium)).foregroundStyle(SP.ink)
+                            .frame(maxWidth: .infinity).padding(.vertical, 15)
+                            .background(Capsule().fill(.ultraThinMaterial))
+                    }
+                    .padding(.horizontal, 40)
+                    if !records.isEmpty {
+                        Button {
+                            if short { discard() } else { confirmDiscard = true }
+                        } label: {
+                            Text("Discard this session").font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.7))
+                                .padding(.vertical, 8)
+                        }
+                    }
+                    Spacer().frame(height: 20)
                 }
-                Spacer().frame(height: 20)
             }
         }
         .onAppear { withAnimation(reduceMotion ? nil : Animation.easeOut(duration: 3.2)) { bloom = true } }

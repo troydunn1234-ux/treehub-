@@ -29,6 +29,10 @@ enum StillPointWellness {
             s.startHR = r.hrStart
             s.hrDrop = r.hrDrop
             s.hrv = r.hrv
+            s.endHR = r.hrEnd
+            s.respRate = r.respiratoryRate
+            s.calmSeconds = r.calmZoneSeconds
+            s.breathsPerMin = r.breathsPerMinute
             return s
         }
         out += heat.history.filter { $0.end != nil && $0.minutes >= 1 }.map {
@@ -54,20 +58,32 @@ enum StillPointWellness {
     /// re-published to the feed, so Rootbound shows the stats under the tree.
     @MainActor
     static func enrichTreeSessions(_ log: SessionLog = .shared) {
+        enrichSessions(log)
+    }
+
+    /// Fill missing heart data (curve, start / low / avg / end, HRV, breathing rate, calm-zone time) for every
+    /// session of the last two days from Apple Health, read-only. Watch data can land minutes late, so this runs
+    /// on launch, foreground, right after a session and when a session's results are opened.
+    @MainActor
+    static func enrichSessions(_ log: SessionLog = .shared, only: UUID? = nil, force: Bool = false) {
         let since = Date().addingTimeInterval(-2 * 86400)
-        for r in log.records where r.treeID != nil && r.start >= since && (r.hrAvg == nil || r.hrv == nil) {
-            if let t = lastLookup[r.id], Date().timeIntervalSince(t) < 90 { continue }
+        for r in log.records where (only == nil || r.id == only) && (only != nil || r.start >= since)
+            && r.seconds >= 30 && (r.hrAvg == nil || r.hrv == nil || r.respiratoryRate == nil || r.calmSeconds == nil) {
+            if !force, let t = lastLookup[r.id], Date().timeIntervalSince(t) < 90 { continue }
             lastLookup[r.id] = Date()
             let id = r.id
-            if r.hrAvg == nil {
+            if r.hrAvg == nil || r.calmSeconds == nil {
                 MindfulHealth.shared.heartRateStats(start: r.start, end: r.end) { w in
                     guard let w else { return }
                     log.update(id) { rec in
-                        rec.hrAvg = (w.avg * 10).rounded() / 10
-                        rec.hrMin = w.min
+                        if rec.hrAvg == nil { rec.hrAvg = (w.avg * 10).rounded() / 10 }
+                        if rec.hrMin == nil { rec.hrMin = w.min }
                         if rec.hrStart == nil { rec.hrStart = w.points.first?.bpm }
                         if rec.hrEnd == nil { rec.hrEnd = w.points.last?.bpm }
                         if rec.hrSamples == nil, w.points.count >= 2 { rec.hrSamples = w.points }
+                        if rec.calmSeconds == nil {
+                            rec.calmSeconds = SessionRecord.calmSeconds(samples: rec.hrSamples, start: rec.hrStart, total: rec.seconds)
+                        }
                     }
                 }
             }
@@ -76,6 +92,23 @@ enum StillPointWellness {
                     guard let v else { return }
                     log.update(id) { $0.hrv = (v * 10).rounded() / 10 }
                 }
+            }
+            if r.respiratoryRate == nil {
+                MindfulHealth.shared.respiratoryRate(start: r.start, end: r.end) { v in
+                    guard let v else { return }
+                    log.update(id) { $0.respiratoryRate = (v * 10).rounded() / 10 }
+                }
+            }
+        }
+    }
+
+    /// Right after any session: look now, then again as late Watch / WHOOP data arrives.
+    @MainActor
+    static func sessionFinished(_ id: UUID) {
+        for delay in [3.0, 25.0, 120.0, 300.0] {
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                enrichSessions(only: id, force: true)
+                sync()
             }
         }
     }

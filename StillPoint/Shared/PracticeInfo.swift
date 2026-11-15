@@ -96,8 +96,8 @@ struct PracticeInfo {
         tradition = t
         era = PracticeInfo.eras[p.traditionId] ?? ""
         let extra = PracticeInfo.extra(p.id)
-        purpose = extra?.purpose ?? PracticeInfo.defaultPurpose(p)
-        mechanism = extra?.mechanism ?? PracticeInfo.defaultMechanism(p)
+        purpose = extra?.purpose ?? (p.whatItDoes.isEmpty ? PracticeInfo.defaultPurpose(p) : p.whatItDoes)
+        mechanism = extra?.mechanism ?? (p.howItWorks.isEmpty ? PracticeInfo.defaultMechanism(p) : p.howItWorks)
         feel = extra?.feel ?? PracticeInfo.defaultFeel(p)
         bestFor = lib.intentions.filter { $0.practiceIds.contains(p.id) }
         history = p.about.isEmpty ? (t?.summary ?? "") : p.about
@@ -182,7 +182,11 @@ struct PracticeInfo {
         "modern": "Lab-studied, 20th–21st c.",
         "thai": "Thai traditional medicine, centuries old",
         "japan": "Japan, 20th c. routines",
-        "wind-down": "Evening practices, drawn from several traditions"
+        "wind-down": "Evening practices, drawn from several traditions",
+        "mindbody": "Clinical relaxation methods, 1920s onward",
+        "performance": "Sport science and recovery, 21st c.",
+        "stoic": "Greek and Roman philosophy, 3rd c. BCE – 2nd c. CE",
+        "nature": "Time with trees, any era"
     ]
 
     struct Extra { let purpose: String; let mechanism: String; let feel: String; let fact: String? }

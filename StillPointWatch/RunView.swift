@@ -114,6 +114,7 @@ struct RunView: View {
         // Samples are timed from when the Watch started measuring; re-base them on this record's own start.
         let mine = runtime.samples.filter { $0.t >= offset - 1 }.map { HRSample(t: max(0, $0.t - offset), bpm: $0.bpm) }
         r.hrSamples = mine.isEmpty ? nil : mine
+        r.calmSeconds = SessionRecord.calmSeconds(samples: r.hrSamples, start: r.hrStart, total: r.seconds)
     }
 
     private func complete() {
@@ -337,6 +338,16 @@ struct SummaryView: View {
                     stat("\(Int(a)) → \(Int(b))", "HEART BPM")
                 }
                 if let h = hrv { stat("\(Int(h)) ms", "HRV") }
+                if let t = detail?.takeaway {
+                    Text(t).font(SP.rounded(12)).foregroundStyle(SP.ink)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                }
+                if hrv == nil, startHR != nil {
+                    HStack(spacing: 6) {
+                        ProgressView().frame(width: 16, height: 16)
+                        Text("Waiting for HRV…").font(SP.rounded(11)).foregroundStyle(SP.faint)
+                    }
+                }
                 let streak = SessionLog.shared.streak
                 if streak > 1 { Text("\(streak) days in a row").font(SP.rounded(12)).foregroundStyle(SP.amber) }
                 if let d = detail {

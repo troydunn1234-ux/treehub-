@@ -2420,6 +2420,1018 @@
           }
         }
       }
+    },
+    "Healing": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sanación"
+          }
+        }
+      }
+    },
+    "Calm & Anxiety": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calma y ansiedad"
+          }
+        }
+      }
+    },
+    "Sleep": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño"
+          }
+        }
+      }
+    },
+    "Energy": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía"
+          }
+        }
+      }
+    },
+    "Focus": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enfoque"
+          }
+        }
+      }
+    },
+    "Recovery": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación"
+          }
+        }
+      }
+    },
+    "Nature & Grounding": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Naturaleza y arraigo"
+          }
+        }
+      }
+    },
+    "Quick": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Rápido"
+          }
+        }
+      }
+    },
+    "Beginner": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Principiante"
+          }
+        }
+      }
+    },
+    "Gentle practices for recovery, easing discomfort, grief and deep rest.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prácticas suaves para la recuperación, aliviar molestias, el duelo y el descanso profundo."
+          }
+        }
+      }
+    },
+    "Slow the heart and quiet worry, from a 1-minute SOS to longer sits.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calma el corazón y la preocupación, desde un SOS de 1 minuto hasta sesiones más largas."
+          }
+        }
+      }
+    },
+    "Unwind the body and mind at night so sleep comes more easily.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relaja cuerpo y mente por la noche para dormir con más facilidad."
+          }
+        }
+      }
+    },
+    "Wake up, warm up and lift a flat mood without caffeine.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Despierta, entra en calor y levanta el ánimo sin cafeína."
+          }
+        }
+      }
+    },
+    "Steady, clear attention for work, study or a big moment.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atención clara y estable para el trabajo, el estudio o un gran momento."
+          }
+        }
+      }
+    },
+    "Before and after training, the cold plunge and the sauna.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antes y después de entrenar, el baño frío y la sauna."
+          }
+        }
+      }
+    },
+    "Get out of your head and back into your body and the world around you.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sal de tu cabeza y vuelve a tu cuerpo y al mundo que te rodea."
+          }
+        }
+      }
+    },
+    "Three minutes or less. Good for a busy day.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tres minutos o menos. Ideal para un día ajetreado."
+          }
+        }
+      }
+    },
+    "Simple to learn and easy to enjoy. Start here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fáciles de aprender y de disfrutar. Empieza aquí."
+          }
+        }
+      }
+    },
+    "Supportive practices, not medical advice. Keep following your care team.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prácticas de apoyo, no consejo médico. Sigue las indicaciones de tu equipo de salud."
+          }
+        }
+      }
+    },
+    "Library": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Biblioteca"
+          }
+        }
+      }
+    },
+    "Intermediate": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Intermedio"
+          }
+        }
+      }
+    },
+    "Advanced": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Avanzado"
+          }
+        }
+      }
+    },
+    "Favorites": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Favoritos"
+          }
+        }
+      }
+    },
+    "Recently used": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usadas recientemente"
+          }
+        }
+      }
+    },
+    "Works best for you": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo que mejor te funciona"
+          }
+        }
+      }
+    },
+    "Your biggest average heart-rate drops (3+ sessions).": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus mayores bajadas medias de pulso (3+ sesiones)."
+          }
+        }
+      }
+    },
+    "All practices": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas las prácticas"
+          }
+        }
+      }
+    },
+    "Everything in the library, from 1-minute resets to 30-minute sits.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toda la biblioteca, desde pausas de 1 minuto hasta sesiones de 30."
+          }
+        }
+      }
+    },
+    "%lld practices": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld prácticas"
+          }
+        }
+      }
+    },
+    "Sort": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ordenar"
+          }
+        }
+      }
+    },
+    "Suggested": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugeridas"
+          }
+        }
+      }
+    },
+    "Shortest first": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más cortas primero"
+          }
+        }
+      }
+    },
+    "A–Z": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A–Z"
+          }
+        }
+      }
+    },
+    "All": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas"
+          }
+        }
+      }
+    },
+    "1 practice": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 práctica"
+          }
+        }
+      }
+    },
+    "No practices match. Try a feeling (stress, sleep) or a length (3 min).": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguna práctica coincide. Prueba un estado (estrés, sueño) o una duración (3 min)."
+          }
+        }
+      }
+    },
+    "%lld matching practices": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld prácticas encontradas"
+          }
+        }
+      }
+    },
+    "Search: sleep, anxiety, box, 5 min…": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar: sueño, ansiedad, caja, 5 min…"
+          }
+        }
+      }
+    },
+    "%lld practices from %lld traditions, each with what it does and how.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld prácticas de %2$lld tradiciones, cada una con lo que hace y cómo."
+          }
+        }
+      }
+    },
+    "Good for": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ideal para"
+          }
+        }
+      }
+    },
+    "How it works": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo funciona"
+          }
+        }
+      }
+    },
+    "How to do it": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo hacerlo"
+          }
+        }
+      }
+    },
+    "About": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de"
+          }
+        }
+      }
+    },
+    "Why it helps": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por qué ayuda"
+          }
+        }
+      }
+    },
+    "Not medical advice. These practices can help you feel calmer and more comfortable; they don't diagnose or treat anything.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No es consejo médico. Estas prácticas pueden ayudarte a sentirte más tranquilo y cómodo; no diagnostican ni tratan nada."
+          }
+        }
+      }
+    },
+    "Your results": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus resultados"
+          }
+        }
+      }
+    },
+    "Not tried yet. After each session your heart-rate results show up here, so you can see which practices settle you most.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no la has probado. Después de cada sesión verás aquí tus resultados de pulso, para saber qué prácticas te calman más."
+          }
+        }
+      }
+    },
+    "time done": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vez"
+          }
+        }
+      }
+    },
+    "times done": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "veces"
+          }
+        }
+      }
+    },
+    "minutes total": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "minutos en total"
+          }
+        }
+      }
+    },
+    "avg bpm drop": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bajada media lpm"
+          }
+        }
+      }
+    },
+    "last done": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "última vez"
+          }
+        }
+      }
+    },
+    "Best session: −%lld bpm": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mejor sesión: −%lld lpm"
+          }
+        }
+      }
+    },
+    "Heart-rate drop per session, oldest to newest.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bajada de pulso por sesión, de la más antigua a la más reciente."
+          }
+        }
+      }
+    },
+    "Wear your Apple Watch while you practice to see your heart-rate drop here.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva tu Apple Watch mientras practicas para ver aquí cuánto baja tu pulso."
+          }
+        }
+      }
+    },
+    "Heart-rate drop for each of your last %lld sessions": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bajada de pulso en tus últimas %lld sesiones"
+          }
+        }
+      }
+    },
+    "Your heart rate dropped %lld bpm. Nicely settled.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso bajó %lld lpm. Muy bien asentado."
+          }
+        }
+      }
+    },
+    "Your heart rate dropped %lld bpm and stayed below your starting rate for most of the session.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso bajó %lld lpm y se mantuvo por debajo del inicial la mayor parte de la sesión."
+          }
+        }
+      }
+    },
+    "Your heart rate dropped %lld bpm. A good, steady settle.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso bajó %lld lpm. Una calma buena y estable."
+          }
+        }
+      }
+    },
+    "Your heart rate eased %lld bpm. Gentle progress; longer sessions often settle more.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso bajó %lld lpm. Un avance suave; las sesiones más largas suelen calmar más."
+          }
+        }
+      }
+    },
+    "Your heart rate rose %lld bpm, as expected when you move.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso subió %lld lpm, lo normal al moverte."
+          }
+        }
+      }
+    },
+    "Your heart rate rose %lld bpm. Energizing breaths and talking can do that; try a longer exhale next time.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso subió %lld lpm. Las respiraciones energizantes o hablar pueden causarlo; prueba una exhalación más larga la próxima vez."
+          }
+        }
+      }
+    },
+    "Your heart rate held steady.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu pulso se mantuvo estable."
+          }
+        }
+      }
+    },
+    "Waiting for Watch data…": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando datos del Watch…"
+          }
+        }
+      }
+    },
+    "Heart rate and HRV can take a few minutes to reach Apple Health. This updates by itself.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pulso y la VFC pueden tardar unos minutos en llegar a Salud. Esto se actualiza solo."
+          }
+        }
+      }
+    },
+    "Turn on heart rate in the watch session settings (Fine-tune → Heart rate).": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activa el pulso en los ajustes de sesión del reloj (Ajustes finos → Pulso)."
+          }
+        }
+      }
+    },
+    "Wear your Apple Watch (or another heart-rate device that saves to Apple Health) while you practice.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva tu Apple Watch (u otro dispositivo de pulso que guarde en Salud) mientras practicas."
+          }
+        }
+      }
+    },
+    "Look in Apple Health": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar en Salud"
+          }
+        }
+      }
+    },
+    "start → end bpm": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lpm inicio → fin"
+          }
+        }
+      }
+    },
+    "bpm drop": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bajada lpm"
+          }
+        }
+      }
+    },
+    "lowest bpm": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lpm mínimo"
+          }
+        }
+      }
+    },
+    "avg bpm": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "lpm medio"
+          }
+        }
+      }
+    },
+    "HRV ms": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC ms"
+          }
+        }
+      }
+    },
+    "breathing rate": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "frecuencia respiratoria"
+          }
+        }
+      }
+    },
+    "paced breaths / min": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "respiraciones guiadas / min"
+          }
+        }
+      }
+    },
+    "calm zone (%lld pct)": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zona de calma (%lld %%)"
+          }
+        }
+      }
+    },
+    "steps": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pasos"
+          }
+        }
+      }
+    },
+    "breaths": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "respiraciones"
+          }
+        }
+      }
+    },
+    "minutes": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "minutos"
+          }
+        }
+      }
+    },
+    "day": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "día"
+          }
+        }
+      }
+    },
+    "days in a row": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "días seguidos"
+          }
+        }
+      }
+    },
+    "Estimates from your heart rate, not medical measures.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimaciones a partir de tu pulso, no medidas médicas."
+          }
+        }
+      }
+    },
+    "All %lld practices from %lld traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las %1$lld prácticas de %2$lld tradiciones, todas las rutinas de articulaciones, linfa y estiramiento, la guía de sauna y vapor, y toda tu biblioteca en el Watch."
+          }
+        }
+      }
+    },
+    "All %lld practices": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las %lld prácticas"
+          }
+        }
+      }
+    },
+    "Breathwork, meditation and movement from Zen, Yoga, Sufi, Taoist, Tibetan, Christian, Stoic and more, sorted by goal: Healing, Calm, Sleep, Energy, Focus and Recovery.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración, meditación y movimiento del zen, el yoga, el sufismo, el taoísmo, el budismo tibetano, la tradición cristiana, el estoicismo y más, ordenados por objetivo: sanación, calma, sueño, energía, enfoque y recuperación."
+          }
+        }
+      }
+    },
+    "The starter set of %lld practices, including the 1-minute Calm SOS, body scan and Tree Hugs, stays free forever.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El set inicial de %lld prácticas, con el SOS de calma de 1 minuto, el escaneo corporal y los Abrazos a árboles, es gratis para siempre."
+          }
+        }
+      }
+    },
+    "%lld practices, including Calm SOS, body scan and Tree Hugs, free forever.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld prácticas, con el SOS de calma, el escaneo corporal y los Abrazos a árboles, gratis para siempre."
+          }
+        }
+      }
+    },
+    "Breathwork, stillness and gentle warm-ups from %lld traditions, sorted by goal, each saying in plain words what it does and how. Turn on the voice guide and just listen.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración, quietud y calentamientos suaves de %lld tradiciones, ordenados por objetivo, cada uno explicando con palabras sencillas qué hace y cómo. Activa la guía de voz y solo escucha."
+          }
+        }
+      }
+    },
+    "Waiting for HRV…": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando VFC…"
+          }
+        }
+      }
+    },
+    "Goals": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivos"
+          }
+        }
+      }
+    },
+    "LOWEST": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "MÍNIMO"
+          }
+        }
+      }
+    },
+    "CALM ZONE": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ZONA CALMA"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

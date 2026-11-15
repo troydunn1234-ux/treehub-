@@ -9,7 +9,7 @@ enum StillPointOnboard {
         pages: [
             .init(icon: "leaf.fill",
                   title: String(localized: "Stillness from everywhere."),
-                  text: String(localized: "Breathwork, stillness and gentle warm-ups from a dozen traditions, each with where it comes from and why it works. Turn on the voice guide and just listen.")),
+                  text: String(localized: "Breathwork, stillness and gentle warm-ups from \(PracticeLibrary.shared.traditions.count) traditions, sorted by goal, each saying in plain words what it does and how. Turn on the voice guide and just listen.")),
             .init(icon: "flame.fill",
                   title: String(localized: "Made for the sauna and steam room."),
                   text: String(localized: "Tap Sauna or Steam as you walk in. Heat-safe breathing, bench moves and a timer, then see how your mornings look after a heat day.")),
@@ -17,7 +17,7 @@ enum StillPointOnboard {
                   title: String(localized: "Health and Watch, when you want them."),
                   text: String(localized: "Sessions can go to Health as Mindful Minutes, with heart rate from your Watch or WHOOP. You'll be asked the first time it's needed. Nothing leaves your devices.")),
         ],
-        freeLine: String(localized: "One practice from every tradition and two warm-up routines, free forever."),
+        freeLine: String(localized: "\(PracticeLibrary.shared.freeCount) practices, including Calm SOS, body scan and Tree Hugs, free forever."),
         proLine: String(localized: "Pro opens every practice, routine and the sauna & steam guide for"),
         version: 2
     )

@@ -215,26 +215,42 @@ struct PracticeStack: View {
 
 struct PracticeCardRow: View {
     let practice: Practice
+    @ObservedObject private var log = SessionLog.shared
     var body: some View {
-        let t = PracticeLibrary.shared.tradition(practice.traditionId)
-        HStack(spacing: 14) {
+        let lib = PracticeLibrary.shared
+        let t = lib.tradition(practice.traditionId)
+        let tint = practice.focus?.tint ?? t?.tint ?? SP.teal
+        HStack(alignment: .top, spacing: 14) {
             ZStack {
-                let tint = practice.focus?.tint ?? t?.tint ?? SP.teal
                 Circle().fill(tint.opacity(0.16))
                 Image(systemName: practice.focus?.symbol ?? (practice.pattern == nil ? "circle.dotted" : "wind"))
                     .font(.system(size: 17, weight: .light)).foregroundStyle(tint)
             }
             .frame(width: 46, height: 46)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(practice.title).font(SP.serif(18)).foregroundStyle(SP.ink).lineLimit(1)
-                Text([t?.name, practice.level].compactMap { $0 }.joined(separator: " · "))
-                    .font(SP.rounded(12)).foregroundStyle(SP.faint).lineLimit(1)
+            .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 5) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Text(practice.title).font(SP.serif(18)).foregroundStyle(SP.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                    if lib.isLocked(practice) { ProLockBadge(tint: SP.gold) }
+                }
+                if !practice.tagline.isEmpty {
+                    Text(practice.tagline).font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.78))
+                        .lineLimit(3).fixedSize(horizontal: false, vertical: true)
+                }
+                Text([practice.minutesLabel, practice.levelLabel, t?.name].compactMap { $0 }.joined(separator: " · "))
+                    .font(SP.rounded(12)).foregroundStyle(SP.faint)
+                    .fixedSize(horizontal: false, vertical: true)
+                if log.worksBest().contains(practice.id) {
+                    Label("Works best for you", systemImage: "arrow.down.heart.fill")
+                        .font(SP.rounded(12, .semibold)).foregroundStyle(SP.rose)
+                }
             }
-            Spacer()
-            if let p = practice.pattern { Text(p.shortLabel).font(SP.rounded(12)).foregroundStyle(SP.dim) }
-            if PracticeLibrary.shared.isLocked(practice) { ProLockBadge(tint: SP.gold) }
-            PracticeInfoButton(practice: practice, size: 16)
-            Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
+            VStack(spacing: 10) {
+                PracticeInfoButton(practice: practice, size: 16)
+                Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
+            }
         }
         .padding(14)
         .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(SP.card))

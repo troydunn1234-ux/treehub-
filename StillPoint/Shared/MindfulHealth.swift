@@ -32,6 +32,14 @@ final class MindfulHealth {
         }
     }
 
+    /// Read-only access to heart rate, HRV and breathing rate, asked for when someone opens their session results.
+    func requestHeartReadAccess(_ done: ((Bool) -> Void)? = nil) {
+        guard isAvailable, !ProcessInfo.processInfo.arguments.contains("-demo") else { done?(false); return }
+        store.requestAuthorization(toShare: [], read: [heartRate, hrv, respiratory]) { ok, _ in
+            DispatchQueue.main.async { done?(ok) }
+        }
+    }
+
     var canSaveMindful: Bool {
         isAvailable && store.authorizationStatus(for: mindful) == .sharingAuthorized
     }

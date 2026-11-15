@@ -127,11 +127,17 @@ struct WatchSessionDetailView: View {
                         .multilineTextAlignment(.center)
                 }
 
+                if let t = record.takeaway {
+                    Text(t).font(SP.rounded(12)).foregroundStyle(SP.ink)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                }
                 LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 6) {
                     tile("\(Int(max(1, record.minutes.rounded())))", "MIN")
                     if record.cycles > 0 { tile("\(record.cycles)", record.isMovement ? "STEPS" : "BREATHS") }
                     if let a = record.hrAvg { tile("\(Int(a.rounded()))", "AVG BPM") }
                     if let d = record.hrDrop { tile((d >= 0 ? "−" : "+") + "\(Int(abs(d).rounded()))", "HR DROP") }
+                    if let lo = record.hrLow { tile("\(Int(lo.rounded()))", "LOWEST") }
+                    if let c = record.calmZoneSeconds, c > 0 { tile(spFormatClock(c), "CALM ZONE") }
                     if let h = record.hrv { tile("\(Int(h.rounded()))", "HRV MS") }
                     if let b = record.breathsPerMinute, !record.isMovement { tile(String(format: "%.1f", b), "BR/MIN") }
                     if let rr = record.respiratoryRate { tile(String(format: "%.0f", rr), "RESP") }

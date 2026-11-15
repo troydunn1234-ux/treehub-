@@ -187,12 +187,15 @@ struct PracticeRow: View {
         let t = PracticeLibrary.shared.tradition(practice.traditionId)
         VStack(alignment: .leading, spacing: 3) {
             Text(practice.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2)
+            if !practice.tagline.isEmpty {
+                Text(practice.tagline).font(SP.rounded(12)).foregroundStyle(SP.ink.opacity(0.75)).lineLimit(2)
+            }
             HStack(spacing: 6) {
                 Circle().fill(t?.tint ?? SP.teal).frame(width: 6, height: 6)
                 Text(t?.name ?? (practice.isMovement ? "Warm up" : "Practice"))
                     .font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(1)
                 Spacer(minLength: 0)
-                if let p = practice.pattern { Text(p.shortLabel).font(SP.rounded(11)).foregroundStyle(SP.faint) }
+                Text(practice.minutesLabel).font(SP.rounded(11)).foregroundStyle(SP.faint)
             }
         }
         .padding(.vertical, 4)
@@ -204,6 +207,7 @@ struct MoreView: View {
     @EnvironmentObject var prefs: Prefs
     let onStart: (Practice, Int) -> Void
     @State private var tradition: String? = nil
+    @State private var goal: String? = nil
     private let lib = PracticeLibrary.shared
 
     var body: some View {
@@ -220,7 +224,18 @@ struct MoreView: View {
             Section {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        chip(nil, "All", SP.amber)
+                        ForEach(lib.categories) { c in goalChip(c.id, c.localizedName, Color(spHex: c.color)) }
+                    }
+                }
+                .listRowBackground(Color.clear)
+                if let g = goal {
+                    rows(lib.practices(inCategory: g).filter { !$0.isMovement })
+                }
+            } header: { Text("Goals") }
+            Section {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 6) {
+                        chip(nil, String(localized: "All"), SP.amber)
                         ForEach(lib.traditions) { t in chip(t.id, t.name, t.tint) }
                     }
                 }
@@ -235,6 +250,13 @@ struct MoreView: View {
         ForEach(ps) { p in
             NavigationLink(value: p) { PracticeRow(practice: p) }
         }
+    }
+
+    private func goalChip(_ id: String?, _ name: String, _ c: Color) -> some View {
+        Button { goal = (goal == id) ? nil : id } label: {
+            SPChip(text: name, color: c, filled: goal == id)
+        }
+        .buttonStyle(.plain)
     }
 
     private func chip(_ id: String?, _ name: String, _ c: Color) -> some View {

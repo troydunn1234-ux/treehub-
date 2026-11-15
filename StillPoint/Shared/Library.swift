@@ -9,12 +9,15 @@ struct Tradition: Decodable, Hashable, Identifiable {
     var origin: String = ""
     var summary: String = ""
     var color: String = "#7C6CF0"
+    /// One plain line for the library list ("Upright sitting, breath counting…").
+    var short: String = ""
 
-    init(id: String, name: String, region: String = "", origin: String = "", summary: String = "", color: String = "#7C6CF0") {
+    init(id: String, name: String, region: String = "", origin: String = "", summary: String = "", color: String = "#7C6CF0", short: String = "") {
         self.id = id; self.name = name; self.region = region; self.origin = origin; self.summary = summary; self.color = color
+        self.short = short
     }
 
-    enum CodingKeys: String, CodingKey { case id, name, title, region, origin, summary, color }
+    enum CodingKeys: String, CodingKey { case id, name, title, region, origin, summary, color, short }
 
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -24,7 +27,62 @@ struct Tradition: Decodable, Hashable, Identifiable {
         origin = ((try? c.decodeIfPresent(String.self, forKey: .origin)) ?? nil) ?? ""
         summary = ((try? c.decodeIfPresent(String.self, forKey: .summary)) ?? nil) ?? ""
         color = ((try? c.decodeIfPresent(String.self, forKey: .color)) ?? nil) ?? "#7C6CF0"
+        short = ((try? c.decodeIfPresent(String.self, forKey: .short)) ?? nil) ?? ""
     }
+
+    /// The short line, or the first sentence of the summary.
+    var blurb: String {
+        if !short.isEmpty { return short }
+        if let r = summary.range(of: ". ") { return String(summary[..<r.lowerBound]) + "." }
+        return summary
+    }
+}
+
+/// A goal tab in the library: Healing, Calm & Anxiety, Sleep… A practice can sit in several.
+struct PracticeCategory: Decodable, Hashable, Identifiable {
+    let id: String
+    var name: String
+    var summary: String = ""
+    var symbol: String = "circle.hexagongrid.fill"
+    var color: String = "#8FD3CC"
+    /// Extra line under the header (e.g. "not medical advice" on Healing).
+    var note: String? = nil
+
+    init(id: String, name: String, summary: String, symbol: String, color: String, note: String? = nil) {
+        self.id = id; self.name = name; self.summary = summary; self.symbol = symbol; self.color = color; self.note = note
+    }
+
+    enum CodingKeys: String, CodingKey { case id, name, summary, symbol, color, note }
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = try c.decode(String.self, forKey: .id)
+        name = ((try? c.decodeIfPresent(String.self, forKey: .name)) ?? nil) ?? id.capitalized
+        summary = ((try? c.decodeIfPresent(String.self, forKey: .summary)) ?? nil) ?? ""
+        symbol = ((try? c.decodeIfPresent(String.self, forKey: .symbol)) ?? nil) ?? "circle.hexagongrid.fill"
+        color = ((try? c.decodeIfPresent(String.self, forKey: .color)) ?? nil) ?? "#8FD3CC"
+        note = (try? c.decodeIfPresent(String.self, forKey: .note)) ?? nil
+    }
+
+    /// Name / summary / note in the person's language when the string catalog has them.
+    var localizedName: String { NSLocalizedString(name, comment: "Library category") }
+    var localizedSummary: String { NSLocalizedString(summary, comment: "Library category summary") }
+    var localizedNote: String? { note.map { NSLocalizedString($0, comment: "Library category note") } }
+
+    static let quickID = "quick"
+    static let beginnerID = "beginner"
+
+    static let fallback: [PracticeCategory] = [
+        PracticeCategory(id: "healing", name: "Healing", summary: "Gentle practices for recovery, easing discomfort, grief and deep rest.", symbol: "cross.case.fill", color: "#E8A6A6",
+                         note: "Supportive practices, not medical advice. Keep following your care team."),
+        PracticeCategory(id: "calm", name: "Calm & Anxiety", summary: "Slow the heart and quiet worry, from a 1-minute SOS to longer sits.", symbol: "leaf.fill", color: "#8FD3CC"),
+        PracticeCategory(id: "sleep", name: "Sleep", summary: "Unwind the body and mind at night so sleep comes more easily.", symbol: "moon.stars.fill", color: "#A99BE8"),
+        PracticeCategory(id: "energy", name: "Energy", summary: "Wake up, warm up and lift a flat mood without caffeine.", symbol: "sun.max.fill", color: "#EBC88E"),
+        PracticeCategory(id: "focus", name: "Focus", summary: "Steady, clear attention for work, study or a big moment.", symbol: "scope", color: "#7FB3D5"),
+        PracticeCategory(id: "recovery", name: "Recovery", summary: "Before and after training, the cold plunge and the sauna.", symbol: "figure.cooldown", color: "#E07A5F"),
+        PracticeCategory(id: "nature", name: "Nature & Grounding", summary: "Get out of your head and back into your body and the world around you.", symbol: "tree.fill", color: "#4F9D69"),
+        PracticeCategory(id: "quick", name: "Quick", summary: "Three minutes or less. Good for a busy day.", symbol: "timer", color: "#F6DDA8"),
+        PracticeCategory(id: "beginner", name: "Beginner", summary: "Simple to learn and easy to enjoy. Start here.", symbol: "sparkle", color: "#F4EFE6"),
+    ]
 }
 
 struct BreathPattern: Codable, Hashable {
@@ -117,8 +175,12 @@ struct Cue: Decodable, Hashable {
         text = ((try? c.decodeIfPresent(String.self, forKey: .text)) ?? nil) ?? ""
     }
 
-    /// "1:30" → 90, "90" → 90.
+    /// "1:30" → 90, "90" → 90, "start" → 0, "minute:5" → 300. "end" / "everyCycle" have no fixed time: -1 (dropped).
     static func parseTime(_ s: String) -> Double {
+        let low = s.lowercased().trimmingCharacters(in: .whitespaces)
+        if low == "start" { return 0 }
+        if low.hasPrefix("minute:"), let m = Double(low.dropFirst(7)) { return m * 60 }
+        if low.first.map({ !$0.isNumber }) ?? true { return -1 }
         let parts = s.split(separator: ":").compactMap { Double($0.trimmingCharacters(in: .whitespaces)) }
         if parts.count == 2 { return parts[0] * 60 + parts[1] }
         return parts.first ?? 0
@@ -185,10 +247,23 @@ struct Practice: Decodable, Hashable, Identifiable {
     var steps: [MoveStep] = []
     /// Optional "focus" tag from the library file: joint, lymph, stretch or breathe.
     var focusTag: String? = nil
+    /// Plain-English labels: one line on what it does, who it's for, and 2–3 sentences on how it works.
+    var whatItDoes: String = ""
+    var goodFor: [String] = []
+    var howItWorks: String = ""
+    /// Goal tabs (healing, calm, sleep, energy, focus, recovery, nature, quick, beginner).
+    var categoryIds: [String] = []
+    /// Numbered steps for the detail page.
+    var howTo: [String] = []
+    /// Part of the free starter set (from the library file).
+    var freeFlag: Bool? = nil
 
     enum CodingKeys: String, CodingKey {
         case id, title, traditionId, kind, minutes, level, about, why, pattern, cues, safety, sources, steps
         case focusTag = "focus"
+        case whatItDoes, goodFor, howItWorks, howTo
+        case categoryIds = "categories"
+        case freeFlag = "free"
     }
 
     init(id: String, title: String, traditionId: String, kind: String = "breath", minutes: [Int], level: String = "Beginner",
@@ -220,7 +295,55 @@ struct Practice: Decodable, Hashable, Identifiable {
         else if let s = try? c.decodeIfPresent(String.self, forKey: .sources) { sources = [s] }
         steps = ((try? c.decodeIfPresent([MoveStep].self, forKey: .steps)) ?? nil) ?? []
         focusTag = ((try? c.decodeIfPresent(String.self, forKey: .focusTag)) ?? nil)?.lowercased()
+        whatItDoes = ((try? c.decodeIfPresent(String.self, forKey: .whatItDoes)) ?? nil) ?? ""
+        goodFor = ((try? c.decodeIfPresent([String].self, forKey: .goodFor)) ?? nil) ?? []
+        howItWorks = ((try? c.decodeIfPresent(String.self, forKey: .howItWorks)) ?? nil) ?? ""
+        howTo = ((try? c.decodeIfPresent([String].self, forKey: .howTo)) ?? nil) ?? []
+        categoryIds = (((try? c.decodeIfPresent([String].self, forKey: .categoryIds)) ?? nil) ?? []).map { $0.lowercased() }
+        freeFlag = (try? c.decodeIfPresent(Bool.self, forKey: .freeFlag)) ?? nil
+        cues = cues.filter { $0.at >= 0 }
         if isMovement { pattern = nil }
+    }
+
+    /// "Beginner", "Intermediate", "Advanced" (the file says easy / medium / deep).
+    var levelLabel: String {
+        switch level.lowercased() {
+        case "easy", "beginner": return String(localized: "Beginner")
+        case "medium", "intermediate": return String(localized: "Intermediate")
+        case "deep", "advanced": return String(localized: "Advanced")
+        default: return level.capitalized
+        }
+    }
+
+    /// "1–3 min" or "5 min".
+    var minutesLabel: String {
+        let lo = minutes.min() ?? 5, hi = minutes.max() ?? lo
+        return lo == hi ? "\(lo) min" : "\(lo)–\(hi) min"
+    }
+
+    /// The one-liner, falling back to the first sentence of the about text.
+    var tagline: String {
+        if !whatItDoes.isEmpty { return whatItDoes }
+        if let r = about.range(of: ". ") { return String(about[..<r.lowerBound]) + "." }
+        return about
+    }
+
+    /// In a goal tab: listed there, or (Quick) has a 3-minute-or-shorter option, or (Beginner) easy and tagged.
+    func isIn(_ category: String) -> Bool {
+        if categoryIds.contains(category) { return true }
+        if category == PracticeCategory.quickID { return (minutes.min() ?? 99) <= 3 }
+        return false
+    }
+
+    /// Does this practice match a search? Title, tradition, labels, goals and "good for" lines.
+    func matches(_ query: String, tradition: Tradition?, categories: [PracticeCategory]) -> Bool {
+        let words = query.lowercased().split(separator: " ").map(String.init).filter { !$0.isEmpty }
+        guard !words.isEmpty else { return true }
+        let cats = categories.filter { isIn($0.id) }.map { $0.name + " " + $0.localizedName }
+        let hay = ([title, whatItDoes, howItWorks, kind, tradition?.name ?? "", levelLabel] + goodFor + cats)
+            .joined(separator: " ").lowercased()
+            .folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)
+        return words.allSatisfy { hay.contains($0.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: nil)) }
     }
 
     var isMovement: Bool { kind.lowercased() == "movement" || !steps.isEmpty }
@@ -289,13 +412,15 @@ private struct LibraryFile: Decodable {
     var traditions: [Tradition]?
     var practices: [Practice]?
     var intentions: [Intention]?
+    var categories: [PracticeCategory]?
 
-    enum CodingKeys: String, CodingKey { case traditions, practices, intentions }
+    enum CodingKeys: String, CodingKey { case traditions, practices, intentions, categories }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         traditions = Self.lossy(c, .traditions)
         practices = Self.lossy(c, .practices)
         intentions = Self.lossy(c, .intentions)
+        categories = Self.lossy(c, .categories)
     }
 
     /// Decode an array but skip any element that fails, instead of failing the whole file.
@@ -320,6 +445,8 @@ final class PracticeLibrary {
     let traditions: [Tradition]
     let practices: [Practice]
     let intentions: [Intention]
+    /// Goal tabs for the library (Healing, Calm & Anxiety, Sleep…).
+    let categories: [PracticeCategory]
     /// source id → citation line (from SOURCES.md)
     let sourceNotes: [String: String]
 
@@ -327,12 +454,14 @@ final class PracticeLibrary {
         var t: [Tradition] = []
         var p: [Practice] = []
         var i: [Intention] = []
+        var cats: [PracticeCategory] = []
         if let url = Bundle.main.url(forResource: "practices", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let file = try? JSONDecoder().decode(LibraryFile.self, from: data) {
             t = file.traditions ?? []
             p = file.practices ?? []
             i = file.intentions ?? []
+            cats = file.categories ?? []
         }
         if p.isEmpty {
             t = Fallback.traditions
@@ -360,6 +489,7 @@ final class PracticeLibrary {
         traditions = t
         practices = p
         intentions = i
+        categories = cats.isEmpty ? PracticeCategory.fallback : cats
         sourceNotes = Self.loadSources()
     }
 
@@ -369,6 +499,13 @@ final class PracticeLibrary {
     /// movement routines. Everything else is part of Still Point Pro.
     lazy var freeIDs: Set<String> = {
         var ids = Set<String>()
+        // The library file marks its starter set with "free": true; older files fall back to the rule below.
+        let flagged = practices.filter { $0.freeFlag == true }.map(\.id)
+        if !flagged.isEmpty {
+            ids.formUnion(flagged)
+            for t in practices where t.focus == .trees { ids.insert(t.id) }
+            return ids
+        }
         for t in traditions { if let first = practices.first(where: { $0.traditionId == t.id && !$0.isMovement }) { ids.insert(first.id) } }
         for m in practices.filter(\.isMovement).prefix(2) { ids.insert(m.id) }
         // Tree Hugs are always free (Rootbound's "Breathe with this tree" opens them).
@@ -379,6 +516,16 @@ final class PracticeLibrary {
     /// Locked for this person right now (not free and not unlocked).
     func isLocked(_ p: Practice) -> Bool { !isFree(p) && !Prefs.shared.pro }
     func tradition(_ id: String) -> Tradition? { traditions.first { $0.id == id } }
+    func category(_ id: String) -> PracticeCategory? { categories.first { $0.id == id } }
+    func practices(inCategory id: String) -> [Practice] { practices.filter { $0.isIn(id) } }
+    /// Goal tabs this practice belongs to, in tab order.
+    func categories(for p: Practice) -> [PracticeCategory] { categories.filter { p.isIn($0.id) } }
+    func search(_ query: String) -> [Practice] {
+        let q = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !q.isEmpty else { return [] }
+        return practices.filter { $0.matches(q, tradition: tradition($0.traditionId), categories: categories) }
+    }
+    var freeCount: Int { practices.filter { isFree($0) }.count }
     func practices(in tradition: Tradition) -> [Practice] { practices.filter { $0.traditionId == tradition.id } }
     func practices(for intention: Intention) -> [Practice] { intention.practiceIds.compactMap { practice($0) } }
     func note(for source: String) -> String { sourceNotes[source] ?? source }

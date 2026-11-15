@@ -49,6 +49,12 @@ enum WellnessBridge {
         /// Average HRV (SDNN, ms) in the window, when a Watch took one.
         var hrv: Double? = nil
         var practice: String? = nil
+        /// Added with Still Pointz' session stats (all optional): end heart rate, breathing rate from Apple Health,
+        /// seconds below the starting heart rate, and the paced breaths per minute.
+        var endHR: Double? = nil
+        var respRate: Double? = nil
+        var calmSeconds: Double? = nil
+        var breathsPerMin: Double? = nil
 
         /// Guided practice (anything but sauna / steam): what Rootbound shows as "Calm minutes".
         var isCalm: Bool { !["sauna", "steam"].contains(kind.lowercased()) }

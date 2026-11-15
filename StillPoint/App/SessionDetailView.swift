@@ -44,6 +44,10 @@ struct SessionDetailView: View {
             }
         }
         .onAppear {
+            // Heart data can land late (Watch, WHOOP): look again whenever results are opened.
+            if let r = record, !r.hasHeartRate || r.hrv == nil || r.respiratoryRate == nil {
+                StillPointWellness.enrichSessions(only: r.id, force: true)
+            }
             notes = record?.notes ?? ""
             if let r = record { shareImage = SessionShareCard(record: r, tint: tint(r)).rendered() }
         }
@@ -72,14 +76,7 @@ struct SessionDetailView: View {
             VStack(alignment: .leading, spacing: 22) {
                 hero(r)
                 VStack(alignment: .leading, spacing: 22) {
-                    if let samples = r.hrSamples, samples.count >= 2 {
-                        HRChartCard(samples: samples, record: r, tint: tint(r))
-                    } else if r.hasHeartRate {
-                        simpleHR(r)
-                    } else {
-                        noHR(r)
-                    }
-                    tiles(r)
+                    SessionResultsPanel(recordId: r.id, tint: tint(r))
                     if let c = r.calmScore { CalmGauge(score: c, tint: tint(r)) }
                     notesCard(r)
                     if let w = r.warmUpId, let wp = lib.practice(w) {
@@ -125,61 +122,6 @@ struct SessionDetailView: View {
         .frame(height: 250)
     }
 
-    // MARK: Heart rate states
-
-    private func simpleHR(_ r: SessionRecord) -> some View {
-        card {
-            HStack {
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("HEART RATE").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                    Text("\(Int(r.hrStart ?? 0)) → \(Int(r.hrMin ?? r.hrEnd ?? 0)) bpm").font(SP.numbers(28)).foregroundStyle(SP.ink)
-                }
-                Spacer()
-                Image(systemName: "heart.fill").font(.system(size: 26)).foregroundStyle(SP.rose)
-            }
-        }
-    }
-
-    private func noHR(_ r: SessionRecord) -> some View {
-        card {
-            HStack(spacing: 14) {
-                Image(systemName: "applewatch").font(.system(size: 26, weight: .light)).foregroundStyle(SP.teal)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("No heart rate for this session").font(SP.serif(17)).foregroundStyle(SP.ink)
-                    Text(r.device == "Watch"
-                         ? "Turn on heart rate in the watch session settings (Fine-tune → Heart rate)."
-                         : "Heart rate is recorded when you practice on your Apple Watch with heart rate on.")
-                        .font(SP.rounded(13)).foregroundStyle(SP.dim)
-                }
-            }
-        }
-    }
-
-    // MARK: Tiles
-
-    private func tiles(_ r: SessionRecord) -> some View {
-        let cols = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
-        return LazyVGrid(columns: cols, spacing: 10) {
-            if let a = r.hrAvg { tile("\(Int(a.rounded()))", "avg bpm", SP.rose) }
-            if let d = r.hrDrop { tile((d >= 0 ? "−" : "+") + "\(Int(abs(d).rounded()))", "bpm drop", SP.teal) }
-            if let h = r.hrv { tile("\(Int(h.rounded()))", "HRV ms", SP.violet) }
-            if r.cycles > 0 { tile("\(r.cycles)", r.isMovement ? "steps" : "breaths", SP.amber) }
-            if let b = r.breathsPerMinute, !r.isMovement { tile(String(format: "%.1f", b), "breaths / min", SP.gold) }
-            if let rr = r.respiratoryRate { tile(String(format: "%.0f", rr), "resp. rate", SP.teal) }
-        }
-    }
-
-    private func tile(_ v: String, _ l: String, _ c: Color) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
-            Text(v).font(SP.numbers(24)).foregroundStyle(SP.ink)
-            Text(l).font(SP.rounded(11)).foregroundStyle(SP.faint)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(c.opacity(0.25), lineWidth: 1))
-    }
-
     // MARK: Notes
 
     private func notesCard(_ r: SessionRecord) -> some View {
@@ -202,6 +144,128 @@ struct SessionDetailView: View {
             .padding(16)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+    }
+}
+
+// MARK: - Session results (summary screen and session page)
+
+/// The health side of one session: a plain-English takeaway, the heart-rate curve, and the numbers.
+/// Observes the log, so late Watch / Apple Health data appears as soon as it lands.
+struct SessionResultsPanel: View {
+    let recordId: UUID
+    var tint: Color = SP.teal
+    @ObservedObject private var log = SessionLog.shared
+    @State private var asked = false
+
+    var body: some View {
+        if let r = log.record(recordId) {
+            VStack(alignment: .leading, spacing: 14) {
+                if let t = r.takeaway {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: (r.hrDrop ?? 0) >= 1 ? "arrow.down.heart.fill" : "heart.fill")
+                            .foregroundStyle(SP.rose).font(.system(size: 18))
+                            .accessibilityHidden(true)
+                        Text(t).font(SP.serif(19, .light)).foregroundStyle(SP.ink)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                if let samples = r.hrSamples, samples.count >= 2 {
+                    HRChartCard(samples: samples, record: r, tint: tint)
+                } else if r.hasHeartRate {
+                    EmptyView()
+                } else if waiting(r) {
+                    waitingCard
+                } else {
+                    noHeartCard(r)
+                }
+                statGrid(r)
+                if r.hasHeartRate {
+                    Text("Estimates from your heart rate, not medical measures.")
+                        .font(SP.rounded(11)).foregroundStyle(SP.faint)
+                }
+            }
+        }
+    }
+
+    /// Heart data usually arrives within a few minutes of the session.
+    private func waiting(_ r: SessionRecord) -> Bool {
+        Date().timeIntervalSince(r.end) < 10 * 60
+    }
+
+    private var waitingCard: some View {
+        HStack(spacing: 14) {
+            ProgressView().tint(SP.teal)
+            VStack(alignment: .leading, spacing: 3) {
+                Text("Waiting for Watch data…").font(SP.serif(17)).foregroundStyle(SP.ink)
+                Text("Heart rate and HRV can take a few minutes to reach Apple Health. This updates by itself.")
+                    .font(SP.rounded(13)).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .accessibilityElement(children: .combine)
+    }
+
+    private func noHeartCard(_ r: SessionRecord) -> some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(spacing: 14) {
+                Image(systemName: "applewatch").font(.system(size: 26, weight: .light)).foregroundStyle(SP.teal)
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("No heart rate for this session").font(SP.serif(17)).foregroundStyle(SP.ink)
+                    Text(r.device == "Watch"
+                         ? "Turn on heart rate in the watch session settings (Fine-tune → Heart rate)."
+                         : "Wear your Apple Watch (or another heart-rate device that saves to Apple Health) while you practice.")
+                        .font(SP.rounded(13)).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            if !asked {
+                Button {
+                    asked = true
+                    MindfulHealth.shared.requestHeartReadAccess { _ in
+                        StillPointWellness.enrichSessions(only: r.id, force: true)
+                    }
+                } label: {
+                    Label("Look in Apple Health", systemImage: "heart.text.square")
+                        .font(SP.rounded(14, .medium)).foregroundStyle(SP.teal)
+                }
+            }
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+    }
+
+    private func statGrid(_ r: SessionRecord) -> some View {
+        let cols = [GridItem(.adaptive(minimum: 104), spacing: 10)]
+        return LazyVGrid(columns: cols, alignment: .leading, spacing: 10) {
+            if let a = r.hrStart, let b = r.hrEnd ?? r.hrSamples?.last?.bpm {
+                tile("\(Int(a.rounded()))→\(Int(b.rounded()))", String(localized: "start → end bpm"), SP.rose)
+            }
+            if let d = r.hrDrop { tile((d >= 0 ? "−" : "+") + "\(Int(abs(d).rounded()))", String(localized: "bpm drop"), SP.teal) }
+            if let lo = r.hrLow { tile("\(Int(lo.rounded()))", String(localized: "lowest bpm"), SP.amber) }
+            if let a = r.hrAvg { tile("\(Int(a.rounded()))", String(localized: "avg bpm"), SP.rose) }
+            if let h = r.hrv { tile("\(Int(h.rounded()))", String(localized: "HRV ms"), SP.violet) }
+            if let rr = r.respiratoryRate { tile(String(format: "%.0f", rr), String(localized: "breathing rate"), SP.teal) }
+            if let b = r.breathsPerMinute, !r.isMovement { tile(String(format: "%.1f", b), String(localized: "paced breaths / min"), SP.gold) }
+            if let c = r.calmZoneSeconds, let f = r.calmZoneFraction {
+                tile(spFormatClock(c), String(localized: "calm zone (\(Int((f * 100).rounded())) pct)"), SP.teal)
+            }
+            if r.cycles > 0 { tile("\(r.cycles)", r.isMovement ? String(localized: "steps") : String(localized: "breaths"), SP.amber) }
+        }
+    }
+
+    private func tile(_ v: String, _ l: String, _ c: Color) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(v).font(SP.numbers(22)).foregroundStyle(SP.ink).lineLimit(1).minimumScaleFactor(0.6)
+            Text(l).font(SP.rounded(11)).foregroundStyle(SP.faint).fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
+        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(c.opacity(0.25), lineWidth: 1))
+        .accessibilityElement(children: .combine)
     }
 }
 

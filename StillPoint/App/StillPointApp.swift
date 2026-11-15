@@ -136,7 +136,7 @@ struct RootView: View {
                 .tabItem { Label("Today", systemImage: "sun.horizon") }
                 .tag(0)
             TraditionsView()
-                .tabItem { Label("Traditions", systemImage: "globe.asia.australia") }
+                .tabItem { Label("Library", systemImage: "books.vertical") }
                 .tag(1)
             JourneyView()
                 .tabItem { Label("Journey", systemImage: "leaf") }
@@ -163,7 +163,7 @@ struct RootView: View {
             router.consumePending()
             let args = ProcessInfo.processInfo.arguments
             if let i = args.firstIndex(of: "-tab"), i + 1 < args.count {
-                router.tab = ["today": 0, "traditions": 1, "journey": 2][args[i + 1]] ?? 0
+                router.tab = ["today": 0, "traditions": 1, "library": 1, "journey": 2][args[i + 1]] ?? 0
             }
             // -demo -open <screen> (simulator QA): progress (Journey tab), settings, moreapps.
             if args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count {
@@ -215,19 +215,25 @@ struct Motes: View {
 
 /// Still Point Pro: what the one-time unlock contains.
 enum StillPointPro {
-    static let spec = PaywallSpec(
+    /// Counts come from the library, so the copy stays right as practices are added.
+    static var practiceCount: Int { PracticeLibrary.shared.practices.count }
+    static var traditionCount: Int { PracticeLibrary.shared.traditions.count }
+    static var freeCount: Int { PracticeLibrary.shared.freeCount }
+
+    static var spec: PaywallSpec { PaywallSpec(
         appName: "Still Point",
         headline: "Everything in Still Pointz.",
-        tagline: "All 45 practices from 12 traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch.",
+        tagline: String(localized: "All \(practiceCount) practices from \(traditionCount) traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch."),
         tint: SP.gold, tint2: SP.amber,
         features: [
-            .init(icon: "books.vertical.fill", title: "All 45 practices", detail: "Breathwork, stillness and movement from Zen, Sufi, Vedic, Taoist, Christian, Jewish, Stoic and more."),
+            .init(icon: "books.vertical.fill", title: String(localized: "All \(practiceCount) practices"),
+                  detail: String(localized: "Breathwork, meditation and movement from Zen, Yoga, Sufi, Taoist, Tibetan, Christian, Stoic and more, sorted by goal: Healing, Calm, Sleep, Energy, Focus and Recovery.")),
             .init(icon: "figure.cooldown", title: "Every warm-up routine", detail: "Makkō-hō, Sūrya Namaskār, Ruesi Dat Ton, Ba Duan Jin and the rest, 2–10 minutes, with figures for each step."),
             .init(icon: "flame.fill", title: "Sauna & steam guide", detail: "Heat-safe breathing, gentle bench moves and a timer that pulls your WHOOP heart rate for each session."),
             .init(icon: "applewatch", title: "Everything on your Watch", detail: "Haptic breathing for the full library, straight from your wrist."),
             .init(icon: "heart.text.square.fill", title: "Journey with heart data", detail: "Every session kept with your heart-rate stats and Mindful Minutes in Apple Health."),
         ],
-        freeNote: "The starter set — one practice from each tradition and two routines — stays free forever.",
+        freeNote: String(localized: "The starter set of \(freeCount) practices, including the 1-minute Calm SOS, body scan and Tree Hugs, stays free forever."),
         privacyURL: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/PRIVACY.md")
-    )
+    ) }
 }

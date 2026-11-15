@@ -37,6 +37,10 @@ struct SessionRecord: Codable, Identifiable, Hashable {
     /// Set when Rootbound started the session for a tree: that tree's stable id (UUID string) and name.
     var treeID: String? = nil
     var treeName: String? = nil
+    /// Seconds spent below the starting heart rate (the "calm zone"). Filled once heart data is in.
+    var calmSeconds: Double? = nil
+    /// Last time Apple Health was asked for this session's heart data (so the screen can say "waiting…").
+    var healthCheckedAt: Date? = nil
 
     var minutes: Double { seconds / 60 }
     var end: Date { start.addingTimeInterval(seconds) }
@@ -79,7 +83,7 @@ struct SessionRecord: Codable, Identifiable, Hashable {
     enum CodingKeys: String, CodingKey {
         case id, practiceId, title, start, seconds, cycles, hrStart, hrEnd, hrv, device
         case kind, minutesPlanned, warmUpId, hrSamples, hrMin, hrAvg, respiratoryRate, notes
-        case treeID, treeName
+        case treeID, treeName, calmSeconds, healthCheckedAt
     }
 
     // Tolerant decoding: anything missing in an old record is simply nil.
@@ -105,6 +109,81 @@ struct SessionRecord: Codable, Identifiable, Hashable {
         notes = try? c.decode(String.self, forKey: .notes)
         treeID = try? c.decode(String.self, forKey: .treeID)
         treeName = try? c.decode(String.self, forKey: .treeName)
+        calmSeconds = try? c.decode(Double.self, forKey: .calmSeconds)
+        healthCheckedAt = try? c.decode(Date.self, forKey: .healthCheckedAt)
+    }
+
+    // MARK: Derived health stats (none of these are medical measures)
+
+    /// Lowest heart rate: the kept low, or the lowest sample.
+    var hrLow: Double? { hrMin ?? hrSamples?.map(\.bpm).min() }
+
+    /// Start → end (positive = lower at the end).
+    var hrEndDrop: Double? {
+        guard let a = hrStart, let b = hrEnd ?? hrSamples?.last?.bpm else { return nil }
+        return a - b
+    }
+
+    /// Time spent below the starting heart rate, from the stored value or the curve.
+    var calmZoneSeconds: Double? {
+        if let c = calmSeconds { return c }
+        return Self.calmSeconds(samples: hrSamples, start: hrStart, total: seconds)
+    }
+
+    /// Share of the session in the calm zone, 0…1.
+    var calmZoneFraction: Double? {
+        guard let c = calmZoneSeconds, seconds > 0 else { return nil }
+        return min(1, max(0, c / seconds))
+    }
+
+    static func calmSeconds(samples: [HRSample]?, start: Double?, total: Double) -> Double? {
+        guard let s = samples, s.count >= 2 else { return nil }
+        let base = start ?? s[0].bpm
+        var calm = 0.0
+        for (a, b) in zip(s, s.dropFirst()) where a.bpm < base {
+            calm += max(0, min(b.t, total) - a.t)
+        }
+        if let last = s.last, last.bpm < base { calm += max(0, total - last.t) }
+        return min(total, calm)
+    }
+
+    /// One friendly line about how the body responded.
+    var takeaway: String? {
+        guard let d = hrDrop else { return nil }
+        let n = Int(abs(d).rounded())
+        let zone = calmZoneFraction.map { Int(($0 * 100).rounded()) }
+        if d >= 10 {
+            return String(localized: "Your heart rate dropped \(n) bpm. Nicely settled.")
+        } else if d >= 5 {
+            if let z = zone, z >= 50 { return String(localized: "Your heart rate dropped \(n) bpm and stayed below your starting rate for most of the session.") }
+            return String(localized: "Your heart rate dropped \(n) bpm. A good, steady settle.")
+        } else if d >= 1 {
+            return String(localized: "Your heart rate eased \(n) bpm. Gentle progress; longer sessions often settle more.")
+        } else if d <= -3 && isMovement {
+            return String(localized: "Your heart rate rose \(n) bpm, as expected when you move.")
+        } else if d <= -3 {
+            return String(localized: "Your heart rate rose \(n) bpm. Energizing breaths and talking can do that; try a longer exhale next time.")
+        }
+        return String(localized: "Your heart rate held steady.")
+    }
+}
+
+/// One practice's history, for its detail page.
+struct PracticeStats {
+    let sessions: [SessionRecord]   // newest first
+    var count: Int { sessions.count }
+    var totalMinutes: Double { sessions.reduce(0) { $0 + $1.minutes } }
+    var lastDone: Date? { sessions.map(\.start).max() }
+    var withHeart: [SessionRecord] { sessions.filter { $0.hrDrop != nil } }
+    var avgDrop: Double? {
+        let d = withHeart.compactMap(\.hrDrop)
+        return d.isEmpty ? nil : d.reduce(0, +) / Double(d.count)
+    }
+    /// The session where the heart settled most.
+    var best: SessionRecord? { withHeart.max { ($0.hrDrop ?? 0) < ($1.hrDrop ?? 0) } }
+    /// Oldest → newest drops, for the trend chart.
+    var dropTrend: [(date: Date, drop: Double)] {
+        withHeart.sorted { $0.start < $1.start }.suffix(20).compactMap { r in r.hrDrop.map { (r.start, $0) } }
     }
 }
 
@@ -250,6 +329,9 @@ final class SessionLog: ObservableObject {
             var merged = r
             if merged.notes == nil { merged.notes = records[i].notes }
             if merged.hrv == nil { merged.hrv = records[i].hrv }
+            if merged.respiratoryRate == nil { merged.respiratoryRate = records[i].respiratoryRate }
+            if merged.calmSeconds == nil { merged.calmSeconds = records[i].calmSeconds }
+            if merged.healthCheckedAt == nil { merged.healthCheckedAt = records[i].healthCheckedAt }
             if merged.hrSamples == nil { merged.hrSamples = records[i].hrSamples }
             if merged.treeID == nil { merged.treeID = records[i].treeID; merged.treeName = records[i].treeName }
             if merged.hrAvg == nil { merged.hrAvg = records[i].hrAvg; merged.hrMin = merged.hrMin ?? records[i].hrMin }
@@ -425,6 +507,26 @@ final class SessionLog: ObservableObject {
     }
 
     /// Practices with the biggest average heart-rate drop over the last 30 days, best first.
+    /// Everything about one practice across all sessions: for the practice page.
+    func stats(for practiceId: String) -> PracticeStats {
+        let mine = records.filter { $0.practiceId == practiceId }
+        return PracticeStats(sessions: mine)
+    }
+
+    /// Average heart-rate drop per practice, for practices done at least `minSessions` times with heart data.
+    func dropByPractice(minSessions: Int = 3) -> [String: Double] {
+        var sums: [String: (Double, Int)] = [:]
+        for r in records { if let d = r.hrDrop { let c = sums[r.practiceId] ?? (0, 0); sums[r.practiceId] = (c.0 + d, c.1 + 1) } }
+        var out: [String: Double] = [:]
+        for (k, v) in sums where v.1 >= minSessions { out[k] = v.0 / Double(v.1) }
+        return out
+    }
+
+    /// The practices that settle this person's heart the most (3+ sessions, average drop of at least 2 bpm), best first.
+    func worksBest(limit: Int = 3) -> [String] {
+        Array(dropByPractice().filter { $0.value >= 2 }.sorted { $0.value > $1.value }.prefix(limit).map(\.key))
+    }
+
     func bestPractices(limit: Int = 3) -> [PracticeDrop] {
         let since = Date().addingTimeInterval(-30 * 86400)
         var sums: [String: (title: String, total: Double, n: Int)] = [:]
