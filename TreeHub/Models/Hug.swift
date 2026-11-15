@@ -136,10 +136,11 @@ struct LinkedSession: Codable, Hashable, Identifiable {
     }
 
     init(id: UUID = UUID(), feedID: UUID? = nil, start: Date, end: Date, source: String, practice: String? = nil,
-         avgHR: Double? = nil, minHR: Double? = nil, startHR: Double? = nil, hrDrop: Double? = nil, hrv: Double? = nil) {
+         avgHR: Double? = nil, minHR: Double? = nil, startHR: Double? = nil, hrDrop: Double? = nil, hrv: Double? = nil,
+         respRate: Double? = nil) {
         self.id = id; self.feedID = feedID; self.start = start; self.end = end; self.source = source
         self.practice = practice; self.avgHR = avgHR; self.minHR = minHR; self.startHR = startHR
-        self.hrDrop = hrDrop; self.hrv = hrv
+        self.hrDrop = hrDrop; self.hrv = hrv; self.respRate = respRate
     }
 
     init(from decoder: Decoder) throws {
