@@ -59,13 +59,8 @@ final class Unlock: ObservableObject {
         if ProcessInfo.processInfo.arguments.contains("-free") { isPro = false }
         #endif
         if Self.demoPro { isPro = true }
-        if Self.demoPaywall {
-            isPro = false
-            Task { @MainActor [weak self] in
-                try? await Task.sleep(nanoseconds: 1_500_000_000)
-                self?.requested = PaywallRequest(context: nil)
-            }
-        }
+        // "-demo -paywall": the root's paywallHost opens the paywall once it is on screen (see PaywallHost).
+        if Self.demoPaywall { isPro = false }
         updates = Task { [weak self] in
             for await result in Transaction.updates {
                 if case .verified(let t) = result {

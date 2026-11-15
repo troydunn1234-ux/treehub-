@@ -210,8 +210,29 @@ extension View {
 private struct PaywallHost: ViewModifier {
     let spec: PaywallSpec
     @ObservedObject private var unlock = Unlock.shared
+    /// Set once the paywall sheet has actually appeared (used by the "-demo -paywall" launch below).
+    @State private var demoShown = false
     func body(content: Content) -> some View {
-        content.sheet(item: $unlock.requested) { r in PaywallView(spec: spec, context: r.context) }
+        content
+            .sheet(item: $unlock.requested) { r in
+                PaywallView(spec: spec, context: r.context).onAppear { demoShown = true }
+            }
+            .task { await openDemoPaywall() }
+    }
+
+    /// "-demo -paywall" (App Store review screenshot): open the paywall at launch. Asked for from here, after the
+    /// host is on screen, and asked again if it hasn't appeared: a request made while a slow cold start still
+    /// shows the launch screen is dropped by UIKit and never retried. Normal launches return right away.
+    @MainActor private func openDemoPaywall() async {
+        guard Unlock.demoPaywall else { return }
+        for _ in 0..<12 {
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            if demoShown || Task.isCancelled { return }
+            unlock.requested = nil
+            try? await Task.sleep(nanoseconds: 250_000_000)
+            if demoShown { return }
+            unlock.requested = PaywallRequest(context: nil)
+        }
     }
 }
 
