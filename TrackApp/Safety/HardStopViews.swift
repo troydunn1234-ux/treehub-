@@ -14,12 +14,11 @@ final class HardStopWindow: NSObject, MFMessageComposeViewControllerDelegate {
 
     func show() {
         if let window { window.isHidden = false; return }
-        guard let scene = UIApplication.shared.connectedScenes
-            .compactMap({ $0 as? UIWindowScene })
-            .first(where: { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive })
-            ?? UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first else { return }
+        let scenes: [UIWindowScene] = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let foreground: UIWindowScene? = scenes.first { $0.activationState == .foregroundActive || $0.activationState == .foregroundInactive }
+        guard let scene = foreground ?? scenes.first else { return }
         let w = UIWindow(windowScene: scene)
-        w.windowLevel = .alert + 1
+        w.windowLevel = UIWindow.Level(rawValue: UIWindow.Level.alert.rawValue + 1)
         let host = UIHostingController(rootView: HardStopAlertView())
         host.view.backgroundColor = .clear
         w.rootViewController = host

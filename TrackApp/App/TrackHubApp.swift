@@ -41,6 +41,8 @@ struct TrackHubApp: App {
     var body: some Scene {
         WindowGroup {
             LaunchGate { RoamrIntroGate { TrackRootView() } }
+                // Roamr Pro: "-demo -paywall" (review screenshot) and Unlock.shared.gate(...) open the paywall here.
+                .paywallHost(spec: RoamrPro.spec)
                 .environment(tracker)
                 // "Go together" invite links: roamr://join?c=CODE (and the https join page form).
                 .onOpenURL { url in Task { @MainActor in GroupSession.shared.handle(url: url) } }
@@ -95,8 +97,6 @@ struct TrackRootView: View {
         }
         // "Go together": live group activities with friends (TrackApp/Group).
         .groupTogether(tab: $tab)
-        // Root paywall host (Unlock.gate; opens for the purchase review screenshot: "-demo -paywall").
-        .background { Color.clear.paywallHost(spec: RoamrPro.spec) }
         .overlay(alignment: .top) {
             if detector.showBanner && !tracker.isActive {
                 DriveBanner(onStart: startDriveFromPrompt, onDismiss: { detector.dismissBanner() })
