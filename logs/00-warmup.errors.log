@@ -1,0 +1,6 @@
+2026-11-15 01:24:24.168 E  RideQuest[7040:6929] [com.apple.TextInputUI:CandidateGeneration] Result accumulator timeout: 0.250000, exceeded.
+2026-11-15 01:24:26.378 E  RideQuest[7040:692d] [com.apple.TextInputUI:CandidateGeneration] Attempted to update accumulator from source type: 0, after completion has already been called for token:[1D6E9B1B]. This is an error and will be ignored.
+2026-11-15 01:24:27.145 E  RideQuest[7040:698f] [com.apple.WebKit:ResourceLoadStatistics] WebContent[7075] Unable to hide query parameters from script (missing data)
+2026-11-15 01:24:27.331 E  RideQuest[7040:6906] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = 95AAB66D-5B65-426E-8FEF-F8422470C458
+2026-11-15 01:24:27.345 E  RideQuest[7040:6906] [com.apple.WebKit:ResourceLoadStatistics] Failed to request allowed query parameters from WebPrivacy.
+2026-11-15 01:24:28.705 E  RideQuest[7040:6906] [com.apple.WebKit:ResourceLoadStatistics] Failed to request restricted opener domains from WebPrivacy

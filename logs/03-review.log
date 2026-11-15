@@ -1,0 +1,669 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-15 01:26:49.748 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x104804c90] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-15 01:26:49.763 Df RideQuest[11816:9bdb] [com.apple.UserNotifications:Connections] [com.troydunn.ridequest] Creating a user notification center
+2026-11-15 01:26:49.796 A  RideQuest[11816:9c09] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-15 01:26:49.799 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:49.802 Df RideQuest[11816:9c03] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c03] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c03] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x60000210d860>
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c09] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c03] [com.apple.runningboard:connection] Initializing connection
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c03] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-15 01:26:49.803 Df RideQuest[11816:9c0a] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-15 01:26:49.804 Df RideQuest[11816:9c03] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-15 01:26:49.804 Df RideQuest[11816:9c09] [com.apple.xpc:connection] [0x103507680] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:49.804 Df RideQuest[11816:9c03] [com.apple.xpc:connection] [0x103704bc0] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-15 01:26:49.804 Df RideQuest[11816:9bdb] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-15 01:26:49.806 A  RideQuest[11816:9c0c] (RunningBoardServices) didChangeInheritances
+2026-11-15 01:26:49.807 Df RideQuest[11816:9c0a] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-15 01:26:49.808 Df RideQuest[11816:9c0a] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.ridequest((null))>
+2026-11-15 01:26:49.818 Df RideQuest[11816:9c03] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x60000210d860>
+2026-11-15 01:26:49.819 Df RideQuest[11816:9c03] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x600001704ec0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 676 (elapsed = 0).
+2026-11-15 01:26:49.819 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-15 01:26:49.821 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-15 01:26:49.822 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-15 01:26:49.823 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-15 01:26:49.823 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-15 01:26:49.825 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-15 01:26:49.826 Df RideQuest[11816:9bdb] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-15 01:26:49.826 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-15 01:26:49.826 Df RideQuest[11816:9bdb] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-15 01:26:49.827 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-15 01:26:49.827 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-15 01:26:49.827 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-15 01:26:49.828 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-15 01:26:49.828 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-15 01:26:49.829 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-15 01:26:49.829 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-15 01:26:49.829 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-15 01:26:49.830 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-15 01:26:49.830 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000020ef40; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-15 01:26:49.830 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-15 01:26:49.830 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003008630 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-15 01:26:49.830 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-15 01:26:49.831 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-15 01:26:49.831 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003008630 com.apple.frontboard.systemappservices> sent handshake
+2026-11-15 01:26:49.832 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-15 01:26:49.832 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-15 01:26:49.832 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-15 01:26:49.833 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-15 01:26:49.834 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-15 01:26:49.834 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-15 01:26:49.835 Df RideQuest[11816:9bdb] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x6000002143c0>
+2026-11-15 01:26:49.835 Df RideQuest[11816:9c03] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-15 01:26:49.837 Df RideQuest[11816:9c0e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-15 01:26:49.838 Df RideQuest[11816:9c0e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-15 01:26:49.846 Df RideQuest[11816:9bdb] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x104906230> for initial
+2026-11-15 01:26:49.846 Df RideQuest[11816:9bdb] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x104906230> for CADisplay KVO
+2026-11-15 01:26:49.848 Df RideQuest[11816:9c0e] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-15 01:26:49.848 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-15 01:26:49.849 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryL
+2026-11-15 01:26:49.849 Df RideQuest[11816:9c0e] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-15 01:26:49.850 Df RideQuest[11816:9c0e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-15 01:26:49.859 Df RideQuest[11816:9bdb] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-15 01:26:49.859 Df RideQuest[11816:9bdb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-15 01:26:49.860 Df RideQuest[11816:9bdb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-15 01:26:49.860 Df RideQuest[11816:9bdb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-15 01:26:49.861 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-15 01:26:49.864 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-15 01:26:49.865 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-15 01:26:49.865 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-15 01:26:49.865 Df RideQuest[11816:9bdb] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-15 01:26:49.872 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x103508440] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-15 01:26:49.930 Df RideQuest[11816:9bdb] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-15 01:26:49.930 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10350d6f0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:49.931 Df RideQuest[11816:9c0b] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-15 01:26:49.936 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-15 01:26:49.936 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:49.938 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:49.938 Df RideQuest[11816:9bdb] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x60000290f250>; with scene: <UIWindowScene: 0x103706d40>
+2026-11-15 01:26:49.938 Df RideQuest[11816:9bdb] [com.apple.BacklightServices:scenes] 0x600000c1d140 setDelegate:<0x600000c1cff0 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.ridequest-default
+2026-11-15 01:26:49.939 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:49.939 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventDeferring] [0x60000290edf0] Initialized with scene: <UIWindowScene: 0x103706d40>; behavior: <_UIEventDeferringBehavior_iOS: 0x6000002205a0>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-15 01:26:49.940 Df RideQuest[11816:9c0b] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002606a60; process scope; status: target> was:none
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x103706d40; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.ridequest-default
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventDeferring] [0x60000290edf0] Scene target of event deferring environments did update: scene: 0x103706d40; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x103706d40; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.ridequest-default
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c13390: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-15 01:26:49.942 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x103706d40; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x103706d40: Window scene became target of keyboard environment
+2026-11-15 01:26:49.943 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:49.944 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:49.946 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:50.024 Df RideQuest[11816:9bdb] [com.apple.UIKit:Orientation] <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7) Scene updated orientation preferences: none -> ( Pu )
+2026-11-15 01:26:50.029 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-15 01:26:50.029 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x103706d40: Window became key in scene: UIWindow: 0x104807ce0; contextId: 0x95400179: reason: UIWindowScene: 0x103706d40: Window requested to become key in scene: 0x104807ce0
+2026-11-15 01:26:50.029 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x103706d40; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x104807ce0; reason: UIWindowScene: 0x103706d40: Window requested to become key in scene: 0x104807ce0
+2026-11-15 01:26:50.029 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x104807ce0; contextId: 0x95400179; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.ridequest-default
+2026-11-15 01:26:50.029 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventDeferring] [0x60000290edf0] Begin local event deferring requested for token: 0x600002602c40; environments: 1; reason: UIWindowScene: 0x103706d40: Begin event deferring in keyboardFocus for window: 0x104807ce0
+2026-11-15 01:26:50.032 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:50.034 Df RideQuest[11816:9c03] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002606a60; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.ridequest-default; status: ancestor> was:target
+2026-11-15 01:26:50.035 Df RideQuest[11816:9bdb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.ridequest-default  persistentID: F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7
+2026-11-15 01:26:50.041 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-15 01:26:50.041 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-15 01:26:50.041 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-15 01:26:50.041 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-15 01:26:50.042 Df RideQuest[11816:9c0b] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-15 01:26:50.042 Df RideQuest[11816:9c0b] [com.apple.xpc:session] [0x600002113bb0] Session created.
+2026-11-15 01:26:50.042 Df RideQuest[11816:9c0b] [com.apple.xpc:session] [0x600002113bb0] Session created from connection [0x103708120]
+2026-11-15 01:26:50.042 Df RideQuest[11816:9c0b] [com.apple.xpc:connection] [0x103708120] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-15 01:26:50.043 Df RideQuest[11816:9c0b] [com.apple.xpc:session] [0x600002113bb0] Session activated
+2026-11-15 01:26:50.074 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:50.162 A  RideQuest[11816:9bdb] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:50.208 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.208 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.211 A  RideQuest[11816:9bdb] (TCC) TCCAccessRequest() IPC
+2026-11-15 01:26:50.211 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10350f4d0] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-15 01:26:50.215 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10350f4d0] invalidated after the last release of the connection object
+2026-11-15 01:26:50.215 A  RideQuest[11816:9bdb] (TCC) TCCAccessRequest() IPC
+2026-11-15 01:26:50.215 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10370c6b0] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-15 01:26:50.228 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10370c6b0] invalidated after the last release of the connection object
+2026-11-15 01:26:50.230 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.230 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.234 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.236 Df RideQuest[11816:9bdb] (WebKit) 0x1120580e0 - [PID=0] WebProcessCache::updateCapacity: Cache is disabled because process swap on navigation is disabled
+2026-11-15 01:26:50.257 Df RideQuest[11816:9bdb] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-15 01:26:50.270 Df RideQuest[11816:9c0b] [com.apple.xpc:connection] [0x10350f4d0] activating connection: mach=true listener=false peer=false name=com.apple.webprivacyd
+2026-11-15 01:26:50.272 Df RideQuest[11816:9bdb] [com.apple.WebKit:Storage] 0x104812568 - WebsiteDataStore::WebsiteDataStore sessionID=1 identifier=null
+2026-11-15 01:26:50.273 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.273 A  RideQuest[11816:9c0b] (libsystem_containermanager.dylib) container_system_group_path_for_identifier
+2026-11-15 01:26:50.274 Df RideQuest[11816:9c0b] [com.apple.containermanager:xpc] Requesting container lookup; class = 13, identifier = (null), group_identifier = systemgroup.com.apple.configurationprofiles, create = 1, temp = 0, euid = 501, uid = 501
+2026-11-15 01:26:50.274 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.274 A  RideQuest[11816:9c0b] (libsystem_containermanager.dylib) container_query_t
+2026-11-15 01:26:50.274 Df RideQuest[11816:9c0b] [com.apple.containermanager:xpc] Query; euid = 501, uid = 501, class = 13, identifier = [(null)](0), flags = 900000003
+2026-11-15 01:26:50.274 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x10370ee98 - PageConfiguration::delaysWebProcessLaunchUntilFirstLoad() -> false because of associated processPool value
+2026-11-15 01:26:50.274 E  RideQuest[11816:9c0b] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-15 01:26:50.275 E  RideQuest[11816:9c0b] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-15 01:26:50.275 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x10401f608 - WebProcessPool::createWebPage: Not delaying WebProcess launch
+2026-11-15 01:26:50.275 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1120b00c0 - [PID=0] WebProcessProxy::constructor:
+2026-11-15 01:26:50.276 E  RideQuest[11816:9c0b] [com.apple.ManagedConfiguration:MC] Error getting system group container for systemgroup.com.apple.configurationprofiles: 98
+2026-11-15 01:26:50.277 F  RideQuest[11816:9c0b] [com.apple.ManagedConfiguration:MC] Failed to get profile system group container path. Overriding with expected path: /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles
+2026-11-15 01:26:50.277 A  RideQuest[11816:9c0b] (libsystem_trace.dylib) Activity for state dumps
+2026-11-15 01:26:50.278 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Bundle/Application/5D90A5EF-04A7-42E9-96E5-1363DB5B96B7/RideQuest.app'
+2026-11-15 01:26:50.279 Df RideQuest[11816:9c0c] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.WebContent instance ID: Optional([_EXExtensionInstanceIdentifier: AFED90A5-8DB5-4F3C-9682-CE38F3BBE547])
+2026-11-15 01:26:50.303 Df RideQuest[11816:9bdb] [com.apple.avkit:AVKit] +[AVPictureInPicturePlatformAdapter isPictureInPictureSupported]_block_invoke isPictureInPictureSupported NO
+2026-11-15 01:26:50.318 Df RideQuest[11816:9bdb] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-15 01:26:50.319 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x103513350] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-15 01:26:50.323 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/MediaKeys/v1'
+2026-11-15 01:26:50.323 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d40c0 - [PID=0, throttler=0x1120b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-15 01:26:50.324 Df RideQuest[11816:9c0b] [com.apple.xpc:connection] [0x103513860] activating connection: mach=true listener=false peer=false name=com.apple.accessibility.mediaaccessibilityd
+2026-11-15 01:26:50.339 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::constructor, site isolation enabled 0
+2026-11-15 01:26:50.340 Df RideQuest[11816:9bdb] [com.apple.WebKit:Media] PlaybackSessionManagerProxy::PlaybackSessionManagerProxy(3817405348)
+2026-11-15 01:26:50.340 Df RideQuest[11816:9bdb] [com.apple.WebKit:Fullscreen] PlaybackSessionManagerProxy::VideoPresentationManagerProxy(3817405348)
+2026-11-15 01:26:50.343 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.344 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1120b00c0 - [PID=0] WebProcessProxy::addExistingWebPage: webPage=0x104022420, pageProxyID=10, webPageID=11
+2026-11-15 01:26:50.344 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSwapping] 0x1120580e0 - [PID=0] WebProcessCache::updateCapacity: Cache is disabled by client
+2026-11-15 01:26:50.348 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.apple.WebKit.GPU'
+2026-11-15 01:26:50.348 Df RideQuest[11816:9c0b] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: 009891C2-1587-4E04-A398-6C155CBB5097])
+2026-11-15 01:26:50.349 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/tmp/com.apple.WebKit.GPU'
+2026-11-15 01:26:50.349 Df RideQuest[11816:9bdb] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-15 01:26:50.349 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4150 - [PID=0, throttler=0x112114270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-15 01:26:50.353 Df RideQuest[11816:9bdb] [com.apple.WebKit:TextInteraction] Conforming to BrowserEngineKit text input protocol
+2026-11-15 01:26:50.398 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::loadRequest:
+2026-11-15 01:26:50.399 Df RideQuest[11816:9bdb] [com.apple.runningboard:connection] Creating side-channel connection to com.apple.runningboard
+2026-11-15 01:26:50.399 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x1035176e0] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-15 01:26:50.400 Df RideQuest[11816:9bdb] [com.apple.runningboard:process] Hit the server for a process handle 77c4eb00002e28 that resolved to: [app<com.troydunn.ridequest((null))>:11816]
+2026-11-15 01:26:50.401 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::WebPageProxy::shouldForceForegroundPriorityForClientNavigation() returns 1 based on PageClient::canTakeForegroundAssertions()
+2026-11-15 01:26:50.401 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4210 - [PID=0, throttler=0x1120b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Client navigation'
+2026-11-15 01:26:50.401 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::loadRequestWithNavigationShared:
+2026-11-15 01:26:50.401 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::NetworkProcessProxy
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/ResourceLoadStatistics'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.troydunn.ridequest/WebKit/NetworkCache'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.troydunn.ridequest/WebKit/HSTS'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/ResourceMonitorThrottler'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/LocalStorage'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/IndexedDB'
+2026-11-15 01:26:50.402 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/Default'
+2026-11-15 01:26:50.403 Df RideQuest[11816:9c0e] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: FA53DE85-1568-4E39-AA4C-0B401014B718])
+2026-11-15 01:26:50.404 E  RideQuest[11816:9c0e] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: FA53DE85-1568-4E39-AA4C-0B401014B718])
+2026-11-15 01:26:50.404 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.troydunn.ridequest/WebKit/CacheStorage'
+2026-11-15 01:26:50.404 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.troydunn.ridequest/WebKit/ServiceWorkers'
+2026-11-15 01:26:50.404 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.troydunn.ridequest/WebKit/AlternativeServices'
+2026-11-15 01:26:50.411 Df RideQuest[11816:9bdb] [com.apple.CFNetwork:Default] Initializing CFHTTPCookieStorage singleton
+2026-11-15 01:26:50.411 Df RideQuest[11816:9bdb] [com.apple.CFNetwork:Default] Creating default cookie storage with process/bundle identifier
+2026-11-15 01:26:50.412 Df RideQuest[11816:9bdb] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-15 01:26:50.413 Df RideQuest[11816:9bdb] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-15 01:26:50.415 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Cookies'
+2026-11-15 01:26:50.418 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/Caches/com.apple.WebKit.Networking'
+2026-11-15 01:26:50.418 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Bundle/Application/5D90A5EF-04A7-42E9-96E5-1363DB5B96B7/RideQuest.app'
+2026-11-15 01:26:50.420 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4240 - [PID=0, throttler=0x11212c190] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-15 01:26:50.420 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x112128100 - NavigationState is taking a process network assertion because a page load started
+2026-11-15 01:26:50.420 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d42a0 - [PID=0, throttler=0x1120b0150] ProcessThrottler::Activity::Activity: Starting background activity / 'Page Load'
+2026-11-15 01:26:50.442 Df RideQuest[11816:9c09] [com.apple.xpc:connection] [0x10490d370] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-15 01:26:50.444 Df RideQuest[11816:9c09] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.465 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:50.476 Df RideQuest[11816:9c0c] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.WebContent([app<com.troydunn.ridequest((null))>:11816])>{vt hash: 71395982}[uuid:AFED90A5-8DB5-4F3C-9682-CE38F3BBE547]{definition:com.apple.WebKit.WebContent[extension][client]}:11868]
+2026-11-15 01:26:50.482 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:50.483 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x1120a8100 - ApplicationStateTracker::setIsInBackground: 0
+2026-11-15 01:26:50.483 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x1120a8100 - ApplicationStateTracker: add observers for scene
+2026-11-15 01:26:50.488 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x103853600 - WKApplicationStateTrackingView: View with page [0x104022420, pageProxyID=10] was added to a window, _lastObservedStateWasBackground=0, isNowBackground=0
+2026-11-15 01:26:50.492 Df RideQuest[11816:9c0c] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.WebContent instance ID: Optional([_EXExtensionInstanceIdentifier: AFED90A5-8DB5-4F3C-9682-CE38F3BBE547]) pid: 11868.
+2026-11-15 01:26:50.512 Df RideQuest[11816:9c0c] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:50.520 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::updateActivityState: view visibility state changed 0 -> 1
+2026-11-15 01:26:50.526 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] Activating connection to server: (null)
+2026-11-15 01:26:50.527 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] server remote target <BSXPCServiceConnectionProxy<BKSKeyboardServiceClientToServerIPC>: 0x600002926610>
+2026-11-15 01:26:50.527 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:50.528 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000278640> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.528 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:50.529 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000278640> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.530 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:50.531 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002785c0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.532 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:50.533 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002785c0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.637 Df RideQuest[11816:9c0b] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.GPU([app<com.troydunn.ridequest((null))>:11816])>{vt hash: 223737757}[uuid:009891C2-1587-4E04-A398-6C155CBB5097]{definition:com.apple.WebKit.GPU[extension][client]}:11870]
+2026-11-15 01:26:50.661 Df RideQuest[11816:9c0b] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: 009891C2-1587-4E04-A398-6C155CBB5097]) pid: 11870.
+2026-11-15 01:26:50.661 Df RideQuest[11816:9c0b] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:50.786 Df RideQuest[11816:9bdb] [com.apple.UIKit:HardwareKeyboard] -[UIApplication GSKeyboardForHWLayout:senderID:forceRebuild:createIfNeeded:], New hardware layout is created with US layout and 0 standardType.
+2026-11-15 01:26:50.786 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:50.787 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000277f20> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.787 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:50.787 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000277f20> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:50.787 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::viewIsBecomingVisible:
+2026-11-15 01:26:50.821 Df RideQuest[11816:9bdb] [com.apple.WebKit:ScreenTime] Screen Time has updated to use the system shield for any blocked URL.
+2026-11-15 01:26:50.821 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x104022420 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::updateThrottleState: UIProcess is taking a foreground assertion because the view is visible
+2026-11-15 01:26:50.821 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4330 - [PID=0, throttler=0x1120b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'View is visible'
+2026-11-15 01:26:50.821 Df RideQuest[11816:9bdb] [com.apple.WebKit:RemoteLayerTree] RemoteLayerTreeDrawingAreaProxy(13)::hideContentUntilAnyUpdate
+2026-11-15 01:26:50.821 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x10400c600 (pageProxyID=10) -[WKWebView _endLiveResize]
+2026-11-15 01:26:50.835 Df RideQuest[11816:9c0b] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-15 01:26:50.835 Df RideQuest[11816:9c0b] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x600001704ec0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 676 (elapsed = 1), _expireHandler: (null)
+2026-11-15 01:26:50.836 Df RideQuest[11816:9c0b] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x60000210d860> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x600001704ec0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 676 (elapsed = 1))
+2026-11-15 01:26:50.836 Df RideQuest[11816:9c0b] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x60000210d860> for task identifier: 1
+2026-11-15 01:26:50.860 Df RideQuest[11816:9c0c] [com.apple.CoreAnalytics:client] No XPC connection in Simulator
+2026-11-15 01:26:50.860 Df RideQuest[11816:9bdb] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [F47D8FDC-009E-4228-97B4-1112A14196D2] (reporting strategy default)>
+2026-11-15 01:26:50.860 E  RideQuest[11816:9c0c] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-15 01:26:50.860 Df RideQuest[11816:9bdb] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [D852DC90-16E8-472B-BBA2-D143C279D0CC] (reporting strategy default)>
+2026-11-15 01:26:50.861 Df RideQuest[11816:9bdb] [com.apple.network:activity] Set activity <nw_activity 50:1 [F47D8FDC-009E-4228-97B4-1112A14196D2] (reporting strategy default)> as the global parent
+2026-11-15 01:26:50.864 A  RideQuest[11816:9c0c] (RunningBoardServices) didChangeInheritances
+2026-11-15 01:26:50.865 Df RideQuest[11816:9bdb] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-15 01:26:50.867 Df RideQuest[11816:9bdb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.ridequest-default  persistentID: F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7
+2026-11-15 01:26:50.868 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:50.869 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x103512ff0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:50.869 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x104814ad0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:50.874 Df RideQuest[11816:9bdb] [com.apple.UIKit:EventDeferring] [0x60000290edf0] Scene target of event deferring environments did update: scene: 0x103706d40; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-15 01:26:50.874 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x103706d40; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.ridequest-default
+2026-11-15 01:26:50.875 Df RideQuest[11816:9bdb] [com.apple.WebKit:ResourceLoadStatistics] StorageAccessPromptQuirkController::didUpdateCachedListData: Loaded 1 storage access prompt(s) quirks from WebPrivacy.
+2026-11-15 01:26:50.876 Df RideQuest[11816:9bdb] [com.apple.gamecontroller:Session] Creating the shared game controller session...
+2026-11-15 01:26:50.881 Df RideQuest[11816:9bdb] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x6000026096e0; process scope; status: target> was:none
+2026-11-15 01:26:50.881 A  RideQuest[11816:9bdb] (GameController) [GCDeviceSession] Activate
+2026-11-15 01:26:50.881 Sd RideQuest[11816:0] (EB73264B-09AE-3310-B642-B0B5D9390089) IOHIDManager State
+{
+    DispatchQueue = 0;
+    RunLoop = 1;
+    createOptions = 0;
+    isOpen = 0;
+    openOptions = 0;
+}
+2026-11-15 01:26:50.883 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-15 01:26:50.883 Df RideQuest[11816:9bdb] [com.apple.WebKit:TextInput] Started deferring input view updates (01)
+2026-11-15 01:26:50.884 A  RideQuest[11816:9c0b] (RunningBoardServices) didChangeInheritances
+2026-11-15 01:26:50.893 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] Reloading input views for key-window scene responder: <WKContentView: 0x103853600; frame = (0 0; 0 0); opaque = NO; > force:N
+2026-11-15 01:26:50.894 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _reloadInputViewsForKeyWindowSceneResponder: 1 force: 0, fromBecomeFirstResponder: 1 (automaticKeyboard: 1, reloadIdentifier: 7CEA5268-7FF2-44F2-976B-694A420005B5)
+2026-11-15 01:26:50.894 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder: <WKContentView: 0x103853600; frame = (0 0; 0 0); opaque = NO; >, automaticKeyboard: 1, force: 0
+2026-11-15 01:26:50.894 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder, disableAutomaticKeyboardUI return empty
+2026-11-15 01:26:50.903 Df RideQuest[11816:9bdb] [com.apple.UIKit:TrackingElementWindowController] Change from input view set: (null)
+2026-11-15 01:26:50.903 Df RideQuest[11816:9bdb] [com.apple.UIKit:TrackingElementWindowController] Change to input view set: (null)
+2026-11-15 01:26:50.906 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardLayoutGuide] _moveGuideOffscreenAtEdge: 4
+2026-11-15 01:26:50.906 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardLayoutGuide] changeOffsetConstants: offset is changing to {0, 0} [previous offset: {-1, -1}]
+2026-11-15 01:26:50.906 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardLayoutGuide] changeSizingConstants: size is changing [not transitioning] to {440, 0} [previous size: {1, 0}]
+2026-11-15 01:26:50.953 A  RideQuest[11816:9c0a] (RunningBoardServices) didChangeInheritances
+2026-11-15 01:26:50.959 Df RideQuest[11816:9c0e] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.Networking([app<com.troydunn.ridequest((null))>:11816])>{vt hash: 114736818}[uuid:FA53DE85-1568-4E39-AA4C-0B401014B718]{definition:com.apple.WebKit.Networking[extension][client]}:11871]
+2026-11-15 01:26:50.980 Df RideQuest[11816:9c0e] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: FA53DE85-1568-4E39-AA4C-0B401014B718]) pid: 11871.
+2026-11-15 01:26:50.981 Df RideQuest[11816:9c0a] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:51.165 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardUI] -[_UIKeyboardStateManager initWithPresentationDelegateView:forCustomInputView:] UIDevice.currentDevice._hardwareKeyboardAvailable = YES
+2026-11-15 01:26:51.165 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:51.167 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x60000027cfc0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.167 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:51.169 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x60000027cfc0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.211 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10491e520] activating connection: mach=true listener=false peer=false name=com.apple.TextInput
+2026-11-15 01:26:51.212 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:51.213 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x60000027e400> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.213 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:51.213 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x60000027e400> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.233 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:51.233 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000278d00> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.234 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:51.235 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000278d00> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.237 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:51.238 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x60000027e420> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.239 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:51.240 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x60000027e420> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.244 A  RideQuest[11816:9bdb] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.247 Df RideQuest[11816:9bdb] [com.apple.UIKit:UIKBFeedbackGenerator] <_UIKBFeedbackGenerator: 0x600003509550>: Updating mode. Haptics: unsupported. Haptics: disabled. Ringer: on. Sound: enabled. Mode: audio only
+2026-11-15 01:26:51.249 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:51.250 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000238800> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.250 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:51.251 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000238800> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:51.251 Df RideQuest[11816:9bdb] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:(nil) forSetDelegate:<WKContentView: 0x103853600> force:NO delayEndInputSession:YES
+2026-11-15 01:26:51.252 Df RideQuest[11816:9bdb] [com.apple.UIKit:InputSessionChange] endInputSession completion is disabled
+2026-11-15 01:26:51.253 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] [Interface Orientation] was:Interface Unknown now:UIInterfaceOrientationPortrait reason:Using key window scene
+2026-11-15 01:26:51.258 Df RideQuest[11816:9bdb] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-15 01:26:51.578 Df RideQuest[11816:9bdb] [com.apple.TextInputUI:DynamicKeyplaneView] <TUIKeyplaneView: 0x104920520> changed keyplane size to {440, 224}; docked
+2026-11-15 01:26:51.579 Df RideQuest[11816:9bdb] [com.apple.TextInputUI:DynamicKeyplaneView] Setting dynamic keyplane: Dynamic-QWERTY-British-Small_Capital-Letters
+2026-11-15 01:26:51.603 Df RideQuest[11816:9c0c] [com.apple.TextInputUI:CandidateGeneration] -[TUIKeyboardCandidateMultiplexer installGeneratorForSource:]_block_invoke: Multiplexer is installing generator for source: 1
+2026-11-15 01:26:51.604 Df RideQuest[11816:9c0c] [com.apple.TextInputUI:CandidateGeneration] -[TUIKeyboardCandidateMultiplexer installGeneratorForSource:]_block_invoke: Multiplexer is installing generator for source: 3
+2026-11-15 01:26:51.604 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardUI] Creating a new RTI client
+2026-11-15 01:26:51.605 Df RideQuest[11816:9bdb] [com.apple.BoardServices:XPCErrors] [C:3] Alloc com.apple.inputservice.input-ui-host
+2026-11-15 01:26:51.605 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10481b0a0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:51.606 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardUI] creating new AutofillUI connection
+2026-11-15 01:26:51.608 Df RideQuest[11816:9bdb] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-15 01:26:51.609 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient beginAllowingRemoteTextInput:]  Begin allowing remote text input: AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:51.609 Df RideQuest[11816:9c0c] [com.apple.calls.callkit:Default] Call host has no calls
+2026-11-15 01:26:51.638 Df RideQuest[11816:9bdb] [com.apple.UIKit:UIPeripheralHost] endPlacementForInputViewSet: <<UIInputViewSet: 0x600003708fc0>; (empty)> windowScene: <UIWindowScene: 0x103706d40; role: UIWindowSceneSessionRoleApplication; persistentIdentifier: F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7; activationState: UISceneActivationStateForegroundInactive>
+2026-11-15 01:26:51.642 Df RideQuest[11816:9c0a] [com.apple.FrontBoard:Common] [FBSSystemService][0xaf90] Sending request to open "com.apple.iMessageAppsViewService"
+2026-11-15 01:26:51.651 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-15 01:26:51.652 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardArbiterClientLog] -[_UIRemoteKeyboards prepareToMoveKeyboard:withIAV:isIAVRelevant:showing:notifyRemote:forScene:] position: {{0, 0}, {0, 0}} visible: 0; notifyRemote: 1; isMinimized: NO
+2026-11-15 01:26:51.652 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardVisualMode] Show keyboard with visual mode windowed (0)
+2026-11-15 01:26:51.655 Df RideQuest[11816:9c0a] [com.apple.FrontBoard:Common] [FBSSystemService][0xaf90] Request successful: <BSProcessHandle: 0x600000c6d650; iMessageAppsVie:7090; valid: YES>
+2026-11-15 01:26:51.676 Df RideQuest[11816:9c0a] [com.apple.xpc:connection] [0x10351ef20] activating connection: mach=true listener=false peer=false name=com.apple.iMessageAppsViewService.warmup-connection
+2026-11-15 01:26:51.788 Df RideQuest[11816:9bdb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-15 01:26:51.789 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:51.790 Df RideQuest[11816:9bdb] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x103706d40> (F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7)
+2026-11-15 01:26:51.792 Df RideQuest[11816:9bdb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.ridequest-default  persistentID: F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7
+2026-11-15 01:26:51.793 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-15 01:26:51.793 Df RideQuest[11816:9bdb] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-15 01:26:51.793 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = YES)
+2026-11-15 01:26:51.794 Df RideQuest[11816:9bdb] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-15 01:26:51.795 Df RideQuest[11816:9bdb] [com.apple.WebKit:Fullscreen] PlaybackSessionManagerProxy::applicationDidBecomeActive(3817405348)
+2026-11-15 01:26:51.795 A  RideQuest[11816:9bdb] (GameController) Notify ApplicationDidBecomeActive
+2026-11-15 01:26:51.795 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.797 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.801 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.804 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.808 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.811 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.815 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.819 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.822 A  RideQuest[11816:9c0a] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-15 01:26:51.825 Df RideQuest[11816:9c09] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-15 01:26:51.827 Df RideQuest[11816:9c0c] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-15 01:26:51.828 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x1037128d0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:51.828 Df RideQuest[11816:9bdb] (WebKit) WebContent[11868] Installed launch log hook
+2026-11-15 01:26:51.830 Df RideQuest[11816:9c0a] [com.apple.TextInputUI:CandidateGeneration] All generators are complete, dispatching to `completionBlockJustOnce`
+2026-11-15 01:26:51.830 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:51.830 Df RideQuest[11816:9c0a] [com.apple.TextInputUI:CandidateGeneration] Assigning candidates of source type kbd to `containerToPush, for autocorrection flow only` - F4F26C73
+2026-11-15 01:26:51.831 Df RideQuest[11816:9c0a] [com.apple.TextInputUI:CandidateGeneration] Preparing to push <_TUIKeyboardCandidateContainer: 0x6000002a1340> to candidate receiver, for request token: F4F26C73
+2026-11-15 01:26:51.831 Df RideQuest[11816:9c0a] [com.apple.TextInputUI:CandidateGeneration] Performing delayed generation for token=F4F26C73
+2026-11-15 01:26:51.831 Df RideQuest[11816:9c09] [com.apple.TextInputUI:CandidateGeneration] containerToPush has an autocorrection list.  pushing to candidate receiver with request token. F4F26C73.
+2026-11-15 01:26:51.860 Df RideQuest[11816:9bdb] [com.apple.gamecontroller:Session] Connected devices changed (2 added, 0 removed) -> [2] {(
+    <GCKeyboard 0x600000296d00 'Generic Keyboard'>,
+    <GCController 0x600003d120d0 'MFi'/'Gamepad'>
+)}
+2026-11-15 01:26:51.862 Df RideQuest[11816:9bdb] [com.apple.gamecontroller:Session] Connected devices changed (0 added, 0 removed) -> [2] {(
+    <GCKeyboard 0x600000296d00 'Generic Keyboard'>,
+    <GCController 0x600003d120d0 'MFi'/'Gamepad'>
+)}
+2026-11-15 01:26:51.862 Df RideQuest[11816:9bdb] [com.apple.gamecontroller:Session] Connected devices changed (0 added, 0 removed) -> [2] {(
+    <GCKeyboard 0x600000296d00 'Generic Keyboard'>,
+    <GCController 0x600003d120d0 'MFi'/'Gamepad'>
+)}
+2026-11-15 01:26:51.862 A  RideQuest[11816:9bdb] (GameControllerFoundation) [HID Event System Client] Activate
+2026-11-15 01:26:51.863 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1120b00c0 - [PID=11868] WebProcessProxy::didFinishLaunching:
+2026-11-15 01:26:51.863 F  RideQuest[11816:9bdb] [com.apple.WebKit:Process] WebContent process (0x1120b00c0) took 1.586294 seconds to launch
+2026-11-15 01:26:51.863 A  RideQuest[11816:9bdb] (libsystem_trace.dylib) Activity for state dumps
+2026-11-15 01:26:51.863 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120b0150 - [PID=11868] ProcessThrottler::didConnectToProcess
+2026-11-15 01:26:51.863 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120b0150 - [PID=11868] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=3, backgroundActivities=7)
+2026-11-15 01:26:51.863 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:51.864 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x6000017668c0 - WKProcessAssertionBackgroundTaskManager: beginBackgroundTaskWithName
+2026-11-15 01:26:51.864 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] WKProcessAssertionBackgroundTaskManager: Took a FinishTaskInterruptable assertion for own process
+2026-11-15 01:26:51.864 Df RideQuest[11816:9c0a] [com.apple.WebKit:ProcessSuspension] 0x1121500c0 - ProcessAssertion::acquireSync Trying to take RBS assertion 'WebProcess Foreground Assertion' for process with PID=11868
+2026-11-15 01:26:51.865 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120b00c0 - [PID=11868] WebProcessProxy::didChangeThrottleState: type=2
+2026-11-15 01:26:51.868 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120b00c0 - [PID=11868] WebProcessProxy::didChangeThrottleState(Foreground) Taking foreground assertion for network process
+2026-11-15 01:26:51.868 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d43c0 - [PID=0, throttler=0x11212c190] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Networking for foreground view(s)'
+2026-11-15 01:26:51.869 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d43f0 - [PID=0, throttler=0x112114270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'GPU for foreground view(s)'
+2026-11-15 01:26:51.869 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1120b00c0) state = 1 has connection = 1 XPC endpoint message = 0x0
+2026-11-15 01:26:51.874 Df RideQuest[11816:9c0b] [com.apple.xpc:connection] [0x104808270] activating connection: mach=true listener=false peer=false name=com.apple.SystemConfiguration.NetworkInformation_sim
+2026-11-15 01:26:51.877 Df RideQuest[11816:9c0a] [com.apple.WebKit:ProcessSuspension] 0x1121500c0 - ProcessAssertion() Successfully granted capability
+2026-11-15 01:26:51.879 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1121141e0 - GPUProcessProxy::didFinishLaunching:
+2026-11-15 01:26:51.879 F  RideQuest[11816:9bdb] [com.apple.WebKit:Process] GPU process (0x1121141e0) took 1.535536 seconds to launch
+2026-11-15 01:26:51.879 A  RideQuest[11816:9bdb] (libsystem_trace.dylib) Activity for state dumps
+2026-11-15 01:26:51.880 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1121141e0 - GPUProcessProxy::connectionWillOpen:
+2026-11-15 01:26:51.880 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x112114270 - [PID=11870] ProcessThrottler::didConnectToProcess
+2026-11-15 01:26:51.881 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x112114270 - [PID=11870] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=2, backgroundActivities=1)
+2026-11-15 01:26:51.881 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:51.882 Df RideQuest[11816:9c09] [com.apple.WebKit:ProcessSuspension] 0x112150180 - ProcessAssertion::acquireSync Trying to take RBS assertion 'GPUProcess Foreground Assertion' for process with PID=11870
+2026-11-15 01:26:51.882 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1121141e0) state = 1 has connection = 1 XPC endpoint message = 0x0
+2026-11-15 01:26:51.883 A  RideQuest[11816:9c0b] (CoreServicesInternal) CFURLCreateBookmarkData
+2026-11-15 01:26:51.898 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] WebContent[11868] getNetworkProcessConnection: Request connection for core identifier 2
+2026-11-15 01:26:51.899 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d40c0 - [PID=11868, throttler=0x1120b0150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-15 01:26:51.899 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x11212c100 - NetworkProcessProxy::getNetworkProcessConnection: Taking a background assertion because web process pid 11868 (core identifier 2) is requesting a connection
+2026-11-15 01:26:51.902 Df RideQuest[11816:9bdb] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-15 01:26:51.906 Df RideQuest[11816:9c09] [com.apple.WebKit:ProcessSuspension] 0x112150180 - ProcessAssertion() Successfully granted capability
+2026-11-15 01:26:51.909 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10481c2a0] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-15 01:26:52.037 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::didFinishLaunching
+2026-11-15 01:26:52.037 F  RideQuest[11816:9bdb] [com.apple.WebKit:Process] Networking process (0x11212c100) took 1.635470 seconds to launch
+2026-11-15 01:26:52.037 A  RideQuest[11816:9bdb] (libsystem_trace.dylib) Activity for state dumps
+2026-11-15 01:26:52.037 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x11212c190 - [PID=11871] ProcessThrottler::didConnectToProcess
+2026-11-15 01:26:52.037 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x11212c190 - [PID=11871] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=2, backgroundActivities=2)
+2026-11-15 01:26:52.037 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-15 01:26:52.037 Df RideQuest[11816:9c0e] [com.apple.WebKit:ProcessSuspension] 0x112150240 - ProcessAssertion::acquireSync Trying to take RBS assertion 'NetworkProcess Foreground Assertion' for process with PID=11871
+2026-11-15 01:26:52.038 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1120b00c0) state = 1 has connection = 1 XPC endpoint message = 0x600003e10e00
+2026-11-15 01:26:52.039 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x11212c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1121141e0) state = 1 has connection = 1 XPC endpoint message = 0x600003e10e00
+2026-11-15 01:26:52.039 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4150 - [PID=11870, throttler=0x112114270] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-15 01:26:52.040 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] WebContent[11868] [0x104d04970] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:52.041 Sd RideQuest[11816:0] (8932B5E7-350E-3E7D-A9DF-0DAD1BBE74A3) UAUserActivity
+UAUserActivityManager supportsActivityContinuation=YES isEnabled=YES serverPid=0 PROJECT:UserActivity-551
+2026-11-15 01:26:52.041 Df RideQuest[11816:9bdb] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-15 01:26:52.041 Df RideQuest[11816:9c0e] [com.apple.WebKit:ProcessSuspension] 0x112150240 - ProcessAssertion() Successfully granted capability
+2026-11-15 01:26:52.079 Df RideQuest[11816:9bdb] [com.apple.network:activity] <nw_activity 50:1 [F47D8FDC-009E-4228-97B4-1112A14196D2] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 3539ms
+2026-11-15 01:26:52.080 Df RideQuest[11816:9bdb] [com.apple.network:activity] <nw_activity 50:2 [D852DC90-16E8-472B-BBA2-D143C279D0CC] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 3539ms
+2026-11-15 01:26:52.080 Df RideQuest[11816:9bdb] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [F47D8FDC-009E-4228-97B4-1112A14196D2] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-15 01:26:52.080 Df RideQuest[11816:9bdb] [com.apple.network:activity] Unset the global parent activity
+2026-11-15 01:26:52.080 E  RideQuest[11816:9c0e] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-15 01:26:52.093 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4240 - [PID=11871, throttler=0x11212c190] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-15 01:26:52.099 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] WebContent[11868] Received Launch Services database
+2026-11-15 01:26:52.100 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] WebContent[11868] 0x108048150 - [sessionID=1] WebProcess::initializeLogForwarding: Debug logging enabled: 0
+2026-11-15 01:26:52.100 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] WebContent[11868] WebProcess::platformInitializeWebProcess
+2026-11-15 01:26:52.103 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] WebContent[11868] [0x104f064b0] activating connection: mach=false listener=true peer=false name=(anonymous)
+2026-11-15 01:26:52.103 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] WebContent[11868] [0x104f064b0] Connection returned listener port: 0x3203
+2026-11-15 01:26:52.103 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] WebContent[11868] [0x104f06850] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-15 01:26:52.103 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] WebContent[11868] [0x104d04c10] activating connection: mach=false listener=false peer=true name=com.apple.xpc.anonymous.0x104f064b0.peer[11868].0x104d04c10
+2026-11-15 01:26:52.119 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXSupportCommon] WebContent[11868] Application accessibility enabled: 0, (
+	0   libAccessibility.dylib              0x00007ff8161a0269 _AXSApplicationAccessibilitySetEnabled + 82
+	1   WebKit                              0x00007ff811d1e2af _ZN6WebKit10WebProcess28platformInitializeWebProcessERNS_28WebProcessCreationParametersE + 2349
+	2   WebKit                              0x00007ff811f00a28 _ZN6WebKit10WebProcess20initializeWebProcessEONS_28WebProcessCreationParametersEON3WTF17CompletionHandlerIFvN7WebCore15ProcessIdentityEEEE + 148
+	3   WebKit                              0x00007ff8118842e3 _ZN3IPC18handleMessageAsyncIN8Messages10WebProcess20InitializeWebProcessENS_10ConnectionEN6WebKit10WebProcessES6_FvONS5_28WebProcessCreationParametersEON3WTF17CompletionHandlerIFvN7WebCore15ProcessIdentityEEEEEEEvRT0_RNS_7DecoderEPT1_MT2_T3_ + 275
+	4   WebKit                              0x00007ff8122eb645 _ZN3IPC10Connection15dispatchMessageEN3WTF9UniqueRefINS_7DecoderEEE + 535
+	5   WebKit                              0x00007ff812309290 _Z<…>
+2026-11-15 01:26:52.120 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXSupportCommon] WebContent[11868] Stored App AX setting: 0
+2026-11-15 01:26:52.123 Df RideQuest[11816:9bdb] [com.apple.Accessibility:AXSupportCommon] WebContent[11868] AXS AccessibilityEnabled: (app ax: 0), ax settings: 0, cached: 0
+2026-11-15 01:26:52.124 Df RideQuest[11816:9bdb] [com.apple.securityd:SecWarning] WebContent[11868] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=11816 task=RideQuest[11816]/0#-1 LF=22
+2026-11-15 01:26:52.124 Df RideQuest[11816:9c03] [com.apple.xpc:connection] [0x103512ff0] Re-initialization successful; calling out to event handler with XPC_ERROR_CONNECTION_INTERRUPTED
+2026-11-15 01:26:52.154 Df RideQuest[11816:9bdb] [com.apple.WebKit:TextInput] Stopped deferring all input view updates (01)
+2026-11-15 01:26:52.209 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::decidePolicyForNavigationAction: frameID=4294967297, isMainFrame=1, navigationID=16
+2026-11-15 01:26:52.211 A  RideQuest[11816:9c03] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-15 01:26:52.217 Df RideQuest[11816:9ccd] [com.apple.WebKit:RemoteLayerBuffers] WebContent[11868]: [renderingBackend=11] Created rendering backend for pageProxyID=10, webPageID=11
+2026-11-15 01:26:52.226 Df RideQuest[11816:9ccd] [com.apple.WebKit:Process] WebContent[11868] GPUProcessConnection::create - 0x108262e60
+2026-11-15 01:26:52.226 Df RideQuest[11816:9bdb] [com.apple.WebKit:AppSSO] 0x1120500d0 - SOAuthorizationCoordinator::tryAuthorize
+2026-11-15 01:26:52.227 Df RideQuest[11816:9c03] [com.apple.xpc:connection] [0x10493d480] activating connection: mach=true listener=false peer=false name=com.apple.Safari.SafeBrowsing.Service
+2026-11-15 01:26:52.241 A  RideQuest[11816:9bdb] (AppSSO) canPerformAuthorizationWithURL
+2026-11-15 01:26:52.242 A  RideQuest[11816:9bdb] (AppSSOCore) canPerformAuthorizationWithURL
+2026-11-15 01:26:52.243 Df RideQuest[11816:9bdb] [com.apple.authkit:nto] Fetching native takeover URLs
+2026-11-15 01:26:52.245 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x10352d460] activating connection: mach=true listener=false peer=false name=com.apple.ak.authorizationservices.xpc
+2026-11-15 01:26:52.247 A  RideQuest[11816:9bdb] (libsystem_containermanager.dylib) container_system_group_path_for_identifier
+2026-11-15 01:26:52.247 Df RideQuest[11816:9bdb] [com.apple.containermanager:xpc] Requesting container lookup; class = 13, identifier = com.apple.nsurlsessiond, group_identifier = systemgroup.com.apple.nsurlstoragedresources, create = 1, temp = 0, euid = 501, uid = 501
+2026-11-15 01:26:52.247 A  RideQuest[11816:9bdb] (libsystem_containermanager.dylib) container_query_t
+2026-11-15 01:26:52.247 Df RideQuest[11816:9bdb] [com.apple.containermanager:xpc] Query; euid = 501, uid = 501, class = 13, identifier = [com.apple.nsurlsessiond](1), flags = 900000003
+2026-11-15 01:26:52.248 Df RideQuest[11816:9c0a] [com.apple.authkit:nto] URL shouldn't be processed
+2026-11-15 01:26:52.248 E  RideQuest[11816:9bdb] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-15 01:26:52.250 E  RideQuest[11816:9bdb] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-15 01:26:52.254 Df RideQuest[11816:9c0a] [com.apple.AppSSO:SOConfigurationClient] -[SOConfigurationClient init]  on <SOConfigurationClient: 0x6000002a8100>
+2026-11-15 01:26:52.256 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _beginSessionWithID:forServices:force:]  Begin text input session. sessionID = AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF, options = <RTISessionOptions: 0x6000002ac180; shouldResign = NO; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-15 01:26:52.256 Df RideQuest[11816:9c0a] [com.apple.xpc:connection] [0x103524ed0] activating connection: mach=true listener=false peer=false name=com.apple.AppSSO.service-xpc
+2026-11-15 01:26:52.257 Df RideQuest[11816:9c0a] [com.apple.AppSSO:SOServiceConnection] <SOServiceConnection: 0x6000002a4c20>: new XPC connection
+2026-11-15 01:26:52.267 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/tmp/com.troydunn.ridequest/WebKit/MediaCache'
+2026-11-15 01:26:52.267 Df RideQuest[11816:9bdb] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/8B7DADE6-B8C8-477D-B156-37222894D1D4/Library/WebKit/com.troydunn.ridequest/WebsiteData/MediaKeys/v1'
+2026-11-15 01:26:52.267 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1121141e0 - GPUProcessProxy is taking a background assertion because a web process is requesting a connection
+2026-11-15 01:26:52.267 Df RideQuest[11816:9bdb] [com.apple.WebKit:AppSSO] SOAuthorizationCoordinator::tryAuthorize: The requested URL is not registered for AppSSO handling. No further action needed.
+2026-11-15 01:26:52.268 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::decidePolicyForNavigationAction: listener called: frameID=4294967297, isMainFrame=1, navigationID=16, policyAction=Use, isAppBoundDomain=0, wasNavigationIntercepted=0
+2026-11-15 01:26:52.268 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::receivedNavigationActionPolicyDecision: frameID=4294967297, isMainFrame=1, navigationID=16, policyAction=Use
+2026-11-15 01:26:52.268 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSwapping] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::decidePolicyForNavigationAction: keep using process 11868 for navigation, reason=Process has not yet committed any provisional loads
+2026-11-15 01:26:52.269 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1120b00c0 - [PID=11868] WebProcessProxy::canTerminateAuxiliaryProcess: returns false (pageCount=1, provisionalPageCount=0, suspendedPageCount=0, m_isInProcessCache=0, m_shutdownPreventingScopeCounter=0)
+2026-11-15 01:26:52.380 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] 0x1121141e0 - GPUProcessProxy::didCreateContextForVisibilityPropagation: webPageProxyID: 10, pagePID: 11, contextID: 3
+2026-11-15 01:26:52.381 Df RideQuest[11816:9bdb] [com.apple.WebKit:Process] Created visibility propagation interaction <_UIVisibilityPropagationInteraction: 0x600002621aa0> for process with PID=11870
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebFrameLoaderClient::dispatchDecidePolicyForNavigationAction: Got policyAction Use from async IPC
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:Loading] WebContent[11868] 0x1081301c0 - [pageID=11, frameID=4294967297] PolicyChecker::checkNavigationPolicy: continuing because this policyAction from dispatchDecidePolicyForNavigationAction is Use
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::stopAllLoaders: m_provisionalDocumentLoader=0, m_documentLoader=4446412800
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::stopLoading
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 4446429184 (was 0)
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::continueLoadAfterNavigationPolicy: Setting provisional document loader (m_provisionalDocumentLoader=4446429184)
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:ProcessSuspension] WebContent[11868]: [webPageID=11] WebPage::freezeLayerTree: Adding a reason to freeze layer tree (reason=1, new=1, old=0)
+2026-11-15 01:26:52.383 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 0 (was 4446429184)
+2026-11-15 01:26:52.384 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::prepareForLoadStart: Starting frame load
+2026-11-15 01:26:52.384 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: ProgressTracker::progressStarted: frameID 4294967297, value 0.100000, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-11-15 01:26:52.384 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::startLoadingMainResource: Starting load
+2026-11-15 01:26:52.384 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::didStartProvisionalLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-15 01:26:52.384 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=18] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.385 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x1120b00c0 - [PID=11868] WebProcessProxy::didStartProvisionalLoadForMainFrame:
+2026-11-15 01:26:52.385 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=18 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.385 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868] 0x1080500e0 - [resourceLoader=0x109000000, frameLoader=0x10819c100, frame=0x108040680, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-15 01:26:52.386 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::startLoading
+2026-11-15 01:26:52.386 Df RideQuest[11816:9ccd] [com.apple.WebKit:Process] WebContent[11868] 0x108262e60 - GPUProcessConnection::didInitialize
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didReceiveData: Received data during response processing, queuing it.
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didComplete
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setDocumentLoader: Setting document loader to 4446429184 (was 4446412800)
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::detachFromFrame
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::stopLoading
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::transitionToCommitted: Clearing provisional document loader (m_provisionalDocumentLoader=4446429184)
+2026-11-15 01:26:52.394 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 0 (was 4446429184)
+2026-11-15 01:26:52.394 E  RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoadStatistics] WebContent[11868] Unable to hide query parameters from script (missing data)
+2026-11-15 01:26:52.395 Df RideQuest[11816:9ccd] [com.apple.WebKit:ProcessSuspension] WebContent[11868]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=128, new=1, old=1)
+2026-11-15 01:26:52.396 Df RideQuest[11816:9ccd] [com.apple.WebKit:ProcessSuspension] WebContent[11868]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=128, new=1, old=1)
+2026-11-15 01:26:52.396 Df RideQuest[11816:9ccd] [com.apple.WebKit:ProcessSuspension] WebContent[11868]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=32, new=1, old=1)
+2026-11-15 01:26:52.399 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::didNavigateWithNavigationDataShared:
+2026-11-15 01:26:52.401 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::didCommitLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-15 01:26:52.404 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] Reloading input views for key-window scene responder: <WKContentView: 0x103853600; frame = (0 0; 0 0); opaque = NO; > force:N
+2026-11-15 01:26:52.404 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:52.405 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac4a0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:52.406 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:52.407 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac4a0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:52.408 Df RideQuest[11816:9bdb] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:<WKContentView: 0x103853600> forSetDelegate:(nil) force:NO delayEndInputSession:NO
+2026-11-15 01:26:52.408 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=25] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.409 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=25 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.409 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.410 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=3, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.410 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=25] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.421 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=28] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.421 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=28 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.421 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be loaded as data
+2026-11-15 01:26:52.421 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=0, frameID=0, resourceID=0] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.425 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didComplete
+2026-11-15 01:26:52.425 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=18 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.427 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient endRemoteTextInputSessionWithID:options:completion:]  Ending text input session. sessionID = AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF, options = <RTISessionOptions: 0x600000299a20; shouldResign = YES; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-15 01:26:52.428 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=28 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.428 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _endSessionWithID:forServices:options:completion:]  End input session: AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:52.443 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient endAllowingRemoteTextInput:completion:]  End allowing remote text input: AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:52.443 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = NO)
+2026-11-15 01:26:52.444 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Text input session suggestions changed. sessionID = (null)
+2026-11-15 01:26:52.447 Df RideQuest[11816:9bdb] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-15 01:26:52.452 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _reloadInputViewsForKeyWindowSceneResponder: 1 force: 0, fromBecomeFirstResponder: 0 (automaticKeyboard: 1, reloadIdentifier: E81AF788-2EA5-4166-AF18-953211C26274)
+2026-11-15 01:26:52.452 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder: <WKContentView: 0x103853600; frame = (0 0; 0 0); opaque = NO; >, automaticKeyboard: 1, force: 0
+2026-11-15 01:26:52.452 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder, disableAutomaticKeyboardUI return empty
+2026-11-15 01:26:52.452 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-15 01:26:52.453 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac420> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:52.453 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-15 01:26:52.453 Df RideQuest[11816:9bdb] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac420> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-15 01:26:52.453 Df RideQuest[11816:9bdb] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:(nil) forSetDelegate:<WKContentView: 0x103853600> force:NO delayEndInputSession:NO
+2026-11-15 01:26:52.456 Df RideQuest[11816:9bdb] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-15 01:26:52.474 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=25] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.474 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=25] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.475 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=25 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.521 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient beginAllowingRemoteTextInput:]  Begin allowing remote text input: AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:52.521 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = YES)
+2026-11-15 01:26:52.525 Df RideQuest[11816:9bdb] [com.apple.UIKit:UIPeripheralHost] endPlacementForInputViewSet: <<UIInputViewSet: 0x600003708fc0>; (empty)> windowScene: <UIWindowScene: 0x103706d40; role: UIWindowSceneSessionRoleApplication; persistentIdentifier: F5C21FF4-7E1A-459D-A0BF-B4A8A693A5A7; activationState: UISceneActivationStateForegroundActive>
+2026-11-15 01:26:52.526 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardArbiterClientLog] -[_UIRemoteKeyboards prepareToMoveKeyboard:withIAV:isIAVRelevant:showing:notifyRemote:forScene:] position: {{0, 0}, {0, 0}} visible: 0; notifyRemote: 1; isMinimized: NO
+2026-11-15 01:26:52.527 Df RideQuest[11816:9bdb] [com.apple.UIKit:KeyboardVisualMode] Show keyboard with visual mode windowed (0)
+2026-11-15 01:26:52.527 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Text input session suggestions changed. sessionID = AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:52.527 E  RideQuest[11816:9bdb] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF
+2026-11-15 01:26:52.534 Df RideQuest[11816:9c0c] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-15 01:26:52.537 Df RideQuest[11816:9c03] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-15 01:26:52.543 Df RideQuest[11816:9c0e] [com.apple.TextInputUI:CandidateGeneration] All generators are complete, dispatching to `completionBlockJustOnce`
+2026-11-15 01:26:52.543 Df RideQuest[11816:9c03] [com.apple.TextInputUI:CandidateGeneration] Assigning candidates of source type kbd to `containerToPush, for autocorrection flow only` - 1FB22841
+2026-11-15 01:26:52.544 Df RideQuest[11816:9c03] [com.apple.TextInputUI:CandidateGeneration] Preparing to push <_TUIKeyboardCandidateContainer: 0x6000002a8e60> to candidate receiver, for request token: 1FB22841
+2026-11-15 01:26:52.545 Df RideQuest[11816:9c03] [com.apple.TextInputUI:CandidateGeneration] Performing delayed generation for token=1FB22841
+2026-11-15 01:26:52.545 Df RideQuest[11816:9c0c] [com.apple.TextInputUI:CandidateGeneration] containerToPush has an autocorrection list.  pushing to candidate receiver with request token. 1FB22841.
+2026-11-15 01:26:52.549 Df RideQuest[11816:9bdb] [com.apple.WebKit:RemoteLayerTree] RemoteLayerTreeDrawingAreaProxy(13) Unhiding layer tree
+2026-11-15 01:26:52.606 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x10400c600 (pageProxyID=10) -[WKWebView _updateVisibleContentRects:] - scroll view state is non-stable, bailing (shouldDeferGeometryUpdates 0, dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=31] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=31 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=31] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=32] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.632 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=32 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.633 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.633 A  RideQuest[11816:9bdb] (Security) SecItemCopyMatching_ios
+2026-11-15 01:26:52.633 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.634 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=32] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.635 Df RideQuest[11816:9bdb] [com.apple.securityd:secitemratelimit] Not internal release, disabling SIRL
+2026-11-15 01:26:52.647 Df RideQuest[11816:9bdb] [com.apple.securityd:thread-local-client-debug] SecSecurityClientGet new thread!
+2026-11-15 01:26:52.652 Df RideQuest[11816:9bdb] [com.apple.securityd:keychain] System Keychain Always Supported set via feature flag to disabled
+2026-11-15 01:26:52.652 Df RideQuest[11816:9bdb] [com.apple.xpc:connection] [0x104947d00] activating connection: mach=true listener=false peer=false name=com.apple.securityd
+2026-11-15 01:26:52.655 A  RideQuest[11816:9bdb] (Security) SecItemDelete_ios
+2026-11-15 01:26:52.659 A  RideQuest[11816:9bdb] (Security) SecItemAdd_ios
+2026-11-15 01:26:52.660 A  RideQuest[11816:9bdb] (Security) SecItemCopyMatching_ios
+2026-11-15 01:26:52.675 Df RideQuest[11816:9ccd] [com.apple.WebKit:ProcessSuspension] WebContent[11868]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=1, new=0, old=1)
+2026-11-15 01:26:52.675 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [pageID=11, frameID=4294967297, isMainFrame=1] LocalFrameView::fireLayoutRelatedMilestonesIfNeeded: Firing first visually non-empty layout milestone on the main frame
+2026-11-15 01:26:52.675 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstVisuallyNonEmptyLayout)
+2026-11-15 01:26:52.675 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidFirstVisuallyNonEmptyLayoutForFrame
+2026-11-15 01:26:52.675 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::completePageTransitionIfNeeded: dispatching didCompletePageTransition
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=34] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=34 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=34] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=35] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.689 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=35 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.690 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.690 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.691 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=35] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.691 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=36] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-15 01:26:52.691 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=36 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-15 01:26:52.691 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be scheduled with the NetworkProcess
+2026-11-15 01:26:52.692 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: Resource is being scheduled with the NetworkProcess (priority=2, existingNetworkResourceLoadIdentifierToResume=0)
+2026-11-15 01:26:52.692 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=36] WebResourceLoader::WebResourceLoader
+2026-11-15 01:26:52.694 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::didFinishDocumentLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-15 01:26:52.754 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidFirstLayoutForFrame
+2026-11-15 01:26:52.754 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstLayout)
+2026-11-15 01:26:52.754 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=31] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.754 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=31] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.754 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=31 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.755 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=32] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.755 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=32] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.755 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=32 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.766 Df RideQuest[11816:9bdb] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _beginSessionWithID:forServices:force:]  Begin text input session. sessionID = AF01CDF4-460A-47E1-B1DF-D4A38C0BFEDF, options = <RTISessionOptions: 0x6000002a8ae0; shouldResign = NO; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-15 01:26:52.775 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=34] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.775 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=34] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.775 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=34 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.775 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=35] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.775 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=35] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.776 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=35 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.776 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=36] WebResourceLoader::didReceiveResponse: (httpStatusCode=200)
+2026-11-15 01:26:52.776 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: [webPageID=11, frameID=4294967297, resourceID=36] WebResourceLoader::didReceiveResource
+2026-11-15 01:26:52.776 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11, frameID=4294967297, resourceID=36 SubResourceLoader::didFinishLoading
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setState: main frame load completed
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]: Memory usage info dump at MainFrameLoadCompleted:
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   page_count: 1
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   backforward_cache_page_count: 0
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   document_count: 1
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   javascript_gc_heap_capacity_mb: 2
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   javascript_gc_heap_extra_memory_size_mb: 0
+2026-11-15 01:26:52.803 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   internal_mb: 27
+2026-11-15 01:26:52.804 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   compressed_mb: 0
+2026-11-15 01:26:52.804 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   phys_footprint_mb: 27
+2026-11-15 01:26:52.805 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   resident_size_mb: 120
+2026-11-15 01:26:52.805 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]:   virtual_size_mb: 104396
+2026-11-15 01:26:52.805 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: ProgressTracker::progressCompleted: frameID 4294967297, value 0.750547, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-11-15 01:26:52.806 Df RideQuest[11816:9ccd] [com.apple.WebKit:Network] WebContent[11868]: ProgressTracker::finalProgressComplete: value 0.750547, tracked frames 0, originating frameID 4294967297, isMainLoad 1, isMainLoadProgressing 0
+2026-11-15 01:26:52.806 Df RideQuest[11816:9ccd] [com.apple.WebKit:ResourceLoading] WebContent[11868]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::checkLoadCompleteForThisFrame: Finished frame load
+2026-11-15 01:26:52.807 Df RideQuest[11816:9ccd] [com.apple.WebKit:Layout] WebContent[11868]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstMeaningfulPaint)
+2026-11-15 01:26:52.814 Df RideQuest[11816:9ccd] [com.apple.Accessibility:AXCommon] WebContent[11868] Read Per-App on Init: Smart invert = (null)
+2026-11-15 01:26:52.911 Df RideQuest[11816:9bdb] [com.apple.WebKit:Loading] 0x104022420 - [pageProxyID=10, webPageID=11, PID=11868] WebPageProxy::didFinishLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-15 01:26:52.911 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x112128100 - NavigationState will release its process network assertion soon because the page load completed
+2026-11-15 01:26:52.911 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d4210 - [PID=11868, throttler=0x1120b0150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Client navigation'
+2026-11-15 01:26:53.020 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x10400c600 (pageProxyID=10) -[WKWebView _didCommitLayerTree:] - received a commit (2) while deferring visible content rect updates (dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-11-15 01:26:53.021 Df RideQuest[11816:9bdb] [com.apple.WebKit:ViewState] 0x10400c600 (pageProxyID=10) -[WKWebView _updateVisibleContentRects:] - performing first visible content rect update after deferring updates
+2026-11-15 01:26:55.911 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x112128100 NavigationState is releasing background process assertion because a page load completed
+2026-11-15 01:26:55.912 Df RideQuest[11816:9bdb] [com.apple.WebKit:ProcessSuspension] 0x1120d42a0 - [PID=11868, throttler=0x1120b0150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-11-15 01:27:02.804 Df RideQuest[11816:9ccd] [com.apple.WebKit:PerformanceLogging] WebContent[11868]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 29413376 bytes of memory after the page load.

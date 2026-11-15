@@ -1,0 +1,12 @@
+2026-11-15 01:27:09.668 E  RideQuest[12453:a2ef] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-15 01:27:09.668 E  RideQuest[12453:a2ef] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-15 01:27:09.671 E  RideQuest[12453:a2ef] [com.apple.ManagedConfiguration:MC] Error getting system group container for systemgroup.com.apple.configurationprofiles: 98
+2026-11-15 01:27:09.674 F  RideQuest[12453:a2ef] [com.apple.ManagedConfiguration:MC] Failed to get profile system group container path. Overriding with expected path: /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles
+2026-11-15 01:27:09.786 E  RideQuest[12453:a2f4] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 8F022CE9-F557-45BB-8851-18009328B15D])
+2026-11-15 01:27:11.302 F  RideQuest[12453:a2e4] [com.apple.WebKit:Process] WebContent process (0x1100c40c0) took 1.630445 seconds to launch
+2026-11-15 01:27:11.326 F  RideQuest[12453:a2e4] [com.apple.WebKit:Process] GPU process (0x1101201e0) took 1.574237 seconds to launch
+2026-11-15 01:27:11.332 F  RideQuest[12453:a2e4] [com.apple.WebKit:Process] Networking process (0x110138100) took 1.547225 seconds to launch
+2026-11-15 01:27:11.729 E  RideQuest[12453:a2e4] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-15 01:27:11.731 E  RideQuest[12453:a2e4] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-15 01:27:11.894 E  RideQuest[12453:a374] [com.apple.WebKit:ResourceLoadStatistics] WebContent[12460] Unable to hide query parameters from script (missing data)
+2026-11-15 01:27:12.023 E  RideQuest[12453:a2e4] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = 66B138EA-57BC-49AF-ACBC-CE2250B259F0

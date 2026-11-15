@@ -1,0 +1,6 @@
+OK    00-warmup  -demo  [6 error/fault log lines]
+OK    01-budgets  -demo -section budgets  [12 error/fault log lines]
+OK    02-setup-alerts  -demo -section setup  [12 error/fault log lines]
+OK    03-review  -demo -section review  [14 error/fault log lines]
+OK    04-subs  -demo -section subs  [12 error/fault log lines]
+OK    05-budgets-largetype  -demo -section budgets  [12 error/fault log lines]
