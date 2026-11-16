@@ -42,8 +42,8 @@ struct LogWhoopSheet: View {
                         slider(.steps, "Steps", "steps", range: 0...40_000, step: 500, decimals: 0, tint: Lab.whoop)
                         openWhoopButton
                         slider(.recovery, "Recovery", "%", range: 0...100, step: 1, decimals: 0, tint: band)
-                        slider(.strain, "Day strain", "/ 21", range: 0...21, step: 0.1, decimals: 1, tint: Lab.watch)
-                        slider(.sleepPerformance, "Sleep performance", "%", range: 0...100, step: 1, decimals: 0, tint: Lab.violet)
+                        slider(.strain, "Day strain", "/ 21", range: 0...21, step: 0.1, decimals: 1, tint: Lab.whoop)
+                        slider(.sleepPerformance, "Sleep performance", "%", range: 0...100, step: 1, decimals: 0, tint: Lab.whoop)
                         sleepTile
                         LazyVGrid(columns: [GridItem(.flexible(), spacing: Lab.S.s), GridItem(.flexible())], spacing: Lab.S.s) {
                             stepper(.hrv, "HRV", "ms", range: 0...300, step: 1, decimals: 0)
@@ -69,7 +69,7 @@ struct LogWhoopSheet: View {
                         focus = nil
                         // The sleep minutes field has no focus value of its own; end editing everywhere.
                         UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
-                    }.font(Lab.display(15, .heavy)).foregroundStyle(Lab.whoop)
+                    }.font(.body.weight(.semibold)).foregroundStyle(Lab.accent)
                 }
             }
         }
@@ -96,25 +96,23 @@ struct LogWhoopSheet: View {
         HStack(alignment: .top) {
             ScreenTitle(kicker: "Log WHOOP · by hand", title: date.isToday ? "Today's WHOOP" : "WHOOP · \(date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))")
             Spacer()
-            Button { dismiss() } label: {
-                Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                    .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-            }
-            .accessibilityLabel("Close")
+            CloseButton { dismiss() }
         }
     }
 
     private var dateRow: some View {
         HStack {
-            Image(systemName: "calendar").foregroundStyle(Lab.whoop)
-            Text("Day").font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
+            Image(systemName: "calendar").foregroundStyle(Lab.whoop).accessibilityHidden(true)
+            Text("Day").font(.body.weight(.semibold)).foregroundStyle(Lab.text)
             Spacer()
             DatePicker("Day", selection: $date, in: ...Date(), displayedComponents: .date)
                 .labelsHidden().tint(Lab.whoop)
             if existing != nil { SourceBadge(text: "WHOOP · MANUAL") }
         }
         .padding(.horizontal, Lab.S.m).padding(.vertical, 10)
-        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
+        .frame(minHeight: 56)
+        .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+        .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.line))
     }
 
     private var openWhoopButton: some View {
@@ -125,18 +123,18 @@ struct LogWhoopSheet: View {
             }
         } label: {
             HStack(spacing: 10) {
-                Image(systemName: "bolt.heart.fill").font(.system(size: 16, weight: .bold))
+                Image(systemName: "bolt.heart.fill").font(.system(size: 16, weight: .semibold))
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("Open WHOOP").font(Lab.display(16, .heavy))
-                    Text("Glance at today's numbers, then come back").font(Lab.mono(10)).opacity(0.75)
+                    Text("Open WHOOP").font(.body.weight(.semibold))
+                    Text("Glance at today's numbers, then come back").font(.caption).opacity(0.8)
                 }
                 Spacer()
-                Image(systemName: "arrow.up.right").font(.system(size: 13, weight: .heavy))
+                Image(systemName: "arrow.up.right").font(.footnote.weight(.semibold))
             }
             .foregroundStyle(Lab.whoop)
             .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.whoop.opacity(0.12)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.whoop.opacity(0.35)))
+            .frame(minHeight: 56)
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.whoop.opacity(0.12)))
         }
         .buttonStyle(PressScale())
     }
@@ -154,7 +152,7 @@ struct LogWhoopSheet: View {
         return tile(f, title, unit, tint: tint) {
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 field(f, decimals: decimals, size: 40, tint: tint)
-                Text(unit).font(Lab.label(11)).foregroundStyle(Lab.faint)
+                Text(unit).font(Lab.label(12)).foregroundStyle(Lab.faint)
                 Spacer()
                 bump(f, -step, range, decimals)
                 bump(f, step, range, decimals)
@@ -173,7 +171,7 @@ struct LogWhoopSheet: View {
         tile(f, title, unit, tint: Lab.whoop) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 field(f, decimals: decimals, size: 30, tint: Lab.whoop)
-                Text(unit).font(Lab.label(8)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
+                Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
             }
             HStack(spacing: 8) {
                 bump(f, -step, range, decimals)
@@ -184,11 +182,11 @@ struct LogWhoopSheet: View {
     }
 
     private var sleepTile: some View {
-        tile(.sleep, "Hours of sleep", "h:mm", tint: Lab.violet) {
+        tile(.sleep, "Hours of sleep", "h:mm", tint: Lab.whoop) {
             HStack(alignment: .firstTextBaseline, spacing: 4) {
                 TextField("–", text: $sleepH)
                     .keyboardType(.numberPad)
-                    .font(Lab.number(40, .black)).foregroundStyle(Lab.violet)
+                    .font(Lab.number(40)).foregroundStyle(Lab.whoop)
                     .multilineTextAlignment(.trailing)
                     .frame(width: 64)
                     .focused($focus, equals: .sleep)
@@ -196,7 +194,7 @@ struct LogWhoopSheet: View {
                 Text("h").font(Lab.label(12)).foregroundStyle(Lab.faint)
                 TextField("00", text: $sleepM)
                     .keyboardType(.numberPad)
-                    .font(Lab.number(40, .black)).foregroundStyle(Lab.violet)
+                    .font(Lab.number(40)).foregroundStyle(Lab.whoop)
                     .multilineTextAlignment(.trailing)
                     .frame(width: 64)
                     .accessibilityLabel("Minutes asleep")
@@ -211,18 +209,20 @@ struct LogWhoopSheet: View {
     private func tile<C: View>(_ f: ManualField, _ title: String, _ unit: String, tint: Color, @ViewBuilder _ content: () -> C) -> some View {
         VStack(alignment: .leading, spacing: Lab.S.s) {
             HStack(spacing: 6) {
-                Text(title.uppercased()).font(Lab.label(10)).tracking(1.2).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
+                Text(L(title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
                 Spacer(minLength: 0)
                 if let k = known[f], isFilled(f), abs((value(f) ?? -1) - k) < 0.001 {
-                    Text("FROM HEALTH").font(Lab.label(7)).foregroundStyle(Lab.faint)
+                    Text("From Health").font(.caption2.weight(.medium)).foregroundStyle(Lab.faint)
+                        .padding(.horizontal, 6).padding(.vertical, 2)
+                        .background(Capsule().fill(Lab.inset))
                 }
             }
             content()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(Lab.S.m - 2)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Lab.panel.opacity(0.85)))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).strokeBorder(focus == f ? tint.opacity(0.6) : Color.white.opacity(0.08)))
+        .padding(Lab.S.m)
+        .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+        .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(focus == f ? tint.opacity(0.7) : Lab.line))
         .contentShape(Rectangle())
         .onTapGesture { focus = f }
     }
@@ -230,7 +230,7 @@ struct LogWhoopSheet: View {
     private func field(_ f: ManualField, decimals: Int, size: CGFloat, tint: Color) -> some View {
         TextField("–", text: Binding(get: { text[f] ?? "" }, set: { text[f] = $0 }))
             .keyboardType(decimals > 0 ? .decimalPad : .numberPad)
-            .font(Lab.number(size, .black)).foregroundStyle(tint)
+            .font(Lab.number(size)).foregroundStyle(tint)
             .lineLimit(1).minimumScaleFactor(0.5)
             .focused($focus, equals: f)
             .frame(minWidth: 60)
@@ -248,9 +248,9 @@ struct LogWhoopSheet: View {
             Lab.tick()
             action()
         } label: {
-            Image(systemName: symbol).font(.system(size: 16, weight: .heavy)).foregroundStyle(Lab.text)
+            Image(systemName: symbol).font(.system(size: 15, weight: .semibold)).foregroundStyle(Lab.text)
                 .frame(width: 44, height: 44)
-                .background(Circle().fill(Color.white.opacity(0.08)))
+                .background(Circle().fill(Color.white.opacity(0.10)))
         }
         .buttonStyle(PressScale())
         .accessibilityLabel(symbol == "minus" ? "Decrease" : "Increase")
@@ -258,39 +258,37 @@ struct LogWhoopSheet: View {
 
     private var saveButton: some View {
         Button(action: save) {
-            Text(existing == nil ? "Save" : "Save changes").font(Lab.display(18, .heavy)).foregroundStyle(.black)
-                .frame(maxWidth: .infinity).padding(.vertical, 16)
-                .background(Capsule().fill(Lab.whoop))
+            Text(existing == nil ? "Save" : "Save changes")
         }
-        .buttonStyle(PressScale())
+        .buttonStyle(LabPrimaryButton())
+        .padding(.top, Lab.S.s)
     }
 
     @ViewBuilder private var footer: some View {
         VStack(spacing: Lab.S.s) {
             if auto {
                 Button { dismiss() } label: {
-                    Text("Not now").font(Lab.display(15, .heavy)).foregroundStyle(Lab.dim)
-                        .frame(maxWidth: .infinity).padding(.vertical, 10)
+                    Text("Not now")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(LabSecondaryButton(tint: Lab.dim))
                 Button {
                     WhoopPrompt.askEnabled = false
                     store.toast = "Won't ask each morning. Turn it back on in Settings."
                     dismiss()
                 } label: {
-                    Text("Don't ask again").font(Lab.mono(11)).foregroundStyle(Lab.faint)
+                    Text("Don't ask again").font(.footnote).foregroundStyle(Lab.faint).frame(minHeight: 44)
                 }
                 .buttonStyle(.plain)
             }
             if existing != nil {
                 Button { confirmDelete = true } label: {
-                    Text("Delete this day's entry").font(Lab.mono(12, .heavy)).foregroundStyle(Lab.bad)
-                        .frame(maxWidth: .infinity).padding(.vertical, 8)
+                    Text("Delete this day's entry").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.bad)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.plain)
             }
             Text("Everything is optional; only what you fill in is saved. Numbers already in Apple Health are filled in for you. If the WHOOP API sends this day later, its numbers win.")
-                .font(Lab.body(11)).foregroundStyle(Lab.faint)
+                .font(.caption).foregroundStyle(Lab.faint)
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity)
@@ -410,20 +408,23 @@ struct LogWhoopCard: View {
         } label: {
             HStack(spacing: Lab.S.s) {
                 Image(systemName: rec == nil ? "square.and.pencil" : "checkmark.circle.fill")
-                    .font(.system(size: 16, weight: .bold)).foregroundStyle(rec == nil ? Lab.whoop : Lab.good)
+                    .font(.system(size: 18, weight: .semibold)).foregroundStyle(rec == nil ? Lab.whoop : Lab.good)
+                    .frame(width: 34, height: 34)
+                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill((rec == nil ? Lab.whoop : Lab.good).opacity(0.15)))
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
                     HStack(spacing: 6) {
-                        Text("Log WHOOP").font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
+                        Text("Log WHOOP").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
                         if manualToday { SourceBadge(text: "WHOOP · MANUAL") }
                     }
-                    Text(line(today, rec)).font(Lab.mono(10)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.8)
+                    Text(line(today, rec)).font(.caption).foregroundStyle(Lab.dim).lineLimit(2).minimumScaleFactor(0.8)
                 }
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
             }
             .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.whoop.opacity(0.35)))
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+            .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.line))
         }
         .buttonStyle(PressScale())
         .accessibilityHint("Type today's WHOOP numbers by hand")

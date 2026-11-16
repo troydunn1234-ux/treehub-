@@ -57,7 +57,7 @@ struct SuppsView: View {
     private var header: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                Text("DAILY STACK · SYNCED TO HEALTH").font(Ember.font(11, .heavy)).tracking(3).foregroundStyle(Ember.fire)
+                Text("DAILY STACK · SYNCED TO HEALTH").font(Ember.font(11, .heavy)).tracking(0.4).foregroundStyle(Ember.fire)
                 Text("Supplements").font(Ember.font(28, .heavy)).foregroundStyle(Ember.cream)
             }
             Spacer()
@@ -189,12 +189,11 @@ struct SuppsView: View {
                     Circle().strokeBorder(done ? Color.clear : Ember.line, lineWidth: 2)
                     if done {
                         Circle().fill(Ember.fire)
-                        Image(systemName: "checkmark").font(.system(size: 15, weight: .black)).foregroundStyle(.white)
+                        Image(systemName: "checkmark").font(.system(size: 15, weight: .semibold)).foregroundStyle(.white)
                             .transition(.scale.combined(with: .opacity))
                     }
                 }
                 .frame(width: 32, height: 32)
-                .shadow(color: done ? Ember.orange.opacity(0.6) : .clear, radius: 8)
             }
             .padding(12)
             .background(done ? Ember.orange.opacity(0.10) : Ember.card, in: RoundedRectangle(cornerRadius: 20, style: .continuous))

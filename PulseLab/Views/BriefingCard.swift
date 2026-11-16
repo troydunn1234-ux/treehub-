@@ -11,10 +11,10 @@ struct BriefingCard: View {
         LabPanel(tint: Lab.good) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(alignment: .firstTextBaseline) {
-                    SectionTag(String(localized: "Morning briefing"), color: Lab.good)
+                    SectionTag(String(localized: "Morning briefing"))
                     Spacer()
                     Text(Date().formatted(.dateTime.weekday(.abbreviated).day()))
-                        .font(Lab.label(10)).foregroundStyle(Lab.faint)
+                        .font(.footnote).foregroundStyle(Lab.faint)
                         .accessibilityHidden(true)
                 }
                 Button {
@@ -26,7 +26,7 @@ struct BriefingCard: View {
                 .buttonStyle(PressScale())
                 .accessibilityHint(b.recoveryKind == .readiness ? String(localized: "Shows how readiness was worked out") : String(localized: "Opens the recovery chart"))
                 let cols = typeSize.isAccessibilitySize ? 1 : 2
-                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10), count: cols), alignment: .leading, spacing: 10) {
+                LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s), count: cols), alignment: .leading, spacing: Lab.S.s) {
                     stat(String(localized: "Sleep"), b.sleepMin.map { fmtHM($0) },
                          delta: b.sleepDeltaMin.map { ($0 >= 0 ? "+" : "−") + fmtHM(abs($0)) + " " + String(localized: "vs 7-night avg") },
                          good: b.sleepDeltaMin.map { $0 >= -10 })
@@ -40,7 +40,7 @@ struct BriefingCard: View {
                          delta: nil, good: nil)
                 }
                 Text(b.takeaway)
-                    .font(Lab.body(14)).foregroundStyle(Lab.text)
+                    .font(.subheadline).foregroundStyle(Lab.text)
                     .fixedSize(horizontal: false, vertical: true)
                 if b.whoopMissing {
                     Button {
@@ -48,12 +48,11 @@ struct BriefingCard: View {
                         store.logWhoop = LogWhoopRequest()
                     } label: {
                         Label(String(localized: "Log today's WHOOP to complete it"), systemImage: "square.and.pencil")
-                            .font(Lab.display(13, .heavy)).foregroundStyle(Lab.whoop)
                     }
-                    .buttonStyle(PressScale())
+                    .buttonStyle(LabSecondaryButton(tint: Lab.whoop))
                 }
                 Text(String(localized: "Describes your numbers against your own history. Not medical advice."))
-                    .font(Lab.label(8)).foregroundStyle(Lab.faint)
+                    .font(.caption2).foregroundStyle(Lab.faint)
             }
         }
     }
@@ -61,9 +60,9 @@ struct BriefingCard: View {
     private func recoveryRow(_ b: Briefing) -> some View {
         HStack(alignment: .center, spacing: 14) {
             ZStack {
-                Circle().stroke(Color.white.opacity(0.08), lineWidth: 7)
+                Circle().stroke(Color.white.opacity(0.08), lineWidth: 6)
                 Circle().trim(from: 0, to: CGFloat((b.recovery ?? 0) / 100))
-                    .stroke(Lab.band(b.recovery ?? 0), style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                    .stroke(Lab.band(b.recovery ?? 0), style: StrokeStyle(lineWidth: 6, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 Text(b.recovery.map { "\(Int($0.rounded()))" } ?? "—")
                     .font(Lab.number(22)).foregroundStyle(Lab.text)
@@ -72,14 +71,14 @@ struct BriefingCard: View {
             .frame(width: 62, height: 62)
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
-                Text(b.recoveryLabel.uppercased()).font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.dim)
-                Text(band(b.recovery)).font(Lab.display(18, .heavy)).foregroundStyle(Lab.text)
+                Text(b.recoveryLabel).font(.footnote.weight(.semibold)).foregroundStyle(Lab.dim)
+                Text(band(b.recovery)).font(.title3.weight(.bold)).foregroundStyle(b.recovery.map(Lab.band) ?? Lab.text)
                 if b.recoveryKind == .readiness {
-                    Text(String(localized: "Pulse Lab's score from your Watch")).font(Lab.label(8)).foregroundStyle(Lab.faint)
+                    Text(String(localized: "Pulse Lab's score from your Watch")).font(.caption2).foregroundStyle(Lab.faint)
                 }
             }
             Spacer(minLength: 0)
-            Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.faint)
+            Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(b.recovery.map { "\(b.recoveryLabel) \(Int($0.rounded())), \(band($0))" } ?? String(localized: "\(b.recoveryLabel): no score yet"))
@@ -92,15 +91,16 @@ struct BriefingCard: View {
 
     private func stat(_ title: String, _ value: String?, delta: String?, good: Bool?) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(title.uppercased()).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.dim)
+            Text(title).font(.caption.weight(.semibold)).foregroundStyle(Lab.dim)
             Text(value ?? "—").font(Lab.number(19)).foregroundStyle(value == nil ? Lab.faint : Lab.text)
                 .lineLimit(1).minimumScaleFactor(0.7)
-            if let delta {
-                Text(delta).font(Lab.mono(9)).foregroundStyle(good == false ? Lab.warn : Lab.dim)
-                    .fixedSize(horizontal: false, vertical: true)
-            }
+            Text(delta ?? (value == nil ? String(localized: "No reading") : " ")).font(Lab.mono(11, .medium))
+                .foregroundStyle(good == false ? Lab.warn : Lab.faint)
+                .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(Lab.S.sm)
+        .background(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).fill(Lab.inset))
         .accessibilityElement(children: .combine)
     }
 }

@@ -150,7 +150,7 @@ struct SuppEditSheet: View {
 
     private var doseCard: some View {
         VStack(spacing: 14) {
-            Text("DOSE").font(Ember.font(11, .heavy)).tracking(3).foregroundStyle(Ember.orange)
+            Text("DOSE").font(Ember.font(11, .heavy)).tracking(0.4).foregroundStyle(Ember.orange)
                 .frame(maxWidth: .infinity, alignment: .leading)
             HStack(spacing: 16) {
                 stepButton("minus") { setAmount(max(dose.step >= 1 ? dose.step : 0.5, dose.amount - dose.step)) }
@@ -264,7 +264,6 @@ struct SuppEditSheet: View {
                 .font(Ember.font(18, .heavy)).foregroundStyle(.white)
                 .frame(maxWidth: .infinity).padding(.vertical, 17)
                 .background(Ember.fire, in: Capsule())
-                .shadow(color: Ember.orange.opacity(0.5), radius: 14, y: 6)
         }
         .buttonStyle(Squish())
         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
@@ -276,17 +275,16 @@ struct SuppEditSheet: View {
 
     private func section<C: View>(_ label: String, @ViewBuilder _ content: () -> C) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Text(label).font(Ember.font(11, .heavy)).tracking(3).foregroundStyle(Ember.orange)
+            Text(label).font(Ember.font(11, .heavy)).tracking(0.4).foregroundStyle(Ember.orange)
             content()
         }
     }
 
     private func stepButton(_ symbol: String, _ action: @escaping () -> Void) -> some View {
         Button(action: action) {
-            Image(systemName: symbol).font(.system(size: 24, weight: .black)).foregroundStyle(.white)
+            Image(systemName: symbol).font(.system(size: 24, weight: .semibold)).foregroundStyle(.white)
                 .frame(width: 60, height: 60)
                 .background(Ember.fire, in: Circle())
-                .shadow(color: Ember.orange.opacity(0.45), radius: 10)
         }
         .buttonStyle(Squish())
         .accessibilityLabel(symbol == "plus" ? "More" : "Less")

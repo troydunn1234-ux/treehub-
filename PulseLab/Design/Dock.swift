@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Floating glass dock with five tabs. The selected tab gets a sliding pill in the duel gradient
+/// Floating dock with the main tabs. The selected tab gets a sliding tinted pill in the accent colour
 /// and its icon bounces. Settings isn't here; it lives behind the gear in each header.
 struct LabDock: View {
     @Binding var tab: LabTab
@@ -18,18 +18,18 @@ struct LabDock: View {
                 } label: {
                     VStack(spacing: 3) {
                         Image(systemName: t.symbol)
-                            .font(.system(size: 18, weight: .bold))
+                            .font(.system(size: 17, weight: .semibold))
                             .symbolEffect(.bounce, value: tab == t)
-                        Text(t.dockTitle).font(.system(size: 8, weight: .heavy, design: .monospaced)).tracking(1)
+                        Text(t.title).font(.system(size: 10, weight: .semibold))
+                            .lineLimit(1).minimumScaleFactor(0.8)
                     }
-                    .foregroundStyle(tab == t ? Lab.bg : Lab.dim)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 9)
+                    .foregroundStyle(tab == t ? Lab.accent : Lab.dim)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .padding(.vertical, 4)
                     .background {
                         if tab == t {
                             Capsule()
-                                .fill(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing))
-                                .shadow(color: Lab.watch.opacity(0.5), radius: 10)
+                                .fill(Lab.accent.opacity(0.16))
                                 .matchedGeometryEffect(id: "pill", in: pill)
                         }
                     }
@@ -42,9 +42,9 @@ struct LabDock: View {
         }
         .padding(6)
         .background(Capsule().fill(.ultraThinMaterial))
-        .background(Capsule().fill(Lab.bg.opacity(0.55)))
-        .overlay(Capsule().strokeBorder(LinearGradient(colors: [Lab.watch.opacity(0.45), Color.white.opacity(0.06), Lab.whoop.opacity(0.45)], startPoint: .leading, endPoint: .trailing), lineWidth: 1))
-        .shadow(color: .black.opacity(0.5), radius: 20, y: 10)
+        .background(Capsule().fill(Lab.panel.opacity(0.7)))
+        .overlay(Capsule().strokeBorder(Lab.line, lineWidth: 1))
+        .shadow(color: .black.opacity(0.35), radius: 12, y: 6)
         .padding(.horizontal, 14)
     }
 }
@@ -75,11 +75,13 @@ struct HeaderIconButton: View {
             action()
         } label: {
             Image(systemName: symbol)
-                .font(.system(size: 15, weight: .bold))
+                .font(.system(size: 15, weight: .semibold))
                 .foregroundStyle(Lab.text)
-                .frame(width: 38, height: 38)
-                .background(Circle().fill(.ultraThinMaterial))
-                .overlay(Circle().strokeBorder(Color.white.opacity(0.12)))
+                .frame(width: 40, height: 40)
+                .background(Circle().fill(Lab.panel))
+                .overlay(Circle().strokeBorder(Lab.line))
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
@@ -101,19 +103,17 @@ struct LaunchSplash: View {
             ZStack {
                 PulseLineShape(phase: 0)
                     .trim(from: 0, to: draw)
-                    .stroke(Lab.watch, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                    .shadow(color: Lab.watch, radius: 10)
+                    .stroke(Lab.watch, style: StrokeStyle(lineWidth: 3.5, lineCap: .round, lineJoin: .round))
                     .offset(y: merge ? 0 : -26)
                 PulseLineShape(phase: 0.5)
                     .trim(from: 0, to: draw)
-                    .stroke(Lab.whoop, style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
-                    .shadow(color: Lab.whoop, radius: 10)
+                    .stroke(Lab.whoop, style: StrokeStyle(lineWidth: 3.5, lineCap: .round, lineJoin: .round))
                     .offset(y: merge ? 0 : 26)
             }
             .frame(width: 240, height: 90)
             VStack {
                 Spacer()
-                Text("PULSE LAB").font(Lab.label(14)).tracking(8).foregroundStyle(Lab.text)
+                Text("Pulse Lab").font(.title3.weight(.semibold)).tracking(0.4).foregroundStyle(Lab.text)
                     .opacity(merge ? 1 : 0)
                     .padding(.bottom, 120)
             }

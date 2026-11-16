@@ -26,6 +26,7 @@ struct OnboardingView: View {
                 .accessibilityLabel(String(localized: "Page \(page + 1) of \(pages)"))
             if page == 0 {
                 Button { go(1) } label: { primary(String(localized: "Next")) }
+                    .buttonStyle(LabPrimaryButton())
                     .padding(.horizontal, 24).padding(.bottom, 24)
             }
         }
@@ -61,11 +62,13 @@ struct OnboardingView: View {
 
     private func feature(_ icon: String, _ title: String, _ text: String) -> some View {
         HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon).font(.system(size: 18, weight: .bold)).foregroundStyle(Lab.watch)
-                .frame(width: 28).accessibilityHidden(true)
+            Image(systemName: icon).font(.body.weight(.semibold)).foregroundStyle(Lab.accent)
+                .frame(width: 36, height: 36)
+                .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(Lab.accent.opacity(0.15)))
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Lab.display(16, .heavy)).foregroundStyle(Lab.text)
-                Text(text).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                Text(title).font(.headline).foregroundStyle(Lab.text)
+                Text(text).font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
             }
         }
         .accessibilityElement(children: .combine)
@@ -77,7 +80,6 @@ struct OnboardingView: View {
         let phase = CGFloat(tl.date.timeIntervalSinceReferenceDate.truncatingRemainder(dividingBy: 3) / 3)
         Canvas { context, size in
             for (i, color) in [Lab.watch, Lab.whoop].enumerated() {
-                var ctx = context
                 var path = Path()
                 let mid = size.height / 2 + CGFloat(i) * 10 - 5
                 for x in stride(from: 0, through: size.width, by: 2) {
@@ -87,8 +89,7 @@ struct OnboardingView: View {
                     if t > 0.5 && t < 0.55 { y = mid + sin((t - 0.5) / 0.05 * .pi) * size.height * 0.18 }
                     if x == 0 { path.move(to: CGPoint(x: x, y: y)) } else { path.addLine(to: CGPoint(x: x, y: y)) }
                 }
-                ctx.addFilter(.shadow(color: color, radius: 6))
-                ctx.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
+                context.stroke(path, with: .color(color), style: StrokeStyle(lineWidth: 3, lineCap: .round, lineJoin: .round))
             }
         }
         }
@@ -101,8 +102,7 @@ struct OnboardingView: View {
     private var connectHealth: some View {
         VStack(spacing: 18) {
             Spacer()
-            Image(systemName: "heart.text.square.fill").font(.system(size: 64)).foregroundStyle(Lab.watch)
-                .shadow(color: Lab.watch.opacity(0.7), radius: 16)
+            Image(systemName: "heart.text.square.fill").font(.system(size: 64)).foregroundStyle(Lab.accent)
                 .accessibilityHidden(true)
             Text(String(localized: "Connect Health")).font(Lab.display(32)).foregroundStyle(Lab.text)
                 .accessibilityAddTraits(.isHeader)
@@ -118,8 +118,11 @@ struct OnboardingView: View {
                     go(2)
                 }
             } label: { primary(healthDone ? String(localized: "Connected") : String(localized: "Connect Health")) }
+            .buttonStyle(LabPrimaryButton())
+            .sensoryFeedback(.success, trigger: healthDone)
             Button(String(localized: "Not now")) { go(2) }
                 .font(Lab.body(15, .semibold)).foregroundStyle(Lab.dim)
+                .frame(minHeight: 44)
                 .padding(.bottom, 24)
         }
         .padding(.horizontal, 24)
@@ -130,7 +133,7 @@ struct OnboardingView: View {
         ScrollView {
             VStack(spacing: 16) {
                 Image(systemName: "bolt.heart.fill").font(.system(size: 52)).foregroundStyle(Lab.whoop)
-                    .shadow(color: Lab.whoop.opacity(0.7), radius: 16).padding(.top, 32)
+                    .padding(.top, 32)
                     .accessibilityHidden(true)
                 Text(String(localized: "WHOOP & your Stack")).font(Lab.display(30)).foregroundStyle(Lab.text)
                     .multilineTextAlignment(.center)
@@ -140,9 +143,9 @@ struct OnboardingView: View {
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 LabPanel(tint: Lab.whoop) { WhoopConnectView(accent: Lab.whoop) }
-                LabPanel(tint: Lab.good) {
+                LabPanel {
                     VStack(alignment: .leading, spacing: 6) {
-                        Toggle(String(localized: "Morning briefing notification"), isOn: $briefing).tint(Lab.good)
+                        Toggle(String(localized: "Morning briefing notification"), isOn: $briefing).tint(Lab.accent)
                             .font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
                             .onChange(of: briefing) { _, on in
                                 Task {
@@ -162,8 +165,10 @@ struct OnboardingView: View {
                     }
                 }
                 Button { done() } label: { primary(String(localized: "Enter the lab")) }
+                    .buttonStyle(LabPrimaryButton())
                 Button(String(localized: "Skip WHOOP for now")) { done() }
                     .font(Lab.body(15, .semibold)).foregroundStyle(Lab.dim)
+                    .frame(minHeight: 44)
                     .padding(.bottom, 24)
             }
             .padding(.horizontal, 24)
@@ -173,7 +178,7 @@ struct OnboardingView: View {
     private var dots: some View {
         HStack(spacing: 6) {
             ForEach(0..<pages, id: \.self) { i in
-                Capsule().fill(i == page ? AnyShapeStyle(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing)) : AnyShapeStyle(Color.white.opacity(0.15)))
+                Capsule().fill(i == page ? Lab.accent : Color.white.opacity(0.18))
                     .frame(width: i == page ? 22 : 7, height: 7)
             }
         }
@@ -181,9 +186,6 @@ struct OnboardingView: View {
     }
 
     private func primary(_ t: String) -> some View {
-        Text(t).font(Lab.display(17, .heavy)).foregroundStyle(Lab.bg)
-            .frame(maxWidth: .infinity).padding(.vertical, 16)
-            .background(Capsule().fill(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing)))
-            .shadow(color: Lab.watch.opacity(0.4), radius: 14)
+        Text(t)
     }
 }

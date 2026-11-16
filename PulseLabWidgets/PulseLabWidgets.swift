@@ -63,21 +63,21 @@ enum Bridge {
 // MARK: - Palette (copied from PulseLab/Design/Lab.swift)
 
 enum Palette {
-    static let bg = Color(red: 0.020, green: 0.016, blue: 0.040)
-    static let panel = Color(red: 0.060, green: 0.052, blue: 0.105)
-    static let text = Color(red: 0.93, green: 0.94, blue: 1.0)
-    static let dim = Color.white.opacity(0.55)
-    static let faint = Color.white.opacity(0.32)
-    static let watch = Color(red: 0.20, green: 0.92, blue: 1.00)
-    static let whoop = Color(red: 1.00, green: 0.66, blue: 0.16)
-    static let violet = Color(red: 0.58, green: 0.38, blue: 1.00)
-    static let good = Color(red: 0.25, green: 0.95, blue: 0.55)
+    static let bg = Color(red: 0.043, green: 0.043, blue: 0.051)
+    static let panel = Color(red: 0.106, green: 0.106, blue: 0.118)
+    static let text = Color(red: 0.96, green: 0.96, blue: 0.97)
+    static let dim = Color.white.opacity(0.66)
+    static let faint = Color.white.opacity(0.50)
+    static let watch = Color(red: 0.25, green: 0.80, blue: 1.00)
+    static let whoop = Color(red: 1.00, green: 0.64, blue: 0.20)
+    static let accent = Color(red: 1.00, green: 0.25, blue: 0.36)
+    static let good = Color(red: 0.22, green: 0.84, blue: 0.46)
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
-    static let bad = Color(red: 1.00, green: 0.30, blue: 0.40)
+    static let bad = Color(red: 1.00, green: 0.36, blue: 0.32)
 
     static func band(_ score: Double) -> Color { score >= 67 ? good : score >= 34 ? warn : bad }
-    static func number(_ size: CGFloat) -> Font { .system(size: size, weight: .heavy, design: .rounded).width(.condensed).monospacedDigit() }
-    static func label(_ size: CGFloat = 8) -> Font { .system(size: size, weight: .heavy, design: .monospaced) }
+    static func number(_ size: CGFloat) -> Font { .system(size: size, weight: .bold, design: .rounded).monospacedDigit() }
+    static func label(_ size: CGFloat = 10) -> Font { .system(size: max(size, 10), weight: .semibold) }
 }
 
 // MARK: - Timeline
@@ -122,9 +122,7 @@ struct WidgetBackdrop: View {
     var body: some View {
         ZStack {
             Palette.bg
-            RadialGradient(colors: [Palette.violet.opacity(0.26), .clear], center: .top, startRadius: 4, endRadius: 220)
-            RadialGradient(colors: [Palette.watch.opacity(0.10), .clear], center: .bottomLeading, startRadius: 4, endRadius: 180)
-            RadialGradient(colors: [Palette.whoop.opacity(0.10), .clear], center: .bottomTrailing, startRadius: 4, endRadius: 180)
+            LinearGradient(colors: [Color.white.opacity(0.05), .clear], startPoint: .top, endPoint: .center)
         }
     }
 }
@@ -146,9 +144,9 @@ struct ReadyDuelView: View {
         VStack(spacing: 6) {
             header
             HStack(spacing: 0) {
-                score(entry.snap.readiness, "READY", .watch)
+                score(entry.snap.readiness, "Readiness", .watch)
                 vs
-                score(entry.snap.recovery, "RECOV", .whoop)
+                score(entry.snap.recovery, "Recovery", .whoop)
             }
             Spacer(minLength: 0)
             footer
@@ -162,9 +160,9 @@ struct ReadyDuelView: View {
             VStack(spacing: 6) {
                 header
                 HStack(spacing: 0) {
-                    score(entry.snap.readiness, "READY", .watch)
+                    score(entry.snap.readiness, "Readiness", .watch)
                     vs
-                    score(entry.snap.recovery, "RECOV", .whoop)
+                    score(entry.snap.recovery, "Recovery", .whoop)
                 }
                 Spacer(minLength: 0)
                 footer
@@ -172,9 +170,9 @@ struct ReadyDuelView: View {
             .frame(maxWidth: .infinity)
             Rectangle().fill(Color.white.opacity(0.08)).frame(width: 1)
             VStack(alignment: .leading, spacing: 8) {
-                row("RESTING HR", "bpm", entry.snap.rhrWatch, entry.snap.rhrWhoop, decimals: 0)
+                row("Resting HR", "bpm", entry.snap.rhrWatch, entry.snap.rhrWhoop, decimals: 0)
                 Rectangle().fill(Color.white.opacity(0.08)).frame(height: 1)
-                row("SLEEP", "h", entry.snap.sleepWatch, entry.snap.sleepWhoop, decimals: 1)
+                row("Sleep", "h", entry.snap.sleepWatch, entry.snap.sleepWhoop, decimals: 1)
             }
             .frame(width: 118)
         }
@@ -184,18 +182,18 @@ struct ReadyDuelView: View {
 
     private var header: some View {
         HStack(spacing: 5) {
-            Circle().fill(Palette.watch).frame(width: 5, height: 5)
-            Circle().fill(Palette.whoop).frame(width: 5, height: 5)
-            Text("PULSE LAB").font(Palette.label(8)).tracking(1.8).foregroundStyle(Palette.dim)
+            Image(systemName: "waveform.path.ecg").font(.system(size: 10, weight: .semibold))
+                .foregroundStyle(Palette.accent).widgetAccentable()
+            Text("Pulse Lab").font(Palette.label(11)).foregroundStyle(Palette.dim)
             Spacer()
         }
     }
 
     private var vs: some View {
-        Text("VS")
-            .font(.system(size: 13, weight: .black, design: .rounded))
-            .foregroundStyle(LinearGradient(colors: [Palette.watch, Palette.violet, Palette.whoop], startPoint: .leading, endPoint: .trailing))
-            .frame(width: 28)
+        Text("vs")
+            .font(.system(size: 12, weight: .semibold))
+            .foregroundStyle(Palette.faint)
+            .frame(width: 22)
     }
 
     private enum Side { case watch, whoop }
@@ -203,47 +201,49 @@ struct ReadyDuelView: View {
     private func score(_ v: Double?, _ label: String, _ side: Side) -> some View {
         let base = side == .watch ? Palette.watch : Palette.whoop
         let ring = side == .whoop ? (v.map(Palette.band) ?? base) : base
-        return VStack(spacing: 2) {
+        return VStack(spacing: 4) {
             ZStack {
                 Circle().stroke(Color.white.opacity(0.08), lineWidth: 5)
                 Circle()
                     .trim(from: 0, to: CGFloat(min(100, max(0, v ?? 0)) / 100))
                     .stroke(ring, style: StrokeStyle(lineWidth: 5, lineCap: .round))
                     .rotationEffect(.degrees(-90))
-                Text(v.map { "\(Int($0.rounded()))" } ?? "––")
-                    .font(Palette.number(22)).foregroundStyle(v == nil ? Palette.faint : Palette.text)
+                    .widgetAccentable()
+                Text(v.map { "\(Int($0.rounded()))" } ?? "—")
+                    .font(Palette.number(20)).foregroundStyle(v == nil ? Palette.faint : Palette.text)
                     .minimumScaleFactor(0.6)
             }
             .frame(width: 50, height: 50)
-            Text(label).font(Palette.label(7)).tracking(1.2).foregroundStyle(base)
+            Text(label).font(Palette.label(10)).foregroundStyle(base)
+                .lineLimit(1).minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
     }
 
     private func row(_ title: String, _ unit: String, _ w: Double?, _ h: Double?, decimals: Int) -> some View {
         VStack(alignment: .leading, spacing: 3) {
-            Text(title).font(Palette.label(7)).tracking(1.4).foregroundStyle(Palette.dim)
+            Text(title).font(Palette.label(10)).foregroundStyle(Palette.dim)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 value(w, decimals, Palette.watch)
-                Text("/").font(Palette.label(10)).foregroundStyle(Palette.faint)
+                Text("/").font(Palette.label(11)).foregroundStyle(Palette.faint)
                 value(h, decimals, Palette.whoop)
-                Text(unit).font(Palette.label(7)).foregroundStyle(Palette.faint)
+                Text(unit).font(Palette.label(10)).foregroundStyle(Palette.faint)
             }
         }
     }
 
     private func value(_ v: Double?, _ decimals: Int, _ color: Color) -> some View {
-        Text(v.map { String(format: "%.\(decimals)f", $0) } ?? "–")
+        Text(v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "—")
             .font(Palette.number(18)).foregroundStyle(v == nil ? Palette.faint : color)
     }
 
     private var footer: some View {
         HStack {
-            Text(verdict).font(.system(size: 9, weight: .semibold, design: .rounded)).foregroundStyle(Palette.dim)
+            Text(verdict).font(.system(size: 11, weight: .medium)).foregroundStyle(Palette.dim)
                 .lineLimit(1).minimumScaleFactor(0.8)
             Spacer(minLength: 0)
             if let t = entry.snap.updatedAt {
-                Text(t, style: .relative).font(Palette.label(7)).foregroundStyle(Palette.faint).lineLimit(1)
+                Text(t, style: .relative).font(Palette.label(10).monospacedDigit()).foregroundStyle(Palette.faint).lineLimit(1)
             }
         }
     }

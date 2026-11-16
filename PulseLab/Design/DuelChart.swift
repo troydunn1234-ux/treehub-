@@ -13,9 +13,10 @@ extension Array where Element == DuelPoint {
     static func from(_ pts: [(Date, Double)], _ s: Source) -> [DuelPoint] { pts.map { DuelPoint(day: $0.0, value: $0.1, source: s) } }
 }
 
-/// The signature chart: two glowing Catmull-Rom lines (wide soft line under a crisp one), an area
-/// fading out under the Watch line, y-axis fitted to the data, and press-and-drag scrubbing with a
-/// crosshair + glass tooltip + haptic ticks.
+/// The signature chart, and the reference for every other chart in the app: two crisp monotone lines
+/// (Watch cyan, WHOOP amber), a faint area under the first, optional dashed averages and a personal
+/// normal band, hairline grid, unit in the corner, and press-and-drag scrubbing that snaps to a day
+/// and shows one tooltip with both values.
 struct DuelChart: View {
     let watch: [DuelPoint]
     let whoop: [DuelPoint]
@@ -31,7 +32,6 @@ struct DuelChart: View {
     /// Shaded horizontal band (your personal normal range), drawn behind the lines.
     var band: ClosedRange<Double>? = nil
 
-    @State private var rawSelection: Date?
     @State private var selectedDay: Date?
 
     private var watchShown: [DuelPoint] { solo == .whoop ? [] : watch }
@@ -49,6 +49,8 @@ struct DuelChart: View {
 
     private var areaPoints: [DuelPoint] { watchShown.isEmpty ? whoopShown : watchShown }
     private var areaColor: Color { watchShown.isEmpty ? Lab.whoop : Lab.watch }
+    /// Few points: show dots so single readings aren't invisible.
+    private var dots: Bool { showPoints || all.count <= 10 }
 
     var body: some View {
         let d = domain
@@ -58,90 +60,65 @@ struct DuelChart: View {
             if let band, let first = all.map(\.day).min(), let last = all.map(\.day).max() {
                 RectangleMark(xStart: .value("From", first, unit: .day), xEnd: .value("To", last, unit: .day),
                               yStart: .value("Low", band.lowerBound), yEnd: .value("High", band.upperBound))
-                    .foregroundStyle(Color.white.opacity(0.07))
-                RuleMark(y: .value("Normal low", band.lowerBound))
-                    .foregroundStyle(Color.white.opacity(0.18)).lineStyle(StrokeStyle(lineWidth: 0.6, dash: [2, 3]))
-                RuleMark(y: .value("Normal high", band.upperBound))
-                    .foregroundStyle(Color.white.opacity(0.18)).lineStyle(StrokeStyle(lineWidth: 0.6, dash: [2, 3]))
+                    .foregroundStyle(Color.white.opacity(0.06))
             }
             ForEach(areaPoints) { p in
                 AreaMark(x: .value("Day", p.day, unit: .day),
                          yStart: .value("Base", d.lowerBound),
                          yEnd: .value(unit, p.value))
-                    .foregroundStyle(LinearGradient(colors: [areaColor.opacity(0.32), areaColor.opacity(0.0)], startPoint: .top, endPoint: .bottom))
-                    .interpolationMethod(.catmullRom)
+                    .foregroundStyle(LinearGradient(colors: [areaColor.opacity(0.18), areaColor.opacity(0.0)], startPoint: .top, endPoint: .bottom))
+                    .interpolationMethod(.monotone)
             }
             ForEach(watch) { p in
-                LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "Watch glow"))
-                    .foregroundStyle(Lab.watch.opacity(0.16))
-                    .lineStyle(StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.catmullRom)
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "Watch"))
                     .foregroundStyle(Lab.watch)
-                    .lineStyle(StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.catmullRom)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.monotone)
             }
             ForEach(whoop) { p in
-                LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "WHOOP glow"))
-                    .foregroundStyle(Lab.whoop.opacity(0.16))
-                    .lineStyle(StrokeStyle(lineWidth: 6, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.catmullRom)
                 LineMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value), series: .value("S", "WHOOP"))
                     .foregroundStyle(Lab.whoop)
-                    .lineStyle(StrokeStyle(lineWidth: 2.4, lineCap: .round, lineJoin: .round))
-                    .interpolationMethod(.catmullRom)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                    .interpolationMethod(.monotone)
             }
-            if showPoints {
+            if dots {
                 ForEach(all) { p in
                     PointMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value))
                         .foregroundStyle(Lab.color(p.source))
-                        .symbolSize(16)
+                        .symbolSize(18)
                 }
             }
             if showAverages, let wAvg {
                 RuleMark(y: .value("Watch avg", wAvg))
-                    .foregroundStyle(Lab.watch.opacity(0.35))
+                    .foregroundStyle(Lab.watch.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
             }
             if showAverages, let hAvg {
                 RuleMark(y: .value("WHOOP avg", hAvg))
-                    .foregroundStyle(Lab.whoop.opacity(0.35))
+                    .foregroundStyle(Lab.whoop.opacity(0.45))
                     .lineStyle(StrokeStyle(lineWidth: 1, dash: [3, 4]))
             }
             if let sel = selectedDay {
                 RuleMark(x: .value("Selected", sel, unit: .day))
-                    .foregroundStyle(Color.white.opacity(0.45))
+                    .foregroundStyle(Color.white.opacity(0.35))
                     .lineStyle(StrokeStyle(lineWidth: 1))
-                    .annotation(position: .top, spacing: 2,
+                    .annotation(position: .top, spacing: 4,
                                 overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
                         tooltip(sel)
                     }
                 ForEach(points(on: sel)) { p in
                     PointMark(x: .value("Day", p.day, unit: .day), y: .value(unit, p.value))
                         .foregroundStyle(Lab.color(p.source))
-                        .symbolSize(90)
+                        .symbolSize(70)
                 }
             }
         }
         .chartYScale(domain: d)
-        .chartYAxisLabel(position: .topLeading, alignment: .leading) {
-            Text(unit.uppercased()).font(Lab.label(7)).tracking(1).foregroundStyle(Lab.faint)
-        }
-        .chartXSelection(value: $rawSelection)
+        .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel(unit) }
+        .scrubDays(Array(Set(all.map(\.day))).sorted(), selection: $selectedDay)
         .chartXAxis { LabAxis.xDays }
         .chartYAxis { LabAxis.y }
         .frame(height: height)
-        .onChange(of: rawSelection) { _, raw in
-            let snapped = raw.flatMap(nearestDay)
-            if snapped != selectedDay {
-                selectedDay = snapped
-                if snapped != nil { UISelectionFeedbackGenerator().selectionChanged() }
-            }
-        }
-    }
-
-    private func nearestDay(_ d: Date) -> Date? {
-        all.min { abs($0.day.timeIntervalSince(d)) < abs($1.day.timeIntervalSince(d)) }?.day
     }
 
     private func points(on day: Date) -> [DuelPoint] {
@@ -150,30 +127,13 @@ struct DuelChart: View {
 
     private func tooltip(_ day: Date) -> some View {
         let pts = points(on: day)
-        let w = pts.first { $0.source == .watch }?.value
-        let h = pts.first { $0.source == .whoop }?.value
-        return VStack(alignment: .leading, spacing: 3) {
-            Text(day.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()).uppercased())
-                .font(Lab.label(8)).tracking(1).foregroundStyle(Lab.dim)
-            HStack(spacing: 10) {
-                valueChip(w, .watch)
-                valueChip(h, .whoop)
+        var lines: [LabChartTooltip.Line] = []
+        for s in Source.allCases {
+            if let v = pts.first(where: { $0.source == s })?.value {
+                lines.append(.init(label: s.label, value: unit.isEmpty ? Lab.fmt(v, decimals) : Lab.fmt(v, decimals) + " " + unit, color: Lab.color(s)))
             }
         }
-        .padding(.horizontal, 10).padding(.vertical, 7)
-        .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(.ultraThinMaterial))
-        .overlay(RoundedRectangle(cornerRadius: 10, style: .continuous).strokeBorder(Color.white.opacity(0.15)))
-    }
-
-    @ViewBuilder private func valueChip(_ v: Double?, _ s: Source) -> some View {
-        if let v {
-            HStack(spacing: 3) {
-                Circle().fill(Lab.color(s)).frame(width: 5, height: 5)
-                Text(v.formatted(.number.precision(.fractionLength(decimals))))
-                    .font(Lab.number(15, .black)).foregroundStyle(Lab.color(s))
-                Text(unit).font(Lab.label(7)).foregroundStyle(Lab.faint)
-            }
-        }
+        return LabChartTooltip(title: LabChartTooltip.dayTitle(day), lines: lines)
     }
 }
 
@@ -189,7 +149,7 @@ struct DuelLegend: View {
             chip(.whoop)
             if !compact {
                 Spacer()
-                Text(solo == nil ? "PRESS & DRAG TO SCRUB" : "TAP A CHIP TO ISOLATE").font(Lab.label(7)).tracking(1).foregroundStyle(Lab.faint)
+                Text(solo == nil ? "Press and drag to scrub" : "Tap a chip to isolate").font(.caption2).foregroundStyle(Lab.faint)
             }
         }
     }
@@ -203,6 +163,8 @@ struct DuelLegend: View {
                 SourceChip(source: s)
                     .opacity(solo.wrappedValue == nil || solo.wrappedValue == s ? 1 : 0.35)
                     .overlay(Capsule().strokeBorder(Lab.color(s).opacity(solo.wrappedValue == s ? 0.9 : 0), lineWidth: 1))
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(PressScale())
             .accessibilityLabel("\(s.name)\(solo.wrappedValue == s ? ", isolated" : "")")

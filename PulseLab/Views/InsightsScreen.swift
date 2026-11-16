@@ -77,7 +77,7 @@ struct InsightsScreen: View {
     }
 
     private var emptyState: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: 8) {
                 Text(String(localized: "Nothing to compare yet")).font(Lab.display(17, .heavy)).foregroundStyle(Lab.text)
                 Text(String(localized: "Check off your Stack, log workouts or sauna sessions, and keep wearing your trackers. Once there are at least \(Correlations.minDays) days with and \(Correlations.minDays) without, comparisons show up here."))
@@ -88,7 +88,7 @@ struct InsightsScreen: View {
     }
 
     private var alcoholPrompt: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: 8) {
                 Label(String(localized: "Include alcohol"), systemImage: "wineglass.fill")
                     .font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
@@ -105,7 +105,7 @@ struct InsightsScreen: View {
                     Text(String(localized: "Allow reading drinks"))
                         .font(Lab.display(14, .heavy)).foregroundStyle(.black)
                         .padding(.horizontal, 16).padding(.vertical, 10)
-                        .background(Capsule().fill(Lab.violet))
+                        .background(Capsule().fill(Lab.accent))
                 }
                 .buttonStyle(PressScale())
             }
@@ -121,13 +121,13 @@ private struct ResultRow: View {
         let diff = r.diff ?? 0
         // Recovery, HRV and sleep: higher is the better direction for all three.
         let better = diff >= 0
-        LabPanel(tint: r.size == .none ? Lab.violet : (better ? Lab.good : Lab.warn)) {
+        LabPanel(tint: r.size == .none ? Lab.accent : (better ? Lab.good : Lab.warn)) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack {
                     Text(r.factor.title).font(Lab.display(16, .heavy)).foregroundStyle(Lab.text)
                     Spacer()
                     Text(r.size.label.uppercased())
-                        .font(Lab.label(8)).tracking(1).foregroundStyle(r.size == .none ? Lab.dim : (better ? Lab.good : Lab.warn))
+                        .font(Lab.label(8)).tracking(0.4).foregroundStyle(r.size == .none ? Lab.dim : (better ? Lab.good : Lab.warn))
                         .padding(.horizontal, 7).padding(.vertical, 4)
                         .background(Capsule().fill(Color.white.opacity(0.06)))
                 }
@@ -213,7 +213,7 @@ struct InsightsButton: View {
                         .font(Lab.mono(10)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Lab.faint)
                     .accessibilityHidden(true)
             }
             .padding(.horizontal, Lab.S.m).padding(.vertical, 12)

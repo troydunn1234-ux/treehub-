@@ -1,21 +1,36 @@
 import Charts
 import SwiftUI
 
-/// Pulse Lab's look: a dark lab bench with a faint grid, two signature colours
-/// (Apple Watch = electric cyan, WHOOP = hot amber), mono numerics and heavy rounded headings.
+/// Pulse Lab's look: a calm, dark data dashboard. Flat graphite cards, one red accent for controls,
+/// and two fixed data colours used everywhere (Apple Watch = cyan, WHOOP = amber). Numbers are SF Rounded
+/// with monospaced digits; text is plain SF.
 enum Lab {
-    static let bg = Color(red: 0.020, green: 0.016, blue: 0.040)
-    static let panel = Color(red: 0.060, green: 0.052, blue: 0.105)
-    static let line = Color.white.opacity(0.07)
-    static let text = Color(red: 0.93, green: 0.94, blue: 1.0)
-    static let dim = Color.white.opacity(0.55)
-    static let faint = Color.white.opacity(0.32)
-    static let watch = Color(red: 0.20, green: 0.92, blue: 1.00)
-    static let whoop = Color(red: 1.00, green: 0.66, blue: 0.16)
-    static let violet = Color(red: 0.58, green: 0.38, blue: 1.00)
-    static let good = Color(red: 0.25, green: 0.95, blue: 0.55)
+    static let bg = Color(red: 0.043, green: 0.043, blue: 0.051)
+    /// Card surface (close to iOS's dark secondary grouped background).
+    static let panel = Color(red: 0.106, green: 0.106, blue: 0.118)
+    /// Inner surface: rows / tiles inside a card.
+    static let inset = Color.white.opacity(0.05)
+    /// Hairlines, gridlines and card strokes.
+    static let line = Color.white.opacity(0.08)
+    static let text = Color(red: 0.96, green: 0.96, blue: 0.97)
+    /// Secondary text (AA on panel).
+    static let dim = Color.white.opacity(0.66)
+    /// Tertiary text: captions, axis labels (still ≥ 4.5:1 on panel).
+    static let faint = Color.white.opacity(0.50)
+    /// Fixed data colours: always Watch = cyan, WHOOP = amber, in every chart, chip and number.
+    static let watch = Color(red: 0.25, green: 0.80, blue: 1.00)
+    static let whoop = Color(red: 1.00, green: 0.64, blue: 0.20)
+    /// Pulse Lab's accent (buttons, selection, links).
+    static let accent = Color(red: 1.00, green: 0.25, blue: 0.36)
+    /// Data colour for REM sleep / the sleep category (not used for controls).
+    static let violet = Color(red: 0.58, green: 0.45, blue: 1.00)
+    static let good = Color(red: 0.22, green: 0.84, blue: 0.46)
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
-    static let bad = Color(red: 1.00, green: 0.30, blue: 0.40)
+    static let bad = Color(red: 1.00, green: 0.36, blue: 0.32)
+
+    /// Card corner radius (continuous) and inner radius.
+    static let radius: CGFloat = 20
+    static let innerRadius: CGFloat = 12
 
     /// Dynamic Type: every Lab font follows the text size setting. Big display numbers grow less than
     /// small text (they're already large and sit in fixed layouts); small labels grow the most.
@@ -24,15 +39,21 @@ enum Lab {
         let cap: CGFloat = size >= 28 ? 1.2 : size >= 18 ? 1.4 : 1.8
         return max(size * 0.85, min(s, size * cap))
     }
-    static func display(_ size: CGFloat, _ weight: Font.Weight = .black) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
-    static func mono(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: scaled(size), weight: weight, design: .monospaced) }
-    static func label(_ size: CGFloat = 10) -> Font { .system(size: scaled(size), weight: .heavy, design: .monospaced) }
-    /// Big scoreboard numbers: heavy rounded, condensed, monospaced digits.
-    static func number(_ size: CGFloat, _ weight: Font.Weight = .heavy) -> Font {
-        .system(size: scaled(size), weight: weight, design: .rounded).width(.condensed).monospacedDigit()
+    /// Heavy weights are toned down one step: the dashboard reads sharper with bold, not black.
+    private static func calm(_ w: Font.Weight) -> Font.Weight { (w == .black || w == .heavy) ? .bold : w }
+    static func display(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: scaled(size), weight: calm(weight)) }
+    /// Inline numbers and short numeric chips: rounded, monospaced digits.
+    static func mono(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font {
+        .system(size: scaled(size), weight: weight == .black || weight == .heavy ? .bold : weight, design: .rounded).monospacedDigit()
     }
-    /// Signature gradient: Watch cyan → violet → WHOOP amber.
-    static let duel = LinearGradient(colors: [watch, violet, whoop], startPoint: .leading, endPoint: .trailing)
+    /// Small uppercase captions (units, column heads). Never below 10 pt.
+    static func label(_ size: CGFloat = 10) -> Font { .system(size: scaled(max(size + 1, 10)), weight: .semibold) }
+    /// Big scoreboard numbers: rounded, monospaced digits.
+    static func number(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font {
+        .system(size: scaled(size), weight: calm(weight), design: .rounded).monospacedDigit()
+    }
+    /// Watch → WHOOP gradient (used sparingly: brand marks only).
+    static let duel = LinearGradient(colors: [watch, whoop], startPoint: .leading, endPoint: .trailing)
 
     static func color(_ s: Source) -> Color { s == .watch ? watch : whoop }
 
@@ -41,19 +62,58 @@ enum Lab {
 
     static var reduceMotion: Bool { UIAccessibility.isReduceMotionEnabled }
 
-    /// 8-pt spacing grid.
+    /// Spacing scale 4 / 8 / 12 / 16 / 24 / 32.
     enum S {
         static let xs: CGFloat = 4
         static let s: CGFloat = 8
+        static let sm: CGFloat = 12
         static let m: CGFloat = 16
         static let l: CGFloat = 24
         static let xl: CGFloat = 32
     }
-    /// Type scale: display 44/34 · title 22 · body 15 · caption 11 (small caps via `label`).
-    static func title(_ size: CGFloat = 22, _ weight: Font.Weight = .heavy) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
-    static func body(_ size: CGFloat = 15, _ weight: Font.Weight = .medium) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
+    /// Type scale: large title 34 · title 22 · headline 17 · body 15 · caption 11.
+    static func title(_ size: CGFloat = 22, _ weight: Font.Weight = .bold) -> Font { .system(size: scaled(size), weight: calm(weight)) }
+    static func body(_ size: CGFloat = 15, _ weight: Font.Weight = .regular) -> Font { .system(size: scaled(size), weight: calm(weight)) }
+
+    /// One number format everywhere: grouping, fixed decimals, real minus sign.
+    static func fmt(_ v: Double, _ decimals: Int = 0, signed: Bool = false) -> String {
+        let s = abs(v).formatted(.number.precision(.fractionLength(decimals)))
+        if v < 0 && s.contains(where: { $0 != "0" && $0 != "." && $0 != "," }) { return "−" + s }
+        return (signed && v > 0 ? "+" : "") + s
+    }
 
     static func tick() { UISelectionFeedbackGenerator().selectionChanged() }
+}
+
+/// The one primary button: filled accent, 50 pt tall, 14 pt corners.
+struct LabPrimaryButton: ButtonStyle {
+    var tint: Color = Lab.accent
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(Lab.body(16, .semibold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .padding(.horizontal, 16)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(tint))
+            .opacity(configuration.isPressed ? 0.85 : 1)
+            .scaleEffect(configuration.isPressed ? 0.98 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+/// Secondary button: tinted fill, tinted text.
+struct LabSecondaryButton: ButtonStyle {
+    var tint: Color = Lab.accent
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(Lab.body(15, .semibold))
+            .foregroundStyle(tint)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .padding(.horizontal, 14)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(tint.opacity(0.15)))
+            .opacity(configuration.isPressed ? 0.8 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+    }
 }
 
 /// Cards and rows press down slightly under the finger.
@@ -68,36 +128,12 @@ struct PressScale: ButtonStyle {
 
 // MARK: - Background
 
-/// Near-black with a faint lab grid, a violet haze and a slow scanline.
+/// Flat near-black with a barely-there lift at the top. Static (nothing moves behind data).
 struct LabBackground: View {
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         ZStack {
             Lab.bg
-            RadialGradient(colors: [Lab.violet.opacity(0.22), .clear], center: .top, startRadius: 10, endRadius: 520)
-            RadialGradient(colors: [Lab.watch.opacity(0.08), .clear], center: .bottomLeading, startRadius: 10, endRadius: 420)
-            RadialGradient(colors: [Lab.whoop.opacity(0.07), .clear], center: .bottomTrailing, startRadius: 10, endRadius: 420)
-            Canvas { ctx, size in
-                let step: CGFloat = 26
-                var p = Path()
-                var x: CGFloat = 0
-                while x < size.width { p.move(to: CGPoint(x: x, y: 0)); p.addLine(to: CGPoint(x: x, y: size.height)); x += step }
-                var y: CGFloat = 0
-                while y < size.height { p.move(to: CGPoint(x: 0, y: y)); p.addLine(to: CGPoint(x: size.width, y: y)); y += step }
-                ctx.stroke(p, with: .color(Color.white.opacity(0.035)), lineWidth: 0.5)
-            }
-            if !reduceMotion {
-                TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                    GeometryReader { geo in
-                        let t = tl.date.timeIntervalSinceReferenceDate
-                        let y = CGFloat((t.truncatingRemainder(dividingBy: 7)) / 7) * (geo.size.height + 120) - 60
-                        LinearGradient(colors: [.clear, Lab.watch.opacity(0.06), .clear], startPoint: .top, endPoint: .bottom)
-                            .frame(height: 120)
-                            .offset(y: y)
-                    }
-                }
-                .allowsHitTesting(false)
-            }
+            LinearGradient(colors: [Color.white.opacity(0.035), .clear], startPoint: .top, endPoint: .center)
         }
         .ignoresSafeArea()
     }
@@ -105,45 +141,41 @@ struct LabBackground: View {
 
 // MARK: - Panels
 
+/// The one card style: flat panel, 20 pt continuous corners, 1 pt hairline. `tint` is kept for call sites
+/// but only colours a 2 pt leading accent when `accentEdge` is set.
 struct LabPanel<Content: View>: View {
-    var tint: Color = Lab.violet
+    var tint: Color = Lab.accent
+    var accentEdge = false
     @ViewBuilder var content: Content
     var body: some View {
         content
-            .padding(16)
+            .padding(Lab.S.m)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(LinearGradient(colors: [Lab.panel.opacity(0.95), Lab.panel.opacity(0.75)], startPoint: .top, endPoint: .bottom))
-            )
-            .overlay(
-                // Inner highlight along the top edge, like light catching glass.
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(LinearGradient(colors: [Color.white.opacity(0.10), .clear], startPoint: .top, endPoint: .center), lineWidth: 1)
-                    .padding(1)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(LinearGradient(colors: [tint.opacity(0.7), Color.white.opacity(0.05), tint.opacity(0.25)], startPoint: .topLeading, endPoint: .bottomTrailing), lineWidth: 1)
-            )
-            .shadow(color: tint.opacity(0.14), radius: 18, y: 6)
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+            .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.line, lineWidth: 1))
+            .overlay(alignment: .leading) {
+                if accentEdge {
+                    Capsule().fill(tint).frame(width: 3).padding(.vertical, 18).padding(.leading, 1)
+                }
+            }
     }
 }
 
+/// Card section header: `.headline`, sentence case.
 struct SectionTag: View {
     let text: String
     var color: Color = Lab.dim
     init(_ text: String, color: Color = Lab.dim) { self.text = text; self.color = color }
     var body: some View {
-        HStack(spacing: 7) {
-            LiveDot(color: color == Lab.dim ? Lab.violet : color, size: 5)
-            Text(L(text).uppercased()).font(Lab.label(11)).tracking(2.2).foregroundStyle(color)
-        }
-        .accessibilityElement(children: .combine)
+        Text(L(text))
+            .font(.headline)
+            .foregroundStyle(color == Lab.dim ? Lab.text : color)
+            .lineLimit(2)
+            .accessibilityAddTraits(.isHeader)
     }
 }
 
-/// A tiny dot that softly pulses (still under Reduce Motion).
+/// Small status dot that softly pulses (still under Reduce Motion).
 struct LiveDot: View {
     var color: Color = Lab.watch
     var size: CGFloat = 6
@@ -152,8 +184,7 @@ struct LiveDot: View {
     var body: some View {
         Circle().fill(color)
             .frame(width: size, height: size)
-            .shadow(color: color.opacity(on ? 0.9 : 0.3), radius: on ? 5 : 2)
-            .opacity(on ? 1 : 0.55)
+            .opacity(on ? 1 : 0.5)
             .onAppear {
                 guard !reduceMotion else { on = true; return }
                 withAnimation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true)) { on = true }
@@ -162,20 +193,17 @@ struct LiveDot: View {
     }
 }
 
+/// Screen header: small secondary kicker over a large bold title.
 struct ScreenTitle: View {
     let kicker: String
     let title: String
     var body: some View {
-        VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 6) {
-                Circle().fill(Lab.watch).frame(width: 6, height: 6)
-                Circle().fill(Lab.whoop).frame(width: 6, height: 6)
-                Text(L(kicker).uppercased()).font(Lab.label(11)).tracking(2.6).foregroundStyle(Lab.dim)
-            }
-            Text(L(title)).font(Lab.display(34)).foregroundStyle(Lab.text)
+        VStack(alignment: .leading, spacing: 2) {
+            Text(L(kicker)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.dim)
+                .lineLimit(2)
+            Text(L(title)).font(Lab.display(34, .bold)).foregroundStyle(Lab.text)
+                .lineLimit(2).minimumScaleFactor(0.8)
                 .accessibilityAddTraits(.isHeader)
-                .shadow(color: Lab.violet.opacity(0.35), radius: 12)
-            Capsule().fill(Lab.duel).frame(width: 46, height: 3).opacity(0.9)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .accessibilityElement(children: .combine)
@@ -187,17 +215,28 @@ struct SourceChip: View {
     let source: Source
     var body: some View {
         HStack(spacing: 5) {
-            Circle().fill(Lab.color(source)).frame(width: 6, height: 6).shadow(color: Lab.color(source), radius: 4)
-            Text(source.short).font(Lab.label(10)).tracking(1.5).foregroundStyle(Lab.color(source))
+            Circle().fill(Lab.color(source)).frame(width: 6, height: 6)
+            Text(source.short).font(Lab.label(10)).tracking(0.4).foregroundStyle(Lab.color(source))
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
-        .background(Capsule().fill(Lab.color(source).opacity(0.12)))
+        .background(Capsule().fill(Lab.color(source).opacity(0.14)))
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Uppercase caption used above a number (column heads, units).
+struct LabCaption: View {
+    let text: String
+    var color: Color = Lab.faint
+    init(_ text: String, color: Color = Lab.faint) { self.text = text; self.color = color }
+    var body: some View {
+        Text(L(text).uppercased()).font(Lab.label(10)).tracking(0.4).foregroundStyle(color)
     }
 }
 
 // MARK: - Numbers
 
-/// A number that counts up when it first appears (mono, glowing).
+/// A number that counts up when it first appears (rounded, monospaced digits). Nil shows an em dash.
 struct CountUp: View {
     let value: Double?
     var decimals: Int = 0
@@ -212,24 +251,25 @@ struct CountUp: View {
                     .contentTransition(.numericText(value: shown))
                     .onAppear { animate(to: value) }
                     .onChange(of: value) { _, v in animate(to: v) }
+                    .foregroundStyle(color)
             } else {
-                Text("––")
+                Text("—").foregroundStyle(Lab.faint)
             }
         }
-        .font(Lab.number(size * 1.12, .black))
-        .foregroundStyle(color)
-        .shadow(color: color.opacity(0.5), radius: 9)
+        .font(Lab.number(size, .bold))
+        .lineLimit(1)
+        .minimumScaleFactor(0.6)
     }
 
     private func animate(to v: Double) {
         if Lab.reduceMotion { shown = v; return }
-        withAnimation(.easeOut(duration: 0.9)) { shown = v }
+        withAnimation(.easeOut(duration: 0.7)) { shown = v }
     }
 }
 
 // MARK: - Gauge
 
-/// Ring gauge 0–100 with a glowing gradient stroke.
+/// Ring gauge 0–100, flat stroke.
 struct GaugeRing: View {
     let value: Double?
     let label: String
@@ -239,35 +279,28 @@ struct GaugeRing: View {
 
     var body: some View {
         ZStack {
-            Circle().stroke(Color.white.opacity(0.07), lineWidth: 12)
+            Circle().stroke(Color.white.opacity(0.08), lineWidth: size * 0.09)
             Circle()
                 .trim(from: 0, to: drawn / 100)
-                .stroke(AngularGradient(colors: [color.opacity(0.4), color, color], center: .center),
-                        style: StrokeStyle(lineWidth: 12, lineCap: .round))
+                .stroke(color, style: StrokeStyle(lineWidth: size * 0.09, lineCap: .round))
                 .rotationEffect(.degrees(-90))
-                .shadow(color: color.opacity(0.7), radius: 10)
             VStack(spacing: 0) {
                 CountUp(value: value, size: size * 0.28, color: Lab.text)
-                Text(label.uppercased()).font(Lab.label(9)).tracking(1.5).foregroundStyle(color)
+                Text(L(label)).font(Lab.label(10)).foregroundStyle(Lab.dim)
             }
         }
         .frame(width: size, height: size)
         .onAppear { draw() }
         .onChange(of: value) { _, _ in draw() }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label) \(value.map { Int($0).description } ?? "not available")")
+        .accessibilityLabel("\(L(label)) \(value.map { Int($0.rounded()).description } ?? "not available")")
     }
 
     private func draw() {
         let v = min(100, max(0, value ?? 0))
         if Lab.reduceMotion { drawn = v; return }
-        drawn = 0   // always sweep up from empty, on every appearance
-        DispatchQueue.main.async { withAnimation(.easeOut(duration: 1.1)) { drawn = v } }
-        guard value != nil else { return }
-        // Small tap when the ring lands.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.05) {
-            UIImpactFeedbackGenerator(style: .soft).impactOccurred(intensity: 0.6)
-        }
+        drawn = 0
+        DispatchQueue.main.async { withAnimation(.easeOut(duration: 0.9)) { drawn = v } }
     }
 }
 
@@ -285,93 +318,195 @@ struct VSRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(title.uppercased()).font(Lab.label(10)).tracking(1.8).foregroundStyle(Lab.dim)
+                Text(L(title)).font(Lab.body(13, .semibold)).foregroundStyle(Lab.dim)
                 Spacer()
                 if let note { Text(note).font(Lab.label(9)).foregroundStyle(Lab.faint) }
             }
             HStack(alignment: .firstTextBaseline) {
-                VStack(alignment: .leading, spacing: 0) {
-                    CountUp(value: watch, decimals: decimals, size: 26, color: Lab.watch)
-                    Text(unit).font(Lab.label(9)).foregroundStyle(Lab.watch.opacity(0.7))
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    CountUp(value: watch, decimals: decimals, size: 24, color: Lab.watch)
+                    Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
                 }
                 Spacer()
                 delta
                 Spacer()
-                VStack(alignment: .trailing, spacing: 0) {
-                    CountUp(value: whoop, decimals: decimals, size: 26, color: Lab.whoop)
-                    Text(unit).font(Lab.label(9)).foregroundStyle(Lab.whoop.opacity(0.7))
+                HStack(alignment: .firstTextBaseline, spacing: 4) {
+                    CountUp(value: whoop, decimals: decimals, size: 24, color: Lab.whoop)
+                    Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
                 }
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(title): Apple Watch \(fmt(watch)) \(unit), WHOOP \(fmt(whoop)) \(unit)")
+        .accessibilityLabel("\(L(title)): Apple Watch \(fmt(watch)) \(unit), WHOOP \(fmt(whoop)) \(unit)")
     }
 
     private var delta: some View {
         Group {
             if let a = watch, let b = whoop {
-                let d = a - b
-                Text((d >= 0 ? "+" : "−") + abs(d).formatted(.number.precision(.fractionLength(decimals))))
-                    .font(Lab.mono(12, .bold))
-                    .foregroundStyle(d >= 0 ? Lab.watch : Lab.whoop)
-                    .padding(.horizontal, 8).padding(.vertical, 3)
-                    .background(Capsule().strokeBorder(Color.white.opacity(0.12)))
+                DeltaPill(value: a - b, decimals: decimals)
             } else {
-                Text("VS").font(Lab.display(14)).foregroundStyle(Lab.faint)
+                Text("vs").font(Lab.body(13, .semibold)).foregroundStyle(Lab.faint)
             }
         }
     }
 
-    private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data" }
+    private func fmt(_ v: Double?) -> String { v.map { Lab.fmt($0, decimals) } ?? "no data" }
 }
 
+/// Watch − WHOOP gap, neutral pill. Coloured text by which side reads higher.
+struct DeltaPill: View {
+    let value: Double
+    var decimals: Int = 0
+    var body: some View {
+        let even = abs(value) < pow(10, -Double(decimals)) / 2
+        Text(even ? "=" : Lab.fmt(value, decimals, signed: true))
+            .font(Lab.mono(12, .semibold))
+            .foregroundStyle(even ? Lab.faint : (value > 0 ? Lab.watch : Lab.whoop))
+            .padding(.horizontal, 8).padding(.vertical, 3)
+            .background(Capsule().fill(Lab.inset))
+            .accessibilityLabel(even ? "Equal" : "Difference \(Lab.fmt(value, decimals, signed: true))")
+    }
+}
+
+/// Segmented 7D / 30D / 90D / 1Y control (90D and 1Y are Pro).
 struct RangePicker: View {
     @Binding var days: Int
     var body: some View {
-        HStack(spacing: 6) {
+        HStack(spacing: 2) {
             ForEach([7, 30, 90, 365], id: \.self) { d in
                 Button {
                     if d >= 90 && !Unlock.shared.gate(d == 365 ? "Full-year history" : "90-day history") { return }
-                    if days != d { Lab.tick() }
                     withAnimation(.snappy) { days = d }
                 } label: {
-                    Text((d == 365 ? "1Y" : "\(d)D") + (d >= 90 && !Unlock.shared.isPro ? " 🔒" : "")).font(Lab.mono(12, .heavy))
-                        .foregroundStyle(days == d ? Color.white : Lab.dim)
-                        .padding(.horizontal, 12).padding(.vertical, 7)
-                        .background(Capsule().fill(days == d ? AnyShapeStyle(Lab.violet) : AnyShapeStyle(Color.white.opacity(0.06))))
+                    HStack(spacing: 3) {
+                        Text(d == 365 ? "1Y" : "\(d)D")
+                        if d >= 90 && !Unlock.shared.isPro { Image(systemName: "lock.fill").font(.system(size: 8, weight: .bold)) }
+                    }
+                    .font(Lab.mono(13, .semibold))
+                    .foregroundStyle(days == d ? Color.white : Lab.dim)
+                    .frame(minWidth: 44, minHeight: 32)
+                    .padding(.horizontal, 4)
+                    .background(Capsule().fill(days == d ? Lab.accent : Color.clear))
+                    .contentShape(Capsule())
                 }
-                .buttonStyle(PressScale())
+                .buttonStyle(.plain)
+                .accessibilityLabel(d == 365 ? "1 year" : "\(d) days")
                 .accessibilityAddTraits(days == d ? .isSelected : [])
             }
         }
+        .padding(2)
+        .background(Capsule().fill(Lab.inset))
+        .sensoryFeedback(.selection, trigger: days)
     }
 }
 
+/// Inline "nothing here yet" line inside a card.
 struct EmptyNote: View {
     let text: String
     var body: some View {
-        Text(text).font(.system(size: 13, weight: .medium, design: .rounded)).foregroundStyle(Lab.faint)
-            .frame(maxWidth: .infinity, alignment: .center).padding(.vertical, 18)
+        HStack(spacing: 8) {
+            Image(systemName: "chart.line.uptrend.xyaxis").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
+            Text(L(text)).font(.footnote).foregroundStyle(Lab.dim)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
+        .padding(.vertical, 18)
     }
 }
 
+// MARK: - Charts
 
-/// Shared chart axes: faint grid, mono labels.
+/// The one chart style: hairline grid, rounded mono-digit axis labels, unit in the corner.
 enum LabAxis {
+    static let labelFont = Font.system(size: 10, weight: .medium, design: .rounded).monospacedDigit()
+
     static var y: some AxisContent {
         AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { _ in
-            AxisGridLine().foregroundStyle(Lab.line)
-            AxisValueLabel().foregroundStyle(Lab.faint).font(Lab.mono(9, .medium))
+            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Lab.line)
+            AxisValueLabel().foregroundStyle(Lab.faint).font(labelFont)
         }
     }
     static var xDays: some AxisContent {
         AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-            AxisGridLine().foregroundStyle(Lab.line)
-            AxisValueLabel(format: .dateTime.month(.abbreviated).day()).foregroundStyle(Lab.faint).font(Lab.mono(9, .medium))
+            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Lab.line)
+            AxisValueLabel(format: .dateTime.month(.abbreviated).day(), collisionResolution: .greedy)
+                .foregroundStyle(Lab.faint).font(labelFont)
         }
+    }
+    /// Category axis (bar charts with string x values).
+    static var xLabels: some AxisContent {
+        AxisMarks { _ in
+            AxisValueLabel().foregroundStyle(Lab.faint).font(labelFont)
+        }
+    }
+
+    /// Unit caption pinned to the top-left of the plot.
+    static func unitLabel(_ unit: String) -> some View {
+        Text(unit).font(.system(size: 10, weight: .semibold)).foregroundStyle(Lab.faint)
+    }
+}
+
+/// Scrub tooltip used by every chart: date on top, one line per value.
+struct LabChartTooltip: View {
+    struct Line: Identifiable {
+        let label: String
+        let value: String
+        let color: Color
+        var id: String { label }
+    }
+    let title: String
+    let lines: [Line]
+    var body: some View {
+        VStack(alignment: .leading, spacing: 3) {
+            Text(title).font(.system(size: 11, weight: .semibold)).foregroundStyle(Lab.dim)
+            ForEach(lines) { l in
+                HStack(spacing: 5) {
+                    Circle().fill(l.color).frame(width: 6, height: 6)
+                    Text(l.label).font(.system(size: 11, weight: .medium)).foregroundStyle(Lab.dim)
+                    Spacer(minLength: 6)
+                    Text(l.value).font(Lab.mono(13, .semibold)).foregroundStyle(Lab.text)
+                }
+            }
+        }
+        .padding(.horizontal, 10).padding(.vertical, 8)
+        .frame(minWidth: 120)
+        .background(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).fill(Color(white: 0.16)))
+        .overlay(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).strokeBorder(Color.white.opacity(0.12)))
+        .accessibilityElement(children: .combine)
+    }
+
+    static func dayTitle(_ d: Date) -> String { d.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()) }
+}
+
+/// Snaps a raw chart-selection date to the nearest day that has data, with a selection haptic.
+struct DaySelection: ViewModifier {
+    let days: [Date]
+    @Binding var selected: Date?
+    @State private var raw: Date?
+    func body(content: Content) -> some View {
+        content
+            .chartXSelection(value: $raw)
+            .onChange(of: raw) { _, r in
+                let snapped = r.flatMap { r in days.min { abs($0.timeIntervalSince(r)) < abs($1.timeIntervalSince(r)) } }
+                if snapped != selected { selected = snapped }
+            }
+            .sensoryFeedback(.selection, trigger: selected)
+    }
+}
+
+extension View {
+    /// Press-and-drag scrubbing that snaps to `days`.
+    func scrubDays(_ days: [Date], selection: Binding<Date?>) -> some View {
+        modifier(DaySelection(days: days, selected: selection))
     }
 }
 
 /// Looks up a runtime string (titles passed around as `String`) in the String Catalog.
 /// Strings with no entry come back unchanged.
 func L(_ key: String) -> String { NSLocalizedString(key, comment: "") }
+
+extension Source {
+    /// Display name in sentence case for legends and tooltips ("Watch" / "WHOOP").
+    var label: String { self == .watch ? "Watch" : "WHOOP" }
+}

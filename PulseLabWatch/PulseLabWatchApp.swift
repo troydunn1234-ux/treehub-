@@ -15,11 +15,13 @@ struct PulseLabWatchApp: App {
 }
 
 enum WPalette {
-    static let watch = Color(red: 0.20, green: 0.92, blue: 1.00)
-    static let whoop = Color(red: 1.00, green: 0.66, blue: 0.16)
-    static let good = Color(red: 0.25, green: 0.95, blue: 0.55)
+    // Same fixed data colours as the iPhone app (Lab): Watch = cyan, WHOOP = amber; red is the accent.
+    static let watch = Color(red: 0.25, green: 0.80, blue: 1.00)
+    static let whoop = Color(red: 1.00, green: 0.64, blue: 0.20)
+    static let accent = Color(red: 1.00, green: 0.25, blue: 0.36)
+    static let good = Color(red: 0.22, green: 0.84, blue: 0.46)
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
-    static let bad = Color(red: 1.00, green: 0.30, blue: 0.40)
+    static let bad = Color(red: 1.00, green: 0.36, blue: 0.32)
     static func band(_ v: Double) -> Color { v >= 67 ? good : v >= 34 ? warn : bad }
 }
 
@@ -36,11 +38,17 @@ struct WatchHome: View {
         let s = store.snap
         NavigationStack {
             ScrollView {
-                VStack(spacing: 10) {
+                VStack(spacing: 8) {
                     gauge(s)
                     if s.isEmpty {
-                        Text("Open Pulse Lab on your iPhone to send today's numbers.")
-                            .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.secondary)
+                        VStack(spacing: 4) {
+                            Image(systemName: "iphone.radiowaves.left.and.right").font(.title3).foregroundStyle(WPalette.accent)
+                                .accessibilityHidden(true)
+                            Text("No numbers yet").font(.headline)
+                            Text("Open Pulse Lab on your iPhone to send today's numbers.")
+                                .font(.footnote).multilineTextAlignment(.center).foregroundStyle(.secondary)
+                        }
+                        .padding(.vertical, 4)
                     } else {
                         row("moon.zzz.fill", String(localized: "Sleep"), watchHM(s.sleepMin),
                             s.sleepMin.flatMap { m in s.sleepAvgMin.map { a in delta(m - a, minutes: true) } })
@@ -53,7 +61,8 @@ struct WatchHome: View {
                         if let t = s.takeaway {
                             Text(t).font(.footnote).foregroundStyle(.secondary)
                                 .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.top, 4)
+                                .fixedSize(horizontal: false, vertical: true)
+                                .padding(.top, 2)
                         }
                     }
                     Button {
@@ -65,7 +74,9 @@ struct WatchHome: View {
                             Label(String(localized: "Sync"), systemImage: "arrow.triangle.2.circlepath")
                         }
                     }
-                    .padding(.top, 6)
+                    .tint(WPalette.accent)
+                    .sensoryFeedback(.selection, trigger: store.refreshing)
+                    .padding(.top, 4)
                     if store.phoneUnreachable {
                         Text("iPhone not reachable. Numbers update after its next sync.")
                             .font(.caption2).foregroundStyle(.secondary).multilineTextAlignment(.center)
@@ -78,6 +89,7 @@ struct WatchHome: View {
                 .padding(.horizontal, 4)
             }
             .navigationTitle("Pulse Lab")
+            .containerBackground(WPalette.accent.gradient.opacity(0.25), for: .navigation)
         }
     }
 
@@ -87,7 +99,7 @@ struct WatchHome: View {
             Gauge(value: v, in: 0...100) {
                 Text(s.isWhoop ? "REC" : "RDY")
             } currentValueLabel: {
-                Text(s.recovery.map { "\(Int($0.rounded()))" } ?? "—")
+                Text(s.recovery.map { "\(Int($0.rounded()))" } ?? "—").monospacedDigit()
             }
             .gaugeStyle(.accessoryCircular)
             .tint(Gradient(colors: [WPalette.bad, WPalette.warn, WPalette.good]))
@@ -103,16 +115,20 @@ struct WatchHome: View {
 
     private func row(_ icon: String, _ title: String, _ value: String, _ sub: String?) -> some View {
         HStack {
-            Image(systemName: icon).foregroundStyle(WPalette.watch).frame(width: 20).accessibilityHidden(true)
+            Image(systemName: icon).font(.footnote.weight(.semibold)).foregroundStyle(WPalette.accent)
+                .frame(width: 20).accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 0) {
                 Text(title).font(.caption2).foregroundStyle(.secondary)
                 Text(value).font(.system(.title3, design: .rounded).weight(.semibold)).monospacedDigit()
+                    .lineLimit(1).minimumScaleFactor(0.7)
             }
-            Spacer()
+            Spacer(minLength: 4)
             if let sub, !sub.isEmpty {
-                Text(sub).font(.caption2).foregroundStyle(.secondary)
+                Text(sub).font(.caption2.monospacedDigit()).foregroundStyle(.secondary)
             }
         }
+        .padding(.horizontal, 10).padding(.vertical, 6)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.white.opacity(0.08)))
         .accessibilityElement(children: .combine)
     }
 

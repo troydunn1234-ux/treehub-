@@ -26,14 +26,13 @@ struct VSShareCard: View {
 
             VStack(spacing: 40) {
                 VStack(spacing: 10) {
-                    Text("PULSE LAB").font(.system(size: 34, weight: .heavy, design: .monospaced)).tracking(12).foregroundStyle(Lab.dim)
+                    Text("PULSE LAB").font(.system(size: 34, weight: .bold, design: .rounded).monospacedDigit()).tracking(0.4).foregroundStyle(Lab.dim)
                     Text(Date().formatted(.dateTime.weekday(.wide).month(.wide).day())).font(.system(size: 30, weight: .bold, design: .rounded)).foregroundStyle(Lab.faint)
                 }
                 HStack(alignment: .center) {
                     side(.watch, score: readiness, label: "READINESS")
-                    Text("VS").font(.system(size: 90, weight: .black, design: .rounded))
+                    Text("VS").font(.system(size: 90, weight: .bold, design: .rounded))
                         .foregroundStyle(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing))
-                        .shadow(color: Lab.violet.opacity(0.6), radius: 20)
                     side(.whoop, score: recovery, label: "RECOVERY")
                 }
                 VStack(spacing: 26) {
@@ -59,30 +58,29 @@ struct VSShareCard: View {
                 Circle().trim(from: 0, to: (score ?? 0) / 100)
                     .stroke(Lab.color(s), style: StrokeStyle(lineWidth: 22, lineCap: .round))
                     .rotationEffect(.degrees(-90))
-                    .shadow(color: Lab.color(s).opacity(0.8), radius: 18)
-                Text(score.map { "\(Int($0))" } ?? "––").font(.system(size: 92, weight: .heavy, design: .monospaced)).foregroundStyle(Lab.text)
+                Text(score.map { "\(Int($0))" } ?? "—").font(.system(size: 92, weight: .bold, design: .rounded).monospacedDigit()).foregroundStyle(Lab.text)
             }
             .frame(width: 270, height: 270)
-            Text(label).font(.system(size: 24, weight: .heavy, design: .monospaced)).tracking(4).foregroundStyle(Lab.color(s))
-            Text(s.name.uppercased()).font(.system(size: 26, weight: .black, design: .rounded)).foregroundStyle(Lab.text)
+            Text(label).font(.system(size: 24, weight: .bold, design: .rounded).monospacedDigit()).tracking(0.4).foregroundStyle(Lab.color(s))
+            Text(s.name.uppercased()).font(.system(size: 26, weight: .bold, design: .rounded)).foregroundStyle(Lab.text)
         }
         .frame(maxWidth: .infinity)
     }
 
     private func row(_ title: String, _ unit: String, _ a: Double?, _ b: Double?, _ d: Int) -> some View {
         HStack {
-            Text(fmt(a, d)).font(.system(size: 58, weight: .heavy, design: .monospaced)).foregroundStyle(Lab.watch)
+            Text(fmt(a, d)).font(.system(size: 58, weight: .bold, design: .rounded).monospacedDigit()).foregroundStyle(Lab.watch)
                 .frame(maxWidth: .infinity, alignment: .leading)
             VStack(spacing: 4) {
-                Text(title).font(.system(size: 22, weight: .heavy, design: .monospaced)).tracking(3).foregroundStyle(Lab.dim)
-                Text(unit).font(.system(size: 20, weight: .bold, design: .monospaced)).foregroundStyle(Lab.faint)
+                Text(title).font(.system(size: 22, weight: .bold, design: .rounded).monospacedDigit()).tracking(0.4).foregroundStyle(Lab.dim)
+                Text(unit).font(.system(size: 20, weight: .bold, design: .rounded).monospacedDigit()).foregroundStyle(Lab.faint)
             }
-            Text(fmt(b, d)).font(.system(size: 58, weight: .heavy, design: .monospaced)).foregroundStyle(Lab.whoop)
+            Text(fmt(b, d)).font(.system(size: 58, weight: .bold, design: .rounded).monospacedDigit()).foregroundStyle(Lab.whoop)
                 .frame(maxWidth: .infinity, alignment: .trailing)
         }
     }
 
-    private func fmt(_ v: Double?, _ d: Int) -> String { v.map { $0.formatted(.number.precision(.fractionLength(d))) } ?? "––" }
+    private func fmt(_ v: Double?, _ d: Int) -> String { v.map { $0.formatted(.number.precision(.fractionLength(d))) } ?? "—" }
 }
 
 /// Button that renders the poster and opens the share sheet.
@@ -136,15 +134,10 @@ struct SharePreviewSheet: View {
             HStack {
                 SectionTag("Your VS card", color: Lab.text)
                 Spacer()
-                Button { dismiss() } label: {
-                    Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(Lab.dim)
-                        .frame(width: 34, height: 34).background(Circle().fill(Color.white.opacity(0.07)))
-                }
-                .accessibilityLabel("Close")
+                CloseButton { dismiss() }
             }
             image.resizable().scaledToFit()
                 .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
-                .shadow(color: Lab.violet.opacity(0.4), radius: 20)
                 .accessibilityLabel("Preview of today's Apple Watch versus WHOOP card")
             ShareLink(item: image, preview: SharePreview("Pulse Lab · Watch vs WHOOP", image: image)) {
                 Label("Share", systemImage: "square.and.arrow.up")

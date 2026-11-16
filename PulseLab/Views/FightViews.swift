@@ -10,10 +10,9 @@ struct VSSlam: View {
             fighter("applewatch", "WATCH", Lab.watch)
                 .offset(x: inPlace || reduceMotion ? 0 : -140)
             Text("VS")
-                .font(.system(size: 54, weight: .black, design: .rounded).width(.compressed))
+                .font(.system(size: 54, weight: .bold, design: .rounded).width(.compressed))
                 .italic()
                 .foregroundStyle(LinearGradient(colors: [Lab.watch, .white, Lab.whoop], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .shadow(color: Lab.violet, radius: inPlace ? 14 : 0)
                 .scaleEffect(inPlace || reduceMotion ? 1 : 2.6)
                 .rotationEffect(.degrees(inPlace || reduceMotion ? -6 : 8))
                 .opacity(inPlace || reduceMotion ? 1 : 0)
@@ -40,8 +39,7 @@ struct VSSlam: View {
                 .frame(width: 56, height: 56)
                 .background(Circle().fill(c.opacity(0.14)))
                 .overlay(Circle().strokeBorder(c.opacity(0.6), lineWidth: 1.2))
-                .shadow(color: c.opacity(0.7), radius: 12)
-            Text(name).font(Lab.label(10)).tracking(2.4).foregroundStyle(c)
+            Text(name).font(Lab.label(10)).tracking(0.4).foregroundStyle(c)
         }
         .frame(maxWidth: .infinity)
     }
@@ -72,7 +70,7 @@ struct FightRow: View {
         Button(action: action) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 8) {
-                    Text("ROUND \(round)").font(Lab.label(9)).tracking(2).foregroundStyle(Lab.faint)
+                    Text("ROUND \(round)").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                     Text(agreement.metric.uppercased()).font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
                     Spacer()
                     if let w = winner { CrownChip(source: w.0, label: w.1) }
@@ -93,7 +91,6 @@ struct FightRow: View {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .strokeBorder(selected ? AnyShapeStyle(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing)) : AnyShapeStyle(Color.white.opacity(0.08)), lineWidth: selected ? 1.5 : 1)
             )
-            .shadow(color: selected ? Lab.violet.opacity(0.35) : .clear, radius: 14)
         }
         .buttonStyle(.plain)
         .onAppear { animate() }
@@ -112,21 +109,18 @@ struct FightRow: View {
                 Capsule()
                     .fill(LinearGradient(colors: [Lab.watch.opacity(0.35), Lab.watch], startPoint: .leading, endPoint: .trailing))
                     .frame(width: max(0, split - 2))
-                    .shadow(color: Lab.watch.opacity(0.7), radius: 6)
                 // WHOOP bar from the right.
                 Capsule()
                     .fill(LinearGradient(colors: [Lab.whoop, Lab.whoop.opacity(0.35)], startPoint: .leading, endPoint: .trailing))
                     .frame(width: max(0, w - split - 2))
                     .offset(x: split + 2)
-                    .shadow(color: Lab.whoop.opacity(0.7), radius: 6)
                 // Center badge at the clash point.
-                Text(agreement.agreePercent.map { "\(Int($0))%" } ?? "––")
+                Text(agreement.agreePercent.map { "\(Int($0))%" } ?? "—")
                     .font(Lab.number(12, .black))
                     .foregroundStyle(agreeColor)
                     .padding(.horizontal, 7).padding(.vertical, 3)
                     .background(Capsule().fill(Lab.bg))
                     .overlay(Capsule().strokeBorder(agreeColor.opacity(0.8), lineWidth: 1))
-                    .shadow(color: agreeColor.opacity(0.6), radius: 6)
                     .fixedSize()
                     .position(x: min(max(split, 26), w - 26), y: geo.size.height / 2)
             }
@@ -136,13 +130,13 @@ struct FightRow: View {
 
     private func value(_ v: Double?, _ c: Color, leading: Bool) -> some View {
         VStack(alignment: leading ? .leading : .trailing, spacing: 0) {
-            Text(fmt(v)).font(Lab.number(20, .black)).foregroundStyle(c).shadow(color: c.opacity(0.5), radius: 6)
+            Text(fmt(v)).font(Lab.number(20, .black)).foregroundStyle(c)
             Text(agreement.unit).font(Lab.label(7)).foregroundStyle(Lab.faint)
         }
     }
 
     private func fmt(_ v: Double?) -> String {
-        v.map { String(format: abs($0) < 10 ? "%.1f" : "%.0f", $0) } ?? "––"
+        v.map { String(format: abs($0) < 10 ? "%.1f" : "%.0f", $0) } ?? "—"
     }
 
     private func animate() {

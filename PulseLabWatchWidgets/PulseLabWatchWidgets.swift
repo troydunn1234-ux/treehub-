@@ -16,10 +16,11 @@ struct PulseLabWatchWidgets: WidgetBundle {
 private enum Shared {
     static let suite = "group.com.troydunn.pulselab"
     static let key = "watchSnapshot"
-    static let good = Color(red: 0.25, green: 0.95, blue: 0.55)
+    // Same palette as the iPhone app (Lab).
+    static let good = Color(red: 0.22, green: 0.84, blue: 0.46)
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
-    static let bad = Color(red: 1.00, green: 0.30, blue: 0.40)
-    static let watch = Color(red: 0.20, green: 0.92, blue: 1.00)
+    static let bad = Color(red: 1.00, green: 0.36, blue: 0.32)
+    static let accent = Color(red: 1.00, green: 0.25, blue: 0.36)
 }
 
 struct PulseEntry: TimelineEntry {
@@ -138,19 +139,19 @@ struct SummaryView: View {
         default:
             VStack(alignment: .leading, spacing: 1) {
                 HStack(spacing: 4) {
-                    Image(systemName: "waveform.path.ecg").font(.system(size: 11, weight: .bold))
-                    Text("PULSE LAB").font(.system(size: 11, weight: .heavy, design: .rounded))
+                    Image(systemName: "waveform.path.ecg").font(.system(size: 11, weight: .semibold))
+                    Text("Pulse Lab").font(.system(size: 12, weight: .semibold))
                 }
-                .foregroundStyle(Shared.watch)
+                .foregroundStyle(Shared.accent)
                 .widgetAccentable()
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
                     Text(entry.recovery.map { "\(Int($0.rounded()))" } ?? "—")
                         .font(.system(size: 22, weight: .semibold, design: .rounded)).monospacedDigit()
                         .foregroundStyle(entry.recovery.map(band) ?? .secondary)
-                    Text(entry.isWhoop ? "recovery" : "readiness").font(.system(size: 12, design: .rounded)).foregroundStyle(.secondary)
+                    Text(entry.isWhoop ? "recovery" : "readiness").font(.system(size: 12)).foregroundStyle(.secondary)
                 }
                 Text("Sleep \(entry.sleepText) · HRV \(entry.hrv.map { "\(Int($0.rounded()))" } ?? "—") · Strain \(entry.strain.map { $0.formatted(.number.precision(.fractionLength(1))) } ?? "—")")
-                    .font(.system(size: 12, design: .rounded)).lineLimit(1).minimumScaleFactor(0.7)
+                    .font(.system(size: 12).monospacedDigit()).lineLimit(1).minimumScaleFactor(0.7)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .accessibilityElement(children: .combine)

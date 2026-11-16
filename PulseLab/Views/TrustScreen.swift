@@ -28,11 +28,7 @@ struct TrustScreen: View {
     }
 
     private var closeButton: some View {
-        Button { dismiss() } label: {
-            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-        }
-        .accessibilityLabel("Close")
+        CloseButton { dismiss() }
     }
 }
 
@@ -98,11 +94,7 @@ struct TrustContent: View {
                 HStack(alignment: .top) {
                     ScreenTitle(kicker: "Lab verdict", title: "Who to trust")
                     if let onClose {
-                        Button(action: onClose) {
-                            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton(action: onClose)
                     }
                 }
                 summary
@@ -120,14 +112,14 @@ struct TrustContent: View {
     }
 
     private var summary: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
                 SectionTag("The short version")
                 line(.whoop, "Sleep stages, resting HR, HRV, recovery")
                 line(.watch, "Steps, workouts, calories, SpO₂ spot checks, ECG")
                 HStack(alignment: .top, spacing: Lab.S.s) {
-                    Text("BOTH").font(Lab.label(9)).tracking(1.5).foregroundStyle(Lab.violet)
-                        .padding(.horizontal, 8).padding(.vertical, 4).background(Capsule().fill(Lab.violet.opacity(0.12)))
+                    Text("BOTH").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.accent)
+                        .padding(.horizontal, 8).padding(.vertical, 4).background(Capsule().fill(Lab.accent.opacity(0.12)))
                     Text("Respiratory rate, temperature trend").font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
                 }
             }
@@ -148,7 +140,7 @@ struct TrustCard: View {
     let pick: TrustPick
     let agreement: Agreement?
 
-    private var tint: Color { pick.trust.map(Lab.color) ?? Lab.violet }
+    private var tint: Color { pick.trust.map(Lab.color) ?? Lab.accent }
 
     var body: some View {
         LabPanel(tint: tint) {
@@ -164,11 +156,11 @@ struct TrustCard: View {
                 Text(pick.reason).font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                 if let why = pick.compareName.flatMap({ Compare.why[$0] }), !why.isEmpty {
                     HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.violet).font(.system(size: 13)).padding(.top, 2)
+                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.accent).font(.system(size: 13)).padding(.top, 2)
                         Text(why).font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.violet.opacity(0.08)))
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.accent.opacity(0.08)))
                 }
                 if pick.compareName != nil { yourNumbers }
             }
@@ -178,7 +170,7 @@ struct TrustCard: View {
 
     private var badge: some View {
         Text(pick.trust.map { "TRUST \($0.short)" } ?? "BOTH FINE")
-            .font(Lab.label(9)).tracking(1.4).foregroundStyle(tint)
+            .font(Lab.label(9)).tracking(0.4).foregroundStyle(tint)
             .padding(.horizontal, 8).padding(.vertical, 4)
             .background(Capsule().fill(tint.opacity(0.12)))
     }
@@ -186,7 +178,7 @@ struct TrustCard: View {
     @ViewBuilder private var yourNumbers: some View {
         Divider().overlay(Lab.line)
         HStack(spacing: Lab.S.m) {
-            Text("YOURS · 30D").font(Lab.label(8)).tracking(1.4).foregroundStyle(Lab.faint)
+            Text("YOURS · 30D").font(Lab.label(8)).tracking(0.4).foregroundStyle(Lab.faint)
             if let a = agreement, a.n >= 3 {
                 if let p = a.agreePercent {
                     stat(a.trendOnly ? "SAME WAY" : "AGREE", "\(Int(p.rounded()))%", p >= 70 ? Lab.good : p >= 45 ? Lab.warn : Lab.bad)
@@ -212,7 +204,7 @@ struct TrustCard: View {
     private func stat(_ l: String, _ v: String, _ c: Color) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(v).font(Lab.mono(13, .heavy)).foregroundStyle(c)
-            Text(l).font(Lab.label(7)).tracking(1.2).foregroundStyle(Lab.faint)
+            Text(l).font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
         }
     }
 }

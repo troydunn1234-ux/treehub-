@@ -50,7 +50,7 @@ struct StackInsightsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text("STACK VS RECOVERY").font(Ember.font(11, .heavy)).tracking(2.5).foregroundStyle(Lab.duel)
+                Text("STACK VS RECOVERY").font(Ember.font(11, .heavy)).tracking(0.4).foregroundStyle(Lab.duel)
                 Spacer()
                 Text("next morning · 60 days").font(Ember.font(11, .medium)).foregroundStyle(Lab.faint)
             }

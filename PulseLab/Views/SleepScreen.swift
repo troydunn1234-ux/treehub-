@@ -74,6 +74,7 @@ struct SleepScreen: View {
                     }
                     .chartForegroundStyleScale(["Deep": stageColor(.deep), "Light": stageColor(.core), "REM": stageColor(.rem), "Awake": stageColor(.awake)])
                     .chartLegend(position: .bottom, spacing: 8)
+                    .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("hours") }
                     .chartXAxis { LabAxis.xDays }
                     .chartYAxis { LabAxis.y }
                     .frame(height: 200)

@@ -50,8 +50,8 @@ struct ActivityScreen: View {
             store.quickWhoop = .steps()
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: v == nil ? "plus.circle.fill" : "pencil").font(.system(size: 11, weight: .heavy))
-                Text(v.map { "WHOOP \(Int($0.rounded()).formatted())" } ?? "WHOOP steps").font(Lab.label(9)).tracking(1)
+                Image(systemName: v == nil ? "plus.circle.fill" : "pencil").font(.system(size: 11, weight: .semibold))
+                Text(v.map { "WHOOP \(Int($0.rounded()).formatted())" } ?? "WHOOP steps").font(Lab.label(9)).tracking(0.4)
             }
             .foregroundStyle(Lab.whoop)
             .padding(.horizontal, 9).padding(.vertical, 6)
@@ -84,7 +84,7 @@ struct ActivityScreen: View {
                 HStack {
                     SectionTag("Total calories burned")
                     Spacer()
-                    Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.watch)
+                    Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 10, weight: .semibold)).foregroundStyle(Lab.watch)
                 }
                 if w.allSatisfy({ $0.totalKcal == nil }) && h.allSatisfy({ $0.totalKcal == nil }) {
                     EmptyNote(text: "No calorie data in this range.")
@@ -93,18 +93,19 @@ struct ActivityScreen: View {
                     ForEach(w.filter { $0.totalKcal != nil }) { d in
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("kcal", d.totalKcal ?? 0), width: .ratio(0.38))
                             .position(by: .value("Source", "Watch"))
-                            .foregroundStyle(Lab.watch.gradient)
+                            .foregroundStyle(Lab.watch)
                             .opacity(d.day.isToday ? 0.4 : 1)
                             .cornerRadius(3)
                     }
                     ForEach(h.filter { $0.totalKcal != nil }) { d in
                         BarMark(x: .value("Day", d.day, unit: .day), y: .value("kcal", d.totalKcal ?? 0), width: .ratio(0.38))
                             .position(by: .value("Source", "WHOOP"))
-                            .foregroundStyle(Lab.whoop.gradient)
+                            .foregroundStyle(Lab.whoop)
                             .opacity(d.day >= Date().dayStart.adding(days: -1) && d.day == (h.last?.day ?? .distantPast) ? 0.4 : 1)
                             .cornerRadius(3)
                     }
                 }
+                .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("kcal") }
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
                 .frame(height: 180)
@@ -162,6 +163,7 @@ struct ActivityScreen: View {
                 }
                 .chartForegroundStyleScale(domain: devices, range: devices.map(colorOf))
                 .chartLegend(position: .bottom, alignment: .leading, spacing: 6)
+                .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("steps") }
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
                 .frame(height: 170)

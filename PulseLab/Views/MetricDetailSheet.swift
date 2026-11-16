@@ -113,7 +113,7 @@ struct StatDetailSheet: View {
                     }
                 }
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy))
+                Image(systemName: "chevron.right").font(.system(size: 11, weight: .semibold))
             }
             .foregroundStyle(Lab.whoop)
             .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
@@ -132,17 +132,13 @@ struct StatDetailSheet: View {
                     Lab.tick()
                     withAnimation(.snappy) { def = back; trail.removeLast(); solo = nil }
                 } label: {
-                    Image(systemName: "chevron.left").font(.system(size: 14, weight: .heavy)).foregroundStyle(Lab.dim)
+                    Image(systemName: "chevron.left").font(.system(size: 14, weight: .semibold)).foregroundStyle(Lab.dim)
                         .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.07)))
                 }
                 .accessibilityLabel("Back to \(back.title)")
             }
             ScreenTitle(kicker: def.section.title, title: def.title)
-            Button { dismiss() } label: {
-                Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(Lab.dim)
-                    .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.07)))
-            }
-            .accessibilityLabel("Close")
+            CloseButton { dismiss() }
         }
     }
 
@@ -156,7 +152,7 @@ struct StatDetailSheet: View {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 6) {
                     SourceBadge(text: badge)
-                    Text(dayLabel(last.day)).font(Lab.label(9)).tracking(1).foregroundStyle(last.day.isToday ? Lab.good : Lab.dim)
+                    Text(dayLabel(last.day)).font(Lab.label(9)).tracking(0.4).foregroundStyle(last.day.isToday ? Lab.good : Lab.dim)
                     Spacer(minLength: 0)
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
@@ -178,7 +174,7 @@ struct StatDetailSheet: View {
                 }
                 Divider().overlay(Lab.line)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("WHAT THIS IS").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                    Text("WHAT THIS IS").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                     Text(info.what).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                 }
                 .accessibilityElement(children: .combine)
@@ -254,7 +250,7 @@ struct StatDetailSheet: View {
         let sources = Source.allCases.filter { !series.points($0).isEmpty }
         return LabPanel(tint: def.section.tint) {
             VStack(alignment: .leading, spacing: 12) {
-                Text(days == 365 ? "LAST YEAR" : "LAST \(days) DAYS").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Text(days == 365 ? "LAST YEAR" : "LAST \(days) DAYS").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 if sources.isEmpty {
                     Text("No data yet").font(Lab.body(13)).foregroundStyle(Lab.faint)
                 }
@@ -334,7 +330,7 @@ struct StatDetailSheet: View {
             let color: Color = good == nil ? Lab.dim : (good == true ? Lab.good : Lab.warn)
             HStack(spacing: 4) {
                 Image(systemName: flat ? "arrow.right" : (d > 0 ? "arrow.up.right" : "arrow.down.right"))
-                    .font(.system(size: 11, weight: .heavy))
+                    .font(.system(size: 11, weight: .semibold))
                 Text(flat ? "steady" : (d > 0 ? "+" : "−") + fmt(abs(d)))
                     .font(Lab.mono(11, .heavy))
                 Text("VS LAST WK").font(Lab.label(7)).foregroundStyle(Lab.faint)
@@ -355,7 +351,7 @@ struct StatDetailSheet: View {
     private func agreementCard(_ a: Agreement) -> some View {
         LabPanel(tint: def.section.tint) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Text("WATCH VS WHOOP").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Text("WATCH VS WHOOP").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 HStack(spacing: Lab.S.m) {
                     ArcGauge(value: a.score, label: "Agree", color: a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad, size: 84)
                     VStack(alignment: .leading, spacing: 4) {
@@ -376,7 +372,7 @@ struct StatDetailSheet: View {
     private func textCard(_ title: String, _ body: String, icon: String) -> some View {
         LabPanel(tint: def.section.tint) {
             VStack(alignment: .leading, spacing: 6) {
-                Label(L(title).uppercased(), systemImage: icon).font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Label(L(title).uppercased(), systemImage: icon).font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 Text(body).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
             }
             .accessibilityElement(children: .combine)
@@ -386,7 +382,7 @@ struct StatDetailSheet: View {
     private var improveCard: some View {
         LabPanel(tint: def.section.tint) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("HOW TO IMPROVE", systemImage: "arrow.up.forward.circle.fill").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Label("HOW TO IMPROVE", systemImage: "arrow.up.forward.circle.fill").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 ForEach(info.improve, id: \.self) { tip in
                     HStack(alignment: .top, spacing: 8) {
                         Circle().fill(def.section.tint).frame(width: 5, height: 5).padding(.top, 7)
@@ -403,7 +399,7 @@ struct StatDetailSheet: View {
         let first = [series.watch.first?.day, series.whoop.first?.day].compactMap { $0 }.min()
         return LabPanel(tint: def.section.tint) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("WHERE IT COMES FROM", systemImage: "antenna.radiowaves.left.and.right").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Label("WHERE IT COMES FROM", systemImage: "antenna.radiowaves.left.and.right").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 if !series.watch.isEmpty {
                     sourceRow(store.badge(def, .watch, series: series), String(localized: "\(series.watch.count) days from Apple Health"))
                 }
@@ -437,7 +433,7 @@ struct StatDetailSheet: View {
         if !links.isEmpty {
             LabPanel(tint: def.section.tint) {
                 VStack(alignment: .leading, spacing: Lab.S.s) {
-                    Label("RELATED", systemImage: "point.3.connected.trianglepath.dotted").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                    Label("RELATED", systemImage: "point.3.connected.trianglepath.dotted").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                     ForEach(Array(links.enumerated()), id: \.element.id) { i, link in
                         if i > 0 { Divider().overlay(Lab.line) }
                         relatedRow(link, proxy)
@@ -466,7 +462,7 @@ struct StatDetailSheet: View {
                 if let v = latest(link) {
                     Text(v).font(Lab.mono(12)).foregroundStyle(Lab.dim).lineLimit(1)
                 }
-                Image(systemName: "chevron.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.faint)
+                Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold)).foregroundStyle(Lab.faint)
             }
             .padding(.vertical, 6)
             .contentShape(Rectangle())
@@ -483,7 +479,7 @@ struct StatDetailSheet: View {
 
     // MARK: Formatting
 
-    private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(def.decimals))) } ?? "––" }
+    private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(def.decimals))) } ?? "—" }
 
     private func summary(_ w: [StatPoint], _ h: [StatPoint]) -> String {
         [(Source.watch, w), (Source.whoop, h)].map { s, p in

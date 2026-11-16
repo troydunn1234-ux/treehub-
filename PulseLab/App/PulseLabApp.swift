@@ -88,7 +88,6 @@ enum LabTab: String, CaseIterable, Identifiable {
         case .settings: String(localized: "Settings")
         }
     }
-    var dockTitle: String { title.uppercased() }
     var symbol: String {
         switch self {
         case .today: "waveform.path.ecg"
@@ -200,7 +199,7 @@ struct RootView: View {
                     .zIndex(10)
             }
         }
-        .tint(Lab.watch)
+        .tint(Lab.accent)
         .paywallHost(spec: PulseLabPro.spec)
         .overlay(alignment: .top) { ToastView() }
         .task {
@@ -380,7 +379,7 @@ enum PulseLabPro {
         appName: "Pulse Lab",
         headline: "Settle it: Watch vs WHOOP.",
         tagline: "The full head-to-head lab, 90 days of history and shareable results. Try it free for a week.",
-        tint: Lab.watch, tint2: Lab.violet,
+        tint: Lab.accent, tint2: Lab.whoop,
         features: [
             .init(icon: "bolt.horizontal.fill", title: "The VS tab", detail: "Day-by-day agreement scores for resting HR, HRV, sleep, SpO₂, respiratory rate, temperature and calories — and who's winning."),
             .init(icon: "calendar", title: "90-day history", detail: "Trends over three months instead of one, on every screen."),
@@ -404,17 +403,19 @@ struct ProTeaser<Content: View>: View {
         ZStack {
             content.blur(radius: 14).allowsHitTesting(false).accessibilityHidden(true)
             LinearGradient(colors: [Lab.bg.opacity(0.2), Lab.bg.opacity(0.9)], startPoint: .top, endPoint: .bottom).ignoresSafeArea()
-            VStack(spacing: 14) {
-                Image(systemName: symbol).font(.system(size: 34, weight: .black)).foregroundStyle(Lab.watch)
-                Text(title).font(Lab.display(28, .heavy)).foregroundStyle(Lab.text)
-                Text(message)
-                    .font(.system(size: 15, design: .rounded)).foregroundStyle(Lab.dim).multilineTextAlignment(.center)
+            VStack(spacing: Lab.S.m) {
+                Image(systemName: symbol).font(.system(size: 34, weight: .semibold)).foregroundStyle(Lab.accent)
+                    .accessibilityHidden(true)
+                Text(L(title)).font(Lab.display(28)).foregroundStyle(Lab.text).multilineTextAlignment(.center)
+                    .accessibilityAddTraits(.isHeader)
+                Text(L(message))
+                    .font(.body).foregroundStyle(Lab.dim).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                 Button { Unlock.shared.gate(context) } label: {
-                    Text("See what's inside").font(Lab.display(16, .heavy)).foregroundStyle(.black)
-                        .padding(.horizontal, 22).padding(.vertical, 13)
-                        .background(Capsule().fill(Lab.watch))
+                    Text("See what's inside")
                 }
-                .buttonStyle(PressScale())
+                .buttonStyle(LabPrimaryButton())
+                .frame(maxWidth: 320)
             }
             .padding(28)
         }

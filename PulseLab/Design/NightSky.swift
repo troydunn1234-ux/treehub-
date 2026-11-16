@@ -24,7 +24,6 @@ struct NightSkyHypnogram: View {
                 timeLabel(start, "moon.stars.fill", "BED")
                 Spacer()
                 Text(fmtHM(end.timeIntervalSince(start) / 60)).font(Lab.number(18, .black)).foregroundStyle(Lab.text)
-                    .shadow(color: Lab.violet.opacity(0.6), radius: 8)
                 Spacer()
                 timeLabel(end, "sun.max.fill", "UP")
             }
@@ -60,7 +59,7 @@ struct NightSkyHypnogram: View {
         HStack(spacing: 5) {
             Image(systemName: icon).font(.system(size: 11, weight: .bold)).foregroundStyle(Lab.warn)
             VStack(alignment: .leading, spacing: 0) {
-                Text(l).font(Lab.label(7)).tracking(1.2).foregroundStyle(Lab.faint)
+                Text(l).font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
                 Text(d.formatted(.dateTime.hour().minute())).font(Lab.mono(11, .heavy)).foregroundStyle(Lab.text)
             }
         }
@@ -70,7 +69,7 @@ struct NightSkyHypnogram: View {
         HStack(spacing: 12) {
             ForEach([SleepStage.awake, .rem, .core, .deep]) { s in
                 HStack(spacing: 4) {
-                    RoundedRectangle(cornerRadius: 2).fill(Self.color(s)).frame(width: 10, height: 4).shadow(color: Self.color(s), radius: 3)
+                    RoundedRectangle(cornerRadius: 2).fill(Self.color(s)).frame(width: 10, height: 4)
                     Text(s.title.uppercased()).font(Lab.label(8)).foregroundStyle(Lab.dim)
                 }
             }
@@ -168,7 +167,7 @@ struct NightSkyHypnogram: View {
             tick.addLine(to: CGPoint(x: xx, y: size.height - 9))
             ctx.stroke(tick, with: .color(Color.white.opacity(0.35)), lineWidth: 1)
             if n % 2 == 0 || end.timeIntervalSince(start) < 5 * 3600 {
-                let label = Text(f.string(from: h).lowercased()).font(.system(size: 8, weight: .heavy, design: .monospaced)).foregroundColor(.white.opacity(0.45))
+                let label = Text(f.string(from: h).lowercased()).font(.system(size: 9, weight: .medium, design: .rounded).monospacedDigit()).foregroundColor(.white.opacity(0.5))
                 ctx.draw(label, at: CGPoint(x: xx, y: size.height - 4), anchor: .center)
             }
             h = cal.date(byAdding: .hour, value: 1, to: h) ?? end.addingTimeInterval(1)

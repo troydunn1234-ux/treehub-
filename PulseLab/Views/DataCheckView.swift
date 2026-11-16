@@ -15,11 +15,7 @@ struct DataCheckView: View {
                 VStack(alignment: .leading, spacing: Lab.S.m) {
                     HStack {
                         ScreenTitle(kicker: "Diagnostics", title: "Data check")
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton { dismiss() }
                     }
                     summary
                     healthRows
@@ -38,7 +34,7 @@ struct DataCheckView: View {
     }
 
     private var summary: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
                 row("Apple Health", store.healthAsked ? "asked for access" : "not asked yet", ok: store.healthAsked)
                 row("Watch days loaded", "\(store.watchDays.count)", ok: !store.watchDays.isEmpty)
@@ -143,7 +139,7 @@ struct DataCheckView: View {
     }
 
     private var syncLog: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.xs) {
                 SectionTag("Sync log · last \(whoop.log.count) requests")
                 if whoop.log.isEmpty { EmptyNote(text: "No WHOOP requests this session.") }
@@ -170,7 +166,7 @@ struct ReasonChip: View {
     var body: some View {
         HStack(spacing: 5) {
             Circle().fill(Lab.color(source)).frame(width: 5, height: 5)
-            Text(text.uppercased()).font(Lab.label(8)).tracking(1).foregroundStyle(Lab.dim)
+            Text(text.uppercased()).font(Lab.label(8)).tracking(0.4).foregroundStyle(Lab.dim)
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
         .background(Capsule().fill(Color.white.opacity(0.06)))

@@ -51,13 +51,13 @@ struct CompareScreen: View {
             showTrust = true
         } label: {
             HStack(spacing: 5) {
-                Image(systemName: "checkmark.shield.fill").font(.system(size: 11, weight: .heavy))
-                Text("WHO TO TRUST").font(Lab.label(9)).tracking(1.2)
+                Image(systemName: "checkmark.shield.fill").font(.system(size: 11, weight: .semibold))
+                Text("WHO TO TRUST").font(Lab.label(9)).tracking(0.4)
             }
-            .foregroundStyle(Lab.violet)
+            .foregroundStyle(Lab.accent)
             .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Capsule().fill(Lab.violet.opacity(0.14)))
-            .overlay(Capsule().strokeBorder(Lab.violet.opacity(0.35)))
+            .background(Capsule().fill(Lab.accent.opacity(0.14)))
+            .overlay(Capsule().strokeBorder(Lab.accent.opacity(0.35)))
         }
         .buttonStyle(PressScale())
         .accessibilityLabel("Who to trust")
@@ -79,7 +79,7 @@ struct CompareScreen: View {
         } else {
             LabEmptyState(icon: "hourglass", title: "Not enough overlap yet",
                           message: "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.",
-                          button: nil, tint: Lab.violet, action: nil)
+                          button: nil, tint: Lab.accent, action: nil)
         }
     }
 
@@ -96,7 +96,7 @@ struct CompareScreen: View {
         else if !scored.isEmpty { lines.append("Neither tracker reads consistently higher") }
         if let best, let p = best.agreePercent { lines.append("Strongest agreement: \(best.metric) (\(Int(p.rounded()))% of days within \(best.tolerance.formatted()) \(best.unit))") }
         if let bestR { lines.append("Best trend match: \(bestR.0.metric), r = \(bestR.1.formatted(.number.precision(.fractionLength(2))))") }
-        return LabPanel(tint: Lab.violet) {
+        return LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
                 SectionTag("Verdict · \(days) days")
                 if lines.isEmpty {
@@ -105,7 +105,7 @@ struct CompareScreen: View {
                 } else {
                     ForEach(lines, id: \.self) { l in
                         HStack(alignment: .top, spacing: Lab.S.s) {
-                            Circle().fill(Lab.violet).frame(width: 5, height: 5).padding(.top, 7)
+                            Circle().fill(Lab.accent).frame(width: 5, height: 5).padding(.top, 7)
                             Text(l).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
                         }
                     }
@@ -130,11 +130,11 @@ struct CompareScreen: View {
         let overall = Stats.mean(scored.map(\.score))
         let wins = scored.compactMap { winner($0)?.0 }
         let w = wins.filter { $0 == .watch }.count, h = wins.filter { $0 == .whoop }.count
-        return LabPanel(tint: Lab.violet) {
+        return LabPanel(tint: Lab.accent) {
             VStack(spacing: 12) {
                 HStack(alignment: .center) {
                     tally(.watch, w)
-                    ArcGauge(value: overall, label: "Agree", color: overall.map { $0 >= 70 ? Lab.good : $0 >= 45 ? Lab.warn : Lab.bad } ?? Lab.violet, size: 116)
+                    ArcGauge(value: overall, label: "Agree", color: overall.map { $0 >= 70 ? Lab.good : $0 >= 45 ? Lab.warn : Lab.bad } ?? Lab.faint, size: 116)
                     tally(.whoop, h)
                 }
                 Text("\(scored.count) metrics measured by both · crowns go to the tracker that reads higher, or steadier when they match.")
@@ -146,9 +146,9 @@ struct CompareScreen: View {
 
     private func tally(_ s: Source, _ n: Int) -> some View {
         VStack(spacing: 2) {
-            Text(s.short).font(Lab.label(10)).tracking(2).foregroundStyle(Lab.color(s))
+            Text(s.short).font(Lab.label(10)).tracking(0.4).foregroundStyle(Lab.color(s))
             CountUp(value: Double(n), size: 40, color: Lab.color(s))
-            Text("CROWNS").font(Lab.label(7)).tracking(1.4).foregroundStyle(Lab.faint)
+            Text("CROWNS").font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
         }
         .frame(maxWidth: .infinity)
     }
@@ -156,7 +156,7 @@ struct CompareScreen: View {
     private func stat(_ l: String, _ v: Double?, _ u: String, _ c: Color) -> some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint)
-            Text(v.map { String(format: abs($0) < 10 ? "%.2f" : "%.0f", $0) } ?? "––").font(Lab.mono(14, .heavy)).foregroundStyle(c)
+            Text(v.map { String(format: abs($0) < 10 ? "%.2f" : "%.0f", $0) } ?? "—").font(Lab.mono(14, .heavy)).foregroundStyle(c)
             Text(u).font(Lab.label(8)).foregroundStyle(Lab.faint)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -170,11 +170,11 @@ struct CompareScreen: View {
                 Text(a.plain).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
                 if !a.why.isEmpty {
                     HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.violet).font(.system(size: 13)).padding(.top, 2)
+                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.accent).font(.system(size: 13)).padding(.top, 2)
                         Text(a.why).font(.system(size: 13, design: .rounded)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.violet.opacity(0.08)))
+                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.accent.opacity(0.08)))
                 }
                 SectionTag(a.trendOnly ? "Day by day" : "Difference plot").padding(.top, 4)
                 if a.n < 3 {
@@ -185,12 +185,13 @@ struct CompareScreen: View {
                     Chart {
                         ForEach(Array(a.pairs.enumerated()), id: \.offset) { i, p in
                             LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zw[i]), series: .value("S", "Watch"))
-                                .foregroundStyle(Lab.watch).interpolationMethod(.catmullRom).lineStyle(StrokeStyle(lineWidth: 2.5))
+                                .foregroundStyle(Lab.watch).interpolationMethod(.monotone).lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                             LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zh[i]), series: .value("S", "WHOOP"))
-                                .foregroundStyle(Lab.whoop).interpolationMethod(.catmullRom).lineStyle(StrokeStyle(lineWidth: 2.5))
+                                .foregroundStyle(Lab.whoop).interpolationMethod(.monotone).lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
                         }
                         RuleMark(y: .value("0", 0)).foregroundStyle(Lab.faint)
                     }
+                    .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("vs own average (SD)") }
                     .chartXAxis { LabAxis.xDays }
                     .chartYAxis { LabAxis.y }
                     .frame(height: 180)
@@ -203,7 +204,7 @@ struct CompareScreen: View {
                     Chart {
                         RectangleMark(xStart: .value("lo", minMean(a)), xEnd: .value("hi", maxMean(a)),
                                       yStart: .value("l", b - 1.96 * sd), yEnd: .value("u", b + 1.96 * sd))
-                            .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.16), Lab.violet.opacity(0.10), Lab.whoop.opacity(0.16)], startPoint: .top, endPoint: .bottom))
+                            .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.16), Color.white.opacity(0.04), Lab.whoop.opacity(0.16)], startPoint: .top, endPoint: .bottom))
                         RuleMark(y: .value("bias", b)).foregroundStyle(Lab.text.opacity(0.7))
                             .annotation(position: .top, alignment: .trailing) {
                                 Text("AVG GAP \(String(format: "%+.1f", b))").font(Lab.label(8)).foregroundStyle(Lab.dim)
@@ -219,15 +220,15 @@ struct CompareScreen: View {
                         }
                     }
                     .chartXScale(domain: .automatic(includesZero: false))
+                    .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("Watch − WHOOP · " + a.unit) }
                     .chartXAxis {
                         AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine().foregroundStyle(Lab.line)
-                            AxisValueLabel().foregroundStyle(Lab.faint).font(Lab.mono(9, .medium))
+                            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Lab.line)
+                            AxisValueLabel().foregroundStyle(Lab.faint).font(LabAxis.labelFont)
                         }
                     }
                     .chartYAxis { LabAxis.y }
                     .frame(height: 200)
-                    .shadow(color: Lab.watch.opacity(0.25), radius: 6)
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Difference plot for \(a.metric). On average Apple Watch reads \(String(format: "%+.1f", b)) \(a.unit) versus WHOOP across \(a.n) days.")
                     Text("Dots above the line: Watch read higher (cyan). Below: WHOOP read higher (amber). The shaded band is where 95% of days fall.")
@@ -246,7 +247,7 @@ struct CompareScreen: View {
     }
 
     private var method: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: 8) {
                 SectionTag("How we compare")
                 Text("""

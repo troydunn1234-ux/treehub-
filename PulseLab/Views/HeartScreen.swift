@@ -43,7 +43,7 @@ struct HeartScreen: View {
                             UIImpactFeedbackGenerator(style: .light).impactOccurred()
                             store.detail = metric
                         } label: {
-                            Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.watch)
+                            Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 11, weight: .semibold)).foregroundStyle(Lab.watch)
                                 .frame(width: 30, height: 30)
                         }
                         .accessibilityLabel("Open \(title.lowercased()) details")
@@ -97,11 +97,12 @@ struct HeartScreen: View {
                     ForEach(Array(w.enumerated()), id: \.offset) { _, p in
                         LineMark(x: .value("Day", p.0, unit: .day), y: .value("Readiness", p.1))
                             .foregroundStyle(Lab.watch)
-                            .lineStyle(StrokeStyle(lineWidth: 2.5))
-                            .interpolationMethod(.catmullRom)
+                            .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                            .interpolationMethod(.monotone)
                     }
                 }
                 .chartYScale(domain: 0...100)
+                .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("score") }
                 .chartXAxis { LabAxis.xDays }
                 .chartYAxis { LabAxis.y }
                 .frame(height: 170)

@@ -164,7 +164,7 @@ enum Units {
 }
 
 func fmtHM(_ minutes: Double?) -> String {
-    guard let m = minutes, m > 0 else { return "––" }
+    guard let m = minutes, m > 0 else { return "—" }
     let h = Int(m) / 60, mm = Int(m) % 60
     return h > 0 ? "\(h)h \(mm)m" : "\(mm)m"
 }

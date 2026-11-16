@@ -19,11 +19,7 @@ struct ReadinessSheet: View {
                 VStack(alignment: .leading, spacing: Lab.S.m) {
                     HStack(alignment: .top) {
                         ScreenTitle(kicker: "Apple Watch", title: "Readiness")
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.07)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton { dismiss() }
                     }
                     if let d = detail {
                         hero(d)
@@ -82,14 +78,14 @@ struct ReadinessSheet: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(band(d.score)).font(Lab.title(24)).foregroundStyle(color)
             Text(bandAdvice(d.score)).font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
-            chip(String(localized: "BASELINE: LAST \(d.baselineDays) DAYS"), Lab.violet)
+            chip(String(localized: "BASELINE: LAST \(d.baselineDays) DAYS"), Lab.accent)
             if d.usedYesterday { chip(String(localized: "USED YESTERDAY'S READINGS"), Lab.warn) }
         }
         .accessibilityElement(children: .combine)
     }
 
     private func chip(_ text: String, _ color: Color) -> some View {
-        Text(text).font(Lab.label(8)).tracking(1).foregroundStyle(color)
+        Text(text).font(Lab.label(8)).tracking(0.4).foregroundStyle(color)
             .padding(.horizontal, 7).padding(.vertical, 4)
             .background(Capsule().fill(color.opacity(0.13)))
             .fixedSize(horizontal: false, vertical: true)
@@ -100,7 +96,7 @@ struct ReadinessSheet: View {
     private func breakdown(_ d: Compare.ReadinessDetail) -> some View {
         LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("WHAT MADE TODAY'S SCORE").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Text("WHAT MADE TODAY'S SCORE").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 HStack {
                     Text("Starting point").font(Lab.body(14, .semibold)).foregroundStyle(Lab.dim)
                     Spacer()
@@ -198,7 +194,7 @@ struct ReadinessSheet: View {
     private func missingCard(_ notes: [String]) -> some View {
         LabPanel(tint: Lab.warn) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("MISSING OR LIMITED DATA", systemImage: "exclamationmark.circle.fill").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.warn)
+                Label("MISSING OR LIMITED DATA", systemImage: "exclamationmark.circle.fill").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.warn)
                 ForEach(notes, id: \.self) { n in
                     HStack(alignment: .top, spacing: 8) {
                         Circle().fill(Lab.warn).frame(width: 5, height: 5).padding(.top, 7)
@@ -238,7 +234,7 @@ struct ReadinessSheet: View {
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    Text("LAST 30 DAYS").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                    Text("LAST 30 DAYS").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                     Spacer()
                     if !h.isEmpty { DuelLegend(compact: true) }
                 }
@@ -289,7 +285,7 @@ struct ReadinessSheet: View {
         let rec = store.recoveryToday
         return LabPanel(tint: Lab.whoop) {
             VStack(alignment: .leading, spacing: 12) {
-                Text("NEXT TO WHOOP RECOVERY").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Text("NEXT TO WHOOP RECOVERY").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 if today != nil || rec != nil {
                     HStack(spacing: 0) {
                         scoreColumn("Readiness", today, .watch)
@@ -317,7 +313,7 @@ struct ReadinessSheet: View {
                         .font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                 }
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("HOW THEY DIFFER").font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.faint)
+                    Text("HOW THEY DIFFER").font(Lab.label(8)).tracking(0.4).foregroundStyle(Lab.faint)
                     bullet(String(localized: "WHOOP reads HRV (RMSSD) and resting HR in your last deep sleep. The Watch logs HRV as SDNN, often from short readings, and resting HR from calm moments in the day."))
                     bullet(String(localized: "WHOOP scores sleep against its own estimate of what you needed; readiness uses a flat 7-hour target."))
                     bullet(String(localized: "WHOOP's formula is its own and isn't published. Readiness is the simple recipe shown on this screen."))
@@ -328,11 +324,11 @@ struct ReadinessSheet: View {
     }
 
     private func scoreColumn(_ label: String, _ v: Double?, _ s: Source) -> some View {
-        let shown: String = v.map { String(Int($0.rounded())) } ?? "––"
+        let shown: String = v.map { String(Int($0.rounded())) } ?? "—"
         let spoken: String = v.map { String(Int($0.rounded())) } ?? String(localized: "no score")
         return VStack(spacing: 4) {
             Text(shown).font(Lab.number(36, .black)).foregroundStyle(v.map(Lab.band) ?? Lab.faint)
-            Text(L(label).uppercased()).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.dim)
+            Text(L(label).uppercased()).font(Lab.label(8)).tracking(0.4).foregroundStyle(Lab.dim)
             SourceChip(source: s)
         }
         .frame(maxWidth: .infinity)
@@ -350,9 +346,9 @@ struct ReadinessSheet: View {
     // MARK: How it's calculated
 
     private var howCard: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("HOW IT'S CALCULATED", systemImage: "function").font(Lab.label(9)).tracking(1.4).foregroundStyle(Lab.faint)
+                Label("HOW IT'S CALCULATED", systemImage: "function").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
                 Text("Every score starts at 55. Each signal from your Watch then adds or takes away points depending on how today compares with your own recent normal.")
                     .font(Lab.body(14)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
                 ForEach(Part.Kind.allCases, id: \.self) { k in

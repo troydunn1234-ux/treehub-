@@ -12,7 +12,6 @@ struct TodayScreen: View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
-            BriefingCard()
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
                           sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday,
                           onReadiness: { openDetail(.readiness) },
@@ -21,6 +20,7 @@ struct TodayScreen: View {
                               UIImpactFeedbackGenerator(style: .light).impactOccurred()
                               if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
                           })
+            BriefingCard()
             LogWhoopCard()
             numbersHeader
             headToHead
@@ -54,7 +54,7 @@ struct TodayScreen: View {
     private var numbersHeader: some View {
         VStack(alignment: .leading, spacing: Lab.S.s) {
             HStack(alignment: .firstTextBaseline) {
-                Text("Your numbers").font(Lab.title(20)).foregroundStyle(Lab.text)
+                Text("Your numbers").font(.title3.weight(.bold)).foregroundStyle(Lab.text)
                     .accessibilityAddTraits(.isHeader)
                 Spacer()
                 Button {
@@ -62,11 +62,11 @@ struct TodayScreen: View {
                     showAllData = true
                 } label: {
                     HStack(spacing: 4) {
-                        Text("See all stats").font(Lab.body(13, .bold))
-                        Image(systemName: "chevron.right").font(.system(size: 10, weight: .heavy))
+                        Text("See all stats").font(.subheadline.weight(.semibold))
+                        Image(systemName: "chevron.right").font(.caption.weight(.bold))
                     }
-                    .foregroundStyle(Lab.violet)
-                    .padding(.vertical, 6)
+                    .foregroundStyle(Lab.accent)
+                    .frame(minHeight: 44)
                     .contentShape(Rectangle())
                 }
                 .buttonStyle(PressScale())
@@ -78,7 +78,7 @@ struct TodayScreen: View {
                 Text("· tap a tile for details").foregroundStyle(Lab.faint)
                 Spacer(minLength: 0)
             }
-            .font(Lab.label(9))
+            .font(.footnote.weight(.medium))
             .labelStyle(DotLabelStyle())
             if store.reason(.watch) != nil || store.reason(.whoop) != nil {
                 HStack(spacing: Lab.S.s) {
@@ -96,15 +96,14 @@ struct TodayScreen: View {
 
     /// The five numbers both trackers report, Watch on the left, WHOOP on the right. Each side shows its most
     /// relevant recent value (last night / newest reading / today / yesterday) with a caption saying which;
-    /// "––" only when there's nothing from the last day and a half, with a one-line hint.
+    /// "—" only when there's nothing from the last day and a half, with a one-line hint.
     private var headToHead: some View {
         LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 12) {
                 HStack {
-                    SourceChip(source: .watch)
-                    Spacer()
                     SectionTag("Head to head")
                     Spacer()
+                    SourceChip(source: .watch)
                     SourceChip(source: .whoop)
                 }
                 h2hRow("Resting HR", "bpm", .rhr,
@@ -130,7 +129,7 @@ struct TodayScreen: View {
                        watchHint: String(localized: "Not in yet"), whoopHint: String(localized: "Tap to add WHOOP steps"),
                        edit: .steps())
                 Text("Tap a row for its chart · tap WHOOP steps or calories to type them in")
-                    .font(Lab.label(8)).foregroundStyle(Lab.faint)
+                    .font(.caption).foregroundStyle(Lab.faint)
                     .frame(maxWidth: .infinity, alignment: .center).multilineTextAlignment(.center)
             }
         }
@@ -142,20 +141,16 @@ struct TodayScreen: View {
         let f: (Double) -> String = { $0.formatted(.number.precision(.fractionLength(decimals))) }
         return VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text(L(title).uppercased()).font(Lab.label(10)).tracking(1.6).foregroundStyle(Lab.dim)
+                Text(L(title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.dim)
                 Spacer()
-                if let note { Text(note).font(Lab.label(8)).foregroundStyle(Lab.faint) }
+                if let note { Text(note).font(.caption2).foregroundStyle(Lab.faint) }
             }
             HStack(alignment: .top, spacing: Lab.S.s) {
                 h2hSide(w, .watch, unit, f, hint: watchHint)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 if let w, let h {
-                    let d = w.value - h.value
-                    Text((d >= 0 ? "+" : "−") + f(abs(d)))
-                        .font(Lab.mono(11, .bold)).foregroundStyle(Lab.dim)
-                        .padding(.horizontal, 7).padding(.vertical, 3)
-                        .background(Capsule().strokeBorder(Color.white.opacity(0.12)))
-                        .padding(.top, 6)
+                    DeltaPill(value: w.value - h.value, decimals: decimals)
+                        .padding(.top, 8)
                         .accessibilityHidden(true)
                 }
                 if let edit {
@@ -188,19 +183,20 @@ struct TodayScreen: View {
         return VStack(alignment: lead ? .leading : .trailing, spacing: 2) {
             if let r {
                 HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    if editable && !lead { Image(systemName: "pencil").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.faint) }
-                    Text(f(r.value)).font(Lab.number(26, .black)).foregroundStyle(Lab.color(s))
+                    if editable && !lead { Image(systemName: "pencil").font(.caption2.weight(.bold)).foregroundStyle(Lab.faint) }
+                    Text(f(r.value)).font(Lab.number(26)).foregroundStyle(Lab.color(s))
                         .lineLimit(1).minimumScaleFactor(0.6)
-                    Text(unit).font(Lab.label(8)).foregroundStyle(Lab.color(s).opacity(0.7))
+                        .contentTransition(.numericText(value: r.value))
+                    Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
                 }
-                Text(r.caption).font(Lab.label(7)).tracking(0.8).foregroundStyle(r.manual ? Lab.whoop.opacity(0.8) : Lab.faint)
+                Text(r.caption).font(.caption2).foregroundStyle(r.manual ? Lab.whoop : Lab.faint)
                     .lineLimit(1).minimumScaleFactor(0.7)
             } else {
                 HStack(spacing: 4) {
-                    if editable { Image(systemName: "plus.circle.fill").font(.system(size: 14, weight: .bold)).foregroundStyle(Lab.whoop) }
-                    Text("––").font(Lab.number(26, .black)).foregroundStyle(Lab.faint)
+                    if editable { Image(systemName: "plus.circle.fill").font(.system(size: 15, weight: .semibold)).foregroundStyle(Lab.whoop) }
+                    Text("—").font(Lab.number(26)).foregroundStyle(Lab.faint)
                 }
-                Text(hint).font(Lab.body(10)).foregroundStyle(editable ? Lab.whoop.opacity(0.85) : Lab.faint)
+                Text(hint).font(.caption2).foregroundStyle(editable ? Lab.whoop : Lab.faint)
                     .multilineTextAlignment(lead ? .leading : .trailing)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -232,18 +228,18 @@ struct TodayScreen: View {
         } label: {
             VStack(alignment: .leading, spacing: Lab.S.xs) {
                 HStack(spacing: 4) {
-                    Text(title.uppercased()).font(Lab.label(9)).tracking(1.2).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
+                    Text(L(title)).font(.footnote.weight(.semibold)).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
                     Spacer(minLength: 0)
                     if let a, let b, a.1 || b.1 { gapChip(a.0 - b.0, decimals: decimals) }
                 }
                 if only == .whoop { notMeasured(.watch) } else { tileValue(a, .watch, decimals, signed: signed) }
                 if only == .watch { notMeasured(.whoop) } else { tileValue(b, .whoop, decimals, signed: signed) }
-                Text(note ?? unit).font(Lab.label(8)).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
+                Text(note ?? unit).font(.caption2).foregroundStyle(Lab.faint).lineLimit(1).minimumScaleFactor(0.7)
             }
-            .frame(maxWidth: .infinity, minHeight: 92, alignment: .topLeading)
-            .padding(12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.9)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Color.white.opacity(0.08)))
+            .frame(maxWidth: .infinity, minHeight: 104, alignment: .topLeading)
+            .padding(Lab.S.sm)
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+            .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.line))
         }
         .buttonStyle(PressScale())
         .accessibilityLabel("\(title): Apple Watch \(a.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit), WHOOP \(b.map { $0.0.formatted(.number.precision(.fractionLength(decimals))) } ?? "no data") \(unit)")
@@ -252,28 +248,26 @@ struct TodayScreen: View {
 
     /// Watch − WHOOP, coloured by who reads higher. Small on purpose.
     private func gapChip(_ d: Double, decimals: Int) -> some View {
-        let txt = (d >= 0 ? "+" : "−") + abs(d).formatted(.number.precision(.fractionLength(decimals)))
-        return Text(txt).font(Lab.mono(8, .heavy)).foregroundStyle(abs(d) < 0.05 ? Lab.faint : (d > 0 ? Lab.watch : Lab.whoop))
-            .padding(.horizontal, 4).padding(.vertical, 2)
-            .background(Capsule().fill(Color.white.opacity(0.06)))
+        DeltaPill(value: d, decimals: decimals)
     }
 
     private func notMeasured(_ s: Source) -> some View {
         HStack(spacing: 5) {
             Circle().fill(Lab.color(s).opacity(0.35)).frame(width: 5, height: 5)
-            Text(s == .watch ? "not on Watch" : "not on WHOOP").font(Lab.label(8)).foregroundStyle(Lab.faint)
+            Text(s == .watch ? "Not on Watch" : "Not on WHOOP").font(.caption2).foregroundStyle(Lab.faint)
         }
         .frame(height: 24)
     }
 
     private func tileValue(_ v: (Double, Bool)?, _ s: Source, _ decimals: Int, signed: Bool = false) -> some View {
         HStack(spacing: 5) {
-            Circle().fill(Lab.color(s)).frame(width: 5, height: 5)
-            let f = v.map { (signed && $0.0 > 0 ? "+" : "") + $0.0.formatted(.number.precision(.fractionLength(decimals))) }
+            Circle().fill(Lab.color(s)).frame(width: 6, height: 6)
+            let f = v.map { Lab.fmt($0.0, decimals, signed: signed) }
             Text(f ?? "—")
-                .font(Lab.number(20, .black)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s).opacity(v?.1 == false ? 0.6 : 1))
+                .font(Lab.number(20)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s).opacity(v?.1 == false ? 0.6 : 1))
                 .lineLimit(1).minimumScaleFactor(0.6)
-            if let v, !v.1 { Text("prev").font(Lab.label(7)).foregroundStyle(Lab.faint) }
+            if v == nil { Text("No reading").font(.caption2).foregroundStyle(Lab.faint) }
+            if let v, !v.1 { Text("Earlier").font(.caption2).foregroundStyle(Lab.faint) }
         }
     }
 
@@ -300,7 +294,7 @@ struct TodayScreen: View {
                     SectionTag("Last night")
                     Spacer()
                     Button { store.detail = .sleep } label: {
-                        Text("DETAILS").font(Lab.label(9)).foregroundStyle(Lab.watch)
+                        Text("Details").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.accent).frame(minHeight: 44)
                     }
                 }
                 HStack(alignment: .top) {
@@ -314,9 +308,9 @@ struct TodayScreen: View {
 
     private func sleepColumn(_ n: SleepNight?, _ s: Source) -> some View {
         VStack(alignment: s == .watch ? .leading : .trailing, spacing: 4) {
-            Text(fmtHM(n?.asleepMin)).font(Lab.mono(26, .heavy)).foregroundStyle(Lab.color(s))
-                .shadow(color: Lab.color(s).opacity(0.5), radius: 8)
-            Text("ASLEEP").font(Lab.label(9)).foregroundStyle(Lab.color(s).opacity(0.7))
+            SourceChip(source: s)
+            Text(fmtHM(n?.asleepMin)).font(Lab.number(26)).foregroundStyle(n == nil ? Lab.faint : Lab.color(s))
+            Text(n == nil ? "No night recorded" : "Asleep").font(.caption).foregroundStyle(Lab.faint)
             HStack(spacing: 8) {
                 stat("DEEP", n?.deepMin)
                 stat("REM", n?.remMin)
@@ -327,8 +321,8 @@ struct TodayScreen: View {
 
     private func stat(_ l: String, _ m: Double?) -> some View {
         VStack(spacing: 0) {
-            Text(fmtHM(m)).font(Lab.mono(12)).foregroundStyle(Lab.text)
-            Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint)
+            Text(fmtHM(m)).font(Lab.mono(13)).foregroundStyle(Lab.text)
+            Text(l).font(Lab.label(9)).foregroundStyle(Lab.faint)
         }
     }
 
@@ -340,14 +334,15 @@ struct TodayScreen: View {
                     SectionTag("Resting HR · 14 days")
                     Spacer()
                     Button { store.detail = .rhr } label: {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(Lab.watch)
-                            .frame(width: 30, height: 30)
+                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.accent)
+                            .frame(width: 44, height: 44)
                     }
                     .accessibilityLabel("Open resting heart rate details")
                 }
-                DuelChart(watch: spark(.watch), whoop: spark(.whoop), unit: "bpm", height: 130, showAverages: false)
-                .accessibilityElement(children: .ignore)
-                .accessibilityLabel(rhrSummary)
+                DuelChart(watch: spark(.watch), whoop: spark(.whoop), unit: "bpm", height: 150, showAverages: false)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel(rhrSummary)
+                DuelLegend()
             }
         }
     }
@@ -366,9 +361,10 @@ struct TodayScreen: View {
         LabPanel(tint: Lab.whoop) {
             HStack(spacing: 12) {
                 Image(systemName: "bolt.heart.fill").font(.title2).foregroundStyle(Lab.whoop)
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Connect WHOOP for the full duel").font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
-                    Text("Recovery, strain and sleep stages straight from WHOOP. Settings → WHOOP.").font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
+                    Text("Connect WHOOP for the full duel").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                    Text("Recovery, strain and sleep stages straight from WHOOP. Settings → WHOOP.").font(.footnote).foregroundStyle(Lab.dim)
                 }
             }
         }
@@ -395,44 +391,46 @@ struct ReadyDuelCard: View {
     @ObservedObject private var unlock = Unlock.shared
 
     var body: some View {
-        LabPanel(tint: Lab.violet) {
-            VStack(spacing: 12) {
+        LabPanel {
+            VStack(spacing: Lab.S.m) {
                 HStack {
-                    SectionTag("Recovery vs Readiness")
+                    SectionTag("Recovery vs readiness")
                     Spacer()
                     Button(action: action) {
                         HStack(spacing: 4) {
-                            if !unlock.isPro { Image(systemName: "lock.fill").font(.system(size: 9, weight: .heavy)) }
-                            Text("VS").font(Lab.label(9)).tracking(1.5)
-                            Image(systemName: "chevron.right").font(.system(size: 9, weight: .heavy))
+                            if !unlock.isPro { Image(systemName: "lock.fill").font(.caption2.weight(.bold)) }
+                            Text("Compare").font(.subheadline.weight(.semibold))
+                            Image(systemName: "chevron.right").font(.caption.weight(.bold))
                         }
-                        .foregroundStyle(Lab.watch)
-                        .padding(.vertical, 6).padding(.leading, 10)
+                        .foregroundStyle(Lab.accent)
+                        .frame(minHeight: 44)
+                        .padding(.leading, 10)
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(PressScale())
                     .accessibilityLabel("Compare tab")
                     .accessibilityHint(unlock.isPro ? "Opens the VS tab" : "Opens the Pro unlock")
                 }
-                HStack(spacing: 0) {
+                HStack(alignment: .top, spacing: 0) {
                     Button(action: onReadiness) {
-                        FacingArc(value: readiness, label: "Readiness", source: .watch, color: Lab.watch, opensRight: true)
-                            .contentShape(Rectangle())
+                        scoreColumn(readiness, "Readiness", .watch)
                     }
                     .buttonStyle(PressScale())
                     .accessibilityElement(children: .ignore)
                     .accessibilityLabel("Apple Watch readiness \(fmt(readiness))")
                     .accessibilityHint("Shows how readiness was worked out")
                     .accessibilityAddTraits(.isButton)
-                    VStack(spacing: 2) {
-                        Text("VS").font(Lab.display(22)).foregroundStyle(Lab.duel)
-                        Text(gapText).font(Lab.label(8)).tracking(1.2).foregroundStyle(Lab.faint)
+                    VStack(spacing: 4) {
+                        Text(gapText).font(Lab.mono(13, .semibold)).foregroundStyle(Lab.text)
+                            .padding(.horizontal, 8).padding(.vertical, 4)
+                            .background(Capsule().fill(Lab.inset))
+                        Text("gap").font(.caption2).foregroundStyle(Lab.faint)
                     }
-                    .frame(width: 72)
+                    .frame(width: 64)
+                    .padding(.top, 48)
                     .accessibilityHidden(true)
                     Button(action: onRecovery) {
-                        FacingArc(value: recovery, label: "Recovery", source: .whoop, color: recovery.map(Lab.band) ?? Lab.whoop, opensRight: false)
-                            .contentShape(Rectangle())
+                        scoreColumn(recovery, "Recovery", .whoop)
                     }
                     .buttonStyle(PressScale())
                     .accessibilityElement(children: .ignore)
@@ -441,21 +439,37 @@ struct ReadyDuelCard: View {
                     .accessibilityAddTraits(.isButton)
                 }
                 Text(read)
-                    .font(Lab.body(13, .semibold)).foregroundStyle(Lab.dim)
+                    .font(.subheadline).foregroundStyle(Lab.dim)
                     .multilineTextAlignment(.center).frame(maxWidth: .infinity)
                     .fixedSize(horizontal: false, vertical: true)
-                Text("Tap a score for the breakdown").font(Lab.label(8)).tracking(1).foregroundStyle(Lab.faint)
+                Text("Tap a score for the breakdown").font(.caption).foregroundStyle(Lab.faint)
                     .accessibilityHidden(true)
             }
         }
     }
 
+    /// Ring coloured by zone (green / yellow / red), tracker chip underneath.
+    private func scoreColumn(_ v: Double?, _ label: String, _ s: Source) -> some View {
+        VStack(spacing: Lab.S.s) {
+            GaugeRing(value: v, label: label, color: v.map(Lab.band) ?? Lab.faint, size: 116)
+            SourceChip(source: s)
+            Text(zone(v)).font(.caption.weight(.medium)).foregroundStyle(v.map(Lab.band) ?? Lab.faint)
+        }
+        .frame(maxWidth: .infinity)
+        .contentShape(Rectangle())
+    }
+
+    private func zone(_ v: Double?) -> String {
+        guard let v else { return String(localized: "No score yet") }
+        return v >= 67 ? String(localized: "Ready") : v >= 34 ? String(localized: "Moderate") : String(localized: "Rest")
+    }
+
     private func fmt(_ v: Double?) -> String { v.map { "\(Int($0.rounded())) percent" } ?? "no score" }
 
     private var gapText: String {
-        guard let a = readiness, let b = recovery else { return "TODAY" }
+        guard let a = readiness, let b = recovery else { return "—" }
         let d = Int((a - b).rounded())
-        return d == 0 ? "EVEN" : String(format: "%+d PTS", d)
+        return d == 0 ? String(localized: "Even") : Lab.fmt(Double(d), signed: true)
     }
 
     /// One line in plain English. When the two split, last night's sleep breaks the tie.
@@ -484,78 +498,6 @@ struct ReadyDuelCard: View {
             if h >= 6 { return base + " — trust sleep: \(hm) last night, a middle day." }
             return base + " — trust sleep: only \(hm) last night, lean toward rest."
         }
-    }
-}
-
-/// A 180° arc on one side (the open side faces the opponent), filled top → bottom.
-struct FacingArc: View {
-    let value: Double?
-    let label: String
-    let source: Source
-    let color: Color
-    /// True for the left-hand arc (bulges left, opens to the right).
-    let opensRight: Bool
-    var size: CGFloat = 112
-    @State private var drawn: Double = 0
-
-    var body: some View {
-        let line = size * 0.10
-        ZStack {
-            HalfArc(progress: 1, leftSide: opensRight)
-                .stroke(Color.white.opacity(0.07), style: StrokeStyle(lineWidth: line, lineCap: .round))
-                .padding(line / 2)
-            HalfArc(progress: drawn / 100, leftSide: opensRight)
-                .stroke(LinearGradient(colors: [color.opacity(0.45), color], startPoint: .top, endPoint: .bottom),
-                        style: StrokeStyle(lineWidth: line, lineCap: .round))
-                .padding(line / 2)
-                .shadow(color: color.opacity(0.7), radius: 8)
-            VStack(spacing: 2) {
-                CountUp(value: value, size: size * 0.26, color: Lab.text)
-                Text(label.uppercased()).font(Lab.label(8)).tracking(1.3).foregroundStyle(color)
-                SourceChip(source: source).scaleEffect(0.85)
-            }
-            .offset(x: opensRight ? size * 0.06 : -size * 0.06)
-        }
-        .frame(width: size, height: size)
-        .frame(maxWidth: .infinity)
-        .onAppear { sweep() }
-        .onChange(of: value) { _, _ in sweep() }
-        .accessibilityHidden(true)
-    }
-
-    private func sweep() {
-        let v = min(100, max(0, value ?? 0))
-        if Lab.reduceMotion { drawn = v; return }
-        drawn = 0
-        DispatchQueue.main.async { withAnimation(.easeOut(duration: 1.0)) { drawn = v } }
-    }
-}
-
-/// Half circle: the left side runs from 12 o'clock down through 9 to 6; the right side mirrors it. Animatable.
-struct HalfArc: Shape {
-    var progress: Double
-    var leftSide: Bool
-    var animatableData: Double {
-        get { progress }
-        set { progress = newValue }
-    }
-
-    func path(in r: CGRect) -> Path {
-        var p = Path()
-        let c = CGPoint(x: r.midX, y: r.midY), radius = min(r.width, r.height) / 2
-        let part = min(1, max(0, progress))
-        guard part > 0 else { return p }
-        // SwiftUI angles: 0° = 3 o'clock, 90° = 6 o'clock, 270° = 12 o'clock.
-        if leftSide {
-            // 270° → 180° → 90°, i.e. counter-clockwise on screen from the top down the left side.
-            let start = Angle.degrees(270), end = Angle.degrees(270 - 180 * part)
-            p.addArc(center: c, radius: radius, startAngle: start, endAngle: end, clockwise: true)
-        } else {
-            // 270° → 360° → 450°, clockwise on screen from the top down the right side.
-            let start = Angle.degrees(270), end = Angle.degrees(270 + 180 * part)
-            p.addArc(center: c, radius: radius, startAngle: start, endAngle: end, clockwise: false)
-        }
-        return p
     }
 }
 

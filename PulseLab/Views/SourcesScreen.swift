@@ -35,7 +35,7 @@ struct SyncProgressBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
-                Text((store.syncLine ?? "Syncing").uppercased()).font(Lab.label(9)).tracking(1.2).foregroundStyle(Lab.dim).lineLimit(1)
+                Text((store.syncLine ?? "Syncing").uppercased()).font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.dim).lineLimit(1)
                 Spacer()
                 Text("\(Int(store.syncProgress * 100))%").font(Lab.mono(10)).foregroundStyle(Lab.faint)
             }
@@ -78,11 +78,7 @@ struct SourcesScreen: View {
                     HStack(alignment: .top) {
                         ScreenTitle(kicker: "Where your data comes from", title: "Sources")
                         Spacer()
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton { dismiss() }
                     }
                     syncAll
                     whoopCard
@@ -109,7 +105,7 @@ struct SourcesScreen: View {
     // MARK: cards
 
     private var syncAll: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
                 HStack {
                     VStack(alignment: .leading, spacing: 2) {
@@ -201,9 +197,9 @@ struct SourcesScreen: View {
     private var fitnessCard: some View {
         let today = store.watchDays.stat(on: Date())
         let lastWorkout = store.workouts.filter { $0.source == .watch }.map(\.start).max()
-        return LabPanel(tint: Lab.violet) {
+        return LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                header("Fitness", icon: "figure.run", tint: Lab.violet,
+                header("Fitness", icon: "figure.run", tint: Lab.accent,
                        status: today == nil ? ("NO DATA TODAY", Lab.faint) : ("TODAY IN", Lab.good))
                 line("Move", today?.activeKcal.map { "\(Int($0)) kcal" } ?? "—")
                 line("Exercise", today?.exerciseMin.map { "\(Int($0)) min" } ?? "—")
@@ -215,24 +211,24 @@ struct SourcesScreen: View {
     }
 
     private var tools: some View {
-        LabPanel(tint: Lab.violet) {
+        LabPanel(tint: Lab.accent) {
             VStack(alignment: .leading, spacing: Lab.S.s) {
                 Button { showAllData = true } label: {
                     HStack {
-                        Image(systemName: "square.grid.3x3.fill").foregroundStyle(Lab.violet)
+                        Image(systemName: "square.grid.3x3.fill").foregroundStyle(Lab.accent)
                         Text("All data, every metric").font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
                         Spacer()
-                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Lab.faint)
                     }
                 }
                 .buttonStyle(.plain)
                 Divider().overlay(Lab.line)
                 Button { showDataCheck = true } label: {
                     HStack {
-                        Image(systemName: "stethoscope").foregroundStyle(Lab.violet)
+                        Image(systemName: "stethoscope").foregroundStyle(Lab.accent)
                         Text("Data check, metric by metric").font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
                         Spacer()
-                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Lab.faint)
+                        Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Lab.faint)
                     }
                 }
                 .buttonStyle(.plain)

@@ -48,11 +48,7 @@ struct WhoopQuickEditSheet: View {
                 VStack(alignment: .leading, spacing: Lab.S.m) {
                     HStack(alignment: .top) {
                         ScreenTitle(kicker: "Log WHOOP · by hand", title: title)
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton { dismiss() }
                     }
                     HStack {
                         Image(systemName: "calendar").foregroundStyle(Lab.whoop)

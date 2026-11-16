@@ -28,11 +28,7 @@ struct AllDataScreen: View {
                     HStack(alignment: .top) {
                         ScreenTitle(kicker: "Everything that syncs", title: "All data")
                         Spacer()
-                        Button { dismiss() } label: {
-                            Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(Lab.dim)
-                                .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.06)))
-                        }
-                        .accessibilityLabel("Close")
+                        CloseButton { dismiss() }
                     }
                     if store.loading { SyncProgressBar() }
                     summary(withData: withData)
@@ -87,7 +83,7 @@ struct AllDataScreen: View {
                 Toggle(isOn: $hideEmpty.animation(.snappy)) {
                     Text("Hide metrics with no data").font(Lab.body(13, .semibold)).foregroundStyle(Lab.text)
                 }
-                .tint(Lab.violet)
+                .tint(Lab.accent)
                 Text("Tap any row for what it means, your normal range, its chart from 7 days to a year, and tips. Dimmed rows aren't arriving yet: check Sources or the Health permissions.")
                     .font(Lab.body(11)).foregroundStyle(Lab.faint)
                     .fixedSize(horizontal: false, vertical: true)
@@ -189,7 +185,7 @@ struct AllDataScreen: View {
                             Lab.tick()
                             withAnimation(.snappy) { workoutLimit += 30 }
                         } label: {
-                            Text("Show more (\(all.count - workoutLimit) older)").font(Lab.mono(12, .heavy)).foregroundStyle(Lab.violet)
+                            Text("Show more (\(all.count - workoutLimit) older)").font(Lab.mono(12, .heavy)).foregroundStyle(Lab.accent)
                                 .frame(maxWidth: .infinity).padding(.vertical, 8)
                         }
                         .buttonStyle(.plain)
@@ -212,7 +208,7 @@ struct SourceBadge: View {
         return Lab.dim
     }
     var body: some View {
-        Text(text).font(Lab.label(8)).tracking(1).foregroundStyle(color).lineLimit(1)
+        Text(text).font(Lab.label(8)).tracking(0.4).foregroundStyle(color).lineLimit(1)
             .padding(.horizontal, 6).padding(.vertical, 3)
             .background(Capsule().fill(color.opacity(0.13)))
     }
@@ -264,7 +260,7 @@ struct StatRowView: View {
                 }
             }
             .frame(minWidth: 70, alignment: .trailing)
-            Image(systemName: "chevron.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(Lab.faint)
+            Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold)).foregroundStyle(Lab.faint)
         }
         .padding(.vertical, 9)
         .contentShape(Rectangle())
@@ -277,7 +273,7 @@ struct StatRowView: View {
         HStack {
             Text(def.title).font(Lab.body(14, .medium)).foregroundStyle(Lab.faint).lineLimit(1)
             Spacer()
-            Text("No data yet").font(Lab.label(9)).tracking(1).foregroundStyle(Lab.faint)
+            Text("No data yet").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
         }
         .padding(.vertical, 9)
         .opacity(0.6)
