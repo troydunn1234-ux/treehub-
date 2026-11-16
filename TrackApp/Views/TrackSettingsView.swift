@@ -421,6 +421,24 @@ struct TrackSettingsView: View {
                         .padding(.vertical, 11)
                     divider
                 }
+                if let url = RoamrPro.spec.privacyURL {
+                    Link(destination: url) {
+                        row(symbol: "hand.raised.fill", tint: Theme.sky, title: "Privacy", subtitle: "No accounts, no ads, no tracking") {
+                            Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                        }
+                        .contentShape(Rectangle())
+                    }
+                    .buttonStyle(.plain)
+                    divider
+                }
+                Link(destination: Self.supportURL) {
+                    row(symbol: "questionmark.bubble.fill", tint: Theme.leaf, title: "Help & contact", subtitle: "Answers to common questions, and how to reach us") {
+                        Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                    }
+                    .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+                divider
                 row(symbol: "info.circle.fill", tint: Theme.glow,
                     title: "Version",
                     subtitle: nil) {
@@ -433,6 +451,8 @@ struct TrackSettingsView: View {
         }
         .paywall(isPresented: $showPlans, spec: RoamrPro.spec)
     }
+
+    static let supportURL = URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/roamr/SUPPORT.md")!
 
     private var versionFooter: some View {
         VStack(spacing: 6) {

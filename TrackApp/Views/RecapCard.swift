@@ -41,8 +41,8 @@ struct RecapData {
     }
 
     var avgLabel: String { kind.isOnFoot ? "Avg pace" : "Avg speed" }
-    var avgValue: String { Format.paceOrSpeed(distance: distanceM, seconds: max(movingSec > 0 ? movingSec : elapsedSec, 1), kind: kind) }
-    var topValue: String { maxSpeed > 0 ? Format.speed(maxSpeed) : "--" }
+    var avgValue: String { Format.paceOrSpeed(distance: distanceM, seconds: max(movingSec > 0 ? movingSec : elapsedSec, 1), kind: kind).replacingOccurrences(of: "--", with: "—") }
+    var topValue: String { maxSpeed > 0 ? Format.speed(maxSpeed) : "—" }
 }
 
 // MARK: - Route helpers

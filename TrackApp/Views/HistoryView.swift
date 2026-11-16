@@ -14,18 +14,67 @@ struct HistoryView: View {
     /// Go together trips you took part in (kept on this phone).
     @ObservedObject private var groupLog = GroupHistory.shared
 
-    private struct MonthGroup: Identifiable {
-        let month: Date
+    /// One calendar week of trips, split into days, with totals for the header.
+    private struct WeekGroup: Identifiable {
+        let week: Date
+        let days: [DayGroup]
+        var id: Date { week }
+        var items: [Activity] { days.flatMap(\.items) }
+        var totalDistance: Double { items.reduce(0.0) { $0 + $1.distanceM } }
+        var totalSeconds: Double { items.reduce(0.0) { $0 + $1.elapsedSec } }
+    }
+
+    private struct DayGroup: Identifiable {
+        let day: Date
         let items: [Activity]
-        var id: Date { month }
+        var id: Date { day }
         var totalDistance: Double { items.reduce(0.0) { $0 + $1.distanceM } }
     }
 
-    private static let monthFormatter: DateFormatter = {
+    private static let shortDay: DateFormatter = {
         let f = DateFormatter()
-        f.dateFormat = "LLLL yyyy"
+        f.setLocalizedDateFormatFromTemplate("MMMd")
         return f
     }()
+
+    private static let shortDayYear: DateFormatter = {
+        let f = DateFormatter()
+        f.setLocalizedDateFormatFromTemplate("MMMdyyyy")
+        return f
+    }()
+
+    private static let weekdayFormatter: DateFormatter = {
+        let f = DateFormatter()
+        f.setLocalizedDateFormatFromTemplate("EEEEMMMd")
+        return f
+    }()
+
+    /// "This week", "Last week", or "Nov 2 – Nov 8" (with the year when it isn't this year).
+    private static func weekTitle(_ start: Date) -> String {
+        let cal = Calendar.current
+        let thisWeek = cal.dateInterval(of: .weekOfYear, for: Date())?.start
+        if start == thisWeek { return String(localized: "This week") }
+        if let thisWeek, let last = cal.date(byAdding: .weekOfYear, value: -1, to: thisWeek), start == last {
+            return String(localized: "Last week")
+        }
+        let end = cal.date(byAdding: .day, value: 6, to: start) ?? start
+        let sameYear = cal.isDate(start, equalTo: Date(), toGranularity: .year)
+        let f = sameYear ? shortDay : shortDayYear
+        return "\(shortDay.string(from: start)) – \(f.string(from: end))"
+    }
+
+    private static func dayTitle(_ day: Date) -> String {
+        let cal = Calendar.current
+        if cal.isDateInToday(day) { return String(localized: "Today") }
+        if cal.isDateInYesterday(day) { return String(localized: "Yesterday") }
+        return weekdayFormatter.string(from: day)
+    }
+
+    /// "2h 05m" / "45m" for week totals.
+    private static func hoursMinutes(_ seconds: Double) -> String {
+        let m = Int((seconds / 60).rounded())
+        return m >= 60 ? String(format: "%dh %02dm", m / 60, m % 60) : "\(m)m"
+    }
 
     private static let spring = Animation.spring(response: 0.38, dampingFraction: 0.82)
 
@@ -34,15 +83,17 @@ struct HistoryView: View {
         return activities.filter { $0.kind == filter }
     }
 
-    private var groups: [MonthGroup] {
+    private var groups: [WeekGroup] {
         let cal = Calendar.current
-        let dict: [Date: [Activity]] = Dictionary(grouping: filtered) { (a: Activity) -> Date in
-            cal.dateInterval(of: .month, for: a.start)?.start ?? cal.startOfDay(for: a.start)
+        let byWeek: [Date: [Activity]] = Dictionary(grouping: filtered) { (a: Activity) -> Date in
+            cal.dateInterval(of: .weekOfYear, for: a.start)?.start ?? cal.startOfDay(for: a.start)
         }
-        let keys: [Date] = dict.keys.sorted(by: >)
-        return keys.map { (key: Date) -> MonthGroup in
-            let items: [Activity] = (dict[key] ?? []).sorted { $0.start > $1.start }
-            return MonthGroup(month: key, items: items)
+        return byWeek.keys.sorted(by: >).map { (week: Date) -> WeekGroup in
+            let byDay: [Date: [Activity]] = Dictionary(grouping: byWeek[week] ?? []) { cal.startOfDay(for: $0.start) }
+            let days: [DayGroup] = byDay.keys.sorted(by: >).map { (d: Date) -> DayGroup in
+                DayGroup(day: d, items: (byDay[d] ?? []).sorted { $0.start > $1.start })
+            }
+            return WeekGroup(week: week, days: days)
         }
     }
 
@@ -74,7 +125,7 @@ struct HistoryView: View {
                     } else {
                         LazyVStack(alignment: .leading, spacing: Theme.gap) {
                             ForEach(groupList) { group in
-                                monthSection(group)
+                                weekSection(group)
                             }
                         }
                         .padding(.horizontal, Theme.pad)
@@ -180,29 +231,47 @@ struct HistoryView: View {
         .sensoryFeedback(.selection, trigger: filter)
     }
 
-    // MARK: Month sections
+    // MARK: Week sections
 
-    private func monthSection(_ group: MonthGroup) -> some View {
+    private func weekSection(_ group: WeekGroup) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
-                Text(Self.monthFormatter.string(from: group.month).uppercased())
-                    .font(Theme.rounded(12, .bold))
-                    .tracking(1.4)
-                    .foregroundStyle(Theme.textDim)
-                Spacer()
-                Text("\(group.items.count) \(group.items.count == 1 ? "trip" : "trips") · \(Format.distance(group.totalDistance))")
-                    .font(Theme.rounded(12, .bold))
+            VStack(alignment: .leading, spacing: 2) {
+                Text(Self.weekTitle(group.week))
+                    .font(Theme.rounded(20, .heavy))
+                    .foregroundStyle(.white)
+                    .accessibilityAddTraits(.isHeader)
+                Text("\(group.items.count) \(group.items.count == 1 ? "trip" : "trips") · \(Format.distance(group.totalDistance)) · \(Self.hoursMinutes(group.totalSeconds))")
+                    .font(Theme.rounded(13, .semibold))
+                    .monospacedDigit()
                     .foregroundStyle(Theme.glow.opacity(0.9))
                     .contentTransition(.numericText())
             }
             .padding(.horizontal, 4)
-            .padding(.top, 10)
+            .padding(.top, 14)
 
-            ForEach(group.items) { (a: Activity) in
-                NavigationLink(value: a.id) { ActivityRow(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
-                    .pressable()
-                    .cardAppear()
-                    .transition(.opacity.combined(with: .move(edge: .bottom)))
+            ForEach(group.days) { day in
+                HStack(alignment: .firstTextBaseline) {
+                    Text(Self.dayTitle(day.day).uppercased())
+                        .font(Theme.rounded(12, .bold))
+                        .tracking(1.2)
+                        .foregroundStyle(Theme.textDim)
+                    Spacer()
+                    if day.items.count > 1 {
+                        Text(Format.distance(day.totalDistance))
+                            .font(Theme.rounded(12, .bold))
+                            .monospacedDigit()
+                            .foregroundStyle(Theme.textDim)
+                    }
+                }
+                .padding(.horizontal, 4)
+                .padding(.top, 2)
+
+                ForEach(day.items) { (a: Activity) in
+                    NavigationLink(value: a.id) { TripCard(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
+                        .pressable()
+                        .cardAppear()
+                        .transition(.opacity.combined(with: .move(edge: .bottom)))
+                }
             }
         }
     }
@@ -298,35 +367,42 @@ struct HistoryView: View {
     private var emptyState: some View {
         GlassCard(padding: 28) {
             VStack(spacing: 12) {
-                Image(systemName: filter?.symbol ?? "map")
-                    .font(.system(size: 40, weight: .semibold))
+                Image(systemName: filter?.symbol ?? "map.fill")
+                    .font(.system(size: 38, weight: .semibold))
                     .foregroundStyle(Theme.leafGradient)
-                    .frame(width: 76, height: 76)
+                    .frame(width: 80, height: 80)
                     .background(Theme.glow.opacity(0.12), in: Circle())
+                    .accessibilityHidden(true)
                 Text(filter == nil ? "No trips yet" : "No \(filter?.title.lowercased() ?? "") trips yet")
-                    .font(Theme.rounded(18, .bold))
+                    .font(Theme.rounded(20, .bold))
                     .foregroundStyle(.white)
-                Text(filter == nil ? "Start a trip from the Track tab and it will show up here."
+                    .multilineTextAlignment(.center)
+                Text(filter == nil ? "Every walk, run, ride and drive you record lands here with its map."
                                    : "Pick \(filter?.title ?? "it") on the Track tab before you start, or change a trip's type from its page.")
-                    .font(Theme.rounded(13, .medium))
+                    .font(Theme.rounded(14, .medium))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
-                if filter != nil {
-                    Button {
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    if filter != nil {
                         withAnimation(Self.spring) { filter = nil }
-                    } label: {
-                        Text("Show all trips")
-                            .font(Theme.rounded(14, .heavy))
-                            .foregroundStyle(Theme.forestDeep)
-                            .padding(.horizontal, 18).padding(.vertical, 10)
-                            .background(Theme.leafGradient, in: Capsule())
+                    } else {
+                        NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
                     }
-                    .buttonStyle(.plain)
-                    .padding(.top, 4)
+                } label: {
+                    Label(filter != nil ? "Show all trips" : "Start a trip",
+                          systemImage: filter != nil ? "square.grid.2x2.fill" : "play.fill")
                 }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 6)
             }
             .frame(maxWidth: .infinity)
         }
         .padding(.top, 12)
     }
+}
+
+/// Lets a screen send you to another tab (e.g. History's empty state -> Track).
+enum RoamrTabs {
+    static let openTrack = Notification.Name("roamr.openTrackTab")
 }

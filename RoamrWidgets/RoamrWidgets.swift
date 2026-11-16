@@ -119,7 +119,9 @@ private struct RMStat: View {
     let alignment: HorizontalAlignment
 
     var body: some View {
-        let parts: (value: String, unit: String) = TrackingActivityAttributes.valueAndUnit(text)
+        // "--" means "not enough data yet" (first seconds of a recording): show a calm dash instead.
+        let clean: String = text.trimmingCharacters(in: .whitespaces) == "--" ? "—" : text
+        let parts: (value: String, unit: String) = TrackingActivityAttributes.valueAndUnit(clean)
         return VStack(alignment: alignment, spacing: 2) {
             Text(label)
                 .font(.system(size: 9, weight: .bold, design: .rounded))
@@ -212,7 +214,7 @@ private struct RMLockTimer: View {
                 .kerning(0.8)
                 .foregroundStyle(Palette.secondary)
             RMTimerText(state: state)
-                .font(.system(size: 40, weight: .semibold, design: .rounded))
+                .font(.system(size: 40, weight: .bold, design: .rounded))
                 .monospacedDigit()
                 .foregroundStyle(state.isPaused ? Palette.secondary : Palette.text)
                 .lineLimit(1)

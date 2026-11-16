@@ -236,7 +236,7 @@ struct TrackView: View {
             #if TRACK_APP
             SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath")
             ForEach(activities.prefix(3)) { a in
-                NavigationLink(value: a.id) { ActivityRow(activity: a) }.pressable().cardAppear()
+                NavigationLink(value: a.id) { TripCard(activity: a, mapHeight: 104) }.pressable().cardAppear()
             }
             #else
             SectionHeader(title: "Your strolls", symbol: "clock.arrow.circlepath")
@@ -543,15 +543,19 @@ struct TrackView: View {
                         Text(Format.duration(tracker.elapsed))
                             .font(.system(size: 54, weight: .black, design: .rounded))
                             .monospacedDigit()
-                            .foregroundStyle(.white)
+                            .foregroundStyle(tracker.state == .recording ? Color.white : Theme.gold)
+                            .contentTransition(.numericText())
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.6)
+                            .accessibilityLabel("Elapsed time \(Format.duration(tracker.elapsed))")
                         Text("TIME").font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(1.2).foregroundStyle(Theme.textDim)
                     }
                 }
                 HStack(spacing: 10) {
                     StatTile(value: Format.distance(tracker.distance), label: "Distance")
-                    StatTile(value: tracker.kind.isOnFoot
+                    StatTile(value: (tracker.kind.isOnFoot
                              ? Format.paceOrSpeed(distance: tracker.distance, seconds: max(tracker.movingSec, 1), kind: tracker.kind)
-                             : Format.speed(tracker.currentSpeed),
+                             : Format.speed(max(0, tracker.currentSpeed))).replacingOccurrences(of: "--", with: "—"),
                              label: tracker.kind.isOnFoot ? "Avg pace" : "Speed")
                     StatTile(value: Format.elevation(tracker.elevGain), label: "Climb")
                 }
@@ -574,9 +578,17 @@ struct TrackView: View {
                         Button { tracker.resume() } label: { Label("Resume", systemImage: "play.fill") }
                             .buttonStyle(PrimaryButtonStyle())
                     }
+                    #if TRACK_APP
+                    // Stop: always next to Pause/Resume; asks Save / Discard / Keep going.
+                    Button { confirmFinish = true } label: { Label("Stop", systemImage: "stop.fill") }
+                        .buttonStyle(PrimaryButtonStyle(gradient: LinearGradient(colors: [.white, Theme.cream], startPoint: .top, endPoint: .bottom)))
+                        .accessibilityHint("Save or discard this recording")
+                    #else
                     Button { confirmFinish = true } label: { Label("Finish", systemImage: "flag.checkered") }
                         .buttonStyle(PrimaryButtonStyle(gradient: LinearGradient(colors: [.white, Theme.cream], startPoint: .top, endPoint: .bottom)))
+                    #endif
                 }
+                .sensoryFeedback(.impact(weight: .medium), trigger: tracker.state == .recording)
             }
             .padding(18)
             .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 30, style: .continuous))

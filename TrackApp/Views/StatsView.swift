@@ -625,6 +625,7 @@ struct StatsView: View {
         GlassCard(padding: 28) {
             VStack(spacing: 12) {
                 Image(systemName: "chart.bar.xaxis")
+                    .accessibilityHidden(true)
                     .font(.system(size: 38, weight: .semibold))
                     .foregroundStyle(Theme.leafGradient)
                     .frame(width: 76, height: 76)
@@ -633,9 +634,17 @@ struct StatsView: View {
                     .font(Theme.rounded(18, .bold))
                     .foregroundStyle(.white)
                 Text("Record a trip from the Track tab to see totals, trends and records.")
-                    .font(Theme.rounded(13, .medium))
+                    .font(Theme.rounded(14, .medium))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
+                } label: {
+                    Label("Start a trip", systemImage: "play.fill")
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 6)
             }
             .frame(maxWidth: .infinity)
         }

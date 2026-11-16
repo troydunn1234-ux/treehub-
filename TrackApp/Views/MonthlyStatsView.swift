@@ -167,7 +167,7 @@ struct MonthlyStatsView: View {
                     divider
                     miniStat(value: "\(drives.count)", label: "Drives", symbol: "car.fill", tint: Theme.leaf)
                     divider
-                    miniStat(value: lifetimeLongest.map { Format.distance($0.distanceM) } ?? "--", label: "Longest", symbol: "trophy.fill", tint: Theme.gold)
+                    miniStat(value: lifetimeLongest.map { Format.distance($0.distanceM) } ?? "—", label: "Longest", symbol: "trophy.fill", tint: Theme.gold)
                 }
             }
         }

@@ -140,6 +140,9 @@ struct TrackRootView: View {
         .onReceive(NotificationCenter.default.publisher(for: RoamrPending.note)) { _ in
             consumePendingAction()
         }
+        .onReceive(NotificationCenter.default.publisher(for: RoamrTabs.openTrack)) { _ in
+            tab = "track"
+        }
         .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
             // History picks up the saved id and pushes the activity.
             tab = "history"
