@@ -1,0 +1,220 @@
+# photosort categories — edit freely, then re-run `./photosort scan`.
+# Re-runs are fast: image hashes and CLIP embeddings are cached, so changing
+# labels / prompts / thresholds only re-scores.
+#
+# Personal tweaks (your own keywords, a fixed home location, etc.) belong in
+# `categories.local.yaml` next to this file. It is gitignored and is merged
+# over this file (top-level keys replace; categories are matched by `name`).
+#
+# How a photo gets a score for a category (0..1), combined with a noisy-OR:
+#   flags          hard Photos flags (screenshot, selfie, video, live, ...)  -> 1.0
+#   labels         Apple's ML labels from Photos, whole-word match           -> 0.85 each
+#   weak_labels    broad labels that only count with other evidence          -> 0.35 each
+#   search         Photos search info: venue types / activities              -> 0.40 each
+#   keywords       words in your title / caption / keywords / AI caption     -> 0.80
+#   prompts        CLIP zero-shot prompts (only if the CLIP model is on)     -> probability
+#   rule           built-in logic: people | saved | travel | duplicates | review
+# The photo joins every album whose score >= that category's `threshold`
+# (multi-album membership). Nothing over threshold -> "Unsorted".
+
+folder: "Sorted by Claude"     # top-level Photos folder that holds every album
+unsorted_album: "Unsorted"     # set to null to not create an album for leftovers
+threshold: 0.5                 # default per-category threshold
+label_strength: {strong: 0.85, weak: 0.35, search: 0.40, keyword: 0.80}
+
+clip:
+  backend: auto                # auto | open_clip | off
+  model: ViT-B-32
+  pretrained: laion2b_s34b_b79k
+  temperature: 100
+  # "none of the above" prompts that soak up probability for ordinary photos
+  background_prompts:
+    - "a photo"
+    - "a photo of a room inside a house"
+    - "a photo of furniture"
+    - "a photo of a random everyday object"
+    - "a photo of a building"
+    - "a photo of a street"
+    - "a photo of a person"
+
+travel:
+  home: auto                   # auto = densest GPS cluster in your library; or [lat, lon] (put that in categories.local.yaml)
+  min_km: 150                  # farther than this from home counts as travel
+  min_gps_photos: 25           # need at least this many geotagged photos to guess home
+
+duplicates:
+  max_distance: 6              # library-wide: pHash bits that may differ (0-7) for "duplicate"
+  similar_distance: 12         # near-in-time shots: looser pHash distance for "similar"
+  similar_window_seconds: 120
+  include_videos: false
+  extras_album: null           # e.g. "Review to delete" to also drop the non-keeper copies there
+
+review:                        # Blurry / Accidental -> "Review to delete"
+  blur_soft: 14.0              # sharpness below this = maybe blurry
+  blur_strict: 8.0            # sharpness below this = clearly blurry
+  dark_mean: 14                # mean brightness (0-255) below this ...
+  dark_std: 12                 # ... with contrast below this = dark/pocket shot
+  flat_std: 5                  # contrast below this = blank/uniform frame
+  exempt_labels: [sky, sunset, sunrise, night, fog, cloud, snow, water, fireworks, moon, star]
+
+categories:
+  - name: "Screenshots"
+    flags: [screenshot, screen_recording]
+
+  - name: "Selfies"
+    flags: [selfie, front_camera]
+
+  - name: "Videos"
+    flags: [video]
+
+  - name: "Friends & Family"
+    rule: people
+    exclude_flags: [screenshot]
+    weak_labels: [people, person, crowd, group, baby, child, adult, wedding, party]
+    prompts:
+      - "a group photo of friends"
+      - "a family photo"
+      - "a photo of people smiling together"
+
+  - name: "Travel"
+    rule: travel
+    exclude_flags: [screenshot]
+
+  - name: "Gym & Fitness"
+    exclude_flags: [screenshot]
+    labels: [gym, weightlifting, dumbbell, barbell, treadmill, exercise, fitness, workout, bodybuilding, kettlebell, yoga, boxing, weights]
+    weak_labels: [sport, sports, muscle, athlete, running]
+    search: [gym, fitness center, fitness, health club, working out, exercise, yoga studio]
+    keywords: [gym, workout, lifting, deadlift, squat, bench press, physique]
+    prompts:
+      - "a photo taken inside a gym"
+      - "a gym mirror selfie"
+      - "weights and exercise equipment"
+      - "a person lifting weights"
+      - "a shirtless physique progress photo"
+
+  - name: "Food & Drinks"
+    exclude_flags: [screenshot]
+    labels: [food, meal, dish, drink, beverage, coffee, pizza, burger, hamburger, dessert, cocktail, beer, wine, fruit, vegetable, breakfast, lunch, dinner, sandwich, salad, sushi, pasta, cake, steak, taco, noodle, soup, bread, ice cream, meat, snack, smoothie, tea, juice]
+    weak_labels: [plate, bowl, cup, kitchen, restaurant, bottle, glass]
+    search: [restaurant, cafe, coffee shop, bar, dining, bakery, brewery]
+    keywords: [recipe, dinner, lunch, breakfast, meal prep]
+    prompts:
+      - "a photo of food on a plate"
+      - "a photo of a meal at a restaurant"
+      - "a photo of a drink in a glass or cup"
+      - "a photo of dessert"
+      - "a photo of groceries or cooking ingredients"
+
+  - name: "Receipts & Documents"
+    labels: [document, receipt, paper, handwriting, invoice, form, letter, business card, whiteboard, menu, newspaper, book, page, certificate, ticket, mail, envelope, label, id card, passport, check]
+    weak_labels: [text, sign, screen]
+    exclude_flags: [screenshot, video]
+    keywords: [receipt, invoice, document, warranty, contract]
+    prompts:
+      - "a photo of a paper receipt"
+      - "a photo of a printed document"
+      - "a photo of a page of text"
+      - "a photo of a handwritten note"
+      - "a photo of a form or a letter"
+
+  - name: "Cars & Rides"
+    exclude_flags: [screenshot]
+    labels: [car, automobile, vehicle, truck, pickup, pickup truck, motorcycle, motorbike, suv, van, jeep, convertible, sports car, bicycle, bike, scooter, atv, engine, wheel, tire, dashboard, steering wheel, license plate]
+    weak_labels: [road, highway, parking, garage, traffic]
+    keywords: [car, truck, motorcycle]
+    prompts:
+      - "a photo of a car"
+      - "a photo of a pickup truck"
+      - "a photo of a motorcycle"
+      - "a photo of a car interior and dashboard"
+      - "a photo of an engine bay"
+      - "a photo of a bicycle"
+
+  - name: "Nature & Outdoors"
+    exclude_flags: [screenshot]
+    labels: [nature, mountain, forest, beach, lake, river, ocean, sea, hiking, trail, landscape, waterfall, desert, canyon, valley, meadow, field, flower, garden, park, coast, cliff, rock, hill, creek, pond, woods, wilderness, camping, snow, island, wildflower]
+    weak_labels: [outdoor, plant, grass, water, land, leaf]
+    search: [hiking, camping, park, national park, beach, trail]
+    prompts:
+      - "a landscape photo of mountains"
+      - "a photo of a forest trail"
+      - "a photo of a beach or the ocean"
+      - "a photo of a lake or a river"
+      - "a photo of flowers and plants outdoors"
+
+  - name: "Trees"
+    exclude_flags: [screenshot]
+    labels: [tree, trunk, redwood, pine, oak, palm tree, sequoia, grove, woods, forest]
+    weak_labels: [bark, branch, foliage]
+    exclude_labels: [christmas tree, family tree]
+    keywords: [tree hug, tree, redwood]
+    prompts:
+      - "a photo of a tree"
+      - "a person hugging a tree"
+      - "a photo of a large tree trunk"
+      - "looking up at tall trees"
+
+  - name: "Sunsets & Sky"
+    exclude_flags: [screenshot]
+    labels: [sunset, sunrise, dusk, dawn, rainbow, moon, night sky, twilight, aurora, starry sky]
+    prompts:
+      - "a photo of a sunset"
+      - "a photo of the sky with clouds"
+      - "a photo of the night sky or the moon"
+
+  - name: "Pets & Animals"
+    exclude_flags: [screenshot]
+    labels: [dog, cat, pet, animal, bird, horse, fish, wildlife, puppy, kitten, rabbit, deer, squirrel, cow, duck, lizard, snake, insect, butterfly, bear, mammal, reptile, turtle, goat, sheep, pig, chicken]
+    prompts:
+      - "a photo of a dog"
+      - "a photo of a cat"
+      - "a photo of a wild animal"
+      - "a photo of a bird"
+
+  - name: "Memes & Saved Images"
+    rule: saved
+    exclude_flags: [screenshot, video]
+    labels: [meme, cartoon, illustration, drawing, poster, comic, logo, clip art, graphic]
+    prompts:
+      - "an internet meme with text"
+      - "a cartoon or digital illustration"
+      - "a social media post"
+      - "a poster or graphic design with text"
+
+  - name: "Work"
+    exclude_flags: [screenshot]
+    labels: [office, whiteboard, construction, tool, tools, machinery, warehouse, factory, workshop, electrical, wiring, hard hat, blueprint]
+    weak_labels: [computer, desk, equipment, monitor, laptop]
+    search: [office, construction site, warehouse]
+    keywords: [work, job site, jobsite, shift]
+    prompts:
+      - "a photo of a job site or construction site"
+      - "a photo of tools and equipment at work"
+      - "a photo of an office desk with a computer"
+      - "a photo of a whiteboard or presentation"
+      - "a photo of an electrical panel or wiring"
+
+  - name: "Shopping"
+    exclude_flags: [screenshot]
+    labels: [store, supermarket, shopping, price tag, shelf, mall, shopping cart, clothing store, grocery store, market]
+    weak_labels: [product, merchandise]
+    search: [shopping mall, department store, grocery store, supermarket, clothing store, store]
+    prompts:
+      - "a photo of products on a store shelf"
+      - "a photo of a price tag"
+      - "a photo of clothes on a rack in a store"
+      - "a photo of a product for sale"
+
+  - name: "Duplicates & Similar"
+    rule: duplicates
+
+  - name: "Blurry / Accidental"
+    album: "Review to delete"    # just an album to look through — photosort never deletes
+    rule: review
+    exclude_flags: [screenshot, video]
+    prompts:
+      - "a very blurry out of focus photo"
+      - "an accidental photo of the floor"
+      - "a completely black photo"
+      - "a finger covering the camera lens"

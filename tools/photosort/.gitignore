@@ -1,0 +1,18 @@
+# photosort outputs contain personal data (photo names, thumbnails, places). Never commit them.
+output/
+.cache/
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm
+*.csv
+report*.html
+plan.json
+thumbs/
+sheets/
+runs/
+demo-library/
+categories.local.yaml

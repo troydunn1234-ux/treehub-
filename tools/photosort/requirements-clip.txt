@@ -1,0 +1,3 @@
+# Optional: local CLIP model for zero-shot categories (runs on-device; Apple GPU via MPS).
+torch>=2.2
+open_clip_torch>=2.24

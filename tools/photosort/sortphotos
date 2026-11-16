@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+# Launcher: runs photosort with the virtualenv made by install.sh.
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PY="$DIR/.venv/bin/python"
+if [ ! -x "$PY" ]; then
+  echo "photosort is not installed yet. Run:  $DIR/install.sh" >&2
+  exit 1
+fi
+export PYTHONPATH="$DIR${PYTHONPATH:+:$PYTHONPATH}"
+exec "$PY" -m photosort "$@"
