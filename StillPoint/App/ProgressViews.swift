@@ -28,18 +28,18 @@ struct ProgressEntryCard: View {
         NavigationLink(value: ProgressRoute.main) {
             HStack(spacing: 14) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("PROGRESS").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                    Text(summary).font(SP.serif(17)).foregroundStyle(SP.ink).lineLimit(2)
+                    Text("Progress").font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
+                    Text(summary).font(.footnote).foregroundStyle(SP.dim)
                         .fixedSize(horizontal: false, vertical: true)
-                    Text("Streaks, minutes by kind, milestones").font(SP.rounded(12)).foregroundStyle(SP.faint)
+                    Text("Streaks, minutes by kind, milestones").font(.footnote).foregroundStyle(SP.faint)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "chart.bar.xaxis").font(.system(size: 20, weight: .light)).foregroundStyle(SP.amber)
+                Image(systemName: "chart.bar.xaxis").font(.system(size: 20, weight: .light)).foregroundStyle(SP.accent)
+                    .accessibilityHidden(true)
                 Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(SP.faint)
             }
-            .padding(16)
-            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(SP.card))
-            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+            .spCard()
             .contentShape(Rectangle())
         }
         .buttonStyle(SoftPress())
@@ -83,8 +83,8 @@ struct PracticeProgressView: View {
                 if !log.heatEntries.isEmpty { RecoveryCard() }
                 MilestonesCard()
             }
-            .padding(.horizontal, 22)
-            .padding(.bottom, 40)
+            .padding(.horizontal, SP.screenPadding)
+            .padding(.bottom, SP.s8)
         }
         .background(DuskBackground())
         .navigationBarTitleDisplayMode(.inline)
@@ -110,16 +110,10 @@ struct PracticeProgressView: View {
                 router.tab = 0
             } label: {
                 Label("Find a practice", systemImage: "sun.horizon")
-                    .font(SP.rounded(15, .medium))
-                    .foregroundStyle(Color.black.opacity(0.85))
-                    .padding(.horizontal, 18).padding(.vertical, 11)
-                    .background(Capsule().fill(SP.goldGlow))
             }
-            .buttonStyle(SoftPress())
+            .buttonStyle(SPPrimaryButtonStyle(fullWidth: false))
         }
-        .padding(18)
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
     }
 }
 
@@ -152,9 +146,7 @@ struct StreakPairCard: View {
             Text(caption).font(SP.rounded(12)).foregroundStyle(SP.faint).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .spCard()
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(value) \(value == 1 ? "day" : "days") \(label == "longest" ? "longest streak" : "current streak"). \(caption)")
     }
@@ -203,8 +195,7 @@ struct CategoryWeekCard: View {
                     .font(SP.rounded(12)).foregroundStyle(SP.faint)
             }
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
     }
 
     private func accessibilitySummary(_ rows: [CategoryMinutes]) -> String {
@@ -272,8 +263,7 @@ struct HeatmapCard: View {
             }
             .accessibilityHidden(true)
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Calendar of the last 12 weeks: \(activeCount) days with practice")
     }
@@ -286,7 +276,7 @@ struct HeatmapCard: View {
             .fill(future ? Color.clear : color(for: minutes))
             .overlay(
                 RoundedRectangle(cornerRadius: 4, style: .continuous)
-                    .stroke(isToday ? SP.gold : (future ? Color.white.opacity(0.06) : .clear), lineWidth: isToday ? 1.2 : 0.8)
+                    .stroke(isToday ? SP.ink.opacity(0.9) : (future ? Color.white.opacity(0.06) : .clear), lineWidth: isToday ? 1.2 : 0.8)
             )
             .frame(height: 18)
             .contentShape(Rectangle())
@@ -303,10 +293,10 @@ struct HeatmapCard: View {
     private func color(for minutes: Double) -> Color {
         switch minutes {
         case ..<1: return Color.white.opacity(0.06)
-        case ..<10: return SP.amber.opacity(0.30)
-        case ..<20: return SP.amber.opacity(0.52)
-        case ..<40: return SP.amber.opacity(0.75)
-        default: return SP.gold
+        case ..<10: return SP.indigo.opacity(0.40)
+        case ..<20: return SP.indigo.opacity(0.75)
+        case ..<40: return SP.accent.opacity(0.80)
+        default: return SP.accent
         }
     }
 
@@ -329,7 +319,11 @@ struct HeatmapCard: View {
 /// Gentle milestones: earned ones glow, the rest show how close they are.
 struct MilestonesCard: View {
     @EnvironmentObject var log: SessionLog
-    private let cols = [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)]
+    @Environment(\.dynamicTypeSize) private var typeSize
+    /// Three across; two at accessibility text sizes.
+    private var cols: [GridItem] {
+        Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .top), count: typeSize.isAccessibilitySize ? 2 : 3)
+    }
 
     var body: some View {
         let all = log.milestones
@@ -343,8 +337,7 @@ struct MilestonesCard: View {
                 ForEach(all) { m in MilestoneBadge(milestone: m) }
             }
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
     }
 }
 
@@ -366,10 +359,10 @@ struct MilestoneBadge: View {
             }
             .frame(width: 58, height: 58)
             .shadow(color: milestone.earned ? SP.amber.opacity(0.35) : .clear, radius: 8)
-            Text(milestone.title).font(SP.serif(13)).foregroundStyle(milestone.earned ? SP.ink : SP.dim)
-                .multilineTextAlignment(.center).lineLimit(2)
-            Text(milestone.detail).font(SP.rounded(10)).foregroundStyle(SP.faint)
+            Text(milestone.title).font(.caption.weight(.semibold)).foregroundStyle(milestone.earned ? SP.ink : SP.dim)
                 .multilineTextAlignment(.center).lineLimit(3).fixedSize(horizontal: false, vertical: true)
+            Text(milestone.detail).font(.caption2).foregroundStyle(SP.faint)
+                .multilineTextAlignment(.center).lineLimit(4).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .top)
         .accessibilityElement(children: .ignore)

@@ -211,21 +211,15 @@ struct BreathRunView: View {
                     Spacer()
                     HStack(spacing: 10) {
                         Button { session.isPaused ? session.resume() : session.pause() } label: {
-                            Image(systemName: session.isPaused ? "play.fill" : "pause.fill")
-                                .font(.system(size: 18, weight: .semibold))
-                                .frame(maxWidth: .infinity, minHeight: 44)
+                            WatchRunGlyph(icon: session.isPaused ? "play.fill" : "pause.fill", height: 44, fill: AnyShapeStyle(SP.accentFill))
                         }
-                        .tint(SP.accent)
                         .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
                         Button(role: .destructive, action: onEnd) {
-                            Image(systemName: "stop.fill")
-                                .font(.system(size: 16, weight: .semibold))
-                                .frame(maxWidth: .infinity, minHeight: 44)
+                            WatchRunGlyph(icon: "stop.fill", height: 44, fill: AnyShapeStyle(Color.red.opacity(0.55)))
                         }
                         .accessibilityLabel("End")
                     }
-                    .buttonStyle(.bordered)
-                    .buttonBorderShape(.capsule)
+                    .buttonStyle(.plain)
                     Text(spFormatClock(session.remaining) + (heartRate.map { " · \(Int($0)) bpm" } ?? ""))
                         .font(SP.rounded(11)).monospacedDigit().foregroundStyle(SP.dim)
                 }
@@ -257,6 +251,22 @@ struct BreathRunView: View {
             guard !session.isFinished else { return }
             withAnimation(.easeInOut(duration: 1)) { showControls = false }
         }
+    }
+}
+
+/// A run-screen control: a white glyph on a capsule of a set height, sharing the row's width.
+private struct WatchRunGlyph: View {
+    let icon: String
+    let height: CGFloat
+    let fill: AnyShapeStyle
+    var body: some View {
+        Image(systemName: icon)
+            .font(.system(size: height >= 40 ? 17 : 13, weight: .semibold))
+            .foregroundStyle(.white)
+            .frame(maxWidth: .infinity)
+            .frame(height: height)
+            .background(Capsule().fill(fill))
+            .contentShape(Capsule())
     }
 }
 
@@ -306,19 +316,20 @@ struct MovementRunView: View {
                 }
                 HStack(spacing: 6) {
                     Button { session.isPaused ? session.resume() : session.pause() } label: {
-                        Image(systemName: session.isPaused ? "play.fill" : "pause.fill").frame(maxWidth: .infinity, minHeight: 32)
+                        WatchRunGlyph(icon: session.isPaused ? "play.fill" : "pause.fill", height: 34, fill: AnyShapeStyle(SP.accentFill))
                     }
                     .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
-                    Button { session.skip() } label: { Image(systemName: "forward.end.fill").frame(maxWidth: .infinity, minHeight: 32) }
-                        .accessibilityLabel("Next step")
-                    Button(action: onEnd) { Image(systemName: "stop.fill").frame(maxWidth: .infinity, minHeight: 32) }
-                        .accessibilityLabel("End")
+                    Button { session.skip() } label: {
+                        WatchRunGlyph(icon: "forward.end.fill", height: 34, fill: AnyShapeStyle(Color.white.opacity(0.14)))
+                    }
+                    .accessibilityLabel("Next step")
+                    Button(action: onEnd) {
+                        WatchRunGlyph(icon: "stop.fill", height: 34, fill: AnyShapeStyle(Color.white.opacity(0.14)))
+                    }
+                    .accessibilityLabel("End")
                 }
                 .opacity(luminanceReduced ? 0 : 1)
-                .buttonStyle(.bordered)
-                .buttonBorderShape(.capsule)
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(SP.ink)
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 6)
         }
@@ -363,23 +374,26 @@ struct SummaryView: View {
                     if let a = startHR, let b = minHR ?? endHR, a > 0 {
                         stat("\(Int(a))→\(Int(b))", "BPM", SP.rose)
                     }
-                    if let h = hrv { stat("\(Int(h))", "HRV MS", SP.violet) }
+                    if let h = hrv {
+                        stat("\(Int(h))", "HRV MS", SP.violet)
+                    } else if startHR != nil {
+                        // Skeleton tile while HRV is still on its way.
+                        VStack(alignment: .leading, spacing: 4) {
+                            SPSkeleton(height: 14, width: 44)
+                            Text("HRV ON ITS WAY").font(SP.rounded(9, .semibold)).tracking(0.8).foregroundStyle(SP.faint)
+                                .lineLimit(1).minimumScaleFactor(0.7)
+                        }
+                        .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Waiting for HRV")
+                    }
                 }
                 if let t = detail?.takeaway {
                     Text(t).font(SP.rounded(13)).foregroundStyle(SP.ink)
                         .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
                         .padding(.top, 2)
-                }
-                if hrv == nil, startHR != nil {
-                    // Skeleton tile while HRV is still on its way.
-                    VStack(alignment: .leading, spacing: 4) {
-                        SPSkeleton(height: 14, width: 44)
-                        Text("Waiting for HRV").font(SP.rounded(10, .semibold)).foregroundStyle(SP.faint)
-                    }
-                    .padding(8)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
-                    .accessibilityElement(children: .combine)
                 }
                 let streak = SessionLog.shared.streak
                 if streak > 1 {

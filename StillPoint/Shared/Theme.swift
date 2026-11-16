@@ -178,6 +178,7 @@ extension View {
 struct SPPrimaryButtonStyle: ButtonStyle {
     var fullWidth = true
     @Environment(\.isEnabled) private var isEnabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(SP.rounded(17, .semibold))
@@ -189,8 +190,8 @@ struct SPPrimaryButtonStyle: ButtonStyle {
             .background(Capsule().fill(SP.accentFill))
             .overlay(Capsule().stroke(Color.white.opacity(0.14), lineWidth: 1))
             .opacity(isEnabled ? 1 : 0.45)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
+            .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.7), value: configuration.isPressed)
             .contentShape(Capsule())
     }
 }
@@ -199,23 +200,29 @@ struct SPPrimaryButtonStyle: ButtonStyle {
 struct SPSecondaryButtonStyle: ButtonStyle {
     var tint: Color = SP.accent
     var fullWidth = false
+    @Environment(\.isEnabled) private var isEnabled
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(SP.rounded(15, .medium))
             .foregroundStyle(tint)
             .lineLimit(2)
+            .multilineTextAlignment(.center)
             .padding(.horizontal, 16)
             .frame(maxWidth: fullWidth ? .infinity : nil, minHeight: 44)
             .background(Capsule().fill(tint.opacity(configuration.isPressed ? 0.22 : 0.14)))
+            .opacity(isEnabled ? 1 : 0.55)
             .contentShape(Capsule())
     }
 }
 
 /// A round icon control (pause / end / voice) with a 56pt hit area and a caption under it.
+/// `spoken` / `value` let VoiceOver say e.g. "Voice guide, on" instead of the short caption.
 struct SPRoundControl: View {
     let icon: String
     let title: String
     var prominent = false
+    var spoken: String? = nil
+    var value: String? = nil
     let action: () -> Void
     var body: some View {
         Button(action: action) {
@@ -223,30 +230,18 @@ struct SPRoundControl: View {
                 Image(systemName: icon)
                     .font(.system(size: prominent ? 22 : 18, weight: .regular))
                     .foregroundStyle(prominent ? Color.white : SP.ink)
+                    .contentTransition(.symbolEffect(.replace))
                     .frame(width: prominent ? 68 : 56, height: prominent ? 68 : 56)
                     .background(Circle().fill(prominent ? AnyShapeStyle(SP.accentFill) : AnyShapeStyle(Color.white.opacity(0.10))))
                     .overlay(Circle().stroke(Color.white.opacity(0.12), lineWidth: 1))
                 Text(title).font(SP.rounded(12, .medium)).foregroundStyle(SP.dim).lineLimit(1)
+                    .minimumScaleFactor(0.8)
             }
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
-        .accessibilityLabel(title)
-    }
-}
-
-/// Section title in the family style: headline weight, optional trailing detail.
-struct SPSectionTitle: View {
-    let title: String
-    var detail: String? = nil
-    init(_ title: String, detail: String? = nil) { self.title = title; self.detail = detail }
-    var body: some View {
-        HStack(alignment: .firstTextBaseline) {
-            Text(title).font(.headline).foregroundStyle(SP.ink)
-                .accessibilityAddTraits(.isHeader)
-            Spacer(minLength: 8)
-            if let detail { Text(detail).font(.footnote).foregroundStyle(SP.faint).multilineTextAlignment(.trailing) }
-        }
+        .accessibilityLabel(spoken ?? title)
+        .accessibilityValue(value ?? "")
     }
 }
 
@@ -266,6 +261,7 @@ struct SPEmptyState: View {
                 .background(Circle().fill(SP.accent.opacity(0.12)))
                 .accessibilityHidden(true)
             Text(title).font(.headline).foregroundStyle(SP.ink).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             Text(hint).font(.subheadline).foregroundStyle(SP.dim).multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             if let actionTitle, let action {
@@ -276,6 +272,7 @@ struct SPEmptyState: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, SP.s6)
         .padding(.horizontal, SP.s4)
+        .accessibilityElement(children: .contain)
     }
 }
 

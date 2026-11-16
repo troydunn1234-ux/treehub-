@@ -385,7 +385,7 @@ struct PracticeDetailView: View {
                     // Length
                     VStack(alignment: .leading, spacing: 10) {
                         Text("LENGTH").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                        HStack(spacing: 8) {
+                        SPFlow(spacing: 8) {
                             ForEach(practice.minutes, id: \.self) { m in
                                 Button { minutes = m } label: {
                                     Text("\(m) min").font(.subheadline.weight(minutes == m ? .semibold : .regular)).monospacedDigit()
@@ -430,7 +430,7 @@ struct PracticeDetailView: View {
                             Label(sentToWatch ? "Starting on your Watch…" : "Start on Apple Watch", systemImage: "applewatch")
                                 .frame(minHeight: 50)
                         }
-                        .buttonStyle(SPSecondaryButtonStyle(tint: link.canUseWatch ? SP.ink : SP.faint, fullWidth: true))
+                        .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink, fullWidth: true))
                         .sensoryFeedback(.success, trigger: sentToWatch)
                         .disabled(!link.canUseWatch)
                         if !link.canUseWatch {

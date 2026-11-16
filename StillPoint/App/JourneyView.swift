@@ -31,7 +31,7 @@ struct JourneyView: View {
 
                     // 3. This week, day by day.
                     VStack(alignment: .leading, spacing: SP.s3) {
-                        SectionHeader("This week", detail: String(localized: "Tap a day"))
+                        SectionHeader("Last 7 days", detail: String(localized: "Tap a day"))
                         WeekCard(selectedDay: $selectedDay)
                     }
 
@@ -256,6 +256,7 @@ struct JourneyView: View {
 /// The Journey's milestone line: what you've earned most recently and what's next, with a link to all of them.
 struct JourneyMilestoneStrip: View {
     @EnvironmentObject var log: SessionLog
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let all = log.milestones
@@ -271,7 +272,9 @@ struct JourneyMilestoneStrip: View {
                         .frame(minHeight: 32)
                 }
             }
-            HStack(alignment: .top, spacing: SP.s2) {
+            // Four across; two across at accessibility text sizes so titles never squeeze.
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: SP.s2, alignment: .top), count: typeSize.isAccessibilitySize ? 2 : 4),
+                      alignment: .leading, spacing: SP.s3) {
                 ForEach(shown) { m in MilestoneBadge(milestone: m) }
             }
         }
@@ -368,19 +371,12 @@ struct SettingsView: View {
                 }
                 MoreAppsGate { Section { MoreAppsRow() } }
                 Section {
-                    StillPointAboutHeader()
-                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/PRIVACY.md")!) {
-                        Label("Privacy policy", systemImage: "hand.raised")
-                    }
-                    Link(destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!) {
-                        Label("Terms of use", systemImage: "doc.text")
-                    }
-                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/SUPPORT.md")!) {
-                        Label("Help & support", systemImage: "questionmark.circle")
-                    }
-                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/issues")!) {
-                        Label("Contact", systemImage: "envelope")
-                    }
+                    // The family About block: app icon, name and version, then privacy, terms and help.
+                    FamilyAboutHeader(name: "Still Pointz", tint: SP.accent)
+                    FamilyAboutLinks(privacy: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/PRIVACY.md"),
+                                     terms: FamilyAboutLinks.standardTerms,
+                                     support: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/SUPPORT.md"),
+                                     tint: SP.accent)
                 } header: { Text("About") } footer: {
                     Text("No accounts, no ads, no tracking. Your sessions stay on your devices and in Apple Health.")
                 }
@@ -405,35 +401,6 @@ struct SettingsView: View {
         if mins % 60 == 0 { return mins == 60 ? "1 hour a week" : "\(mins / 60) hours a week" }
         if mins > 60 { return String(format: "%.1f hours a week", m / 60) }
         return "\(mins) min a week"
-    }
-}
-
-/// App icon mark, name and version for the About section.
-struct StillPointAboutHeader: View {
-    private var version: String {
-        let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
-        let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
-        return b.isEmpty ? v : "\(v) (\(b))"
-    }
-    var body: some View {
-        HStack(spacing: 14) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 13, style: .continuous)
-                    .fill(LinearGradient(colors: [SP.nightTop, SP.plum, SP.nightBottom], startPoint: .top, endPoint: .bottom))
-                Circle().fill(RadialGradient(colors: [Color.white.opacity(0.9), SP.accent.opacity(0.7), .clear],
-                                             center: .center, startRadius: 0, endRadius: 20))
-                    .frame(width: 38, height: 38)
-            }
-            .frame(width: 56, height: 56)
-            .overlay(RoundedRectangle(cornerRadius: 13, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1))
-            .accessibilityHidden(true)
-            VStack(alignment: .leading, spacing: 2) {
-                Text("Still Pointz").font(.headline)
-                Text("Version \(version)").font(.footnote).foregroundStyle(.secondary).monospacedDigit()
-            }
-        }
-        .padding(.vertical, 4)
-        .accessibilityElement(children: .combine)
     }
 }
 
@@ -513,15 +480,18 @@ struct WeekCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .firstTextBaseline) {
-                Text("THIS WEEK").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                Spacer()
+                Text("\(Int(log.weekMinutes.rounded())) min").font(SP.numbers(26)).foregroundStyle(SP.ink)
+                    .contentTransition(.numericText())
+                Spacer(minLength: 8)
                 if log.previousWeekMinutes > 0 || log.weekMinutes > 0 {
-                    Text(deltaText).font(SP.rounded(12)).foregroundStyle(delta >= 0 ? SP.teal : SP.rose)
+                    Text(deltaText).font(.footnote).foregroundStyle(delta >= 0 ? SP.teal : SP.rose)
+                        .multilineTextAlignment(.trailing)
                 }
             }
+            .accessibilityElement(children: .combine)
             Chart(log.lastWeek()) { d in
                 BarMark(x: .value("Day", d.day, unit: .day), y: .value("Minutes", d.minutes))
-                    .foregroundStyle(LinearGradient(colors: [SP.amber, SP.plum], startPoint: .top, endPoint: .bottom))
+                    .foregroundStyle(LinearGradient(colors: [SP.accent, SP.indigo.opacity(0.55)], startPoint: .top, endPoint: .bottom))
                     .cornerRadius(6)
             }
             .chartXAxis {
@@ -554,23 +524,19 @@ struct WeekCard: View {
             let best = log.bestPractices()
             if !best.isEmpty {
                 VStack(alignment: .leading, spacing: 6) {
-                    Text("WHAT SETTLES YOU MOST").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
+                    Text("What settles you most").font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink.opacity(0.85))
                     ForEach(best) { b in
                         HStack {
-                            Text(b.title).font(SP.serif(15)).foregroundStyle(SP.ink).lineLimit(1)
-                            Spacer()
+                            Text(b.title).font(.subheadline).foregroundStyle(SP.ink).lineLimit(2)
+                            Spacer(minLength: 8)
                             Text("♥ −\(Int(b.avgDrop.rounded())) bpm").font(SP.rounded(12)).foregroundStyle(SP.rose)
                             Text("· \(b.count)×").font(SP.rounded(12)).foregroundStyle(SP.faint)
                         }
                     }
                 }
             }
-            if log.streak > 1 {
-                Label("\(log.streak) days in a row", systemImage: "flame").font(SP.rounded(13)).foregroundStyle(SP.amber)
-            }
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
     }
 
     private var deltaText: String {

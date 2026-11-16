@@ -142,12 +142,20 @@ struct PhoneBreathView: View {
     var body: some View {
         let st = session.state
         let paced = session.pattern != nil
+        let headline = paced ? st.label : (session.cue ?? "Be still")
         ZStack {
             DuskBackground(glow: accent ?? SP.indigo).opacity(dimmed ? 0 : 1)
-            RadialGradient(colors: [wash(st.phase).opacity(dimmed ? 0.06 : 0.20), .clear],
-                           center: UnitPoint(x: 0.5, y: 0.45), startRadius: 20, endRadius: 420)
-                .ignoresSafeArea()
-                .animation(reduceMotion ? nil : .easeInOut(duration: 2.4), value: st.phase)
+            // One soft wash per phase, cross-faded (a fade, not movement, so it stays with Reduce Motion).
+            ZStack {
+                ForEach([BreathPhase.inhale, .holdIn, .exhale, .holdOut], id: \.self) { ph in
+                    RadialGradient(colors: [wash(ph), .clear],
+                                   center: UnitPoint(x: 0.5, y: 0.45), startRadius: 20, endRadius: 420)
+                        .opacity(washPhase(st.phase) == ph ? (dimmed ? 0.06 : 0.20) : 0)
+                }
+            }
+            .ignoresSafeArea()
+            .animation(.easeInOut(duration: reduceMotion ? 0.8 : 2.0), value: st.phase)
+            .accessibilityHidden(true)
             if !reduceMotion { Motes(count: 16, color: accent ?? SP.accent).opacity(dimmed ? 0 : 0.6) }
             VStack(spacing: SP.s4) {
                 // Header: what you're doing, how long is left, overall progress.
@@ -177,14 +185,17 @@ struct PhoneBreathView: View {
 
                 Spacer(minLength: SP.s2)
                 ZStack {
-                    if paced {
+                    // The ring follows "Show numbers"; with Reduce Motion it always shows, as it carries the rhythm.
+                    if paced && (prefs.settings.showNumbers || reduceMotion) {
                         CountdownRing(progress: st.phaseProgress, color: (accent ?? SP.accent).opacity(0.6), lineWidth: 2.5)
                             .frame(width: 304, height: 304)
                             .opacity(dimmed ? 0.25 : 1)
                     }
-                    // Reduce Motion: the orb keeps one size; the ring, colour and words carry the rhythm instead.
+                    // Reduce Motion: the orb keeps one size and its glow brightens and softens with the breath;
+                    // the ring, colour and words carry the rhythm instead.
                     BreathOrb(scale: reduceMotion ? 0.82 : st.orb, phase: st.phase, hum: session.pattern?.hum ?? false, accent: accent)
                         .frame(width: 290, height: 290)
+                        .opacity(reduceMotion ? 0.5 + 0.5 * min(1, max(0, (st.orb - 0.55) / 0.45)) : 1)
                     if prefs.settings.showNumbers && paced {
                         Text("\(Int(st.phaseRemaining.rounded(.up)))")
                             .font(SP.numbers(44)).foregroundStyle(Color.white.opacity(dimmed ? 0.35 : 0.9))
@@ -197,11 +208,13 @@ struct PhoneBreathView: View {
                 Spacer(minLength: SP.s2)
 
                 VStack(spacing: SP.s3) {
-                    Text(paced ? st.label : (session.cue ?? "Be still"))
+                    Text(headline)
                         .font(SP.serif(30, .light)).foregroundStyle(SP.ink.opacity(dimmed ? 0.5 : 1))
                         .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, SP.screenPadding)
                         .contentTransition(.opacity)
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.9), value: st.label)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.9), value: headline)
                         .accessibilityAddTraits(.updatesFrequently)
                     if let n = st.nostril {
                         SideIndicator(left: n == .left, right: n == .right, color: SP.accent)
@@ -215,9 +228,12 @@ struct PhoneBreathView: View {
                 .frame(minHeight: 110)
 
                 HStack(spacing: SP.s8) {
-                    SPRoundControl(icon: voice.on ? "speaker.wave.2.fill" : "speaker.slash", title: voice.on ? String(localized: "Voice on") : String(localized: "Voice off")) {
+                    SPRoundControl(icon: voice.on ? "speaker.wave.2.fill" : "speaker.slash.fill", title: String(localized: "Voice"),
+                                   spoken: String(localized: "Voice guide"),
+                                   value: voice.on ? String(localized: "On") : String(localized: "Off")) {
                         voice.toggle()
                     }
+                    .accessibilityHint(Text("Speaks each step and counts the breath"))
                     SPRoundControl(icon: session.isPaused ? "play.fill" : "pause.fill",
                                    title: session.isPaused ? String(localized: "Resume") : String(localized: "Pause"), prominent: true) {
                         session.isPaused ? session.resume() : session.pause()
@@ -236,6 +252,9 @@ struct PhoneBreathView: View {
         .animation(.easeInOut(duration: 3), value: dimmed)
     }
 
+    /// Which wash is lit: "still" (silent practice) shares the in-breath colour.
+    private func washPhase(_ phase: BreathPhase) -> BreathPhase { phase == .still ? .inhale : phase }
+
     private func wake() {
         dimmed = false
         let stamp = Date()
@@ -250,6 +269,7 @@ struct PhoneBreathView: View {
 struct PhoneMovementView: View {
     @ObservedObject var session: MovementSession
     let onEnd: () -> Void
+    @ObservedObject private var voice = VoiceGuide.shared
 
     var body: some View {
         let s = session.step
@@ -305,16 +325,18 @@ struct PhoneMovementView: View {
                     }
                 }
                 Spacer()
-                HStack(spacing: 22) {
-                    roundButton(session.isPaused ? "play.fill" : "pause.fill", label: session.isPaused ? "Resume" : "Pause") {
+                HStack(spacing: SP.s4) {
+                    roundButton(session.isPaused ? "play.fill" : "pause.fill", label: session.isPaused ? String(localized: "Resume") : String(localized: "Pause")) {
                         session.isPaused ? session.resume() : session.pause()
                     }
-                    roundButton("forward.end.fill", label: "Next") { session.skip() }
-                    VStack(spacing: 6) {
-                        VoiceToggleButton().foregroundStyle(SP.ink)
-                        Text("Voice").font(SP.rounded(12, .medium)).foregroundStyle(SP.dim)
+                    roundButton("forward.end.fill", label: String(localized: "Next")) { session.skip() }
+                    SPRoundControl(icon: voice.on ? "speaker.wave.2.fill" : "speaker.slash.fill", title: String(localized: "Voice"),
+                                   spoken: String(localized: "Voice guide"),
+                                   value: voice.on ? String(localized: "On") : String(localized: "Off")) {
+                        voice.toggle()
                     }
-                    roundButton("stop.fill", label: "End", action: onEnd)
+                    .accessibilityHint(Text("Speaks each step and counts the breath"))
+                    roundButton("stop.fill", label: String(localized: "End"), action: onEnd)
                 }
                 .padding(.bottom, 30)
             }

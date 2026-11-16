@@ -45,7 +45,7 @@ struct RightNowCard: View {
         let s = model.current
         let p = PracticeLibrary.shared.practice(s.practiceId)
         let tint = PracticeLibrary.shared.category(s.goal).map { Color(spHex: $0.color) } ?? SP.teal
-        let goalName = PracticeLibrary.shared.category(s.goal)?.name
+        let goalName = PracticeLibrary.shared.category(s.goal)?.localizedName
         VStack(alignment: .leading, spacing: SP.s3) {
             HStack(spacing: SP.s2) {
                 Label("Right now", systemImage: "sparkles")
@@ -98,12 +98,11 @@ struct RightNowCard: View {
             .sensoryFeedback(.impact(weight: .light), trigger: taps)
             .disabled(p == nil)
             .padding(.top, SP.s1)
-            HStack(spacing: SP.s2) {
+            SPFlow(spacing: SP.s2) {
                 Button { showWhy = true } label: {
                     Label("Why this?", systemImage: "info.circle")
                 }
                 .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink.opacity(0.9)))
-                Spacer(minLength: 0)
                 if link.canUseWatch, let p {
                     Button {
                         link.startOnWatch(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: s.minutes)) { _ in }
@@ -408,8 +407,6 @@ struct DailyMomentsSettings: View {
                 Text("Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it.")
             }
         }
-        .sensoryFeedback(.selection, trigger: moments.morningOn)
-        .sensoryFeedback(.selection, trigger: moments.bedtimeOn)
         .onAppear { moments.refreshStatus() }
     }
 }

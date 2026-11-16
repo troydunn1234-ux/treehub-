@@ -3432,6 +3432,526 @@
           }
         }
       }
+    },
+    "%lld of %lld · See all": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld de %2$lld · Ver todos"
+          }
+        }
+      }
+    },
+    "%lld sessions and %lld mindful minutes so far.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$lld sesiones y %2$lld minutos de atención plena hasta ahora."
+          }
+        }
+      }
+    },
+    "1 session and %lld mindful minutes so far.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 sesión y %lld minutos de atención plena hasta ahora."
+          }
+        }
+      }
+    },
+    "Allow notifications": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Permitir notificaciones"
+          }
+        }
+      }
+    },
+    "Bedtime pick": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencia para dormir"
+          }
+        }
+      }
+    },
+    "Begin · %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar · %lld min"
+          }
+        }
+      }
+    },
+    "Begins straight away": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza al instante"
+          }
+        }
+      }
+    },
+    "Biggest heart-rate drops": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mayores bajadas de pulso"
+          }
+        }
+      }
+    },
+    "Browse": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Explorar"
+          }
+        }
+      }
+    },
+    "Clear search": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Borrar búsqueda"
+          }
+        }
+      }
+    },
+    "End": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Terminar"
+          }
+        }
+      }
+    },
+    "Every session you finish is kept here, with how your heart settled.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada sesión que terminas se guarda aquí, con cómo se calmó tu corazón."
+          }
+        }
+      }
+    },
+    "Heart rate and HRV can take a few minutes to reach Apple Health. This fills in by itself.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El pulso y la VFC pueden tardar unos minutos en llegar a Salud. Esto se completa solo."
+          }
+        }
+      }
+    },
+    "Last 7 days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Últimos 7 días"
+          }
+        }
+      }
+    },
+    "Last practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Última práctica"
+          }
+        }
+      }
+    },
+    "Milestones": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Logros"
+          }
+        }
+      }
+    },
+    "Morning pick": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencia de la mañana"
+          }
+        }
+      }
+    },
+    "Move, release, breathe": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muévete, suelta, respira"
+          }
+        }
+      }
+    },
+    "No accounts, no ads, no tracking. Your sessions stay on your devices and in Apple Health.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin cuentas, sin anuncios, sin rastreo. Tus sesiones se quedan en tus dispositivos y en Salud."
+          }
+        }
+      }
+    },
+    "No favorites yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay favoritos"
+          }
+        }
+      }
+    },
+    "No practices match": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ninguna práctica coincide"
+          }
+        }
+      }
+    },
+    "No sessions yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay sesiones"
+          }
+        }
+      }
+    },
+    "On": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activada"
+          }
+        }
+      }
+    },
+    "On Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En el Watch"
+          }
+        }
+      }
+    },
+    "Opens the practice": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la práctica"
+          }
+        }
+      }
+    },
+    "Opens your journey": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tu recorrido"
+          }
+        }
+      }
+    },
+    "Pause": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pausar"
+          }
+        }
+      }
+    },
+    "Practice with your Watch on. After 3 sessions of a practice, the ones that settle you most show here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practica con el Watch puesto. Tras 3 sesiones de una práctica, aquí verás las que más te calman."
+          }
+        }
+      }
+    },
+    "Quick starts": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicios rápidos"
+          }
+        }
+      }
+    },
+    "Resume": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reanudar"
+          }
+        }
+      }
+    },
+    "Right now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ahora mismo"
+          }
+        }
+      }
+    },
+    "Sound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sonido"
+          }
+        }
+      }
+    },
+    "Start %@, %lld minutes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar %1$@, %2$lld minutos"
+          }
+        }
+      }
+    },
+    "Start · %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar · %lld min"
+          }
+        }
+      }
+    },
+    "Stress: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estrés: %@"
+          }
+        }
+      }
+    },
+    "Tap a day": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca un día"
+          }
+        }
+      }
+    },
+    "Tap the heart on any practice to keep it here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca el corazón en cualquier práctica para guardarla aquí."
+          }
+        }
+      }
+    },
+    "Trends": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tendencias"
+          }
+        }
+      }
+    },
+    "Try a feeling (stress, sleep) or a length (3 min).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba un estado (estrés, sueño) o una duración (3 min)."
+          }
+        }
+      }
+    },
+    "Use heart rate, HRV and sleep from Health for a better pick": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usar pulso, VFC y sueño de Salud para elegir mejor"
+          }
+        }
+      }
+    },
+    "Waiting for Watch data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando datos del Watch"
+          }
+        }
+      }
+    },
+    "Waiting for Watch data. Heart rate and HRV can take a few minutes to arrive.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando datos del Watch. El pulso y la VFC pueden tardar unos minutos en llegar."
+          }
+        }
+      }
+    },
+    "What settles you most": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo que más te calma"
+          }
+        }
+      }
+    },
+    "Why this?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Por qué esta?"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer"
+          }
+        }
+      }
+    },
+    "best streak (days)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mejor racha (días)"
+          }
+        }
+      }
+    },
+    "day streak": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "días de racha"
+          }
+        }
+      }
+    },
+    "minutes in the last 7 days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "minutos en los últimos 7 días"
+          }
+        }
+      }
+    },
+    "minutes today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "minutos hoy"
+          }
+        }
+      }
+    },
+    "sessions in all": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sesiones en total"
+          }
+        }
+      }
+    },
+    "▲ %lld vs the week before": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "▲ %lld frente a la semana anterior"
+          }
+        }
+      }
+    },
+    "▼ %lld vs the week before": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "▼ %lld frente a la semana anterior"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
