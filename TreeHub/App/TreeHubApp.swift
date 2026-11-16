@@ -62,6 +62,8 @@ struct RootView: View {
     /// "Hug from Watch — pick tree", then the hug logger filled in with the Watch data.
     @State private var watchPrompt: WatchHug?
     @State private var watchLog: WatchHugLog?
+    /// Hugs brought back after the Nov 15 storage mix-up (HugRescue), shown once.
+    @State private var rescueReport: HugRescue.Report?
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -89,6 +91,14 @@ struct RootView: View {
         }
         .sheet(isPresented: $showHugLog) {
             HugLogView(editing: nil)
+        }
+        // Once after this update: bring back hugs saved in the wrong place on Nov 15.
+        .task {
+            try? await Task.sleep(for: .seconds(1.5))
+            if let report = await HugRescue.runOnce(in: context) { rescueReport = report }
+        }
+        .sheet(item: $rescueReport) { report in
+            HugRescueSheet(report: report)
         }
         .sheet(item: $watchPrompt) { h in
             WatchHugPrompt(hug: h, onPick: { tree in

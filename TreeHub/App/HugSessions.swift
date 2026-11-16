@@ -13,10 +13,15 @@ enum HugSessions {
         (WellnessBridge.stillPoint()?.sessions ?? []).filter { $0.isCalm && $0.minutes >= 1 }
     }
 
-    private static func fromFeed(_ f: WellnessBridge.Session) -> LinkedSession {
-        LinkedSession(feedID: f.id, start: f.date, end: f.end ?? f.date.addingTimeInterval(f.minutes * 60),
-                      source: "Still Pointz", practice: f.practice, avgHR: f.avgHR, minHR: f.minHR,
-                      startHR: f.startHR, hrDrop: f.hrDrop, hrv: f.hrv)
+    private static func fromFeed(_ f: WellnessBridge.Session) -> LinkedSession { linked(from: f) }
+
+    /// One Still Pointz feed session as a hug's linked session, with all the heart data the feed has.
+    static func linked(from f: WellnessBridge.Session) -> LinkedSession {
+        var s = LinkedSession(feedID: f.id, start: f.date, end: f.end ?? f.date.addingTimeInterval(f.minutes * 60),
+                              source: "Still Pointz", practice: f.practice, avgHR: f.avgHR, minHR: f.minHR,
+                              startHR: f.startHR, hrDrop: f.hrDrop, hrv: f.hrv, respRate: f.respRate)
+        s.endHR = f.endHR
+        return s
     }
 
     /// Every breath session within ±60 min of `date`: Still Pointz' feed first (practice names), then Apple Health

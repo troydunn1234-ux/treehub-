@@ -71,6 +71,8 @@ struct TrackRootView: View {
     @State private var autoFinish = AutoFinish.shared
     @State private var showGas = false
     @State private var gasAdding = false
+    /// Trips brought back after the Nov 15 storage mix-up (TripRescue), shown once.
+    @State private var tripRescue: TripRescue.Report?
     /// Theme fonts read Dynamic Type when drawn; rebuilding the screens picks up a text-size change.
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -154,6 +156,17 @@ struct TrackRootView: View {
         .onChange(of: tracker.state) { _, _ in HardStopMonitor.shared.update(tracker: tracker) }
         .onChange(of: tracker.kind) { _, _ in HardStopMonitor.shared.update(tracker: tracker) }
         .sheet(isPresented: $showGas) { GasLogView(startAdding: gasAdding) }
+        // Once after this update: bring back trips saved in the wrong place on Nov 15.
+        .task {
+            try? await Task.sleep(for: .seconds(1.5))
+            if let report = await TripRescue.runOnce(in: context) { tripRescue = report }
+        }
+        .alert("Trips are back", isPresented: Binding(get: { tripRescue != nil }, set: { if !$0 { tripRescue = nil } }),
+               presenting: tripRescue) { _ in
+            Button("OK", role: .cancel) { tripRescue = nil }
+        } message: { report in
+            Text(report.summary)
+        }
         .onReceive(NotificationCenter.default.publisher(for: GasLogRequest.note)) { note in
             gasAdding = (note.object as? Bool) ?? false
             showGas = true

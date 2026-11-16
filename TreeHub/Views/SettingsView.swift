@@ -4,6 +4,7 @@ import SwiftData
 @MainActor
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var context
     @AppStorage("useMetric") private var useMetric = false
     @Query(sort: \Hug.date) private var hugs: [Hug]
     @Query(sort: \Activity.start) private var activities: [Activity]
@@ -14,6 +15,8 @@ struct SettingsView: View {
     @State private var showPlans = false
     @State private var plansContext: String?
     @ObservedObject private var unlock = Unlock.shared
+    @State private var rescue: HugRescue.Report?
+    @State private var findingHugs = false
 
     var body: some View {
         NavigationStack {
@@ -82,6 +85,20 @@ struct SettingsView: View {
                     Text("Record walks and hikes in Roamr (walks other apps save to Apple Health count too). Tap Sync Roamr on Home or in the hug logger and each walk shows up under the hugs it passed. Strolls Rootbound recorded before stay under Past strolls.")
                 }
                 Section {
+                    Button {
+                        guard !findingHugs else { return }
+                        findingHugs = true
+                        Task {
+                            rescue = await HugRescue.run(in: context)
+                            findingHugs = false
+                        }
+                    } label: {
+                        HStack {
+                            Label("Find missing hugs", systemImage: "magnifyingglass")
+                            Spacer()
+                            if findingHugs { ProgressView() }
+                        }
+                    }
                     if let exportURL {
                         ShareLink(item: exportURL) { Label("Export my data (JSON)", systemImage: "square.and.arrow.up") }
                     }
@@ -115,6 +132,9 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
             .onAppear { writeExports() }
+            .sheet(item: $rescue) { report in
+                HugRescueSheet(report: report)
+            }
             .onChange(of: unlock.isPro) { _, _ in writeExports() }
         }
         .paywall(isPresented: $showPlans, spec: RootboundPro.spec, context: plansContext)
