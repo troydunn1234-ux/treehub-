@@ -31,21 +31,22 @@ struct PlansBlock: View {
                 demoPlans
             } else if options.isEmpty {
                 ProgressView().tint(.white).padding(30)
-                Text("Loading plans from the App Store…").font(.system(size: 13, design: .rounded)).foregroundStyle(.white.opacity(0.6))
+                Text("Loading plans from the App Store…").font(.footnote).foregroundStyle(.white.opacity(0.6))
             } else {
                 ForEach(options, id: \.id) { p in planRow(p) }
                 cta
                 Text(terms(for: choice))
-                    .font(.system(size: 11.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
+                    .font(.caption).foregroundStyle(.white.opacity(0.55))
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if let m = unlock.message {
-                Text(m).font(.system(size: 13, design: .rounded)).foregroundStyle(.orange).multilineTextAlignment(.center)
+                Text(m).font(.footnote).foregroundStyle(.orange).multilineTextAlignment(.center)
             }
             links
         }
         .manageSubscriptionsSheet(isPresented: $manage)
+        .sensoryFeedback(.selection, trigger: selected)
     }
 
     // MARK: Simulator screenshot (no App Store there): the same rows, priced from "-demoPlans" / "-demoPrice"
@@ -65,14 +66,13 @@ struct PlansBlock: View {
                 demoRow(title: "Lifetime", badge: nil, subtitle: "Pay once, keep Pro forever", price: "$" + lifetime, period: "once", on: false, save: nil)
             }
             Text("Start 1 week free trial")
-                .font(.system(size: 17, weight: .bold, design: .rounded))
+                .font(.headline)
                 .foregroundStyle(.black.opacity(0.88))
                 .frame(maxWidth: .infinity)
-                .padding(.vertical, 17)
+                .frame(minHeight: FamilySpacing.buttonHeight)
                 .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
-                .shadow(color: spec.tint.opacity(0.45), radius: 18, y: 8)
             Text("Free for 1 week, then $\(yearly) per year. Renews automatically until cancelled. Payment is charged to your Apple ID; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.")
-                .font(.system(size: 11.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
+                .font(.caption).foregroundStyle(.white.opacity(0.55))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
         }
@@ -81,32 +81,32 @@ struct PlansBlock: View {
     private func demoRow(title: String, badge: String?, subtitle: String, price: String, period: String, on: Bool, save: String?) -> some View {
         HStack(spacing: 12) {
             Image(systemName: on ? "checkmark.circle.fill" : "circle")
-                .font(.system(size: 20)).foregroundStyle(on ? spec.tint : .white.opacity(0.35))
+                .font(.title3).foregroundStyle(on ? spec.tint : .white.opacity(0.35))
             VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 6) {
-                    Text(title).font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundStyle(.white)
+                    Text(title).font(.headline).foregroundStyle(.white)
                     if let badge {
-                        Text(badge.uppercased()).font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(0.6)
+                        Text(badge.uppercased()).font(.caption2.weight(.heavy)).tracking(0.6)
                             .foregroundStyle(.black.opacity(0.85))
                             .padding(.horizontal, 7).padding(.vertical, 3)
                             .background(Capsule().fill(spec.tint))
                     }
                 }
-                Text(subtitle).font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.6))
+                Text(subtitle).font(.footnote).foregroundStyle(.white.opacity(0.6))
             }
             Spacer(minLength: 0)
             VStack(alignment: .trailing, spacing: 2) {
-                Text(price).font(.system(size: 17, weight: .bold, design: .rounded)).foregroundStyle(.white)
-                Text(period).font(.system(size: 11, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                Text(price).font(.headline.monospacedDigit()).foregroundStyle(.white)
+                Text(period).font(.caption2).foregroundStyle(.white.opacity(0.5))
             }
         }
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.white.opacity(on ? 0.12 : 0.05)))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
+        .background(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).fill(.white.opacity(on ? 0.12 : 0.05)))
+        .overlay(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous)
             .stroke(on ? spec.tint : .white.opacity(0.08), lineWidth: on ? 1.5 : 1))
         .overlay(alignment: .topTrailing) {
             if let save {
-                Text(save).font(.system(size: 10, weight: .heavy, design: .rounded))
+                Text(save).font(.caption2.weight(.heavy))
                     .foregroundStyle(.black.opacity(0.85))
                     .padding(.horizontal, 8).padding(.vertical, 3)
                     .background(Capsule().fill(spec.tint2))
@@ -125,32 +125,32 @@ struct PlansBlock: View {
         } label: {
             HStack(spacing: 12) {
                 Image(systemName: isOn ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 20)).foregroundStyle(isOn ? spec.tint : .white.opacity(0.35))
+                    .font(.title3).foregroundStyle(isOn ? spec.tint : .white.opacity(0.35))
                 VStack(alignment: .leading, spacing: 3) {
                     HStack(spacing: 6) {
-                        Text(title(p)).font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundStyle(.white)
+                        Text(title(p)).font(.headline).foregroundStyle(.white)
                         if let free = freeTrialText(p) {
-                            Text(free.uppercased()).font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(0.6)
+                            Text(free.uppercased()).font(.caption2.weight(.heavy)).tracking(0.6)
                                 .foregroundStyle(.black.opacity(0.85))
                                 .padding(.horizontal, 7).padding(.vertical, 3)
                                 .background(Capsule().fill(spec.tint))
                         }
                     }
-                    Text(subtitle(p)).font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.6))
+                    Text(subtitle(p)).font(.footnote).foregroundStyle(.white.opacity(0.6))
                 }
                 Spacer(minLength: 0)
                 VStack(alignment: .trailing, spacing: 2) {
-                    Text(p.displayPrice).font(.system(size: 17, weight: .bold, design: .rounded)).foregroundStyle(.white)
-                    Text(periodWord(p)).font(.system(size: 11, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                    Text(p.displayPrice).font(.headline.monospacedDigit()).foregroundStyle(.white)
+                    Text(periodWord(p)).font(.caption2).foregroundStyle(.white.opacity(0.5))
                 }
             }
             .padding(14)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(.white.opacity(isOn ? 0.12 : 0.05)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .background(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).fill(.white.opacity(isOn ? 0.12 : 0.05)))
+            .overlay(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous)
                 .stroke(isOn ? spec.tint : .white.opacity(0.08), lineWidth: isOn ? 1.5 : 1))
             .overlay(alignment: .topTrailing) {
                 if isYear, let save = savings() {
-                    Text(save).font(.system(size: 10, weight: .heavy, design: .rounded))
+                    Text(save).font(.caption2.weight(.heavy))
                         .foregroundStyle(.black.opacity(0.85))
                         .padding(.horizontal, 8).padding(.vertical, 3)
                         .background(Capsule().fill(spec.tint2))
@@ -172,13 +172,12 @@ struct PlansBlock: View {
         } label: {
             HStack(spacing: 10) {
                 if unlock.busy { ProgressView().tint(.black) }
-                Text(ctaTitle).font(.system(size: 17, weight: .bold, design: .rounded))
+                Text(ctaTitle).font(.headline)
             }
             .foregroundStyle(.black.opacity(0.88))
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 17)
+            .frame(minHeight: FamilySpacing.buttonHeight)
             .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
-            .shadow(color: spec.tint.opacity(0.45), radius: 18, y: 8)
         }
         .disabled(unlock.busy || choice == nil)
     }
@@ -186,17 +185,17 @@ struct PlansBlock: View {
     private var subscribedCard: some View {
         VStack(spacing: 8) {
             Label("You're Pro", systemImage: "checkmark.seal.fill")
-                .font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(spec.tint)
+                .font(.title3.weight(.bold)).foregroundStyle(spec.tint)
             if let id = unlock.activePlanID, let p = unlock.plans.first(where: { $0.id == id }) {
                 Text("\(title(p)) · \(p.displayPrice) \(periodWord(p))")
-                    .font(.system(size: 14, design: .rounded)).foregroundStyle(.white.opacity(0.75))
+                    .font(.subheadline).foregroundStyle(.white.opacity(0.75))
             }
             if let d = unlock.renewsOrEnds {
                 Text("Renews or ends \(d.formatted(date: .abbreviated, time: .omitted))")
-                    .font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
+                    .font(.footnote).foregroundStyle(.white.opacity(0.55))
             }
             Button("Manage subscription") { manage = true }
-                .font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(.white)
+                .font(.subheadline.weight(.semibold)).foregroundStyle(.white)
                 .padding(.horizontal, 18).padding(.vertical, 10)
                 .background(Capsule().stroke(.white.opacity(0.4), lineWidth: 1))
         }
@@ -208,9 +207,9 @@ struct PlansBlock: View {
     private var lifetimeCard: some View {
         VStack(spacing: 8) {
             Label("You're Pro for life", systemImage: "checkmark.seal.fill")
-                .font(.system(size: 18, weight: .bold, design: .rounded)).foregroundStyle(spec.tint)
+                .font(.title3.weight(.bold)).foregroundStyle(spec.tint)
             Text("Everything is unlocked. No subscription needed.")
-                .font(.system(size: 14, design: .rounded)).foregroundStyle(.white.opacity(0.75))
+                .font(.subheadline).foregroundStyle(.white.opacity(0.75))
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
@@ -225,7 +224,7 @@ struct PlansBlock: View {
             Link("Terms", destination: Self.terms)
             if let u = spec.privacyURL { Link("Privacy", destination: u) }
         }
-        .font(.system(size: 13, weight: .medium, design: .rounded))
+        .font(.footnote.weight(.medium))
         .foregroundStyle(.white.opacity(0.7))
         .padding(.top, 4)
     }

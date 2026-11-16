@@ -2,7 +2,7 @@ import SwiftUI
 import StoreKit
 import UIKit
 
-/// "More from Troy": a small cross-promo list of the other apps, shared by every app.
+/// "More apps by Troy": a small cross-promo list of the other apps, shared by every app.
 ///
 /// The one table of App Store IDs lives here (`MoreApps.all`). An app shows up only once it's
 /// actually on the App Store: the list asks the public App Store lookup which IDs are live in this
@@ -17,32 +17,34 @@ struct MoreApp: Identifiable, Hashable {
     /// App Store Connect "Apple ID" = the number in apps.apple.com/app/id<N>. nil = no listing yet.
     let appStoreID: Int?
     var id: String { bundleID }
+    /// Bundled icon (Shared/Store/MoreAppsIcons.xcassets), e.g. "moreapps-roamr".
+    var iconAsset: String { "moreapps-" + (bundleID.split(separator: ".").last.map(String.init) ?? "") }
+    /// The App Store app's page for this app, or nil when there's no listing yet.
+    var appStoreURL: URL? { appStoreID.flatMap { URL(string: "itms-apps://apps.apple.com/app/id\($0)") } }
 }
 
 enum MoreApps {
     /// Every app, in the order they're listed. App Store IDs come from App Store Connect (status.yml prints them).
     static let all: [MoreApp] = [
+        MoreApp(bundleID: "com.troydunn.rootbound", name: "Rootbound",
+                pitch: "Hug trees, breathe with them and grow a grove of your own.",
+                symbol: "tree.fill", tint: Color(red: 0.30, green: 0.68, blue: 0.36), appStoreID: 6832122198),
+        MoreApp(bundleID: "com.troydunn.stillpoint", name: "Still Pointz",
+                pitch: "102 breathing, meditation and movement practices for iPhone and Watch.",
+                symbol: "wind", tint: Color(red: 0.36, green: 0.42, blue: 0.95), appStoreID: 6832615273),
+        MoreApp(bundleID: "com.troydunn.roamr", name: "Roamr",
+                pitch: "Every walk, run, ride and drive, on a map.",
+                symbol: "location.north.circle.fill", tint: Color(red: 1.0, green: 0.55, blue: 0.20), appStoreID: 6832123417),
+        MoreApp(bundleID: "com.troydunn.pulselab", name: "Pulse Lab",
+                pitch: "Your watch and your WHOOP, head to head.",
+                symbol: "waveform.path.ecg", tint: Color(red: 1.0, green: 0.30, blue: 0.36), appStoreID: 6832409394),
         MoreApp(bundleID: "com.troydunn.clicker", name: "Couch Remote",
                 pitch: "One remote for every smart TV in the house, plus your PC.",
                 symbol: "tv.fill", tint: Color(red: 0.55, green: 0.45, blue: 1.0), appStoreID: 6832160195),
-        MoreApp(bundleID: "com.troydunn.stillpoint", name: "Still Pointz",
-                pitch: "Breathing, meditation and sauna guides on your phone and Watch.",
-                symbol: "wind", tint: Color(red: 0.35, green: 0.85, blue: 0.8), appStoreID: 6832615273),
-        MoreApp(bundleID: "com.troydunn.pulselab", name: "Pulse Lab",
-                pitch: "Your Watch and WHOOP, side by side. See which one to trust.",
-                symbol: "waveform.path.ecg", tint: Color(red: 1.0, green: 0.36, blue: 0.4), appStoreID: 6832409394),
-        MoreApp(bundleID: "com.troydunn.roamr", name: "Roamr",
-                pitch: "Every walk, run, ride and drive, mapped.",
-                symbol: "location.north.circle.fill", tint: Color(red: 0.3, green: 0.85, blue: 0.55), appStoreID: 6832123417),
-        MoreApp(bundleID: "com.troydunn.rootbound", name: "Rootbound",
-                pitch: "Hug trees on your walks and grow a forest of your own.",
-                symbol: "tree.fill", tint: Color(red: 0.45, green: 0.8, blue: 0.3), appStoreID: 6832122198),
         MoreApp(bundleID: "com.troydunn.natalorbit", name: "Natal Orbit",
                 pitch: "Your birth chart as a living 3D sky.",
                 symbol: "sparkles", tint: Color(red: 0.6, green: 0.55, blue: 1.0), appStoreID: 6832136754),
-        MoreApp(bundleID: "com.troydunn.ridequest", name: "Ride Quest",
-                pitch: "Turn saving for your next car into a game.",
-                symbol: "car.fill", tint: Color(red: 1.0, green: 0.6, blue: 0.25), appStoreID: 6832137042),
+        // Not listed: Ride Quest (private, TestFlight only) and Food Book (retired).
     ]
 
     /// The other apps that have an App Store ID (the view then keeps only the live ones).
@@ -105,7 +107,7 @@ final class MoreAppsStore: ObservableObject {
     }
 }
 
-/// The full "More from Troy" screen. Present it in a sheet (it brings its own Done button).
+/// The full "More apps by Troy" screen. Present it in a sheet (it brings its own Done button).
 struct MoreAppsView: View {
     @ObservedObject private var store = MoreAppsStore.shared
     @Environment(\.dismiss) private var dismiss
@@ -117,24 +119,26 @@ struct MoreAppsView: View {
             ScrollView {
                 VStack(spacing: 12) {
                     Text("Small, private apps made by one person. No ads, no tracking.")
-                        .font(.system(size: 14, design: .rounded))
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.bottom, 6)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.bottom, 4)
                     if store.apps.isEmpty {
-                        VStack(spacing: 10) {
-                            if !store.checked { ProgressView() }
-                            Text(store.checked ? "More apps are on the way. Check back soon." : "Checking the App Store…")
-                                .font(.system(size: 14, design: .rounded)).foregroundStyle(.secondary)
+                        if store.checked {
+                            FamilyEmptyState(symbol: "square.grid.2x2", title: "More apps are on the way",
+                                             message: "Check back soon.")
+                        } else {
+                            ForEach(0..<3, id: \.self) { _ in placeholderRow }
                         }
-                        .padding(.top, 40)
                     }
                     ForEach(store.apps) { app in row(app) }
                 }
-                .padding(.horizontal, 18)
+                .padding(.horizontal, FamilySpacing.screen)
                 .padding(.vertical, 12)
             }
-            .navigationTitle("More from Troy")
+            .background(Color(.systemGroupedBackground).ignoresSafeArea())
+            .navigationTitle("More apps by Troy")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -146,6 +150,21 @@ struct MoreAppsView: View {
         .appStoreOverlay(isPresented: $showOverlay) {
             SKOverlay.AppConfiguration(appIdentifier: String(overlayID ?? 0), position: .bottom)
         }
+        .sensoryFeedback(.selection, trigger: showOverlay)
+    }
+
+    private var placeholderRow: some View {
+        HStack(spacing: 14) {
+            RoundedRectangle(cornerRadius: 13, style: .continuous).fill(Color.primary.opacity(0.08)).frame(width: 56, height: 56)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("App name").font(.headline)
+                Text("A short line about what the app does.").font(.subheadline)
+            }
+            Spacer(minLength: 0)
+        }
+        .redacted(reason: .placeholder)
+        .familyCard(padding: 14)
+        .accessibilityHidden(true)
     }
 
     private func row(_ app: MoreApp) -> some View {
@@ -153,8 +172,8 @@ struct MoreAppsView: View {
         return HStack(spacing: 14) {
             MoreAppIcon(app: app, artwork: listing?.artwork, size: 56)
             VStack(alignment: .leading, spacing: 3) {
-                Text(app.name).font(.system(size: 16, weight: .semibold, design: .rounded))
-                Text(app.pitch).font(.system(size: 13, design: .rounded)).foregroundStyle(.secondary)
+                Text(app.name).font(.headline)
+                Text(app.pitch).font(.subheadline).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 6)
@@ -162,22 +181,65 @@ struct MoreAppsView: View {
                 overlayID = app.appStoreID
                 showOverlay = true
             } label: {
-                Text("GET").font(.system(size: 14, weight: .heavy, design: .rounded))
+                Text("GET").font(.subheadline.weight(.heavy))
                     .foregroundStyle(app.tint)
                     .padding(.horizontal, 16).padding(.vertical, 7)
-                    .background(Capsule().fill(app.tint.opacity(0.16)))
+                    .frame(minHeight: 44)
+                    .background(Capsule().fill(app.tint.opacity(0.16)).frame(height: 32))
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Get \(app.name)")
         }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(Color.primary.opacity(0.06)))
+        .familyCard(padding: 14)
         .contentShape(Rectangle())
         .onTapGesture { if let id = app.appStoreID { StoreProductPage.open(id) } }
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(.isButton)
+        .accessibilityAction { if let id = app.appStoreID { StoreProductPage.open(id) } }
     }
 }
 
-/// The app's real icon once the App Store has it, otherwise a symbol on the app's color.
+/// "More apps by Troy" as plain rows (icon, name, one line, App Store link), for an About section or card.
+/// Lists only the other apps that are live on the App Store; renders nothing until one is.
+///
+///     Section("More apps by Troy") { MoreAppsList() }        // inside a List / Form
+///     MoreAppsList().familyCard()                             // or as a card
+struct MoreAppsList: View {
+    var iconSize: CGFloat = 44
+    @ObservedObject private var store = MoreAppsStore.shared
+
+    var body: some View {
+        ForEach(store.apps) { app in
+            if let url = app.appStoreURL {
+                Link(destination: url) { label(app) }
+                    .accessibilityHint("Opens the App Store")
+            } else {
+                label(app)
+            }
+        }
+        .task { await store.refresh() }
+    }
+
+    private func label(_ app: MoreApp) -> some View {
+        HStack(spacing: 12) {
+            MoreAppIcon(app: app, artwork: app.appStoreID.flatMap { store.live[$0]?.artwork }, size: iconSize)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(app.name).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                Text(app.pitch).font(.footnote).foregroundStyle(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 8)
+            Image(systemName: "arrow.up.right").font(.footnote.weight(.semibold)).foregroundStyle(.tertiary)
+                .accessibilityHidden(true)
+        }
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// The app's icon: the copy bundled in MoreAppsIcons.xcassets, else the App Store artwork, else a symbol on the app's color.
 struct MoreAppIcon: View {
     let app: MoreApp
     var artwork: URL?
@@ -186,19 +248,23 @@ struct MoreAppIcon: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: size * 0.225, style: .continuous)
         ZStack {
-            shape.fill(LinearGradient(colors: [app.tint, app.tint.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing))
-            Image(systemName: app.symbol)
-                .font(.system(size: size * 0.45, weight: .bold))
-                .foregroundStyle(.white)
-            if let artwork {
-                AsyncImage(url: artwork) { phase in
-                    if let image = phase.image { image.resizable().scaledToFill() } else { Color.clear }
+            if let bundled = UIImage(named: app.iconAsset) {
+                Image(uiImage: bundled).resizable().scaledToFill()
+            } else {
+                shape.fill(LinearGradient(colors: [app.tint, app.tint.opacity(0.6)], startPoint: .topLeading, endPoint: .bottomTrailing))
+                Image(systemName: app.symbol)
+                    .font(.system(size: size * 0.45, weight: .bold))
+                    .foregroundStyle(.white)
+                if let artwork {
+                    AsyncImage(url: artwork) { phase in
+                        if let image = phase.image { image.resizable().scaledToFill() } else { Color.clear }
+                    }
                 }
             }
         }
         .frame(width: size, height: size)
         .clipShape(shape)
-        .overlay(shape.stroke(.white.opacity(0.12), lineWidth: 0.5))
+        .overlay(shape.strokeBorder(Color.primary.opacity(0.10), lineWidth: 0.5))
         .accessibilityHidden(true)
     }
 }
@@ -249,16 +315,19 @@ struct MoreAppsRow: View {
         Button { show = true } label: {
             HStack(spacing: 12) {
                 Image(systemName: "square.grid.2x2.fill")
-                    .font(.system(size: 15, weight: .bold)).foregroundStyle(tint)
+                    .font(.subheadline.weight(.bold)).foregroundStyle(tint)
                     .frame(width: 32, height: 32)
                     .background(Circle().fill(tint.opacity(0.16)))
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 1) {
-                    Text("More apps").font(.system(size: 15, weight: .semibold, design: .rounded))
-                    Text("More from Troy").font(.system(size: 12, design: .rounded)).foregroundStyle(.secondary)
+                    Text("More apps by Troy").font(.subheadline.weight(.semibold))
+                    Text("Small, private apps. No ads.").font(.footnote).foregroundStyle(.secondary)
                 }
                 Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(.secondary)
+                Image(systemName: "chevron.right").font(.caption.weight(.bold)).foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
             }
+            .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
@@ -280,7 +349,7 @@ struct MoreAppsGate<Content: View>: View {
     }
 }
 
-/// Presents the "More from Troy" sheet from anywhere (the web-shell apps' bridge uses this).
+/// Presents the "More apps by Troy" sheet from anywhere (the web-shell apps' bridge uses this).
 enum MoreAppsSheet {
     @MainActor static func present() {
         StoreProductPage.topController()?.present(UIHostingController(rootView: MoreAppsView()), animated: true)

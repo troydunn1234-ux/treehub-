@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Three swipes on first launch: what the app does, what it needs, what's free vs Pro.
+/// Up to three swipes on first launch: what the app does and what it needs; the last page also says what's free vs Pro.
 struct OnboardingSpec {
     struct Page: Identifiable {
         let id = UUID()
@@ -49,90 +49,119 @@ struct ProOnboardingView: View {
     let done: () -> Void
     @State private var page = 0
     @ObservedObject private var unlock = Unlock.shared
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    private var last: Int { spec.pages.count }   // the "free vs Pro" page sits after the spec pages
+    /// Index of the last page. The "free vs Pro" lines sit under the last spec page (so three spec pages
+    /// stay three pages); with no spec pages they get a page of their own.
+    private var last: Int { max(spec.pages.count - 1, 0) }
 
     var body: some View {
         ZStack {
             Color(red: 0.05, green: 0.05, blue: 0.07).ignoresSafeArea()
-            RadialGradient(colors: [spec.tint.opacity(0.5), .clear], center: .init(x: 0.15, y: 0.1), startRadius: 10, endRadius: 420).ignoresSafeArea()
-            RadialGradient(colors: [spec.tint2.opacity(0.3), .clear], center: .init(x: 0.9, y: 0.5), startRadius: 10, endRadius: 360).ignoresSafeArea()
+            RadialGradient(colors: [spec.tint.opacity(0.45), .clear], center: .init(x: 0.15, y: 0.1), startRadius: 10, endRadius: 420).ignoresSafeArea()
+            RadialGradient(colors: [spec.tint2.opacity(0.28), .clear], center: .init(x: 0.9, y: 0.5), startRadius: 10, endRadius: 360).ignoresSafeArea()
             VStack(spacing: 0) {
                 TabView(selection: $page) {
-                    ForEach(Array(spec.pages.enumerated()), id: \.element.id) { i, p in
-                        pageView(icon: p.icon, title: p.title, text: p.text).tag(i)
+                    if spec.pages.isEmpty {
+                        pageView(icon: "sparkles", title: "Free to use.", text: nil, showsPlans: true).tag(0)
                     }
-                    proPage.tag(last)
+                    ForEach(Array(spec.pages.enumerated()), id: \.element.id) { i, p in
+                        pageView(icon: p.icon, title: p.title, text: p.text, showsPlans: i == last).tag(i)
+                    }
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
                 HStack(spacing: 6) {
                     ForEach(0...last, id: \.self) { i in
                         Capsule().fill(i == page ? spec.tint : .white.opacity(0.18))
                             .frame(width: i == page ? 22 : 7, height: 7)
-                            .animation(.snappy, value: page)
+                            .animation(reduceMotion ? nil : .snappy, value: page)
                     }
                 }
-                .padding(.bottom, 18)
+                .padding(.bottom, FamilySpacing.l)
+                .accessibilityElement()
+                .accessibilityLabel("Page \(page + 1) of \(last + 1)")
                 Button {
-                    if page < last { withAnimation(.snappy) { page += 1 } } else { done() }
+                    if page < last {
+                        if reduceMotion { page += 1 } else { withAnimation(.snappy) { page += 1 } }
+                    } else { done() }
                 } label: {
-                    Text(page < last ? "Next" : "Let's go")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                    Text(page < last ? "Continue" : "Let's go")
+                        .font(.headline)
                         .foregroundStyle(.black.opacity(0.88))
-                        .frame(maxWidth: .infinity).padding(.vertical, 16)
+                        .frame(maxWidth: .infinity, minHeight: FamilySpacing.buttonHeight)
                         .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
-                        .shadow(color: spec.tint.opacity(0.4), radius: 16, y: 8)
+                        .contentShape(Capsule())
                 }
-                .padding(.horizontal, 24)
+                .buttonStyle(.plain)
+                .padding(.horizontal, FamilySpacing.xl)
                 Button("Skip") { done() }
-                    .font(.system(size: 14, weight: .medium, design: .rounded))
-                    .foregroundStyle(.white.opacity(0.5))
-                    .padding(.top, 12).padding(.bottom, 24)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundStyle(.white.opacity(0.6))
+                    .frame(minWidth: 44, minHeight: 44)
+                    .padding(.top, FamilySpacing.xs).padding(.bottom, FamilySpacing.m)
                     .opacity(page < last ? 1 : 0)
+                    .accessibilityHidden(page >= last)
             }
         }
         .preferredColorScheme(.dark)
-    }
-
-    private func pageView(icon: String, title: String, text: String) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Spacer()
-            Image(systemName: icon)
-                .font(.system(size: 56, weight: .semibold))
-                .foregroundStyle(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .padding(.bottom, 8)
-            Text(title).font(.system(size: 34, weight: .bold, design: .serif)).foregroundStyle(.white)
-                .fixedSize(horizontal: false, vertical: true)
-            Text(text).font(.system(size: 17, design: .rounded)).foregroundStyle(.white.opacity(0.72))
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 28)
-    }
-
-    private var proPage: some View {
-        VStack(alignment: .leading, spacing: 18) {
-            Spacer()
-            Image(systemName: "sparkles")
-                .font(.system(size: 56, weight: .semibold))
-                .foregroundStyle(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .padding(.bottom, 8)
-            Text("Free to use.\nOne unlock for everything.").font(.system(size: 30, weight: .bold, design: .serif)).foregroundStyle(.white)
-                .fixedSize(horizontal: false, vertical: true)
-            row("checkmark.circle.fill", spec.freeLine)
-            row("sparkles", unlock.isPro ? "You already have \(spec.appName) Pro — thank you." : spec.proLine + (unlock.usesSubscriptions ? " Free for 7 days, then monthly, yearly or lifetime." : (unlock.priceText.isEmpty ? "" : " \(unlock.priceText), once. No subscription.")))
-            Spacer()
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.horizontal, 28)
+        .sensoryFeedback(.selection, trigger: page)
         .task { await unlock.load() }
     }
 
+    /// Centered when it fits; scrolls at large Dynamic Type sizes instead of clipping.
+    private func pageView(icon: String, title: String, text: String?, showsPlans: Bool) -> some View {
+        ViewThatFits(in: .vertical) {
+            VStack(spacing: 0) {
+                Spacer(minLength: 0)
+                pageContent(icon: icon, title: title, text: text, showsPlans: showsPlans)
+                Spacer(minLength: 0)
+            }
+            ScrollView(showsIndicators: false) {
+                pageContent(icon: icon, title: title, text: text, showsPlans: showsPlans)
+            }
+        }
+    }
+
+    private func pageContent(icon: String, title: String, text: String?, showsPlans: Bool) -> some View {
+            VStack(alignment: .leading, spacing: FamilySpacing.l) {
+                Image(systemName: icon)
+                    .font(.system(size: 52, weight: .semibold))
+                    .foregroundStyle(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .padding(.bottom, FamilySpacing.s)
+                    .accessibilityHidden(true)
+                Text(title).font(.largeTitle.weight(.bold)).foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+                if let text {
+                    Text(text).font(.body).foregroundStyle(.white.opacity(0.75))
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                if showsPlans {
+                    VStack(alignment: .leading, spacing: FamilySpacing.m) {
+                        row("checkmark.circle.fill", spec.freeLine)
+                        row("sparkles", proText)
+                    }
+                    .padding(FamilySpacing.l)
+                    .background(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).fill(.white.opacity(0.06)))
+                    .overlay(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).strokeBorder(.white.opacity(0.10), lineWidth: 1))
+                    .padding(.top, FamilySpacing.s)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(.horizontal, 28)
+            .padding(.vertical, FamilySpacing.xxl)
+    }
+
+    private var proText: String {
+        if unlock.isPro { return "You already have \(spec.appName) Pro. Thank you!" }
+        if unlock.usesSubscriptions { return spec.proLine + " Free for 7 days, then monthly, yearly or lifetime." }
+        return spec.proLine + (unlock.priceText.isEmpty ? "" : " \(unlock.priceText), once. No subscription.")
+    }
+
     private func row(_ icon: String, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: 12) {
-            Image(systemName: icon).foregroundStyle(spec.tint).font(.system(size: 18, weight: .semibold)).padding(.top, 1)
-            Text(text).font(.system(size: 16, design: .rounded)).foregroundStyle(.white.opacity(0.8))
+        HStack(alignment: .firstTextBaseline, spacing: FamilySpacing.m) {
+            Image(systemName: icon).foregroundStyle(spec.tint).font(.body.weight(.semibold)).accessibilityHidden(true)
+            Text(text).font(.subheadline).foregroundStyle(.white.opacity(0.85))
                 .fixedSize(horizontal: false, vertical: true)
         }
     }

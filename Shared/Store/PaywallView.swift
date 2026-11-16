@@ -26,78 +26,89 @@ struct PaywallView: View {
     var context: String? = nil
     @ObservedObject private var unlock = Unlock.shared
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
 
     var body: some View {
         ZStack {
             background
             ScrollView(showsIndicators: false) {
-                VStack(spacing: 22) {
+                VStack(spacing: FamilySpacing.xl) {
                     header
                     featureList
                     if unlock.usesSubscriptions {
                         PlansBlock(spec: spec)
                         Text(spec.freeNote)
-                            .font(.system(size: 13, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                            .font(.footnote).foregroundStyle(.white.opacity(0.6))
                             .multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
                     } else {
                         buyBlock
                         footer
                     }
                 }
-                .padding(.horizontal, 22)
-                .padding(.top, 18)
-                .padding(.bottom, 30)
+                .padding(.horizontal, 20)
+                .padding(.top, FamilySpacing.l)
+                .padding(.bottom, FamilySpacing.xxl)
             }
         }
         .preferredColorScheme(.dark)
         .overlay(alignment: .topTrailing) {
             Button { dismiss() } label: {
                 Image(systemName: "xmark")
-                    .font(.system(size: 13, weight: .bold))
-                    .foregroundStyle(.white.opacity(0.7))
-                    .padding(9)
-                    .background(Circle().fill(.white.opacity(0.1)))
+                    .font(.subheadline.weight(.bold))
+                    .foregroundStyle(.white.opacity(0.75))
+                    .frame(width: 32, height: 32)
+                    .background(Circle().fill(.white.opacity(0.12)))
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
-            .padding(16)
+            .accessibilityLabel("Close")
+            .padding(10)
         }
         .onChange(of: unlock.isPro) { _, pro in if pro && !unlock.inTrial { dismiss() } }
         .onChange(of: unlock.trialEnds) { _, end in if end != nil && unlock.inTrial { dismiss() } }
+        .sensoryFeedback(.success, trigger: unlock.isPro) { old, new in !old && new }
         .task { await unlock.load() }
-        .onAppear { withAnimation(.spring(duration: 0.9, bounce: 0.25)) { appeared = true } }
+        .onAppear {
+            if reduceMotion { appeared = true } else { withAnimation(.spring(duration: 0.9, bounce: 0.25)) { appeared = true } }
+        }
     }
 
     private var background: some View {
         ZStack {
             Color(red: 0.05, green: 0.05, blue: 0.07).ignoresSafeArea()
-            RadialGradient(colors: [spec.tint.opacity(0.55), .clear], center: .init(x: 0.2, y: 0.05), startRadius: 10, endRadius: 420)
+            RadialGradient(colors: [spec.tint.opacity(0.5), .clear], center: .init(x: 0.2, y: 0.05), startRadius: 10, endRadius: 420)
                 .ignoresSafeArea()
-            RadialGradient(colors: [spec.tint2.opacity(0.35), .clear], center: .init(x: 0.95, y: 0.35), startRadius: 10, endRadius: 360)
+            RadialGradient(colors: [spec.tint2.opacity(0.3), .clear], center: .init(x: 0.95, y: 0.35), startRadius: 10, endRadius: 360)
                 .ignoresSafeArea()
         }
+        .accessibilityHidden(true)
     }
 
     private var header: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 8) {
-                Image(systemName: "sparkles").font(.system(size: 12, weight: .bold))
-                Text("\(spec.appName.uppercased()) PRO").font(.system(size: 12, weight: .bold, design: .rounded)).tracking(1.8)
+        VStack(alignment: .leading, spacing: FamilySpacing.m) {
+            HStack(spacing: 6) {
+                Image(systemName: "sparkles").font(.caption.weight(.bold))
+                Text("\(spec.appName) Pro").font(.caption.weight(.bold)).textCase(.uppercase).tracking(1.4)
             }
             .foregroundStyle(spec.tint)
             .padding(.horizontal, 10).padding(.vertical, 6)
-            .background(Capsule().fill(spec.tint.opacity(0.14)))
+            .background(Capsule().fill(spec.tint.opacity(0.16)))
+            .accessibilityElement(children: .combine)
 
             Text(spec.headline)
-                .font(.system(size: 36, weight: .bold, design: .serif))
+                .font(.largeTitle.weight(.bold))
                 .foregroundStyle(.white)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
             Text(context.map { "\($0) is part of Pro. " + spec.tagline } ?? spec.tagline)
-                .font(.system(size: 16, design: .rounded))
-                .foregroundStyle(.white.opacity(0.72))
+                .font(.body)
+                .foregroundStyle(.white.opacity(0.75))
                 .fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.top, 28)
+        .padding(.top, FamilySpacing.xxl)
         .opacity(appeared ? 1 : 0).offset(y: appeared ? 0 : 14)
     }
 
@@ -105,35 +116,37 @@ struct PaywallView: View {
         VStack(spacing: 0) {
             ForEach(Array(spec.features.enumerated()), id: \.element.id) { i, f in
                 HStack(alignment: .top, spacing: 14) {
-                    ZStack {
-                        RoundedRectangle(cornerRadius: 11, style: .continuous)
-                            .fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .topLeading, endPoint: .bottomTrailing))
-                        Image(systemName: f.icon).font(.system(size: 16, weight: .semibold)).foregroundStyle(.black.opacity(0.8))
-                    }
-                    .frame(width: 38, height: 38)
+                    Image(systemName: f.icon)
+                        .font(.body.weight(.semibold))
+                        .foregroundStyle(.black.opacity(0.8))
+                        .frame(width: 38, height: 38)
+                        .background(RoundedRectangle(cornerRadius: FamilySpacing.innerRadius, style: .continuous)
+                            .fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .topLeading, endPoint: .bottomTrailing)))
+                        .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(f.title).font(.system(size: 16, weight: .semibold, design: .rounded)).foregroundStyle(.white)
-                        Text(f.detail).font(.system(size: 13.5, design: .rounded)).foregroundStyle(.white.opacity(0.62))
-                            .fixedSize(horizontal: false, vertical: true)
+                        Text(f.title).font(.headline).foregroundStyle(.white)
+                        Text(f.detail).font(.subheadline).foregroundStyle(.white.opacity(0.65))
                     }
+                    .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
                 }
-                .padding(.vertical, 12)
+                .padding(.vertical, FamilySpacing.m)
+                .accessibilityElement(children: .combine)
                 .opacity(appeared ? 1 : 0).offset(y: appeared ? 0 : 10)
-                .animation(.spring(duration: 0.8, bounce: 0.2).delay(0.06 * Double(i) + 0.1), value: appeared)
+                .animation(reduceMotion ? nil : .spring(duration: 0.8, bounce: 0.2).delay(0.06 * Double(i) + 0.1), value: appeared)
                 if i < spec.features.count - 1 { Divider().overlay(.white.opacity(0.08)) }
             }
         }
-        .padding(.horizontal, 16).padding(.vertical, 4)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.white.opacity(0.06)))
-        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(.white.opacity(0.09), lineWidth: 1))
+        .padding(.horizontal, FamilySpacing.l).padding(.vertical, FamilySpacing.xs)
+        .background(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).fill(.white.opacity(0.06)))
+        .overlay(RoundedRectangle(cornerRadius: FamilySpacing.cardRadius, style: .continuous).strokeBorder(.white.opacity(0.10), lineWidth: 1))
     }
 
     private var buyBlock: some View {
-        VStack(spacing: 12) {
+        VStack(spacing: FamilySpacing.m) {
             if unlock.inTrial {
                 Label("Free trial · \(unlock.trialDaysLeft) day\(unlock.trialDaysLeft == 1 ? "" : "s") left", systemImage: "hourglass")
-                    .font(.system(size: 14, weight: .semibold, design: .rounded))
+                    .font(.subheadline.weight(.semibold).monospacedDigit())
                     .foregroundStyle(spec.tint)
                     .padding(.horizontal, 14).padding(.vertical, 8)
                     .background(Capsule().fill(spec.tint.opacity(0.14)))
@@ -142,53 +155,63 @@ struct PaywallView: View {
                 HStack(spacing: 10) {
                     if unlock.busy { ProgressView().tint(.black) }
                     Text(unlock.priceText.isEmpty ? "Unlock everything" : "Unlock everything · \(unlock.priceText)")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .font(.headline)
+                        .multilineTextAlignment(.leading)
                     Spacer(minLength: 0)
-                    Text("once").font(.system(size: 13, weight: .semibold, design: .rounded)).opacity(0.7)
+                    Text("once").font(.subheadline.weight(.semibold)).opacity(0.7)
                 }
                 .foregroundStyle(.black.opacity(0.88))
-                .padding(.horizontal, 20).padding(.vertical, 17)
+                .padding(.horizontal, 20)
+                .frame(maxWidth: .infinity, minHeight: FamilySpacing.buttonHeight)
                 .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
-                .shadow(color: spec.tint.opacity(0.45), radius: 18, y: 8)
+                .contentShape(Capsule())
             }
+            .buttonStyle(.plain)
             .disabled(unlock.busy)
+            .sensoryFeedback(.impact(weight: .medium), trigger: unlock.busy) { _, busy in busy }
             if unlock.trialAvailable {
                 Button { Task { await unlock.startTrial() } } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "gift.fill")
-                        Text("Try everything free for \(Unlock.trialDays) days")
-                    }
-                    .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundStyle(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 15)
-                    .background(Capsule().stroke(spec.tint.opacity(0.7), lineWidth: 1.5))
+                    Label("Try everything free for \(Unlock.trialDays) days", systemImage: "gift.fill")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, FamilySpacing.l)
+                        .frame(maxWidth: .infinity, minHeight: FamilySpacing.buttonHeight)
+                        .background(Capsule().strokeBorder(spec.tint.opacity(0.7), lineWidth: 1.5))
+                        .contentShape(Capsule())
                 }
+                .buttonStyle(.plain)
                 .disabled(unlock.busy)
                 Text("The trial is free and never charges you. After \(Unlock.trialDays) days the free features stay, and you can unlock everything whenever you like.")
-                    .font(.system(size: 12, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                    .font(.caption).foregroundStyle(.white.opacity(0.6))
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Text("One payment. No subscription. Yours on every device signed in to your Apple ID.")
-                .font(.system(size: 12.5, design: .rounded)).foregroundStyle(.white.opacity(0.55))
+                .font(.caption).foregroundStyle(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
             if let m = unlock.message {
-                Text(m).font(.system(size: 13, design: .rounded)).foregroundStyle(.orange).multilineTextAlignment(.center)
+                Text(m).font(.footnote).foregroundStyle(.orange).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
 
     private var footer: some View {
-        VStack(spacing: 14) {
+        VStack(spacing: FamilySpacing.m) {
             Text(spec.freeNote)
-                .font(.system(size: 13, design: .rounded)).foregroundStyle(.white.opacity(0.5))
+                .font(.footnote).foregroundStyle(.white.opacity(0.6))
                 .multilineTextAlignment(.center)
-            HStack(spacing: 18) {
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: FamilySpacing.l) {
                 Button("Restore purchase") { Task { await unlock.restore() } }
+                Link("Terms", destination: FamilyAboutLinks.standardTerms)
                 if let u = spec.privacyURL { Link("Privacy", destination: u) }
             }
-            .font(.system(size: 13, weight: .medium, design: .rounded))
-            .foregroundStyle(.white.opacity(0.7))
+            .font(.footnote.weight(.medium))
+            .foregroundStyle(.white.opacity(0.75))
+            .frame(minHeight: 44)
         }
     }
 }
@@ -242,6 +265,7 @@ struct ProLockBadge: View {
     var body: some View {
         Image(systemName: "lock.fill")
             .font(.system(size: 10, weight: .bold))
+            .accessibilityLabel("Pro")
             .foregroundStyle(.black.opacity(0.8))
             .padding(5)
             .background(Circle().fill(tint))

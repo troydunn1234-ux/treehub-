@@ -18,7 +18,7 @@ enum FirstRun {
 // MARK: - Model
 
 private enum OnboardingStep: Int, CaseIterable, Hashable {
-    case welcome, features, location, health
+    case welcome, features, permissions
 }
 
 private enum HealthLinkState: Equatable {
@@ -35,7 +35,7 @@ private struct OnboardingFeature: Identifiable {
 
 // MARK: - Onboarding
 
-/// First-run walkthrough: welcome, features, location, Apple Health.
+/// First-run walkthrough (3 pages): welcome, features, then optional location + Apple Health.
 /// Nothing is required; "Skip" / "Let's go" both mark onboarding done and call `onDone`.
 @MainActor
 struct OnboardingView: View {
@@ -81,7 +81,7 @@ struct OnboardingView: View {
                 .tracking(2.5)
                 .foregroundStyle(Theme.textDim)
             Spacer()
-            if step != .health {
+            if step != .permissions {
                 Button {
                     finish()
                 } label: {
@@ -108,8 +108,7 @@ struct OnboardingView: View {
         TabView(selection: $step) {
             welcomePage.tag(OnboardingStep.welcome)
             featuresPage.tag(OnboardingStep.features)
-            locationPage.tag(OnboardingStep.location)
-            healthPage.tag(OnboardingStep.health)
+            permissionsPage.tag(OnboardingStep.permissions)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
     }
@@ -121,13 +120,13 @@ struct OnboardingView: View {
                 advance()
             } label: {
                 HStack(spacing: 8) {
-                    Text(step == .health ? "Let's go" : "Continue")
-                    Image(systemName: step == .health ? "checkmark" : "arrow.right")
+                    Text(step == .permissions ? "Let's go" : "Continue")
+                    Image(systemName: step == .permissions ? "checkmark" : "arrow.right")
                         .font(.system(size: 15, weight: .heavy))
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
-            .accessibilityIdentifier(step == .health ? "onboarding-done" : "onboarding-continue")
+            .accessibilityIdentifier(step == .permissions ? "onboarding-done" : "onboarding-continue")
         }
         .padding(.horizontal, Theme.pad)
         .padding(.top, 10)
@@ -168,19 +167,14 @@ struct OnboardingView: View {
         }
     }
 
-    private var locationPage: some View {
-        OnboardingPageLayout(active: isActive(.location), headline: Copy.locationHeadline, message: Copy.locationMessage) {
-            locationHero
-        } extra: {
-            locationAction
-        }
-    }
-
-    private var healthPage: some View {
-        OnboardingPageLayout(active: isActive(.health), headline: Copy.healthHeadline, message: Copy.healthMessage) {
+    /// Location and Health on one optional page. Both are also asked in context (pinning a tree, linking a
+    /// breath session), so nothing here is required.
+    private var permissionsPage: some View {
+        OnboardingPageLayout(active: isActive(.permissions), headline: Copy.permissionsHeadline, message: Copy.permissionsMessage) {
             healthHero
         } extra: {
             VStack(alignment: .leading, spacing: 16) {
+                locationAction
                 healthFlow
                 healthAction
             }
@@ -196,13 +190,13 @@ struct OnboardingView: View {
                               detail: "Walk, run, hike, ride or drive, mapped live by GPS.", tint: Theme.leaf),
             OnboardingFeature(id: "stats", symbol: "chart.bar.xaxis", title: "Stats & records",
                               detail: "History, totals and personal records to chase.", tint: Theme.sky),
-            OnboardingFeature(id: "garmin", symbol: "applewatch", title: "Garmin workouts",
+            OnboardingFeature(id: "garmin", symbol: "applewatch", title: "Watch workouts",
                               detail: "Pulled in automatically through Apple Health.", tint: Theme.gold),
         ]
         #else
         return [
             OnboardingFeature(id: "hug", symbol: "tree.fill", title: "Hug & log trees",
-                              detail: "Snap the tree and a selfie, then pin it on the map.", tint: Theme.leaf),
+                              detail: "Snap the tree, pin it on the map, note how you feel.", tint: Theme.leaf),
             OnboardingFeature(id: "breathe", symbol: "applewatch", title: "Hug with your Apple Watch",
                               detail: "Live heart rate during the hug, plus your breath sessions.", tint: Theme.sky),
             OnboardingFeature(id: "grow", symbol: "leaf.fill", title: "Grow your grove",
@@ -306,7 +300,7 @@ struct OnboardingView: View {
                 }
                 .buttonStyle(OnboardingGlassButtonStyle())
                 .accessibilityIdentifier("onboarding-allow-location")
-                Text("Not now? Tap Continue. You can allow it later.")
+                Text("Not now? You can allow it later.")
                     .font(Theme.rounded(13, .medium))
                     .foregroundStyle(Theme.textDim)
             }
@@ -332,7 +326,7 @@ struct OnboardingView: View {
             Image(systemName: "heart.fill")
                 .font(.system(size: 36, weight: .bold))
                 .foregroundStyle(.white)
-                .symbolEffect(.pulse, isActive: !reduceMotion && isActive(.health))
+                .symbolEffect(.pulse, isActive: !reduceMotion && isActive(.permissions))
             Image(systemName: "applewatch")
                 .font(.system(size: 17, weight: .bold))
                 .foregroundStyle(Theme.forestDeep)
@@ -500,6 +494,8 @@ private enum Copy {
     static let healthHeadline: String = "Bring your\nGarmin along."
     static let healthMessage: String = "Garmin and Whoop sync workouts and heart rate into Apple Health. Roamr reads them so your Garmin workouts land in your history."
     static let watchSource: String = "Garmin Connect"
+    static let permissionsHeadline: String = "Two optional\npermissions."
+    static let permissionsMessage: String = "Location draws your route while you track. Apple Health brings in workouts and heart rate from your watch. Both are asked again when you need them."
     #else
     static let appSymbol: String = "tree.fill"
     static let welcomeHeadline: String = "Grow a grove,\none hug at a time."
@@ -511,6 +507,8 @@ private enum Copy {
     static let healthHeadline: String = "Bring your\nApple Watch along."
     static let healthMessage: String = "Your Apple Watch saves heart rate, HRV, breathing and mindful minutes to Apple Health. Rootbound reads them to show how every hug and breath session calms you."
     static let watchSource: String = "Apple Watch"
+    static let permissionsHeadline: String = "Only when\nyou need it."
+    static let permissionsMessage: String = "Rootbound asks for your location when you pin a tree, and for Apple Health when you link a breath session. Turn them on now, or skip and decide later."
     #endif
 }
 
