@@ -74,7 +74,7 @@ struct NatureRollView: View {
     }
 
     private var welcomeCard: some View {
-        GlassCard {
+        RBCard {
             VStack(alignment: .leading, spacing: 12) {
                 Image(systemName: NatureRoll.symbol).font(.system(size: 34)).foregroundStyle(Theme.leafGradient)
                 Text("Find the trails, peaks, sunsets and wildlife you've already shot.")
@@ -89,19 +89,19 @@ struct NatureRollView: View {
                     Button { if let u = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(u) } } label: {
                         Label("Open Settings", systemImage: "gearshape.fill")
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(RBPrimaryButtonStyle())
                 } else {
                     Button { Task { await store.scanNow() } } label: {
                         Label("Scan my photos", systemImage: "sparkle.magnifyingglass")
                     }
-                    .buttonStyle(PrimaryButtonStyle())
+                    .buttonStyle(RBPrimaryButtonStyle())
                 }
             }
         }
     }
 
     private var scanCard: some View {
-        GlassCard(padding: 14) {
+        RBCard(padding: 14) {
             VStack(alignment: .leading, spacing: 10) {
                 if store.scanning {
                     HStack {
@@ -137,7 +137,7 @@ struct NatureRollView: View {
     }
 
     private var emptyCard: some View {
-        GlassCard {
+        RBCard {
             VStack(spacing: 8) {
                 Image(systemName: "leaf").font(.system(size: 36)).foregroundStyle(Theme.glow.opacity(0.7))
                 Text("No nature found yet").font(Theme.rounded(17, .bold)).foregroundStyle(.white)
@@ -152,7 +152,7 @@ struct NatureRollView: View {
         let days = store.onThisDay()
         if !days.isEmpty {
             VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(title: "On this day", symbol: "calendar")
+                RBSectionTitle(title: "On this day", symbol: "calendar")
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 12) {
                         ForEach(days, id: \.year) { day in
@@ -254,9 +254,9 @@ struct NatureRollView: View {
     }
 
     private var albumsCard: some View {
-        GlassCard {
+        RBCard {
             VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(title: "Save to Photos albums", symbol: "rectangle.stack.badge.plus")
+                RBSectionTitle(title: "Save to Photos albums", symbol: "rectangle.stack.badge.plus")
                 Text(category.map { "Adds these \(store.count($0)) photos to \"\(NatureRoll.albumName($0))\" in the Photos app." }
                      ?? "Makes an album per category in the Photos app, like \"\(NatureRoll.albumName(.mountains))\". Photos already there are skipped.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
@@ -270,7 +270,7 @@ struct NatureRollView: View {
                         if !unlock.isPro { Text("Pro").font(.system(size: 12, weight: .heavy, design: .rounded)) }
                     }
                 }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(RBPrimaryButtonStyle())
                 .disabled(savingAlbums)
                 if !albumNote.isEmpty {
                     Text(albumNote).font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.glow)
@@ -430,7 +430,7 @@ struct NatureRollPhotoView: View {
                     }
 
                     Button { makeHug = true } label: { Label("Make this a hug", systemImage: "heart.fill") }
-                        .buttonStyle(PrimaryButtonStyle())
+                        .buttonStyle(RBPrimaryButtonStyle())
 
                     Menu {
                         ForEach(store.categories(of: record.id)) { c in

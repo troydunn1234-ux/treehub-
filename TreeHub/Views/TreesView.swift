@@ -264,12 +264,12 @@ struct TreeDetailView: View {
                     }
 
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                        StatTile(value: "\(tree.hugCount)", label: "Hugs")
-                        StatTile(value: Format.minutes(tree.totalMinutes + taggedMinutes), label: "Together")
-                        StatTile(value: Format.day(tree.firstHug), label: "Met")
+                        RBStatTile(value: "\(tree.hugCount)", label: "Hugs")
+                        RBStatTile(value: Format.minutes(tree.totalMinutes + taggedMinutes), label: "Together")
+                        RBStatTile(value: Format.day(tree.firstHug), label: "Met")
                     }
 
-                    GlassCard(padding: 16) {
+                    RBCard(padding: 16) {
                         VStack(alignment: .leading, spacing: 12) {
                             TreeBreathSection(treeName: tree.name, breaths: breaths)
                             BreatheWithTreeButton(treeName: tree.name, treeID: tree.id)
@@ -300,7 +300,7 @@ struct TreeDetailView: View {
                         .buttonStyle(.plain)
                     }
 
-                    SectionHeader(title: "Our hugs", symbol: "heart.fill")
+                    RBSectionTitle(title: "Our hugs", symbol: "heart.fill")
                     ForEach(tree.hugs) { h in
                         NavigationLink(value: h.id) {
                             HStack(spacing: 12) {
@@ -450,22 +450,22 @@ struct TreeInsightsCard: View {
 
     var body: some View {
         if unlock.isPro {
-            GlassCard {
+            RBCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Tree insights", symbol: "chart.line.uptrend.xyaxis")
+                    RBSectionTitle(title: "Tree insights", symbol: "chart.line.uptrend.xyaxis")
                     LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                        StatTile(value: moodLift.map { String(format: "%+.1f", $0) } ?? "--", label: "Mood lift", symbol: "face.smiling")
-                        StatTile(value: hrDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "Heart settles", symbol: "arrow.down.heart.fill")
-                        StatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", symbol: "heart.fill")
-                        StatTile(value: avgMinutes.map { Format.minutes($0) } ?? "--", label: "Avg hug", symbol: "timer")
-                        StatTile(value: barefootShare.map { "\(Int(($0 * 100).rounded()))%" } ?? "--", label: "Barefoot", symbol: "shoeprints.fill")
-                        StatTile(value: favoriteTime ?? "--", label: "Favorite time", symbol: "sun.horizon.fill")
+                        RBStatTile(value: moodLift.map { String(format: "%+.1f", $0) } ?? "--", label: "Mood lift", symbol: "face.smiling")
+                        RBStatTile(value: hrDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "Heart settles", symbol: "arrow.down.heart.fill")
+                        RBStatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", symbol: "heart.fill")
+                        RBStatTile(value: avgMinutes.map { Format.minutes($0) } ?? "--", label: "Avg hug", symbol: "timer")
+                        RBStatTile(value: barefootShare.map { "\(Int(($0 * 100).rounded()))%" } ?? "--", label: "Barefoot", symbol: "shoeprints.fill")
+                        RBStatTile(value: favoriteTime ?? "--", label: "Favorite time", symbol: "sun.horizon.fill")
                         if let v = avgHRV {
-                            StatTile(value: String(format: "%.0f ms", v), label: "Avg HRV", symbol: "waveform.path.ecg")
+                            RBStatTile(value: String(format: "%.0f ms", v), label: "Avg HRV", symbol: "waveform.path.ecg")
                         }
                         if !breaths.isEmpty {
-                            StatTile(value: Format.minutes(breaths.reduce(0) { $0 + $1.minutes }), label: "Breathing here", symbol: "wind", tint: Theme.sky)
-                            StatTile(value: Self.avg(breaths.compactMap(\.hrDrop)).map { String(format: "−%.0f bpm", $0) } ?? "--",
+                            RBStatTile(value: Format.minutes(breaths.reduce(0) { $0 + $1.minutes }), label: "Breathing here", symbol: "wind", tint: Theme.sky)
+                            RBStatTile(value: Self.avg(breaths.compactMap(\.hrDrop)).map { String(format: "−%.0f bpm", $0) } ?? "--",
                                      label: "Calm effect", symbol: "arrow.down.heart.fill", tint: Theme.sky)
                         }
                     }

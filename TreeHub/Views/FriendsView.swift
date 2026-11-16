@@ -48,9 +48,9 @@ struct FriendsView: View {
     // MARK: Share mine
 
     private var shareSection: some View {
-        GlassCard {
+        RBCard {
             VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Share my trees", symbol: "square.and.arrow.up")
+                RBSectionTitle(title: "Share my trees", symbol: "square.and.arrow.up")
                 TextField("Your name for friends", text: $myName)
                     .textInputAutocapitalization(.words)
                     .padding(10)
@@ -102,9 +102,9 @@ struct FriendsView: View {
     // MARK: Import theirs
 
     private var importSection: some View {
-        GlassCard {
+        RBCard {
             VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(title: "Add a friend's trees", symbol: "person.2.fill")
+                RBSectionTitle(title: "Add a friend's trees", symbol: "person.2.fill")
                 Text("Scan their QR code with the Camera, open their link, or paste their code here.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                 HStack {
@@ -117,7 +117,7 @@ struct FriendsView: View {
                 Button {
                     if let p = FriendShare.decode(pasted) { preview = p; message = "" } else { message = "That doesn't look like a Rootbound code." }
                 } label: { Text("Add").frame(maxWidth: .infinity) }
-                .buttonStyle(PrimaryButtonStyle())
+                .buttonStyle(RBPrimaryButtonStyle())
                 .disabled(pasted.trimmingCharacters(in: .whitespaces).isEmpty)
                 if !message.isEmpty {
                     Text(message).font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.gold)
@@ -127,9 +127,9 @@ struct FriendsView: View {
     }
 
     private func importCard(_ p: SharePack) -> some View {
-        GlassCard {
+        RBCard {
             VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(title: "\(p.from.isEmpty ? "A friend" : p.from) shared \(p.t.count) tree\(p.t.count == 1 ? "" : "s")", symbol: "gift.fill")
+                RBSectionTitle(title: "\(p.from.isEmpty ? "A friend" : p.from) shared \(p.t.count) tree\(p.t.count == 1 ? "" : "s")", symbol: "gift.fill")
                 ForEach(Array(p.t.prefix(6).enumerated()), id: \.offset) { _, t in
                     Text("• \(t.n)\(t.s.isEmpty ? "" : " · \(t.s)")").font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                 }
@@ -152,7 +152,7 @@ struct FriendsView: View {
     private var friendsSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             if !friends.isEmpty {
-                SectionHeader(title: "Friends on your map", symbol: "map.fill")
+                RBSectionTitle(title: "Friends on your map", symbol: "map.fill")
                 ForEach(friends) { f in
                     HStack {
                         Circle().fill(Theme.sky).frame(width: 12, height: 12)

@@ -10,24 +10,30 @@ struct CelebrationView: View {
     @State private var xpShown = 0
     @State private var leafFlipped = false
     @State private var burst = false
+    @State private var badgePop = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var leveledUp: Bool { data.levelAfter.level > data.levelBefore.level }
 
     var body: some View {
         ZStack {
             ForestBackground()
-            if burst { LeafBurst().allowsHitTesting(false) }
+            if burst && !reduceMotion { LeafBurst().allowsHitTesting(false) }
             ScrollView {
-                VStack(spacing: 22) {
-                    VStack(spacing: 6) {
+                VStack(spacing: RB.l) {
+                    VStack(spacing: RB.s) {
                         Image(systemName: "heart.fill")
-                            .font(.system(size: 44))
+                            .font(.system(size: 40, weight: .bold))
                             .foregroundStyle(Color(red: 1, green: 0.45, blue: 0.55))
+                            .frame(width: 84, height: 84)
+                            .background(Color(red: 1, green: 0.45, blue: 0.55).opacity(0.15), in: Circle())
                             .symbolEffect(.bounce, value: step)
-                        Text("Hug logged!").font(Theme.title(34)).foregroundStyle(.white)
-                        Text("\(data.treeName) felt that.").font(Theme.rounded(16, .medium)).foregroundStyle(Theme.textDim)
+                            .accessibilityHidden(true)
+                        Text("Hug logged").font(Theme.title(32)).foregroundStyle(.white)
+                            .accessibilityAddTraits(.isHeader)
+                        Text("\(data.treeName) felt that.").font(RB.text(.body, .medium)).foregroundStyle(Theme.textDim)
                     }
-                    .padding(.top, 40)
+                    .padding(.top, RB.xxl + RB.s)
 
                     if let r = data.rareFind {
                         RareFindCard(rarity: r, species: data.species)
@@ -40,39 +46,53 @@ struct CelebrationView: View {
                             Text("\(ev.name) event: bonus XP on every hug").font(Theme.rounded(14, .bold)).foregroundStyle(.white)
                             Spacer()
                         }
-                        .padding(12)
-                        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+                        .padding(RB.m)
+                        .rbInner()
                     }
 
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 8) {
-                            HStack {
-                                Text("+\(xpShown) XP").font(.system(size: 40, weight: .black, design: .rounded))
-                                    .foregroundStyle(Theme.goldGradient)
-                                    .contentTransition(.numericText())
-                                Spacer()
-                                if leveledUp && step >= 1 {
-                                    VStack(alignment: .trailing) {
-                                        Text("LEVEL UP").font(.system(size: 12, weight: .heavy, design: .rounded)).foregroundStyle(Theme.gold)
-                                        Text("\(data.levelAfter.level) · \(data.levelAfter.title)").font(Theme.rounded(15, .bold))
+                    RBCard(tint: Theme.gold) {
+                        VStack(alignment: .leading, spacing: RB.m) {
+                            HStack(alignment: .center, spacing: RB.l) {
+                                LevelRing(info: step >= 1 ? data.levelAfter : data.levelBefore, size: 72)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("+\(xpShown) XP")
+                                        .font(.system(.largeTitle, design: .rounded).weight(.black))
+                                        .monospacedDigit()
+                                        .foregroundStyle(Theme.goldGradient)
+                                        .contentTransition(.numericText(value: Double(xpShown)))
+                                        .accessibilityLabel("\(data.breakdown.total) XP earned")
+                                    if leveledUp && step >= 1 {
+                                        Label("Level \(data.levelAfter.level) · \(data.levelAfter.title)", systemImage: "arrow.up.circle.fill")
+                                            .font(RB.text(.subheadline, .bold)).foregroundStyle(Theme.gold)
+                                            .symbolEffect(.bounce, value: step)
+                                            .transition(.scale.combined(with: .opacity))
+                                    } else {
+                                        Text("\(data.levelAfter.xpForNext - data.levelAfter.xpIntoLevel) XP to level \(data.levelAfter.level + 1)")
+                                            .font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
                                     }
-                                    .transition(.scale.combined(with: .opacity))
                                 }
+                                Spacer(minLength: 0)
                             }
+                            ProgressView(value: step >= 1 ? data.levelAfter.progress : data.levelBefore.progress)
+                                .tint(Theme.gold)
+                                .animation(.easeOut(duration: 0.8), value: step)
+                                .accessibilityLabel("Level progress")
+                            Divider().overlay(RB.stroke)
                             ForEach(Array(data.breakdown.lines.enumerated()), id: \.offset) { _, line in
                                 HStack {
-                                    Text(line.0).font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
+                                    Text(line.0).font(RB.text(.subheadline)).foregroundStyle(Theme.textDim)
                                     Spacer()
-                                    Text("+\(line.1)").font(Theme.rounded(14, .bold)).foregroundStyle(Theme.glow)
+                                    Text("+\(line.1)").font(RB.number(.subheadline)).monospacedDigit().foregroundStyle(Theme.glow)
                                 }
+                                .accessibilityElement(children: .combine)
                             }
                         }
                     }
 
                     if !data.sessions.isEmpty {
-                        GlassCard {
+                        RBCard {
                             VStack(alignment: .leading, spacing: 10) {
-                                SectionHeader(title: data.sessions.count == 1 ? "Your breath session" : "Your \(data.sessions.count) breath sessions",
+                                RBSectionTitle(title: data.sessions.count == 1 ? "Your breath session" : "Your \(data.sessions.count) breath sessions",
                                               symbol: "wind")
                                 if data.sessions.count > 1 { LinkedSessionTotals(sessions: data.sessions) }
                                 ForEach(data.sessions) { s in LinkedSessionCard(session: s) }
@@ -119,12 +139,15 @@ struct CelebrationView: View {
                     }
 
                     if !data.newBadges.isEmpty && leafFlipped {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: data.newBadges.count == 1 ? "Badge unlocked" : "\(data.newBadges.count) badges unlocked",
+                        RBCard(tint: data.newBadges.map(\.rarity).max()?.color) {
+                        VStack(alignment: .leading, spacing: RB.m) {
+                            RBSectionTitle(title: data.newBadges.count == 1 ? "Badge unlocked" : "\(data.newBadges.count) badges unlocked",
                                           symbol: "rosette")
                             ForEach(data.newBadges) { b in
                                 HStack(spacing: 14) {
                                     Medallion(symbol: b.symbol, rarity: b.rarity, earned: true, size: 56)
+                                        .scaleEffect(badgePop > 0 ? 1 : 0.6)
+                                        .animation(.spring(response: 0.5, dampingFraction: 0.55), value: badgePop)
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text(b.name).font(Theme.rounded(17, .bold)).foregroundStyle(.white)
                                         Text(b.detail).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
@@ -133,8 +156,8 @@ struct CelebrationView: View {
                                 }
                             }
                         }
-                        .padding(16)
-                        .background(Theme.card, in: RoundedRectangle(cornerRadius: 22))
+                        }
+                        .onAppear { badgePop += 1 }
                         .transition(.scale.combined(with: .opacity))
                     }
 
@@ -153,19 +176,21 @@ struct CelebrationView: View {
                     }
 
                     Button("Back to the forest", action: onDone)
-                        .buttonStyle(PrimaryButtonStyle())
-                        .padding(.top, 8)
-                        .padding(.bottom, 40)
+                        .buttonStyle(RBPrimaryButtonStyle())
+                        .padding(.top, RB.s)
+                        .padding(.bottom, RB.xxl)
                 }
-                .padding(.horizontal, 20)
+                .padding(.horizontal, RB.screen)
             }
         }
+        .sensoryFeedback(.success, trigger: step)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: leafFlipped)
+        .sensoryFeedback(.success, trigger: badgePop)
         .task { await run() }
     }
 
     private func flip() {
         guard !leafFlipped else { return }
-        UIImpactFeedbackGenerator(style: .heavy).impactOccurred()
         withAnimation(.spring(response: 0.6, dampingFraction: 0.7)) { leafFlipped = true }
         if let leaf = data.leaf, leaf.rarity >= .rare {
             burst = true
@@ -176,13 +201,12 @@ struct CelebrationView: View {
     private func run() async {
         burst = true
         let target = data.breakdown.total
-        let steps = 24
+        let steps = reduceMotion ? 1 : 24
         for i in 1...steps {
             try? await Task.sleep(nanoseconds: 35_000_000)
             withAnimation(.snappy) { xpShown = Int(Double(target) * Double(i) / Double(steps)) }
         }
         withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) { step = 1 }
-        if leveledUp { UINotificationFeedbackGenerator().notificationOccurred(.success) }
         try? await Task.sleep(nanoseconds: 1_600_000_000)
         burst = false
         if data.leaf == nil || DemoData.isOn { withAnimation { leafFlipped = true } }

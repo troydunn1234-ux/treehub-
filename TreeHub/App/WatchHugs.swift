@@ -99,7 +99,7 @@ struct WatchHugPrompt: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
                     summary
-                    SectionHeader(title: "Which tree?", symbol: "tree.fill")
+                    RBSectionTitle(title: "Which tree?", symbol: "tree.fill")
                     Button { onPick(nil) } label: {
                         row(name: "New tree", sub: "Make a new friend", photo: nil, symbol: "plus")
                     }
@@ -128,15 +128,15 @@ struct WatchHugPrompt: View {
     }
 
     private var summary: some View {
-        GlassCard(padding: 16) {
+        RBCard(padding: 16) {
             VStack(alignment: .leading, spacing: 10) {
                 Label("\(Format.dayTime(hug.start))", systemImage: "applewatch")
                     .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.textDim)
                 HStack(spacing: 10) {
-                    StatTile(value: Format.minutes((hug.minutes * 10).rounded() / 10), label: "Hug")
-                    StatTile(value: hug.avgHR.map { "\(Int($0))" } ?? "--", label: "Avg bpm")
+                    RBStatTile(value: Format.minutes((hug.minutes * 10).rounded() / 10), label: "Hug")
+                    RBStatTile(value: hug.avgHR.map { "\(Int($0))" } ?? "--", label: "Avg bpm")
                     if let a = hug.startHR, let b = hug.endHR {
-                        StatTile(value: String(format: "%+.0f", b - a), label: "HR change")
+                        RBStatTile(value: String(format: "%+.0f", b - a), label: "HR change")
                     }
                 }
             }

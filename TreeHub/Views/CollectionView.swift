@@ -41,7 +41,7 @@ struct CollectionView: View {
         let earned = badges.filter(\.earned).count
         let leafKinds = LeafType.all.filter { (leafCounts[$0.id] ?? 0) > 0 }.count
         let level = GameEngine.level(for: GameEngine.totalXP(hugs: hugs, activities: activities))
-        return GlassCard {
+        return RBCard {
             HStack(spacing: 16) {
                 LevelRing(info: level, size: 70)
                 VStack(alignment: .leading, spacing: 6) {
