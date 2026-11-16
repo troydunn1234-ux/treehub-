@@ -23,7 +23,7 @@ struct ActivityDetailView: View {
     @State var headerHeight: CGFloat = 150
     @State var camera: MapCameraPosition = .automatic
     @State var visibleSpan: Double?
-    @AppStorage("roamr.tripMapStyle") var mapStyleRaw = TripMapStyle.day.rawValue
+    @AppStorage("roamr.tripMapStyle.v2") var mapStyleRaw = TripMapStyle.night.rawValue
     #endif
     #if !TRACK_APP
     @Query(sort: \Hug.date) private var allHugs: [Hug]
@@ -501,7 +501,7 @@ private struct ZoneCluster: Identifiable {
 }
 
 extension ActivityDetailView {
-    private var tripMapStyle: TripMapStyle { TripMapStyle(rawValue: mapStyleRaw) ?? .day }
+    private var tripMapStyle: TripMapStyle { TripMapStyle(rawValue: mapStyleRaw) ?? .night }
 
     /// Room the app's floating tab bar takes at the bottom (it stays on screen over pushed pages).
     private var tabBarReserve: CGFloat { isNew ? 0 : 84 }

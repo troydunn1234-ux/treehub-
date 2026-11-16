@@ -116,6 +116,7 @@ struct TrackView: View {
         ZStack(alignment: .bottomLeading) {
             Map(position: $camera) { UserAnnotation() }
                 .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
+                .environment(\.colorScheme, .dark)
                 .allowsHitTesting(false)
                 .frame(height: 400)
                 .overlay {
@@ -432,6 +433,7 @@ struct TrackView: View {
             .mapStyle(tracker.kind == .drive
                       ? .standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll, showsTraffic: true)
                       : .standard(elevation: .realistic))
+            .environment(\.colorScheme, .dark)
             .mapControls {
                 MapCompass()
             }

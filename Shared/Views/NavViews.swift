@@ -301,6 +301,7 @@ struct DirectionsSheet: View {
                 UserAnnotation()
             }
             .mapStyle(.standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
+            .environment(\.colorScheme, .dark)
             .id(nav.routes.first?.id)
             .frame(maxWidth: .infinity).frame(height: 300)
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))

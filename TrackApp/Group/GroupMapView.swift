@@ -146,6 +146,7 @@ struct GroupMapView: View {
             }
         }
         .mapStyle(.standard(elevation: .realistic, emphasis: .muted, pointsOfInterest: .excludingAll))
+        .environment(\.colorScheme, .dark)
         .mapControls { MapCompass() }
         .simultaneousGesture(DragGesture(minimumDistance: 12).onChanged { _ in userMovedMap = true })
         .simultaneousGesture(MagnifyGesture().onChanged { _ in userMovedMap = true })
