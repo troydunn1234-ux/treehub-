@@ -39,19 +39,24 @@ private enum Bridge {
     }
 }
 
-/// Dusk palette, copied from the app's Theme.swift.
+/// Night palette, copied from the app's Theme.swift.
 private enum Palette {
-    static let nightTop = Color(red: 0x1C / 255, green: 0x18 / 255, blue: 0x44 / 255)
-    static let night = Color(red: 0x2A / 255, green: 0x18 / 255, blue: 0x38 / 255)
-    static let nightBottom = Color(red: 0x0B / 255, green: 0x09 / 255, blue: 0x12 / 255)
+    static let nightTop = Color(red: 0x18 / 255, green: 0x21 / 255, blue: 0x4A / 255)
+    static let night = Color(red: 0x11 / 255, green: 0x18 / 255, blue: 0x36 / 255)
+    static let nightBottom = Color(red: 0x07 / 255, green: 0x0A / 255, blue: 0x18 / 255)
     static let amber = Color(red: 0xE9 / 255, green: 0xB9 / 255, blue: 0x7A / 255)
     static let gold = Color(red: 0xEB / 255, green: 0xC8 / 255, blue: 0x8E / 255)
     static let goldLight = Color(red: 0xF6 / 255, green: 0xDD / 255, blue: 0xA8 / 255)
-    static let teal = Color(red: 0x8F / 255, green: 0xD3 / 255, blue: 0xCC / 255)
-    static let indigo = Color(red: 0x6A / 255, green: 0x5A / 255, blue: 0xCD / 255)
-    static let ink = Color(red: 0xF4 / 255, green: 0xEF / 255, blue: 0xE6 / 255)
-    static let dim = ink.opacity(0.62)
-    static let faint = ink.opacity(0.38)
+    static let teal = Color(red: 0x8F / 255, green: 0xD3 / 255, blue: 0xD6 / 255)
+    static let indigo = Color(red: 0x6C / 255, green: 0x74 / 255, blue: 0xE0 / 255)
+    /// Calm periwinkle accent and the deeper fill used for primary buttons (white text).
+    static let accent = Color(red: 0xA3 / 255, green: 0xB4 / 255, blue: 0xFF / 255)
+    static let accentFill = LinearGradient(colors: [Color(red: 0x5B / 255, green: 0x69 / 255, blue: 0xDE / 255),
+                                                    Color(red: 0x46 / 255, green: 0x51 / 255, blue: 0xC4 / 255)],
+                                           startPoint: .topLeading, endPoint: .bottomTrailing)
+    static let ink = Color(red: 0xF2 / 255, green: 0xF3 / 255, blue: 0xFA / 255)
+    static let dim = ink.opacity(0.66)
+    static let faint = ink.opacity(0.44)
 
     static var background: LinearGradient {
         LinearGradient(colors: [nightTop, night, nightBottom], startPoint: .top, endPoint: .bottom)
@@ -164,10 +169,10 @@ struct StillPointWidget: Widget {
     }
 }
 
-/// A warm glow low in the widget, like the app's background.
+/// A soft indigo glow low in the widget, like the app's background.
 private struct WidgetGlow: View {
     var body: some View {
-        RadialGradient(colors: [Palette.amber.opacity(0.22), .clear], center: UnitPoint(x: 0.5, y: 1.1),
+        RadialGradient(colors: [Palette.indigo.opacity(0.24), .clear], center: UnitPoint(x: 0.5, y: 1.1),
                        startRadius: 4, endRadius: 220)
     }
 }
@@ -263,13 +268,14 @@ struct StillHomeView: View {
             }
             Spacer(minLength: 2)
             Text("Begin")
-                .font(Palette.rounded(12, .semibold)).foregroundStyle(Color.black.opacity(0.85))
+                .font(Palette.rounded(12, .semibold)).foregroundStyle(.white)
                 .padding(.horizontal, 14).padding(.vertical, 5)
-                .background(Capsule().fill(Palette.goldGlow))
+                .background(Capsule().fill(Palette.accentFill))
         }
         .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Color.white.opacity(0.07)))
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.white.opacity(0.07)))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(Color.white.opacity(0.09), lineWidth: 1))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Today's routine: \(entry.suggestedTitle). \(entry.suggestedDetail)")
         .accessibilityHint("Starts the session")

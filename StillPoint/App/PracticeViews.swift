@@ -21,7 +21,7 @@ struct TraditionsView: View {
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(.top, 8)
-                    .padding(.horizontal, 22)
+                    .padding(.horizontal, SP.screenPadding)
 
                     LibraryTabBar(selection: $tab)
 
@@ -36,9 +36,10 @@ struct TraditionsView: View {
                             categoryPage(c)
                         }
                     }
-                    .padding(.horizontal, 22)
+                    .padding(.horizontal, SP.screenPadding)
+                    .animation(.easeInOut(duration: 0.25), value: tab)
                 }
-                .padding(.bottom, 40)
+                .padding(.bottom, SP.s8)
             }
             .scrollDismissesKeyboard(.immediately)
             .searchable(text: $query, placement: .navigationBarDrawer(displayMode: .always),
@@ -54,10 +55,16 @@ struct TraditionsView: View {
     private var searchResults: some View {
         let found = searchMatches
         return VStack(alignment: .leading, spacing: 12) {
-            Text(found.isEmpty ? String(localized: "No practices match. Try a feeling (stress, sleep) or a length (3 min).")
-                               : String(localized: "\(found.count) matching practices"))
-                .font(SP.rounded(14)).foregroundStyle(SP.dim)
-            PracticeStack(practices: found)
+            if found.isEmpty {
+                SPEmptyState(symbol: "magnifyingglass", title: String(localized: "No practices match"),
+                             hint: String(localized: "Try a feeling (stress, sleep) or a length (3 min)."),
+                             actionTitle: String(localized: "Clear search")) { query = "" }
+                    .spCard()
+            } else {
+                Text(String(localized: "\(found.count) matching practices"))
+                    .font(.footnote).foregroundStyle(SP.dim)
+                PracticeStack(practices: found)
+            }
         }
     }
 
@@ -105,8 +112,9 @@ struct TraditionsView: View {
     }
 
     private func sectionTitle(_ title: String, _ icon: String) -> some View {
-        Label(title.uppercased(), systemImage: icon)
-            .font(SP.rounded(12, .semibold)).tracking(1.4).foregroundStyle(SP.faint)
+        Label(title, systemImage: icon)
+            .font(.headline).foregroundStyle(SP.ink)
+            .accessibilityAddTraits(.isHeader)
     }
 
     // MARK: A goal tab
@@ -114,7 +122,7 @@ struct TraditionsView: View {
     private func categoryPage(_ c: PracticeCategory?) -> some View {
         let base = c.map { lib.practices(inCategory: $0.id) } ?? lib.practices
         let list = sorted(base)
-        let tint = c.map { Color(spHex: $0.color) } ?? SP.amber
+        let tint = c.map { Color(spHex: $0.color) } ?? SP.accent
         return VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) {
@@ -137,13 +145,12 @@ struct TraditionsView: View {
                         }
                     } label: {
                         Label(sort.title, systemImage: "arrow.up.arrow.down")
-                            .font(SP.rounded(13, .medium)).foregroundStyle(SP.teal)
+                            .font(SP.rounded(13, .medium)).foregroundStyle(SP.accent)
+                            .frame(minHeight: 44)
                     }
                 }
             }
-            .padding(16)
-            .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(tint.opacity(0.10)))
-            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(tint.opacity(0.25), lineWidth: 1))
+            .spCard(tint: tint)
             PracticeStack(practices: list)
         }
     }
@@ -205,14 +212,15 @@ struct LibraryTabBar: View {
         ScrollViewReader { proxy in
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 8) {
-                    chip(LibraryTab.traditions, String(localized: "Traditions"), "globe.asia.australia", SP.amber)
+                    chip(LibraryTab.traditions, String(localized: "Traditions"), "globe.asia.australia", SP.accent)
                     ForEach(lib.categories) { c in
                         chip(c.id, c.localizedName, c.symbol, Color(spHex: c.color))
                     }
                     chip(LibraryTab.all, String(localized: "All"), "books.vertical.fill", SP.ink)
                 }
-                .padding(.horizontal, 22)
+                .padding(.horizontal, SP.screenPadding)
             }
+            .sensoryFeedback(.selection, trigger: selection)
             .onChange(of: selection) { _, new in withAnimation { proxy.scrollTo(new, anchor: .center) } }
         }
     }
@@ -220,12 +228,19 @@ struct LibraryTabBar: View {
     private func chip(_ id: String, _ title: String, _ icon: String, _ c: Color) -> some View {
         let on = selection == id
         return Button { selection = id } label: {
-            Label(title, systemImage: icon)
-                .font(SP.rounded(15, on ? .semibold : .regular))
-                .foregroundStyle(on ? Color.black.opacity(0.85) : SP.ink)
-                .padding(.horizontal, 14).padding(.vertical, 9)
-                .background(Capsule().fill(on ? AnyShapeStyle(c) : AnyShapeStyle(SP.card)))
-                .overlay(Capsule().stroke(c.opacity(on ? 0 : 0.35), lineWidth: 1))
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: icon).foregroundStyle(on ? Color.white : c)
+            }
+                .font(.subheadline.weight(on ? .semibold : .regular))
+                .foregroundStyle(on ? Color.white : SP.ink.opacity(0.9))
+                .padding(.horizontal, 14)
+                .frame(minHeight: 40)
+                .background(Capsule().fill(on ? AnyShapeStyle(SP.accentFill) : AnyShapeStyle(SP.card)))
+                .overlay(Capsule().stroke(on ? Color.white.opacity(0.14) : SP.stroke, lineWidth: 1))
+                .contentShape(Capsule())
+                .padding(.vertical, 2)
         }
         .buttonStyle(.plain)
         .id(id)
@@ -256,9 +271,7 @@ struct TraditionRow: View {
             Spacer(minLength: 0)
             Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
         }
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .spCard(padding: SP.s3)
         .accessibilityElement(children: .combine)
     }
 }
@@ -343,7 +356,13 @@ struct PracticeDetailView: View {
                             .opacity(0.8)
                     }
                 }
-                .frame(height: 280)
+                .frame(height: 300)
+                .overlay(alignment: .bottom) {
+                    // Soft fade so the hero melts into the page.
+                    LinearGradient(colors: [.clear, SP.night.opacity(0.85)], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 90)
+                        .allowsHitTesting(false)
+                }
 
                 VStack(alignment: .leading, spacing: 22) {
                     VStack(alignment: .leading, spacing: 10) {
@@ -369,14 +388,17 @@ struct PracticeDetailView: View {
                         HStack(spacing: 8) {
                             ForEach(practice.minutes, id: \.self) { m in
                                 Button { minutes = m } label: {
-                                    Text("\(m) min").font(SP.rounded(14))
-                                        .foregroundStyle(minutes == m ? Color.black.opacity(0.85) : SP.ink)
-                                        .padding(.horizontal, 14).padding(.vertical, 9)
-                                        .background(Capsule().fill(minutes == m ? AnyShapeStyle(SP.goldGlow) : AnyShapeStyle(SP.card)))
+                                    Text("\(m) min").font(.subheadline.weight(minutes == m ? .semibold : .regular)).monospacedDigit()
+                                        .foregroundStyle(minutes == m ? Color.white : SP.ink)
+                                        .padding(.horizontal, 16).frame(minHeight: 44)
+                                        .background(Capsule().fill(minutes == m ? AnyShapeStyle(SP.accentFill) : AnyShapeStyle(SP.card)))
+                                        .overlay(Capsule().stroke(SP.stroke, lineWidth: 1))
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityAddTraits(minutes == m ? .isSelected : [])
                             }
                         }
+                        .sensoryFeedback(.selection, trigger: minutes)
                     }
 
                     if !practice.isMovement && !lib.warmUps.isEmpty {
@@ -392,25 +414,24 @@ struct PracticeDetailView: View {
                             }
                             .font(SP.rounded(15)).foregroundStyle(SP.ink)
                             .padding(14)
-                            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
+                            .background(RoundedRectangle(cornerRadius: SP.innerRadius + 2, style: .continuous).fill(SP.card))
+                            .overlay(RoundedRectangle(cornerRadius: SP.innerRadius + 2, style: .continuous).stroke(SP.stroke, lineWidth: 1))
                         }
                     }
 
                     VStack(spacing: 10) {
                         Button { if locked { showPaywall = true } else { router.run(plan) } } label: {
-                            Label(locked ? "Unlock to practice" : "Practice on iPhone", systemImage: locked ? "lock.fill" : "iphone")
-                                .font(SP.rounded(17, .medium)).foregroundStyle(Color.black.opacity(0.85))
-                                .frame(maxWidth: .infinity).padding(.vertical, 15)
-                                .background(Capsule().fill(SP.goldGlow))
+                            Label(locked ? "Unlock to practice" : "Begin · \(minutes) min", systemImage: locked ? "lock.fill" : "play.fill")
                         }
+                        .buttonStyle(SPPrimaryButtonStyle())
                         Button {
                             if locked { showPaywall = true } else { link.startOnWatch(plan) { ok in sentToWatch = ok } }
                         } label: {
                             Label(sentToWatch ? "Starting on your Watch…" : "Start on Apple Watch", systemImage: "applewatch")
-                                .font(SP.rounded(17)).foregroundStyle(link.canUseWatch ? SP.ink : SP.faint)
-                                .frame(maxWidth: .infinity).padding(.vertical, 15)
-                                .background(Capsule().stroke(Color.white.opacity(0.18), lineWidth: 1))
+                                .frame(minHeight: 50)
                         }
+                        .buttonStyle(SPSecondaryButtonStyle(tint: link.canUseWatch ? SP.ink : SP.faint, fullWidth: true))
+                        .sensoryFeedback(.success, trigger: sentToWatch)
                         .disabled(!link.canUseWatch)
                         if !link.canUseWatch {
                             Text("Install Still Point on your Apple Watch to start from here.")
@@ -476,13 +497,15 @@ struct PracticeDetailView: View {
             }
         }
         .ignoresSafeArea(edges: .top)
-        .background(DuskBackground(glow: tradition?.tint ?? SP.amber))
+        .background(DuskBackground(glow: tradition?.tint ?? SP.indigo))
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button { prefs.toggleFavorite(practice.id) } label: {
                     Image(systemName: prefs.isFavorite(practice.id) ? "heart.fill" : "heart")
+                        .contentTransition(.symbolEffect(.replace))
                 }
+                .sensoryFeedback(.impact(weight: .light), trigger: prefs.isFavorite(practice.id))
                 .accessibilityLabel(prefs.isFavorite(practice.id) ? "Remove from favorites" : "Add to favorites")
             }
         }
@@ -509,7 +532,7 @@ struct PracticeMetaRow: View {
     var body: some View {
         let lib = PracticeLibrary.shared
         SPFlow(spacing: 6) {
-            SPChip(text: practice.minutesLabel, color: SP.gold)
+            SPChip(text: practice.minutesLabel, color: SP.accent)
             SPChip(text: practice.levelLabel, color: SP.ink.opacity(0.75))
             ForEach(lib.categories(for: practice).filter { $0.id != PracticeCategory.quickID && $0.id != PracticeCategory.beginnerID }) { c in
                 SPChip(text: c.localizedName, color: Color(spHex: c.color))

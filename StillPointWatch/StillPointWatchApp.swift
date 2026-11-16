@@ -86,7 +86,7 @@ struct WatchRoot: View {
 
                     HStack(spacing: 8) {
                         NavigationLink(value: "more") {
-                            Text("More").font(SP.rounded(14)).foregroundStyle(SP.amber)
+                            Label("More", systemImage: "books.vertical").font(SP.rounded(14)).foregroundStyle(SP.accent)
                                 .frame(maxWidth: .infinity).padding(.vertical, 8)
                                 .background(Capsule().fill(Color.white.opacity(0.06)))
                         }
@@ -238,7 +238,7 @@ struct MoreView: View {
             Section {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        chip(nil, String(localized: "All"), SP.amber)
+                        chip(nil, String(localized: "All"), SP.accent)
                         ForEach(lib.traditions) { t in chip(t.id, t.name, t.tint) }
                     }
                 }

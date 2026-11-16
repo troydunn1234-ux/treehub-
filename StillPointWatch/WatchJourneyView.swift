@@ -67,7 +67,7 @@ struct WatchStreakGoalRow: View {
                 Circle().stroke(Color.white.opacity(0.10), lineWidth: 4)
                 Circle()
                     .trim(from: 0, to: log.weekProgress)
-                    .stroke(log.goalReached ? SP.gold : SP.teal, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                    .stroke(log.goalReached ? SP.gold : SP.accent, style: StrokeStyle(lineWidth: 4, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                 Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(13)).foregroundStyle(SP.ink)
             }

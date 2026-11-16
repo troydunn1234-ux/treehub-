@@ -5,7 +5,7 @@ import SwiftUI
 /// (or the recovery chart opens), notifications when a reminder or sauna check-in is first needed.
 enum StillPointOnboard {
     static let spec = OnboardingSpec(
-        appName: "Still Point", tint: SP.gold, tint2: SP.amber,
+        appName: "Still Point", tint: SP.accent, tint2: Color(spHex: "#CFC6FF"),
         pages: [
             .init(icon: "leaf.fill",
                   title: String(localized: "Stillness from everywhere."),

@@ -23,65 +23,101 @@ struct HomeView: View {
         return lib.quickPractice
     }
 
+    /// One-tap short practices (shortest length), the ones people reach for most.
+    private var quickStarts: [Practice] {
+        ["calm-sos", "sigh", "box", "478", "focus-reset", "resonance"].compactMap { lib.practice($0) }
+    }
+
     var body: some View {
         NavigationStack(path: $router.homePath) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
-                    VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: SP.s6) {
+                    VStack(alignment: .leading, spacing: SP.s1) {
                         Text(greeting).font(SP.serif(34, .light)).foregroundStyle(SP.ink)
-                        Text(log.streak > 1 ? "\(log.streak) days of stillness in a row." : "Take a few slow breaths with me.")
-                            .font(SP.rounded(15)).foregroundStyle(SP.dim)
+                            .accessibilityAddTraits(.isHeader)
                         Text(DailyThought.today)
-                            .font(SP.serif(15).italic()).foregroundStyle(SP.gold.opacity(0.85))
-                            .padding(.top, 6)
-                        WeekDots(days: log.lastWeek())
-                            .padding(.top, 10)
+                            .font(SP.serif(15).italic()).foregroundStyle(SP.dim)
+                            .fixedSize(horizontal: false, vertical: true)
                     }
-                    .padding(.top, 8)
+                    .padding(.top, SP.s2)
                     .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared ? 0 : 10)
+                    .offset(y: appeared ? 0 : 8)
 
-                    // One practice for this moment, from WHOOP / Watch numbers in Health and Pulse Lab.
+                    // Hero: one practice for this moment, from WHOOP / Watch numbers in Health and Pulse Lab.
                     RightNowCard()
 
-                    // Sauna / steam sits right under the greeting so it's one tap as you walk in.
+                    TodaySummaryCard()
+
+                    // Sauna / steam: one tap as you walk in (shows the live timer while one is running).
                     HeatCard()
 
-                    FeaturedCard(practice: featured)
-
-                    SectionHeader("Your body", detail: "Move, release, breathe")
-                    FocusGrid()
-
-                    SectionHeader("Intentions")
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 14) {
-                            ForEach(lib.intentions) { i in
-                                NavigationLink(value: i) { IntentionBubble(intention: i) }
-                                    .buttonStyle(SoftPress())
-                            }
-                        }
-                        .padding(.horizontal, 2)
-                    }
-
                     let favs = prefs.favorites.compactMap { lib.practice($0) }
-                    if !favs.isEmpty {
-                        SectionHeader("Favorites")
-                        PracticeStack(practices: favs)
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Favorites", detail: favs.isEmpty ? nil : "\(favs.count)")
+                        if favs.isEmpty {
+                            HStack(spacing: SP.s3) {
+                                Image(systemName: "heart").font(.system(size: 18, weight: .light)).foregroundStyle(SP.accent)
+                                    .frame(width: 40, height: 40).background(Circle().fill(SP.accent.opacity(0.12)))
+                                    .accessibilityHidden(true)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("No favorites yet").font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
+                                    Text("Tap the heart on any practice to keep it here.").font(.footnote).foregroundStyle(SP.dim)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                                Spacer(minLength: 0)
+                                Button("Browse") { router.tab = 1 }
+                                    .buttonStyle(SPSecondaryButtonStyle())
+                            }
+                            .spCard(padding: SP.s3)
+                        } else {
+                            PracticeStack(practices: favs)
+                        }
                     }
+
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Quick starts", detail: "Begins straight away")
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: SP.s3) {
+                                ForEach(quickStarts) { p in QuickStartTile(practice: p) }
+                            }
+                            .padding(.horizontal, 2)
+                        }
+                    }
+
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Your body", detail: "Move, release, breathe")
+                        FocusGrid()
+                    }
+
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Intentions")
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 14) {
+                                ForEach(lib.intentions) { i in
+                                    NavigationLink(value: i) { IntentionBubble(intention: i) }
+                                        .buttonStyle(SoftPress())
+                                }
+                            }
+                            .padding(.horizontal, 2)
+                        }
+                    }
+
                     let recents = prefs.recents.dropFirst().compactMap { lib.practice($0) }
                     if !recents.isEmpty {
-                        SectionHeader("Recently")
-                        PracticeStack(practices: Array(recents.prefix(4)))
+                        VStack(alignment: .leading, spacing: SP.s3) {
+                            SectionHeader("Recently")
+                            PracticeStack(practices: Array(recents.prefix(4)))
+                        }
                     }
                 }
-                .padding(.horizontal, 22)
-                .padding(.bottom, 40)
+                .padding(.horizontal, SP.screenPadding)
+                .padding(.bottom, SP.s8)
             }
             .background(ZStack { DuskBackground(); Fireflies() })
             .onAppear { withAnimation(.easeOut(duration: 0.9)) { appeared = true } }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button { router.showSettings = true } label: { Image(systemName: "slider.horizontal.3") }
+                    Button { router.showSettings = true } label: { Image(systemName: "gearshape") }
                         .accessibilityLabel("Settings")
                 }
             }
@@ -94,15 +130,111 @@ struct HomeView: View {
     }
 }
 
+/// Streak, today's minutes and the last seven days, in one quiet card. Taps through to Journey.
+struct TodaySummaryCard: View {
+    @EnvironmentObject var log: SessionLog
+    @EnvironmentObject var router: Router
+
+    var body: some View {
+        let week = log.lastWeek()
+        let today = week.last?.minutes ?? 0
+        Button { router.tab = 2 } label: {
+            VStack(alignment: .leading, spacing: SP.s3) {
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: SP.s4) { streak; Divider().frame(height: 36).overlay(SP.stroke); minutes(today); Spacer(minLength: 0); chevron }
+                    VStack(alignment: .leading, spacing: SP.s3) { streak; minutes(today) }
+                }
+                WeekDots(days: week)
+                Text(log.streakLine).font(.footnote).foregroundStyle(SP.dim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .spCard()
+            .contentShape(RoundedRectangle(cornerRadius: SP.radius, style: .continuous))
+        }
+        .buttonStyle(SoftPress())
+        .accessibilityElement(children: .combine)
+        .accessibilityHint("Opens your journey")
+    }
+
+    private var streak: some View {
+        HStack(spacing: SP.s2) {
+            Image(systemName: log.streak > 0 ? "flame.fill" : "flame")
+                .font(.system(size: 20))
+                .foregroundStyle(log.streak > 0 ? AnyShapeStyle(SP.goldGlow) : AnyShapeStyle(SP.faint))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("\(log.streak)").font(.system(.title2, design: .rounded).weight(.semibold)).monospacedDigit()
+                    .foregroundStyle(SP.ink).contentTransition(.numericText())
+                Text("day streak").font(.caption).foregroundStyle(SP.faint)
+            }
+        }
+    }
+
+    private func minutes(_ m: Double) -> some View {
+        HStack(spacing: SP.s2) {
+            Image(systemName: "clock").font(.system(size: 18)).foregroundStyle(SP.accent).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("\(Int(m.rounded()))").font(.system(.title2, design: .rounded).weight(.semibold)).monospacedDigit()
+                    .foregroundStyle(SP.ink).contentTransition(.numericText())
+                Text("minutes today").font(.caption).foregroundStyle(SP.faint)
+            }
+        }
+    }
+
+    private var chevron: some View {
+        Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(SP.faint).accessibilityHidden(true)
+    }
+}
+
+/// A small one-tap start: icon, name, shortest length.
+struct QuickStartTile: View {
+    let practice: Practice
+    @EnvironmentObject var router: Router
+    @State private var taps = 0
+
+    var body: some View {
+        let lib = PracticeLibrary.shared
+        let tint = lib.tradition(practice.traditionId)?.tint ?? SP.teal
+        let mins = practice.minutes.min() ?? practice.defaultMinutes
+        Button {
+            taps += 1
+            router.handle(practiceId: practice.id, minutes: mins)
+        } label: {
+            VStack(alignment: .leading, spacing: SP.s2) {
+                HStack {
+                    Image(systemName: practice.pattern == nil ? "circle.dotted" : "wind")
+                        .font(.system(size: 16)).foregroundStyle(tint)
+                        .frame(width: 34, height: 34).background(Circle().fill(tint.opacity(0.16)))
+                    Spacer(minLength: 0)
+                    if lib.isLocked(practice) { ProLockBadge(tint: SP.gold) }
+                    else { Image(systemName: "play.fill").font(.caption).foregroundStyle(SP.accent) }
+                }
+                Text(practice.title).font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
+                    .lineLimit(2).multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: 0)
+                Text("\(mins) min").font(.footnote).monospacedDigit().foregroundStyle(SP.faint)
+            }
+            .padding(SP.s3)
+            .frame(width: 148, height: 132, alignment: .topLeading)
+            .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
+            .overlay(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        }
+        .buttonStyle(SoftPress())
+        .sensoryFeedback(.impact(weight: .light), trigger: taps)
+        .accessibilityLabel("Start \(practice.title), \(mins) minutes")
+    }
+}
+
 struct SectionHeader: View {
     let title: String
     var detail: String? = nil
     init(_ title: String, detail: String? = nil) { self.title = title; self.detail = detail }
     var body: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text(title).font(SP.serif(22)).foregroundStyle(SP.ink)
-            Spacer()
-            if let detail { Text(detail).font(SP.rounded(12)).foregroundStyle(SP.faint) }
+            Text(title).font(.headline).foregroundStyle(SP.ink)
+                .accessibilityAddTraits(.isHeader)
+            Spacer(minLength: 8)
+            if let detail { Text(detail).font(.footnote).foregroundStyle(SP.faint).multilineTextAlignment(.trailing) }
         }
     }
 }
@@ -133,14 +265,9 @@ struct FeaturedCard: View {
                         beginTaps += 1
                         router.run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: practice, minutes: mins))
                     } label: {
-                        Label("Begin · \(mins) min", systemImage: "circle.circle")
-                            .font(SP.rounded(16, .medium))
-                            .foregroundStyle(Color.black.opacity(0.85))
-                            .padding(.horizontal, 18).padding(.vertical, 12)
-                            .background(Capsule().fill(SP.goldGlow))
-                            .shadow(color: SP.gold.opacity(0.45), radius: 14, y: 4)
+                        Label("Begin · \(mins) min", systemImage: "play.fill")
                     }
-                    .buttonStyle(SoftPress())
+                    .buttonStyle(SPPrimaryButtonStyle(fullWidth: false))
                     .sensoryFeedback(.impact(weight: .light), trigger: beginTaps)
                     if link.canUseWatch {
                         Button {
@@ -233,18 +360,22 @@ struct PracticeCardRow: View {
             .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 5) {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(practice.title).font(SP.serif(18)).foregroundStyle(SP.ink)
+                    Text(practice.title).font(.body.weight(.semibold)).foregroundStyle(SP.ink)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
                     if lib.isLocked(practice) { ProLockBadge(tint: SP.gold) }
                 }
                 if !practice.tagline.isEmpty {
-                    Text(practice.tagline).font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.78))
+                    Text(practice.tagline).font(.subheadline).foregroundStyle(SP.ink.opacity(0.75))
                         .lineLimit(3).fixedSize(horizontal: false, vertical: true)
                 }
-                Text([practice.minutesLabel, practice.levelLabel, t?.name].compactMap { $0 }.joined(separator: " · "))
-                    .font(SP.rounded(12)).foregroundStyle(SP.faint)
-                    .fixedSize(horizontal: false, vertical: true)
+                SPFlow(spacing: 10) {
+                    Label(practice.minutesLabel, systemImage: "clock").monospacedDigit()
+                    Label(practice.levelLabel, systemImage: "chart.bar")
+                    if let name = t?.name { Text(name) }
+                }
+                .font(.caption).foregroundStyle(SP.faint)
+                .labelStyle(SPCompactLabel())
                 if log.worksBest().contains(practice.id) {
                     Label("Works best for you", systemImage: "arrow.down.heart.fill")
                         .font(SP.rounded(12, .semibold)).foregroundStyle(SP.rose)
@@ -255,9 +386,14 @@ struct PracticeCardRow: View {
                 Image(systemName: "chevron.right").font(.system(size: 12)).foregroundStyle(SP.faint)
             }
         }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .spCard(padding: 14)
+    }
+}
+
+/// Icon + title with tight spacing, for meta rows.
+struct SPCompactLabel: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 4) { configuration.icon.imageScale(.small); configuration.title }
     }
 }
 

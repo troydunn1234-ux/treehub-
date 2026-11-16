@@ -13,7 +13,7 @@ struct WatchRightNowCard: View {
                 Button { onStart(p, s.minutes) } label: {
                     VStack(alignment: .leading, spacing: 3) {
                         HStack(spacing: 4) {
-                            Text("RIGHT NOW").font(SP.rounded(10, .semibold)).foregroundStyle(SP.amber)
+                            Label("Right now", systemImage: "sparkles").font(SP.rounded(10, .semibold)).textCase(.uppercase).foregroundStyle(SP.accent)
                             Spacer(minLength: 0)
                             if let lvl = s.stressLevel.flatMap(StressEstimate.Level.init(rawValue:)) {
                                 Circle().fill(lvl.tint).frame(width: 6, height: 6)
@@ -22,16 +22,22 @@ struct WatchRightNowCard: View {
                         }
                         Text(s.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2)
                         Text(s.because).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(3)
-                        Text("Begin · \(s.minutes) min").font(SP.rounded(12, .medium)).foregroundStyle(SP.gold)
+                        Label("Start · \(s.minutes) min", systemImage: "play.fill")
+                            .font(SP.rounded(12, .semibold)).foregroundStyle(.white)
+                            .padding(.horizontal, 10).frame(minHeight: 28)
+                            .background(Capsule().fill(SP.accentFill))
+                            .padding(.top, 2)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.07)))
+                    .background(RoundedRectangle(cornerRadius: 14, style: .continuous)
+                        .fill(LinearGradient(colors: [Color(spHex: "#2C3580"), Color(spHex: "#1A1F4E")], startPoint: .topLeading, endPoint: .bottomTrailing)))
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Right now: \(s.title), \(s.minutes) minutes. \(s.because)")
                 NavigationLink(value: "why") {
-                    Text("Why this?").font(SP.rounded(12)).foregroundStyle(SP.teal)
+                    Label("Why this?", systemImage: "info.circle").font(SP.rounded(12)).foregroundStyle(SP.accent).frame(minHeight: 32)
                 }
                 .buttonStyle(.plain)
                 .padding(.leading, 6)

@@ -164,26 +164,29 @@ struct BreathRunView: View {
     @Environment(\.isLuminanceReduced) private var luminanceReduced
     @State private var dimmed = false
     @State private var showControls = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var accent: Color? { PracticeLibrary.shared.tradition(session.practice.traditionId)?.tint }
 
     var body: some View {
         let st = session.state
         ZStack {
-            DuskBackground(glow: accent ?? SP.amber)
-                .opacity(dimmed || luminanceReduced ? 0.0 : 0.85)
+            DuskBackground(glow: accent ?? SP.indigo)
+                .opacity(luminanceReduced ? 0.0 : 0.85)
             VStack(spacing: 4) {
                 ZStack {
                     if session.pattern != nil && prefs.settings.showNumbers && !dimmed {
-                        CountdownRing(progress: st.phaseProgress, color: (accent ?? SP.amber).opacity(0.7), lineWidth: 2)
+                        CountdownRing(progress: st.phaseProgress, color: (accent ?? SP.accent).opacity(0.7), lineWidth: 2.5)
                             .padding(2)
                     }
-                    BreathOrb(scale: st.orb, phase: st.phase, hum: session.pattern?.hum ?? false,
+                    // Reduce Motion: one steady size; the ring, colour and words carry the rhythm.
+                    BreathOrb(scale: reduceMotion ? 0.82 : st.orb, phase: st.phase, hum: session.pattern?.hum ?? false,
                               simplified: luminanceReduced, accent: accent)
                         .padding(dimmed ? 0 : 8)
                     if prefs.settings.showNumbers && session.pattern != nil && !dimmed {
                         Text("\(Int(st.phaseRemaining.rounded(.up)))")
-                            .font(SP.numbers(22)).foregroundStyle(Color.white.opacity(0.85))
+                            .font(SP.numbers(22)).foregroundStyle(Color.white.opacity(0.9))
+                            .contentTransition(.numericText(countsDown: true))
                     }
                 }
                 .frame(maxHeight: .infinity)
@@ -193,7 +196,7 @@ struct BreathRunView: View {
                     .lineLimit(3).minimumScaleFactor(0.85).multilineTextAlignment(.center)
                 if !dimmed && !luminanceReduced {
                     if let n = st.nostril {
-                        SideIndicator(left: n == .left, right: n == .right, color: SP.amber)
+                        SideIndicator(left: n == .left, right: n == .right, color: SP.accent)
                     } else if let c = session.cue, session.pattern != nil {
                         Text(c).font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(3).minimumScaleFactor(0.85).multilineTextAlignment(.center)
                     } else {
@@ -209,12 +212,27 @@ struct BreathRunView: View {
                     HStack(spacing: 10) {
                         Button { session.isPaused ? session.resume() : session.pause() } label: {
                             Image(systemName: session.isPaused ? "play.fill" : "pause.fill")
+                                .font(.system(size: 18, weight: .semibold))
+                                .frame(maxWidth: .infinity, minHeight: 44)
                         }
-                        Button(role: .destructive, action: onEnd) { Image(systemName: "xmark") }
+                        .tint(SP.accent)
+                        .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
+                        Button(role: .destructive, action: onEnd) {
+                            Image(systemName: "stop.fill")
+                                .font(.system(size: 16, weight: .semibold))
+                                .frame(maxWidth: .infinity, minHeight: 44)
+                        }
+                        .accessibilityLabel("End")
                     }
-                    .font(.system(size: 16))
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
                     Text(spFormatClock(session.remaining) + (heartRate.map { " · \(Int($0)) bpm" } ?? ""))
-                        .font(SP.rounded(11)).foregroundStyle(SP.dim)
+                        .font(SP.rounded(11)).monospacedDigit().foregroundStyle(SP.dim)
+                }
+                .padding(.horizontal, 4)
+                .background(alignment: .bottom) {
+                    LinearGradient(colors: [.clear, SP.nightBottom.opacity(0.85)], startPoint: .top, endPoint: .bottom)
+                        .frame(height: 90).ignoresSafeArea().allowsHitTesting(false)
                 }
                 .transition(.opacity)
             }
@@ -280,23 +298,27 @@ struct MovementRunView: View {
                         }
                         HStack(spacing: 8) {
                             if s.side != nil { SideIndicator(left: s.side == "left" || s.side == "both", right: s.side == "right" || s.side == "both", color: SP.teal) }
-                            Text(s.breathCue).font(SP.rounded(11)).foregroundStyle(SP.amber)
+                            Text(s.breathCue).font(SP.rounded(11)).foregroundStyle(SP.accent)
                         }
                     }
                     .frame(maxWidth: .infinity)
                     .id(session.index)
                 }
-                HStack(spacing: 14) {
+                HStack(spacing: 6) {
                     Button { session.isPaused ? session.resume() : session.pause() } label: {
-                        Image(systemName: session.isPaused ? "play.fill" : "pause.fill")
+                        Image(systemName: session.isPaused ? "play.fill" : "pause.fill").frame(maxWidth: .infinity, minHeight: 32)
                     }
-                    Button { session.skip() } label: { Image(systemName: "forward.end.fill") }
-                    Button(action: onEnd) { Image(systemName: "xmark") }
+                    .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
+                    Button { session.skip() } label: { Image(systemName: "forward.end.fill").frame(maxWidth: .infinity, minHeight: 32) }
+                        .accessibilityLabel("Next step")
+                    Button(action: onEnd) { Image(systemName: "stop.fill").frame(maxWidth: .infinity, minHeight: 32) }
+                        .accessibilityLabel("End")
                 }
                 .opacity(luminanceReduced ? 0 : 1)
-                .buttonStyle(.plain)
-                .font(.system(size: 14))
-                .foregroundStyle(SP.dim)
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.capsule)
+                .font(.system(size: 13, weight: .semibold))
+                .foregroundStyle(SP.ink)
             }
             .padding(.horizontal, 6)
         }
@@ -323,47 +345,65 @@ struct SummaryView: View {
             VStack(spacing: 8) {
                 ZStack {
                     Circle()
-                        .fill(RadialGradient(colors: [SP.amber.opacity(0.55), SP.plum.opacity(0.2), .clear],
+                        .fill(RadialGradient(colors: [SP.accent.opacity(0.55), SP.plum.opacity(0.25), .clear],
                                              center: .center, startRadius: 2, endRadius: 60))
                         .frame(width: 110, height: 110)
                         .scaleEffect(bloom ? 1.0 : 0.4)
                         .opacity(bloom ? 1 : 0)
-                    Text("Well done.").font(SP.serif(22, .light)).foregroundStyle(SP.ink)
-                }
-                HStack(spacing: 14) {
-                    stat(String(format: "%.0f", max(1, minutes.rounded())), "MIN")
-                    if cycles > 0 { stat("\(cycles)", "BREATHS") }
-                }
-                if let a = startHR, let b = minHR ?? endHR, a > 0 {
-                    stat("\(Int(a)) → \(Int(b))", "HEART BPM")
-                }
-                if let h = hrv { stat("\(Int(h)) ms", "HRV") }
-                if let t = detail?.takeaway {
-                    Text(t).font(SP.rounded(12)).foregroundStyle(SP.ink)
-                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
-                }
-                if hrv == nil, startHR != nil {
-                    HStack(spacing: 6) {
-                        ProgressView().frame(width: 16, height: 16)
-                        Text("Waiting for HRV…").font(SP.rounded(11)).foregroundStyle(SP.faint)
+                    VStack(spacing: 2) {
+                        Image(systemName: "checkmark.circle.fill").font(.system(size: 18)).foregroundStyle(SP.accent)
+                            .accessibilityHidden(true)
+                        Text("Well done.").font(SP.serif(22, .light)).foregroundStyle(SP.ink)
                     }
                 }
+                let cols = [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)]
+                LazyVGrid(columns: cols, spacing: 6) {
+                    stat(String(format: "%.0f", max(1, minutes.rounded())), "MIN", SP.accent)
+                    if cycles > 0 { stat("\(cycles)", "BREATHS", SP.teal) }
+                    if let a = startHR, let b = minHR ?? endHR, a > 0 {
+                        stat("\(Int(a))→\(Int(b))", "BPM", SP.rose)
+                    }
+                    if let h = hrv { stat("\(Int(h))", "HRV MS", SP.violet) }
+                }
+                if let t = detail?.takeaway {
+                    Text(t).font(SP.rounded(13)).foregroundStyle(SP.ink)
+                        .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                        .padding(.top, 2)
+                }
+                if hrv == nil, startHR != nil {
+                    // Skeleton tile while HRV is still on its way.
+                    VStack(alignment: .leading, spacing: 4) {
+                        SPSkeleton(height: 14, width: 44)
+                        Text("Waiting for HRV").font(SP.rounded(10, .semibold)).foregroundStyle(SP.faint)
+                    }
+                    .padding(8)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+                    .accessibilityElement(children: .combine)
+                }
                 let streak = SessionLog.shared.streak
-                if streak > 1 { Text("\(streak) days in a row").font(SP.rounded(12)).foregroundStyle(SP.amber) }
+                if streak > 1 {
+                    Label("\(streak) days in a row", systemImage: "flame.fill").font(SP.rounded(12, .medium)).foregroundStyle(SP.gold)
+                }
                 if let d = detail {
                     NavigationLink {
                         WatchSessionDetailView(record: d)
                     } label: {
                         Label("Details", systemImage: "waveform.path.ecg")
-                            .font(SP.rounded(13)).foregroundStyle(SP.teal)
-                            .frame(maxWidth: .infinity).padding(.vertical, 8)
-                            .background(Capsule().fill(Color.white.opacity(0.06)))
+                            .font(SP.rounded(14, .medium))
+                            .frame(maxWidth: .infinity)
                     }
-                    .buttonStyle(.plain)
+                    .buttonStyle(.bordered)
+                    .buttonBorderShape(.capsule)
+                    .tint(SP.accent)
                 }
-                Button(minutes < 1 ? "Keep" : "Done", action: onDone)
-                    .tint(SP.amber)
-                    .padding(.top, 4)
+                Button(action: onDone) {
+                    Text(minutes < 1 ? "Keep" : "Done").font(SP.rounded(15, .semibold)).frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .buttonBorderShape(.capsule)
+                .tint(Color(spHex: "#5B69DE"))
+                .padding(.top, 4)
                 if !records.isEmpty {
                     Button(role: .destructive) {
                         for r in records {
@@ -386,10 +426,14 @@ struct SummaryView: View {
         }
     }
 
-    private func stat(_ v: String, _ l: String) -> some View {
-        VStack(spacing: 0) {
-            Text(v).font(SP.numbers(20)).foregroundStyle(SP.ink)
-            Text(l).font(SP.rounded(9, .semibold)).tracking(1).foregroundStyle(SP.faint)
+    private func stat(_ v: String, _ l: String, _ c: Color) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(v).font(SP.numbers(19)).foregroundStyle(SP.ink).lineLimit(1).minimumScaleFactor(0.6)
+            Text(l).font(SP.rounded(9, .semibold)).tracking(0.8).foregroundStyle(c)
         }
+        .padding(8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+        .accessibilityElement(children: .combine)
     }
 }

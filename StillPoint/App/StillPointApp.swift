@@ -29,7 +29,7 @@ struct StillPointApp: App {
                 .environmentObject(router)
                 .environmentObject(heat)
                 .preferredColorScheme(.dark)
-                .tint(SP.amber)
+                .tint(SP.accent)
                 .onReceive(unlock.$isPro) { Prefs.shared.setPro($0) }
                 .onboarding(StillPointOnboard.spec)
                 // Widget / complication taps: stillpoint://practice/<id>
@@ -239,7 +239,7 @@ enum StillPointPro {
         appName: "Still Point",
         headline: "Everything in Still Pointz.",
         tagline: String(localized: "All \(practiceCount) practices from \(traditionCount) traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch."),
-        tint: SP.gold, tint2: SP.amber,
+        tint: SP.accent, tint2: Color(spHex: "#CFC6FF"),
         features: [
             .init(icon: "books.vertical.fill", title: String(localized: "All \(practiceCount) practices"),
                   detail: String(localized: "Breathwork, meditation and movement from Zen, Yoga, Sufi, Taoist, Tibetan, Christian, Stoic and more, sorted by goal: Healing, Calm, Sleep, Energy, Focus and Recovery.")),

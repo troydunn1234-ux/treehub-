@@ -14,53 +14,97 @@ struct JourneyView: View {
     var body: some View {
         NavigationStack(path: $path) {
             ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("Journey").font(SP.serif(34, .light)).foregroundStyle(SP.ink).padding(.top, 8)
+                VStack(alignment: .leading, spacing: SP.s6) {
+                    VStack(alignment: .leading, spacing: SP.s1) {
+                        Text("Journey").font(SP.serif(34, .light)).foregroundStyle(SP.ink)
+                            .accessibilityAddTraits(.isHeader)
+                        Text(storyLine).font(.subheadline).foregroundStyle(SP.dim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, SP.s2)
 
+                    // 1. Where you are: streak and weekly goal.
                     StreakGoalCard()
 
-                    ProgressEntryCard()
+                    // 2. What you've reached, and what's next.
+                    JourneyMilestoneStrip()
+
+                    // 3. This week, day by day.
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("This week", detail: String(localized: "Tap a day"))
+                        WeekCard(selectedDay: $selectedDay)
+                    }
+
+                    // 4. Trends.
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Trends")
+                        ViewThatFits(in: .horizontal) {
+                            HStack(spacing: SP.s3) { trendTiles }
+                            VStack(spacing: SP.s3) { trendTiles }
+                        }
+                        ProgressEntryCard()
+                    }
+
+                    // 5. What works for you.
+                    let best = log.worksBest().compactMap { PracticeLibrary.shared.practice($0) }
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Works best for you", detail: best.isEmpty ? nil : String(localized: "Biggest heart-rate drops"))
+                        if best.isEmpty {
+                            HStack(spacing: SP.s3) {
+                                Image(systemName: "arrow.down.heart").font(.system(size: 18, weight: .light)).foregroundStyle(SP.rose)
+                                    .frame(width: 40, height: 40).background(Circle().fill(SP.rose.opacity(0.12)))
+                                    .accessibilityHidden(true)
+                                Text("Practice with your Watch on. After 3 sessions of a practice, the ones that settle you most show here.")
+                                    .font(.footnote).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
+                            }
+                            .spCard(padding: SP.s3)
+                        } else {
+                            PracticeStack(practices: best)
+                        }
+                    }
 
                     RootboundLinkCard()
 
-                    HStack(spacing: 12) {
-                        tile(String(format: "%.0f", max(healthWeek ?? 0, log.weekMinutes)), "mindful minutes\nthis week")
-                        tile("\(log.streak)", log.streak == 1 ? "day\nin a row" : "days\nin a row")
-                        tile("\(log.records.count)", "sessions\nin all")
-                    }
-
-                    WeekCard(selectedDay: $selectedDay)
-
-                    if !log.records.isEmpty || !external.isEmpty {
-                        Text("SESSIONS").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                        VStack(spacing: 10) {
-                            ForEach(mergedRows.prefix(40)) { item in
-                                switch item {
-                                case .mine(let r):
-                                    NavigationLink(value: r.id) { row(r) }.buttonStyle(.plain)
-                                        .contextMenu {
-                                            Button(role: .destructive) { withAnimation { log.remove(r.id) } } label: {
-                                                Label("Delete session", systemImage: "trash")
-                                            }
+                    // 6. Every session, grouped by day.
+                    VStack(alignment: .leading, spacing: SP.s3) {
+                        SectionHeader("Sessions")
+                        if !log.records.isEmpty || !external.isEmpty {
+                            ForEach(groupedRows, id: \.day) { group in
+                                VStack(alignment: .leading, spacing: SP.s2) {
+                                    HStack {
+                                        Text(dayTitle(group.day)).font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink.opacity(0.85))
+                                        Spacer()
+                                        Text(String(format: "%.0f min", max(1, group.minutes.rounded())))
+                                            .font(.footnote).monospacedDigit().foregroundStyle(SP.faint)
+                                    }
+                                    .accessibilityElement(children: .combine)
+                                    .accessibilityAddTraits(.isHeader)
+                                    ForEach(group.items) { item in
+                                        switch item {
+                                        case .mine(let r):
+                                            NavigationLink(value: r.id) { row(r) }.buttonStyle(SoftPress())
+                                                .contextMenu {
+                                                    Button(role: .destructive) { withAnimation { log.remove(r.id) } } label: {
+                                                        Label("Delete session", systemImage: "trash")
+                                                    }
+                                                }
+                                        case .other(let e):
+                                            externalRow(e)
                                         }
-                                case .other(let e):
-                                    externalRow(e)
+                                    }
                                 }
+                                .padding(.bottom, SP.s1)
                             }
-                        }
-                    } else {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text("Your sessions will gather here, like stones on a path.")
-                                .font(SP.serif(17, .light)).foregroundStyle(SP.dim)
-                            Button { router.tab = 0 } label: {
-                                Label("Begin a first practice", systemImage: "sun.horizon")
-                                    .font(SP.rounded(14, .medium)).foregroundStyle(SP.amber)
-                            }
+                        } else {
+                            SPEmptyState(symbol: "leaf", title: String(localized: "No sessions yet"),
+                                         hint: String(localized: "Your sessions will gather here, like stones on a path."),
+                                         actionTitle: String(localized: "Begin a first practice")) { router.tab = 0 }
+                                .spCard()
                         }
                     }
                 }
-                .padding(.horizontal, 22)
-                .padding(.bottom, 40)
+                .padding(.horizontal, SP.screenPadding)
+                .padding(.bottom, SP.s8)
             }
             .background(DuskBackground())
             .navigationDestination(for: UUID.self) { id in SessionDetailView(recordId: id) }
@@ -85,10 +129,56 @@ struct JourneyView: View {
         }
     }
 
+    /// One line that tells the story so far.
+    private var storyLine: String {
+        let total = Int(log.totalMinutes.rounded())
+        let n = log.records.count
+        if n == 0 { return String(localized: "Every session you finish is kept here, with how your heart settled.") }
+        return n == 1 ? String(localized: "1 session and \(total) mindful minutes so far.")
+                      : String(localized: "\(n) sessions and \(total) mindful minutes so far.")
+    }
+
+    @ViewBuilder private var trendTiles: some View {
+        let week = max(healthWeek ?? 0, log.weekMinutes)
+        let prev = log.previousWeekMinutes
+        let delta = week - prev
+        tile(String(format: "%.0f", week), String(localized: "minutes in the last 7 days"),
+             note: prev > 0 || week > 0 ? (delta >= 0 ? String(localized: "▲ \(Int(delta.rounded())) vs the week before")
+                                                       : String(localized: "▼ \(Int((-delta).rounded())) vs the week before")) : nil)
+        tile("\(log.bestStreak)", String(localized: "best streak (days)"))
+        tile("\(log.records.count)", String(localized: "sessions in all"))
+    }
+
+    private struct DayGroup { let day: Date; let items: [RowItem]; let minutes: Double }
+
+    /// The newest 60 rows, grouped under their day.
+    private var groupedRows: [DayGroup] {
+        let cal = Calendar.current
+        var out: [DayGroup] = []
+        for item in mergedRows.prefix(60) {
+            let d = cal.startOfDay(for: item.start)
+            let m = item.minutes
+            if let last = out.last, last.day == d {
+                out[out.count - 1] = DayGroup(day: d, items: last.items + [item], minutes: last.minutes + m)
+            } else {
+                out.append(DayGroup(day: d, items: [item], minutes: m))
+            }
+        }
+        return out
+    }
+
+    private func dayTitle(_ d: Date) -> String {
+        let cal = Calendar.current
+        if cal.isDateInToday(d) { return String(localized: "Today") }
+        if cal.isDateInYesterday(d) { return String(localized: "Yesterday") }
+        return d.formatted(.dateTime.weekday(.wide).month(.abbreviated).day())
+    }
+
     private enum RowItem: Identifiable {
         case mine(SessionRecord), other(ExternalMindfulSession)
         var id: UUID { switch self { case .mine(let r): return r.id; case .other(let e): return e.id } }
         var start: Date { switch self { case .mine(let r): return r.start; case .other(let e): return e.start } }
+        var minutes: Double { switch self { case .mine(let r): return r.minutes; case .other(let e): return e.minutes } }
     }
 
     /// Our sessions plus other apps' mindful sessions, newest first. Skips Health entries that overlap one of ours.
@@ -105,28 +195,27 @@ struct JourneyView: View {
             Image(systemName: "heart.circle").font(.system(size: 15, weight: .light)).foregroundStyle(SP.faint).frame(width: 26)
             VStack(alignment: .leading, spacing: 2) {
                 Text(e.source).font(SP.serif(16)).foregroundStyle(SP.dim).lineLimit(1)
-                Text(e.start.formatted(.dateTime.weekday(.abbreviated).hour().minute()) + " · from Apple Watch Mindfulness")
+                Text(e.start.formatted(.dateTime.hour().minute()) + " · from Apple Watch Mindfulness")
                     .font(SP.rounded(12)).foregroundStyle(SP.faint)
             }
             Spacer()
             Text(String(format: "%.0f min", max(1, e.minutes.rounded()))).font(SP.rounded(14)).foregroundStyle(SP.dim)
         }
         .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card.opacity(0.5)))
-        .opacity(0.75)
+        .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card.opacity(0.5)))
+        .opacity(0.8)
     }
 
-    private func tile(_ value: String, _ label: String) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(value).font(SP.numbers(32)).foregroundStyle(SP.ink)
-            Text(label).font(SP.rounded(12)).foregroundStyle(SP.faint).fixedSize(horizontal: false, vertical: true)
+    private func tile(_ value: String, _ label: String, note: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: SP.s1) {
+            Text(value).font(SP.numbers(30)).foregroundStyle(SP.ink).contentTransition(.numericText())
+            Text(label).font(.caption).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
+            if let note { Text(note).font(.caption2.weight(.medium)).foregroundStyle(SP.accent).fixedSize(horizontal: false, vertical: true) }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .frame(maxWidth: .infinity, alignment: .topLeading)
+        .spCard(padding: 14)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(value) \(label.replacingOccurrences(of: "\n", with: " "))")
+        .accessibilityLabel([value, label, note].compactMap { $0 }.joined(separator: " "))
     }
 
     private func row(_ r: SessionRecord) -> some View {
@@ -134,8 +223,8 @@ struct JourneyView: View {
             Image(systemName: r.device == "Watch" ? "applewatch" : "iphone")
                 .font(.system(size: 15, weight: .light)).foregroundStyle(SP.teal).frame(width: 26)
             VStack(alignment: .leading, spacing: 2) {
-                Text(r.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(1)
-                Text(r.start.formatted(.dateTime.weekday(.abbreviated).hour().minute())).font(SP.rounded(12)).foregroundStyle(SP.faint)
+                Text(r.title).font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink).lineLimit(2)
+                Text(r.start.formatted(.dateTime.hour().minute())).font(.caption).foregroundStyle(SP.faint)
             }
             Spacer()
             if let s = r.hrSamples, s.count >= 2 {
@@ -150,8 +239,7 @@ struct JourneyView: View {
             Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(SP.faint)
                 .accessibilityHidden(true)
         }
-        .padding(14)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
+        .spCard(padding: 14)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(rowLabel(r))
         .accessibilityHint("Opens the session")
@@ -162,6 +250,32 @@ struct JourneyView: View {
                      "\(Int(max(1, r.minutes.rounded()))) minutes", "on \(r.device == "Watch" ? "Watch" : "iPhone")"]
         if let drop = r.hrDrop, drop > 0 { parts.append("heart rate down \(Int(drop)) beats per minute") }
         return parts.joined(separator: ", ")
+    }
+}
+
+/// The Journey's milestone line: what you've earned most recently and what's next, with a link to all of them.
+struct JourneyMilestoneStrip: View {
+    @EnvironmentObject var log: SessionLog
+
+    var body: some View {
+        let all = log.milestones
+        let earned = all.filter(\.earned)
+        let next = all.filter { !$0.earned }.sorted { $0.progress > $1.progress }
+        let shown = Array(earned.suffix(2) + next.prefix(4 - min(2, earned.count)))
+        VStack(alignment: .leading, spacing: SP.s3) {
+            HStack(alignment: .firstTextBaseline) {
+                Text("Milestones").font(.headline).foregroundStyle(SP.ink).accessibilityAddTraits(.isHeader)
+                Spacer(minLength: 8)
+                NavigationLink(value: ProgressRoute.main) {
+                    Text("\(earned.count) of \(all.count) · See all").font(.footnote.weight(.medium)).foregroundStyle(SP.accent)
+                        .frame(minHeight: 32)
+                }
+            }
+            HStack(alignment: .top, spacing: SP.s2) {
+                ForEach(shown) { m in MilestoneBadge(milestone: m) }
+            }
+        }
+        .spCard()
     }
 }
 
@@ -192,10 +306,10 @@ struct SettingsView: View {
                     Text(unlock.subscribed ? "Change plan, cancel or restore from here." : "Free trial, monthly, yearly or lifetime.")
                 }
                 Section {
-                    Picker("Weekly goal", selection: $log.weeklyGoal) {
+                    Picker(selection: $log.weeklyGoal) {
                         ForEach(goalOptions, id: \.self) { m in Text(goalLabel(m)).tag(m) }
-                    }
-                    Toggle("Daily reminder", isOn: $reminders.enabled)
+                    } label: { Label("Weekly goal", systemImage: "target") }
+                    Toggle(isOn: $reminders.enabled) { Label("Daily reminder", systemImage: "bell") }
                     if reminders.enabled {
                         DatePicker("Time", selection: $reminders.time, displayedComponents: .hourAndMinute)
                     }
@@ -208,7 +322,7 @@ struct SettingsView: View {
                 }
                 DailyMomentsSettings()
                 Section {
-                    Toggle("Voice guide", isOn: $prefs.settings.voiceGuide)
+                    Toggle(isOn: $prefs.settings.voiceGuide) { Label("Voice guide", systemImage: "waveform") }
                     Toggle("Tap the count, in & out", isOn: $prefs.settings.countTaps)
                 } header: { Text("Voice") } footer: {
                     Text("A calm voice names each move and counts the breath, in sessions and in the sauna & steam guide. It keeps going with the screen locked, and music only gets quieter. The speaker button in a session switches it for that session. On the Watch, the count is tapped on your wrist instead.")
@@ -247,13 +361,31 @@ struct SettingsView: View {
                 } header: { Text("Apple Health") } footer: {
                     Text("Sessions are saved on your phone and as Mindful Minutes in Apple Health. Heart rate is read from Apple Health; nothing leaves your devices.")
                 }
-                MoreAppsGate { Section { MoreAppsRow() } }
                 Section("Apple Watch") {
                     LabeledContent("Watch", value: link.watchPaired ? "Paired" : "Not paired")
                     LabeledContent("Still Point on Watch", value: link.watchAppInstalled ? "Installed" : "Not installed")
                     Text("These settings are shared with your Watch automatically.").font(.footnote).foregroundStyle(.secondary)
                 }
+                MoreAppsGate { Section { MoreAppsRow() } }
+                Section {
+                    StillPointAboutHeader()
+                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/PRIVACY.md")!) {
+                        Label("Privacy policy", systemImage: "hand.raised")
+                    }
+                    Link(destination: URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!) {
+                        Label("Terms of use", systemImage: "doc.text")
+                    }
+                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/stillpoint/SUPPORT.md")!) {
+                        Label("Help & support", systemImage: "questionmark.circle")
+                    }
+                    Link(destination: URL(string: "https://github.com/troydunn1234-ux/treehub-/issues")!) {
+                        Label("Contact", systemImage: "envelope")
+                    }
+                } header: { Text("About") } footer: {
+                    Text("No accounts, no ads, no tracking. Your sessions stay on your devices and in Apple Health.")
+                }
             }
+            .tint(SP.accent)
             .scrollContentBackground(.hidden)
             .background(DuskBackground())
             .navigationTitle("Settings")
@@ -273,6 +405,35 @@ struct SettingsView: View {
         if mins % 60 == 0 { return mins == 60 ? "1 hour a week" : "\(mins / 60) hours a week" }
         if mins > 60 { return String(format: "%.1f hours a week", m / 60) }
         return "\(mins) min a week"
+    }
+}
+
+/// App icon mark, name and version for the About section.
+struct StillPointAboutHeader: View {
+    private var version: String {
+        let v = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
+        let b = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? ""
+        return b.isEmpty ? v : "\(v) (\(b))"
+    }
+    var body: some View {
+        HStack(spacing: 14) {
+            ZStack {
+                RoundedRectangle(cornerRadius: 13, style: .continuous)
+                    .fill(LinearGradient(colors: [SP.nightTop, SP.plum, SP.nightBottom], startPoint: .top, endPoint: .bottom))
+                Circle().fill(RadialGradient(colors: [Color.white.opacity(0.9), SP.accent.opacity(0.7), .clear],
+                                             center: .center, startRadius: 0, endRadius: 20))
+                    .frame(width: 38, height: 38)
+            }
+            .frame(width: 56, height: 56)
+            .overlay(RoundedRectangle(cornerRadius: 13, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1))
+            .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Still Pointz").font(.headline)
+                Text("Version \(version)").font(.footnote).foregroundStyle(.secondary).monospacedDigit()
+            }
+        }
+        .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -296,7 +457,7 @@ struct StreakGoalCard: View {
                         .symbolEffect(.pulse, options: .repeating.speed(0.4), isActive: alive && !reduceMotion)
                         .shadow(color: log.streak > 0 ? SP.amber.opacity(0.45) : .clear, radius: 10)
                         .accessibilityHidden(true)
-                    Text("\(log.streak)").font(SP.numbers(40)).foregroundStyle(SP.ink)
+                    Text("\(log.streak)").font(SP.numbers(40)).foregroundStyle(SP.ink).contentTransition(.numericText())
                     Text(log.streak == 1 ? "day" : "days").font(SP.rounded(14)).foregroundStyle(SP.dim)
                 }
                 Text(log.streakLine).font(SP.rounded(12)).foregroundStyle(SP.faint)
@@ -314,7 +475,7 @@ struct StreakGoalCard: View {
                 Circle().stroke(Color.white.opacity(0.08), lineWidth: 7)
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(log.goalReached ? SP.goldGlow : LinearGradient(colors: [SP.teal, SP.indigo], startPoint: .top, endPoint: .bottom),
+                    .stroke(log.goalReached ? SP.goldGlow : LinearGradient(colors: [SP.accent, SP.indigo], startPoint: .top, endPoint: .bottom),
                             style: StrokeStyle(lineWidth: 7, lineCap: .round))
                     .rotationEffect(.degrees(-90))
                     .shadow(color: (log.goalReached ? SP.gold : SP.teal).opacity(0.35), radius: 6)
@@ -329,8 +490,8 @@ struct StreakGoalCard: View {
             .accessibilityLabel("Weekly goal: \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week")
         }
         .padding(18)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
+        .overlay(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).stroke(SP.stroke, lineWidth: 1))
         .overlay(alignment: .bottomTrailing) {
             if log.goalReached {
                 SPChip(text: "Goal met", color: SP.gold).padding(10)

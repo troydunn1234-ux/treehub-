@@ -127,74 +127,107 @@ struct PhoneBreathView: View {
 
     private var accent: Color? { PracticeLibrary.shared.tradition(session.practice.traditionId)?.tint }
 
+    @ObservedObject private var voice = VoiceGuide.shared
+
+    /// Soft phase colour for the background wash: teal in, sand on hold, lavender out.
+    private func wash(_ phase: BreathPhase) -> Color {
+        switch phase {
+        case .inhale, .still: return accent ?? SP.teal
+        case .holdIn: return SP.amber
+        case .exhale: return SP.violet
+        case .holdOut: return SP.indigo
+        }
+    }
+
     var body: some View {
         let st = session.state
+        let paced = session.pattern != nil
         ZStack {
-            DuskBackground(glow: accent ?? SP.amber).opacity(dimmed ? 0 : 1)
-            Motes(color: accent ?? SP.amber).opacity(dimmed ? 0 : 0.8)
-            VStack(spacing: 22) {
-                VStack(spacing: 4) {
+            DuskBackground(glow: accent ?? SP.indigo).opacity(dimmed ? 0 : 1)
+            RadialGradient(colors: [wash(st.phase).opacity(dimmed ? 0.06 : 0.20), .clear],
+                           center: UnitPoint(x: 0.5, y: 0.45), startRadius: 20, endRadius: 420)
+                .ignoresSafeArea()
+                .animation(reduceMotion ? nil : .easeInOut(duration: 2.4), value: st.phase)
+            if !reduceMotion { Motes(count: 16, color: accent ?? SP.accent).opacity(dimmed ? 0 : 0.6) }
+            VStack(spacing: SP.s4) {
+                // Header: what you're doing, how long is left, overall progress.
+                VStack(spacing: SP.s2) {
                     if let treeName {
                         Label("Breathing with \(treeName)", systemImage: "tree")
-                            .font(SP.rounded(13, .medium)).foregroundStyle(Color(spHex: "#8CCB7E"))
+                            .font(.footnote.weight(.medium)).foregroundStyle(Color(spHex: "#8CCB7E"))
                     }
-                    Text(session.practice.title).font(SP.serif(20, .light)).foregroundStyle(SP.dim)
+                    Text(session.practice.title).font(SP.serif(20, .light)).foregroundStyle(SP.ink.opacity(0.9))
+                        .multilineTextAlignment(.center).lineLimit(2)
                     if prefs.settings.showNumbers {
-                        Text(spFormatClock(session.remaining)).font(SP.rounded(14)).foregroundStyle(SP.faint).monospacedDigit()
+                        HStack(spacing: SP.s2) {
+                            Capsule().fill(Color.white.opacity(0.10)).frame(width: 120, height: 4)
+                                .overlay(alignment: .leading) {
+                                    Capsule().fill(SP.accent.opacity(0.8)).frame(width: 120 * CGFloat(session.progress), height: 4)
+                                }
+                                .accessibilityHidden(true)
+                            Text(spFormatClock(session.remaining)).font(.footnote).monospacedDigit().foregroundStyle(SP.dim)
+                                .contentTransition(.numericText())
+                                .accessibilityLabel("\(Int(session.remaining.rounded(.up) / 60)) minutes \(Int(session.remaining.rounded(.up)) % 60) seconds left")
+                        }
                     }
                 }
                 .opacity(dimmed ? 0 : 1)
-                .padding(.top, 30)
+                .padding(.top, SP.s6)
+                .padding(.horizontal, SP.screenPadding)
 
-                Spacer()
+                Spacer(minLength: SP.s2)
                 ZStack {
-                    if session.pattern != nil && prefs.settings.showNumbers {
-                        CountdownRing(progress: st.phaseProgress, color: (accent ?? SP.amber).opacity(0.55), lineWidth: 2)
-                            .frame(width: 300, height: 300)
+                    if paced {
+                        CountdownRing(progress: st.phaseProgress, color: (accent ?? SP.accent).opacity(0.6), lineWidth: 2.5)
+                            .frame(width: 304, height: 304)
                             .opacity(dimmed ? 0.25 : 1)
                     }
-                    BreathOrb(scale: st.orb, phase: st.phase, hum: session.pattern?.hum ?? false, accent: accent)
+                    // Reduce Motion: the orb keeps one size; the ring, colour and words carry the rhythm instead.
+                    BreathOrb(scale: reduceMotion ? 0.82 : st.orb, phase: st.phase, hum: session.pattern?.hum ?? false, accent: accent)
                         .frame(width: 290, height: 290)
-                    if prefs.settings.showNumbers && session.pattern != nil {
+                    if prefs.settings.showNumbers && paced {
                         Text("\(Int(st.phaseRemaining.rounded(.up)))")
-                            .font(SP.numbers(40)).foregroundStyle(Color.white.opacity(dimmed ? 0.35 : 0.85))
+                            .font(SP.numbers(44)).foregroundStyle(Color.white.opacity(dimmed ? 0.35 : 0.9))
+                            .contentTransition(.numericText(countsDown: true))
+                            .animation(reduceMotion ? nil : .snappy, value: Int(st.phaseRemaining.rounded(.up)))
+                            .accessibilityHidden(true)
                     }
                 }
-                Spacer()
+                .frame(maxWidth: .infinity)
+                Spacer(minLength: SP.s2)
 
-                VStack(spacing: 12) {
-                    Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
-                        .font(SP.serif(28, .light)).foregroundStyle(SP.ink.opacity(dimmed ? 0.5 : 1))
+                VStack(spacing: SP.s3) {
+                    Text(paced ? st.label : (session.cue ?? "Be still"))
+                        .font(SP.serif(30, .light)).foregroundStyle(SP.ink.opacity(dimmed ? 0.5 : 1))
                         .multilineTextAlignment(.center)
-                        .animation(reduceMotion ? nil : .easeInOut(duration: 1.2), value: st.label)
+                        .contentTransition(.opacity)
+                        .animation(reduceMotion ? nil : .easeInOut(duration: 0.9), value: st.label)
+                        .accessibilityAddTraits(.updatesFrequently)
                     if let n = st.nostril {
-                        SideIndicator(left: n == .left, right: n == .right, color: SP.amber)
+                        SideIndicator(left: n == .left, right: n == .right, color: SP.accent)
                     }
-                    if let c = session.cue, session.pattern != nil {
-                        Text(c).font(SP.rounded(15)).foregroundStyle(SP.dim).multilineTextAlignment(.center)
-                            .padding(.horizontal, 30).opacity(dimmed ? 0 : 1)
+                    if let c = session.cue, paced {
+                        Text(c).font(.body).foregroundStyle(SP.dim).multilineTextAlignment(.center)
+                            .fixedSize(horizontal: false, vertical: true)
+                            .padding(.horizontal, SP.s8).opacity(dimmed ? 0 : 1)
                     }
                 }
                 .frame(minHeight: 110)
 
-                HStack(spacing: 28) {
-                    Button { session.isPaused ? session.resume() : session.pause() } label: {
-                        Image(systemName: session.isPaused ? "play" : "pause")
-                            .font(.system(size: 20, weight: .light)).frame(width: 56, height: 56)
-                            .background(Circle().fill(.ultraThinMaterial))
+                HStack(spacing: SP.s8) {
+                    SPRoundControl(icon: voice.on ? "speaker.wave.2.fill" : "speaker.slash", title: voice.on ? String(localized: "Voice on") : String(localized: "Voice off")) {
+                        voice.toggle()
                     }
-                    .accessibilityLabel(session.isPaused ? "Resume" : "Pause")
-                    VoiceToggleButton()
-                    Button(action: onEnd) {
-                        Image(systemName: "xmark")
-                            .font(.system(size: 18, weight: .light)).frame(width: 56, height: 56)
-                            .background(Circle().fill(.ultraThinMaterial))
+                    SPRoundControl(icon: session.isPaused ? "play.fill" : "pause.fill",
+                                   title: session.isPaused ? String(localized: "Resume") : String(localized: "Pause"), prominent: true) {
+                        session.isPaused ? session.resume() : session.pause()
+                        wake()
                     }
-                    .accessibilityLabel("End session")
+                    SPRoundControl(icon: "stop.fill", title: String(localized: "End"), action: onEnd)
                 }
-                .foregroundStyle(SP.ink)
+                .sensoryFeedback(.selection, trigger: session.isPaused)
                 .opacity(dimmed ? 0 : 1)
-                .padding(.bottom, 30)
+                .padding(.bottom, SP.s6)
             }
         }
         .contentShape(Rectangle())
@@ -265,7 +298,7 @@ struct PhoneMovementView: View {
                         if s.side != nil {
                             SideIndicator(left: s.side == "left" || s.side == "both", right: s.side == "right" || s.side == "both", color: SP.teal)
                         }
-                        Text(s.breathCue).font(SP.rounded(15)).foregroundStyle(SP.amber)
+                        Text(s.breathCue).font(SP.rounded(15)).foregroundStyle(SP.accent)
                     }
                     if let n = session.next {
                         Text("Next: \(n.name)\(n.sideLetter.map { " · \($0)" } ?? "")").font(SP.rounded(13)).foregroundStyle(SP.faint)
@@ -273,12 +306,15 @@ struct PhoneMovementView: View {
                 }
                 Spacer()
                 HStack(spacing: 22) {
-                    roundButton(session.isPaused ? "play" : "pause", label: session.isPaused ? "Resume" : "Pause") {
+                    roundButton(session.isPaused ? "play.fill" : "pause.fill", label: session.isPaused ? "Resume" : "Pause") {
                         session.isPaused ? session.resume() : session.pause()
                     }
-                    roundButton("forward.end", label: "Next step") { session.skip() }
-                    VoiceToggleButton().foregroundStyle(SP.ink)
-                    roundButton("xmark", label: "End warm-up", action: onEnd)
+                    roundButton("forward.end.fill", label: "Next") { session.skip() }
+                    VStack(spacing: 6) {
+                        VoiceToggleButton().foregroundStyle(SP.ink)
+                        Text("Voice").font(SP.rounded(12, .medium)).foregroundStyle(SP.dim)
+                    }
+                    roundButton("stop.fill", label: "End", action: onEnd)
                 }
                 .padding(.bottom, 30)
             }
@@ -287,11 +323,7 @@ struct PhoneMovementView: View {
     }
 
     private func roundButton(_ icon: String, label: String, action: @escaping () -> Void) -> some View {
-        Button(action: action) {
-            Image(systemName: icon).font(.system(size: 18, weight: .light)).foregroundStyle(SP.ink)
-                .frame(width: 56, height: 56).background(Circle().fill(.ultraThinMaterial))
-        }
-        .accessibilityLabel(label)
+        SPRoundControl(icon: icon, title: label, action: action)
     }
 }
 
@@ -322,33 +354,60 @@ struct PhoneSummaryView: View {
         return main.flatMap { lib.practice($0.practiceId) }.flatMap { lib.tradition($0.traditionId) }?.tint ?? SP.teal
     }
 
+    private var title: String? { main.flatMap { PracticeLibrary.shared.practice($0.practiceId)?.title } ?? main?.title }
+
     var body: some View {
         ZStack {
             SP.dawn.ignoresSafeArea()
-            Grain(opacity: 0.06).ignoresSafeArea()
+            RadialGradient(colors: [tint.opacity(0.25), .clear], center: UnitPoint(x: 0.5, y: 0.12), startRadius: 10, endRadius: 360)
+                .ignoresSafeArea()
+            Grain(opacity: 0.05).ignoresSafeArea()
             ScrollView {
-                VStack(spacing: 22) {
-                    ZStack {
-                        Circle()
-                            .fill(RadialGradient(colors: [Color.white.opacity(0.7), SP.amber.opacity(0.45), .clear],
-                                                 center: .center, startRadius: 4, endRadius: 120))
-                            .frame(width: 240, height: 240)
-                            .scaleEffect(bloom ? 1 : 0.3)
-                            .opacity(bloom ? 1 : 0)
-                        Text("Well done.").font(SP.serif(44, .light)).foregroundStyle(SP.ink)
+                VStack(spacing: SP.s6) {
+                    VStack(spacing: SP.s2) {
+                        ZStack {
+                            Circle()
+                                .fill(RadialGradient(colors: [Color.white.opacity(0.55), SP.accent.opacity(0.35), .clear],
+                                                     center: .center, startRadius: 4, endRadius: 110))
+                                .frame(width: 210, height: 210)
+                                .scaleEffect(bloom ? 1 : 0.4)
+                                .opacity(bloom ? 1 : 0)
+                                .accessibilityHidden(true)
+                            VStack(spacing: SP.s1) {
+                                Image(systemName: "checkmark.circle.fill").font(.system(size: 30)).foregroundStyle(.white)
+                                    .symbolEffect(.bounce, value: bloom)
+                                    .accessibilityHidden(true)
+                                Text("Well done.").font(SP.serif(40, .light)).foregroundStyle(SP.ink)
+                                    .accessibilityAddTraits(.isHeader)
+                            }
+                        }
+                        if let title {
+                            Text(title).font(.subheadline).foregroundStyle(SP.ink.opacity(0.8)).multilineTextAlignment(.center)
+                        }
                     }
-                    .padding(.top, 30)
-                    HStack(spacing: 40) {
+                    .padding(.top, SP.s6)
+
+                    HStack(spacing: 0) {
                         stat(String(format: "%.0f", max(1, minutes.rounded())), String(localized: "minutes"))
-                        if cycles > 0 { stat("\(cycles)", String(localized: "breaths")) }
+                        if cycles > 0 { divider; stat("\(cycles)", String(localized: "breaths")) }
                         let streak = SessionLog.shared.streak
-                        if streak > 0 { stat("\(streak)", streak == 1 ? String(localized: "day") : String(localized: "days in a row")) }
+                        if streak > 0 { divider; stat("\(streak)", streak == 1 ? String(localized: "day") : String(localized: "days in a row")) }
                     }
+                    .padding(.vertical, SP.s3)
+                    .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.nightBottom.opacity(0.35)))
+                    .overlay(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).stroke(Color.white.opacity(0.10), lineWidth: 1))
+                    .padding(.horizontal, SP.screenPadding)
+
                     if let m = main, !short {
-                        SessionResultsPanel(recordId: m.id, tint: tint)
-                            .padding(16)
-                            .background(RoundedRectangle(cornerRadius: 26, style: .continuous).fill(SP.nightBottom.opacity(0.55)))
-                            .padding(.horizontal, 18)
+                        VStack(alignment: .leading, spacing: SP.s3) {
+                            Label("Your results", systemImage: "waveform.path.ecg")
+                                .font(.headline).foregroundStyle(SP.ink)
+                            SessionResultsPanel(recordId: m.id, tint: tint)
+                        }
+                        .padding(SP.s4)
+                        .background(RoundedRectangle(cornerRadius: SP.radius + 4, style: .continuous).fill(SP.nightBottom.opacity(0.6)))
+                        .overlay(RoundedRectangle(cornerRadius: SP.radius + 4, style: .continuous).stroke(Color.white.opacity(0.10), lineWidth: 1))
+                        .padding(.horizontal, SP.s4)
                     }
                     if !short && !records.isEmpty {
                         // Rootbound link: back to the tree you just breathed with, or out to hug one.
@@ -356,41 +415,50 @@ struct PhoneSummaryView: View {
                                           subtitle: treeName == nil ? "Log a hug in Rootbound. It counts here too." : "This breath is saved under the tree, with your heart data.",
                                           url: treeName == nil ? WellnessLinks.hugLogger
                                               : treeID.map { WellnessLinks.rootboundTree($0) } ?? WellnessLinks.rootboundHome)
-                            .padding(.horizontal, 40)
+                            .padding(.horizontal, SP.screenPadding)
                     }
                     if short && !records.isEmpty {
                         Text("That was under a minute. Keep it in your journey?")
-                            .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.8))
-                            .multilineTextAlignment(.center).padding(.horizontal, 30)
+                            .font(.subheadline).foregroundStyle(SP.ink.opacity(0.85))
+                            .multilineTextAlignment(.center).padding(.horizontal, SP.s8)
                     }
-                    Button(action: onDone) {
-                        Text(short && !records.isEmpty ? "Keep it" : "Return").font(SP.rounded(17, .medium)).foregroundStyle(SP.ink)
-                            .frame(maxWidth: .infinity).padding(.vertical, 15)
-                            .background(Capsule().fill(.ultraThinMaterial))
-                    }
-                    .padding(.horizontal, 40)
-                    if !records.isEmpty {
-                        Button {
-                            if short { discard() } else { confirmDiscard = true }
-                        } label: {
-                            Text("Discard this session").font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.7))
-                                .padding(.vertical, 8)
+                    VStack(spacing: SP.s2) {
+                        Button(action: onDone) {
+                            Text(short && !records.isEmpty ? "Keep it" : "Done")
+                        }
+                        .buttonStyle(SPPrimaryButtonStyle())
+                        .sensoryFeedback(.success, trigger: bloom)
+                        if !records.isEmpty {
+                            Button(role: .destructive) {
+                                if short { discard() } else { confirmDiscard = true }
+                            } label: {
+                                Text("Discard this session").font(.subheadline).foregroundStyle(SP.ink.opacity(0.7))
+                                    .frame(minHeight: 44)
+                            }
+                            .buttonStyle(.plain)
                         }
                     }
-                    Spacer().frame(height: 20)
+                    .padding(.horizontal, SP.s8)
+                    Spacer().frame(height: SP.s4)
                 }
             }
         }
-        .onAppear { withAnimation(reduceMotion ? nil : Animation.easeOut(duration: 3.2)) { bloom = true } }
+        .onAppear { withAnimation(reduceMotion ? nil : Animation.easeOut(duration: 2.4)) { bloom = true } }
         .confirmationDialog("Discard this session?", isPresented: $confirmDiscard, titleVisibility: .visible) {
             Button("Discard", role: .destructive) { discard() }
         } message: { Text("It's removed from your journey and from Mindful Minutes in Apple Health.") }
     }
 
+    private var divider: some View {
+        Rectangle().fill(Color.white.opacity(0.14)).frame(width: 1, height: 34).accessibilityHidden(true)
+    }
+
     private func stat(_ v: String, _ l: String) -> some View {
         VStack(spacing: 2) {
-            Text(v).font(SP.numbers(34)).foregroundStyle(SP.ink)
-            Text(l).font(SP.rounded(12)).foregroundStyle(SP.ink.opacity(0.7))
+            Text(v).font(SP.numbers(32)).foregroundStyle(SP.ink).contentTransition(.numericText())
+            Text(l).font(.caption).foregroundStyle(SP.ink.opacity(0.72)).multilineTextAlignment(.center)
         }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 }

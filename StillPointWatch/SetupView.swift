@@ -33,16 +33,17 @@ struct SetupView: View {
                             .multilineTextAlignment(.center)
                     }
                     .frame(maxWidth: .infinity).padding(.vertical, 10)
-                    .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
                 } else {
                 Button(action: begin) {
-                    Text("Begin")
-                        .font(SP.serif(18))
-                        .foregroundStyle(Color.black.opacity(0.85))
-                        .frame(maxWidth: .infinity).padding(.vertical, 10)
-                        .background(Capsule().fill(SP.goldGlow))
+                    Label("Begin", systemImage: "play.fill")
+                        .font(SP.rounded(17, .semibold))
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .background(Capsule().fill(SP.accentFill))
                 }
                 .buttonStyle(.plain)
+                .accessibilityLabel("Begin \(practice.title)")
                 }
 
                 // Duration: turn the Digital Crown.
@@ -52,7 +53,7 @@ struct SetupView: View {
                         .font(SP.rounded(9, .semibold)).tracking(1.2).foregroundStyle(SP.faint)
                 }
                 .frame(maxWidth: .infinity).padding(.vertical, 6)
-                .background(RoundedRectangle(cornerRadius: 16).fill(Color.white.opacity(0.05)))
+                .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
                 .focusable()
                 .digitalCrownRotation($minutes, from: 1, through: 60, by: 1, sensitivity: .low,
                                       isContinuous: false, isHapticFeedbackEnabled: true)
@@ -112,7 +113,7 @@ struct SetupView: View {
                     .font(SP.rounded(13))
                 }
                 .font(SP.rounded(14))
-                .tint(SP.amber)
+                .tint(SP.accent)
 
                 NavigationLink { WatchPracticeInfoView(practice: practice) } label: {
                     Label("About this practice", systemImage: "info.circle")
@@ -128,7 +129,7 @@ struct SetupView: View {
             }
             .padding(.horizontal, 4)
         }
-        .background(DuskBackground(glow: lib.tradition(practice.traditionId)?.tint ?? SP.amber).opacity(0.9))
+        .background(DuskBackground(glow: lib.tradition(practice.traditionId)?.tint ?? SP.indigo).opacity(0.9))
         .onAppear {
             let d = prefs.settings.defaultMinutes
             minutes = Double(practice.minutes.contains(d) ? d : practice.defaultMinutes)

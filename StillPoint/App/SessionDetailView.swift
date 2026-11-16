@@ -161,13 +161,15 @@ struct SessionResultsPanel: View {
         if let r = log.record(recordId) {
             VStack(alignment: .leading, spacing: 14) {
                 if let t = r.takeaway {
-                    HStack(alignment: .top, spacing: 10) {
+                    HStack(alignment: .top, spacing: SP.s3) {
                         Image(systemName: (r.hrDrop ?? 0) >= 1 ? "arrow.down.heart.fill" : "heart.fill")
                             .foregroundStyle(SP.rose).font(.system(size: 18))
+                            .frame(width: 36, height: 36).background(Circle().fill(SP.rose.opacity(0.14)))
                             .accessibilityHidden(true)
                         Text(t).font(SP.serif(19, .light)).foregroundStyle(SP.ink)
                             .fixedSize(horizontal: false, vertical: true)
                     }
+                    .transition(.opacity)
                 }
                 if let samples = r.hrSamples, samples.count >= 2 {
                     HRChartCard(samples: samples, record: r, tint: tint)
@@ -192,19 +194,42 @@ struct SessionResultsPanel: View {
         Date().timeIntervalSince(r.end) < 10 * 60
     }
 
+    /// Skeleton of the chart and numbers while heart data is on its way from the Watch / Apple Health.
     private var waitingCard: some View {
-        HStack(spacing: 14) {
-            ProgressView().tint(SP.teal)
-            VStack(alignment: .leading, spacing: 3) {
-                Text("Waiting for Watch data…").font(SP.serif(17)).foregroundStyle(SP.ink)
-                Text("Heart rate and HRV can take a few minutes to reach Apple Health. This updates by itself.")
-                    .font(SP.rounded(13)).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
+        VStack(alignment: .leading, spacing: SP.s3) {
+            HStack(spacing: SP.s2) {
+                Image(systemName: "applewatch.radiowaves.left.and.right")
+                    .foregroundStyle(SP.accent)
+                    .symbolEffect(.pulse, options: .repeating)
+                    .accessibilityHidden(true)
+                Text("Waiting for Watch data").font(.headline).foregroundStyle(SP.ink)
             }
+            // Chart placeholder: a soft wave of bars.
+            HStack(alignment: .bottom, spacing: 5) {
+                ForEach(0..<18, id: \.self) { i in
+                    SPSkeleton(height: CGFloat(30 + 38 * abs(sin(Double(i) * 0.55))), radius: 3)
+                }
+            }
+            .frame(height: 74, alignment: .bottom)
+            HStack(spacing: SP.s2) {
+                ForEach(0..<3, id: \.self) { _ in
+                    VStack(alignment: .leading, spacing: 6) {
+                        SPSkeleton(height: 18, width: 56)
+                        SPSkeleton(height: 10, width: 70)
+                    }
+                    .padding(SP.s3)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .background(RoundedRectangle(cornerRadius: SP.innerRadius, style: .continuous).fill(SP.card))
+                }
+            }
+            Text("Heart rate and HRV can take a few minutes to reach Apple Health. This fills in by itself.")
+                .font(.footnote).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
         }
-        .padding(16)
+        .padding(SP.s4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
-        .accessibilityElement(children: .combine)
+        .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Waiting for Watch data. Heart rate and HRV can take a few minutes to arrive.")
     }
 
     private func noHeartCard(_ r: SessionRecord) -> some View {
@@ -232,9 +257,9 @@ struct SessionResultsPanel: View {
                 }
             }
         }
-        .padding(16)
+        .padding(SP.s4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
     }
 
     private func statGrid(_ r: SessionRecord) -> some View {
@@ -258,13 +283,17 @@ struct SessionResultsPanel: View {
 
     private func tile(_ v: String, _ l: String, _ c: Color) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(v).font(SP.numbers(22)).foregroundStyle(SP.ink).lineLimit(1).minimumScaleFactor(0.6)
-            Text(l).font(SP.rounded(11)).foregroundStyle(SP.faint).fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 6) {
+                Circle().fill(c).frame(width: 6, height: 6).accessibilityHidden(true)
+                Text(v).font(SP.numbers(22)).foregroundStyle(SP.ink).lineLimit(1).minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
+            }
+            Text(l).font(.caption).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(12)
-        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(SP.card))
-        .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).stroke(c.opacity(0.25), lineWidth: 1))
+        .padding(SP.s3)
+        .background(RoundedRectangle(cornerRadius: SP.innerRadius, style: .continuous).fill(SP.card))
+        .overlay(RoundedRectangle(cornerRadius: SP.innerRadius, style: .continuous).stroke(SP.stroke, lineWidth: 1))
         .accessibilityElement(children: .combine)
     }
 }
@@ -334,8 +363,8 @@ struct HRChartCard: View {
             .accessibilityLabel("Heart rate over the session, from \(Int(record.hrStart ?? 0)) to a low of \(Int(record.hrMin ?? 0)) beats per minute")
             Text("Shaded band: the calmest few beats of the session.").font(SP.rounded(11)).foregroundStyle(SP.faint)
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .padding(SP.s4)
+        .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
     }
 }
 

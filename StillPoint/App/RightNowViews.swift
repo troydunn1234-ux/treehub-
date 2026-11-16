@@ -45,62 +45,72 @@ struct RightNowCard: View {
         let s = model.current
         let p = PracticeLibrary.shared.practice(s.practiceId)
         let tint = PracticeLibrary.shared.category(s.goal).map { Color(spHex: $0.color) } ?? SP.teal
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                Text("RIGHT NOW").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.ink.opacity(0.7))
+        let goalName = PracticeLibrary.shared.category(s.goal)?.name
+        VStack(alignment: .leading, spacing: SP.s3) {
+            HStack(spacing: SP.s2) {
+                Label("Right now", systemImage: "sparkles")
+                    .font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.2)
+                    .foregroundStyle(SP.ink.opacity(0.75))
                 Spacer(minLength: 0)
                 if let lvl = s.stressLevel.flatMap(StressEstimate.Level.init(rawValue:)) {
                     Label {
-                        Text("Stress estimate: \(lvl.label)")
+                        Text("Stress: \(lvl.label)")
                     } icon: {
                         Circle().fill(lvl.tint).frame(width: 7, height: 7)
                     }
-                    .font(SP.rounded(11, .medium)).foregroundStyle(lvl.tint)
+                    .font(.caption.weight(.medium)).foregroundStyle(lvl.tint)
                     .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(Capsule().fill(lvl.tint.opacity(0.12)))
+                    .background(Capsule().fill(lvl.tint.opacity(0.14)))
+                    .accessibilityLabel("Stress estimate: \(lvl.label)")
                 }
             }
-            Text(s.title).font(SP.serif(24, .light)).foregroundStyle(SP.ink)
+            Text(s.title).font(SP.serif(30, .light)).foregroundStyle(SP.ink)
                 .fixedSize(horizontal: false, vertical: true)
-            Text(s.because).font(SP.rounded(15)).foregroundStyle(SP.ink.opacity(0.8))
-                .fixedSize(horizontal: false, vertical: true)
-            if s.worksBest {
-                Label("Works best for you", systemImage: "arrow.down.heart.fill")
-                    .font(SP.rounded(12, .semibold)).foregroundStyle(SP.rose)
+                .contentTransition(.opacity)
+            HStack(spacing: SP.s2) {
+                Label("\(s.minutes) min", systemImage: "clock")
+                    .font(.subheadline.weight(.medium)).monospacedDigit().foregroundStyle(SP.ink.opacity(0.9))
+                if let goalName {
+                    Text("·").foregroundStyle(SP.faint)
+                    Text(goalName).font(.subheadline).foregroundStyle(SP.ink.opacity(0.8))
+                }
             }
-            if !s.sources.isEmpty {
-                HStack(spacing: 6) {
+            Text(s.because).font(.body).foregroundStyle(SP.ink.opacity(0.82))
+                .fixedSize(horizontal: false, vertical: true)
+            if s.worksBest || !s.sources.isEmpty {
+                SPFlow(spacing: 6) {
+                    if s.worksBest {
+                        Label("Works best for you", systemImage: "arrow.down.heart.fill")
+                            .font(.caption.weight(.semibold)).foregroundStyle(SP.rose)
+                            .padding(.horizontal, 7).padding(.vertical, 3)
+                            .background(Capsule().fill(SP.rose.opacity(0.12)))
+                    }
                     ForEach(s.sources.prefix(4), id: \.self) { SourceBadge(name: $0) }
                 }
             }
-            HStack(spacing: 10) {
-                Button {
-                    taps += 1
-                    if let p { start(p, minutes: s.minutes) }
-                } label: {
-                    Label("Begin · \(s.minutes) min", systemImage: "circle.circle")
-                        .font(SP.rounded(15, .medium))
-                        .foregroundStyle(Color.black.opacity(0.85))
-                        .padding(.horizontal, 16).padding(.vertical, 10)
-                        .background(Capsule().fill(SP.goldGlow))
-                }
-                .buttonStyle(SoftPress())
-                .sensoryFeedback(.impact(weight: .light), trigger: taps)
-                .disabled(p == nil)
+            Button {
+                taps += 1
+                if let p { start(p, minutes: s.minutes) }
+            } label: {
+                Label("Start · \(s.minutes) min", systemImage: "play.fill")
+            }
+            .buttonStyle(SPPrimaryButtonStyle())
+            .sensoryFeedback(.impact(weight: .light), trigger: taps)
+            .disabled(p == nil)
+            .padding(.top, SP.s1)
+            HStack(spacing: SP.s2) {
                 Button { showWhy = true } label: {
-                    Text("Why this?").font(SP.rounded(14, .medium)).foregroundStyle(SP.teal)
-                        .padding(.horizontal, 12).padding(.vertical, 10)
-                        .background(Capsule().fill(Color.white.opacity(0.06)))
+                    Label("Why this?", systemImage: "info.circle")
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink.opacity(0.9)))
                 Spacer(minLength: 0)
                 if link.canUseWatch, let p {
                     Button {
                         link.startOnWatch(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: s.minutes)) { _ in }
                     } label: {
-                        Image(systemName: "applewatch").font(.system(size: 16, weight: .light)).foregroundStyle(SP.ink)
-                            .frame(width: 40, height: 40).background(Circle().fill(.ultraThinMaterial))
+                        Label("On Watch", systemImage: "applewatch")
                     }
+                    .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink.opacity(0.9)))
                     .accessibilityLabel("Start on Watch")
                 }
             }
@@ -108,23 +118,32 @@ struct RightNowCard: View {
                 Button {
                     Task { await model.requestAccess() }
                 } label: {
-                    Label("Use my heart rate, HRV and sleep from Health for a better pick", systemImage: "heart.text.square")
-                        .font(SP.rounded(13)).foregroundStyle(SP.amber)
+                    Label("Use heart rate, HRV and sleep from Health for a better pick", systemImage: "heart.text.square")
+                        .font(.footnote).foregroundStyle(SP.accent)
                         .multilineTextAlignment(.leading)
+                        .frame(minHeight: 44, alignment: .leading)
                 }
                 .buttonStyle(.plain)
             } else if s.timeOnly {
                 Text("No recent heart data, so this is picked by time of day.")
-                    .font(SP.rounded(12)).foregroundStyle(SP.faint)
+                    .font(.footnote).foregroundStyle(SP.faint)
             }
         }
-        .padding(18)
+        .padding(SP.s6 - 4)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(LinearGradient(colors: [tint.opacity(0.20), SP.card], startPoint: .topLeading, endPoint: .bottomTrailing))
+            ZStack {
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(LinearGradient(colors: [Color(spHex: "#2C3580"), Color(spHex: "#1A1F4E"), SP.nightBottom.opacity(0.9)],
+                                         startPoint: .topLeading, endPoint: .bottomTrailing))
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(RadialGradient(colors: [tint.opacity(0.35), .clear], center: UnitPoint(x: 0.9, y: 0.05), startRadius: 4, endRadius: 260))
+                RoundedRectangle(cornerRadius: 26, style: .continuous)
+                    .fill(RadialGradient(colors: [SP.indigo.opacity(0.30), .clear], center: UnitPoint(x: 0.05, y: 1.0), startRadius: 4, endRadius: 240))
+            }
         )
-        .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1))
+        .animation(.spring(response: 0.5, dampingFraction: 0.85), value: s.practiceId)
         .sheet(isPresented: $showWhy) { WhyThisSheet(suggestion: s, stress: model.stress) }
         .task { await model.refresh() }
         .accessibilityElement(children: .contain)
@@ -370,17 +389,17 @@ struct DailyMomentsSettings: View {
 
     var body: some View {
         Section {
-            Toggle("Morning pick", isOn: $moments.morningOn)
+            Toggle(isOn: $moments.morningOn) { Label("Morning pick", systemImage: "sunrise") }
             if moments.morningOn {
                 DatePicker("Time", selection: $moments.morningTime, displayedComponents: .hourAndMinute)
             }
-            Toggle("Bedtime pick", isOn: $moments.bedtimeOn)
+            Toggle(isOn: $moments.bedtimeOn) { Label("Bedtime pick", systemImage: "moon.stars") }
             if moments.bedtimeOn {
                 DatePicker("Time", selection: $moments.bedtimeTime, displayedComponents: .hourAndMinute)
             }
-            Toggle("Sound", isOn: $moments.sound)
+            Toggle(isOn: $moments.sound) { Label("Sound", systemImage: "speaker.wave.1") }
             if moments.status == .notDetermined {
-                Button("Allow notifications") { moments.request() }
+                Button { moments.request() } label: { Label("Allow notifications", systemImage: "bell.badge") }
             }
         } header: { Text("Right now reminders") } footer: {
             if moments.status == .denied {
@@ -389,6 +408,8 @@ struct DailyMomentsSettings: View {
                 Text("Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it.")
             }
         }
+        .sensoryFeedback(.selection, trigger: moments.morningOn)
+        .sensoryFeedback(.selection, trigger: moments.bedtimeOn)
         .onAppear { moments.refreshStatus() }
     }
 }
