@@ -6,9 +6,13 @@ import SwiftData
 struct TreeHubApp: App {
     @State private var tracker = RouteTracker()
 
-    let container: ModelContainer = {
+    let container: ModelContainer = TreeHubApp.makeContainer()
+
+    /// Rootbound's one store, always at LocalStore.url. RootboundTests/DataSafetyTests.swift reopens a store
+    /// through this same code, and .github/scripts/data_guard.py refuses a build that changes the location.
+    static func makeContainer(demo: Bool = DemoData.isOn) -> ModelContainer {
         let schema = Schema([Hug.self, Activity.self])
-        if DemoData.isOn {
+        if demo {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
         // Syncs to your private iCloud when the app is signed with iCloud; otherwise stays on the phone.
@@ -20,7 +24,7 @@ struct TreeHubApp: App {
         }
         // Last resort so the app still opens.
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-    }()
+    }
 
     init() {
         UserDefaults.standard.register(defaults: ["useMetric": false])

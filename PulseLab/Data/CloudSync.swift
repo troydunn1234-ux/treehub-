@@ -26,6 +26,11 @@ enum CloudSync {
 
     // MARK: Stack (SwiftData)
 
+    /// DATA SAFETY: no `url:` here, and never `LocalStore.url`. Pulse Lab had its App Group before it had the
+    /// Stack, so SwiftData has always kept this store in the first App Group's container
+    /// (group.com.troydunn.pulselab/Library/Application Support/default.store). A url would open a new, empty
+    /// Stack. .github/scripts/data_guard.py and PulseLabTests enforce this.
+    ///
     /// The Stack's store. Same file as before either way; with sync on, SwiftData mirrors it to CloudKit
     /// (both models have defaults for every property and no unique constraints, as CloudKit requires).
     static func makeContainer() -> ModelContainer {

@@ -7,9 +7,13 @@ import UserNotifications
 struct TrackHubApp: App {
     @State private var tracker: RouteTracker
 
-    let container: ModelContainer = {
+    let container: ModelContainer = TrackHubApp.makeContainer()
+
+    /// Roamr's one store, always at LocalStore.url. RoamrTests/DataSafetyTests.swift reopens a store through
+    /// this same code, and .github/scripts/data_guard.py refuses a build that changes the location.
+    static func makeContainer(demo: Bool = TrackDemo.isOn) -> ModelContainer {
         let schema = Schema([Activity.self, GasVehicle.self, FillUp.self])
-        if TrackDemo.isOn {
+        if demo {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
         if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .automatic)) {
@@ -19,7 +23,7 @@ struct TrackHubApp: App {
             return c
         }
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-    }()
+    }
 
     init() {
         UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true, DriveFinishedNotifier.enabledKey: true])
