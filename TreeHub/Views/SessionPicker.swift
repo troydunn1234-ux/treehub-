@@ -16,7 +16,7 @@ struct SessionPickerSheet: View {
                 Section {
                     ForEach(candidates) { s in
                         Button { toggle(s) } label: { row(s) }
-                            .listRowBackground(Theme.card)
+                            .listRowBackground(RB.cardFill)
                     }
                 } header: {
                     Text("Within an hour of \(around.formatted(date: .omitted, time: .shortened))")
@@ -79,7 +79,7 @@ struct SessionPickerSheet: View {
     }
 }
 
-/// One linked breath session with all its data: practice, time, minutes, heart rate, HR drop, HRV, breathing.
+/// One linked breath session as a stat block: practice + time, then HR start→end, drop, HRV, avg, low, breathing.
 struct LinkedSessionCard: View {
     let session: LinkedSession
     var compact = false
@@ -88,52 +88,62 @@ struct LinkedSessionCard: View {
         "\(s.start.formatted(date: .omitted, time: .shortened))–\(s.end.formatted(date: .omitted, time: .shortened))"
     }
 
-    private var metrics: [(String, String, String)] {
-        var m: [(String, String, String)] = []
-        if let v = session.avgHR { m.append(("heart.fill", "\(Int(v.rounded()))", "Avg bpm")) }
-        if let v = session.minHR { m.append(("arrow.down", "\(Int(v.rounded()))", "Low bpm")) }
-        if let v = session.startHR { m.append(("play.fill", "\(Int(v.rounded()))", "Start bpm")) }
-        if let v = session.hrDrop { m.append(("arrow.down.heart.fill", String(format: "%.0f", v), "HR drop")) }
-        if let v = session.hrv { m.append(("waveform.path.ecg", String(format: "%.0f ms", v), "HRV")) }
-        if let v = session.respRate { m.append(("lungs.fill", String(format: "%.1f", v), "Breaths/min")) }
+    private static func bpm(_ v: Double) -> String { "\(Int(v.rounded()))" }
+
+    private var startEnd: String? {
+        var end = session.endHR
+        if end == nil, let a = session.startHR, let d = session.hrDrop { end = a - d }
+        switch (session.startHR, end) {
+        case let (a?, b?): return "\(Self.bpm(a))→\(Self.bpm(b))"
+        case let (a?, nil): return Self.bpm(a)
+        default: return nil
+        }
+    }
+
+    private var metrics: [(value: String, label: String, tint: Color)] {
+        var m: [(String, String, Color)] = []
+        if let v = startEnd { m.append((v, "HR start→end", .white)) }
+        if let v = session.hrDrop { m.append((v >= 0 ? String(format: "−%.0f", v) : String(format: "+%.0f", -v), "HR drop (bpm)", Theme.glow)) }
+        if let v = session.hrv { m.append((String(format: "%.0f ms", v), "HRV", Theme.sky)) }
+        if let v = session.avgHR { m.append((Self.bpm(v), "Avg bpm", .white)) }
+        if let v = session.minHR { m.append((Self.bpm(v), "Low bpm", .white)) }
+        if let v = session.respRate { m.append((String(format: "%.1f", v), "Breaths/min", .white)) }
         return m
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline) {
+        VStack(alignment: .leading, spacing: RB.m) {
+            HStack(alignment: .center, spacing: RB.m) {
+                Image(systemName: "wind")
+                    .font(.subheadline.weight(.bold)).foregroundStyle(Theme.sky)
+                    .frame(width: 36, height: 36)
+                    .background(Theme.sky.opacity(0.15), in: Circle())
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(session.title).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                    Text(session.title).font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
                     Text([Self.timeRange(session), session.practiceName != nil ? session.source : nil]
                             .compactMap { $0 }.filter { !$0.isEmpty }.joined(separator: " · "))
-                        .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                 }
-                Spacer()
+                Spacer(minLength: RB.s)
                 Text(Format.minutes((session.minutes * 10).rounded() / 10))
-                    .font(Theme.rounded(15, .bold)).foregroundStyle(Theme.sky)
+                    .font(RB.number(.subheadline)).monospacedDigit().foregroundStyle(Theme.sky)
             }
             if metrics.isEmpty {
-                Text("Heart data appears once your watch syncs to Health.")
-                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                Label("Heart data appears once your watch syncs to Health.", systemImage: "applewatch")
+                    .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
             } else if !compact {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], alignment: .leading, spacing: 8) {
-                    ForEach(metrics, id: \.2) { m in
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(m.1).font(Theme.rounded(17, .bold)).foregroundStyle(.white).monospacedDigit()
-                            Text(m.2).font(Theme.rounded(11, .semibold)).foregroundStyle(Theme.textDim)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .accessibilityElement(children: .combine)
-                    }
+                RBGrid(minimum: 92) {
+                    ForEach(metrics, id: \.label) { m in RBMetric(value: m.value, label: m.label, tint: m.tint) }
                 }
             } else {
-                Text(metrics.prefix(3).map { "\($0.1) \($0.2.lowercased())" }.joined(separator: " · "))
-                    .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.glow)
+                Text(metrics.prefix(3).map { "\($0.value) \($0.label.lowercased())" }.joined(separator: " · "))
+                    .font(RB.text(.caption, .semibold)).foregroundStyle(Theme.glow)
             }
         }
-        .padding(14)
+        .padding(RB.m)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .rbInner()
         .accessibilityElement(children: .combine)
     }
 }
@@ -141,13 +151,14 @@ struct LinkedSessionCard: View {
 /// Totals across a hug's linked sessions: breathwork minutes, avg HR, HR drop, HRV.
 struct LinkedSessionTotals: View {
     let sessions: [LinkedSession]
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
-        LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-            StatTile(value: Format.minutes((sessions.totalMinutes * 10).rounded() / 10), label: "Breathwork", tint: Theme.sky)
-            StatTile(value: sessions.avgHR.map { "\(Int($0.rounded()))" } ?? "--", label: "Avg bpm", tint: Theme.sky)
-            StatTile(value: sessions.avgDrop.map { String(format: "−%.0f", $0) } ?? "--", label: "HR drop", tint: Theme.sky)
-            StatTile(value: sessions.avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "HRV", tint: Theme.sky)
+        LazyVGrid(columns: rbColumns(2, typeSize), spacing: RB.s) {
+            RBStatTile(value: Format.minutes((sessions.totalMinutes * 10).rounded() / 10), label: "Breathwork", tint: Theme.sky)
+            RBStatTile(value: sessions.avgHR.map { "\(Int($0.rounded()))" } ?? "--", label: "Avg bpm", tint: Theme.sky)
+            RBStatTile(value: sessions.avgDrop.map { String(format: "−%.0f", $0) } ?? "--", label: "HR drop", tint: Theme.sky)
+            RBStatTile(value: sessions.avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "HRV", tint: Theme.sky)
         }
     }
 }

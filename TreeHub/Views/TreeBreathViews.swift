@@ -22,17 +22,17 @@ struct TreeBreathSection: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            SectionHeader(title: "Breath sessions", symbol: "wind")
+            RBSectionTitle(title: "Breath sessions", symbol: "wind")
             if breaths.isEmpty {
                 Text("Link Still Pointz sessions when you log a hug, or tap \"Breathe with this tree\". They land here with your heart rate.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-                    StatTile(value: Format.minutes((totalMinutes * 10).rounded() / 10), label: "\(breaths.count) session\(breaths.count == 1 ? "" : "s")", tint: Theme.sky)
-                    StatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", tint: Theme.sky)
-                    StatTile(value: avgDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "HR drop", tint: Theme.sky)
-                    StatTile(value: avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "Avg HRV", tint: Theme.sky)
+                    RBStatTile(value: Format.minutes((totalMinutes * 10).rounded() / 10), label: "\(breaths.count) session\(breaths.count == 1 ? "" : "s")", tint: Theme.sky)
+                    RBStatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", tint: Theme.sky)
+                    RBStatTile(value: avgDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "HR drop", tint: Theme.sky)
+                    RBStatTile(value: avgHRV.map { String(format: "%.0f ms", $0) } ?? "--", label: "Avg HRV", tint: Theme.sky)
                 }
                 ForEach(breaths.prefix(20)) { b in TreeBreathRow(breath: b) }
             }

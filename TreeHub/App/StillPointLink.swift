@@ -159,7 +159,7 @@ struct CalmMinutesCard: View {
                 Button {
                     if !WellnessLinks.open(WellnessLinks.stillPointJourney) { showGet = true }
                 } label: {
-                GlassCard(padding: 16) {
+                RBCard(padding: 16) {
                     HStack(spacing: 14) {
                         Image(systemName: "wind")
                             .font(.system(size: 22, weight: .bold)).foregroundStyle(Theme.sky)
