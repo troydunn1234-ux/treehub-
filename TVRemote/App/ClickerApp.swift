@@ -83,7 +83,7 @@ struct RootView: View {
                         .frame(width: 28, height: 28)
                         .background(ok ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.orange), in: Circle())
                         .symbolEffect(.bounce, value: t)
-                    Text(t).font(Look.font(15, .bold)).foregroundStyle(.white).lineLimit(2)
+                    Text(t).font(Look.text(.subheadline, .bold)).foregroundStyle(.white).lineLimit(3)
                 }
                 .padding(.leading, Look.S.s).padding(.trailing, Look.S.l).padding(.vertical, Look.S.s)
                 .glassCapsule(glow: ok ? Look.magenta : .orange, material: true)
@@ -213,48 +213,126 @@ struct RootView: View {
 
 struct AboutView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var openURL
     @State private var showCompat = false
     private var license: String {
         (Bundle.main.url(forResource: "pyvizio-LICENSE", withExtension: "txt")).flatMap { try? String(contentsOf: $0, encoding: .utf8) } ?? ""
     }
+    private var version: String {
+        let info = Bundle.main.infoDictionary
+        let v = info?["CFBundleShortVersionString"] as? String ?? "1.0"
+        let b = info?["CFBundleVersion"] as? String
+        return b.map { "Version \(v) (\($0))" } ?? "Version \(v)"
+    }
+    private static let repo = "https://github.com/troydunn1234-ux/treehub-"
+
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
-                    Text("Couch Remote").font(Look.display(36)).tracking(-0.5).foregroundStyle(Look.accentH)
-                    Text("Version \(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")")
-                        .font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
-                    Button { showCompat = true } label: {
-                        Label("Which TVs work?", systemImage: "tv.and.mediabox.fill")
-                            .font(Look.font(16, .heavy)).foregroundStyle(.white)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(Look.S.m)
-                            .glass(16, tint: Look.cyan)
+                VStack(alignment: .leading, spacing: Look.S.xl) {
+                    header
+
+                    card {
+                        row("Which TVs work?", "VIZIO, Roku, Samsung, LG, Google TV", "tv.and.mediabox.fill") { showCompat = true }
                     }
+
                     MoreAppsGate {
                         MoreAppsRow(tint: Look.cyan)
                             .foregroundStyle(.white)
                             .padding(Look.S.m)
-                            .glass(16, tint: Look.cyan)
+                            .frame(minHeight: 44)
+                            .glass(Look.R.card, tint: Look.cyan)
                     }
-                    section("Works with", "VIZIO SmartCast, Roku TVs and players, Samsung (Tizen), LG (webOS), and Google TV / Android TV, on the same Wi-Fi as your phone.")
-                    section("Privacy", "Couch Remote talks only to your TV (and your PC, if you use it), directly over your Wi-Fi. It has no account, no tracking and no servers. Pairing keys stay in your phone's Keychain.")
-                    section("Not affiliated", "Couch Remote is an independent app. It is not made, endorsed or supported by VIZIO, Roku, Samsung, LG or Google. Those names, and the names of the streaming services shown, are trademarks of their owners and are used only to identify which TVs work and what opens on your TV.")
-                    section("Open source", "The VIZIO app list comes from pyvizio, used under the MIT License:")
-                    Text(license).font(.system(size: 11, design: .monospaced)).foregroundStyle(Look.dim)
+
+                    card {
+                        link("Privacy policy", "No account, no tracking, no servers", "hand.raised.fill", "\(Self.repo)/blob/main/store/clicker/PRIVACY.md")
+                        divider
+                        link("Help & support", "Pairing, Wi-Fi and TV tips", "questionmark.circle.fill", "\(Self.repo)/blob/main/store/clicker/SUPPORT.md")
+                        divider
+                        link("Contact", "Questions or ideas? Open an issue", "envelope.fill", "\(Self.repo)/issues")
+                        divider
+                        link("Terms of use", "Standard App Store licence", "doc.text.fill", "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")
+                    }
+
+                    VStack(alignment: .leading, spacing: Look.S.l) {
+                        section("Works with", "VIZIO SmartCast, Roku TVs and players, Samsung (Tizen), LG (webOS), and Google TV / Android TV, on the same Wi-Fi as your phone.")
+                        section("Privacy", "Couch Remote talks only to your TV (and your PC, if you use it), directly over your Wi-Fi. It has no account, no tracking and no servers. Pairing keys stay in your phone's Keychain.")
+                        section("Not affiliated", "Couch Remote is an independent app. It is not made, endorsed or supported by VIZIO, Roku, Samsung, LG or Google. Those names, and the names of the streaming services shown, are trademarks of their owners and are used only to identify which TVs work and what opens on your TV.")
+                        section("Open source", "The VIZIO app list comes from pyvizio, used under the MIT License:")
+                        Text(license).font(.system(.caption2, design: .monospaced)).foregroundStyle(Look.dim)
+                    }
                 }
-                .padding(22)
+                .padding(.horizontal, 20)
+                .padding(.vertical, Look.S.xl)
             }
             .background(AuroraBackground())
+            .navigationTitle("About")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
         }
         .preferredColorScheme(.dark)
         .sheet(isPresented: $showCompat) { CompatibilityView() }
     }
+
+    private var header: some View {
+        HStack(spacing: Look.S.l) {
+            AppIconTile(size: 72)
+            VStack(alignment: .leading, spacing: Look.S.xs) {
+                Text("Couch Remote").font(Look.text(.title, .black)).foregroundStyle(Look.accentH)
+                Text(version).font(Look.text(.subheadline, .semibold)).foregroundStyle(Look.dim).monospacedDigit()
+                Text("Every TV. One remote.").font(Look.text(.footnote, .medium)).foregroundStyle(.white.opacity(0.75))
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func card<Content: View>(@ViewBuilder _ content: () -> Content) -> some View {
+        VStack(spacing: 0) { content() }
+            .padding(.horizontal, Look.S.m)
+            .glass(Look.R.card, tint: Look.cyan)
+    }
+
+    private var divider: some View {
+        Rectangle().fill(Color.white.opacity(0.08)).frame(height: 1).padding(.leading, 44)
+    }
+
+    private func rowLabel(_ title: String, _ detail: String, _ symbol: String, external: Bool) -> some View {
+        HStack(spacing: Look.S.m) {
+            Image(systemName: symbol)
+                .font(.system(size: 15, weight: .bold)).foregroundStyle(Look.cyan)
+                .frame(width: 32, height: 32)
+                .background(Look.cyan.opacity(0.14), in: RoundedRectangle(cornerRadius: 9, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 1) {
+                Text(title).font(Look.text(.body, .semibold)).foregroundStyle(.white)
+                Text(detail).font(Look.text(.caption, .medium)).foregroundStyle(Look.dim)
+            }
+            Spacer(minLength: Look.S.s)
+            Image(systemName: external ? "arrow.up.right" : "chevron.right")
+                .font(.system(size: 12, weight: .bold)).foregroundStyle(Look.dim)
+                .accessibilityHidden(true)
+        }
+        .padding(.vertical, Look.S.m)
+        .frame(minHeight: 52)
+        .contentShape(Rectangle())
+    }
+
+    private func row(_ title: String, _ detail: String, _ symbol: String, action: @escaping () -> Void) -> some View {
+        Button(action: action) { rowLabel(title, detail, symbol, external: false) }
+            .buttonStyle(SquishStyle(scale: 0.98))
+    }
+
+    private func link(_ title: String, _ detail: String, _ symbol: String, _ url: String) -> some View {
+        Button { if let u = URL(string: url) { openURL(u) } } label: { rowLabel(title, detail, symbol, external: true) }
+            .buttonStyle(SquishStyle(scale: 0.98))
+            .accessibilityHint("Opens in Safari")
+    }
+
     private func section(_ title: String, _ body: String) -> some View {
         VStack(alignment: .leading, spacing: 6) {
-            Text(title).font(Look.font(17, .heavy)).foregroundStyle(.white)
-            Text(body).font(Look.font(15, .medium)).foregroundStyle(.white.opacity(0.8))
+            Text(title).font(Look.text(.headline, .heavy)).foregroundStyle(.white)
+            Text(body).font(Look.text(.subheadline, .medium)).foregroundStyle(.white.opacity(0.8))
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

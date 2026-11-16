@@ -63,6 +63,7 @@ struct TVSwitcherSheet: View {
                         Button { dismiss() } label: {
                             Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(.white)
                                 .frame(width: 36, height: 36).glassCircle()
+                                .frame(width: 44, height: 44).contentShape(Circle())
                         }
                         .buttonStyle(SquishStyle())
                         .accessibilityLabel("Close")
@@ -77,13 +78,13 @@ struct TVSwitcherSheet: View {
                                 .frame(width: 48, height: 48)
                                 .background(Look.cyan.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                             VStack(alignment: .leading, spacing: 2) {
-                                Text("Add another TV").font(Look.font(16, .heavy)).foregroundStyle(.white)
-                                Text("Pair a TV on this Wi-Fi").font(Look.font(12, .semibold)).foregroundStyle(Look.dim)
+                                Text("Add another TV").font(Look.text(.headline, .heavy)).foregroundStyle(.white)
+                                Text("Pair a TV on this Wi-Fi").font(Look.text(.caption, .semibold)).foregroundStyle(Look.dim)
                             }
                             Spacer()
                         }
                         .padding(Look.S.m)
-                        .background(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .background(RoundedRectangle(cornerRadius: Look.R.card, style: .continuous)
                             .strokeBorder(Color.white.opacity(0.18), style: StrokeStyle(lineWidth: 1.5, dash: [6, 6])))
                     }
                     .buttonStyle(SquishStyle(scale: 0.97))
@@ -96,6 +97,7 @@ struct TVSwitcherSheet: View {
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(36)
         .preferredColorScheme(.dark)
+        .sensoryFeedback(.selection, trigger: store.tv?.id)
         .onChange(of: store.tvs.count) { _, n in if n == 0 { dismiss() } }
         .confirmationDialog("Forget \(forgetting?.name ?? "this TV")?", isPresented: Binding(get: { forgetting != nil }, set: { if !$0 { forgetting = nil } }), titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { if let t = forgetting { withAnimation(.snappy) { store.forget(t) } } }
@@ -119,11 +121,11 @@ struct TVSwitcherSheet: View {
                                     in: RoundedRectangle(cornerRadius: 14, style: .continuous))
                         .shadow(color: active ? Look.violet.opacity(0.6) : .clear, radius: 10)
                     VStack(alignment: .leading, spacing: 3) {
-                        Text(t.name).font(Look.font(17, .heavy)).foregroundStyle(.white).lineLimit(1)
+                        Text(t.name).font(Look.text(.headline, .heavy)).foregroundStyle(.white).lineLimit(2)
                         HStack(spacing: 6) {
                             LiveDot(color: statusColor, size: 6, pulsing: active && store.reachable)
                                 .frame(width: 10, height: 10)
-                            Text("\(status) · \(t.brand.shortName) · \(t.model)").font(Look.font(12, .semibold)).foregroundStyle(Look.dim).lineLimit(1)
+                            Text("\(status) · \(t.brand.shortName) · \(t.model)").font(Look.text(.caption, .semibold)).foregroundStyle(Look.dim).lineLimit(2)
                         }
                     }
                     Spacer(minLength: Look.S.s)
@@ -141,13 +143,13 @@ struct TVSwitcherSheet: View {
                 Button(role: .destructive) { forgetting = t } label: { Label("Forget \(t.name)", systemImage: "tv.slash") }
             } label: {
                 Image(systemName: "ellipsis").font(.system(size: 15, weight: .bold)).foregroundStyle(Look.dim)
-                    .frame(width: 40, height: 48).contentShape(Rectangle())
+                    .frame(width: 44, height: 48).contentShape(Rectangle())
             }
             .accessibilityLabel("Options for \(t.name)")
         }
         .padding(Look.S.m)
         .padding(.trailing, -Look.S.xs)
-        .glass(22, tint: active ? Look.violet : .white, glow: active ? Look.violet : nil)
+        .glass(Look.R.card, tint: active ? Look.violet : .white, glow: active ? Look.violet : nil)
     }
 }
 

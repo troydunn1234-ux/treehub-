@@ -11,7 +11,7 @@ struct RemoteView: View {
     var body: some View {
         GeometryReader { geo in
             // Size the pad to whatever room is left, so nothing ends up under the tab bar.
-            let pad = max(160, min(geo.size.width - 92, geo.size.height - 404 - (store.reachable ? 0 : 48), 290))
+            let pad = max(160, min(geo.size.width - 92, geo.size.height - 420 - (store.reachable ? 0 : 56), 290))
             VStack(spacing: Look.S.m) {
                 if !store.reachable {
                     Button {
@@ -21,7 +21,8 @@ struct RemoteView: View {
                         Label(store.reconnecting ? "Searching for your TV…" : "Can't reach your TV — tap to retry", systemImage: "wifi.exclamationmark")
                             .font(Look.font(13, .bold))
                             .foregroundStyle(.white)
-                            .padding(.horizontal, Look.S.l).frame(minHeight: 36)
+                            .lineLimit(2).multilineTextAlignment(.center)
+                            .padding(.horizontal, Look.S.l).frame(minHeight: 44)
                             .frame(maxWidth: .infinity)
                             .glassCapsule(tint: .orange, glow: .orange, strength: 2)
                     }
@@ -50,6 +51,7 @@ struct RemoteView: View {
             .frame(width: geo.size.width, height: geo.size.height)
             .animation(.spring(response: 0.4, dampingFraction: 0.8), value: store.reachable)
         }
+        .sensoryFeedback(.success, trigger: store.reachable) { old, new in !old && new }
         .tvSheets($sheet, store: store)
     }
 
@@ -99,12 +101,14 @@ struct RemoteView: View {
                             .font(Look.font(12, .heavy))
                             .foregroundStyle(.white)
                             .lineLimit(1)
-                            .padding(.horizontal, 12)
-                            .frame(height: 32)
+                            .padding(.horizontal, 14)
+                            .frame(height: 34)
                             .background(Capsule().fill(LinearGradient(colors: app.colors, startPoint: .topLeading, endPoint: .bottomTrailing)))
                             .overlay(Capsule().fill(LinearGradient(colors: [.white.opacity(0.28), .clear], startPoint: .top, endPoint: .center)).padding(1))
                             .overlay(Capsule().strokeBorder(store.nowPlaying == app.name ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.white.opacity(0.22)),
                                                             lineWidth: store.nowPlaying == app.name ? 2 : 1))
+                            .frame(height: 44)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(SquishStyle(scale: 0.92))
                     .accessibilityLabel("Open \(app.name) on the TV")
@@ -112,7 +116,7 @@ struct RemoteView: View {
             }
             .padding(.horizontal, 2)
         }
-        .frame(height: 34)
+        .frame(height: 44)
     }
 
     /// Back / Home / Menu as one segmented glass bar.
@@ -126,7 +130,7 @@ struct RemoteView: View {
             divider
             segment("magnifyingglass", "Search") { store.searchOnTV() }
         }
-        .frame(height: 54)
+        .frame(height: 56)
         .glassCapsule()
     }
 
@@ -137,8 +141,8 @@ struct RemoteView: View {
     private func segment(_ symbol: String, _ label: String, _ run: @escaping () -> Void) -> some View {
         Button(action: run) {
             HStack(spacing: 5) {
-                Image(systemName: symbol).font(.system(size: 14, weight: .bold))
-                Text(label).font(Look.font(13, .heavy)).lineLimit(1).minimumScaleFactor(0.75)
+                Image(systemName: symbol).font(.system(size: 16, weight: .bold))
+                Text(label).font(Look.font(13, .heavy)).lineLimit(1).minimumScaleFactor(0.7)
             }
             .foregroundStyle(.white)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -168,7 +172,7 @@ struct RemoteView: View {
 
             VStack(spacing: Look.S.m) {
                 HStack(spacing: 6) {
-                    KeyButton(symbol: "backward.fill", label: "Rewind", size: 46) { send(.seekBack) }
+                    KeyButton(symbol: "backward.fill", label: "Rewind", size: 50) { send(.seekBack) }
                     Button {
                         send(playing ? .pause : .play, heavy: true)
                         playing.toggle()
@@ -185,7 +189,7 @@ struct RemoteView: View {
                     }
                     .buttonStyle(SquishStyle())
                     .accessibilityLabel(playing ? "Pause" : "Play")
-                    KeyButton(symbol: "forward.fill", label: "Fast forward", size: 46) { send(.seekForward) }
+                    KeyButton(symbol: "forward.fill", label: "Fast forward", size: 50) { send(.seekForward) }
                 }
                 HStack(spacing: 6) {
                     SmallKey(title: "Info", width: 58) { send(.info) }

@@ -442,7 +442,7 @@ targets:
             CFBundleURLSchemes: [natalorbit]
         WebShellAppGroup: group.com.troydunn.natalorbit
         WebShellBackground: "#05070f"
-        WebShellAccent: "#f2c46d"
+        WebShellAccent: "#a78bfa"
         WebShellSymbol: sparkles
         UIRequiresFullScreen: true
         UIStatusBarStyle: UIStatusBarStyleLightContent

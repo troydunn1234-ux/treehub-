@@ -21,6 +21,8 @@ private enum NOShared {
     static let ink = Color(red: 0.910, green: 0.922, blue: 0.969)
     static let dim = Color(red: 0.541, green: 0.573, blue: 0.706)
     static let violet = Color(red: 0.486, green: 0.302, blue: 1.0)
+    /// Family accent: cosmic violet (matches --accent in web/index.html).
+    static let accent = Color(red: 0.655, green: 0.545, blue: 0.980)
 
     struct Day: Decodable { let d: String; let head: String; let moon: String?; let good: String? }
     struct Payload: Decodable { let name: String?; let days: [Day] }
@@ -92,7 +94,7 @@ struct DailyReadingWidget: Widget {
         }
         .configurationDisplayName("Today's Reading")
         .description("Your daily horoscope headline from your own chart.")
-        .supportedFamilies([.systemSmall, .systemMedium])
+        .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
     }
 }
 
@@ -105,19 +107,38 @@ struct ReadingView: View {
     }
 
     var body: some View {
+        switch family {
+        case .accessoryInline:
+            Label(entry.hasChart ? entry.head : "Set up your chart", systemImage: "sparkles")
+        case .accessoryRectangular:
+            VStack(alignment: .leading, spacing: 1) {
+                Label(entry.name.isEmpty ? "Today" : "Today for \(entry.name)", systemImage: "sparkles")
+                    .font(.caption2.weight(.semibold)).lineLimit(1).widgetAccentable()
+                Text(entry.hasChart ? entry.head : "Open Natal Orbit to set up your chart")
+                    .font(.system(.footnote, design: .serif).weight(.semibold))
+                    .lineLimit(2).minimumScaleFactor(0.85)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        default:
+            if entry.hasChart { reading } else { emptyState }
+        }
+    }
+
+    private var reading: some View {
         VStack(alignment: .leading, spacing: family == .systemSmall ? 6 : 8) {
             HStack(spacing: 5) {
                 Image(systemName: "sparkles").font(.system(size: 11, weight: .bold))
                 Text(eyebrow).font(.system(size: 10, weight: .semibold, design: .monospaced)).tracking(1.4).lineLimit(1)
             }
-            .foregroundStyle(NOShared.gold)
+            .foregroundStyle(NOShared.accent)
+            .widgetAccentable()
 
             Text(entry.head)
                 .font(.system(size: family == .systemSmall ? 16 : 19, weight: .semibold, design: .serif))
-                .foregroundStyle(entry.hasChart ? NOShared.ink : NOShared.dim)
+                .foregroundStyle(NOShared.ink)
                 .lineLimit(family == .systemSmall ? 4 : 3)
                 .minimumScaleFactor(0.8)
-                .shadow(color: NOShared.gold.opacity(0.18), radius: 8)
+                .shadow(color: NOShared.accent.opacity(0.22), radius: 8)
 
             Spacer(minLength: 0)
 
@@ -136,5 +157,28 @@ struct ReadingView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .accessibilityElement(children: .combine)
+    }
+
+    /// No saved chart yet: a calm prompt instead of an empty card.
+    private var emptyState: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Image(systemName: "sparkles")
+                .font(.system(size: 22, weight: .semibold))
+                .foregroundStyle(NOShared.accent)
+                .widgetAccentable()
+            Spacer(minLength: 0)
+            Text("Your daily reading")
+                .font(.system(size: family == .systemSmall ? 15 : 17, weight: .semibold, design: .serif))
+                .foregroundStyle(NOShared.ink)
+                .lineLimit(2)
+            Text("Open Natal Orbit and save your chart.")
+                .font(.system(size: 12, weight: .medium, design: .rounded))
+                .foregroundStyle(NOShared.dim)
+                .lineLimit(2)
+                .minimumScaleFactor(0.85)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .accessibilityElement(children: .combine)
     }
 }

@@ -1,4 +1,5 @@
 import SwiftUI
+import UIKit
 
 /// Clankerr's look — "neon console": deep space, layered glass, electric magenta → violet → cyan.
 enum Look {
@@ -22,7 +23,15 @@ enum Look {
         static let xs: CGFloat = 4, s: CGFloat = 8, m: CGFloat = 12, l: CGFloat = 16, xl: CGFloat = 24, xxl: CGFloat = 32
     }
 
+    /// Corner radii (family spec): cards 20, inner tiles 12.
+    enum R {
+        static let card: CGFloat = 20, inner: CGFloat = 12
+    }
+
     static func font(_ size: CGFloat, _ weight: Font.Weight = .bold) -> Font { .system(size: size, weight: weight, design: .rounded) }
+    /// Dynamic Type text: scales with the iPhone text size. Use for reading text (lists, About, setup copy);
+    /// the remote's keys keep fixed sizes so the controller layout never breaks.
+    static func text(_ style: Font.TextStyle, _ weight: Font.Weight = .bold) -> Font { .system(style, design: .rounded, weight: weight) }
     /// Big confident display type.
     static func display(_ size: CGFloat) -> Font { .system(size: size, weight: .black, design: .rounded) }
 }
@@ -342,10 +351,10 @@ struct DeviceRow: View {
                 .background(Look.accent, in: RoundedRectangle(cornerRadius: 13, style: .continuous))
                 .shadow(color: Look.violet.opacity(0.5), radius: 8)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Look.font(17, .heavy)).foregroundStyle(.white)
-                Text(subtitle).font(Look.font(12, .semibold)).foregroundStyle(Look.dim)
+                Text(title).font(Look.text(.headline, .heavy)).foregroundStyle(.white).lineLimit(2)
+                Text(subtitle).font(Look.text(.caption, .semibold)).foregroundStyle(Look.dim).lineLimit(2)
             }
-            Spacer()
+            Spacer(minLength: Look.S.s)
             if busy { ProgressView().tint(.white) }
             else {
                 Image(systemName: "arrow.right").font(.system(size: 14, weight: .heavy)).foregroundStyle(.white)
@@ -354,7 +363,7 @@ struct DeviceRow: View {
         }
         .padding(Look.S.m)
         .padding(.trailing, Look.S.xs)
-        .glass(22, glow: Look.violet)
+        .glass(Look.R.card, glow: Look.violet)
     }
 }
 
@@ -378,11 +387,83 @@ struct PrimaryButtonStyle: ButtonStyle {
             .font(Look.font(16, .heavy))
             .foregroundStyle(.white)
             .padding(.horizontal, Look.S.xl)
-            .frame(minHeight: 52)
+            .frame(minHeight: 50)
             .background(Look.accentH, in: Capsule())
             .overlay(Capsule().strokeBorder(Color.white.opacity(0.35), lineWidth: 1))
             .shadow(color: Look.magenta.opacity(0.5), radius: 14, y: 4)
             .scaleEffect(configuration.isPressed ? 0.95 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.6), value: configuration.isPressed)
+    }
+}
+
+// MARK: - States
+
+/// Designed empty state (family spec): symbol, title, one-line hint and one primary action.
+struct EmptyStateCard: View {
+    let symbol: String
+    let title: String
+    let hint: String
+    var actionTitle: String? = nil
+    var action: (() -> Void)? = nil
+    @State private var bounce = 0
+
+    var body: some View {
+        VStack(spacing: Look.S.m) {
+            Image(systemName: symbol)
+                .font(.system(size: 30, weight: .bold))
+                .foregroundStyle(Look.accent)
+                .frame(width: 64, height: 64)
+                .background(Color.white.opacity(0.06), in: Circle())
+                .symbolEffect(.bounce, value: bounce)
+                .accessibilityHidden(true)
+            Text(title).font(Look.text(.headline, .heavy)).foregroundStyle(.white).multilineTextAlignment(.center)
+            Text(hint).font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim)
+                .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+            if let actionTitle, let action {
+                Button {
+                    bounce += 1
+                    action()
+                } label: { Text(actionTitle) }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, Look.S.xs)
+                .sensoryFeedback(.impact(weight: .light), trigger: bounce)
+            }
+        }
+        .padding(Look.S.xl)
+        .frame(maxWidth: .infinity)
+        .glass(Look.R.card)
+        .accessibilityElement(children: .contain)
+    }
+}
+
+/// The app's own icon, for About screens (falls back to a branded tile).
+struct AppIconTile: View {
+    var size: CGFloat = 72
+    private static let icon: UIImage? = {
+        if let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
+           let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
+           let files = primary["CFBundleIconFiles"] as? [String], let name = files.last,
+           let img = UIImage(named: name) {
+            return img
+        }
+        return UIImage(named: "AppIcon")
+    }()
+
+    var body: some View {
+        Group {
+            if let icon = Self.icon {
+                Image(uiImage: icon).resizable().scaledToFill()
+            } else {
+                Image(systemName: "dot.radiowaves.left.and.right")
+                    .font(.system(size: size * 0.4, weight: .black)).foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .background(Look.accent)
+            }
+        }
+        .frame(width: size, height: size)
+        .clipShape(RoundedRectangle(cornerRadius: size * 0.225, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: size * 0.225, style: .continuous).strokeBorder(Color.white.opacity(0.18), lineWidth: 1))
+        .shadow(color: Look.violet.opacity(0.45), radius: 14, y: 6)
+        .accessibilityHidden(true)
     }
 }

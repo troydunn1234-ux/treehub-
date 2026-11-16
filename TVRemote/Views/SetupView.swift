@@ -47,10 +47,10 @@ struct SetupView: View {
                 }
                 if let e = store.errorText {
                     Label(e, systemImage: "exclamationmark.triangle.fill")
-                        .font(Look.font(14, .semibold)).foregroundStyle(.white)
+                        .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
                         .padding(Look.S.m)
                         .frame(maxWidth: .infinity)
-                        .glass(18, tint: .orange, glow: .orange, strength: 1.5)
+                        .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
                         .transition(.opacity)
                 }
             }
@@ -62,6 +62,8 @@ struct SetupView: View {
         .scrollDismissesKeyboard(.interactively)
         .onAppear { store.discovery.start() }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
+        .sensoryFeedback(.success, trigger: step) { _, new in new == .done }
+        .sensoryFeedback(.impact(weight: .light), trigger: store.discovery.found.count) { old, new in new > old }
         .sheet(isPresented: $showCompat) { CompatibilityView().presentationDetents([.large]) }
     }
 
@@ -70,15 +72,15 @@ struct SetupView: View {
             VStack(spacing: Look.S.s) {
                 CapsLabel("Step 1 of 2", color: Look.cyan)
                 Text("Let's find\nyour TV.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.center).minimumScaleFactor(0.7)
                 Text("Turn on your TV and keep your phone on the same Wi-Fi. We'll spot VIZIO, Roku, Samsung, LG and Google TV sets in a few seconds.")
-                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button { showCompat = true } label: {
                     Label("Which TVs work?", systemImage: "questionmark.circle.fill")
-                        .font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
+                        .font(Look.text(.footnote, .heavy)).foregroundStyle(Look.cyan)
+                        .frame(minHeight: 44)
                 }
-                .frame(minHeight: 32)
             }
 
             VStack(spacing: Look.S.s) {
@@ -95,13 +97,15 @@ struct SetupView: View {
                 if store.discovery.searching {
                     HStack(spacing: Look.S.s) {
                         ProgressView(value: store.discovery.progress).tint(Look.magenta).frame(width: 110)
-                        Text("Scanning your Wi-Fi…").font(Look.font(13, .bold)).foregroundStyle(Look.dim)
+                        Text("Scanning your Wi-Fi…").font(Look.text(.footnote, .bold)).foregroundStyle(Look.dim)
                     }
                     .padding(.top, Look.S.xs)
                 } else if store.discovery.found.isEmpty {
-                    Text("No TV found yet.").font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
-                    Button("Search again") { store.discovery.start() }
-                        .buttonStyle(PrimaryButtonStyle())
+                    EmptyStateCard(symbol: "tv.badge.wifi",
+                                   title: "No TVs found yet",
+                                   hint: "Check the TV is on and on the same Wi-Fi as this iPhone, then search again.",
+                                   actionTitle: "Search again") { store.discovery.start() }
+                        .transition(.opacity.combined(with: .scale(scale: 0.96)))
                 }
             }
             .animation(.spring(response: 0.45, dampingFraction: 0.55), value: store.discovery.found.count)
@@ -156,7 +160,7 @@ struct SetupView: View {
                 Text("Type the code\non your TV.").font(Look.display(34)).tracking(-1).foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                 Text("A \(pinLength)-\(pinIsHex ? "character" : "digit") code just popped up on \(chosen?.name ?? "the TV").")
-                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
             }
             ZStack {
                 CodeBoxes(code: pin, count: pinLength, boxWidth: pinLength > 4 ? 44 : 60, boxHeight: 74, focused: pinFocused)
@@ -192,9 +196,9 @@ struct SetupView: View {
             VStack(spacing: Look.S.s) {
                 CapsLabel("Step 2 of 2", color: Look.cyan)
                 Text("Look at\nyour TV.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
-                    .multilineTextAlignment(.center)
+                    .multilineTextAlignment(.center).minimumScaleFactor(0.7)
                 Text("\(chosen?.name ?? "Your TV") is asking if Couch Remote can control it. Pick **Allow** with your TV remote.")
-                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
             AllowPulse()
@@ -214,7 +218,7 @@ struct SetupView: View {
         VStack(spacing: Look.S.m) {
             Text("You're in.").font(Look.display(40)).tracking(-1).foregroundStyle(Look.accentH)
             Text("\(chosen?.name ?? "Your TV") is ready. Your phone is the remote now.")
-                .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                .font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
         }
         .transition(.scale(scale: 0.7).combined(with: .opacity))
     }
