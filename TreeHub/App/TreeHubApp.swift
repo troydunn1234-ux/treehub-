@@ -12,10 +12,10 @@ struct TreeHubApp: App {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
         // Syncs to your private iCloud when the app is signed with iCloud; otherwise stays on the phone.
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .automatic)) {
             return c
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .none)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .none)) {
             return c
         }
         // Last resort so the app still opens.

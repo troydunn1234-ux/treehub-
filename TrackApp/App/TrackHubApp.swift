@@ -12,10 +12,10 @@ struct TrackHubApp: App {
         if TrackDemo.isOn {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .automatic)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .automatic)) {
             return c
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, cloudKitDatabase: .none)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .none)) {
             return c
         }
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
