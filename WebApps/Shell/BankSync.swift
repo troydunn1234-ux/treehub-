@@ -124,7 +124,7 @@ enum BankSync {
         }
         UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: lastSyncKey)
         let summary = (result["accounts"] as? [[String: Any]] ?? []).map { a -> [String: Any] in
-            ["id": a["id"] ?? "", "name": a["name"] ?? "", "org": a["org"] ?? "", "balance": a["balance"] ?? 0]
+            ["id": a["id"] ?? "", "name": a["name"] ?? "", "org": a["org"] ?? "", "balance": a["balance"] ?? 0, "balanceDate": a["balanceDate"] ?? 0]
         }
         UserDefaults.standard.set(summary, forKey: accountsKey)
         return result
