@@ -3,6 +3,9 @@ import SwiftData
 
 @MainActor
 struct TrackSettingsView: View {
+    @Environment(\.modelContext) private var rescueContext
+    @State private var rescueReport: TripRescue.Report?
+    @State private var findingTrips = false
     @AppStorage("useMetric") private var useMetric = false
     @AppStorage(TrackPrefs.announceSplitsKey) private var announceSplits = TrackPrefs.defaultOn
     @AppStorage(TrackPrefs.autoPauseKey) private var autoPause = TrackPrefs.defaultOn
@@ -360,6 +363,8 @@ struct TrackSettingsView: View {
             VStack(spacing: 0) {
                 exportRow
                 divider
+                recoverRow
+                divider
                 row(symbol: "icloud.fill", tint: Theme.sky,
                     title: "Storage",
                     subtitle: "iPhone + private iCloud") {
@@ -369,6 +374,38 @@ struct TrackSettingsView: View {
                         .contentTransition(.numericText())
                 }
             }
+        }
+    }
+
+    /// Settings > Find missing trips: brings back anything saved in the wrong place on Nov 15 (TripRescue).
+    private var recoverRow: some View {
+        Button {
+            guard !findingTrips else { return }
+            findingTrips = true
+            Task {
+                rescueReport = await TripRescue.run(in: rescueContext)
+                findingTrips = false
+            }
+        } label: {
+            row(symbol: "magnifyingglass", tint: Theme.sky,
+                title: "Find missing trips",
+                subtitle: "Brings back trips saved in the wrong place") {
+                if findingTrips {
+                    ProgressView().tint(Theme.glow)
+                } else {
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 12, weight: .bold))
+                        .foregroundStyle(Theme.textDim)
+                }
+            }
+            .contentShape(Rectangle())
+        }
+        .pressable()
+        .alert("Find missing trips", isPresented: Binding(get: { rescueReport != nil }, set: { if !$0 { rescueReport = nil } }),
+               presenting: rescueReport) { _ in
+            Button("OK", role: .cancel) { rescueReport = nil }
+        } message: { report in
+            Text(report.summary)
         }
     }
 
