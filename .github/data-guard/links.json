@@ -19,6 +19,9 @@
   },
   "PulseLab": {
     "queries": [
+      "roamr",
+      "rootbound",
+      "stillpoint",
       "whoop"
     ],
     "schemes": [
@@ -32,13 +35,18 @@
     ]
   },
   "Roamr": {
-    "queries": [],
+    "queries": [
+      "pulselab",
+      "rootbound",
+      "stillpoint"
+    ],
     "schemes": [
       "roamr"
     ]
   },
   "Rootbound": {
     "queries": [
+      "pulselab",
       "roamr",
       "stillpoint"
     ],
@@ -54,6 +62,8 @@
   },
   "StillPoint": {
     "queries": [
+      "pulselab",
+      "roamr",
       "rootbound"
     ],
     "schemes": [
