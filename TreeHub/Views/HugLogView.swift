@@ -209,11 +209,9 @@ struct HugLogView: View {
                     feelCard
                     tagsCard
                     if !errorText.isEmpty {
-                        Label(errorText, systemImage: "exclamationmark.triangle.fill")
-                            .font(RB.text(.footnote, .semibold)).foregroundStyle(.red)
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .padding(RB.m)
-                            .rbInner(Color.red.opacity(0.12))
+                        // The family's friendly error row; the fix (Save, "I'm here now", Pin) sits right above it.
+                        FamilyErrorRow(message: errorText, tint: Theme.glow)
+                            .transition(.opacity)
                     }
                 }
                 .padding(.horizontal, RB.l)
@@ -1234,15 +1232,16 @@ struct PhotoSlot: View {
                     .font(RB.text(.caption, .bold)).foregroundStyle(.white)
                     .padding(RB.s)
             } else {
-                Color.white.opacity(0.06)
+                // A soft shimmer while the picked photo loads (no spinner).
+                if loading { RBSkeletonBlock() } else { Color.white.opacity(0.06) }
                 VStack(spacing: 6) {
-                    if loading {
-                        ProgressView().tint(Theme.glow)
-                    } else {
+                    if !loading {
                         Image(systemName: symbol).font(.title2.weight(.semibold))
                     }
                     Text(title).font(RB.text(.footnote, .bold))
-                    if locked {
+                    if loading {
+                        Text("Loading photo…").font(RB.text(.caption2)).foregroundStyle(Theme.textDim)
+                    } else if locked {
                         Label("Pro", systemImage: "lock.fill").font(RB.text(.caption2, .heavy))
                             .foregroundStyle(Theme.gold)
                     } else {
@@ -1260,7 +1259,7 @@ struct PhotoSlot: View {
         .clipShape(RoundedRectangle(cornerRadius: RB.inner + 2, style: .continuous))
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
-        .accessibilityLabel(data == nil ? "Add \(title) photo" : "\(title) photo, change")
+        .accessibilityLabel(loading ? "Loading \(title) photo" : data == nil ? "Add \(title) photo" : "\(title) photo, change")
     }
 }
 

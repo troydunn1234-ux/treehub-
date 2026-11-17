@@ -110,9 +110,12 @@ struct CelebrationView: View {
                                 .symbolEffect(.bounce, value: step)
                                 .transition(.scale.combined(with: .opacity))
                         } else {
-                            Text("\(data.levelAfter.xpForNext - data.levelAfter.xpIntoLevel) XP to level \(data.levelAfter.level + 1)")
+                            // Same level as the ring beside it: before the tally lands, then after.
+                            let shown = step >= 1 ? data.levelAfter : data.levelBefore
+                            Text("\(shown.xpForNext - shown.xpIntoLevel) XP to level \(shown.level + 1)")
                                 .font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
                                 .monospacedDigit()
+                                .contentTransition(.numericText())
                         }
                     }
                     Spacer(minLength: 0)
