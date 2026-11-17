@@ -15,16 +15,23 @@ struct CompareScreen: View {
         let list = agreements
         LabScroll(kicker: "Lab results", title: "VS") {
             VSSlam()
-            HStack {
-                RangePicker(days: $days)
-                Spacer()
-                trustButton
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    RangePicker(days: $days)
+                    Spacer(minLength: Lab.S.s)
+                    trustButton
+                }
+                VStack(alignment: .leading, spacing: Lab.S.s) {
+                    RangePicker(days: $days)
+                    trustButton
+                }
             }
             if list.allSatisfy({ $0.n == 0 }) {
                 noOverlap
             } else {
                 verdictCard(list)
                 scoreboard(list)
+                roundsHeader
                 ForEach(Array(list.filter { $0.n > 0 }.enumerated()), id: \.element.id) { i, a in
                     FightRow(round: i + 1, agreement: a, winner: winner(a), selected: focus == a.metric) {
                         UISelectionFeedbackGenerator().selectionChanged()
@@ -35,7 +42,7 @@ struct CompareScreen: View {
                     }
                 }
             }
-            method
+            method(list)
         }
         .onAppear(perform: takeFocus)
         .onChange(of: store.focusCompare) { _, _ in takeFocus() }
@@ -50,17 +57,18 @@ struct CompareScreen: View {
             Lab.tick()
             showTrust = true
         } label: {
-            HStack(spacing: 5) {
-                Image(systemName: "checkmark.shield.fill").font(.system(size: 11, weight: .semibold))
-                Text("WHO TO TRUST").font(Lab.label(9)).tracking(0.4)
+            HStack(spacing: 6) {
+                Image(systemName: "checkmark.shield.fill").font(.footnote.weight(.semibold))
+                Text("Who to trust").font(.subheadline.weight(.semibold))
             }
             .foregroundStyle(Lab.accent)
-            .padding(.horizontal, 12).padding(.vertical, 8)
-            .background(Capsule().fill(Lab.accent.opacity(0.14)))
-            .overlay(Capsule().strokeBorder(Lab.accent.opacity(0.35)))
+            .padding(.horizontal, 14)
+            .frame(minHeight: 36)
+            .background(Capsule().fill(Lab.accent.opacity(0.15)))
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(PressScale())
-        .accessibilityLabel("Who to trust")
         .accessibilityHint("Opens guidance on which tracker to believe for each metric")
     }
 
@@ -79,7 +87,7 @@ struct CompareScreen: View {
         } else {
             LabEmptyState(icon: "hourglass", title: "Not enough overlap yet",
                           message: "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.",
-                          button: nil, tint: Lab.accent, action: nil)
+                          button: "Sync now", tint: Lab.accent) { Task { await store.refresh(.user) } }
         }
     }
 
@@ -91,23 +99,28 @@ struct CompareScreen: View {
         let best = scored.filter { !$0.trendOnly }.max { ($0.agreePercent ?? 0) < ($1.agreePercent ?? 0) }
         let bestR = scored.compactMap { a in a.correlation.map { (a, $0) } }.max { $0.1 < $1.1 }
         var lines: [String] = []
-        if whoopHigher > watchHigher { lines.append("WHOOP reads higher on \(whoopHigher) of \(scored.count) metrics") }
-        else if watchHigher > whoopHigher { lines.append("Apple Watch reads higher on \(watchHigher) of \(scored.count) metrics") }
-        else if !scored.isEmpty { lines.append("Neither tracker reads consistently higher") }
-        if let best, let p = best.agreePercent { lines.append("Strongest agreement: \(best.metric) (\(Int(p.rounded()))% of days within \(best.tolerance.formatted()) \(best.unit))") }
-        if let bestR { lines.append("Best trend match: \(bestR.0.metric), r = \(bestR.1.formatted(.number.precision(.fractionLength(2))))") }
-        return LabPanel(tint: Lab.accent) {
+        if whoopHigher > watchHigher { lines.append(String(localized: "WHOOP reads higher on \(whoopHigher) of \(scored.count) metrics.")) }
+        else if watchHigher > whoopHigher { lines.append(String(localized: "Apple Watch reads higher on \(watchHigher) of \(scored.count) metrics.")) }
+        else if !scored.isEmpty { lines.append(String(localized: "Neither tracker reads consistently higher.")) }
+        if let best, let p = best.agreePercent {
+            let pct = (p / 100).formatted(.percent.precision(.fractionLength(0)))
+            let tol = "\(best.tolerance.formatted()) \(best.unit)"
+            lines.append(String(localized: "Strongest agreement: \(L(best.metric)), \(pct) of days within \(tol)."))
+        }
+        if let bestR {
+            let r = bestR.1.formatted(.number.precision(.fractionLength(2)))
+            lines.append(String(localized: "Best trend match: \(L(bestR.0.metric)) (r = \(r))."))
+        }
+        return LabPanel {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                SectionTag("Verdict · \(days) days")
+                CardHeader(String(localized: "Verdict · \(days) days"), symbol: "checkmark.seal.fill", tint: Lab.accent)
                 if lines.isEmpty {
                     Text("A few more days where both trackers measured the same thing and the verdict fills in.")
-                        .font(Lab.body(14)).foregroundStyle(Lab.dim)
+                        .font(.subheadline).foregroundStyle(Lab.dim)
+                        .fixedSize(horizontal: false, vertical: true)
                 } else {
                     ForEach(lines, id: \.self) { l in
-                        HStack(alignment: .top, spacing: Lab.S.s) {
-                            Circle().fill(Lab.accent).frame(width: 5, height: 5).padding(.top, 7)
-                            Text(l).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text)
-                        }
+                        LabBullet(l, tint: Lab.accent, color: Lab.text)
                     }
                 }
             }
@@ -118,10 +131,10 @@ struct CompareScreen: View {
     /// Who "wins" a metric: higher reader for absolute metrics, else the steadier (less noisy) tracker.
     private func winner(_ a: Agreement) -> (Source, String)? {
         guard a.n >= 3 else { return nil }
-        if let h = a.higher { return (h, "HIGHER") }
+        if let h = a.higher { return (h, String(localized: "reads higher")) }
         guard let sw = Stats.sd(a.pairs.map(\.watch)), let sh = Stats.sd(a.pairs.map(\.whoop)), sw > 0, sh > 0,
               abs(sw - sh) / max(sw, sh) > 0.1 else { return nil }
-        return (sw < sh ? .watch : .whoop, "STEADIER")
+        return (sw < sh ? .watch : .whoop, String(localized: "steadier"))
     }
 
     /// Overall: agreement gauge in the middle, rounds "won" (reads higher / steadier) on each side.
@@ -130,134 +143,237 @@ struct CompareScreen: View {
         let overall = Stats.mean(scored.map(\.score))
         let wins = scored.compactMap { winner($0)?.0 }
         let w = wins.filter { $0 == .watch }.count, h = wins.filter { $0 == .whoop }.count
-        return LabPanel(tint: Lab.accent) {
-            VStack(spacing: 12) {
+        return LabPanel {
+            VStack(spacing: Lab.S.sm) {
                 HStack(alignment: .center) {
                     tally(.watch, w)
                     ArcGauge(value: overall, label: "Agree", color: overall.map { $0 >= 70 ? Lab.good : $0 >= 45 ? Lab.warn : Lab.bad } ?? Lab.faint, size: 116)
                     tally(.whoop, h)
                 }
-                Text("\(scored.count) metrics measured by both · crowns go to the tracker that reads higher, or steadier when they match.")
-                    .font(.system(size: 11, weight: .medium, design: .rounded)).foregroundStyle(Lab.faint)
+                Text("\(scored.count) metrics measured by both. Crowns go to the tracker that reads higher, or the steadier one when they match.")
+                    .font(.footnote).foregroundStyle(Lab.faint)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            .frame(maxWidth: .infinity)
         }
     }
 
     private func tally(_ s: Source, _ n: Int) -> some View {
-        VStack(spacing: 2) {
-            Text(s.short).font(Lab.label(10)).tracking(0.4).foregroundStyle(Lab.color(s))
+        VStack(spacing: 4) {
+            SourceChip(source: s)
             CountUp(value: Double(n), size: 40, color: Lab.color(s))
-            Text("CROWNS").font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
+            Text("crowns").font(.caption).foregroundStyle(Lab.faint)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "\(s.name): \(n) crowns"))
     }
 
-    private func stat(_ l: String, _ v: Double?, _ u: String, _ c: Color) -> some View {
-        VStack(alignment: .leading, spacing: 1) {
-            Text(l).font(Lab.label(8)).foregroundStyle(Lab.faint)
-            Text(v.map { String(format: abs($0) < 10 ? "%.2f" : "%.0f", $0) } ?? "—").font(Lab.mono(14, .heavy)).foregroundStyle(c)
-            Text(u).font(Lab.label(8)).foregroundStyle(Lab.faint)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
+    private var roundsHeader: some View {
+        CardHeader("Round by round", subtitle: "Tap a metric for the day-by-day detail")
+            .padding(.top, Lab.S.s)
     }
 
-    /// Bland–Altman: each day is a dot at (average of both, difference). The band shows the usual spread.
+    /// The focused metric in plain words, plus its chart: a difference plot, or (HRV) both trends side by side.
     private func detail(_ a: Agreement) -> some View {
-        LabPanel(tint: Lab.watch) {
-            VStack(alignment: .leading, spacing: 10) {
-                SectionTag("\(a.metric) · in plain words")
-                Text(a.plain).font(Lab.body(15, .semibold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
-                if !a.why.isEmpty {
-                    HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.accent).font(.system(size: 13)).padding(.top, 2)
-                        Text(a.why).font(.system(size: 13, design: .rounded)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.accent.opacity(0.08)))
-                }
-                SectionTag(a.trendOnly ? "Day by day" : "Difference plot").padding(.top, 4)
+        LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.sm) {
+                CardHeader(String(localized: "\(L(a.metric)) in plain words"))
+                Text(a.plain).font(.subheadline).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
+                if !a.why.isEmpty { InfoBox(text: a.why) }
+                Divider().overlay(Lab.line)
+                CardHeader(a.trendOnly ? "Day by day" : "Difference plot",
+                           subtitle: a.n >= 3 ? "Press and drag the chart to read each day" : nil)
                 if a.n < 3 {
-                    EmptyNote(text: "Needs at least 3 days where both trackers measured \(a.metric.lowercased()).")
+                    EmptyNote(text: String(localized: "Needs at least 3 days where both trackers measured \(L(a.metric).lowercased())."),
+                              symbol: "calendar.badge.clock", title: "Not enough days yet")
                 } else if a.trendOnly {
-                    // Normalise both to z-scores so SDNN and RMSSD sit on one scale.
-                    let zw = z(a.pairs.map(\.watch)), zh = z(a.pairs.map(\.whoop))
-                    Chart {
-                        ForEach(Array(a.pairs.enumerated()), id: \.offset) { i, p in
-                            LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zw[i]), series: .value("S", "Watch"))
-                                .foregroundStyle(Lab.watch).interpolationMethod(.monotone).lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                            LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zh[i]), series: .value("S", "WHOOP"))
-                                .foregroundStyle(Lab.whoop).interpolationMethod(.monotone).lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
-                        }
-                        RuleMark(y: .value("0", 0)).foregroundStyle(Lab.faint)
-                    }
-                    .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("vs own average (SD)") }
-                    .chartXAxis { LabAxis.xDays }
-                    .chartYAxis { LabAxis.y }
-                    .frame(height: 180)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("\(a.metric) trend for both trackers, correlation \(String(format: "%.2f", a.correlation ?? 0)).")
-                    Text("Each line is scaled to its own average, so you can see if they rise and fall together. Correlation r = \(String(format: "%.2f", a.correlation ?? 0)).")
-                        .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
+                    AgreementTrendChart(agreement: a)
+                    Text("Each line is scaled to its own average, so you can see whether they rise and fall together.")
+                        .font(.footnote).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                 } else {
-                    let b = a.bias ?? 0, sd = a.sdDiff ?? 0
-                    Chart {
-                        RectangleMark(xStart: .value("lo", minMean(a)), xEnd: .value("hi", maxMean(a)),
-                                      yStart: .value("l", b - 1.96 * sd), yEnd: .value("u", b + 1.96 * sd))
-                            .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.16), Color.white.opacity(0.04), Lab.whoop.opacity(0.16)], startPoint: .top, endPoint: .bottom))
-                        RuleMark(y: .value("bias", b)).foregroundStyle(Lab.text.opacity(0.7))
-                            .annotation(position: .top, alignment: .trailing) {
-                                Text("AVG GAP \(String(format: "%+.1f", b))").font(Lab.label(8)).foregroundStyle(Lab.dim)
-                            }
-                        RuleMark(y: .value("zero", 0)).foregroundStyle(Lab.faint).lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
-                        ForEach(a.pairs) { p in
-                            PointMark(x: .value("Average", (p.watch + p.whoop) / 2), y: .value("Watch − WHOOP", p.watch - p.whoop))
-                                .foregroundStyle((p.watch >= p.whoop ? Lab.watch : Lab.whoop).opacity(0.25))
-                                .symbolSize(160)
-                            PointMark(x: .value("Average", (p.watch + p.whoop) / 2), y: .value("Watch − WHOOP", p.watch - p.whoop))
-                                .foregroundStyle(p.watch >= p.whoop ? Lab.watch : Lab.whoop)
-                                .symbolSize(40)
-                        }
-                    }
-                    .chartXScale(domain: .automatic(includesZero: false))
-                    .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("Watch − WHOOP · " + a.unit) }
-                    .chartXAxis {
-                        AxisMarks(values: .automatic(desiredCount: 4)) { _ in
-                            AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Lab.line)
-                            AxisValueLabel().foregroundStyle(Lab.faint).font(LabAxis.labelFont)
-                        }
-                    }
-                    .chartYAxis { LabAxis.y }
-                    .frame(height: 200)
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("Difference plot for \(a.metric). On average Apple Watch reads \(String(format: "%+.1f", b)) \(a.unit) versus WHOOP across \(a.n) days.")
-                    Text("Dots above the line: Watch read higher (cyan). Below: WHOOP read higher (amber). The shaded band is where 95% of days fall.")
-                        .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.faint)
+                    AgreementScatter(agreement: a)
+                    Text("Each dot is one day. Above the line, the Watch read higher (cyan); below it, WHOOP did (amber). The shaded band is where 95% of days fall.")
+                        .font(.footnote).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
     }
 
-    private func minMean(_ a: Agreement) -> Double { a.pairs.map { ($0.watch + $0.whoop) / 2 }.min() ?? 0 }
-    private func maxMean(_ a: Agreement) -> Double { a.pairs.map { ($0.watch + $0.whoop) / 2 }.max() ?? 1 }
+    /// What counts as agreeing, metric by metric, straight from the comparison's own tolerances.
+    private func method(_ list: [Agreement]) -> some View {
+        LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.s) {
+                CardHeader("How we compare", symbol: "ruler", tint: Lab.accent)
+                Text("Only days (or nights) when both trackers recorded a value count. A day agrees when the two land within:")
+                    .font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                VStack(spacing: 0) {
+                    ForEach(Array(list.enumerated()), id: \.element.id) { i, a in
+                        if i > 0 { Divider().overlay(Lab.line) }
+                        HStack(alignment: .firstTextBaseline, spacing: Lab.S.s) {
+                            Text(L(a.metric)).font(.subheadline).foregroundStyle(Lab.text)
+                            Spacer(minLength: Lab.S.s)
+                            Text(tolerance(a)).font(.subheadline.weight(.semibold).monospacedDigit()).foregroundStyle(Lab.dim)
+                                .multilineTextAlignment(.trailing)
+                        }
+                        .padding(.vertical, Lab.S.s)
+                        .accessibilityElement(children: .combine)
+                    }
+                }
+                .padding(.horizontal, Lab.S.sm)
+                .background(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).fill(Lab.inset))
+                Text("Readiness is Pulse Lab's own score from your Watch, not a number Apple shows.")
+                    .font(.footnote).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private func tolerance(_ a: Agreement) -> String {
+        if a.trendOnly { return String(localized: "Same direction (SDNN vs RMSSD)") }
+        if a.unit == "h" { return "± \(Int((a.tolerance * 60).rounded())) min" }
+        return "± \(a.tolerance.formatted()) \(a.unit)"
+    }
+}
+
+// MARK: - Charts
+
+/// HRV-style comparison: both trackers on their own scale (z-scores), with press-and-drag to read the raw
+/// numbers for a day.
+struct AgreementTrendChart: View {
+    let agreement: Agreement
+    @State private var selected: Date?
 
     private func z(_ v: [Double]) -> [Double] {
         guard let m = Stats.mean(v), let s = Stats.sd(v), s > 0 else { return v.map { _ in 0 } }
         return v.map { ($0 - m) / s }
     }
 
-    private var method: some View {
-        LabPanel(tint: Lab.accent) {
-            VStack(alignment: .leading, spacing: 8) {
-                SectionTag("How we compare")
-                Text("""
-                Only days (or nights) where both trackers recorded a value are compared. "Agree" means within \
-                3 bpm resting HR, 20 min of sleep, 1 breath/min, 2% SpO₂, \(Units.fahrenheit ? "0.5 °F" : "0.3 °C") or 250 kcal. HRV is compared by \
-                trend because Apple Watch logs SDNN and WHOOP logs RMSSD. Readiness is Pulse Lab's own Watch \
-                score, not an Apple metric.
-                """)
-                .font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim)
+    var body: some View {
+        let a = agreement
+        let zw = z(a.pairs.map(\.watch)), zh = z(a.pairs.map(\.whoop))
+        let pick = selected.flatMap { s in a.pairs.firstIndex { Calendar.current.isDate($0.day, inSameDayAs: s) } }
+        Chart {
+            RuleMark(y: .value("Average", 0)).foregroundStyle(Lab.faint).lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
+            ForEach(Array(a.pairs.enumerated()), id: \.offset) { i, p in
+                LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zw[i]), series: .value("S", "Watch"))
+                    .foregroundStyle(Lab.watch).interpolationMethod(.monotone)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+                LineMark(x: .value("Day", p.day, unit: .day), y: .value("z", zh[i]), series: .value("S", "WHOOP"))
+                    .foregroundStyle(Lab.whoop).interpolationMethod(.monotone)
+                    .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round, lineJoin: .round))
+            }
+            if let i = pick {
+                let p = a.pairs[i]
+                RuleMark(x: .value("Selected", p.day, unit: .day))
+                    .foregroundStyle(Color.white.opacity(0.35))
+                    .lineStyle(StrokeStyle(lineWidth: 1))
+                    .annotation(position: .top, spacing: 4, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+                        LabChartTooltip(title: LabChartTooltip.dayTitle(p.day), lines: [
+                            .init(label: Source.watch.label, value: value(p.watch), color: Lab.watch),
+                            .init(label: Source.whoop.label, value: value(p.whoop), color: Lab.whoop),
+                        ])
+                    }
+                PointMark(x: .value("Day", p.day, unit: .day), y: .value("z", zw[i])).foregroundStyle(Lab.watch).symbolSize(70)
+                PointMark(x: .value("Day", p.day, unit: .day), y: .value("z", zh[i])).foregroundStyle(Lab.whoop).symbolSize(70)
             }
         }
+        .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel(String(localized: "vs own average (SD)")) }
+        .scrubDays(a.pairs.map(\.day), selection: $selected)
+        .chartXAxis { LabAxis.xDays }
+        .chartYAxis { LabAxis.y }
+        .frame(height: 190)
+        .chartSummary(summary)
+    }
+
+    private func value(_ v: Double) -> String { "\(v.formatted(.number.precision(.fractionLength(0)))) \(agreement.unit)" }
+
+    private var summary: String {
+        let a = agreement
+        let r = (a.correlation ?? 0).formatted(.number.precision(.fractionLength(2)))
+        let w = Stats.mean(a.pairs.map(\.watch)).map(value) ?? "—", h = Stats.mean(a.pairs.map(\.whoop)).map(value) ?? "—"
+        return String(localized: "\(L(a.metric)) trend for both trackers over \(a.n) days. Apple Watch averages \(w), WHOOP \(h). Correlation \(r).")
+    }
+}
+
+/// Bland–Altman difference plot: each day is a dot at (average of both, Watch − WHOOP); the band is the usual
+/// spread. Press and drag to read a day's two numbers.
+struct AgreementScatter: View {
+    let agreement: Agreement
+    @State private var rawX: Double?
+    @State private var picked: Date?
+
+    private func mid(_ p: Agreement.Pair) -> Double { (p.watch + p.whoop) / 2 }
+
+    var body: some View {
+        let a = agreement
+        let b = a.bias ?? 0, sd = a.sdDiff ?? 0
+        let lo = a.pairs.map(mid).min() ?? 0, hi = a.pairs.map(mid).max() ?? 1
+        let sel = picked.flatMap { d in a.pairs.first { $0.day == d } }
+        Chart {
+            RectangleMark(xStart: .value("Low", lo), xEnd: .value("High", hi),
+                          yStart: .value("Lower", b - 1.96 * sd), yEnd: .value("Upper", b + 1.96 * sd))
+                .foregroundStyle(LinearGradient(colors: [Lab.watch.opacity(0.16), Color.white.opacity(0.04), Lab.whoop.opacity(0.16)], startPoint: .top, endPoint: .bottom))
+            RuleMark(y: .value("Average gap", b)).foregroundStyle(Lab.text.opacity(0.7))
+                .annotation(position: .top, alignment: .trailing) {
+                    Text("Average gap \(Lab.fmt(b, 1, signed: true))").font(.caption2.weight(.semibold)).foregroundStyle(Lab.dim)
+                }
+            RuleMark(y: .value("Zero", 0)).foregroundStyle(Lab.faint).lineStyle(StrokeStyle(lineWidth: 1, dash: [2, 4]))
+            ForEach(a.pairs) { p in
+                let dim = sel != nil && sel?.day != p.day
+                PointMark(x: .value("Average", mid(p)), y: .value("Watch − WHOOP", p.watch - p.whoop))
+                    .foregroundStyle((p.watch >= p.whoop ? Lab.watch : Lab.whoop).opacity(dim ? 0.1 : 0.25))
+                    .symbolSize(160)
+                PointMark(x: .value("Average", mid(p)), y: .value("Watch − WHOOP", p.watch - p.whoop))
+                    .foregroundStyle((p.watch >= p.whoop ? Lab.watch : Lab.whoop).opacity(dim ? 0.4 : 1))
+                    .symbolSize(40)
+            }
+            if let p = sel {
+                RuleMark(x: .value("Selected", mid(p)))
+                    .foregroundStyle(Color.white.opacity(0.35))
+                    .lineStyle(StrokeStyle(lineWidth: 1))
+                    .annotation(position: .top, spacing: 4, overflowResolution: .init(x: .fit(to: .chart), y: .disabled)) {
+                        tooltip(p)
+                    }
+                PointMark(x: .value("Average", mid(p)), y: .value("Watch − WHOOP", p.watch - p.whoop))
+                    .foregroundStyle(Lab.text)
+                    .symbolSize(90)
+            }
+        }
+        .chartXScale(domain: .automatic(includesZero: false))
+        .chartYAxisLabel(position: .topLeading, alignment: .leading) { LabAxis.unitLabel("Watch − WHOOP · " + a.unit) }
+        .chartXAxis {
+            AxisMarks(values: .automatic(desiredCount: 4)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Lab.line)
+                AxisValueLabel().foregroundStyle(Lab.faint).font(LabAxis.labelFont)
+            }
+        }
+        .chartYAxis { LabAxis.y }
+        .chartXSelection(value: $rawX)
+        .onChange(of: rawX) { _, r in
+            let nearest = r.flatMap { r in a.pairs.min { abs(mid($0) - r) < abs(mid($1) - r) } }
+            if nearest?.day != picked { picked = nearest?.day }
+        }
+        .sensoryFeedback(.selection, trigger: picked)
+        .frame(height: 210)
+        .chartSummary(summary)
+    }
+
+    private func fmt(_ v: Double) -> String { Lab.fmt(v, abs(v) < 10 ? 1 : 0) }
+
+    private func tooltip(_ p: Agreement.Pair) -> some View {
+        let u = agreement.unit
+        return LabChartTooltip(title: LabChartTooltip.dayTitle(p.day), lines: [
+            .init(label: Source.watch.label, value: "\(fmt(p.watch)) \(u)", color: Lab.watch),
+            .init(label: Source.whoop.label, value: "\(fmt(p.whoop)) \(u)", color: Lab.whoop),
+            .init(label: String(localized: "Gap"), value: "\(Lab.fmt(p.watch - p.whoop, abs(p.watch - p.whoop) < 10 ? 1 : 0, signed: true)) \(u)", color: Lab.text),
+        ])
+    }
+
+    private var summary: String {
+        let a = agreement
+        let gap = "\(Lab.fmt(a.bias ?? 0, 1, signed: true)) \(a.unit)"
+        let within = a.pairs.filter { abs($0.watch - $0.whoop) <= a.tolerance }.count
+        return String(localized: "Difference plot for \(L(a.metric)) over \(a.n) days. On average Apple Watch reads \(gap) versus WHOOP. \(within) of \(a.n) days within \(a.tolerance.formatted()) \(a.unit).")
     }
 }

@@ -1,13 +1,13 @@
 import SwiftUI
 
-/// "WATCH VS WHOOP" title that slams in like a fighting-game intro (fades in under Reduce Motion).
+/// "Watch vs WHOOP" title that slams in like a fighting-game intro (fades in under Reduce Motion).
 struct VSSlam: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var inPlace = false
 
     var body: some View {
         HStack(spacing: 10) {
-            fighter("applewatch", "WATCH", Lab.watch)
+            fighter("applewatch", "Watch", Lab.watch)
                 .offset(x: inPlace || reduceMotion ? 0 : -140)
             Text("VS")
                 .font(.system(size: 54, weight: .bold, design: .rounded).width(.compressed))
@@ -39,7 +39,7 @@ struct VSSlam: View {
                 .frame(width: 56, height: 56)
                 .background(Circle().fill(c.opacity(0.14)))
                 .overlay(Circle().strokeBorder(c.opacity(0.6), lineWidth: 1.2))
-            Text(name).font(Lab.label(10)).tracking(0.4).foregroundStyle(c)
+            Text(name).font(.footnote.weight(.semibold)).foregroundStyle(c)
         }
         .frame(maxWidth: .infinity)
     }
@@ -68,36 +68,54 @@ struct FightRow: View {
 
     var body: some View {
         Button(action: action) {
-            VStack(alignment: .leading, spacing: 8) {
-                HStack(spacing: 8) {
-                    Text("ROUND \(round)").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
-                    Text(agreement.metric.uppercased()).font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
-                    Spacer()
+            VStack(alignment: .leading, spacing: Lab.S.s) {
+                HStack(alignment: .firstTextBaseline, spacing: Lab.S.s) {
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Round \(round)").font(.caption.weight(.semibold)).foregroundStyle(Lab.faint)
+                        Text(L(agreement.metric)).font(.headline).foregroundStyle(Lab.text)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: Lab.S.xs)
                     if let w = winner { CrownChip(source: w.0, label: w.1) }
                 }
                 bars
-                HStack {
+                HStack(alignment: .firstTextBaseline) {
                     value(agreement.meanWatch, Lab.watch, leading: true)
-                    Spacer()
-                    Text(agreement.verdict + " · \(agreement.n)d").font(.system(size: 11, weight: .medium, design: .rounded))
-                        .foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.8)
-                    Spacer()
+                    Spacer(minLength: Lab.S.xs)
+                    VStack(spacing: 1) {
+                        Text(agreement.verdict).font(.caption.weight(.medium)).foregroundStyle(Lab.dim)
+                            .multilineTextAlignment(.center)
+                            .lineLimit(2).minimumScaleFactor(0.85)
+                        Text("\(agreement.n) days").font(.caption2).foregroundStyle(Lab.faint)
+                    }
+                    Spacer(minLength: Lab.S.xs)
                     value(agreement.meanWhoop, Lab.whoop, leading: false)
                 }
             }
-            .padding(14)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(selected ? 1 : 0.8)))
+            .padding(Lab.S.m - 2)
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
             .overlay(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .strokeBorder(selected ? AnyShapeStyle(LinearGradient(colors: [Lab.watch, Lab.whoop], startPoint: .leading, endPoint: .trailing)) : AnyShapeStyle(Color.white.opacity(0.08)), lineWidth: selected ? 1.5 : 1)
+                RoundedRectangle(cornerRadius: Lab.radius, style: .continuous)
+                    .strokeBorder(selected ? Lab.accent : Lab.line, lineWidth: selected ? 1.5 : 1)
             )
+            .contentShape(Rectangle())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(PressScale())
         .onAppear { animate() }
         .onChange(of: agreement.n) { _, _ in animate() }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Round \(round), \(agreement.metric). Apple Watch \(fmt(agreement.meanWatch)), WHOOP \(fmt(agreement.meanWhoop)) \(agreement.unit). \(agreement.agreePercent.map { "\(Int($0)) percent agreement" } ?? ""). \(winner.map { "\($0.0.name) \($0.1.lowercased())" } ?? "")")
-        .accessibilityAddTraits(.isButton)
+        .accessibilityLabel(spoken)
+        .accessibilityAddTraits(selected ? [.isButton, .isSelected] : [.isButton])
+        .accessibilityHint("Shows the day-by-day detail below")
+    }
+
+    private var spoken: String {
+        var parts = [String(localized: "Round \(round), \(L(agreement.metric))"),
+                     "\(Source.watch.name) \(fmt(agreement.meanWatch)) \(agreement.unit), \(Source.whoop.name) \(fmt(agreement.meanWhoop)) \(agreement.unit)",
+                     agreement.verdict]
+        if let p = agreement.agreePercent { parts.append(String(localized: "\(Int(p.rounded())) percent agreement")) }
+        if let w = winner { parts.append("\(w.0.name) \(w.1)") }
+        return parts.joined(separator: ". ")
     }
 
     private var bars: some View {
@@ -130,8 +148,9 @@ struct FightRow: View {
 
     private func value(_ v: Double?, _ c: Color, leading: Bool) -> some View {
         VStack(alignment: leading ? .leading : .trailing, spacing: 0) {
-            Text(fmt(v)).font(Lab.number(20, .black)).foregroundStyle(c)
-            Text(agreement.unit).font(Lab.label(7)).foregroundStyle(Lab.faint)
+            Text(fmt(v)).font(Lab.number(20)).foregroundStyle(v == nil ? Lab.faint : c)
+                .lineLimit(1).minimumScaleFactor(0.7)
+            Text(agreement.unit).font(Lab.label(9)).foregroundStyle(Lab.faint)
         }
     }
 

@@ -11,6 +11,36 @@
         }
       }
     },
+    "%@: %@, %@ versus your usual": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %@, %@ frente a lo habitual"
+          }
+        }
+      }
+    },
+    "%@: not in yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: aún no disponible"
+          }
+        }
+      }
+    },
+    "Asks your iPhone for fresh numbers": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pide números nuevos a tu iPhone"
+          }
+        }
+      }
+    },
     "HRV": {
       "localizations": {
         "es": {
@@ -21,12 +51,32 @@
         }
       }
     },
+    "No numbers yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay números"
+          }
+        }
+      }
+    },
     "No recovery score yet": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Aún sin puntuación de recuperación"
+          }
+        }
+      }
+    },
+    "Not in yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no disponible"
           }
         }
       }
@@ -127,6 +177,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "iPhone no disponible. Los números se actualizan tras su próxima sincronización."
+          }
+        }
+      }
+    },
+    "vs usual": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs lo habitual"
           }
         }
       }

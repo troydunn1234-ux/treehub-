@@ -210,27 +210,30 @@ struct ScreenTitle: View {
     }
 }
 
-/// Small coloured source chip: "● WATCH" / "● WHOOP".
+/// Small coloured source chip: "● Watch" / "● WHOOP" (sentence case, like every caption).
 struct SourceChip: View {
     let source: Source
     var body: some View {
         HStack(spacing: 5) {
             Circle().fill(Lab.color(source)).frame(width: 6, height: 6)
-            Text(source.short).font(Lab.label(10)).tracking(0.4).foregroundStyle(Lab.color(source))
+            Text(source.label).font(Lab.label(10)).foregroundStyle(Lab.color(source))
+                .lineLimit(1)
         }
         .padding(.horizontal, 8).padding(.vertical, 4)
         .background(Capsule().fill(Lab.color(source).opacity(0.14)))
-        .accessibilityElement(children: .combine)
+        .fixedSize()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(source.name)
     }
 }
 
-/// Uppercase caption used above a number (column heads, units).
+/// Sentence-case caption used above a number (column heads, units).
 struct LabCaption: View {
     let text: String
     var color: Color = Lab.faint
     init(_ text: String, color: Color = Lab.faint) { self.text = text; self.color = color }
     var body: some View {
-        Text(L(text).uppercased()).font(Lab.label(10)).tracking(0.4).foregroundStyle(color)
+        Text(L(text)).font(.caption.weight(.semibold)).foregroundStyle(color)
     }
 }
 
@@ -400,18 +403,44 @@ struct RangePicker: View {
     }
 }
 
-/// Inline "nothing here yet" line inside a card.
+/// The designed "nothing here yet" state inside a card: symbol, optional title, one-line hint and an
+/// optional action. `EmptyNote(text:)` alone stays a quiet one-liner.
 struct EmptyNote: View {
     let text: String
+    var symbol: String = "chart.line.uptrend.xyaxis"
+    var title: String? = nil
+    var actionTitle: String? = nil
+    var action: (() -> Void)? = nil
+
     var body: some View {
-        HStack(spacing: 8) {
-            Image(systemName: "chart.line.uptrend.xyaxis").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
+        VStack(spacing: Lab.S.s) {
+            Image(systemName: symbol).font(.title3.weight(.semibold)).foregroundStyle(Lab.faint)
+                .frame(width: 44, height: 44)
+                .background(Circle().fill(Lab.inset))
+                .accessibilityHidden(true)
+            if let title {
+                Text(L(title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             Text(L(text)).font(.footnote).foregroundStyle(Lab.dim)
-                .multilineTextAlignment(.leading)
+                .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+            if let actionTitle, let action {
+                Button {
+                    Lab.tick()
+                    action()
+                } label: {
+                    Text(L(actionTitle))
+                }
+                .buttonStyle(LabSecondaryButton())
+                .frame(maxWidth: 280)
+                .padding(.top, Lab.S.xs)
+            }
         }
-        .frame(maxWidth: .infinity, alignment: .center)
-        .padding(.vertical, 18)
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, Lab.S.m)
+        .accessibilityElement(children: action == nil ? .combine : .contain)
     }
 }
 
@@ -457,6 +486,8 @@ struct LabChartTooltip: View {
     }
     let title: String
     let lines: [Line]
+    /// Optional footnote under the values ("Still counting").
+    var note: String? = nil
     var body: some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title).font(.system(size: 11, weight: .semibold)).foregroundStyle(Lab.dim)
@@ -467,6 +498,9 @@ struct LabChartTooltip: View {
                     Spacer(minLength: 6)
                     Text(l.value).font(Lab.mono(13, .semibold)).foregroundStyle(Lab.text)
                 }
+            }
+            if let note {
+                Text(note).font(.system(size: 10, weight: .medium)).foregroundStyle(Lab.faint)
             }
         }
         .padding(.horizontal, 10).padding(.vertical, 8)
@@ -479,7 +513,9 @@ struct LabChartTooltip: View {
     static func dayTitle(_ d: Date) -> String { d.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()) }
 }
 
-/// Snaps a raw chart-selection date to the nearest day that has data, with a selection haptic.
+/// Snaps a raw chart-selection date to a day that has data, with a selection haptic. Marks plotted with
+/// `unit: .day` sit in the middle of their day (bars span it), so the finger's day wins; between days with
+/// data, the nearest day's middle does.
 struct DaySelection: ViewModifier {
     let days: [Date]
     @Binding var selected: Date?
@@ -488,10 +524,16 @@ struct DaySelection: ViewModifier {
         content
             .chartXSelection(value: $raw)
             .onChange(of: raw) { _, r in
-                let snapped = r.flatMap { r in days.min { abs($0.timeIntervalSince(r)) < abs($1.timeIntervalSince(r)) } }
+                let snapped = r.flatMap { DaySelection.snap($0, to: days) }
                 if snapped != selected { selected = snapped }
             }
             .sensoryFeedback(.selection, trigger: selected)
+    }
+
+    static func snap(_ r: Date, to days: [Date]) -> Date? {
+        if let same = days.first(where: { Calendar.current.isDate($0, inSameDayAs: r) }) { return same }
+        func gap(_ d: Date) -> TimeInterval { abs(d.dayStart.addingTimeInterval(43_200).timeIntervalSince(r)) }
+        return days.min { gap($0) < gap($1) }
     }
 }
 
@@ -499,6 +541,220 @@ extension View {
     /// Press-and-drag scrubbing that snaps to `days`.
     func scrubDays(_ days: [Date], selection: Binding<Date?>) -> some View {
         modifier(DaySelection(days: days, selected: selection))
+    }
+
+    /// One VoiceOver element for a chart: its spoken summary (the scrub gesture stays for touch).
+    func chartSummary(_ text: String) -> some View {
+        accessibilityElement(children: .ignore)
+            .accessibilityLabel(text)
+    }
+}
+
+// MARK: - Rows & cards
+
+/// Card header used by every card: optional tinted symbol, a `.headline` title (sentence case), an optional
+/// one-line subtitle and trailing content (a link, chips or a count).
+struct CardHeader<Trailing: View>: View {
+    let title: String
+    var subtitle: String?
+    var symbol: String?
+    var tint: Color
+    let trailing: Trailing
+
+    init(_ title: String, subtitle: String? = nil, symbol: String? = nil, tint: Color = Lab.accent,
+         @ViewBuilder trailing: () -> Trailing) {
+        self.title = title
+        self.subtitle = subtitle
+        self.symbol = symbol
+        self.tint = tint
+        self.trailing = trailing()
+    }
+
+    var body: some View {
+        HStack(alignment: .center, spacing: Lab.S.s) {
+            if let symbol { SymbolTile(symbol: symbol, tint: tint, size: 30) }
+            VStack(alignment: .leading, spacing: 2) {
+                Text(L(title)).font(.headline).foregroundStyle(Lab.text)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+                if let subtitle {
+                    Text(L(subtitle)).font(.footnote).foregroundStyle(Lab.dim)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer(minLength: Lab.S.s)
+            trailing
+        }
+    }
+}
+
+extension CardHeader where Trailing == EmptyView {
+    init(_ title: String, subtitle: String? = nil, symbol: String? = nil, tint: Color = Lab.accent) {
+        self.init(title, subtitle: subtitle, symbol: symbol, tint: tint) { EmptyView() }
+    }
+}
+
+/// Tinted rounded-square SF Symbol for rows and card headers. Grows a little with Dynamic Type.
+struct SymbolTile: View {
+    let symbol: String
+    var tint: Color
+    var size: CGFloat
+    @ScaledMetric(relativeTo: .body) private var scale: CGFloat = 1
+
+    init(symbol: String, tint: Color = Lab.accent, size: CGFloat = 32) {
+        self.symbol = symbol
+        self.tint = tint
+        self.size = size
+    }
+
+    var body: some View {
+        let s = size * min(max(scale, 1), 1.5)
+        Image(systemName: symbol)
+            .font(.system(size: s * 0.46, weight: .semibold))
+            .foregroundStyle(tint)
+            .frame(width: s, height: s)
+            .background(RoundedRectangle(cornerRadius: s * 0.3, style: .continuous).fill(tint.opacity(0.15)))
+            .accessibilityHidden(true)
+    }
+}
+
+/// Small sentence-case tag: "Yesterday", "Baseline: last 14 days", "Still counting".
+struct TagChip: View {
+    let text: String
+    var tint: Color = Lab.dim
+    var symbol: String? = nil
+
+    init(_ text: String, tint: Color = Lab.dim, symbol: String? = nil) {
+        self.text = text
+        self.tint = tint
+        self.symbol = symbol
+    }
+
+    var body: some View {
+        HStack(spacing: 4) {
+            if let symbol { Image(systemName: symbol).font(.caption2.weight(.bold)).accessibilityHidden(true) }
+            Text(L(text)).font(.caption.weight(.semibold))
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .foregroundStyle(tint)
+        .padding(.horizontal, 8).padding(.vertical, 4)
+        .background(Capsule().fill(tint.opacity(0.14)))
+    }
+}
+
+/// A number with its unit on one baseline: rounded, monospaced digits; unit small and dim.
+struct NumberUnit: View {
+    let value: String
+    var unit: String = ""
+    var color: Color = Lab.text
+    var size: CGFloat = 20
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: 3) {
+            Text(value).font(Lab.number(size)).foregroundStyle(color)
+                .lineLimit(1).minimumScaleFactor(0.6)
+            if !unit.isEmpty {
+                Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint).lineLimit(1)
+            }
+        }
+    }
+}
+
+/// One stat in a grid: sentence-case caption on top, the number (and unit) under it. A missing value says so
+/// in words instead of showing a bare dash.
+struct StatCell: View {
+    let caption: String
+    let value: String?
+    var unit: String = ""
+    var color: Color = Lab.text
+    var size: CGFloat = 20
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(L(caption)).font(.footnote.weight(.medium)).foregroundStyle(Lab.dim)
+                .lineLimit(2).minimumScaleFactor(0.85)
+            if let value {
+                NumberUnit(value: value, unit: unit, color: color, size: size)
+            } else {
+                Text("No data").font(.subheadline).foregroundStyle(Lab.faint)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+}
+
+/// Accent text link for card headers ("Details", "Trend"), 44 pt tall.
+struct CardLink: View {
+    let title: String
+    var symbol = "chevron.right"
+    let action: () -> Void
+
+    init(_ title: String, symbol: String = "chevron.right", action: @escaping () -> Void) {
+        self.title = title
+        self.symbol = symbol
+        self.action = action
+    }
+
+    var body: some View {
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            action()
+        } label: {
+            HStack(spacing: 4) {
+                Text(L(title)).font(.subheadline.weight(.semibold))
+                Image(systemName: symbol).font(.caption.weight(.bold)).accessibilityHidden(true)
+            }
+            .foregroundStyle(Lab.accent)
+            .frame(minHeight: 44)
+            .padding(.leading, Lab.S.xs)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(PressScale())
+    }
+}
+
+/// A bulleted line of body text.
+struct LabBullet: View {
+    let text: String
+    var tint: Color = Lab.faint
+    var font: Font = .subheadline
+    var color: Color = Lab.dim
+
+    init(_ text: String, tint: Color = Lab.faint, font: Font = .subheadline, color: Color = Lab.dim) {
+        self.text = text
+        self.tint = tint
+        self.font = font
+        self.color = color
+    }
+
+    var body: some View {
+        HStack(alignment: .firstTextBaseline, spacing: Lab.S.s) {
+            Circle().fill(tint).frame(width: 5, height: 5)
+                .alignmentGuide(.firstTextBaseline) { d in d[VerticalAlignment.center] + 4 }
+                .accessibilityHidden(true)
+            Text(L(text)).font(font).foregroundStyle(color)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+    }
+}
+
+/// Inset box with an info symbol: why two trackers differ, method notes.
+struct InfoBox: View {
+    let text: String
+    var tint: Color = Lab.accent
+
+    var body: some View {
+        HStack(alignment: .top, spacing: Lab.S.s) {
+            Image(systemName: "info.circle.fill").font(.footnote).foregroundStyle(tint)
+                .padding(.top, 1)
+                .accessibilityHidden(true)
+            Text(L(text)).font(.footnote).foregroundStyle(Lab.dim)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .padding(Lab.S.sm)
+        .background(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).fill(tint.opacity(0.08)))
     }
 }
 

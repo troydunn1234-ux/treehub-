@@ -284,19 +284,22 @@ struct AllNotesSheet: View {
 
 // MARK: - Crown chip
 
-/// Small "winner" chip: 👑 WATCH STEADIER / 👑 WHOOP HIGHER.
+/// Small "winner" chip: 👑 Watch steadier / 👑 WHOOP reads higher. `label` arrives localized.
 struct CrownChip: View {
     let source: Source
     let label: String
     var body: some View {
         HStack(spacing: 4) {
-            Image(systemName: "crown.fill").font(.system(size: 9, weight: .semibold))
-            Text("\(source.short) \(label)").font(Lab.label(9)).tracking(0.4)
+            Image(systemName: "crown.fill").font(.caption2.weight(.semibold))
+            Text(verbatim: "\(source.label) \(label)").font(.caption.weight(.semibold))
+                .lineLimit(1)
         }
         .foregroundStyle(Lab.color(source))
-        .padding(.horizontal, 7).padding(.vertical, 4)
-        .background(Capsule().fill(Lab.color(source).opacity(0.13)))
-        .accessibilityLabel("\(source.name) \(label.lowercased())")
+        .padding(.horizontal, 8).padding(.vertical, 4)
+        .background(Capsule().fill(Lab.color(source).opacity(0.14)))
+        .fixedSize()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(verbatim: "\(source.name) \(label)"))
     }
 }
 

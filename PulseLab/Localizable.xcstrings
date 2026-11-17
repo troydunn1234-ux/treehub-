@@ -1,12 +1,262 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ %@ vs your normal": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@ frente a tu normal"
+          }
+        }
+      }
+    },
+    "%@ %@ · no baseline yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ %@ · aún sin referencia"
+          }
+        }
+      }
+    },
+    "%@ average": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio %@"
+          }
+        }
+      }
+    },
+    "%@ average: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio de %@: %@"
+          }
+        }
+      }
+    },
+    "%@ averages %@ %@ over %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ promedia %@ %@ en %lld días"
+          }
+        }
+      }
+    },
+    "%@ in plain words": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ en palabras sencillas"
+          }
+        }
+      }
+    },
+    "%@ over %lld days. Apple Watch average %@, WHOOP average %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ en %lld días. Promedio del Apple Watch %@, promedio de WHOOP %@."
+          }
+        }
+      }
+    },
+    "%@ sleep stages for %lld nights, averaging %@ asleep.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fases del sueño de %@ en %lld noches, con un promedio de %@ dormido."
+          }
+        }
+      }
+    },
+    "%@ trend for both trackers over %lld days. Apple Watch averages %@, WHOOP %@. Correlation %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tendencia de %@ en ambos dispositivos durante %lld días. El Apple Watch promedia %@ y WHOOP %@. Correlación %@."
+          }
+        }
+      }
+    },
+    "%@ vs last week": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ frente a la semana pasada"
+          }
+        }
+      }
+    },
+    "%@: %lld crowns": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: %lld coronas"
+          }
+        }
+      }
+    },
+    "%@: lowest %@, average %@, highest %@ %@, %lld days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: mínimo %@, promedio %@, máximo %@ %@, %lld días."
+          }
+        }
+      }
+    },
+    "%@: no data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: sin datos"
+          }
+        }
+      }
+    },
+    "%@: no data yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: aún sin datos"
+          }
+        }
+      }
+    },
     "%@: no score yet": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "%@: aún sin puntuación"
+          }
+        }
+      }
+    },
+    "%@: not in yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: aún no disponible"
+          }
+        }
+      }
+    },
+    "%lld days": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days"
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld día"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld días"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days from Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días desde Salud"
+          }
+        }
+      }
+    },
+    "%lld days measured by both": {
+      "localizations": {
+        "en": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld day measured by both"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld days measured by both"
+                }
+              }
+            }
+          }
+        },
+        "es": {
+          "variations": {
+            "plural": {
+              "one": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld día medido por ambos"
+                }
+              },
+              "other": {
+                "stringUnit": {
+                  "state": "translated",
+                  "value": "%lld días medidos por ambos"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "%lld days synced from WHOOP": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días sincronizados desde WHOOP"
           }
         }
       }
@@ -21,12 +271,192 @@
         }
       }
     },
+    "%lld days, %lld typed in by hand": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días, %lld escritos a mano"
+          }
+        }
+      }
+    },
+    "%lld metrics measured by both. Crowns go to the tracker that reads higher, or the steadier one when they match.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld métricas medidas por ambos. Las coronas van al dispositivo que marca más alto, o al más estable cuando coinciden."
+          }
+        }
+      }
+    },
+    "%lld of %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld de %lld"
+          }
+        }
+      }
+    },
+    "%lld of %lld with data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld de %lld con datos"
+          }
+        }
+      }
+    },
+    "%lld percent agreement": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld por ciento de coincidencia"
+          }
+        }
+      }
+    },
+    "%lld recorded by both trackers": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En ambos dispositivos: %lld"
+          }
+        }
+      }
+    },
+    "%lld-night average": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio de %lld noches"
+          }
+        }
+      }
+    },
+    "/ 21 · last cycle": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "/ 21 · último ciclo"
+          }
+        }
+      }
+    },
     "8 am by default. It asks you to log WHOOP when today's numbers are missing. Change it any time in Settings.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "A las 8 am por defecto. Te pide registrar WHOOP cuando faltan los números de hoy. Cámbialo cuando quieras en Ajustes."
+          }
+        }
+      }
+    },
+    "8 h goal": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Meta de 8 h"
+          }
+        }
+      }
+    },
+    "A few more days where both trackers measured the same thing and the verdict fills in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Unos días más en los que ambos dispositivos midan lo mismo y el veredicto se completará."
+          }
+        }
+      }
+    },
+    "About the same as last week.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Más o menos igual que la semana pasada."
+          }
+        }
+      }
+    },
+    "Above your normal range (%@)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por encima de tu rango normal (%@)"
+          }
+        }
+      }
+    },
+    "Active energy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía activa"
+          }
+        }
+      }
+    },
+    "Add WHOOP steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir pasos de WHOOP"
+          }
+        }
+      }
+    },
+    "Add today's WHOOP calories": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir las calorías de WHOOP de hoy"
+          }
+        }
+      }
+    },
+    "Add today's WHOOP steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Añadir los pasos de WHOOP de hoy"
+          }
+        }
+      }
+    },
+    "Adds %lld points": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suma %lld puntos"
+          }
+        }
+      }
+    },
+    "Agree": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden"
           }
         }
       }
@@ -51,12 +481,62 @@
         }
       }
     },
+    "All data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todos los datos"
+          }
+        }
+      }
+    },
     "Allow reading drinks": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Permitir leer bebidas"
+          }
+        }
+      }
+    },
+    "Apple Watch measures SDNN, WHOOP measures RMSSD, so WHOOP usually reads higher. Compare the shape of the lines, not the gap.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Apple Watch mide SDNN y WHOOP mide RMSSD, así que WHOOP suele marcar más alto. Compara la forma de las líneas, no la diferencia."
+          }
+        }
+      }
+    },
+    "Apple Watch reads higher on %lld of %lld metrics.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Apple Watch marca más alto en %lld de %lld métricas."
+          }
+        }
+      }
+    },
+    "Apple Watch versus WHOOP": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple Watch frente a WHOOP"
+          }
+        }
+      }
+    },
+    "Apple counts active + resting energy; WHOOP reports one total per cycle (converted from kJ). Faded bars are still counting (today on the Watch, the open cycle on WHOOP), so don't compare those yet.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Apple cuenta la energía activa + en reposo; WHOOP da un total por ciclo (convertido de kJ). Las barras atenuadas aún están contando (hoy en el Watch, el ciclo abierto en WHOOP), así que no las compares todavía."
           }
         }
       }
@@ -71,12 +551,232 @@
         }
       }
     },
+    "Asleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormido"
+          }
+        }
+      }
+    },
+    "Asleep %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dormido %@"
+          }
+        }
+      }
+    },
+    "Average": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio"
+          }
+        }
+      }
+    },
+    "Average %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio %@"
+          }
+        }
+      }
+    },
+    "Average %@ a day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Promedio de %@ al día."
+          }
+        }
+      }
+    },
+    "Average gap %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia media %@"
+          }
+        }
+      }
+    },
+    "Avg HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC media"
+          }
+        }
+      }
+    },
+    "Awake": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Despierto"
+          }
+        }
+      }
+    },
+    "Back to %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Volver a %@"
+          }
+        }
+      }
+    },
+    "Baseline": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referencia"
+          }
+        }
+      }
+    },
+    "Baseline: last %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referencia: últimos %lld días"
+          }
+        }
+      }
+    },
+    "Baseline: the average of the 14 days before, once at least 10 of them have readings; until then, the last 7 days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Referencia: el promedio de los 14 días anteriores, cuando al menos 10 tienen lecturas; hasta entonces, los últimos 7 días."
+          }
+        }
+      }
+    },
+    "Bed": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acostarse"
+          }
+        }
+      }
+    },
+    "Below your normal range (%@)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por debajo de tu rango normal (%@)"
+          }
+        }
+      }
+    },
+    "Below your usual. An easier day and an early night may help.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por debajo de lo habitual. Un día más suave y acostarte temprano pueden ayudar."
+          }
+        }
+      }
+    },
+    "Best trend match: %@ (r = %@).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tendencias más parecidas: %@ (r = %@)."
+          }
+        }
+      }
+    },
     "Big day yesterday (strain %@). Recovery often trails a hard day by one morning.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Ayer fue un día intenso (esfuerzo %@). La recuperación suele ir un día por detrás de un día duro."
+          }
+        }
+      }
+    },
+    "Blood oxygen": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Oxígeno en sangre"
+          }
+        }
+      }
+    },
+    "Body": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuerpo"
+          }
+        }
+      }
+    },
+    "Both": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambos"
+          }
+        }
+      }
+    },
+    "Both compare you with your recent self, so they agree on direction more often than on the exact number.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambas te comparan con tu yo reciente, así que coinciden en la dirección más a menudo que en el número exacto."
+          }
+        }
+      }
+    },
+    "Both fine": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambos sirven"
+          }
+        }
+      }
+    },
+    "Breathing rate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia respiratoria"
           }
         }
       }
@@ -91,12 +791,62 @@
         }
       }
     },
+    "Calories": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calorías"
+          }
+        }
+      }
+    },
+    "Calories from the Watch arrive through Apple Health; WHOOP's daily total arrives once WHOOP is connected.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las calorías del Watch llegan a través de Salud; el total diario de WHOOP llega cuando WHOOP está conectado."
+          }
+        }
+      }
+    },
+    "Change from your own baseline (Watch: wrist while asleep · WHOOP: skin).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cambio respecto a tu propia referencia (Watch: muñeca mientras duermes · WHOOP: piel)."
+          }
+        }
+      }
+    },
     "Check off your Stack, log workouts or sauna sessions, and keep wearing your trackers. Once there are at least %lld days with and %lld without, comparisons show up here.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Marca tu Stack, registra entrenamientos o sesiones de sauna y sigue usando tus dispositivos. Cuando haya al menos %lld días con y %lld sin, las comparaciones aparecerán aquí."
+          }
+        }
+      }
+    },
+    "Climb": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desnivel"
+          }
+        }
+      }
+    },
+    "Close to your usual. Train as planned, but no need to chase a record.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cerca de lo habitual. Entrena según lo previsto, sin perseguir récords."
           }
         }
       }
@@ -111,12 +861,42 @@
         }
       }
     },
+    "Compare needs both trackers. Connect WHOOP (or turn on WHOOP's Apple Health integration) to start the duel.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparar necesita ambos dispositivos. Conecta WHOOP (o activa la integración de WHOOP con Salud) para empezar el duelo."
+          }
+        }
+      }
+    },
+    "Connect Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar la app Salud"
+          }
+        }
+      }
+    },
     "Connect Health": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Conectar Salud"
+          }
+        }
+      }
+    },
+    "Connect WHOOP": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conectar WHOOP"
           }
         }
       }
@@ -131,12 +911,42 @@
         }
       }
     },
+    "Connect WHOOP in Settings, or log recovery by hand, to compare the two scores.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta WHOOP en Ajustes, o registra la recuperación a mano, para comparar las dos puntuaciones."
+          }
+        }
+      }
+    },
     "Connected": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Conectado"
+          }
+        }
+      }
+    },
+    "Correlation": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Correlación"
+          }
+        }
+      }
+    },
+    "Daily calories over %lld days. Apple Watch averages %@, WHOOP averages %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calorías diarias en %lld días. El Apple Watch promedia %@ y WHOOP promedia %@."
           }
         }
       }
@@ -151,12 +961,72 @@
         }
       }
     },
+    "Day by day": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Día a día"
+          }
+        }
+      }
+    },
+    "Daylight": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Luz del día"
+          }
+        }
+      }
+    },
+    "Days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Días"
+          }
+        }
+      }
+    },
+    "Deep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Profundo"
+          }
+        }
+      }
+    },
+    "Deep sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño profundo"
+          }
+        }
+      }
+    },
     "Describes your numbers against your own history. Not medical advice.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Describe tus números frente a tu propio historial. No es consejo médico."
+          }
+        }
+      }
+    },
+    "Details": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detalles"
           }
         }
       }
@@ -171,6 +1041,36 @@
         }
       }
     },
+    "Difference plot": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gráfico de diferencias"
+          }
+        }
+      }
+    },
+    "Difference plot for %@ over %lld days. On average Apple Watch reads %@ versus WHOOP. %lld of %lld days within %@ %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Gráfico de diferencias de %@ durante %lld días. De media, el Apple Watch marca %@ frente a WHOOP. %lld de %lld días a menos de %@ %@."
+          }
+        }
+      }
+    },
+    "Distance": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Distancia"
+          }
+        }
+      }
+    },
     "Done": {
       "localizations": {
         "es": {
@@ -181,12 +1081,102 @@
         }
       }
     },
+    "Down %@ %@ vs last week.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja %@ %@ frente a la semana pasada."
+          }
+        }
+      }
+    },
+    "Each bar is one device's own count; the diamond is Health's de-duplicated total (what the Health app shows). Today is faded: it's still counting.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada barra es el recuento de un dispositivo; el rombo es el total sin duplicados de Salud (lo que muestra la app Salud). Hoy aparece atenuado: aún está contando."
+          }
+        }
+      }
+    },
+    "Each dot is one day. Above the line, the Watch read higher (cyan); below it, WHOOP did (amber). The shaded band is where 95% of days fall.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada punto es un día. Por encima de la línea, el Watch marcó más (cian); por debajo, WHOOP (ámbar). La banda sombreada es donde cae el 95% de los días."
+          }
+        }
+      }
+    },
+    "Each line is scaled to its own average, so you can see whether they rise and fall together.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada línea se escala a su propio promedio para que veas si suben y bajan juntas."
+          }
+        }
+      }
+    },
+    "Each morning's score lands here once your Watch has HRV or resting heart rate.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La puntuación de cada mañana aparece aquí cuando tu Watch tiene VFC o frecuencia cardiaca en reposo."
+          }
+        }
+      }
+    },
+    "Edit today's WHOOP calories": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar las calorías de WHOOP de hoy"
+          }
+        }
+      }
+    },
+    "Edit today's WHOOP steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Editar los pasos de WHOOP de hoy"
+          }
+        }
+      }
+    },
     "Effect size %@": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Tamaño del efecto %@"
+          }
+        }
+      }
+    },
+    "Efficiency": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eficiencia"
+          }
+        }
+      }
+    },
+    "Energy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Energía"
           }
         }
       }
@@ -207,6 +1197,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "Entrar al laboratorio"
+          }
+        }
+      }
+    },
+    "Even": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iguales"
+          }
+        }
+      }
+    },
+    "Every score starts at 55. Each signal from your Watch then adds or takes away points depending on how today compares with your own recent normal.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada puntuación empieza en 55. Luego, cada señal de tu Watch suma o resta puntos según cómo se compare hoy con tu normal reciente."
+          }
+        }
+      }
+    },
+    "Everything that syncs": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo lo que se sincroniza"
+          }
+        }
+      }
+    },
+    "Exercise": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ejercicio"
           }
         }
       }
@@ -241,12 +1271,52 @@
         }
       }
     },
+    "Flights": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pisos subidos"
+          }
+        }
+      }
+    },
+    "Gap": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Diferencia"
+          }
+        }
+      }
+    },
     "Green light: recovery is high and HRV and resting HR sit at or better than your baseline.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Luz verde: la recuperación es alta y tu VFC y FC en reposo están iguales o mejor que tu referencia."
+          }
+        }
+      }
+    },
+    "Guidance is general: it's what each tracker is built to measure best. Your own agreement numbers (last 30 days) show where your two units actually line up.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La guía es general: es lo que cada dispositivo está hecho para medir mejor. Tus propios números de coincidencia (últimos 30 días) muestran dónde coinciden realmente tus dos dispositivos."
+          }
+        }
+      }
+    },
+    "HR recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación de FC"
           }
         }
       }
@@ -311,12 +1381,62 @@
         }
       }
     },
+    "Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Salud"
+          }
+        }
+      }
+    },
+    "Health total": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Total de Salud"
+          }
+        }
+      }
+    },
     "Heart": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Corazón"
+          }
+        }
+      }
+    },
+    "Heart rate variability": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Variabilidad de la frecuencia cardiaca"
+          }
+        }
+      }
+    },
+    "Heart rate zones: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Zonas de frecuencia cardiaca: %@"
+          }
+        }
+      }
+    },
+    "Hide metrics with no data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ocultar métricas sin datos"
           }
         }
       }
@@ -337,6 +1457,76 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esfuerzo alto (14+)"
+          }
+        }
+      }
+    },
+    "Highest": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máximo"
+          }
+        }
+      }
+    },
+    "Highest: %@ kcal on %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máximo: %@ kcal el %@."
+          }
+        }
+      }
+    },
+    "Highest: %@ on %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Máximo: %@ el %@."
+          }
+        }
+      }
+    },
+    "History from %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historial desde %@"
+          }
+        }
+      }
+    },
+    "How it's calculated": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo se calcula"
+          }
+        }
+      }
+    },
+    "How they differ": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En qué se diferencian"
+          }
+        }
+      }
+    },
+    "How to improve": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo mejorar"
           }
         }
       }
@@ -381,6 +1571,26 @@
         }
       }
     },
+    "If your Watch hasn't recorded HRV or resting HR since midnight, today's score uses yesterday's readings against the days before yesterday.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Si tu Watch no ha registrado VFC ni FC en reposo desde la medianoche, la puntuación de hoy usa las lecturas de ayer frente a los días anteriores a ayer."
+          }
+        }
+      }
+    },
+    "In your normal range (%@)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En tu rango normal (%@)"
+          }
+        }
+      }
+    },
     "Include alcohol": {
       "localizations": {
         "es": {
@@ -397,6 +1607,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Análisis"
+          }
+        }
+      }
+    },
+    "It shows up here once your tracker records it and it reaches Apple Health or WHOOP. If it never does, check Sources in Settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aparece aquí cuando tu dispositivo lo registra y llega a Salud o a WHOOP. Si nunca aparece, revisa Fuentes en Ajustes."
           }
         }
       }
@@ -421,12 +1641,32 @@
         }
       }
     },
+    "Lab verdict": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veredicto del laboratorio"
+          }
+        }
+      }
+    },
     "Large difference": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Diferencia grande"
+          }
+        }
+      }
+    },
+    "Last %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Últimos %lld días"
           }
         }
       }
@@ -441,6 +1681,16 @@
         }
       }
     },
+    "Last night from %@ to %@. %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anoche de %@ a %@. %@"
+          }
+        }
+      }
+    },
     "Last night · stages": {
       "localizations": {
         "es": {
@@ -451,12 +1701,32 @@
         }
       }
     },
+    "Last year": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Último año"
+          }
+        }
+      }
+    },
     "Late eating (after 9 pm)": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Comer tarde (después de las 9 pm)"
+          }
+        }
+      }
+    },
+    "Light": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ligero"
           }
         }
       }
@@ -501,6 +1771,36 @@
         }
       }
     },
+    "Lowest": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mínimo"
+          }
+        }
+      }
+    },
+    "Lowest, average and highest show up once readings arrive.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El mínimo, el promedio y el máximo aparecen cuando llegan las lecturas."
+          }
+        }
+      }
+    },
+    "Max HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC máx."
+          }
+        }
+      }
+    },
     "Measured with: %@ · %lld mornings": {
       "localizations": {
         "es": {
@@ -521,12 +1821,42 @@
         }
       }
     },
+    "Mindful": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Atención plena"
+          }
+        }
+      }
+    },
     "Mindful session": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Sesión de atención plena"
+          }
+        }
+      }
+    },
+    "Missing or limited data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Datos que faltan o limitados"
+          }
+        }
+      }
+    },
+    "Mobility": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Movilidad"
           }
         }
       }
@@ -581,12 +1911,42 @@
         }
       }
     },
+    "Needs at least 3 days where both trackers measured %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesita al menos 3 días en los que ambos dispositivos midieran %@."
+          }
+        }
+      }
+    },
+    "Neither tracker reads consistently higher.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ningún dispositivo marca más alto de forma constante."
+          }
+        }
+      }
+    },
     "Next": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Siguiente"
+          }
+        }
+      }
+    },
+    "Next to WHOOP recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Junto a la recuperación de WHOOP"
           }
         }
       }
@@ -601,12 +1961,42 @@
         }
       }
     },
+    "No %@ sleep in this range yet. Try a longer range or the other tracker.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay sueño de %@ en este rango. Prueba un rango más largo o el otro dispositivo."
+          }
+        }
+      }
+    },
+    "No Watch sleep last night": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anoche no hubo sueño del Watch"
+          }
+        }
+      }
+    },
     "No briefing yet. Open Pulse Lab once to sync.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Aún no hay resumen. Abre Pulse Lab una vez para sincronizar."
+          }
+        }
+      }
+    },
+    "No calories in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay calorías en este rango"
           }
         }
       }
@@ -621,6 +2011,46 @@
         }
       }
     },
+    "No data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin datos"
+          }
+        }
+      }
+    },
+    "No data yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin datos"
+          }
+        }
+      }
+    },
+    "No days measured by both yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay días medidos por ambos"
+          }
+        }
+      }
+    },
+    "No nights in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay noches en este rango"
+          }
+        }
+      }
+    },
     "No numbers yet this morning. Sync after you wake up and the briefing fills in.": {
       "localizations": {
         "es": {
@@ -631,12 +2061,132 @@
         }
       }
     },
+    "No readiness in the last 30 days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin preparación en los últimos 30 días"
+          }
+        }
+      }
+    },
+    "No readiness yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay preparación"
+          }
+        }
+      }
+    },
+    "No reading": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin lectura"
+          }
+        }
+      }
+    },
+    "No readings in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay lecturas en este rango"
+          }
+        }
+      }
+    },
+    "No readings yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay lecturas"
+          }
+        }
+      }
+    },
+    "No scores in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay puntuaciones en este rango"
+          }
+        }
+      }
+    },
+    "No stages from last night": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin fases de anoche"
+          }
+        }
+      }
+    },
+    "No steps in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay pasos en este rango"
+          }
+        }
+      }
+    },
+    "No workouts in this range": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay entrenamientos en este rango"
+          }
+        }
+      }
+    },
+    "No workouts yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay entrenamientos"
+          }
+        }
+      }
+    },
     "Not enough data yet": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Aún no hay suficientes datos"
+          }
+        }
+      }
+    },
+    "Not enough days yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay suficientes días"
+          }
+        }
+      }
+    },
+    "Not enough overlap yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay suficientes días en común"
           }
         }
       }
@@ -671,6 +2221,66 @@
         }
       }
     },
+    "Not scored": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin puntuar"
+          }
+        }
+      }
+    },
+    "Nothing from your Watch yet today. Wear it a while, then pull to refresh.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún nada de tu Watch hoy. Llévalo un rato y luego desliza hacia abajo para actualizar."
+          }
+        }
+      }
+    },
+    "Nothing has arrived for %@ yet.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no ha llegado nada de %@."
+          }
+        }
+      }
+    },
+    "Nothing has arrived yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no ha llegado nada"
+          }
+        }
+      }
+    },
+    "Nothing has arrived yet. Check Sources in Settings and the Health permissions.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no ha llegado nada. Revisa Fuentes en Ajustes y los permisos de Salud."
+          }
+        }
+      }
+    },
+    "Nothing in the last %lld days. Try a longer range.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada en los últimos %lld días. Prueba un rango más largo."
+          }
+        }
+      }
+    },
     "Nothing to compare yet": {
       "localizations": {
         "es": {
@@ -687,6 +2297,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Las notificaciones de Pulse Lab están desactivadas. Puedes activarlas más tarde en la app Ajustes."
+          }
+        }
+      }
+    },
+    "Nutrition & mind": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nutrición y mente"
           }
         }
       }
@@ -711,6 +2331,106 @@
         }
       }
     },
+    "Only %lld of the 3 days needed so far": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo %lld de los 3 días necesarios por ahora"
+          }
+        }
+      }
+    },
+    "Only days (or nights) when both trackers recorded a value count. A day agrees when the two land within:": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo cuentan los días (o noches) en que ambos dispositivos registraron un valor. Un día coincide cuando los dos quedan a menos de:"
+          }
+        }
+      }
+    },
+    "Open %@ details": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir los detalles de %@"
+          }
+        }
+      }
+    },
+    "Open sleep trend": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir la tendencia del sueño"
+          }
+        }
+      }
+    },
+    "Opens %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre %@"
+          }
+        }
+      }
+    },
+    "Opens %@ details": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre los detalles de %@"
+          }
+        }
+      }
+    },
+    "Opens details": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre los detalles"
+          }
+        }
+      }
+    },
+    "Opens guidance on which tracker to believe for each metric": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre una guía sobre qué dispositivo creer en cada métrica"
+          }
+        }
+      }
+    },
+    "Opens recovery and readiness from 7 days to a year": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la recuperación y la preparación de 7 días a un año"
+          }
+        }
+      }
+    },
+    "Opens the calories chart from 7 days to a year": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre el gráfico de calorías de 7 días a un año"
+          }
+        }
+      }
+    },
     "Opens trends and correlations": {
       "localizations": {
         "es": {
@@ -731,6 +2451,16 @@
         }
       }
     },
+    "Over %lld days with both scores, they were within 10 points on %lld. %@ %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En %lld días con ambas puntuaciones, estuvieron a menos de 10 puntos en %lld. %@ %@"
+          }
+        }
+      }
+    },
     "Page %lld of %lld": {
       "localizations": {
         "es": {
@@ -741,12 +2471,82 @@
         }
       }
     },
+    "Past days are scored the same way, from that day's readings (no carry-over from the day before).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los días anteriores se puntúan igual, con las lecturas de ese día (sin arrastrar las del día anterior)."
+          }
+        }
+      }
+    },
+    "Penalty only: −1 point per 0.1 °C more than 0.3 °C above your normal (up to −6).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo penaliza: −1 punto por cada 0,1 °C que supere en más de 0,3 °C tu normal (hasta −6)."
+          }
+        }
+      }
+    },
+    "Penalty only: −3 points per br/min more than 0.5 above your baseline (up to −6).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo penaliza: −3 puntos por cada br/min que supere en más de 0,5 tu referencia (hasta −6)."
+          }
+        }
+      }
+    },
+    "Press and drag the chart to read each day": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado y desliza por el gráfico para leer cada día"
+          }
+        }
+      }
+    },
+    "Press and drag to scrub": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mantén pulsado y desliza para ver cada día"
+          }
+        }
+      }
+    },
+    "Pulse Lab is for general wellness and fitness, not medical advice.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab es para el bienestar general y la forma física, no es consejo médico."
+          }
+        }
+      }
+    },
     "Pulse Lab is synced.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Pulse Lab está sincronizado."
+          }
+        }
+      }
+    },
+    "Pulse Lab reads your Apple Watch data from Health (and anything WHOOP saves there). Nothing leaves your iPhone.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab lee los datos de tu Apple Watch desde Salud (y lo que WHOOP guarde allí). Nada sale de tu iPhone."
           }
         }
       }
@@ -771,12 +2571,82 @@
         }
       }
     },
+    "REM sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño REM"
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación"
+          }
+        }
+      }
+    },
     "Readiness %lld": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Preparación %lld"
+          }
+        }
+      }
+    },
+    "Readiness is Pulse Lab's own score from your Watch, not a number Apple shows.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación es la puntuación propia de Pulse Lab a partir de tu Watch, no un número que muestre Apple."
+          }
+        }
+      }
+    },
+    "Readiness is a general wellness estimate, not medical advice.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación es una estimación general de bienestar, no un consejo médico."
+          }
+        }
+      }
+    },
+    "Readiness needs HRV or resting heart rate from your Watch in the last day. Wear your Watch to sleep for overnight HRV and sleep, and it fills in each morning.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación necesita VFC o frecuencia cardiaca en reposo de tu Watch del último día. Duerme con tu Watch para tener VFC nocturna y sueño, y se completará cada mañana."
+          }
+        }
+      }
+    },
+    "Readiness over 30 days: average %lld, from %lld to %lld.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación en 30 días: promedio %lld, de %lld a %lld."
+          }
+        }
+      }
+    },
+    "Readiness runs about %lld points higher on average.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La preparación suele estar unos %lld puntos más alta de media."
           }
         }
       }
@@ -861,12 +2731,42 @@
         }
       }
     },
+    "Related": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Relacionado"
+          }
+        }
+      }
+    },
     "Remind me at": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Recordarme a las"
+          }
+        }
+      }
+    },
+    "Respiratory rate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia respiratoria"
+          }
+        }
+      }
+    },
+    "Respiratory rate, temperature trend": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia respiratoria, tendencia de la temperatura"
           }
         }
       }
@@ -901,6 +2801,66 @@
         }
       }
     },
+    "Resting heart rate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia cardiaca en reposo"
+          }
+        }
+      }
+    },
+    "Round %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda %lld"
+          }
+        }
+      }
+    },
+    "Round %lld, %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda %lld, %@"
+          }
+        }
+      }
+    },
+    "Round by round": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda a ronda"
+          }
+        }
+      }
+    },
+    "Same direction (SDNN vs RMSSD)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misma dirección (SDNN vs RMSSD)"
+          }
+        }
+      }
+    },
+    "Same way": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misma dirección"
+          }
+        }
+      }
+    },
     "Sauna or steam": {
       "localizations": {
         "es": {
@@ -931,12 +2891,52 @@
         }
       }
     },
+    "Shaded band: your normal range, %@–%@ %@ (%@, 30-day average ± 1 SD).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Banda sombreada: tu rango normal, %@–%@ %@ (%@, promedio de 30 días ± 1 DE)."
+          }
+        }
+      }
+    },
     "Short night: %@, about %@ under your 7-night average. Expect today to feel it.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Noche corta: %@, unos %@ menos que tu promedio de 7 noches. Es probable que hoy lo notes."
+          }
+        }
+      }
+    },
+    "Show older workouts (%lld)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mostrar entrenamientos anteriores (%lld)"
+          }
+        }
+      }
+    },
+    "Shows the day-by-day detail below": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra el detalle día a día debajo"
+          }
+        }
+      }
+    },
+    "Shows what it is and where it comes from": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Muestra qué es y de dónde viene"
           }
         }
       }
@@ -971,6 +2971,36 @@
         }
       }
     },
+    "Sleep (Watch)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño (Watch)"
+          }
+        }
+      }
+    },
+    "Sleep stages": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fases del sueño"
+          }
+        }
+      }
+    },
+    "Sleep stages, resting HR, HRV, recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fases del sueño, FC en reposo, VFC, recuperación"
+          }
+        }
+      }
+    },
     "Slept %@": {
       "localizations": {
         "es": {
@@ -987,6 +3017,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Diferencia pequeña"
+          }
+        }
+      }
+    },
+    "Sources": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fuentes"
           }
         }
       }
@@ -1011,12 +3051,72 @@
         }
       }
     },
+    "Stand": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De pie"
+          }
+        }
+      }
+    },
+    "Starting point": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Punto de partida"
+          }
+        }
+      }
+    },
     "Steady morning: your numbers are close to your usual baseline.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Mañana estable: tus números están cerca de tu referencia habitual."
+          }
+        }
+      }
+    },
+    "Steady vs last week": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estable frente a la semana pasada"
+          }
+        }
+      }
+    },
+    "Steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos"
+          }
+        }
+      }
+    },
+    "Steps by device": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos por dispositivo"
+          }
+        }
+      }
+    },
+    "Steps by device over %lld days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos por dispositivo en %lld días."
           }
         }
       }
@@ -1031,12 +3131,42 @@
         }
       }
     },
+    "Steps, workouts, calories, SpO₂ spot checks, ECG": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pasos, entrenamientos, calorías, mediciones puntuales de SpO₂, ECG"
+          }
+        }
+      }
+    },
+    "Still counting": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún contando"
+          }
+        }
+      }
+    },
     "Strain": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Esfuerzo"
+          }
+        }
+      }
+    },
+    "Strain & activity": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo y actividad"
           }
         }
       }
@@ -1057,6 +3187,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Esfuerzo de ayer"
+          }
+        }
+      }
+    },
+    "Strongest agreement: %@, %@ of days within %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mayor coincidencia: %@, el %@ de los días a menos de %@."
           }
         }
       }
@@ -1101,6 +3241,146 @@
         }
       }
     },
+    "Sync now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizar ahora"
+          }
+        }
+      }
+    },
+    "Syncing…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizando…"
+          }
+        }
+      }
+    },
+    "Takes off %lld points": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Resta %lld puntos"
+          }
+        }
+      }
+    },
+    "Tap a chip to isolate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca una etiqueta para aislarla"
+          }
+        }
+      }
+    },
+    "Tap a metric for the day-by-day detail": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca una métrica para ver el detalle día a día"
+          }
+        }
+      }
+    },
+    "Tap a row for its full history": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca una fila para ver su historial completo"
+          }
+        }
+      }
+    },
+    "Tap any metric for what it means, your normal range, its chart and tips. Dimmed ones aren't arriving yet: tap one to see where it should come from.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca cualquier métrica para ver qué significa, tu rango normal, su gráfico y consejos. Las atenuadas aún no llegan: toca una para ver de dónde debería venir."
+          }
+        }
+      }
+    },
+    "Target": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Objetivo"
+          }
+        }
+      }
+    },
+    "Temp deviation": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desviación de temperatura"
+          }
+        }
+      }
+    },
+    "Temperature": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura"
+          }
+        }
+      }
+    },
+    "Temperature deviation": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desviación de temperatura"
+          }
+        }
+      }
+    },
+    "The chart fills in as readings arrive.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El gráfico se completa a medida que llegan las lecturas."
+          }
+        }
+      }
+    },
+    "The final score is kept between 1 and 99. 67 and up is high, 34–66 moderate, below 34 low — the same bands WHOOP uses.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La puntuación final se mantiene entre 1 y 99. De 67 en adelante es alta, de 34 a 66 moderada y por debajo de 34 baja: las mismas franjas que usa WHOOP."
+          }
+        }
+      }
+    },
+    "The points add up to %lld; the score is held between 1 and 99.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los puntos suman %lld; la puntuación se mantiene entre 1 y 99."
+          }
+        }
+      }
+    },
     "The short version": {
       "localizations": {
         "es": {
@@ -1121,12 +3401,62 @@
         }
       }
     },
+    "They average about the same.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De media son casi iguales."
+          }
+        }
+      }
+    },
+    "They mostly move together.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Casi siempre se mueven juntas."
+          }
+        }
+      }
+    },
+    "They often move differently day to day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A menudo se mueven distinto de un día a otro."
+          }
+        }
+      }
+    },
+    "They rise and fall together closely.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Suben y bajan muy a la par."
+          }
+        }
+      }
+    },
     "This is from your last sync, not today: ": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Esto es de tu última sincronización, no de hoy: "
+          }
+        }
+      }
+    },
+    "Time": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tiempo"
           }
         }
       }
@@ -1141,6 +3471,16 @@
         }
       }
     },
+    "Today: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy: %@"
+          }
+        }
+      }
+    },
     "Total calories burned": {
       "localizations": {
         "es": {
@@ -1151,12 +3491,92 @@
         }
       }
     },
+    "Tracker": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dispositivo"
+          }
+        }
+      }
+    },
+    "Trackers split light vs deep sleep differently, so deep and REM minutes rarely match exactly. Watch the trend, not the single night.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada dispositivo separa el sueño ligero y el profundo a su manera, así que los minutos de profundo y REM rara vez coinciden. Fíjate en la tendencia, no en una sola noche."
+          }
+        }
+      }
+    },
+    "Trend": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tendencia"
+          }
+        }
+      }
+    },
+    "Trust %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Confía en %@"
+          }
+        }
+      }
+    },
+    "Try a longer range, or wear both trackers for a few days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Prueba un rango más largo o lleva ambos dispositivos unos días."
+          }
+        }
+      }
+    },
     "Two trackers.\nOne lab.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Dos dispositivos.\nUn laboratorio."
+          }
+        }
+      }
+    },
+    "Type in WHOOP calories": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribir las calorías de WHOOP"
+          }
+        }
+      }
+    },
+    "Type in WHOOP steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escribir los pasos de WHOOP"
+          }
+        }
+      }
+    },
+    "Type it from the WHOOP app in a few seconds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escríbelo desde la app WHOOP en unos segundos"
           }
         }
       }
@@ -1181,12 +3601,62 @@
         }
       }
     },
+    "Up": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Levantarse"
+          }
+        }
+      }
+    },
+    "Up %@ %@ vs last week.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sube %@ %@ frente a la semana pasada."
+          }
+        }
+      }
+    },
+    "Uses yesterday's readings": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Usa las lecturas de ayer"
+          }
+        }
+      }
+    },
     "Uses your private iCloud. Health and WHOOP data aren't uploaded; each device reads those itself. Changes apply the next time Pulse Lab opens.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Usa tu iCloud privado. Los datos de Salud y WHOOP no se suben; cada dispositivo los lee por sí mismo. Los cambios se aplican la próxima vez que abras Pulse Lab."
+          }
+        }
+      }
+    },
+    "VO₂ max": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VO₂ máx."
+          }
+        }
+      }
+    },
+    "Verdict · %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Veredicto · %lld días"
           }
         }
       }
@@ -1231,12 +3701,92 @@
         }
       }
     },
+    "WHOOP higher by": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP más alto por"
+          }
+        }
+      }
+    },
+    "WHOOP isn't connected": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP no está conectado"
+          }
+        }
+      }
+    },
+    "WHOOP reads HRV (RMSSD) and resting HR in your last deep sleep. The Watch logs HRV as SDNN, often from short readings, and resting HR from calm moments in the day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP lee la VFC (RMSSD) y la FC en reposo en tu último sueño profundo. El Watch registra la VFC como SDNN, a menudo con lecturas cortas, y la FC en reposo en momentos tranquilos del día."
+          }
+        }
+      }
+    },
+    "WHOOP reads higher on %lld of %lld metrics.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP marca más alto en %lld de %lld métricas."
+          }
+        }
+      }
+    },
     "WHOOP recovery": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Recuperación WHOOP"
+          }
+        }
+      }
+    },
+    "WHOOP recovery (bars)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación WHOOP (barras)"
+          }
+        }
+      }
+    },
+    "WHOOP recovery and Watch readiness land here each morning.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La recuperación de WHOOP y la preparación del Watch llegan aquí cada mañana."
+          }
+        }
+      }
+    },
+    "WHOOP recovery and Watch readiness over %lld days. Recovery averages %@, readiness averages %@.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación de WHOOP y preparación del Watch en %lld días. La recuperación promedia %@ y la preparación %@."
+          }
+        }
+      }
+    },
+    "WHOOP recovery averaged %lld percent.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La recuperación de WHOOP promedió un %lld por ciento."
           }
         }
       }
@@ -1251,12 +3801,82 @@
         }
       }
     },
+    "WHOOP runs about %lld points higher on average.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP suele estar unos %lld puntos más alto de media."
+          }
+        }
+      }
+    },
+    "WHOOP scores sleep against its own estimate of what you needed; readiness uses a flat 7-hour target.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP puntúa el sueño frente a su propia estimación de lo que necesitabas; la preparación usa un objetivo fijo de 7 horas."
+          }
+        }
+      }
+    },
+    "WHOOP · typed in": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP · escrito a mano"
+          }
+        }
+      }
+    },
+    "WHOOP's formula is its own and isn't published. Readiness is the simple recipe shown on this screen.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La fórmula de WHOOP es propia y no se publica. La preparación es la receta sencilla que se muestra en esta pantalla."
+          }
+        }
+      }
+    },
+    "Walking HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC al caminar"
+          }
+        }
+      }
+    },
     "Watch HRV": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "VFC del Watch"
+          }
+        }
+      }
+    },
+    "Watch and iPhone steps arrive through Apple Health. WHOOP doesn't count steps; tap Add WHOOP steps to type them in.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los pasos del Watch y del iPhone llegan a través de Salud. WHOOP no cuenta pasos; toca Añadir pasos de WHOOP para escribirlos."
+          }
+        }
+      }
+    },
+    "Watch higher by": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch más alto por"
           }
         }
       }
@@ -1271,12 +3891,52 @@
         }
       }
     },
+    "Watch readiness (line)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación del Watch (línea)"
+          }
+        }
+      }
+    },
     "Watch readiness is %lld": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "La preparación del Watch es %lld"
+          }
+        }
+      }
+    },
+    "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva ambos un par de días y noches. Cada métrica se desbloquea tras 3 días medidos por ambos."
+          }
+        }
+      }
+    },
+    "Wear your Apple Watch to bed with Sleep turned on to see stages here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Duerme con tu Apple Watch y la función Sueño activada para ver aquí las fases."
+          }
+        }
+      }
+    },
+    "Wear your Watch for a day, or check Settings → Health → Data Access → Pulse Lab. WHOOP numbers arrive once WHOOP is connected in Pulse Lab's Settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lleva tu Watch durante un día o revisa Ajustes → Salud → Acceso a datos → Pulse Lab. Los números de WHOOP llegan cuando WHOOP está conectado en los Ajustes de Pulse Lab."
           }
         }
       }
@@ -1291,12 +3951,72 @@
         }
       }
     },
+    "Weight": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Peso"
+          }
+        }
+      }
+    },
+    "What it is": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué es"
+          }
+        }
+      }
+    },
+    "What made today's score": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué formó la puntuación de hoy"
+          }
+        }
+      }
+    },
+    "Where it comes from": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "De dónde viene"
+          }
+        }
+      }
+    },
     "Who agrees": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Quién coincide"
+          }
+        }
+      }
+    },
+    "Who to trust": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En quién confiar"
+          }
+        }
+      }
+    },
+    "Why it matters": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Por qué importa"
           }
         }
       }
@@ -1331,12 +4051,72 @@
         }
       }
     },
+    "Workouts": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entrenamientos"
+          }
+        }
+      }
+    },
+    "Workouts from your Watch or WHOOP in this range show up here, matched side by side when both recorded them.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aquí aparecen los entrenamientos de tu Watch o de WHOOP en este rango, emparejados cuando ambos los registraron."
+          }
+        }
+      }
+    },
+    "Workouts from your Watch's Workout app and WHOOP activities show up here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aquí aparecen los entrenamientos de la app Entreno del Watch y las actividades de WHOOP."
+          }
+        }
+      }
+    },
+    "Wrist temperature": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Temperatura de la muñeca"
+          }
+        }
+      }
+    },
+    "Yesterday": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayer"
+          }
+        }
+      }
+    },
     "Your VS card": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Tu tarjeta VS"
+          }
+        }
+      }
+    },
+    "Your Watch signals look better than usual. A good day to push if you planned to.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las señales de tu Watch están mejor de lo habitual. Buen día para exigirte si lo tenías previsto."
           }
         }
       }
@@ -1351,12 +4131,32 @@
         }
       }
     },
+    "Your normal": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu normal"
+          }
+        }
+      }
+    },
     "Your numbers are running below your usual today. An easier session and an earlier night are worth considering.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Hoy tus números están por debajo de lo habitual. Vale la pena considerar una sesión más suave y acostarte más temprano."
+          }
+        }
+      }
+    },
+    "Yours · last 30 days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los tuyos · últimos 30 días"
           }
         }
       }
@@ -1381,6 +4181,46 @@
         }
       }
     },
+    "bpm in 1 min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bpm en 1 min"
+          }
+        }
+      }
+    },
+    "crowns": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coronas"
+          }
+        }
+      }
+    },
+    "floors": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pisos"
+          }
+        }
+      }
+    },
+    "gap": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "diferencia"
+          }
+        }
+      }
+    },
     "had a sauna or steam session": {
       "localizations": {
         "es": {
@@ -1401,12 +4241,42 @@
         }
       }
     },
+    "hours": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "horas"
+          }
+        }
+      }
+    },
     "iCloud": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "iCloud"
+          }
+        }
+      }
+    },
+    "last %lld days": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "últimos %lld días"
+          }
+        }
+      }
+    },
+    "last year": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "último año"
           }
         }
       }
@@ -1451,12 +4321,102 @@
         }
       }
     },
+    "no data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin datos"
+          }
+        }
+      }
+    },
+    "no score": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin puntuación"
+          }
+        }
+      }
+    },
+    "not scored": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin puntuar"
+          }
+        }
+      }
+    },
+    "of %lld metrics have data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de %lld métricas tienen datos"
+          }
+        }
+      }
+    },
+    "points": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "puntos"
+          }
+        }
+      }
+    },
+    "reads higher": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "marca más alto"
+          }
+        }
+      }
+    },
+    "score": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "puntuación"
+          }
+        }
+      }
+    },
     "sleep": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "sueño"
+          }
+        }
+      }
+    },
+    "steadier": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "más estable"
+          }
+        }
+      }
+    },
+    "steps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "pasos"
           }
         }
       }
@@ -1487,6 +4447,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "vs prom. 7 noches"
+          }
+        }
+      }
+    },
+    "vs own average (SD)": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "vs su promedio (DE)"
           }
         }
       }
@@ -1537,6 +4507,46 @@
           "stringUnit": {
             "state": "translated",
             "value": "dormiste %@, %@ más que tu promedio semanal"
+          }
+        }
+      }
+    },
+    "zone %lld %lld minutes": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "zona %lld %lld minutos"
+          }
+        }
+      }
+    },
+    "±10 points per 1.2 h from 7 h asleep (−15 to +10). Needs the Watch worn to bed.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "±10 puntos por cada 1,2 h de diferencia con 7 h de sueño (de −15 a +10). Necesita que duermas con el Watch."
+          }
+        }
+      }
+    },
+    "±22 points per standard deviation from your baseline, capped at ±1.6 SD (±35 points).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "±22 puntos por desviación estándar respecto a tu referencia, con un tope de ±1,6 DE (±35 puntos)."
+          }
+        }
+      }
+    },
+    "−4 points per bpm above your baseline, +4 per bpm below (−20 to +16).": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "−4 puntos por cada bpm por encima de tu referencia, +4 por cada bpm por debajo (de −20 a +16)."
           }
         }
       }

@@ -21,11 +21,11 @@ struct NightSkyHypnogram: View {
     var body: some View {
         VStack(spacing: 6) {
             HStack {
-                timeLabel(start, "moon.stars.fill", "BED")
+                timeLabel(start, "moon.stars.fill", String(localized: "Bed"))
                 Spacer()
                 Text(fmtHM(end.timeIntervalSince(start) / 60)).font(Lab.number(18, .black)).foregroundStyle(Lab.text)
                 Spacer()
-                timeLabel(end, "sun.max.fill", "UP")
+                timeLabel(end, "sun.max.fill", String(localized: "Up"))
             }
             ZStack {
                 sky
@@ -59,7 +59,7 @@ struct NightSkyHypnogram: View {
         HStack(spacing: 5) {
             Image(systemName: icon).font(.system(size: 11, weight: .bold)).foregroundStyle(Lab.warn)
             VStack(alignment: .leading, spacing: 0) {
-                Text(l).font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
+                Text(l).font(.caption2.weight(.medium)).foregroundStyle(Lab.faint)
                 Text(d.formatted(.dateTime.hour().minute())).font(Lab.mono(11, .heavy)).foregroundStyle(Lab.text)
             }
         }
@@ -70,7 +70,7 @@ struct NightSkyHypnogram: View {
             ForEach([SleepStage.awake, .rem, .core, .deep]) { s in
                 HStack(spacing: 4) {
                     RoundedRectangle(cornerRadius: 2).fill(Self.color(s)).frame(width: 10, height: 4)
-                    Text(s.title.uppercased()).font(Lab.label(8)).foregroundStyle(Lab.dim)
+                    Text(L(s.title)).font(.caption2.weight(.medium)).foregroundStyle(Lab.dim)
                 }
             }
             Spacer()
@@ -178,7 +178,8 @@ struct NightSkyHypnogram: View {
     private var summary: String {
         var mins: [SleepStage: Double] = [:]
         for s in segments { mins[s.stage, default: 0] += s.end.timeIntervalSince(s.start) / 60 }
-        let parts = [SleepStage.deep, .core, .rem, .awake].map { "\($0.title) \(fmtHM(mins[$0]))" }
-        return "Last night from \(start.formatted(date: .omitted, time: .shortened)) to \(end.formatted(date: .omitted, time: .shortened)). " + parts.joined(separator: ", ")
+        let parts = [SleepStage.deep, .core, .rem, .awake].map { "\(L($0.title)) \(fmtHM(mins[$0]))" }.joined(separator: ", ")
+        let from = start.formatted(date: .omitted, time: .shortened), to = end.formatted(date: .omitted, time: .shortened)
+        return String(localized: "Last night from \(from) to \(to). \(parts)")
     }
 }
