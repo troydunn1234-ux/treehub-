@@ -234,6 +234,8 @@ struct RootView: View {
         switch screen {
         case "logwhoop": store.logWhoop = LogWhoopRequest()
         case "logwhoopauto": store.logWhoop = LogWhoopRequest(auto: true)
+        case "readiness": store.detail = .readiness
+        case "hrv": store.detail = .hrv
         case "alldata", "sources": DemoOpen.pending = screen; tab = .settings
         case "moreapps":
             DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() }

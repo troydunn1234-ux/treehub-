@@ -38,11 +38,22 @@ func watchHMSpoken(_ minutes: Double) -> String {
     Duration.seconds(Int(minutes.rounded()) * 60).formatted(.units(allowed: [.hours, .minutes], width: .wide))
 }
 
+/// `-demo` launch flag (simulator QA and screenshots only): sample numbers so the screen is never empty.
+enum WatchDemo {
+    static var isOn: Bool { ProcessInfo.processInfo.arguments.contains("-demo") }
+    static let snap = WatchStore.Snapshot([
+        "recovery": 72.0, "recoveryKind": "whoop", "sleepMin": 446.0, "sleepAvgMin": 421.0,
+        "hrv": 61.0, "hrvBase": 56.0, "rhr": 52.0, "rhrBase": 53.4, "strain": 11.4, "strainIsToday": false,
+        "takeaway": "Slept longer than your week and HRV is above your usual: a good day to train.",
+        "updatedAt": Date().timeIntervalSince1970,
+    ])
+}
+
 struct WatchHome: View {
     @EnvironmentObject private var store: WatchStore
 
     var body: some View {
-        let s = store.snap
+        let s = WatchDemo.isOn ? WatchDemo.snap : store.snap
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
