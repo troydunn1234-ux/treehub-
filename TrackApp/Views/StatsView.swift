@@ -180,8 +180,15 @@ struct StatsView: View {
                         emptyState
                     } else {
                         periodSelector
-                        heroCard.cardAppear()
-                        byTypeSection
+                        if periodActivities.isEmpty {
+                            periodEmptyState
+                                .transition(.opacity.combined(with: .scale(scale: 0.97)))
+                        } else {
+                            heroCard.cardAppear()
+                            insightsCard.cardAppear()
+                                .transition(.opacity)
+                            byTypeSection
+                        }
                         chartCard.cardAppear()
                         recordsSection
                     }
@@ -400,6 +407,163 @@ struct StatsView: View {
         .accessibilityElement(children: .combine)
     }
 
+    // MARK: Insights
+
+    private struct Insight: Identifiable {
+        let symbol: String
+        let tint: Color
+        let title: String
+        let detail: String
+        var activityID: UUID? = nil
+        var id: String { title }
+    }
+
+    /// A few plain-language takeaways for the selected period (only the ones the data supports).
+    private var insights: [Insight] {
+        let list = periodActivities
+        guard !list.isEmpty else { return [] }
+        let cal = Calendar.current
+        var out: [Insight] = []
+
+        // Your usual trip for the type you do most.
+        let byKind = Dictionary(grouping: list, by: { $0.kind })
+        if let top = byKind.max(by: { $0.value.count < $1.value.count }), top.value.count >= 2 {
+            let kind: ActivityKind = top.key
+            let items: [Activity] = top.value
+            let avgDistance: Double = items.reduce(0.0) { $0 + $1.distanceM } / Double(items.count)
+            let avgTime: Double = items.reduce(0.0) { $0 + $1.elapsedSec } / Double(items.count)
+            if avgDistance > 0 {
+                out.append(Insight(symbol: kind.symbol, tint: Self.color(for: kind),
+                                   title: "Your usual \(kind.title.lowercased())",
+                                   detail: "\(Format.distance(avgDistance)) in \(Format.duration(avgTime)), over \(items.count) \(kind.title.lowercased())s"))
+            }
+        }
+
+        // How many days you got out.
+        let days = Set(list.map { cal.startOfDay(for: $0.start) }).count
+        if let span = period.days {
+            out.append(Insight(symbol: "calendar", tint: Theme.sky,
+                               title: "Out on \(days) of \(span) days",
+                               detail: days * 2 >= span ? "More days out than not. Nice rhythm." : "Every day out counts. Try for one more."))
+        } else {
+            out.append(Insight(symbol: "calendar", tint: Theme.sky, title: "\(days) active \(days == 1 ? "day" : "days")",
+                               detail: "Days with at least one trip, all time"))
+        }
+
+        // Busiest weekday, once there's enough to tell.
+        if list.count >= 4 {
+            let counts = Dictionary(grouping: list, by: { cal.component(.weekday, from: $0.start) }).mapValues(\.count)
+            if let best = counts.max(by: { $0.value < $1.value }), best.value >= 2 {
+                let name = cal.weekdaySymbols[(best.key - 1 + 7) % 7]
+                out.append(Insight(symbol: "sun.max.fill", tint: Theme.gold, title: "\(name)s are your big day",
+                                   detail: "\(best.value) of \(list.count) trips started on a \(name)"))
+            }
+        }
+
+        // The longest one in this period, one tap away.
+        if let longest = list.filter({ $0.distanceM > 0 }).max(by: { $0.distanceM < $1.distanceM }) {
+            out.append(Insight(symbol: "trophy.fill", tint: Theme.leaf, title: "Longest: \(Format.distance(longest.distanceM))",
+                               detail: "\(longest.displayTitle) · \(Format.day(longest.start))", activityID: longest.id))
+        }
+        return Array(out.prefix(4))
+    }
+
+    private var insightsCard: some View {
+        let list = insights
+        return GlassCard(padding: 6) {
+            VStack(alignment: .leading, spacing: 0) {
+                SectionHeader(title: "Insights", symbol: "sparkles")
+                    .padding(.horizontal, 12).padding(.top, 10).padding(.bottom, 4)
+                ForEach(list) { (i: Insight) in
+                    if i.id != list.first?.id {
+                        Rectangle().fill(Color.white.opacity(0.08)).frame(height: 1)
+                            .padding(.leading, 64).padding(.trailing, 12)
+                    }
+                    if let id = i.activityID {
+                        NavigationLink(value: id) { insightRow(i, chevron: true) }
+                            .pressable()
+                            .accessibilityHint("Opens that trip")
+                    } else {
+                        insightRow(i, chevron: false)
+                    }
+                }
+            }
+        }
+    }
+
+    private func insightRow(_ i: Insight, chevron: Bool) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: i.symbol)
+                .font(.system(size: 15, weight: .bold))
+                .foregroundStyle(i.tint)
+                .frame(width: 38, height: 38)
+                .background(i.tint.opacity(0.16), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(i.title)
+                    .font(Theme.rounded(15, .bold))
+                    .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(i.detail)
+                    .font(Theme.rounded(12, .medium))
+                    .foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 8)
+            if chevron {
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 12, weight: .bold))
+                    .foregroundStyle(Theme.textDim)
+                    .accessibilityHidden(true)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 11)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+    }
+
+    /// Nothing in the chosen period (but there are older trips): say so, and offer a way forward.
+    private var periodEmptyState: some View {
+        GlassCard(padding: 24) {
+            VStack(spacing: 12) {
+                Image(systemName: "calendar.badge.clock")
+                    .font(.system(size: 30, weight: .semibold))
+                    .foregroundStyle(Theme.leafGradient)
+                    .frame(width: 64, height: 64)
+                    .background(Theme.glow.opacity(0.12), in: Circle())
+                    .accessibilityHidden(true)
+                Text("Nothing in the \(period.caption.lowercased())")
+                    .font(Theme.rounded(17, .bold))
+                    .foregroundStyle(.white)
+                    .multilineTextAlignment(.center)
+                Text("Your older trips are under All. Head out and this fills up.")
+                    .font(Theme.rounded(13, .medium))
+                    .foregroundStyle(Theme.textDim)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
+                } label: {
+                    Label("Start a trip", systemImage: "play.fill")
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 4)
+                Button {
+                    withAnimation(Self.spring) { period = .all }
+                } label: {
+                    Text("See all time")
+                        .font(Theme.rounded(15, .bold))
+                        .foregroundStyle(Theme.glow)
+                        .frame(maxWidth: .infinity, minHeight: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(.plain)
+            }
+            .frame(maxWidth: .infinity)
+        }
+    }
+
     // MARK: By type
 
     private var byTypeSection: some View {
@@ -512,6 +676,8 @@ struct StatsView: View {
                     y: .value("Distance", b.value))
                 .foregroundStyle(by: .value("Type", b.kind.title))
                 .cornerRadius(6)
+                .accessibilityLabel(Text("\(b.kind.title), week of \(b.week.formatted(.dateTime.month(.wide).day()))"))
+                .accessibilityValue(Text("\(b.value.formatted(.number.precision(.fractionLength(1)))) \(Format.distanceUnit)"))
         }
         .chartForegroundStyleScale(domain: domain, range: range)
         .chartXScale(domain: start...end)

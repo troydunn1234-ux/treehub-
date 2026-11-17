@@ -17,7 +17,10 @@
   {"name": "11-moreapps", "args": "-demo -pro -tab stats -open moreapps", "wait": 12},
   {"name": "12-lifetime-largetype", "args": "-demo -pro -open lifetime", "wait": 10, "size": "accessibility-large"},
   {"name": "13-recap-largetype", "args": "-demo -pro -open recap", "wait": 14, "size": "accessibility-large"},
-  {"name": "14-history-largetype", "args": "-demo -pro -tab history", "wait": 8, "size": "accessibility-large"}
+  {"name": "14-history-largetype", "args": "-demo -pro -tab history", "wait": 8, "size": "accessibility-large"},
+  {"name": "15-live-run", "args": "-demo -pro -autostart", "wait": 12},
+  {"name": "16-live-run-largetype", "args": "-demo -pro -autostart", "wait": 12, "size": "accessibility-large"},
+  {"name": "17-intro", "args": "-demo -roamrIntro", "wait": 8}
  ],
  "watch": {"product": "RoamrWatch", "bundle": "com.troydunn.roamr.watchkitapp",
    "shots": [{"name": "w1-home", "args": "-demo", "wait": 8}, {"name": "w2-nophone", "args": "", "wait": 8}]}}
