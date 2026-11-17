@@ -106,10 +106,11 @@ struct HugDetailView: View {
                         RBStatTile(value: String(format: "%+.0f bpm", -drop), label: "HR change", symbol: "arrow.down.heart.fill", tint: Theme.sky)
                     }
                     if let v = hug.hrv { RBStatTile(value: String(format: "%.0f ms", v), label: "HRV", symbol: "waveform.path.ecg", tint: Theme.sky) }
-                    if hug.avgHR != nil { RBStatTile(value: Format.number(hug.avgHR), label: "Avg bpm") }
-                    if hug.minHR != nil { RBStatTile(value: Format.number(hug.minHR), label: "Low bpm") }
-                    if hug.maxHR != nil { RBStatTile(value: Format.number(hug.maxHR), label: "Max bpm") }
-                    if hug.respRate != nil { RBStatTile(value: Format.number(hug.respRate), label: "Breaths/min") }
+                    // Every tile carries a symbol so the rows stay the same height.
+                    if hug.avgHR != nil { RBStatTile(value: Format.number(hug.avgHR), label: "Avg bpm", symbol: "heart") }
+                    if hug.minHR != nil { RBStatTile(value: Format.number(hug.minHR), label: "Low bpm", symbol: "arrow.down") }
+                    if hug.maxHR != nil { RBStatTile(value: Format.number(hug.maxHR), label: "Max bpm", symbol: "arrow.up") }
+                    if hug.respRate != nil { RBStatTile(value: Format.number(hug.respRate), label: "Breaths/min", symbol: "lungs.fill", tint: Theme.sky) }
                 }
                 if hug.fromWatch {
                     Label("Timed on your Apple Watch", systemImage: "applewatch")

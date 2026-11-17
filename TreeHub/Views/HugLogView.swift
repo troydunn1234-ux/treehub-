@@ -388,6 +388,9 @@ struct HugLogView: View {
 
     private func treeChoice(id: UUID?, name: String, sub: String, photo: Data?, symbol: String?) -> some View {
         let selected = d.treeID == id
+        // Wider tiles and two-line names at the largest text sizes, so names aren't cut short.
+        let big = typeSize.isAccessibilitySize
+        let width: CGFloat = big ? 150 : 96
         return Button {
             withAnimation(.snappy) { selectTree(id) }
         } label: {
@@ -400,12 +403,14 @@ struct HugLogView: View {
                         PhotoView(data: photo)
                     }
                 }
-                .frame(width: 96, height: 72)
+                .frame(width: width, height: 72)
                 .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
-                Text(name).font(RB.text(.footnote, .bold)).foregroundStyle(.white).lineLimit(1)
-                Text(sub).font(RB.text(.caption2, .medium)).foregroundStyle(Theme.textDim).lineLimit(1)
+                Text(name).font(RB.text(.footnote, .bold)).foregroundStyle(.white)
+                    .lineLimit(big ? 2 : 1, reservesSpace: big)
+                Text(sub).font(RB.text(.caption2, .medium)).foregroundStyle(Theme.textDim)
+                    .lineLimit(big ? 2 : 1, reservesSpace: big)
             }
-            .frame(width: 96)
+            .frame(width: width, alignment: .leading)
             .padding(RB.s)
             .background(selected ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(selected ? Theme.glow : Color.clear, lineWidth: 2))
