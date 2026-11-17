@@ -1,0 +1,17 @@
+[
+  {"file": "Shared/Store/LocalStore.swift", "why": "where Rootbound and Roamr keep hugs, trips and fill-ups",
+   "contains": ["URL.applicationSupportDirectory", "\"default.store\""]},
+  {"file": "StillPoint/Shared/SessionLog.swift", "why": "Still Pointz session, sauna and tree logs",
+   "contains": ["\"sp.sessions\"", "UserDefaults.standard.data(forKey: key)", "UserDefaults.standard.set(d, forKey: key)"]},
+  {"file": "PulseLab/Data/WhoopManual.swift", "why": "WHOOP numbers typed in by hand",
+   "contains": ["\"whoop-manual.json\"", ".applicationSupportDirectory"]},
+  {"file": "TreeHub/NatureRoll/NatureRollStore.swift", "why": "Nature Roll index and corrections",
+   "contains": ["\"NatureRoll\"", "\"index.json\"", ".applicationSupportDirectory", "\"natureRoll.corrections\""]},
+  {"file": "Shared/Services/RouteTracker.swift", "why": "the recording in progress (survives a crash)",
+   "contains": ["\"active-recording.json\"", ".applicationSupportDirectory"]},
+  {"file": "Shared/Wellness/WellnessBridge.swift", "why": "the feed Rootbound, Still Pointz, Roamr and Pulse Lab share",
+   "contains": ["\"group.com.troydunn.wellness\"", "\"Wellness\"", "\"rootbound.json\"", "\"stillpoint.json\"",
+                "\"roamr.json\"", "\"pulselab.json\"", ".secondsSince1970"]},
+  {"file": "WebApps/Shell/WebScreen.swift", "why": "everything Ride Quest and Natal Orbit save",
+   "contains": ["\"store.json\"", "\"blobs\"", ".documentDirectory"]}
+]

@@ -36,6 +36,9 @@ jobs:
           for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
           xcodegen generate
 
+      - name: Data guard (store location, entitlements, model fields, saved keys, permission texts, links)
+        run: python3 .github/scripts/data_guard.py --generated
+
       - name: Build both apps for iOS Simulator (no signing)
         run: |
           set -o pipefail
@@ -46,16 +49,18 @@ jobs:
             CHANGED=$(git diff --name-only ${{ github.event.before }} ${{ github.sha }} 2>/dev/null || echo all)
             PICK=""
             echo "$CHANGED" | grep -qE '^(TreeHub|RootboundTests)/|^Shared/' && PICK="$PICK Rootbound"
-            echo "$CHANGED" | grep -qE '^(TrackApp|RoamrWatch)/|^Shared/' && PICK="$PICK Roamr"
+            echo "$CHANGED" | grep -qE '^(TrackApp|RoamrWatch|RoamrTests)/|^Shared/' && PICK="$PICK Roamr"
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|NatalOrbit)/' && PICK="$PICK NatalOrbit"
             echo "$CHANGED" | grep -qE '^WebApps/(Shell|QuestApp)/' && PICK="$PICK RideQuest"
             echo "$CHANGED" | grep -qE '^(TVRemote|ClankerrWatch)/' && PICK="$PICK Clicker"
-            echo "$CHANGED" | grep -qE '^PulseLab(Watch|WatchWidgets|Widgets)?/' && PICK="$PICK PulseLab"
-            echo "$CHANGED" | grep -qE '^(StillPoint|StillPointWatch)/' && PICK="$PICK StillPoint"
+            echo "$CHANGED" | grep -qE '^PulseLab(Watch|WatchWidgets|Widgets|Tests)?/' && PICK="$PICK PulseLab"
+            echo "$CHANGED" | grep -qE '^(StillPoint|StillPointWatch|StillPointTests)/' && PICK="$PICK StillPoint"
+            echo "$CHANGED" | grep -qE '^TestSupport/' && PICK="$PICK Rootbound Roamr PulseLab StillPoint"
             echo "$CHANGED" | grep -qE '^project.yml|^.github/|^all$' && PICK="$ALL"
           fi
           [ -z "$PICK" ] && PICK="$ALL"
           echo "Building: $PICK"
+          echo $PICK > picked-schemes.txt
           for SCHEME in $PICK; do
             echo "=== $SCHEME ==="
             xcodebuild build \
@@ -74,13 +79,27 @@ jobs:
         if: failure()
         run: grep -n "error:" build.log | head -80 || true
 
-      - name: Unit tests (game logic, map links, tracking math)
+      - name: Unit tests (data safety in every app; Rootbound game logic, map links, tracking math)
         run: |
           set -o pipefail
+          PICK=$(cat picked-schemes.txt)
           UDID=$(xcrun simctl list devices available -j | python3 -c 'import json,sys;d=json.load(sys.stdin)["devices"];print(next(dv["udid"] for rt in sorted(d,reverse=True) if "iOS" in rt for dv in d[rt] if dv["name"].startswith("iPhone")))')
-          xcodebuild test -project TreeHub.xcodeproj -scheme Rootbound -destination "id=$UDID" \
-            -derivedDataPath build -only-testing:RootboundTests CODE_SIGNING_ALLOWED=NO 2>&1 \
-            | grep -E "Test Case .*(passed|failed)|error:|TEST (SUCCEEDED|FAILED)|Executed" | tail -40
+          RAN=0
+          touch test.log
+          for SCHEME in Rootbound Roamr PulseLab StillPoint; do
+            echo " $PICK " | grep -q " $SCHEME " || continue
+            echo "=== ${SCHEME}Tests ==="
+            xcodebuild test -project TreeHub.xcodeproj -scheme $SCHEME -destination "id=$UDID" \
+              -derivedDataPath build -only-testing:${SCHEME}Tests CODE_SIGNING_ALLOWED=NO 2>&1 \
+              | tee -a test.log | grep -E "Test Case .*(passed|failed)|error:|TEST (SUCCEEDED|FAILED)|Executed" | tail -150 || true
+            RAN=$((RAN + 1))
+          done
+          echo "Test runs: $RAN"
+          [ "$(grep -c 'TEST SUCCEEDED' test.log || true)" -eq "$RAN" ]
+
+      - name: Show test failures
+        if: failure()
+        run: grep -nE "error:|Test Case .*failed|TEST FAILED" test.log | head -120 || true
 
       - name: Run in simulator and screenshot
         if: github.event_name == 'workflow_dispatch'

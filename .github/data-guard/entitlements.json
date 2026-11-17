@@ -1,0 +1,182 @@
+{
+  "ClankerrWatch": {
+    "path": "ClankerrWatch/ClankerrWatch.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.clicker"
+      ]
+    }
+  },
+  "ClankerrWidgets": {
+    "path": "ClankerrWidgets/ClankerrWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.clicker"
+      ]
+    }
+  },
+  "Clicker": {
+    "path": "TVRemote/Clicker.entitlements",
+    "properties": {
+      "com.apple.developer.game-center": true,
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.clicker"
+      ]
+    }
+  },
+  "ClickerWidgets": {
+    "path": "TVRemote/Widgets/ClickerWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.clicker"
+      ]
+    }
+  },
+  "NatalOrbit": {
+    "path": "WebApps/NatalOrbit/NatalOrbit.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.natalorbit"
+      ]
+    }
+  },
+  "NatalOrbitWidgets": {
+    "path": "WebApps/NatalOrbit/Widgets/NatalOrbitWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.natalorbit"
+      ]
+    }
+  },
+  "PulseLab": {
+    "path": "PulseLab/PulseLab.entitlements",
+    "properties": {
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": [],
+      "com.apple.developer.healthkit.background-delivery": true,
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.pulselab",
+        "group.com.troydunn.wellness"
+      ]
+    }
+  },
+  "PulseLabWatch": {
+    "path": "PulseLabWatch/PulseLabWatch.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.pulselab"
+      ]
+    }
+  },
+  "PulseLabWatchWidgets": {
+    "path": "PulseLabWatchWidgets/PulseLabWatchWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.pulselab"
+      ]
+    }
+  },
+  "PulseLabWidgets": {
+    "path": "PulseLabWidgets/PulseLabWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.pulselab"
+      ]
+    }
+  },
+  "RideQuest": {
+    "path": "WebApps/QuestApp/RideQuest.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.ridequest"
+      ]
+    }
+  },
+  "RideQuestWidgets": {
+    "path": "WebApps/QuestApp/Widgets/RideQuestWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.ridequest"
+      ]
+    }
+  },
+  "Roamr": {
+    "path": "TrackApp/TrackHub.entitlements",
+    "properties": {
+      "aps-environment": "development",
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": [],
+      "com.apple.developer.icloud-container-identifiers": [
+        "iCloud.com.troydunn.roamr"
+      ],
+      "com.apple.developer.icloud-services": [
+        "CloudKit"
+      ],
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.wellness"
+      ]
+    }
+  },
+  "Rootbound": {
+    "path": "TreeHub/TreeHub.entitlements",
+    "properties": {
+      "aps-environment": "development",
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": [],
+      "com.apple.developer.icloud-container-identifiers": [
+        "iCloud.com.troydunn.rootbound"
+      ],
+      "com.apple.developer.icloud-services": [
+        "CloudKit"
+      ],
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.wellness"
+      ]
+    }
+  },
+  "RootboundWatch": {
+    "path": "RootboundWatch/RootboundWatch.entitlements",
+    "properties": {
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": []
+    }
+  },
+  "StillPoint": {
+    "path": "StillPoint/StillPoint.entitlements",
+    "properties": {
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": [],
+      "com.apple.developer.healthkit.background-delivery": true,
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.stillpoint",
+        "group.com.troydunn.wellness"
+      ]
+    }
+  },
+  "StillPointWatch": {
+    "path": "StillPointWatch/StillPointWatch.entitlements",
+    "properties": {
+      "com.apple.developer.healthkit": true,
+      "com.apple.developer.healthkit.access": [],
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.stillpoint"
+      ]
+    }
+  },
+  "StillPointWatchWidgets": {
+    "path": "StillPointWidgets/StillPointWatchWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.stillpoint"
+      ]
+    }
+  },
+  "StillPointWidgets": {
+    "path": "StillPointWidgets/StillPointWidgets.entitlements",
+    "properties": {
+      "com.apple.security.application-groups": [
+        "group.com.troydunn.stillpoint"
+      ]
+    }
+  }
+}

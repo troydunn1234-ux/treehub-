@@ -230,11 +230,57 @@ targets:
     platform: iOS
     sources:
       - path: RootboundTests
+      # Data-guard helpers shared by every app's DataSafetyTests.
+      - path: TestSupport
     dependencies:
       - target: Rootbound
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.rootbound.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  # Data-safety tests (store location, old stores still open, saved fields and keys, entitlements, English
+  # permission texts) plus each app's links to the others: one small bundle per app.
+  RoamrTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: RoamrTests
+      # Data-guard helpers shared by every app's DataSafetyTests.
+      - path: TestSupport
+    dependencies:
+      - target: Roamr
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  PulseLabTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: PulseLabTests
+      # Data-guard helpers shared by every app's DataSafetyTests.
+      - path: TestSupport
+    dependencies:
+      - target: PulseLab
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.pulselab.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+  StillPointTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: StillPointTests
+      # Data-guard helpers shared by every app's DataSafetyTests.
+      - path: TestSupport
+    dependencies:
+      - target: StillPoint
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.stillpoint.tests
         GENERATE_INFOPLIST_FILE: YES
 
   # Food Book: native calorie logger
@@ -911,9 +957,14 @@ schemes:
     build:
       targets:
         Roamr: all
+        RoamrTests: [test]
         RoamrUITests: [test]
     test:
+      # Unit tests run inside the app; demo mode keeps its launch quiet (no permission prompts).
+      commandLineArguments:
+        "-demo": true
       targets:
+        - RoamrTests
         - RoamrUITests
   NatalOrbit:
     build:
@@ -931,7 +982,19 @@ schemes:
     build:
       targets:
         PulseLab: all
+        PulseLabTests: [test]
+    test:
+      commandLineArguments:
+        "-demo": true
+      targets:
+        - PulseLabTests
   StillPoint:
     build:
       targets:
         StillPoint: all
+        StillPointTests: [test]
+    test:
+      commandLineArguments:
+        "-demo": true
+      targets:
+        - StillPointTests
