@@ -48,6 +48,8 @@ struct RootView: View {
     @State private var bounces = [0, 0, 0]
     @State private var confirmForget = false
     @State private var showAbout = false
+    /// Set once the About sheet has actually appeared (used by the "-demo -open about" launch).
+    @State private var aboutShown = false
     @Namespace private var tabNS
 
     /// Tabs slide in from the side you're heading toward.
@@ -113,19 +115,36 @@ struct RootView: View {
                 try? await Task.sleep(nanoseconds: 4_000_000_000)
             }
         }
-        .sheet(isPresented: $showAbout) { AboutView() }
-        .onAppear {
-            // -demo -open about / moreapps (simulator QA).
-            let args = ProcessInfo.processInfo.arguments
-            guard args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count else { return }
-            if args[i + 1] == "about" { showAbout = true }
-            if args[i + 1] == "moreapps" { DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { MoreAppsSheet.present() } }
-        }
+        .sheet(isPresented: $showAbout) { AboutView().onAppear { aboutShown = true } }
+        .task { await openDemoSheet() }
         .paywallHost(spec: CouchRemotePro.spec)
         .onboarding(CouchRemoteOnboard.spec)
         .confirmationDialog("Forget \(store.tv?.name ?? "this TV")?", isPresented: $confirmForget, titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { store.forgetTV() }
         } message: { Text("You'll need to pair it again to use it.") }
+    }
+
+    /// "-demo -open about / moreapps" (simulator QA screenshots). Asked for once launch has settled, and asked
+    /// again if it didn't appear: UIKit drops a presentation requested while a cold start still shows the launch
+    /// screen and never retries it (same approach as the shared paywall host). Normal launches return right away.
+    @MainActor private func openDemoSheet() async {
+        let args = ProcessInfo.processInfo.arguments
+        guard args.contains("-demo"), let i = args.firstIndex(of: "-open"), i + 1 < args.count else { return }
+        switch args[i + 1] {
+        case "about":
+            for _ in 0..<8 {
+                try? await Task.sleep(nanoseconds: 1_200_000_000)
+                if aboutShown || Task.isCancelled { return }
+                showAbout = false
+                try? await Task.sleep(nanoseconds: 200_000_000)
+                showAbout = true
+            }
+        case "moreapps":
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+            MoreAppsSheet.present()
+        default:
+            break
+        }
     }
 
     private var topBar: some View {

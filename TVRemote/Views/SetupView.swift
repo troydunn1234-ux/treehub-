@@ -17,46 +17,62 @@ struct SetupView: View {
 
     enum Step { case find, pin, allow, done }
 
+    private static let noTVsID = "setup.noTVs"
     private var pinLength: Int { chosen?.brand == .googleTV ? 6 : 4 }
     private var pinIsHex: Bool { chosen?.brand == .googleTV }
 
     var body: some View {
         ScrollView {
-            VStack(spacing: Look.S.xl) {
-                if onPaired == nil {
-                    HStack(spacing: Look.S.s) {
-                        Image(systemName: "dot.radiowaves.left.and.right")
-                            .font(.system(size: 11, weight: .black)).foregroundStyle(.white)
-                            .frame(width: 24, height: 24)
-                            .background(Look.accent, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
-                        Text("COUCH REMOTE").font(Look.font(14, .black)).tracking(3.5).foregroundStyle(Look.accentH)
+            // Reader inside the scroll view: when a scan ends with no TV, bring "No TVs found yet" (and its
+            // Search again button) up from under the tab bar.
+            ScrollViewReader { proxy in
+                VStack(spacing: Look.S.xl) {
+                    if onPaired == nil {
+                        HStack(spacing: Look.S.s) {
+                            Image(systemName: "dot.radiowaves.left.and.right")
+                                .font(.system(size: 11, weight: .black)).foregroundStyle(.white)
+                                .frame(width: 24, height: 24)
+                                .background(Look.accent, in: RoundedRectangle(cornerRadius: 7, style: .continuous))
+                            Text("COUCH REMOTE").font(Look.font(14, .black)).tracking(3.5).foregroundStyle(Look.accentH)
+                        }
+                        .accessibilityElement(children: .combine)
+                        .accessibilityLabel("Couch Remote")
                     }
-                    .accessibilityElement(children: .combine)
-                    .accessibilityLabel("Couch Remote")
+                    RadarView(scanning: step == .find || step == .allow,
+                              icon: step == .find ? "tv" : step == .allow ? "hand.tap.fill" : step == .done ? "checkmark" : "lock.open.fill",
+                              blips: step == .find ? store.discovery.found.count : 0,
+                              diameter: 250)
+                        .padding(.vertical, Look.S.s)
+                    switch step {
+                    case .find: findStep
+                    case .pin: pinStep
+                    case .allow: allowStep
+                    case .done: doneStep
+                    }
+                    if let e = store.errorText {
+                        Label(e, systemImage: "exclamationmark.triangle.fill")
+                            .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
+                            .padding(Look.S.m)
+                            .frame(maxWidth: .infinity)
+                            .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
+                            .transition(.opacity)
+                    }
                 }
-                RadarView(scanning: step == .find || step == .allow,
-                          icon: step == .find ? "tv" : step == .allow ? "hand.tap.fill" : step == .done ? "checkmark" : "lock.open.fill",
-                          blips: step == .find ? store.discovery.found.count : 0,
-                          diameter: 250)
-                    .padding(.vertical, Look.S.s)
-                switch step {
-                case .find: findStep
-                case .pin: pinStep
-                case .allow: allowStep
-                case .done: doneStep
-                }
-                if let e = store.errorText {
-                    Label(e, systemImage: "exclamationmark.triangle.fill")
-                        .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
-                        .padding(Look.S.m)
-                        .frame(maxWidth: .infinity)
-                        .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
-                        .transition(.opacity)
+                .padding(.horizontal, Look.S.xl)
+                .padding(.top, Look.S.xl)
+                .padding(.bottom, Look.S.xxl)
+                .onChange(of: store.discovery.searching) { _, searching in
+                    guard !searching else { return }
+                    // A beat later, once the card has been laid out.
+                    Task { @MainActor in
+                        try? await Task.sleep(nanoseconds: 400_000_000)
+                        guard step == .find, !store.discovery.searching, store.discovery.found.isEmpty else { return }
+                        withAnimation(reduceMotion ? nil : .spring(response: 0.55, dampingFraction: 0.9)) {
+                            proxy.scrollTo(SetupView.noTVsID, anchor: .bottom)
+                        }
+                    }
                 }
             }
-            .padding(.horizontal, Look.S.xl)
-            .padding(.top, Look.S.xl)
-            .padding(.bottom, Look.S.xxl)
         }
         .scrollIndicators(.hidden)
         .scrollDismissesKeyboard(.interactively)
@@ -105,6 +121,7 @@ struct SetupView: View {
                                    title: "No TVs found yet",
                                    hint: "Check the TV is on and on the same Wi-Fi as this iPhone, then search again.",
                                    actionTitle: "Search again") { store.discovery.start() }
+                        .id(SetupView.noTVsID)
                         .transition(.opacity.combined(with: .scale(scale: 0.96)))
                 }
             }
