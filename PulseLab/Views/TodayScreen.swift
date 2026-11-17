@@ -20,6 +20,8 @@ struct TodayScreen: View {
                               UIImpactFeedbackGenerator(style: .light).impactOccurred()
                               if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
                           })
+            // Calm minutes, tree hugs and walks today from Still Pointz, Rootbound and Roamr (hidden without them).
+            CalmMovementCard()
             BriefingCard()
             LogWhoopCard()
             numbersHeader

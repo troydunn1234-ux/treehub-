@@ -78,6 +78,8 @@ struct SessionDetailView: View {
                 VStack(alignment: .leading, spacing: 22) {
                     SessionResultsPanel(recordId: r.id, tint: tint(r))
                     if let c = r.calmScore { CalmGauge(score: c, tint: tint(r)) }
+                    // The tree this breath went with, as Rootbound names it now, with "Open tree".
+                    SessionTreeCard(record: r)
                     notesCard(r)
                     if let w = r.warmUpId, let wp = lib.practice(w) {
                         Label("Warmed up with \(wp.title)", systemImage: "figure.cooldown")

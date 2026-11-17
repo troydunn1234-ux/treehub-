@@ -10,9 +10,16 @@ import UIKit
 enum RootboundWellness {
     /// Publish our half of the feed (call after hugs change and when the app goes to the background).
     static func publish(hugs: [Hug]) {
-        let items = hugs.map {
-            WellnessBridge.TreeHug(id: $0.id, date: $0.date, minutes: $0.durationMin,
-                                   tree: $0.treeName, species: $0.species, treeID: $0.treeID)
+        let since = Date().addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
+        let items = hugs.filter { $0.date >= since }.map { h -> WellnessBridge.TreeHug in
+            var t = WellnessBridge.TreeHug(id: h.id, date: h.date, minutes: h.durationMin,
+                                           tree: h.treeName, species: h.species, treeID: h.treeID)
+            // Which Still Pointz sessions and Roamr walks this hug is linked to (Still Pointz / Roamr show the tree).
+            let sessions = h.linkedSessions.compactMap(\.feedID)
+            if !sessions.isEmpty { t.sessionIDs = sessions }
+            let walks = h.linkedWalks.filter(\.fromRoamr).map(\.id)
+            if !walks.isEmpty { t.walkIDs = walks }
+            return t
         }
         WellnessBridge.publishRootbound(hugs: items, streak: GameEngine.currentStreak(hugs))
     }

@@ -33,6 +33,7 @@ struct HomeView: View {
                         if !watchInbox.pending.isEmpty { watchHugCard }
                         // 2. Your numbers, always recomputed from the hugs + linked sessions.
                         statsGrid
+                        TodayConnectionsCard(hugs: hugs)
                         CalmMinutesCard(hugs: hugs)
                         // 3. Memories and goals.
                         if hugs.isEmpty { firstHugCard } else { recentHugs }
