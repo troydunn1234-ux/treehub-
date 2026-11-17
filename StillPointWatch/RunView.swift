@@ -13,6 +13,8 @@ struct RunView: View {
     @State private var breath: BreathSession? = nil
     @State private var records: [SessionRecord] = []
     @State private var hrv: Double? = nil
+    /// The HRV lookup came back empty (or never answered): the summary says so instead of waiting for good.
+    @State private var hrvMissing = false
     @State private var detail: SessionRecord? = nil
     @StateObject private var runtime = WatchRuntime.shared
     @State private var haptics = WatchHaptics()
@@ -29,7 +31,7 @@ struct RunView: View {
             case .done:
                 NavigationStack {
                     SummaryView(records: records, startHR: runtime.startHR, endHR: runtime.heartRate, minHR: runtime.minHR,
-                                hrv: hrv, detail: detail, onDone: onClose)
+                                hrv: hrv, hrvMissing: hrvMissing, detail: detail, onDone: onClose)
                 }
             }
         }
@@ -122,13 +124,19 @@ struct RunView: View {
         let main = records.last ?? records.first
         detail = main
         withAnimation(.easeInOut(duration: 1.6)) { stage = .done }
-        guard let m = main else { return }
+        // Nothing was saved (too short), so there is no HRV to wait for.
+        guard let m = main else { hrvMissing = true; return }
+        // Never leave the HRV placeholder up for good: stop waiting after 3 minutes even if Health never answers.
+        DispatchQueue.main.asyncAfter(deadline: .now() + 180) {
+            if hrv == nil { hrvMissing = true }
+        }
         // HRV and breathing rate land in Health a little after the session; fetch, patch, and re-send.
         DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
             MindfulHealth.shared.sessionHRV(start: m.start, end: m.end) { v in
                 let value = v ?? (ProcessInfo.processInfo.arguments.contains("-demo") ? 52 : nil)
                 hrv = value
-                guard let value else { return }
+                // Health had no HRV for this session: show "No HRV reading" rather than a placeholder forever.
+                guard let value else { hrvMissing = true; return }
                 SessionLog.shared.update(m.id) { $0.hrv = value }
                 detail = SessionLog.shared.record(m.id)
                 if let updated = detail { WatchLink.shared.send(updated) }
@@ -343,6 +351,8 @@ struct SummaryView: View {
     let endHR: Double?
     let minHR: Double?
     let hrv: Double?
+    /// The HRV lookup finished (or gave up) without a reading.
+    var hrvMissing = false
     var detail: SessionRecord? = nil
     let onDone: () -> Void
     @State private var bloom = false
@@ -376,6 +386,20 @@ struct SummaryView: View {
                     }
                     if let h = hrv {
                         stat("\(Int(h))", "HRV MS", SP.violet)
+                    } else if startHR != nil && hrvMissing {
+                        // The lookup is over and Health had nothing: say so plainly.
+                        VStack(alignment: .leading, spacing: 4) {
+                            Image(systemName: "waveform.path.ecg").font(.system(size: 13, weight: .medium))
+                                .foregroundStyle(SP.faint)
+                            Text("NO HRV READING").font(SP.rounded(9, .semibold)).tracking(0.8).foregroundStyle(SP.faint)
+                                .lineLimit(1).minimumScaleFactor(0.7)
+                        }
+                        .padding(8)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("No HRV reading for this session")
+                        .transition(.opacity)
                     } else if startHR != nil {
                         // Skeleton tile while HRV is still on its way.
                         VStack(alignment: .leading, spacing: 4) {

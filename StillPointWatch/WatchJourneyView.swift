@@ -8,11 +8,10 @@ struct WatchJourneyView: View {
         List {
             Section {
                 WatchStreakGoalRow()
-                    .listRowBackground(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.05)))
+                    .listRowBackground(WatchRowBackground())
             }
             if log.records.isEmpty {
-                Text("Your sessions will gather here.").font(SP.serif(15, .light)).foregroundStyle(SP.dim)
-                    .listRowBackground(Color.clear)
+                WatchEmptyRow(symbol: "leaf", title: "No sessions yet", hint: "Your sessions will gather here.")
             } else {
                 Section {
                     HStack {
@@ -27,7 +26,7 @@ struct WatchJourneyView: View {
                 Section("Recent") {
                     ForEach(log.records.prefix(7)) { r in
                         NavigationLink { WatchSessionDetailView(record: r) } label: { row(r) }
-                            .listRowBackground(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.05)))
+                            .listRowBackground(WatchRowBackground())
                     }
                 }
             }
@@ -156,10 +155,11 @@ struct WatchSessionDetailView: View {
 
     private func tile(_ v: String, _ l: String) -> some View {
         VStack(spacing: 0) {
-            Text(v).font(SP.numbers(17)).foregroundStyle(SP.ink)
+            Text(v).font(SP.numbers(17)).foregroundStyle(SP.ink).lineLimit(1).minimumScaleFactor(0.7)
             Text(l).font(SP.rounded(8, .semibold)).tracking(1).foregroundStyle(SP.faint)
         }
         .frame(maxWidth: .infinity).padding(.vertical, 6)
-        .background(RoundedRectangle(cornerRadius: 10).fill(Color.white.opacity(0.06)))
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+        .accessibilityElement(children: .combine)
     }
 }

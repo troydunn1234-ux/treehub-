@@ -141,23 +141,40 @@ struct RecoveryCard: View {
     @EnvironmentObject var log: SessionLog
     @StateObject private var model = RecoveryModel()
     @State private var metric: RecoveryMetric = .hrv
+    @State private var retries = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// Heat days in the sauna's soft ember, other days in the app's calm blue.
+    private static var heatStyle: LinearGradient {
+        LinearGradient(colors: [HeatKind.sauna.tint, HeatKind.sauna.tint.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+    }
+    private static var otherStyle: LinearGradient {
+        LinearGradient(colors: [SP.accent.opacity(0.85), SP.indigo.opacity(0.55)], startPoint: .top, endPoint: .bottom)
+    }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            HStack(alignment: .firstTextBaseline) {
-                Text("SAUNA & RECOVERY").font(SP.rounded(11, .semibold)).tracking(1.6).foregroundStyle(SP.faint)
-                Spacer()
+        VStack(alignment: .leading, spacing: SP.s3) {
+            VStack(alignment: .leading, spacing: SP.s1) {
+                Label {
+                    Text("Sauna & recovery")
+                } icon: {
+                    Image(systemName: "flame").foregroundStyle(HeatKind.sauna.tint)
+                }
+                .font(.headline).foregroundStyle(SP.ink)
+                .accessibilityAddTraits(.isHeader)
+                Text("Next-morning numbers after heat days, compared with other days.")
+                    .font(.footnote).foregroundStyle(SP.dim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text("Next-morning numbers after heat days, compared with other days.")
-                .font(SP.rounded(13)).foregroundStyle(SP.dim)
-                .fixedSize(horizontal: false, vertical: true)
             Picker("Measure", selection: $metric) {
                 ForEach(RecoveryMetric.allCases) { m in Text(m.title).tag(m) }
             }
             .pickerStyle(.segmented)
 
             if !model.loaded {
-                ProgressView().frame(maxWidth: .infinity, minHeight: 80)
+                loading
+            } else if !model.hasAnyReading {
+                noReadings
             } else {
                 let groups = model.groups(metric)
                 if !groups.isEmpty {
@@ -165,16 +182,56 @@ struct RecoveryCard: View {
                     scatter
                 }
                 Text(model.caption(metric))
-                    .font(SP.rounded(14)).foregroundStyle(SP.ink.opacity(0.85))
+                    .font(.subheadline).foregroundStyle(SP.ink.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)
                 Text(sourceNote)
-                    .font(SP.rounded(11)).foregroundStyle(SP.faint)
+                    .font(.caption).foregroundStyle(SP.faint)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(SP.card))
+        .spCard()
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: metric)
+        .sensoryFeedback(.selection, trigger: metric)
+        .sensoryFeedback(.impact(weight: .light), trigger: retries)
         .onAppear { model.load(heat: log.heatEntries) }
+    }
+
+    /// Placeholder bars while Apple Health answers (no spinner).
+    private var loading: some View {
+        VStack(alignment: .leading, spacing: SP.s3) {
+            HStack(alignment: .bottom, spacing: SP.s8) {
+                SPSkeleton(height: 120, width: 64, radius: 8)
+                SPSkeleton(height: 90, width: 64, radius: 8)
+            }
+            .frame(maxWidth: .infinity, minHeight: 140, alignment: .bottom)
+            SPSkeleton(height: 12)
+            SPSkeleton(height: 12, width: 200)
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("Loading recovery numbers"))
+    }
+
+    /// No HRV or resting heart rate in Health yet: say how it fills in, and offer to look again.
+    private var noReadings: some View {
+        VStack(alignment: .leading, spacing: SP.s3) {
+            HStack(alignment: .top, spacing: SP.s3) {
+                Image(systemName: "heart.text.square")
+                    .font(.system(size: 18, weight: .light)).foregroundStyle(SP.accent)
+                    .frame(width: 40, height: 40)
+                    .background(Circle().fill(SP.accent.opacity(0.12)))
+                    .accessibilityHidden(true)
+                Text(model.caption(metric))
+                    .font(.subheadline).foregroundStyle(SP.dim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Button {
+                retries += 1
+                model.load(heat: log.heatEntries)
+            } label: {
+                Label("Check again", systemImage: "arrow.clockwise")
+            }
+            .buttonStyle(SPSecondaryButtonStyle())
+        }
     }
 
     private var sourceNote: String {
@@ -182,59 +239,78 @@ struct RecoveryCard: View {
         return from + String(localized: "WHOOP's recovery score isn't shared with Apple Health, but the HRV and resting heart rate it measures are, so they count here. HRV is the morning average (midnight to noon).")
     }
 
+    private var axisFont: Font { .system(.caption2, design: .rounded).monospacedDigit() }
+
     private func bars(_ groups: [RecoveryGroup]) -> some View {
         Chart(groups) { g in
-            BarMark(x: .value("Group", g.label), y: .value(metric.unit, g.average))
-                .foregroundStyle(g.heat ? AnyShapeStyle(LinearGradient(colors: [HeatKind.sauna.tint, HeatKind.sauna.tint2], startPoint: .top, endPoint: .bottom))
-                                        : AnyShapeStyle(SP.teal.opacity(0.7)))
-                .cornerRadius(6)
-                .annotation(position: .top) {
+            BarMark(x: .value("Group", g.label), y: .value(metric.unit, g.average), width: .ratio(0.5))
+                .foregroundStyle(g.heat ? Self.heatStyle : Self.otherStyle)
+                .cornerRadius(8)
+                .annotation(position: .top, spacing: 4) {
                     VStack(spacing: 0) {
-                        Text("\(Int(g.average.rounded())) \(metric.unit)").font(SP.rounded(12, .semibold)).foregroundStyle(SP.ink)
-                        Text("n = \(g.count)").font(SP.rounded(10)).foregroundStyle(SP.faint)
+                        Text("\(Int(g.average.rounded())) \(metric.unit)")
+                            .font(.system(.footnote, design: .rounded).weight(.semibold)).monospacedDigit()
+                            .foregroundStyle(SP.ink)
+                        Text("n = \(g.count)").font(.caption2).monospacedDigit().foregroundStyle(SP.faint)
                     }
                 }
         }
         .chartYAxis {
-            AxisMarks(position: .leading) { _ in
-                AxisGridLine().foregroundStyle(Color.white.opacity(0.06))
-                AxisValueLabel().foregroundStyle(SP.faint)
+            AxisMarks(position: .leading, values: .automatic(desiredCount: 4)) { _ in
+                AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.white.opacity(0.08))
+                AxisValueLabel().font(axisFont).foregroundStyle(SP.faint)
             }
         }
         .chartXAxis {
-            AxisMarks { _ in AxisValueLabel().foregroundStyle(SP.dim) }
+            AxisMarks { _ in AxisValueLabel().font(.footnote).foregroundStyle(SP.dim) }
         }
         .frame(height: 170)
+        // Two labels share the width: past xxLarge they would collide (the spoken summary covers big text).
+        .dynamicTypeSize(...DynamicTypeSize.xxLarge)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(groups.map { "\($0.label): \(Int($0.average.rounded())) \(metric.unit), \($0.count) mornings" }.joined(separator: ". ")))
     }
 
     private var scatter: some View {
         let pts = model.days.filter { $0.value(metric) != nil }
-        return VStack(alignment: .leading, spacing: 6) {
-            Text("MINUTES OF HEAT vs NEXT MORNING").font(SP.rounded(10, .semibold)).tracking(1.2).foregroundStyle(SP.faint)
+        return VStack(alignment: .leading, spacing: SP.s2) {
+            Text("Minutes of heat vs next morning").font(.footnote.weight(.semibold)).foregroundStyle(SP.dim)
             Chart(pts) { d in
                 PointMark(x: .value("Heat minutes", d.heatMinutes), y: .value(metric.unit, d.value(metric) ?? 0))
-                    .foregroundStyle(d.isHeatDay ? HeatKind.sauna.tint : SP.teal.opacity(0.55))
+                    .foregroundStyle(d.isHeatDay ? HeatKind.sauna.tint : SP.accent.opacity(0.55))
                     .symbolSize(d.isHeatDay ? 60 : 30)
             }
             .chartYScale(domain: .automatic(includesZero: false))
             .chartXAxisLabel("min of sauna / steam that day", alignment: .center)
             .chartXAxis {
                 AxisMarks { _ in
-                    AxisGridLine().foregroundStyle(Color.white.opacity(0.05))
-                    AxisValueLabel().foregroundStyle(SP.faint)
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.white.opacity(0.06))
+                    AxisValueLabel().font(axisFont).foregroundStyle(SP.faint)
                 }
             }
             .chartYAxis {
                 AxisMarks(position: .leading) { _ in
-                    AxisGridLine().foregroundStyle(Color.white.opacity(0.05))
-                    AxisValueLabel().foregroundStyle(SP.faint)
+                    AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.white.opacity(0.06))
+                    AxisValueLabel().font(axisFont).foregroundStyle(SP.faint)
                 }
             }
             .frame(height: 150)
+            .dynamicTypeSize(...DynamicTypeSize.xxLarge)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(Text("Scatter chart of heat minutes against the next morning's \(metric == .hrv ? "HRV" : "resting heart rate"), \(pts.count) days"))
+            HStack(spacing: SP.s4) {
+                legendDot(HeatKind.sauna.tint, Text("After heat"))
+                legendDot(SP.accent.opacity(0.55), Text("Other days"))
+            }
+            .font(.caption).foregroundStyle(SP.dim)
+            .accessibilityHidden(true)
+        }
+    }
+
+    private func legendDot(_ color: Color, _ label: Text) -> some View {
+        HStack(spacing: SP.s1) {
+            Circle().fill(color).frame(width: 8, height: 8)
+            label
         }
     }
 }

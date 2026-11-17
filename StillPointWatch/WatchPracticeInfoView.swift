@@ -38,13 +38,16 @@ struct WatchPracticeInfoView: View {
         .navigationTitle("About")
     }
 
+    /// One titled block on the standard wrist card.
     private func block<C: View>(_ title: String, tint: Color, @ViewBuilder _ content: () -> C) -> some View {
         VStack(alignment: .leading, spacing: 4) {
-            HStack(spacing: 6) {
-                Text(title).font(SP.rounded(9, .semibold)).tracking(1.2).foregroundStyle(tint)
-                Rectangle().fill(SP.gold.opacity(0.35)).frame(height: 1)
-            }
+            Text(title).font(SP.rounded(9, .semibold)).tracking(1.2).foregroundStyle(tint)
+                .accessibilityAddTraits(.isHeader)
             content()
         }
+        .padding(8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(SP.card))
+        .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(SP.stroke, lineWidth: 1))
     }
 }

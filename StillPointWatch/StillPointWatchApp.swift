@@ -175,33 +175,79 @@ struct PracticeList: View {
 
     var body: some View {
         List {
+            if practices.isEmpty {
+                WatchEmptyRow(symbol: "leaf", title: "Nothing here yet", hint: "More has every practice.")
+            }
             ForEach(practices) { p in
                 NavigationLink(value: p) { PracticeRow(practice: p) }
-                    .listRowBackground(RoundedRectangle(cornerRadius: 14).fill(Color.white.opacity(0.05)))
+                    .listRowBackground(WatchRowBackground())
             }
         }
         .navigationTitle(title)
     }
 }
 
+/// The one row surface on the wrist: the app's card fill, a hairline and 12 pt continuous corners.
+struct WatchRowBackground: View {
+    var tint: Color? = nil
+    var body: some View {
+        RoundedRectangle(cornerRadius: 12, style: .continuous)
+            .fill(tint.map { AnyShapeStyle(LinearGradient(colors: [$0.opacity(0.18), SP.card], startPoint: .topLeading, endPoint: .bottomTrailing)) }
+                  ?? AnyShapeStyle(SP.card))
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous).stroke(SP.stroke, lineWidth: 1))
+    }
+}
+
+/// A quiet empty state for a wrist list: symbol, title, one hint.
+struct WatchEmptyRow: View {
+    let symbol: String
+    let title: String
+    let hint: String
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: symbol)
+                .font(.system(size: 18, weight: .light)).foregroundStyle(SP.accent)
+                .frame(width: 36, height: 36)
+                .background(Circle().fill(SP.accent.opacity(0.12)))
+                .accessibilityHidden(true)
+            Text(title).font(SP.rounded(14, .semibold)).foregroundStyle(SP.ink).multilineTextAlignment(.center)
+            Text(hint).font(SP.rounded(11)).foregroundStyle(SP.dim).multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 8)
+        .listRowBackground(Color.clear)
+        .accessibilityElement(children: .combine)
+    }
+}
+
 struct PracticeRow: View {
     let practice: Practice
     var body: some View {
-        let t = PracticeLibrary.shared.tradition(practice.traditionId)
+        let lib = PracticeLibrary.shared
+        let t = lib.tradition(practice.traditionId)
         VStack(alignment: .leading, spacing: 3) {
-            Text(practice.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2)
-            if !practice.tagline.isEmpty {
-                Text(practice.tagline).font(SP.rounded(12)).foregroundStyle(SP.ink.opacity(0.75)).lineLimit(2)
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(practice.title).font(SP.serif(16)).foregroundStyle(SP.ink).lineLimit(2)
+                Spacer(minLength: 0)
+                if lib.isLocked(practice) {
+                    Image(systemName: "lock.fill").font(.system(size: 10, weight: .semibold)).foregroundStyle(SP.gold)
+                        .accessibilityLabel("Pro")
+                }
             }
-            HStack(spacing: 6) {
-                Circle().fill(t?.tint ?? SP.teal).frame(width: 6, height: 6)
+            if !practice.tagline.isEmpty {
+                Text(practice.tagline).font(SP.rounded(12)).foregroundStyle(SP.dim).lineLimit(2)
+            }
+            HStack(spacing: 5) {
+                Circle().fill(t?.tint ?? SP.teal).frame(width: 6, height: 6).accessibilityHidden(true)
                 Text(t?.name ?? (practice.isMovement ? "Warm up" : "Practice"))
                     .font(SP.rounded(11)).foregroundStyle(SP.dim).lineLimit(1)
-                Spacer(minLength: 0)
-                Text(practice.minutesLabel).font(SP.rounded(11)).foregroundStyle(SP.faint)
+                Spacer(minLength: 4)
+                Text(practice.minutesLabel).font(SP.rounded(11)).monospacedDigit().foregroundStyle(SP.faint).lineLimit(1)
             }
         }
         .padding(.vertical, 4)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -233,6 +279,10 @@ struct MoreView: View {
                 .listRowBackground(Color.clear)
                 if let g = goal {
                     rows(lib.practices(inCategory: g).filter { !$0.isMovement })
+                } else {
+                    Text("Pick a goal to see its practices.")
+                        .font(SP.rounded(11)).foregroundStyle(SP.faint)
+                        .listRowBackground(Color.clear)
                 }
             } header: { Text("Goals") }
             Section {
@@ -252,6 +302,7 @@ struct MoreView: View {
     @ViewBuilder private func rows(_ ps: [Practice]) -> some View {
         ForEach(ps) { p in
             NavigationLink(value: p) { PracticeRow(practice: p) }
+                .listRowBackground(WatchRowBackground())
         }
     }
 

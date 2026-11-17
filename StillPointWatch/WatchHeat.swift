@@ -88,17 +88,22 @@ struct WatchHeatButtons: View {
             Button(action: open) {
                 HStack(spacing: 8) {
                     Image(systemName: a.kind.symbol).foregroundStyle(a.kind.tint)
+                        .accessibilityHidden(true)
                     TimelineView(.periodic(from: a.start, by: 1)) { ctx in
                         Text(spFormatClock(ctx.date.timeIntervalSince(a.start)))
-                            .font(SP.numbers(16)).foregroundStyle(SP.ink).monospacedDigit()
+                            .font(SP.numbers(17)).foregroundStyle(SP.ink)
                     }
                     Spacer(minLength: 0)
-                    Text("In \(a.kind.short.lowercased())").font(SP.rounded(12)).foregroundStyle(SP.dim)
+                    Text("In \(a.kind.short.lowercased())").font(SP.rounded(12)).foregroundStyle(SP.dim).lineLimit(1)
                 }
-                .padding(.horizontal, 12).padding(.vertical, 9)
-                .background(Capsule().fill(a.kind.tint.opacity(0.22)))
+                .padding(.horizontal, 12)
+                .frame(minHeight: 44)
+                .background(Capsule().fill(LinearGradient(colors: [a.kind.tint.opacity(0.28), a.kind.tint.opacity(0.10)],
+                                                          startPoint: .leading, endPoint: .trailing)))
+                .overlay(Capsule().stroke(a.kind.tint.opacity(0.35), lineWidth: 1))
             }
             .buttonStyle(.plain)
+            .accessibilityLabel("\(a.kind.title) timer running. Open")
         } else {
             HStack(spacing: 8) {
                 ForEach(HeatKind.allCases) { k in
@@ -107,9 +112,11 @@ struct WatchHeatButtons: View {
                         open()
                     } label: {
                         Label(k.short, systemImage: k.symbol)
-                            .font(SP.rounded(14)).foregroundStyle(k.tint)
-                            .frame(maxWidth: .infinity).padding(.vertical, 8)
+                            .font(SP.rounded(14, .medium)).foregroundStyle(k.tint)
+                            .lineLimit(1).minimumScaleFactor(0.8)
+                            .frame(maxWidth: .infinity, minHeight: 40)
                             .background(Capsule().fill(k.tint.opacity(0.14)))
+                            .overlay(Capsule().stroke(k.tint.opacity(0.28), lineWidth: 1))
                     }
                     .buttonStyle(.plain)
                     .accessibilityLabel("Start \(k.title) timer")
@@ -136,6 +143,8 @@ struct WatchHeatView: View {
                 movesPage.tag(2)
             }
             .tabViewStyle(.verticalPage)
+            // The app's night sky behind every page, with a warm (sauna) or misty (steam) glow.
+            .background(DuskBackground(glow: kind.tint).opacity(0.9))
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button { close() } label: { Image(systemName: "chevron.down") }
@@ -154,20 +163,23 @@ struct WatchHeatView: View {
             if let a = heat.active {
                 TimelineView(.periodic(from: a.start, by: 1)) { ctx in
                     Text(spFormatClock(ctx.date.timeIntervalSince(a.start)))
-                        .font(SP.numbers(40)).foregroundStyle(SP.ink).monospacedDigit()
+                        .font(SP.numbers(40)).foregroundStyle(SP.ink)
                 }
             }
             if let hr = runtime.heartRate {
-                Label("\(Int(hr.rounded()))", systemImage: "heart.fill")
-                    .font(SP.numbers(16)).foregroundStyle(SP.rose)
+                Label("\(Int(hr.rounded())) bpm", systemImage: "heart.fill")
+                    .font(SP.numbers(15)).foregroundStyle(SP.rose)
             }
             Button {
                 heat.finish()
                 close()
             } label: {
-                Label("I'm out", systemImage: "checkmark").font(SP.rounded(15, .semibold))
+                Label("I'm out", systemImage: "checkmark")
+                    .font(SP.rounded(15, .semibold)).foregroundStyle(.white)
+                    .frame(maxWidth: .infinity, minHeight: 44)
+                    .background(Capsule().fill(SP.accentFill))
             }
-            .tint(kind.tint)
+            .buttonStyle(.plain)
             Text("Swipe up: breathe · moves")
                 .font(SP.rounded(10)).foregroundStyle(SP.faint)
             Text("High heat can damage the Watch. For a hot round, start here, then leave it outside; WHOOP keeps your heart rate.")
@@ -182,8 +194,9 @@ struct WatchHeatView: View {
             NavigationLink {
                 WatchMovePlayer(tint: kind.tint, glow: kind.tint2)
             } label: {
-                Label("Play all", systemImage: "play.fill").font(SP.rounded(14, .semibold)).foregroundStyle(kind.tint)
+                Label("Play all", systemImage: "play.fill").font(SP.rounded(14, .semibold)).foregroundStyle(SP.accent)
             }
+            .listRowBackground(WatchRowBackground(tint: SP.accent))
             ForEach(HeatMove.all) { m in
                 NavigationLink {
                     ScrollView {
@@ -191,14 +204,21 @@ struct WatchHeatView: View {
                             PoseFigureView(motion: PoseLibrary.motion(for: m.step), tint: kind.tint, glow: kind.tint2,
                                            lineWidth: 2.2, captions: false)
                                 .frame(height: 90)
+                                .accessibilityHidden(true)
                             Text(m.title).font(SP.serif(17)).foregroundStyle(SP.ink)
                             Text(m.how).font(SP.rounded(12)).foregroundStyle(SP.dim)
                                 .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
                         }
                     }
+                    .background(DuskBackground(glow: kind.tint).opacity(0.9))
                 } label: {
-                    Text(m.title).font(SP.rounded(14))
+                    HStack(spacing: 6) {
+                        Text(m.title).font(SP.rounded(14)).foregroundStyle(SP.ink).lineLimit(2)
+                        Spacer(minLength: 4)
+                        Text("\(Int(m.seconds))s").font(SP.rounded(11)).monospacedDigit().foregroundStyle(SP.faint)
+                    }
                 }
+                .listRowBackground(WatchRowBackground())
             }
         }
     }
@@ -218,10 +238,15 @@ struct WatchHeatPacer: View {
             let st = state(at: ctx.date)
             VStack(spacing: 4) {
                 ZStack {
-                    Circle().fill(RadialGradient(colors: [tint.opacity(0.6), tint.opacity(0.05)], center: .center, startRadius: 2, endRadius: 60))
+                    Circle().fill(RadialGradient(colors: [tint.opacity(0.6), SP.indigo.opacity(0.22), .clear],
+                                                 center: .center, startRadius: 2, endRadius: 60))
+                        .scaleEffect(0.5 + 0.5 * st.size)
+                    Circle().stroke(tint.opacity(0.5), lineWidth: 1.5)
+                        .frame(width: 64, height: 64)
                         .scaleEffect(0.5 + 0.5 * st.size)
                     VStack(spacing: 0) {
                         Text(st.label).font(SP.rounded(13, .semibold)).foregroundStyle(SP.ink)
+                            .multilineTextAlignment(.center).minimumScaleFactor(0.8)
                         Text("\(st.count)").font(SP.numbers(20)).foregroundStyle(SP.ink.opacity(0.85))
                     }
                 }
@@ -296,21 +321,36 @@ struct WatchMovePlayer: View {
                         .frame(height: 80)
                         .id(m.id)
                     Text(m.title).font(SP.serif(16)).foregroundStyle(SP.ink)
-                    HStack(spacing: 18) {
-                        Button { go(-1) } label: { Image(systemName: "backward.fill") }.disabled(index == 0)
+                    HStack(spacing: 10) {
+                        Button { go(-1) } label: { control("backward.fill") }
+                            .disabled(index == 0)
+                            .opacity(index == 0 ? 0.4 : 1)
+                            .accessibilityLabel("Previous move")
                         Button {
                             if paused { start = Date().addingTimeInterval(-(m.seconds - pausedLeft)); paused = false }
                             else { pausedLeft = left; paused = true }
-                        } label: { Image(systemName: paused ? "play.fill" : "pause.fill") }
-                        Button { go(1) } label: { Image(systemName: "forward.fill") }
+                        } label: { control(paused ? "play.fill" : "pause.fill", prominent: true) }
+                            .accessibilityLabel(paused ? "Resume" : "Pause")
+                        Button { go(1) } label: { control("forward.fill") }
+                            .accessibilityLabel("Next move")
                     }
-                    .buttonStyle(.plain).foregroundStyle(tint)
+                    .buttonStyle(.plain)
                     Text(m.how).font(SP.rounded(12)).foregroundStyle(SP.dim)
                         .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
                 }
             }
             .onChange(of: left <= 0) { _, done in if done && !paused { go(1) } }
         }
+    }
+
+    /// A round control with a 40 pt hit area; the middle one filled with the accent.
+    private func control(_ icon: String, prominent: Bool = false) -> some View {
+        Image(systemName: icon)
+            .font(.system(size: 15, weight: .semibold))
+            .foregroundStyle(prominent ? Color.white : SP.ink)
+            .frame(width: prominent ? 44 : 40, height: prominent ? 44 : 40)
+            .background(Circle().fill(prominent ? AnyShapeStyle(SP.accentFill) : AnyShapeStyle(Color.white.opacity(0.12))))
+            .contentShape(Circle())
     }
 
     private func go(_ d: Int) {
