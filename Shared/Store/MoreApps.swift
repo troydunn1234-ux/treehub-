@@ -30,7 +30,7 @@ enum MoreApps {
                 pitch: "Hug trees, breathe with them and grow a grove of your own.",
                 symbol: "tree.fill", tint: Color(red: 0.30, green: 0.68, blue: 0.36), appStoreID: 6832122198),
         MoreApp(bundleID: "com.troydunn.stillpoint", name: "Still Pointz",
-                pitch: "102 breathing, meditation and movement practices for iPhone and Watch.",
+                pitch: "Over 100 breathing, meditation and movement practices for iPhone and Watch.",
                 symbol: "wind", tint: Color(red: 0.36, green: 0.42, blue: 0.95), appStoreID: 6832615273),
         MoreApp(bundleID: "com.troydunn.roamr", name: "Roamr",
                 pitch: "Every walk, run, ride and drive, on a map.",
@@ -79,6 +79,18 @@ final class MoreAppsStore: ObservableObject {
 
     var apps: [MoreApp] { MoreApps.others.filter { app in app.appStoreID.map { live[$0] != nil } ?? false } }
 
+    /// The name the App Store shows for `app`, without its subtitle ("Rootbound" from "Rootbound: Hug Trees"),
+    /// so the row matches the page it opens; the name in the table until the app is live.
+    func name(for app: MoreApp) -> String {
+        guard let id = app.appStoreID, let full = live[id]?.name, !full.isEmpty else { return app.name }
+        var short = full
+        for separator in [":", " – ", " — ", " - "] {
+            if let r = short.range(of: separator) { short = String(short[..<r.lowerBound]) }
+        }
+        short = short.trimmingCharacters(in: .whitespaces)
+        return short.isEmpty ? app.name : short
+    }
+
     func refresh() async {
         if let lastCheck, Date().timeIntervalSince(lastCheck) < 600 { return }
         let ids = MoreApps.others.compactMap(\.appStoreID)
@@ -94,9 +106,14 @@ final class MoreAppsStore: ObservableObject {
               let json = try? JSONSerialization.jsonObject(with: reply.0) as? [String: Any],
               let results = json["results"] as? [[String: Any]]
         else { checked = true; return }  // offline: keep what we knew
+        // App Store ID → our bundle ID: a listing only counts when it really is that app, so a mistyped ID
+        // can never show (and link to) somebody else's app.
+        let expected = Dictionary(MoreApps.others.compactMap { app in app.appStoreID.map { ($0, app.bundleID) } },
+                                  uniquingKeysWith: { first, _ in first })
         var found: [Int: Listing] = [:]
         for r in results {
-            guard let id = (r["trackId"] as? NSNumber)?.intValue else { continue }
+            guard let id = (r["trackId"] as? NSNumber)?.intValue, let bundle = expected[id] else { continue }
+            if let listed = r["bundleId"] as? String, listed != bundle { continue }
             let art = (r["artworkUrl512"] as? String) ?? (r["artworkUrl100"] as? String)
             found[id] = Listing(name: (r["trackName"] as? String) ?? "", artwork: art.flatMap { URL(string: $0) })
         }
@@ -111,6 +128,8 @@ final class MoreAppsStore: ObservableObject {
 struct MoreAppsView: View {
     @ObservedObject private var store = MoreAppsStore.shared
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
+    @Environment(\.colorScheme) private var scheme
     @State private var overlayID: Int?
     @State private var showOverlay = false
 
@@ -169,27 +188,31 @@ struct MoreAppsView: View {
 
     private func row(_ app: MoreApp) -> some View {
         let listing = app.appStoreID.flatMap { store.live[$0] }
-        return HStack(spacing: 14) {
-            MoreAppIcon(app: app, artwork: listing?.artwork, size: 56)
-            VStack(alignment: .leading, spacing: 3) {
-                Text(app.name).font(.headline)
-                Text(app.pitch).font(.subheadline).foregroundStyle(.secondary)
-                    .fixedSize(horizontal: false, vertical: true)
+        let name = store.name(for: app)
+        return Group {
+            if typeSize.isAccessibilitySize {
+                // Large text: icon and name on top, the line under them, GET last (nothing squeezed to one word a line).
+                VStack(alignment: .leading, spacing: FamilySpacing.s) {
+                    HStack(spacing: FamilySpacing.m) {
+                        MoreAppIcon(app: app, artwork: listing?.artwork, size: 56)
+                        Text(name).font(.headline).fixedSize(horizontal: false, vertical: true)
+                    }
+                    Text(app.pitch).font(.subheadline).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
+                    getButton(app, name: name)
+                }
+            } else {
+                HStack(spacing: 14) {
+                    MoreAppIcon(app: app, artwork: listing?.artwork, size: 56)
+                    VStack(alignment: .leading, spacing: 3) {
+                        Text(name).font(.headline)
+                        Text(app.pitch).font(.subheadline).foregroundStyle(.secondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 6)
+                    getButton(app, name: name)
+                }
             }
-            Spacer(minLength: 6)
-            Button {
-                overlayID = app.appStoreID
-                showOverlay = true
-            } label: {
-                Text("GET").font(.subheadline.weight(.heavy))
-                    .foregroundStyle(app.tint)
-                    .padding(.horizontal, 16).padding(.vertical, 7)
-                    .frame(minHeight: 44)
-                    .background(Capsule().fill(app.tint.opacity(0.16)).frame(height: 32))
-                    .contentShape(Rectangle())
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("Get \(app.name)")
         }
         .familyCard(padding: 14)
         .contentShape(Rectangle())
@@ -198,13 +221,31 @@ struct MoreAppsView: View {
         .accessibilityAddTraits(.isButton)
         .accessibilityAction { if let id = app.appStoreID { StoreProductPage.open(id) } }
     }
+
+    /// The App Store "GET" pill: the capsule grows with the text, the tap target is at least 44 pt.
+    private func getButton(_ app: MoreApp, name: String) -> some View {
+        Button {
+            overlayID = app.appStoreID
+            showOverlay = true
+        } label: {
+            Text("GET").font(.subheadline.weight(.heavy))
+                .foregroundStyle(FamilyContrast.readable(app.tint, in: scheme))
+                .padding(.horizontal, 16).padding(.vertical, 6)
+                .background(Capsule().fill(app.tint.opacity(0.16)))
+                .frame(minWidth: 44, minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Get \(name)")
+    }
 }
 
 /// "More apps by Troy" as plain rows (icon, name, one line, App Store link), for an About section or card.
-/// Lists only the other apps that are live on the App Store; renders nothing until one is.
+/// Lists only the other apps that are live on the App Store; renders nothing until one is. Wrap the section or
+/// card in `MoreAppsGate` so its header / background disappears too (App Review: no empty "More apps" block).
 ///
-///     Section("More apps by Troy") { MoreAppsList() }        // inside a List / Form
-///     MoreAppsList().familyCard()                             // or as a card
+///     MoreAppsGate { Section("More apps by Troy") { MoreAppsList() } }    // inside a List / Form
+///     MoreAppsGate { MoreAppsList().familyCard() }                         // or as a card
 struct MoreAppsList: View {
     var iconSize: CGFloat = 44
     @ObservedObject private var store = MoreAppsStore.shared
@@ -225,7 +266,7 @@ struct MoreAppsList: View {
         HStack(spacing: 12) {
             MoreAppIcon(app: app, artwork: app.appStoreID.flatMap { store.live[$0]?.artwork }, size: iconSize)
             VStack(alignment: .leading, spacing: 2) {
-                Text(app.name).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
+                Text(store.name(for: app)).font(.subheadline.weight(.semibold)).foregroundStyle(.primary)
                 Text(app.pitch).font(.footnote).foregroundStyle(.secondary)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -302,6 +343,7 @@ struct MoreAppsRow: View {
     var tint: Color = .accentColor
     @State private var show = false
     @ObservedObject private var store = MoreAppsStore.shared
+    @ScaledMetric(relativeTo: .subheadline) private var badge: CGFloat = 32
 
     var body: some View {
         if !store.apps.isEmpty {
@@ -316,14 +358,16 @@ struct MoreAppsRow: View {
             HStack(spacing: 12) {
                 Image(systemName: "square.grid.2x2.fill")
                     .font(.subheadline.weight(.bold)).foregroundStyle(tint)
-                    .frame(width: 32, height: 32)
+                    .frame(width: badge, height: badge)
                     .background(Circle().fill(tint.opacity(0.16)))
                     .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 1) {
                     Text("More apps by Troy").font(.subheadline.weight(.semibold))
+                        .fixedSize(horizontal: false, vertical: true)
                     Text("Small, private apps. No ads.").font(.footnote).foregroundStyle(.secondary)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
+                Spacer(minLength: FamilySpacing.s)
                 Image(systemName: "chevron.right").font(.caption.weight(.bold)).foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }

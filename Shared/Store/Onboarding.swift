@@ -13,6 +13,7 @@ struct OnboardingSpec {
     var tint2: Color
     var pages: [Page]
     var freeLine: String
+    /// What Pro adds. May end with "for": the price from the App Store is added after it ("… for $4.99, once.").
     var proLine: String
     /// Bump when the onboarding changes enough to show again.
     var version: Int = 1
@@ -85,22 +86,23 @@ struct ProOnboardingView: View {
                         if reduceMotion { page += 1 } else { withAnimation(.snappy) { page += 1 } }
                     } else { done() }
                 } label: {
-                    Text(page < last ? "Continue" : "Let's go")
-                        .font(.headline)
-                        .foregroundStyle(.black.opacity(0.88))
-                        .frame(maxWidth: .infinity, minHeight: FamilySpacing.buttonHeight)
-                        .background(Capsule().fill(LinearGradient(colors: [spec.tint, spec.tint2], startPoint: .leading, endPoint: .trailing)))
-                        .contentShape(Capsule())
+                    // "Next" / "Let's go" / "Skip": the apps' Spanish catalogs already translate these three.
+                    Text(page < last ? "Next" : "Let's go")
+                }
+                .buttonStyle(FamilyGradientButtonStyle(tint: spec.tint, tint2: spec.tint2))
+                .padding(.horizontal, FamilySpacing.xl)
+                Button { done() } label: {
+                    Text("Skip")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.white.opacity(0.7))
+                        .frame(minWidth: 88, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.horizontal, FamilySpacing.xl)
-                Button("Skip") { done() }
-                    .font(.subheadline.weight(.medium))
-                    .foregroundStyle(.white.opacity(0.6))
-                    .frame(minWidth: 44, minHeight: 44)
-                    .padding(.top, FamilySpacing.xs).padding(.bottom, FamilySpacing.m)
-                    .opacity(page < last ? 1 : 0)
-                    .accessibilityHidden(page >= last)
+                .padding(.top, FamilySpacing.xs).padding(.bottom, FamilySpacing.m)
+                .opacity(page < last ? 1 : 0)
+                .disabled(page >= last)
+                .accessibilityHidden(page >= last)
             }
         }
         .preferredColorScheme(.dark)
@@ -152,10 +154,49 @@ struct ProOnboardingView: View {
             .padding(.vertical, FamilySpacing.xxl)
     }
 
+    /// "Pro adds … for $4.99, once. No subscription." Prices (and the free trial, only while this person can still
+    /// get it) come from the App Store; before it answers, the sentence ends without a price instead of on "for".
     private var proText: String {
-        if unlock.isPro { return "You already have \(spec.appName) Pro. Thank you!" }
-        if unlock.usesSubscriptions { return spec.proLine + " Free for 7 days, then monthly, yearly or lifetime." }
-        return spec.proLine + (unlock.priceText.isEmpty ? "" : " \(unlock.priceText), once. No subscription.")
+        if unlock.owned { return "You already have \(spec.appName) Pro. Thank you!" }
+        var line = spec.proLine.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let prices = priceEnding {
+            line += " " + prices
+        } else {
+            // No price yet: end the sentence instead of leaving it on "for" (or a translation's "por" / "para").
+            if let dangling = [" for", " por", " para"].first(where: { line.hasSuffix($0) }) { line.removeLast(dangling.count) }
+            if !line.hasSuffix(".") { line += "." }
+        }
+        if unlock.inTrial {
+            let n = unlock.trialDaysLeft
+            line += " Your free trial has \(n) day\(n == 1 ? "" : "s") left."
+        }
+        return line
+    }
+
+    /// "$2.99 a month or $19.99 a year (both start with a free week), or $39.99 once." for subscription apps,
+    /// "$4.99, once. No subscription." for the one-time unlock; nil until the App Store has answered.
+    private var priceEnding: String? {
+        guard unlock.usesSubscriptions else {
+            return unlock.priceText.isEmpty ? nil : "\(unlock.priceText), once. No subscription."
+        }
+        let plans = unlock.plans.sorted { Unlock.days($0) < Unlock.days($1) }   // monthly before yearly
+        guard !plans.isEmpty else { return nil }
+        let prices = plans.map { "\($0.displayPrice) \($0.familyPerWord)" }
+        var text = prices.count == 1 ? prices[0] : prices.dropLast().joined(separator: ", ") + " or " + prices[prices.count - 1]
+        // The free trial only when every plan has the same one and this Apple ID hasn't used it yet.
+        let lengths = plans.map(\.familyFreeTrialLength)   // "1 week", "3 days", or nil
+        if unlock.introEligible, let length = lengths[0], lengths.allSatisfy({ $0 == length }) {
+            let words = length.split(separator: " ").map(String.init)   // ["1", "week"]
+            let unit = words.dropFirst().joined(separator: " ")
+            let free = words.first == "1" ? "a free \(unit)" : "\(words.first ?? "") free \(unit)"   // "a free week", "3 free days"
+            switch plans.count {
+            case 1: text += " (starts with \(free))"
+            case 2: text += " (both start with \(free))"
+            default: text += " (each starts with \(free))"
+            }
+        }
+        if let lifetime = unlock.product { text += ", or \(lifetime.displayPrice) once" }
+        return text + "."
     }
 
     private func row(_ icon: String, _ text: String) -> some View {

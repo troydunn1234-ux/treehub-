@@ -107,6 +107,7 @@ struct DirectionsSheet: View {
                 Image(systemName: nav.phase == .preview ? "chevron.backward" : "xmark")
                     .font(.system(size: 15, weight: .heavy)).foregroundStyle(.white)
                     .frame(width: 38, height: 38).background(.ultraThinMaterial, in: Circle())
+                    .frame(width: 44, height: 44).contentShape(Rectangle())
             }
             .accessibilityLabel(nav.phase == .preview ? "Back to search" : "Close")
         }
@@ -328,6 +329,7 @@ struct DirectionsSheet: View {
                         .foregroundStyle(nav.isFavorite(dest) ? Theme.gold : .white)
                         .frame(width: 40, height: 40)
                         .background(Color.white.opacity(0.08), in: Circle())
+                        .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(nav.isFavorite(dest) ? "Remove from Favorites" : "Add to Favorites")
@@ -446,6 +448,7 @@ struct NavBanner: View {
                         Image(systemName: nav.muted ? "speaker.slash.fill" : "speaker.wave.2.fill")
                             .font(.system(size: 15, weight: .bold)).foregroundStyle(.white)
                             .frame(width: 38, height: 38).background(Color.white.opacity(0.12), in: Circle())
+                            .frame(width: 44, height: 44).contentShape(Rectangle())
                     }
                     .accessibilityLabel(nav.muted ? "Unmute directions" : "Mute directions")
                 }
@@ -475,6 +478,7 @@ struct NavBanner: View {
                 Button { withAnimation(.snappy) { nav.cancel() } } label: {
                     Image(systemName: "xmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(.white)
                         .frame(width: 34, height: 34).background(Color.red.opacity(0.85), in: Circle())
+                        .frame(width: 44, height: 44).contentShape(Rectangle())
                 }
                 .accessibilityLabel("End directions")
             }

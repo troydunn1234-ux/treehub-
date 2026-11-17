@@ -21,10 +21,6 @@ private enum OnboardingStep: Int, CaseIterable, Hashable {
     case welcome, features, permissions
 }
 
-private enum HealthLinkState: Equatable {
-    case idle, requesting, connected, unavailable
-}
-
 private struct OnboardingFeature: Identifiable {
     let id: String
     let symbol: String
@@ -35,19 +31,19 @@ private struct OnboardingFeature: Identifiable {
 
 // MARK: - Onboarding
 
-/// First-run walkthrough (3 pages): welcome, features, then optional location + Apple Health.
-/// Nothing is required; "Skip" / "Let's go" both mark onboarding done and call `onDone`.
+/// First-run walkthrough (3 pages): welcome, features, then what the app will ask for and when.
+/// Nothing is asked up front: location and Apple Health come up in context, the first time a feature
+/// needs them (Rootbound: logging a hug pins the tree and fills in heart data; Roamr: recording, importing workouts).
+/// "Skip" / "Let's go" both mark onboarding done and call `onDone`.
 @MainActor
 struct OnboardingView: View {
     var onDone: () -> Void
 
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @Environment(\.openURL) private var openURL
 
     @State private var step: OnboardingStep = .welcome
     @State private var appeared: Bool = false
-    @State private var health: HealthLinkState = .idle
     @State private var emblemDraw: CGFloat = 0
     @State private var emblemLeaves: CGFloat = 0
     @State private var emblemPulse: Bool = false
@@ -64,12 +60,6 @@ struct OnboardingView: View {
         }
         .onAppear { start() }
         .sensoryFeedback(.selection, trigger: step)
-        .sensoryFeedback(.success, trigger: tracker.canTrack) { (old: Bool, new: Bool) -> Bool in
-            !old && new
-        }
-        .sensoryFeedback(.success, trigger: health) { (_: HealthLinkState, new: HealthLinkState) -> Bool in
-            new == .connected
-        }
     }
 
     // MARK: Chrome
@@ -80,6 +70,7 @@ struct OnboardingView: View {
                 .font(Theme.rounded(12, .heavy))
                 .tracking(2.5)
                 .foregroundStyle(Theme.textDim)
+                .accessibilityHidden(true)
             Spacer()
             if step != .permissions {
                 Button {
@@ -92,16 +83,18 @@ struct OnboardingView: View {
                         .padding(.horizontal, 16)
                         .background(Color.white.opacity(0.07), in: Capsule())
                         .overlay(Capsule().strokeBorder(Color.white.opacity(0.08), lineWidth: 1))
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .transition(.opacity)
                 .accessibilityIdentifier("onboarding-skip")
             }
         }
-        .frame(height: 44)
+        .frame(minHeight: 44)
         .padding(.horizontal, Theme.pad)
         .padding(.top, 6)
-        .animation(.easeInOut(duration: 0.2), value: step)
+        .animation(reduceMotion ? nil : .easeInOut(duration: 0.2), value: step)
     }
 
     private var pager: some View {
@@ -123,6 +116,7 @@ struct OnboardingView: View {
                     Text(step == .permissions ? "Let's go" : "Continue")
                     Image(systemName: step == .permissions ? "checkmark" : "arrow.right")
                         .font(.system(size: 15, weight: .heavy))
+                        .accessibilityHidden(true)
                 }
             }
             .buttonStyle(PrimaryButtonStyle())
@@ -142,7 +136,7 @@ struct OnboardingView: View {
                     .shadow(color: s == step ? Theme.glow.opacity(0.5) : Color.clear, radius: 6)
             }
         }
-        .animation(.spring(response: 0.4, dampingFraction: 0.72), value: step)
+        .animation(reduceMotion ? nil : .spring(response: 0.4, dampingFraction: 0.72), value: step)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Page \(step.rawValue + 1) of \(OnboardingStep.allCases.count)")
     }
@@ -167,16 +161,16 @@ struct OnboardingView: View {
         }
     }
 
-    /// Location and Health on one optional page. Both are also asked in context (pinning a tree, linking a
-    /// breath session), so nothing here is required.
+    /// What the app will ask for, and when. No prompts here: each permission is asked in context.
     private var permissionsPage: some View {
         OnboardingPageLayout(active: isActive(.permissions), headline: Copy.permissionsHeadline, message: Copy.permissionsMessage) {
-            healthHero
+            permissionsHero
         } extra: {
-            VStack(alignment: .leading, spacing: 16) {
-                locationAction
-                healthFlow
-                healthAction
+            VStack(alignment: .leading, spacing: 18) {
+                permissionRow(symbol: "location.fill", tint: Theme.sky, title: "Location",
+                              detail: Copy.locationWhen, isOn: tracker.canTrack)
+                permissionRow(symbol: "heart.fill", tint: Color.pink, title: "Apple Health",
+                              detail: Copy.healthWhen, isOn: false)
             }
         }
     }
@@ -242,6 +236,7 @@ struct OnboardingView: View {
                 Text(f.title)
                     .font(Theme.rounded(17, .bold))
                     .foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text(f.detail)
                     .font(Theme.rounded(14, .medium))
                     .foregroundStyle(Theme.textDim)
@@ -252,9 +247,9 @@ struct OnboardingView: View {
         .accessibilityElement(children: .combine)
     }
 
-    // MARK: Location
+    // MARK: Permissions (information only)
 
-    private var locationHero: some View {
+    private var permissionsHero: some View {
         ZStack {
             Circle()
                 .fill(Theme.leaf.opacity(0.10))
@@ -267,162 +262,52 @@ struct OnboardingView: View {
                 .fill(Theme.leafGradient)
                 .frame(width: 92, height: 92)
                 .shadow(color: Theme.glow.opacity(0.5), radius: 18)
-            Image(systemName: tracker.canTrack ? "checkmark" : "location.fill")
-                .font(.system(size: 36, weight: .bold))
+            Image(systemName: "hand.raised.fill")
+                .font(.system(size: 34, weight: .bold))
                 .foregroundStyle(Theme.forestDeep)
-                .contentTransition(.symbolEffect(.replace))
-        }
-        .animation(.spring(response: 0.45, dampingFraction: 0.7), value: tracker.canTrack)
-        .accessibilityHidden(true)
-    }
-
-    private var locationAction: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            if tracker.canTrack {
-                grantedBadge("Location is on")
-            } else if tracker.denied {
-                Button {
-                    openSettings()
-                } label: {
-                    Label("Open Settings", systemImage: "gearshape.fill")
-                }
-                .buttonStyle(OnboardingGlassButtonStyle())
-                .accessibilityIdentifier("onboarding-location-settings")
-                Text("Location is off for \(AppInfo.name). You can turn it on anytime in Settings.")
-                    .font(Theme.rounded(13, .medium))
-                    .foregroundStyle(Theme.textDim)
-                    .fixedSize(horizontal: false, vertical: true)
-            } else {
-                Button {
-                    tracker.requestPermission()
-                } label: {
-                    Label("Allow location", systemImage: "location.fill")
-                }
-                .buttonStyle(OnboardingGlassButtonStyle())
-                .accessibilityIdentifier("onboarding-allow-location")
-                Text("Not now? You can allow it later.")
-                    .font(Theme.rounded(13, .medium))
-                    .foregroundStyle(Theme.textDim)
-            }
-        }
-        .animation(.spring(response: 0.45, dampingFraction: 0.8), value: tracker.canTrack)
-    }
-
-    // MARK: Health
-
-    private var healthHero: some View {
-        ZStack {
-            Circle()
-                .fill(Color.pink.opacity(0.10))
-                .frame(width: 180, height: 180)
-            Circle()
-                .strokeBorder(Color.pink.opacity(0.28), lineWidth: 1)
-                .frame(width: 136, height: 136)
-            Circle()
-                .fill(LinearGradient(colors: [Color(red: 1.0, green: 0.45, blue: 0.55), Color(red: 0.92, green: 0.20, blue: 0.36)],
-                                     startPoint: .topLeading, endPoint: .bottomTrailing))
-                .frame(width: 92, height: 92)
-                .shadow(color: Color.pink.opacity(0.45), radius: 18)
-            Image(systemName: "heart.fill")
-                .font(.system(size: 36, weight: .bold))
-                .foregroundStyle(.white)
-                .symbolEffect(.pulse, isActive: !reduceMotion && isActive(.permissions))
-            Image(systemName: "applewatch")
-                .font(.system(size: 17, weight: .bold))
-                .foregroundStyle(Theme.forestDeep)
-                .frame(width: 42, height: 42)
-                .background(Theme.leafGradient, in: Circle())
-                .overlay(Circle().strokeBorder(Theme.forestDeep, lineWidth: 3))
-                .offset(x: 44, y: 38)
+            heroBadge("location.fill", tint: Theme.sky).offset(x: -50, y: -42)
+            heroBadge("heart.fill", tint: Color.pink).offset(x: 50, y: 40)
         }
         .accessibilityHidden(true)
     }
 
-    private var healthFlow: some View {
-        GlassCard(padding: 16) {
-            HStack(alignment: .top, spacing: 6) {
-                flowNode(Copy.watchSource, symbol: "applewatch", tint: Theme.sky)
-                flowArrow
-                flowNode("Apple Health", symbol: "heart.fill", tint: Color.pink)
-                flowArrow
-                flowNode(AppInfo.name, symbol: Copy.appSymbol, tint: Theme.glow)
-            }
-        }
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(Copy.watchSource) → Apple Health → \(AppInfo.name)")
+    private func heroBadge(_ symbol: String, tint: Color) -> some View {
+        Image(systemName: symbol)
+            .font(.system(size: 17, weight: .bold))
+            .foregroundStyle(.white)
+            .frame(width: 42, height: 42)
+            .background(tint, in: Circle())
+            .overlay(Circle().strokeBorder(Theme.forestDeep, lineWidth: 3))
     }
 
-    private func flowNode(_ title: String, symbol: String, tint: Color) -> some View {
-        VStack(spacing: 8) {
+    /// One permission: what it is, when the app asks, and "On" once it's already allowed.
+    private func permissionRow(symbol: String, tint: Color, title: String, detail: String, isOn: Bool) -> some View {
+        HStack(alignment: .top, spacing: 16) {
             Image(systemName: symbol)
                 .font(.system(size: 18, weight: .bold))
                 .foregroundStyle(tint)
                 .frame(width: 46, height: 46)
                 .background(tint.opacity(0.16), in: Circle())
-                .overlay(Circle().strokeBorder(tint.opacity(0.3), lineWidth: 1))
-            Text(title)
-                .font(Theme.rounded(12, .bold))
-                .foregroundStyle(.white)
-                .multilineTextAlignment(.center)
-                .lineLimit(2)
-                .minimumScaleFactor(0.8)
-        }
-        .frame(maxWidth: .infinity)
-    }
-
-    private var flowArrow: some View {
-        Image(systemName: "arrow.right")
-            .font(.system(size: 13, weight: .heavy))
-            .foregroundStyle(Theme.textDim)
-            .frame(height: 46)
-    }
-
-    @ViewBuilder
-    private var healthAction: some View {
-        switch health {
-        case .connected:
-            grantedBadge("Apple Health connected")
-        case .unavailable:
-            Text("Apple Health isn't available on this device. You can connect it later in Settings.")
-                .font(Theme.rounded(13, .medium))
-                .foregroundStyle(Theme.textDim)
-                .fixedSize(horizontal: false, vertical: true)
-        case .idle, .requesting:
-            Button {
-                connectHealth()
-            } label: {
+                .overlay(Circle().strokeBorder(tint.opacity(0.35), lineWidth: 1))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 3) {
                 HStack(spacing: 8) {
-                    if health == .requesting {
-                        ProgressView().tint(.white)
-                    } else {
-                        Image(systemName: "heart.fill").foregroundStyle(Color.pink)
+                    Text(title)
+                        .font(Theme.rounded(17, .bold))
+                        .foregroundStyle(.white)
+                    if isOn {
+                        Label("On", systemImage: "checkmark.circle.fill")
+                            .font(Theme.rounded(13, .bold))
+                            .foregroundStyle(Theme.glow)
                     }
-                    Text("Connect Apple Health")
                 }
+                Text(detail)
+                    .font(Theme.rounded(14, .medium))
+                    .foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .buttonStyle(OnboardingGlassButtonStyle())
-            .disabled(health == .requesting)
-            .accessibilityIdentifier("onboarding-connect-health")
-        }
-    }
-
-    // MARK: Shared bits
-
-    private func grantedBadge(_ text: String) -> some View {
-        HStack(spacing: 10) {
-            Image(systemName: "checkmark.circle.fill")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Theme.leafGradient)
-            Text(text)
-                .font(Theme.rounded(17, .bold))
-                .foregroundStyle(.white)
             Spacer(minLength: 0)
         }
-        .padding(.vertical, 14)
-        .padding(.horizontal, 16)
-        .background(Theme.leaf.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Theme.leaf.opacity(0.35), lineWidth: 1))
-        .transition(.scale(scale: 0.92).combined(with: .opacity))
         .accessibilityElement(children: .combine)
     }
 
@@ -449,7 +334,7 @@ struct OnboardingView: View {
             finish()
             return
         }
-        withAnimation(.spring(response: 0.5, dampingFraction: 0.86)) { step = next }
+        if reduceMotion { step = next } else { withAnimation(.spring(response: 0.5, dampingFraction: 0.86)) { step = next } }
     }
 
     private func finish() {
@@ -458,62 +343,36 @@ struct OnboardingView: View {
         FirstRun.hasOnboarded = true
         onDone()
     }
-
-    private func connectHealth() {
-        guard HealthService.shared.isAvailable else {
-            withAnimation(.easeOut(duration: 0.2)) { health = .unavailable }
-            return
-        }
-        health = .requesting
-        Task { @MainActor in
-            let ok: Bool = await HealthService.shared.requestAccess()
-            withAnimation(.spring(response: 0.45, dampingFraction: 0.8)) {
-                health = ok ? .connected : .idle
-            }
-        }
-    }
-
-    private func openSettings() {
-        if let url: URL = URL(string: UIApplication.openSettingsURLString) {
-            openURL(url)
-        }
-    }
 }
 
 // MARK: - Copy
 
 private enum Copy {
     #if TRACK_APP
-    static let appSymbol: String = "location.north.line.fill"
     static let welcomeHeadline: String = "Go anywhere.\nKeep every mile."
     static let welcomeMessage: String = "Roamr records your walks, runs, hikes, rides and drives, with clean stats and records to chase."
     static let featuresHeadline: String = "Built for every\nkind of move."
     static let featuresMessage: String = "One tap to start. The rest is automatic."
-    static let locationHeadline: String = "Tracks with your\nphone locked."
-    static let locationMessage: String = "Roamr uses GPS to draw your route as you go, and keeps recording with your phone in your pocket."
-    static let healthHeadline: String = "Bring your\nGarmin along."
-    static let healthMessage: String = "Garmin and Whoop sync workouts and heart rate into Apple Health. Roamr reads them so your Garmin workouts land in your history."
-    static let watchSource: String = "Garmin Connect"
-    static let permissionsHeadline: String = "Two optional\npermissions."
-    static let permissionsMessage: String = "Location draws your route while you track. Apple Health brings in workouts and heart rate from your watch. Both are asked again when you need them."
+    static let permissionsHeadline: String = "Only when\nyou need it."
+    static let permissionsMessage: String = "Nothing is asked now. Each permission comes up the first time a feature needs it, and you can change your mind anytime in Settings."
+    static let locationWhen: String = "When you start recording, to draw your route as you go."
+    static let healthWhen: String = "When you bring in workouts and heart rate from your watch."
     #else
-    static let appSymbol: String = "tree.fill"
     static let welcomeHeadline: String = "Grow a grove,\none hug at a time."
     static let welcomeMessage: String = "Rootbound turns time with trees into a game: log hugs, breathe slow, and watch your forest grow."
     static let featuresHeadline: String = "A little game\nfor big trees."
     static let featuresMessage: String = "Everything you need to make time outside count."
-    static let locationHeadline: String = "Pin every tree\nyou hug."
-    static let locationMessage: String = "Rootbound uses your location while you log a hug to pin the tree, so you can always find your way back. Walks come from Roamr."
-    static let healthHeadline: String = "Bring your\nApple Watch along."
-    static let healthMessage: String = "Your Apple Watch saves heart rate, HRV, breathing and mindful minutes to Apple Health. Rootbound reads them to show how every hug and breath session calms you."
-    static let watchSource: String = "Apple Watch"
     static let permissionsHeadline: String = "Only when\nyou need it."
-    static let permissionsMessage: String = "Rootbound asks for your location when you pin a tree, and for Apple Health when you link a breath session. Turn them on now, or skip and decide later."
+    static let permissionsMessage: String = "Nothing is asked now. Each permission comes up the first time a feature needs it, and you can change your mind anytime in Settings."
+    static let locationWhen: String = "When you log your first hug, to pin the tree on your map so you can find your way back."
+    static let healthWhen: String = "When you log your first hug, to fill in heart rate and breath sessions from your Apple Watch."
     #endif
 }
 
 // MARK: - Page layout
 
+/// Hero, headline, message and extra content. Centered with breathing room when it fits the screen;
+/// scrolls instead of overlapping the top and bottom bars at large text sizes or on small phones.
 private struct OnboardingPageLayout<Hero: View, Extra: View>: View {
     let active: Bool
     let headline: String
@@ -535,6 +394,15 @@ private struct OnboardingPageLayout<Hero: View, Extra: View>: View {
     }
 
     var body: some View {
+        ViewThatFits(in: .vertical) {
+            column(fillsHeight: true)
+            ScrollView(showsIndicators: false) {
+                column(fillsHeight: false)
+            }
+        }
+    }
+
+    private func column(fillsHeight: Bool) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Spacer(minLength: 8)
             heroBlock
@@ -544,7 +412,7 @@ private struct OnboardingPageLayout<Hero: View, Extra: View>: View {
             Spacer(minLength: 12)
         }
         .padding(.horizontal, Theme.pad)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+        .frame(maxWidth: .infinity, maxHeight: fillsHeight ? .infinity : nil, alignment: .leading)
     }
 
     private var heroBlock: some View {
@@ -561,6 +429,7 @@ private struct OnboardingPageLayout<Hero: View, Extra: View>: View {
                 .foregroundStyle(.white)
                 .minimumScaleFactor(0.8)
                 .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
                 .modifier(Reveal(active: active, delay: 0.08, reduceMotion: reduceMotion))
             Text(message)
                 .font(Theme.rounded(17, .medium))
@@ -601,22 +470,5 @@ private struct Reveal: ViewModifier {
     private var animation: Animation {
         if reduceMotion { return .easeOut(duration: 0.2) }
         return .spring(response: 0.55, dampingFraction: 0.82).delay(active ? delay : 0)
-    }
-}
-
-/// Glassy full-width secondary button for permission prompts.
-private struct OnboardingGlassButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .font(Theme.rounded(17, .bold))
-            .foregroundStyle(.white)
-            .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
-            .background(Color.white.opacity(configuration.isPressed ? 0.15 : 0.09),
-                        in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(Theme.cardStroke, lineWidth: 1))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
