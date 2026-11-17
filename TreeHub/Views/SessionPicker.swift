@@ -53,33 +53,38 @@ struct SessionPickerSheet: View {
     }
 
     private func row(_ s: LinkedSession) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: RB.m) {
             Image(systemName: selected.contains(s.id) ? "checkmark.circle.fill" : "circle")
-                .font(.system(size: 22))
+                .font(.title3)
                 .foregroundStyle(selected.contains(s.id) ? Theme.glow : Theme.textDim)
+                .contentTransition(.symbolEffect(.replace))
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 3) {
-                Text(s.title).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                Text(s.title).font(RB.text(.headline, .bold)).foregroundStyle(.white)
                 Text(LinkedSessionCard.timeRange(s) + " · " + Format.minutes((s.minutes * 10).rounded() / 10))
-                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                    .font(RB.text(.subheadline)).foregroundStyle(Theme.textDim)
+                    .monospacedDigit()
                 if s.practiceName != nil, !s.source.isEmpty {
-                    Text(s.source).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    Text(s.source).font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                 }
             }
             Spacer(minLength: 0)
             if let hr = s.avgHR {
                 Label("\(Int(hr.rounded()))", systemImage: "heart.fill")
-                    .font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow)
+                    .font(RB.text(.subheadline, .bold)).monospacedDigit().foregroundStyle(Theme.glow)
                     .accessibilityLabel("\(Int(hr.rounded())) beats per minute average")
             }
         }
-        .padding(.vertical, 4)
+        .frame(minHeight: 44)
+        .padding(.vertical, RB.xs)
         .contentShape(Rectangle())
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(selected.contains(s.id) ? .isSelected : [])
     }
 }
 
-/// One linked breath session as a stat block: practice + time, then HR start→end, drop, HRV, avg, low, breathing.
+/// One linked breath session as a stat block: practice + time, then HR start→end, drop, HRV, avg, low, end HR and
+/// breathing rate — each only when it's known.
 struct LinkedSessionCard: View {
     let session: LinkedSession
     var compact = false
@@ -90,24 +95,21 @@ struct LinkedSessionCard: View {
 
     private static func bpm(_ v: Double) -> String { "\(Int(v.rounded()))" }
 
-    private var startEnd: String? {
-        var end = session.endHR
-        if end == nil, let a = session.startHR, let d = session.hrDrop { end = a - d }
-        switch (session.startHR, end) {
-        case let (a?, b?): return "\(Self.bpm(a))→\(Self.bpm(b))"
-        case let (a?, nil): return Self.bpm(a)
-        default: return nil
-        }
-    }
-
     private var metrics: [(value: String, label: String, tint: Color)] {
-        var m: [(String, String, Color)] = []
-        if let v = startEnd { m.append((v, "HR start→end", .white)) }
+        var m: [(value: String, label: String, tint: Color)] = []
+        // First → last reading when both are known; otherwise whichever one there is.
+        switch (session.startHR, session.endHR) {
+        case let (a?, b?): m.append(("\(Self.bpm(a))→\(Self.bpm(b))", "HR start→end", .white))
+        case let (a?, nil): m.append((Self.bpm(a), "Start bpm", .white))
+        case let (nil, b?): m.append((Self.bpm(b), "End bpm", .white))
+        default: break
+        }
         if let v = session.hrDrop { m.append((v >= 0 ? String(format: "−%.0f", v) : String(format: "+%.0f", -v), "HR drop (bpm)", Theme.glow)) }
         if let v = session.hrv { m.append((String(format: "%.0f ms", v), "HRV", Theme.sky)) }
         if let v = session.avgHR { m.append((Self.bpm(v), "Avg bpm", .white)) }
         if let v = session.minHR { m.append((Self.bpm(v), "Low bpm", .white)) }
-        if let v = session.respRate { m.append((String(format: "%.1f", v), "Breaths/min", .white)) }
+        if let v = session.maxHR { m.append((Self.bpm(v), "Max bpm", .white)) }
+        if let v = session.respRate { m.append((String(format: "%.1f", v), "Breaths/min", Theme.sky)) }
         return m
     }
 
@@ -137,8 +139,10 @@ struct LinkedSessionCard: View {
                     ForEach(metrics, id: \.label) { m in RBMetric(value: m.value, label: m.label, tint: m.tint) }
                 }
             } else {
-                Text(metrics.prefix(3).map { "\($0.value) \($0.label.lowercased())" }.joined(separator: " · "))
+                Text(metrics.prefix(3).map { "\($0.label) \($0.value)" }.joined(separator: "  ·  "))
                     .font(RB.text(.caption, .semibold)).foregroundStyle(Theme.glow)
+                    .monospacedDigit()
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
         .padding(RB.m)

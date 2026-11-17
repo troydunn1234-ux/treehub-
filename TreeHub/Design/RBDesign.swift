@@ -283,13 +283,128 @@ struct RBInfoChip: View {
 
     var body: some View {
         HStack(spacing: 4) {
-            if let symbol { Image(systemName: symbol).imageScale(.small) }
+            if let symbol { Image(systemName: symbol).imageScale(.small).accessibilityHidden(true) }
             Text(text).lineLimit(1)
         }
         .font(RB.text(.caption, .bold))
         .foregroundStyle(tint)
         .padding(.horizontal, RB.s).padding(.vertical, 5)
         .background(tint.opacity(0.16), in: Capsule())
+    }
+}
+
+/// Selectable chip (tags, weather, categories): a quiet capsule that fills with the accent when on.
+/// No glow, 40 pt tall, wraps its label at big text sizes instead of truncating.
+struct RBChip: View {
+    let label: String
+    var symbol: String? = nil
+    var selected = false
+    var count: Int? = nil
+    var tint: Color = Theme.glow
+
+    var body: some View {
+        HStack(spacing: 6) {
+            if let symbol { Image(systemName: symbol).font(.footnote.weight(.bold)).accessibilityHidden(true) }
+            Text(label).font(RB.text(.subheadline, .semibold)).multilineTextAlignment(.leading)
+            if let count {
+                Text("\(count)")
+                    .font(RB.text(.caption, .bold)).monospacedDigit()
+                    .opacity(0.75)
+            }
+            if selected {
+                Image(systemName: "checkmark").font(.caption2.weight(.heavy)).accessibilityHidden(true)
+                    .transition(.scale.combined(with: .opacity))
+            }
+        }
+        .padding(.horizontal, RB.m)
+        .frame(minHeight: 40)
+        .foregroundStyle(selected ? Theme.forestDeep : .white)
+        .background(selected ? AnyShapeStyle(tint) : AnyShapeStyle(Color.white.opacity(0.08)), in: Capsule())
+        .overlay(Capsule().strokeBorder(selected ? Color.clear : RB.stroke, lineWidth: 1))
+        .contentShape(Capsule())
+        .animation(.spring(response: 0.3, dampingFraction: 0.8), value: selected)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(selected ? .isSelected : [])
+    }
+}
+
+// MARK: - Screen header
+
+/// Top of a main screen: big title (Rootbound's serif), a dim one-line subtitle and an optional trailing accessory.
+struct RBScreenHeader<Trailing: View>: View {
+    let title: String
+    var subtitle: String? = nil
+    @ViewBuilder var trailing: Trailing
+
+    var body: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(alignment: .bottom, spacing: RB.m) { titles; Spacer(minLength: RB.s); trailing }
+            VStack(alignment: .leading, spacing: RB.m) { titles; trailing }
+        }
+        .padding(.top, RB.s)
+    }
+
+    private var titles: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(Theme.title(34))
+                .foregroundStyle(.white)
+                .fixedSize(horizontal: false, vertical: true)
+                .accessibilityAddTraits(.isHeader)
+            if let subtitle, !subtitle.isEmpty {
+                Text(subtitle)
+                    .font(RB.text(.subheadline, .semibold))
+                    .foregroundStyle(Theme.textDim)
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+}
+
+extension RBScreenHeader where Trailing == EmptyView {
+    init(title: String, subtitle: String? = nil) {
+        self.title = title; self.subtitle = subtitle
+        self.trailing = EmptyView()
+    }
+}
+
+// MARK: - Rows
+
+/// A tappable row inside a card: icon in a tinted circle, title, one-line detail, chevron.
+struct RBNavRow: View {
+    let symbol: String
+    let title: String
+    var detail: String? = nil
+    var tint: Color = Theme.glow
+    var trailingSymbol = "chevron.right"
+
+    var body: some View {
+        HStack(spacing: RB.m) {
+            Image(systemName: symbol)
+                .font(.headline)
+                .foregroundStyle(tint)
+                .frame(width: 44, height: 44)
+                .background(tint.opacity(0.14), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(title).font(RB.text(.headline, .bold)).foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                if let detail, !detail.isEmpty {
+                    Text(detail).font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                        .multilineTextAlignment(.leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+            Spacer(minLength: RB.s)
+            Image(systemName: trailingSymbol)
+                .font(.footnote.weight(.bold)).foregroundStyle(Theme.textDim)
+                .accessibilityHidden(true)
+        }
+        .frame(minHeight: 44)
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -302,6 +417,8 @@ struct RBEmptyState: View {
     let hint: String
     var actionTitle: String? = nil
     var action: (() -> Void)? = nil
+    @State private var appeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         VStack(spacing: RB.m) {
@@ -310,6 +427,8 @@ struct RBEmptyState: View {
                 .foregroundStyle(Theme.leafGradient)
                 .frame(width: 84, height: 84)
                 .background(Theme.glow.opacity(0.10), in: Circle())
+                .symbolEffect(.bounce, value: appeared)
+                .onAppear { if !reduceMotion { appeared = true } }
                 .accessibilityHidden(true)
             Text(title)
                 .font(RB.text(.title3, .bold))
@@ -380,6 +499,25 @@ struct RBSkeletonRow: View {
         .padding(.horizontal, RB.m)
         .rbInner()
         .rbSkeleton()
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Loading")
+    }
+}
+
+/// A soft, slowly shimmering block (photo thumbnails while they load).
+struct RBSkeletonBlock: View {
+    var cornerRadius: CGFloat = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var lit = false
+
+    var body: some View {
+        RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
+            .fill(Color.white.opacity(lit ? 0.10 : 0.05))
+            .onAppear {
+                guard !reduceMotion else { return }
+                withAnimation(.easeInOut(duration: 0.9).repeatForever(autoreverses: true)) { lit = true }
+            }
+            .accessibilityHidden(true)
     }
 }
 

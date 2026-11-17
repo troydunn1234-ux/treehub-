@@ -224,9 +224,10 @@ struct HugDetailView: View {
     /// Every Still Pointz / Health session linked to this hug, one card each, with totals. Refreshed on open.
     @ViewBuilder private var breathworkSection: some View {
         let sessions = hug.linkedSessions
-        if !sessions.isEmpty || refreshing {
+        // Skeleton only while an older hug (no list yet) has its sessions looked up for the first time.
+        if !sessions.isEmpty || (refreshing && !hug.hasLinkList) {
             RBCard {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: RB.m) {
                     RBSectionTitle(title: sessions.count > 1 ? "Breathwork · \(sessions.count) sessions" : "Breathwork", symbol: "wind", tint: Theme.sky)
                     if sessions.count > 1 { LinkedSessionTotals(sessions: sessions) }
                     ForEach(sessions) { s in LinkedSessionCard(session: s) }

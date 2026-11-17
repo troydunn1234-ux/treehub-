@@ -346,7 +346,7 @@ struct HugLogView: View {
                         .font(RB.text(.caption, .bold)).foregroundStyle(Theme.glow)
                     if guessing {
                         HStack(spacing: RB.s) {
-                            ForEach(0..<3, id: \.self) { _ in Chip(label: "Coast Live Oak · 80%") }
+                            ForEach(0..<3, id: \.self) { _ in RBChip(label: "Coast Live Oak · 80%") }
                         }
                         .rbSkeleton()
                     }
@@ -355,7 +355,7 @@ struct HugLogView: View {
                             HStack(spacing: RB.s) {
                                 ForEach(guesses) { g in
                                     Button { withAnimation(.snappy) { d.species = g.name } } label: {
-                                        Chip(label: "\(g.name) · \(Int((g.confidence * 100).rounded()))%", symbol: "leaf.fill",
+                                        RBChip(label: "\(g.name) · \(Int((g.confidence * 100).rounded()))%", symbol: "leaf.fill",
                                              selected: d.species == g.name)
                                     }
                                     .buttonStyle(.plain)
@@ -380,7 +380,7 @@ struct HugLogView: View {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: RB.s) {
                         ForEach(suggestions.prefix(12), id: \.self) { s in
-                            Button { d.species = s } label: { Chip(label: s) }.buttonStyle(.plain)
+                            Button { d.species = s } label: { RBChip(label: s) }.buttonStyle(.plain)
                         }
                     }
                 }
@@ -462,11 +462,11 @@ struct HugLogView: View {
             }
             HStack(spacing: RB.s) {
                 Button { Task { await useCurrentLocation() } } label: {
-                    Chip(label: locating ? "Locating…" : "I'm here now", symbol: "location.fill")
+                    RBChip(label: locating ? "Locating…" : "I'm here now", symbol: "location.fill")
                 }
                 .buttonStyle(.plain).disabled(locating)
                 if let pc = photoCoord {
-                    Button { setCoordinate(pc, source: "From photo") } label: { Chip(label: "Photo's spot", symbol: "photo") }
+                    Button { setCoordinate(pc, source: "From photo") } label: { RBChip(label: "Photo's spot", symbol: "photo") }
                         .buttonStyle(.plain)
                 }
             }
@@ -650,7 +650,7 @@ struct HugLogView: View {
                                     if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
                                 }
                             } label: {
-                                Chip(label: t.label, selected: d.tags.contains(t.id))
+                                RBChip(label: t.label, selected: d.tags.contains(t.id))
                             }
                             .buttonStyle(.plain)
                         }
@@ -659,7 +659,7 @@ struct HugLogView: View {
                     FlowLayout(spacing: RB.s) {
                         ForEach(Self.weathers, id: \.1) { w in
                             Button { d.weather = d.weather == w.1 ? "" : w.1 } label: {
-                                Chip(label: w.1, symbol: w.0, selected: d.weather == w.1)
+                                RBChip(label: w.1, symbol: w.0, selected: d.weather == w.1)
                             }
                             .buttonStyle(.plain)
                         }

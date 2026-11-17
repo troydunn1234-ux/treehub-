@@ -36,6 +36,7 @@ struct HomeView: View {
                             if !watchInbox.pending.isEmpty { watchHugCard }
                         }
                         .padding(.top, -RB.xxl - RB.s)
+                        // Cross-app "Today" cards (the other family apps) slot in here, between the actions and the numbers.
                         // 2. Your numbers, always recomputed from the hugs + linked sessions.
                         VStack(alignment: .leading, spacing: RB.m) {
                             RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill")
@@ -252,6 +253,8 @@ struct HomeView: View {
             RBSectionTitle(title: "Recent hugs", symbol: "heart.fill") {
                 Button("Grove") { tab = .trees }
                     .font(RB.text(.subheadline, .semibold)).foregroundStyle(Theme.glow)
+                    .frame(minHeight: 44)
+                    .accessibilityHint("Opens your grove of trees")
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 LazyHStack(spacing: RB.m) {
@@ -280,6 +283,8 @@ struct HomeView: View {
                 Button("\(earned)/\(all.count) badges") { tab = .collection }
                     .font(RB.text(.subheadline, .semibold)).foregroundStyle(Theme.glow)
                     .monospacedDigit()
+                    .frame(minHeight: 44)
+                    .accessibilityHint("Opens your collection")
             }
             RBCard {
                 VStack(spacing: RB.l) {
@@ -324,9 +329,10 @@ struct HugCard: View {
 
     var body: some View {
         let width: CGFloat = typeSize.isAccessibilitySize ? 300 : 240
+        let height: CGFloat = typeSize.isAccessibilitySize ? 360 : 300
         ZStack(alignment: .bottomLeading) {
             RBPhotoFill(data: hug.selfiePhoto ?? hug.treePhoto)
-                .frame(width: width, height: 300)
+                .frame(width: width, height: height)
                 .clipped()
             LinearGradient(stops: [.init(color: .clear, location: 0.35), .init(color: .black.opacity(0.85), location: 1)],
                            startPoint: .top, endPoint: .bottom)
@@ -338,15 +344,17 @@ struct HugCard: View {
                     Text(Format.day(hug.date))
                         .font(RB.text(.footnote, .semibold)).foregroundStyle(.white.opacity(0.75))
                 }
-                HStack(spacing: 6) {
-                    if let b = breathChip { RBInfoChip(text: b, symbol: "wind", tint: Theme.sky) }
-                    if let w = walkChip { RBInfoChip(text: w, symbol: hug.linkedWalks.first?.symbol ?? "figure.walk") }
-                    if hug.barefoot { RBInfoChip(text: "Barefoot", symbol: "shoeprints.fill", tint: Theme.gold) }
+                // As many chips as fit on one line: breathwork first, then the walk, then barefoot.
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 6) { breath; walk; barefoot }
+                    HStack(spacing: 6) { breath; walk }
+                    HStack(spacing: 6) { breath }
+                    EmptyView()
                 }
             }
             .padding(RB.l)
         }
-        .frame(width: width, height: 300)
+        .frame(width: width, height: height)
         .overlay(alignment: .topTrailing) {
             if let leaf = LeafType.find(hug.leafKey) {
                 LeafView(leaf: leaf, size: 26)
@@ -359,6 +367,16 @@ struct HugCard: View {
         .overlay(RoundedRectangle(cornerRadius: RB.radius, style: .continuous).strokeBorder(RB.stroke))
         .accessibilityElement(children: .combine)
         .accessibilityLabel("\(hug.treeName), \(Format.day(hug.date))\(breathChip.map { ", breathwork \($0)" } ?? "")\(walkChip.map { ", walk \($0)" } ?? "")")
+    }
+
+    @ViewBuilder private var breath: some View {
+        if let b = breathChip { RBInfoChip(text: b, symbol: "wind", tint: Theme.sky) }
+    }
+    @ViewBuilder private var walk: some View {
+        if let w = walkChip { RBInfoChip(text: w, symbol: hug.linkedWalks.first?.symbol ?? "figure.walk") }
+    }
+    @ViewBuilder private var barefoot: some View {
+        if hug.barefoot { RBInfoChip(text: "Barefoot", symbol: "shoeprints.fill", tint: Theme.gold) }
     }
 }
 
@@ -376,39 +394,41 @@ struct SeasonalEventBanner: View {
 
     var body: some View {
         let days = event.daysLeft()
-        HStack(alignment: .top, spacing: 14) {
+        HStack(alignment: .top, spacing: RB.m) {
             Image(systemName: event.symbol)
-                .font(.system(size: 24, weight: .bold))
+                .font(.title2.weight(.bold))
                 .foregroundStyle(.white)
                 .frame(width: 52, height: 52)
-                .background(event.gradient, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
-                .shadow(color: event.colors[0].opacity(0.6), radius: 10)
-            VStack(alignment: .leading, spacing: 4) {
+                .background(event.gradient, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: RB.xs) {
                 HStack(spacing: 6) {
-                    Text("EVENT").font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(1.2)
+                    Text("EVENT").font(RB.text(.caption2, .heavy)).tracking(1.2)
                         .padding(.horizontal, 6).padding(.vertical, 2)
                         .background(event.colors[0], in: Capsule()).foregroundStyle(Theme.forestDeep)
                     Text(days == 0 ? "Last day" : "\(days) day\(days == 1 ? "" : "s") left")
-                        .font(Theme.rounded(12, .bold)).foregroundStyle(Theme.textDim)
+                        .font(RB.text(.caption, .bold)).foregroundStyle(Theme.textDim)
+                        .monospacedDigit()
                 }
-                Text(event.name).font(Theme.rounded(19, .heavy)).foregroundStyle(.white)
-                Text(event.tagline).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                Text(event.name).font(RB.text(.headline, .heavy)).foregroundStyle(.white)
+                Text(event.tagline).font(RB.text(.subheadline)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text("+\(event.bonusXP) XP every hug · +\(event.featuredBonusXP) more for \(event.featuredLabel)")
-                    .font(Theme.rounded(12, .bold)).foregroundStyle(event.colors[0])
-                HStack(spacing: 6) {
-                    Image(systemName: badgeEarned ? "checkmark.seal.fill" : "seal")
-                    Text(badgeEarned ? "\(event.badgeName) badge earned" : "Hug one of the \(event.featuredLabel) for the \(event.badgeName) badge")
-                }
-                .font(Theme.rounded(12, .semibold))
-                .foregroundStyle(badgeEarned ? Theme.gold : Theme.textDim)
+                    .font(RB.text(.footnote, .bold)).foregroundStyle(event.colors[0])
+                    .fixedSize(horizontal: false, vertical: true)
+                Label(badgeEarned ? "\(event.badgeName) badge earned" : "Hug one of the \(event.featuredLabel) for the \(event.badgeName) badge",
+                      systemImage: badgeEarned ? "checkmark.seal.fill" : "seal")
+                    .font(RB.text(.footnote, .semibold))
+                    .foregroundStyle(badgeEarned ? Theme.gold : Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
                 if !duringEvent.isEmpty {
                     Text("\(duringEvent.count) hug\(duringEvent.count == 1 ? "" : "s") so far this event")
-                        .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
                 }
             }
             Spacer(minLength: 0)
         }
-        .padding(16)
+        .padding(RB.l)
         .background {
             RoundedRectangle(cornerRadius: RB.radius, style: .continuous).fill(Theme.card)
             RoundedRectangle(cornerRadius: RB.radius, style: .continuous)

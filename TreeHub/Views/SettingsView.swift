@@ -23,23 +23,27 @@ struct SettingsView: View {
             Form {
                 Section {
                     Button { plansContext = nil; showPlans = true } label: {
-                        HStack(spacing: 12) {
+                        HStack(spacing: RB.m) {
                             Image(systemName: "sparkles")
-                                .font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.gold)
+                                .font(.subheadline.weight(.bold)).foregroundStyle(Theme.gold)
                                 .frame(width: 32, height: 32)
                                 .background(Circle().fill(Theme.gold.opacity(0.16)))
+                                .accessibilityHidden(true)
                             VStack(alignment: .leading, spacing: 1) {
-                                Text("Rootbound Pro").font(.system(size: 15, weight: .semibold, design: .rounded)).foregroundStyle(.white)
+                                Text("Rootbound Pro").font(.subheadline.weight(.semibold)).foregroundStyle(.white)
                                 Text(unlock.isPro ? "Unlocked · thank you!"
                                      : unlock.priceText.isEmpty ? "Tree selfies, insights, CSV + GPX export"
                                      : "One payment of \(unlock.priceText), no subscription")
-                                    .font(.system(size: 12.5, design: .rounded)).foregroundStyle(.secondary)
+                                    .font(.footnote).foregroundStyle(.secondary)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            Spacer()
+                            Spacer(minLength: RB.s)
                             Image(systemName: unlock.isPro ? "checkmark.seal.fill" : "chevron.right")
-                                .font(.system(size: unlock.isPro ? 17 : 12, weight: .bold))
+                                .font(unlock.isPro ? .body.weight(.bold) : .caption.weight(.bold))
                                 .foregroundStyle(unlock.isPro ? Theme.glow : .secondary)
+                                .accessibilityHidden(true)
                         }
+                        .frame(minHeight: 44)
                     }
                     Button {
                         Task { await unlock.restore() }
@@ -57,14 +61,16 @@ struct SettingsView: View {
                     Text("Logging hugs, the map, your grove, walks from Roamr, every badge and leaf, and the JSON export are free forever.")
                 }
                 Section("Units") {
-                    Toggle("Metric (km, m)", isOn: $useMetric)
+                    Toggle(isOn: $useMetric) { Label("Metric (km, m)", systemImage: "ruler") }
                 }
                 Section {
-                    Button("Connect Apple Health") {
+                    Button {
                         Task {
                             let ok = await HealthService.shared.requestAccess()
                             healthStatus = ok ? "Done. Rootbound can read what you allowed." : "Apple Health isn't available on this device."
                         }
+                    } label: {
+                        Label("Connect Apple Health", systemImage: "heart.text.square")
                     }
                     if !healthStatus.isEmpty { Text(healthStatus).font(.footnote).foregroundStyle(.secondary) }
                 } header: {
@@ -98,6 +104,7 @@ struct SettingsView: View {
                             Spacer()
                             if findingHugs { ProgressView() }
                         }
+                        .frame(minHeight: 44)
                     }
                     if let exportURL {
                         ShareLink(item: exportURL) { Label("Export my data (JSON)", systemImage: "square.and.arrow.up") }
@@ -121,11 +128,22 @@ struct SettingsView: View {
                 } footer: {
                     Text("Everything stays on your iPhone and syncs to your private iCloud. Nobody else can see it. \(hugs.count) hugs · \(activities.count) activities.")
                 }
-                Section("About") {
-                    MoreAppsRow()
-                    LabeledContent("Version", value: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
+                MoreAppsGate { Section { MoreAppsRow(tint: Theme.glow) } }
+                Section {
+                    // The family About block: app icon, name and version, then privacy, terms and help.
+                    FamilyAboutHeader(name: "Rootbound", tagline: "Hug trees, breathe with them and grow a grove of your own.",
+                                      tint: Theme.glow)
+                    FamilyAboutLinks(privacy: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/PRIVACY.md"),
+                                     terms: FamilyAboutLinks.standardTerms,
+                                     support: URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/rootbound/SUPPORT.md"),
+                                     tint: Theme.glow)
+                } header: {
+                    Text("About")
+                } footer: {
+                    Text("No accounts, no ads, no tracking. Your hugs stay on your iPhone and in your private iCloud.")
                 }
             }
+            .tint(Theme.glow)
             .scrollContentBackground(.hidden)
             .background(ForestBackground())
             .navigationTitle("Settings")

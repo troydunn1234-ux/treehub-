@@ -70,39 +70,13 @@ struct BreatheWithTreeButton: View {
                     if !WellnessLinks.open(WellnessLinks.breatheWithTree(treeName, treeID: treeID, practice: "rooted-breath")) { installed = false }
                 } label: {
                     Label("Breathe with this tree", systemImage: "wind")
-                        .font(Theme.rounded(15, .bold))
-                        .foregroundStyle(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 13)
-                        .background(Theme.sky.opacity(0.18), in: RoundedRectangle(cornerRadius: 14))
-                        .overlay(RoundedRectangle(cornerRadius: 14).strokeBorder(Theme.sky.opacity(0.35)))
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(RBSecondaryButtonStyle(tint: Theme.sky))
                 .accessibilityHint("Opens a three-minute breath with \(treeName) in Still Pointz")
             } else {
-                HStack(spacing: 12) {
-                    Image(systemName: "wind")
-                        .font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.sky)
-                        .frame(width: 40, height: 40)
-                        .background(Theme.sky.opacity(0.15), in: Circle())
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text("Breathe with \(treeName)").font(Theme.rounded(15, .bold)).foregroundStyle(.white)
-                        Text("Still Pointz guides a short grounding breath. Hug + breathe on the same day for Breath & Bark.")
-                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    Spacer(minLength: 0)
-                    if let store = WellnessLinks.storeURL(bundleID: WellnessLinks.stillPointBundleID) {
-                        Button("Get") { openURL(store) }
-                            .font(Theme.rounded(14, .heavy))
-                            .foregroundStyle(Theme.forestDeep)
-                            .padding(.horizontal, 14).padding(.vertical, 7)
-                            .background(Theme.sky, in: Capsule())
-                            .accessibilityLabel("Get Still Pointz on the App Store")
-                    }
-                }
-                .padding(12)
-                .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+                Self.getCard(title: "Breathe with \(treeName)",
+                             text: "Still Pointz guides a short grounding breath. Hug + breathe on the same day for Breath & Bark.",
+                             openURL: openURL)
             }
         }
         .onAppear { installed = WellnessLinks.stillPointInstalled }
@@ -113,29 +87,41 @@ extension BreatheWithTreeButton {
     /// "Get Still Pointz" card with its App Store link (when Still Pointz isn't installed).
     @MainActor
     static func storeCard(title: String, openURL: OpenURLAction) -> some View {
-        HStack(spacing: 12) {
+        getCard(title: title, text: "Still Pointz isn't on this iPhone yet. It guides short breaths and keeps your Journey.",
+                openURL: openURL)
+    }
+
+    /// Wind icon, what Still Pointz would do here, and a "Get" button for its App Store page.
+    @MainActor
+    fileprivate static func getCard(title: String, text: String, openURL: OpenURLAction) -> some View {
+        HStack(spacing: RB.m) {
             Image(systemName: "wind")
-                .font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.sky)
-                .frame(width: 40, height: 40)
+                .font(.headline).foregroundStyle(Theme.sky)
+                .frame(width: 44, height: 44)
                 .background(Theme.sky.opacity(0.15), in: Circle())
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(title).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
-                Text("Still Pointz isn't on this iPhone yet. It guides short breaths and keeps your Journey.")
-                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                Text(title).font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(text)
+                    .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
             if let store = WellnessLinks.storeURL(bundleID: WellnessLinks.stillPointBundleID) {
                 Button("Get") { openURL(store) }
-                    .font(Theme.rounded(14, .heavy))
+                    .font(RB.text(.subheadline, .heavy))
                     .foregroundStyle(Theme.forestDeep)
-                    .padding(.horizontal, 14).padding(.vertical, 7)
+                    .padding(.horizontal, RB.l)
+                    .frame(minHeight: 36)
                     .background(Theme.sky, in: Capsule())
+                    .contentShape(Rectangle())
+                    .frame(minHeight: 44)
                     .accessibilityLabel("Get Still Pointz on the App Store")
             }
         }
-        .padding(12)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+        .padding(RB.m)
+        .rbInner()
     }
 }
 
@@ -159,29 +145,36 @@ struct CalmMinutesCard: View {
                 Button {
                     if !WellnessLinks.open(WellnessLinks.stillPointJourney) { showGet = true }
                 } label: {
-                RBCard(padding: 16) {
-                    HStack(spacing: 14) {
+                RBCard(tint: Theme.sky) {
+                    HStack(spacing: RB.m) {
                         Image(systemName: "wind")
-                            .font(.system(size: 22, weight: .bold)).foregroundStyle(Theme.sky)
-                            .frame(width: 46, height: 46)
+                            .font(.title3.weight(.bold)).foregroundStyle(Theme.sky)
+                            .frame(width: 48, height: 48)
                             .background(Theme.sky.opacity(0.15), in: Circle())
-                        VStack(alignment: .leading, spacing: 3) {
-                            Text("\(Format.minutes(week)) calm minutes")
-                                .font(Theme.rounded(17, .bold)).foregroundStyle(.white)
+                            .accessibilityHidden(true)
+                        VStack(alignment: .leading, spacing: RB.xs) {
+                            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                                Text(Format.minutes(week))
+                                    .font(RB.number(.title2)).monospacedDigit().foregroundStyle(.white)
+                                    .contentTransition(.numericText())
+                                Text("calm minutes").font(RB.text(.subheadline, .semibold)).foregroundStyle(.white)
+                            }
                             Text("This week in Still Pointz · Open Journey")
-                                .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                                .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                                .fixedSize(horizontal: false, vertical: true)
                             if let t = latestTree {
-                                Text(t).font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.sky)
+                                Text(t).font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.sky)
                                     .fixedSize(horizontal: false, vertical: true)
                             }
                             Text(line(breathed: breathedToday, hugged: huggedToday))
-                                .font(Theme.rounded(12, .bold))
+                                .font(RB.text(.footnote, .bold))
                                 .foregroundStyle(breathedToday && huggedToday ? Theme.gold : Theme.glow)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         Spacer(minLength: 0)
-                        Image(systemName: "chevron.right")
-                            .font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.textDim)
+                        Image(systemName: "arrow.up.right")
+                            .font(.footnote.weight(.bold)).foregroundStyle(Theme.textDim)
+                            .accessibilityHidden(true)
                     }
                 }
                 .accessibilityElement(children: .combine)

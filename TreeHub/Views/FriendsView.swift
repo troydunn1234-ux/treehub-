@@ -12,6 +12,7 @@ struct FriendsView: View {
     @State private var pasted = ""
     @State private var message = ""
     @State private var preview: SharePack?
+    @State private var copied = 0
     /// A code that arrived through a rootbound://friends link.
     var incoming: String? = nil
 
@@ -24,18 +25,21 @@ struct FriendsView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 18) {
+                VStack(alignment: .leading, spacing: RB.l) {
                     if let preview { importCard(preview) }
                     shareSection
                     importSection
                     friendsSection
-                    Text("Shared trees carry only a name, a species and a spot rounded to about 1 km. No photos, dates or anything else, and nothing goes through a server: the code is the whole thing.")
-                        .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    Label("Shared trees carry only a name, a species and a spot rounded to about 1 km. No photos, dates or anything else, and nothing goes through a server: the code is the whole thing.",
+                          systemImage: "lock.shield.fill")
+                        .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(Theme.pad)
-                .padding(.bottom, 40)
+                .padding(RB.screen)
+                .padding(.bottom, RB.xxl)
             }
             .forestScreen()
+            .sensoryFeedback(.success, trigger: copied)
             .navigationTitle("Friends map")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { ToolbarItem(placement: .confirmationAction) { Button("Done") { dismiss() } } }
@@ -53,49 +57,59 @@ struct FriendsView: View {
                 RBSectionTitle(title: "Share my trees", symbol: "square.and.arrow.up")
                 TextField("Your name for friends", text: $myName)
                     .textInputAutocapitalization(.words)
-                    .padding(10)
-                    .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    .font(RB.text(.body))
+                    .padding(.horizontal, RB.m)
+                    .frame(minHeight: 48)
+                    .rbInner()
                 if pinned.isEmpty {
                     Text("Pin a tree on the map when you log a hug, then you can share it here.")
-                        .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                        .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
                 } else {
-                    Text("Pick the trees friends can see:").font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.textDim)
+                    Text("Pick the trees friends can see:").font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
                     ForEach(pinned) { t in
                         Toggle(isOn: Binding(get: { shared.contains(t.id) },
                                              set: { on in FriendShare.setShared(t.id, on); shared = FriendShare.sharedTreeIDs })) {
                             VStack(alignment: .leading, spacing: 2) {
-                                Text(t.name).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                                Text(t.name).font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
                                 Text(t.species.isEmpty ? "Mystery species" : t.species)
-                                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                                    .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                             }
                         }
                         .tint(Theme.glow)
                     }
                 }
                 if let link, let code {
-                    HStack(alignment: .center, spacing: 14) {
-                        if let qr = FriendShare.qrImage(for: link.absoluteString) {
-                            Image(uiImage: qr).interpolation(.none).resizable()
-                                .frame(width: 128, height: 128)
-                                .padding(6).background(.white, in: RoundedRectangle(cornerRadius: 10))
-                                .accessibilityLabel("QR code with your shared trees")
-                        }
-                        VStack(alignment: .leading, spacing: 8) {
-                            Text("\(pack.t.count) tree\(pack.t.count == 1 ? "" : "s") in this code")
-                                .font(Theme.rounded(13, .bold)).foregroundStyle(.white)
-                            ShareLink(item: link, subject: Text("My Rootbound trees"),
-                                      message: Text("Open this in Rootbound to see my trees on your map. Code: \(code)")) {
-                                Label("Send link", systemImage: "square.and.arrow.up")
-                            }
-                            .buttonStyle(.borderedProminent).tint(Theme.leaf)
-                            Button { UIPasteboard.general.string = code; message = "Code copied." } label: {
-                                Label("Copy code", systemImage: "doc.on.doc")
-                            }
-                            .buttonStyle(.bordered)
-                        }
+                    ViewThatFits(in: .horizontal) {
+                        HStack(alignment: .center, spacing: RB.m) { qrCode(link); shareButtons(link, code: code) }
+                        VStack(alignment: .leading, spacing: RB.m) { qrCode(link); shareButtons(link, code: code) }
                     }
                 }
             }
+        }
+    }
+
+    @ViewBuilder private func qrCode(_ link: URL) -> some View {
+        if let qr = FriendShare.qrImage(for: link.absoluteString) {
+            Image(uiImage: qr).interpolation(.none).resizable()
+                .frame(width: 128, height: 128)
+                .padding(6).background(.white, in: RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
+                .accessibilityLabel("QR code with your shared trees")
+        }
+    }
+
+    private func shareButtons(_ link: URL, code: String) -> some View {
+        VStack(alignment: .leading, spacing: RB.s) {
+            Text("\(pack.t.count) tree\(pack.t.count == 1 ? "" : "s") in this code")
+                .font(RB.text(.footnote, .bold)).foregroundStyle(.white)
+            ShareLink(item: link, subject: Text("My Rootbound trees"),
+                      message: Text("Open this in Rootbound to see my trees on your map. Code: \(code)")) {
+                Label("Send link", systemImage: "square.and.arrow.up")
+            }
+            .buttonStyle(RBPrimaryButtonStyle())
+            Button { UIPasteboard.general.string = code; message = "Code copied."; copied += 1 } label: {
+                Label("Copy code", systemImage: "doc.on.doc")
+            }
+            .buttonStyle(RBSecondaryButtonStyle(compact: true))
         }
     }
 
@@ -103,16 +117,21 @@ struct FriendsView: View {
 
     private var importSection: some View {
         RBCard {
-            VStack(alignment: .leading, spacing: 10) {
+            VStack(alignment: .leading, spacing: RB.m) {
                 RBSectionTitle(title: "Add a friend's trees", symbol: "person.2.fill")
                 Text("Scan their QR code with the Camera, open their link, or paste their code here.")
-                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                HStack {
+                    .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+                HStack(spacing: RB.s) {
                     TextField("RB1-…", text: $pasted)
                         .textInputAutocapitalization(.never).autocorrectionDisabled()
-                        .padding(10)
-                        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
-                    Button("Paste") { pasted = UIPasteboard.general.string ?? "" }.buttonStyle(.bordered)
+                        .font(RB.text(.body))
+                        .padding(.horizontal, RB.m)
+                        .frame(minHeight: 48)
+                        .rbInner()
+                    Button("Paste") { pasted = UIPasteboard.general.string ?? "" }
+                        .buttonStyle(RBSecondaryButtonStyle(compact: true))
+                        .fixedSize()
                 }
                 Button {
                     if let p = FriendShare.decode(pasted) { preview = p; message = "" } else { message = "That doesn't look like a Rootbound code." }
@@ -120,7 +139,7 @@ struct FriendsView: View {
                 .buttonStyle(RBPrimaryButtonStyle())
                 .disabled(pasted.trimmingCharacters(in: .whitespaces).isEmpty)
                 if !message.isEmpty {
-                    Text(message).font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.gold)
+                    Text(message).font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.gold)
                 }
             }
         }
@@ -131,10 +150,10 @@ struct FriendsView: View {
             VStack(alignment: .leading, spacing: 10) {
                 RBSectionTitle(title: "\(p.from.isEmpty ? "A friend" : p.from) shared \(p.t.count) tree\(p.t.count == 1 ? "" : "s")", symbol: "gift.fill")
                 ForEach(Array(p.t.prefix(6).enumerated()), id: \.offset) { _, t in
-                    Text("• \(t.n)\(t.s.isEmpty ? "" : " · \(t.s)")").font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                    Text("• \(t.n)\(t.s.isEmpty ? "" : " · \(t.s)")").font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
                 }
-                if p.t.count > 6 { Text("and \(p.t.count - 6) more").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim) }
-                HStack {
+                if p.t.count > 6 { Text("and \(p.t.count - 6) more").font(RB.text(.caption)).foregroundStyle(Theme.textDim) }
+                HStack(spacing: RB.s) {
                     Button("Add to my map") {
                         FriendShare.importPack(p)
                         friends = FriendShare.friends
@@ -142,8 +161,9 @@ struct FriendsView: View {
                         message = "Added. Their trees show on your Grove map in blue."
                         UINotificationFeedbackGenerator().notificationOccurred(.success)
                     }
-                    .buttonStyle(.borderedProminent).tint(Theme.sky)
-                    Button("Not now") { preview = nil }.buttonStyle(.bordered)
+                    .buttonStyle(RBPrimaryButtonStyle(tint: Theme.sky))
+                    Button("Not now") { preview = nil }
+                        .buttonStyle(RBSecondaryButtonStyle())
                 }
             }
         }
@@ -154,21 +174,28 @@ struct FriendsView: View {
             if !friends.isEmpty {
                 RBSectionTitle(title: "Friends on your map", symbol: "map.fill")
                 ForEach(friends) { f in
-                    HStack {
+                    HStack(spacing: RB.m) {
                         Circle().fill(Theme.sky).frame(width: 12, height: 12)
+                            .accessibilityHidden(true)
                         VStack(alignment: .leading, spacing: 2) {
-                            Text(f.name).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                            Text(f.name).font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
                             Text("\(f.trees.count) tree\(f.trees.count == 1 ? "" : "s") · added \(Format.day(f.importedAt))")
-                                .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                                .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                         }
-                        Spacer()
+                        Spacer(minLength: RB.s)
                         Button(role: .destructive) { FriendShare.remove(f.id); friends = FriendShare.friends } label: {
                             Image(systemName: "trash")
+                                .font(.body.weight(.semibold))
+                                .foregroundStyle(.red)
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
                         .accessibilityLabel("Remove \(f.name)")
                     }
-                    .padding(12)
-                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 16))
+                    .padding(.leading, RB.m)
+                    .padding(.vertical, RB.xs)
+                    .rbInner()
                 }
             }
         }

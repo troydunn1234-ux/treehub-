@@ -30,7 +30,10 @@ struct TreesView: View {
                 if trees.isEmpty {
                     Spacer()
                     RBEmptyState(symbol: "tree", title: "Your grove is empty",
-                                 hint: "Hug a tree and it shows up here, with every visit you share.")
+                                 hint: "Hug a tree and it shows up here, with every visit you share.",
+                                 actionTitle: "Hug a tree") { RootboundPending.queue(.logHug) }
+                        .padding(.horizontal, RB.screen)
+                    Spacer()
                     Spacer()
                 } else if mode == 0 {
                     grid
@@ -140,45 +143,55 @@ struct TreesView: View {
 
             if let id = selectedTree, let t = mapped.first(where: { $0.id == id }) {
                 NavigationLink(value: t.id) {
-                    HStack(spacing: 12) {
-                        PhotoView(data: t.coverPhoto).frame(width: 56, height: 56).clipShape(RoundedRectangle(cornerRadius: 12))
+                    HStack(spacing: RB.m) {
+                        PhotoView(data: t.coverPhoto).frame(width: 56, height: 56)
+                            .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
                         VStack(alignment: .leading, spacing: 3) {
-                            Text(t.name).font(Theme.rounded(17, .bold)).foregroundStyle(.white)
+                            Text(t.name).font(RB.text(.headline, .bold)).foregroundStyle(.white)
                             HeartsView(filled: t.bond, size: 11)
                             Text("\(t.hugCount) hug\(t.hugCount == 1 ? "" : "s") · last \(Format.day(t.lastHug))")
-                                .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                                .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                         }
-                        Spacer()
-                        Image(systemName: "chevron.right").foregroundStyle(Theme.glow)
+                        Spacer(minLength: RB.s)
+                        Image(systemName: "chevron.right").font(.footnote.weight(.bold)).foregroundStyle(Theme.glow)
                     }
-                    .padding(12)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20))
-                    .padding(.horizontal, 24)
+                    .padding(RB.m)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: RB.radius, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: RB.radius, style: .continuous).strokeBorder(RB.stroke))
+                    .padding(.horizontal, RB.xl)
+                    .padding(.bottom, RB.m)
+                    .accessibilityElement(children: .combine)
                 }
                 .buttonStyle(.plain)
                 .transition(.move(edge: .bottom).combined(with: .opacity))
             }
         }
         .padding(.bottom, 100)
+        .sensoryFeedback(.selection, trigger: selectedTree)
         .overlay(alignment: .topTrailing) {
             if !friends.isEmpty {
                 Button { withAnimation { showFriendTrees.toggle() } } label: {
                     Label(showFriendTrees ? "Friends on" : "Friends off", systemImage: "person.2.fill")
-                        .font(Theme.rounded(12, .bold))
+                        .font(RB.text(.caption, .bold))
                         .foregroundStyle(showFriendTrees ? Theme.sky : Theme.textDim)
-                        .padding(.horizontal, 10).padding(.vertical, 6)
+                        .padding(.horizontal, RB.m).padding(.vertical, RB.s)
                         .background(.ultraThinMaterial, in: Capsule())
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
-                .padding(.top, 10).padding(.trailing, 70)
+                .buttonStyle(.plain)
+                .padding(.top, RB.xs).padding(.trailing, 70)
+                .accessibilityLabel(showFriendTrees ? "Hide friends' trees" : "Show friends' trees")
             }
         }
         .overlay(alignment: .top) {
             if mapped.count < trees.count {
-                Text("\(trees.count - mapped.count) tree\(trees.count - mapped.count == 1 ? "" : "s") without a pin")
-                    .font(Theme.rounded(12, .bold))
-                    .padding(.horizontal, 10).padding(.vertical, 5)
+                Label("\(trees.count - mapped.count) tree\(trees.count - mapped.count == 1 ? "" : "s") without a pin", systemImage: "mappin.slash")
+                    .font(RB.text(.caption, .bold))
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, RB.m).padding(.vertical, 6)
                     .background(.ultraThinMaterial, in: Capsule())
-                    .padding(.top, 10)
+                    .padding(.top, RB.m)
             }
         }
     }
@@ -242,6 +255,8 @@ struct TreeDetailView: View {
     @Environment(\.dynamicTypeSize) private var typeSize
     /// Breath sessions with this tree (Still Pointz + overlapping Health mindful sessions).
     @State private var breaths: [TreeBreath] = []
+    /// True until the first look-up of this tree's breath sessions finishes (skeleton rows meanwhile).
+    @State private var loadingBreaths = true
     @Environment(\.scenePhase) private var scenePhase
 
     private var tree: TreeSummary? { TreeSummary.build(from: allHugs.filter { $0.treeID == treeID }).first }
@@ -258,7 +273,7 @@ struct TreeDetailView: View {
 
                     RBCard {
                         VStack(alignment: .leading, spacing: RB.m) {
-                            TreeBreathSection(treeName: tree.name, breaths: breaths)
+                            TreeBreathSection(treeName: tree.name, breaths: breaths, loading: loadingBreaths)
                             BreatheWithTreeButton(treeName: tree.name, treeID: tree.id)
                         }
                     }
@@ -267,6 +282,8 @@ struct TreeDetailView: View {
 
                     // Walks synced from Roamr / Apple Health onto this tree's hugs.
                     TreeWalksCard(hugs: tree.hugs)
+
+                    // Cross-app sections for this tree (the other family apps) slot in here.
 
                     TreeFactCard(species: tree.species)
 
@@ -440,13 +457,15 @@ struct TreeDetailView: View {
     /// Each hug's sessions are refreshed from Still Pointz + Apple Health first, so late Watch data fills in;
     /// older hugs get theirs by matching the hug's time window.
     private func reloadBreaths() async {
-        guard var tree else { return }
+        guard var tree else { loadingBreaths = false; return }
         let hugs = tree.hugs
         breaths = Self.combine(tagged: breaths.filter(\.tagged), hugs: hugs)   // show what's known straight away
+        if !breaths.isEmpty { loadingBreaths = false }
         await HugSessions.refresh(Array(hugs.prefix(30)), context: context)
         tree.hugs = []   // tagged sessions only; the hugs' own sessions come from their links below
         let tagged = await TreeBreaths.load(for: tree)
         breaths = Self.combine(tagged: tagged, hugs: hugs)
+        loadingBreaths = false
     }
 
     private static func combine(tagged: [TreeBreath], hugs: [Hug]) -> [TreeBreath] {
@@ -510,6 +529,7 @@ struct TreeInsightsCard: View {
     /// Breath sessions with this tree (Still Pointz / Health), for the calm-effect tiles.
     var breaths: [TreeBreath] = []
     @ObservedObject private var unlock = Unlock.shared
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private static func avg(_ v: [Double]) -> Double? { v.isEmpty ? nil : v.reduce(0, +) / Double(v.count) }
 
@@ -532,9 +552,9 @@ struct TreeInsightsCard: View {
     var body: some View {
         if unlock.isPro {
             RBCard {
-                VStack(alignment: .leading, spacing: 12) {
+                VStack(alignment: .leading, spacing: RB.m) {
                     RBSectionTitle(title: "Tree insights", symbol: "chart.line.uptrend.xyaxis")
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
+                    LazyVGrid(columns: rbColumns(2, typeSize), spacing: RB.s) {
                         RBStatTile(value: moodLift.map { String(format: "%+.1f", $0) } ?? "--", label: "Mood lift", symbol: "face.smiling")
                         RBStatTile(value: hrDrop.map { String(format: "−%.0f bpm", $0) } ?? "--", label: "Heart settles", symbol: "arrow.down.heart.fill")
                         RBStatTile(value: avgHR.map { String(format: "%.0f bpm", $0) } ?? "--", label: "Avg heart rate", symbol: "heart.fill")
