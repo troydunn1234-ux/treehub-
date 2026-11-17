@@ -44,6 +44,8 @@ struct StillPointApp: App {
                         router.showSettings = false
                         router.homePath = NavigationPath()
                         router.tab = 2
+                        // …?session=<id> (Roamr "Breathwork after") then opens that session (ConnectionsViews.swift).
+                        JourneyLink.handle(url)
                     }
                 }
                 // Share sessions with Rootbound and pull in its tree hugs (Shared/Wellness/WellnessBridge.swift).

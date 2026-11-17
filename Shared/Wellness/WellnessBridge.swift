@@ -29,6 +29,10 @@ enum WellnessBridge {
         var species: String
         /// The tree's stable id in Rootbound (every hug of one tree shares it).
         var treeID: UUID? = nil
+        /// Still Pointz sessions (feed ids) and Roamr trips linked to this hug in Rootbound. Optional: older feeds
+        /// don't have them. Still Pointz shows the tree on a linked session; Roamr shows the hug on a linked walk.
+        var sessionIDs: [UUID]? = nil
+        var walkIDs: [UUID]? = nil
     }
 
     struct Session: Codable, Hashable, Identifiable {
@@ -132,6 +136,16 @@ enum WellnessBridge {
         enc.dateEncodingStrategy = .secondsSince1970
         guard let d = try? enc.encode(value) else { return }
         try? d.write(to: u, options: .atomic)
+        announceChange()
+    }
+
+    /// Darwin notification posted after an app rewrites its part, so the family apps that are running re-read the
+    /// feed right away (WellnessFeed in WellnessConnect.swift) instead of at their next foreground. No payload.
+    static let changedNotification = "com.troydunn.wellness.changed"
+
+    private static func announceChange() {
+        CFNotificationCenterPostNotification(CFNotificationCenterGetDarwinNotifyCenter(),
+                                             CFNotificationName(changedNotification as CFString), nil, nil, true)
     }
 
     private static var cutoff: Date { Date().addingTimeInterval(-Double(keepDays) * 86400) }

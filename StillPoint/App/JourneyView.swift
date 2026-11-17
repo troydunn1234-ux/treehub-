@@ -26,6 +26,9 @@ struct JourneyView: View {
                     // 1. Where you are: streak and weekly goal.
                     StreakGoalCard()
 
+                    // Today in Rootbound, Roamr and Pulse Lab (ConnectionsViews.swift; hidden without them).
+                    TodayAcrossAppsStrip()
+
                     // 2. What you've reached, and what's next.
                     JourneyMilestoneStrip()
 
@@ -126,6 +129,8 @@ struct JourneyView: View {
                 MindfulHealth.shared.mindfulMinutes(since: weekStart) { healthWeek = $0 }
                 MindfulHealth.shared.externalMindfulSessions(since: Date().addingTimeInterval(-30 * 86400)) { external = $0 }
             }
+            // stillpoint://journey?session=… (Roamr "Breathwork after"): that session's page.
+            .journeySessionLink(path: $path)
         }
     }
 

@@ -179,6 +179,11 @@ struct ActivityDetailView: View {
                 }
                 #endif
 
+                #if TRACK_APP
+                // Tree hugs (Rootbound) and breathwork (Still Pointz) on and right after this trip (TripConnections.swift).
+                TripConnectionsSection(tripID: activity.id, kind: activity.kind, start: activity.start, end: activity.end)
+                #endif
+
                 TextField("", text: $activity.notes, prompt: Text("Notes").foregroundStyle(Theme.textDim), axis: .vertical)
                     .lineLimit(2...6)
                     .font(Theme.rounded(15, .regular))

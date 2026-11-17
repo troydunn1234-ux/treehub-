@@ -51,8 +51,9 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: com.troydunn.rootbound
             CFBundleURLSchemes: [rootbound]
-        # "Breathe with this tree" checks whether Still Pointz is installed; "Open in Roamr" checks Roamr.
-        LSApplicationQueriesSchemes: [stillpoint, roamr]
+        # "Breathe with this tree" checks whether Still Pointz is installed; "Open in Roamr" checks Roamr;
+        # Home's "Today across your apps" opens Still Pointz, Roamr and Pulse Lab (App Store page when missing).
+        LSApplicationQueriesSchemes: [stillpoint, roamr, pulselab]
         ProProductID: com.troydunn.rootbound.pro
         PaidUntilBuild: 0
         TrialProductID: com.troydunn.rootbound.none
@@ -120,6 +121,9 @@ targets:
           - CFBundleURLName: com.troydunn.roamr
             CFBundleURLSchemes:
               - roamr
+        # Trip detail: "Tree hugs on this walk" opens Rootbound, "Breathwork after" opens Still Pointz; the shared
+        # feed (Shared/Wellness/WellnessConnect.swift) checks which of the family apps are installed.
+        LSApplicationQueriesSchemes: [rootbound, stillpoint, pulselab]
         NSSupportsLiveActivities: true
         UIRequiresFullScreen: true
         NSHealthUpdateUsageDescription: Roamr does not write to Apple Health; it only reads your workouts and heart data.
@@ -290,8 +294,12 @@ targets:
           - CFBundleURLName: com.troydunn.pulselab
             CFBundleURLSchemes:
               - pulselab
+        # WHOOP, plus Today's "Calm & movement" card opening Still Pointz, Rootbound and Roamr.
         LSApplicationQueriesSchemes:
           - whoop
+          - stillpoint
+          - rootbound
+          - roamr
         WhoopClientID: "$(WHOOP_CLIENT_ID)"
         WhoopClientSecret: "$(WHOOP_CLIENT_SECRET)"
         BGTaskSchedulerPermittedIdentifiers:
@@ -346,8 +354,9 @@ targets:
         CFBundleURLTypes:
           - CFBundleURLName: com.troydunn.stillpoint
             CFBundleURLSchemes: [stillpoint]
-        # "Go hug a tree" checks whether Rootbound is installed.
-        LSApplicationQueriesSchemes: [rootbound]
+        # "Go hug a tree" checks whether Rootbound is installed; Journey's "Today across your apps" and a
+        # session's "Open tree" open Rootbound, Roamr and Pulse Lab (App Store page when missing).
+        LSApplicationQueriesSchemes: [rootbound, roamr, pulselab]
         ProProductID: com.troydunn.stillpoint.pro
         SubscriptionProductIDs:
           - com.troydunn.stillpoint.pro.yearly

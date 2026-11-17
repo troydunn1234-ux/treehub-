@@ -133,7 +133,7 @@ struct RootView: View {
                 if !showHugLog { tab = .home; showHugLog = true }
                 return
             }
-            if url.scheme == FriendShare.scheme, url.host == "home" { return }
+            if url.scheme == FriendShare.scheme, url.host == "home" { tab = .home; return }
             // rootbound://tree?id=<tree id>: that tree's page (back from a Still Pointz breath with it).
             if url.scheme == FriendShare.scheme, url.host == "tree" {
                 let id = URLComponents(url: url, resolvingAgainstBaseURL: false)?.queryItems?
@@ -157,6 +157,8 @@ struct RootView: View {
             }
         }
         .onAppear {
+            // Share hugs at launch and after every save, not only on count changes (RootboundFeedSync.swift).
+            RootboundFeedSync.start(hugs: hugs, context: context)
             saveLeftoverStroll()
             if !DemoData.isOn { Task { await RoamrWalks.sync(hugs, context: context) } }
             if DemoData.isOn { setUpDemo() }

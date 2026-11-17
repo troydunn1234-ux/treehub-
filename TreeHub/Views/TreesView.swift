@@ -280,6 +280,7 @@ struct TreeDetailView: View {
 
                     // Walks synced from Roamr / Apple Health onto this tree's hugs.
                     TreeWalksCard(hugs: tree.hugs)
+                    TreePassingWalksCard(tree: tree)
 
                     TreeFactCard(species: tree.species)
 
