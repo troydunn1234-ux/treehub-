@@ -1,0 +1,50 @@
+name: Ship several apps to TestFlight
+
+# One run ships a list of apps, one at a time (signing steps can't overlap), entirely on GitHub, so it
+# keeps going whatever happens on the machine that started it. Actions → "Ship several apps to TestFlight".
+on:
+  workflow_dispatch:
+    inputs:
+      apps:
+        description: "Apps, comma-separated: Rootbound, Roamr, NatalOrbit, RideQuest, Clicker, PulseLab, StillPoint"
+        required: true
+        default: "Rootbound,StillPoint,Roamr,PulseLab"
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    outputs:
+      apps: ${{ steps.split.outputs.apps }}
+    steps:
+      - id: split
+        env:
+          APPS: ${{ inputs.apps }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os
+          known = ["Rootbound", "Roamr", "NatalOrbit", "RideQuest", "Clicker", "PulseLab", "StillPoint"]
+          apps = []
+          for a in os.environ["APPS"].split(","):
+              a = a.strip()
+              if not a:
+                  continue
+              if a not in known:
+                  raise SystemExit(f"Unknown app {a!r}; use one of {known}")
+              if a not in apps:
+                  apps.append(a)
+          if not apps:
+              raise SystemExit("No apps given")
+          print("apps=" + json.dumps(apps))
+          PY
+
+  ship:
+    needs: plan
+    strategy:
+      max-parallel: 1
+      fail-fast: false
+      matrix:
+        app: ${{ fromJSON(needs.plan.outputs.apps) }}
+    uses: ./.github/workflows/testflight.yml
+    with:
+      app: ${{ matrix.app }}
+    secrets: inherit

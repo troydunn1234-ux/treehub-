@@ -14,6 +14,12 @@ on:
         type: choice
         options: [Rootbound, Roamr, NatalOrbit, RideQuest, Clicker, PulseLab, StillPoint]
         default: Rootbound
+  # Lets "Ship several apps" (testflight-queue.yml) run this once per app, one after another.
+  workflow_call:
+    inputs:
+      app:
+        type: string
+        required: true
 
 jobs:
   testflight:
