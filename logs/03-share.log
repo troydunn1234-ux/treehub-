@@ -1,0 +1,67 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-17 02:05:23.976 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=59] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.976 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=59 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.977 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=70] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.977 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=70 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.977 Df NatalOrbit[18277:de19] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Getting pending notification requests (async)
+2026-11-17 02:05:23.977 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=71] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.977 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=71 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.978 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=72] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.978 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=72 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.978 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=73] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.978 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=73 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.979 Df NatalOrbit[18277:de3f] [com.apple.xpc:connection] [0x10ca19de0] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-17 02:05:23.979 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=167] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.979 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=167 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.980 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=172] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.981 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=172 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.981 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=177] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.982 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=177 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.982 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=182] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.983 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=182 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.983 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=187] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.984 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=187 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.985 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=192] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.985 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=192 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.986 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=193] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.987 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=193 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.987 Df NatalOrbit[18277:de3f] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Got 0 pending notification [ hasCompletionHandler: 1 ]
+2026-11-17 02:05:23.987 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=198] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.988 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=198 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.989 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=203] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.989 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=203 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.989 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=208] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:05:23.990 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=208 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:23.991 Df NatalOrbit[18277:de3f] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Removing 0 pending notification requests with identifiers (
+)
+2026-11-17 02:05:25.115 Df NatalOrbit[18277:def3] [com.apple.WebKit:Layout] WebContent[18312]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstMeaningfulPaint)
+2026-11-17 02:05:25.124 Df NatalOrbit[18277:de19] [com.apple.WebKit:Loading] 0x10e023820 - [pageProxyID=10, webPageID=11, PID=18312] WebPageProxy::didFinishDocumentLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setState: main frame load completed
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]: Memory usage info dump at MainFrameLoadCompleted:
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   page_count: 1
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   backforward_cache_page_count: 0
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   document_count: 1
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   javascript_gc_heap_capacity_mb: 42
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   javascript_gc_heap_extra_memory_size_mb: 21
+2026-11-17 02:05:25.148 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   internal_mb: 79
+2026-11-17 02:05:25.149 Df NatalOrbit[18277:de19] [com.apple.WebKit:Loading] 0x10e023820 - [pageProxyID=10, webPageID=11, PID=18312] WebPageProxy::didFinishLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:05:25.150 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   compressed_mb: 0
+2026-11-17 02:05:25.151 Df NatalOrbit[18277:de19] [com.apple.WebKit:ProcessSuspension] 0x113128100 - NavigationState will release its process network assertion soon because the page load completed
+2026-11-17 02:05:25.151 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   phys_footprint_mb: 89
+2026-11-17 02:05:25.151 Df NatalOrbit[18277:de19] [com.apple.WebKit:ProcessSuspension] 0x1130d81e0 - [PID=18312, throttler=0x1130c0150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Client navigation'
+2026-11-17 02:05:25.151 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   resident_size_mb: 223
+2026-11-17 02:05:25.152 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]:   virtual_size_mb: 104742
+2026-11-17 02:05:25.152 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312]: ProgressTracker::progressCompleted: frameID 4294967297, value 0.899999, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-11-17 02:05:25.153 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312]: ProgressTracker::finalProgressComplete: value 0.899999, tracked frames 0, originating frameID 4294967297, isMainLoad 1, isMainLoadProgressing 0
+2026-11-17 02:05:25.153 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::checkLoadCompleteForThisFrame: Finished frame load
+2026-11-17 02:05:25.315 Df NatalOrbit[18277:de19] [com.apple.WebKit:ViewState] 0x10d832800 (pageProxyID=10) -[WKWebView _didCommitLayerTree:] - received a commit (2) while deferring visible content rect updates (dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-11-17 02:05:25.324 Df NatalOrbit[18277:de19] [com.apple.WebKit:ViewState] 0x10d832800 (pageProxyID=10) -[WKWebView _updateVisibleContentRects:] - performing first visible content rect update after deferring updates
+2026-11-17 02:05:25.681 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=1123] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:05:25.682 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=1123 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:05:25.682 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312]: [webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::scheduleLoad: URL will be loaded as data
+2026-11-17 02:05:25.690 Df NatalOrbit[18277:def3] [com.apple.WebKit:Network] WebContent[18312]: [webPageID=0, frameID=0, resourceID=0] WebResourceLoader::WebResourceLoader
+2026-11-17 02:05:25.888 Df NatalOrbit[18277:def3] [com.apple.WebKit:ResourceLoading] WebContent[18312]: [pageID=11, frameID=4294967297, resourceID=1123 SubResourceLoader::didFinishLoading
+2026-11-17 02:05:28.152 Df NatalOrbit[18277:de19] [com.apple.WebKit:ProcessSuspension] 0x113128100 NavigationState is releasing background process assertion because a page load completed
+2026-11-17 02:05:28.154 Df NatalOrbit[18277:de19] [com.apple.WebKit:ProcessSuspension] 0x1130d8270 - [PID=18312, throttler=0x1130c0150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-11-17 02:05:35.151 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 95232000 bytes of memory after the page load.
+2026-11-17 02:05:40.174 Df NatalOrbit[18277:def3] [com.apple.WebKit:PerformanceLogging] WebContent[18312]: PerformanceMonitor::measurePostLoadCPUUsage: Process was using 21.4% CPU after the page load.

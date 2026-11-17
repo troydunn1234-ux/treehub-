@@ -1,0 +1,23 @@
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.ManagedConfiguration:MC] Error getting system group container for systemgroup.com.apple.configurationprofiles: 98
+2026-11-17 02:07:15.894 F  NatalOrbit[20002:ef9a] [com.apple.ManagedConfiguration:MC] Failed to get profile system group container path. Overriding with expected path: /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles
+2026-11-17 02:07:15.966 E  NatalOrbit[20002:efb0] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 2B13623F-B308-4A88-8B4A-9A9E53DBF7F4])
+2026-11-17 02:07:17.224 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] WebContent process (0x1150b00c0) took 1.331625 seconds to launch
+2026-11-17 02:07:17.229 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] GPU process (0x1150f41e0) took 1.297071 seconds to launch
+2026-11-17 02:07:17.238 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] Networking process (0x11511c100) took 1.270461 seconds to launch
+2026-11-17 02:07:17.431 E  NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Result accumulator timeout: 0.250000, exceeded.
+2026-11-17 02:07:17.453 E  NatalOrbit[20002:ef3e] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-17 02:07:17.453 E  NatalOrbit[20002:ef3e] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-17 02:07:17.462 E  NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Attempted to update accumulator from source type: 0, after completion has already been called for token:[258B0567]. This is an error and will be ignored.
+2026-11-17 02:07:17.642 E  NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoadStatistics] WebContent[20106] Unable to hide query parameters from script (missing data)
+2026-11-17 02:07:17.911 E  NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::gpuProcessConnectionDidBecomeUnresponsive
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::childConnectionDidBecomeUnresponsive:
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didBecomeUnresponsive: GPUProcess with PID 20108 became unresponsive, terminating it
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::gpuProcessExited: reason=Unresponsive
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::gpuProcessExited: reason=Unresponsive
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] ProcessAssertion::remainingRunTimeInSeconds failed to get identifier for process with PID=0
+2026-11-17 02:07:39.271 E  NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] 0x10826ee60 - GPUProcessConnection::didClose
+2026-11-17 02:07:39.274 E  NatalOrbit[20002:f8de] [com.apple.runningboard:assertion] Error acquiring assertion: <Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 20108 does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 20108 does not exist}>
+2026-11-17 02:07:39.275 E  NatalOrbit[20002:f8de] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'GPUProcess Background Assertion' for process with PID=0, error: (null)

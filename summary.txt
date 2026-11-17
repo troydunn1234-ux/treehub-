@@ -1,0 +1,5 @@
+OK    00-warmup  -demo  [20 error/fault log lines]
+OK    01-today  -demo -section today  [34 error/fault log lines]
+OK    02-chart  -demo -section chart
+OK    03-share  -demo -section share
+OK    04-today-largetype  -demo -section today  [23 error/fault log lines]

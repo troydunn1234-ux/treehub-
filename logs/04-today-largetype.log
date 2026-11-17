@@ -1,0 +1,832 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-17 02:07:15.367 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x106e059d0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-17 02:07:15.371 Df NatalOrbit[20002:ef3e] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Creating a user notification center
+2026-11-17 02:07:15.395 A  NatalOrbit[20002:efa3] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-17 02:07:15.396 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.399 Df NatalOrbit[20002:efa3] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-17 02:07:15.400 Df NatalOrbit[20002:efa3] [com.apple.xpc:connection] [0x108005800] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:15.402 Df NatalOrbit[20002:ef3e] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 02:07:15.415 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-17 02:07:15.415 Df NatalOrbit[20002:ef9a] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-17 02:07:15.415 Df NatalOrbit[20002:ef9a] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:ef3e] [com.apple.runningboard:connection] Initializing connection
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:ef9a] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x600002112990>
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:ef3e] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:efa4] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:ef3e] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:efa4] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-17 02:07:15.416 Df NatalOrbit[20002:efa4] [com.apple.xpc:connection] [0x106e06670] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-17 02:07:15.417 Df NatalOrbit[20002:ef3e] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-17 02:07:15.418 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-17 02:07:15.418 A  NatalOrbit[20002:efa3] (RunningBoardServices) didChangeInheritances
+2026-11-17 02:07:15.419 Df NatalOrbit[20002:efa4] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-17 02:07:15.419 Df NatalOrbit[20002:efa4] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.natalorbit((null))>
+2026-11-17 02:07:15.420 Df NatalOrbit[20002:ef9a] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x600002112990>
+2026-11-17 02:07:15.420 Df NatalOrbit[20002:ef9a] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x600001707dc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1436 (elapsed = 0).
+2026-11-17 02:07:15.420 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-17 02:07:15.422 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-17 02:07:15.423 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-17 02:07:15.423 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000020f540; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-17 02:07:15.424 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003008480 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-17 02:07:15.424 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-17 02:07:15.424 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-17 02:07:15.426 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-17 02:07:15.427 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-17 02:07:15.429 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-17 02:07:15.429 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003008480 com.apple.frontboard.systemappservices> sent handshake
+2026-11-17 02:07:15.430 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-17 02:07:15.431 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-17 02:07:15.432 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-17 02:07:15.432 Df NatalOrbit[20002:ef3e] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x600000201900>
+2026-11-17 02:07:15.433 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-17 02:07:15.434 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-17 02:07:15.434 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-17 02:07:15.435 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-17 02:07:15.436 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-17 02:07:15.436 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-17 02:07:15.438 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-17 02:07:15.438 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-17 02:07:15.438 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-17 02:07:15.439 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-17 02:07:15.439 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-17 02:07:15.440 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-17 02:07:15.440 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-17 02:07:15.441 Df NatalOrbit[20002:efb2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-17 02:07:15.443 Df NatalOrbit[20002:efb2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-17 02:07:15.456 Df NatalOrbit[20002:efb2] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-17 02:07:15.457 Df NatalOrbit[20002:efb2] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-17 02:07:15.458 Df NatalOrbit[20002:efb2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-17 02:07:15.472 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x106e07de0> for initial
+2026-11-17 02:07:15.473 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x106e07de0> for CADisplay KVO
+2026-11-17 02:07:15.478 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-17 02:07:15.479 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryAccessibilityL
+2026-11-17 02:07:15.499 Df NatalOrbit[20002:ef3e] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-17 02:07:15.500 Df NatalOrbit[20002:ef3e] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 02:07:15.501 Df NatalOrbit[20002:ef3e] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 02:07:15.501 Df NatalOrbit[20002:ef3e] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 02:07:15.503 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-17 02:07:15.508 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-17 02:07:15.509 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-17 02:07:15.509 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-17 02:07:15.509 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-17 02:07:15.515 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-17 02:07:15.516 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.518 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.518 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x60000290d650>; with scene: <UIWindowScene: 0x10800c760>
+2026-11-17 02:07:15.518 Df NatalOrbit[20002:ef3e] [com.apple.BacklightServices:scenes] 0x600000c15d10 setDelegate:<0x600000c162e0 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.natalorbit-default
+2026-11-17 02:07:15.519 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.519 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventDeferring] [0x60000290d730] Initialized with scene: <UIWindowScene: 0x10800c760>; behavior: <_UIEventDeferringBehavior_iOS: 0x60000021c240>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-17 02:07:15.520 Df NatalOrbit[20002:ef3e] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-17 02:07:15.520 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x106e05040] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef9a] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002610600; process scope; status: target> was:none
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x10800c760; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.natalorbit-default
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventDeferring] [0x60000290d730] Scene target of event deferring environments did update: scene: 0x10800c760; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10800c760; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.natalorbit-default
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c16e80: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-17 02:07:15.523 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10800c760; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x10800c760: Window scene became target of keyboard environment
+2026-11-17 02:07:15.524 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.525 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.527 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.646 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Orientation] <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6) Scene updated orientation preferences: none -> ( Pu )
+2026-11-17 02:07:15.652 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-17 02:07:15.652 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x10800c760: Window became key in scene: UIWindow: 0x10810cb90; contextId: 0x9F829E4F: reason: UIWindowScene: 0x10800c760: Window requested to become key in scene: 0x10810cb90
+2026-11-17 02:07:15.652 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10800c760; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10810cb90; reason: UIWindowScene: 0x10800c760: Window requested to become key in scene: 0x10810cb90
+2026-11-17 02:07:15.652 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10810cb90; contextId: 0x9F829E4F; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.natalorbit-default
+2026-11-17 02:07:15.653 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventDeferring] [0x60000290d730] Begin local event deferring requested for token: 0x600002608f00; environments: 1; reason: UIWindowScene: 0x10800c760: Begin event deferring in keyboardFocus for window: 0x10810cb90
+2026-11-17 02:07:15.654 Df NatalOrbit[20002:efb2] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-17 02:07:15.656 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.658 Df NatalOrbit[20002:ef9a] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002610600; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.natalorbit-default; status: ancestor> was:target
+2026-11-17 02:07:15.658 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.natalorbit-default  persistentID: F7B636D7-0870-45F1-8462-5885631A2AF6
+2026-11-17 02:07:15.659 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-17 02:07:15.659 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-17 02:07:15.659 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-17 02:07:15.660 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-17 02:07:15.660 Df NatalOrbit[20002:ef9a] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-17 02:07:15.661 Df NatalOrbit[20002:ef9a] [com.apple.xpc:session] [0x60000210b250] Session created.
+2026-11-17 02:07:15.661 Df NatalOrbit[20002:ef9a] [com.apple.xpc:session] [0x60000210b250] Session created from connection [0x10820b3b0]
+2026-11-17 02:07:15.661 Df NatalOrbit[20002:ef9a] [com.apple.xpc:connection] [0x10820b3b0] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-17 02:07:15.661 Df NatalOrbit[20002:ef9a] [com.apple.xpc:session] [0x60000210b250] Session activated
+2026-11-17 02:07:15.662 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:15.670 A  NatalOrbit[20002:ef3e] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:15.822 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.822 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.825 A  NatalOrbit[20002:ef3e] (TCC) TCCAccessRequest() IPC
+2026-11-17 02:07:15.825 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x106e0a940] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-17 02:07:15.829 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x106e0a940] invalidated after the last release of the connection object
+2026-11-17 02:07:15.829 A  NatalOrbit[20002:ef3e] (TCC) TCCAccessRequest() IPC
+2026-11-17 02:07:15.829 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108105be0] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-17 02:07:15.834 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108105be0] invalidated after the last release of the connection object
+2026-11-17 02:07:15.837 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.838 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.845 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.846 Df NatalOrbit[20002:ef3e] (WebKit) 0x1150540e0 - [PID=0] WebProcessCache::updateCapacity: Cache is disabled because process swap on navigation is disabled
+2026-11-17 02:07:15.870 Df NatalOrbit[20002:ef3e] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 02:07:15.887 Df NatalOrbit[20002:ef9a] [com.apple.xpc:connection] [0x108105be0] activating connection: mach=true listener=false peer=false name=com.apple.webprivacyd
+2026-11-17 02:07:15.888 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Storage] 0x10820f698 - WebsiteDataStore::WebsiteDataStore sessionID=1 identifier=null
+2026-11-17 02:07:15.890 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.890 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.891 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x10820da88 - PageConfiguration::delaysWebProcessLaunchUntilFirstLoad() -> false because of associated processPool value
+2026-11-17 02:07:15.891 A  NatalOrbit[20002:ef9a] (libsystem_containermanager.dylib) container_system_group_path_for_identifier
+2026-11-17 02:07:15.891 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x107056808 - WebProcessPool::createWebPage: Not delaying WebProcess launch
+2026-11-17 02:07:15.891 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=0] WebProcessProxy::constructor:
+2026-11-17 02:07:15.891 Df NatalOrbit[20002:ef9a] [com.apple.containermanager:xpc] Requesting container lookup; class = 13, identifier = (null), group_identifier = systemgroup.com.apple.configurationprofiles, create = 1, temp = 0, euid = 501, uid = 501
+2026-11-17 02:07:15.892 A  NatalOrbit[20002:ef9a] (libsystem_containermanager.dylib) container_query_t
+2026-11-17 02:07:15.892 Df NatalOrbit[20002:ef9a] [com.apple.containermanager:xpc] Query; euid = 501, uid = 501, class = 13, identifier = [(null)](0), flags = 900000003
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-17 02:07:15.894 E  NatalOrbit[20002:ef9a] [com.apple.ManagedConfiguration:MC] Error getting system group container for systemgroup.com.apple.configurationprofiles: 98
+2026-11-17 02:07:15.894 F  NatalOrbit[20002:ef9a] [com.apple.ManagedConfiguration:MC] Failed to get profile system group container path. Overriding with expected path: /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Shared/SystemGroup/systemgroup.com.apple.configurationprofiles
+2026-11-17 02:07:15.894 A  NatalOrbit[20002:ef9a] (libsystem_trace.dylib) Activity for state dumps
+2026-11-17 02:07:15.895 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Bundle/Application/11A898F1-DFD1-4180-B18F-AAEB29A79361/NatalOrbit.app'
+2026-11-17 02:07:15.897 Df NatalOrbit[20002:efb2] [com.apple.xpc:connection] [0x106e09440] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-17 02:07:15.910 Df NatalOrbit[20002:ef3e] [com.apple.avkit:AVKit] +[AVPictureInPicturePlatformAdapter isPictureInPictureSupported]_block_invoke isPictureInPictureSupported NO
+2026-11-17 02:07:15.916 Df NatalOrbit[20002:efb2] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.WebContent instance ID: Optional([_EXExtensionInstanceIdentifier: 9647B8CC-4B07-4AEC-AD90-52D6EAB9C182])
+2026-11-17 02:07:15.919 Df NatalOrbit[20002:ef3e] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 02:07:15.919 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108211b20] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-17 02:07:15.920 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/MediaKeys/v1'
+2026-11-17 02:07:15.920 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc0c0 - [PID=0, throttler=0x1150b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-17 02:07:15.922 Df NatalOrbit[20002:ef9a] [com.apple.xpc:connection] [0x106e0db60] activating connection: mach=true listener=false peer=false name=com.apple.accessibility.mediaaccessibilityd
+2026-11-17 02:07:15.930 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::constructor, site isolation enabled 0
+2026-11-17 02:07:15.931 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Media] PlaybackSessionManagerProxy::PlaybackSessionManagerProxy(3817405348)
+2026-11-17 02:07:15.931 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Fullscreen] PlaybackSessionManagerProxy::VideoPresentationManagerProxy(3817405348)
+2026-11-17 02:07:15.932 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:15.932 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=0] WebProcessProxy::addExistingWebPage: webPage=0x107058020, pageProxyID=10, webPageID=11
+2026-11-17 02:07:15.932 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSwapping] 0x1150540e0 - [PID=0] WebProcessCache::updateCapacity: Cache is disabled by client
+2026-11-17 02:07:15.933 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.apple.WebKit.GPU'
+2026-11-17 02:07:15.934 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/tmp/com.apple.WebKit.GPU'
+2026-11-17 02:07:15.934 Df NatalOrbit[20002:ef9a] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: 9A4C153F-1F89-4EAF-9D30-89715122D650])
+2026-11-17 02:07:15.934 Df NatalOrbit[20002:ef3e] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 02:07:15.934 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc150 - [PID=0, throttler=0x1150f4270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-17 02:07:15.935 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:TextInteraction] Conforming to BrowserEngineKit text input protocol
+2026-11-17 02:07:15.960 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::loadRequest:
+2026-11-17 02:07:15.962 Df NatalOrbit[20002:ef3e] [com.apple.runningboard:connection] Creating side-channel connection to com.apple.runningboard
+2026-11-17 02:07:15.962 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x10800e230] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-17 02:07:15.965 Df NatalOrbit[20002:ef3e] [com.apple.runningboard:process] Hit the server for a process handle 1ccc66c900004e22 that resolved to: [app<com.troydunn.natalorbit((null))>:20002]
+2026-11-17 02:07:15.965 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::WebPageProxy::shouldForceForegroundPriorityForClientNavigation() returns 1 based on PageClient::canTakeForegroundAssertions()
+2026-11-17 02:07:15.965 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc1e0 - [PID=0, throttler=0x1150b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Client navigation'
+2026-11-17 02:07:15.965 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::loadRequestWithNavigationShared:
+2026-11-17 02:07:15.965 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::NetworkProcessProxy
+2026-11-17 02:07:15.966 Df NatalOrbit[20002:efb0] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 2B13623F-B308-4A88-8B4A-9A9E53DBF7F4])
+2026-11-17 02:07:15.966 E  NatalOrbit[20002:efb0] [com.apple.extensionkit:default] Failed to resolve host network app id to config: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 2B13623F-B308-4A88-8B4A-9A9E53DBF7F4])
+2026-11-17 02:07:15.975 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/ResourceLoadStatistics'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.troydunn.natalorbit/WebKit/NetworkCache'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.troydunn.natalorbit/WebKit/HSTS'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/ResourceMonitorThrottler'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/LocalStorage'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/IndexedDB'
+2026-11-17 02:07:15.976 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/Default'
+2026-11-17 02:07:15.977 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.troydunn.natalorbit/WebKit/CacheStorage'
+2026-11-17 02:07:15.977 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.troydunn.natalorbit/WebKit/ServiceWorkers'
+2026-11-17 02:07:15.977 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.troydunn.natalorbit/WebKit/AlternativeServices'
+2026-11-17 02:07:15.979 Df NatalOrbit[20002:ef3e] [com.apple.CFNetwork:Default] Initializing CFHTTPCookieStorage singleton
+2026-11-17 02:07:15.979 Df NatalOrbit[20002:ef3e] [com.apple.CFNetwork:Default] Creating default cookie storage with process/bundle identifier
+2026-11-17 02:07:15.980 Df NatalOrbit[20002:ef3e] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-17 02:07:15.980 Df NatalOrbit[20002:ef3e] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-17 02:07:15.981 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Cookies'
+2026-11-17 02:07:15.981 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.apple.WebKit.Networking'
+2026-11-17 02:07:15.981 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Bundle/Application/11A898F1-DFD1-4180-B18F-AAEB29A79361/NatalOrbit.app'
+2026-11-17 02:07:15.983 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc210 - [PID=0, throttler=0x11511c190] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-17 02:07:15.984 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115110100 - NavigationState is taking a process network assertion because a page load started
+2026-11-17 02:07:15.984 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc270 - [PID=0, throttler=0x1150b0150] ProcessThrottler::Activity::Activity: Starting background activity / 'Page Load'
+2026-11-17 02:07:16.015 Df NatalOrbit[20002:efa4] [com.apple.xpc:connection] [0x108129520] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-17 02:07:16.016 Df NatalOrbit[20002:efa4] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:16.055 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:16.078 Df NatalOrbit[20002:efb2] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.WebContent([app<com.troydunn.natalorbit((null))>:20002])>{vt hash: 71395982}[uuid:9647B8CC-4B07-4AEC-AD90-52D6EAB9C182]{definition:com.apple.WebKit.WebContent[extension][client]}:20106]
+2026-11-17 02:07:16.091 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:16.092 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x1150a8100 - ApplicationStateTracker::setIsInBackground: 0
+2026-11-17 02:07:16.092 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x1150a8100 - ApplicationStateTracker: add observers for scene
+2026-11-17 02:07:16.092 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x10702e200 - WKApplicationStateTrackingView: View with page [0x107058020, pageProxyID=10] was added to a window, _lastObservedStateWasBackground=0, isNowBackground=0
+2026-11-17 02:07:16.114 Df NatalOrbit[20002:efb2] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.WebContent instance ID: Optional([_EXExtensionInstanceIdentifier: 9647B8CC-4B07-4AEC-AD90-52D6EAB9C182]) pid: 20106.
+2026-11-17 02:07:16.114 Df NatalOrbit[20002:efb2] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:16.155 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::updateActivityState: view visibility state changed 0 -> 1
+2026-11-17 02:07:16.190 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] Activating connection to server: (null)
+2026-11-17 02:07:16.190 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] server remote target <BSXPCServiceConnectionProxy<BKSKeyboardServiceClientToServerIPC>: 0x60000291d3b0>
+2026-11-17 02:07:16.190 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.191 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000278180> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.191 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.191 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000278180> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.192 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.192 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000272020> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.193 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.194 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000272020> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.199 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:HardwareKeyboard] -[UIApplication GSKeyboardForHWLayout:senderID:forceRebuild:createIfNeeded:], New hardware layout is created with US layout and 0 standardType.
+2026-11-17 02:07:16.199 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.203 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000272000> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.203 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.204 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000272000> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.204 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::viewIsBecomingVisible:
+2026-11-17 02:07:16.235 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ScreenTime] Screen Time has updated to use the system shield for any blocked URL.
+2026-11-17 02:07:16.237 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x107058020 - [pageProxyID=10, webPageID=11, PID=0] WebPageProxy::updateThrottleState: UIProcess is taking a foreground assertion because the view is visible
+2026-11-17 02:07:16.237 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc330 - [PID=0, throttler=0x1150b0150] ProcessThrottler::Activity::Activity: Starting foreground activity / 'View is visible'
+2026-11-17 02:07:16.237 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:RemoteLayerTree] RemoteLayerTreeDrawingAreaProxy(13)::hideContentUntilAnyUpdate
+2026-11-17 02:07:16.237 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107037e00 (pageProxyID=10) -[WKWebView _endLiveResize]
+2026-11-17 02:07:16.249 Df NatalOrbit[20002:ef9a] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.GPU([app<com.troydunn.natalorbit((null))>:20002])>{vt hash: 223737757}[uuid:9A4C153F-1F89-4EAF-9D30-89715122D650]{definition:com.apple.WebKit.GPU[extension][client]}:20108]
+2026-11-17 02:07:16.272 Df NatalOrbit[20002:ef9a] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: 9A4C153F-1F89-4EAF-9D30-89715122D650]) pid: 20108.
+2026-11-17 02:07:16.273 Df NatalOrbit[20002:ef9a] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:16.326 A  NatalOrbit[20002:ef9a] (RunningBoardServices) didChangeInheritances
+2026-11-17 02:07:16.331 A  NatalOrbit[20002:ef9a] (RunningBoardServices) didChangeInheritances
+2026-11-17 02:07:16.422 Df NatalOrbit[20002:efb0] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.Networking([app<com.troydunn.natalorbit((null))>:20002])>{vt hash: 114736818}[uuid:2B13623F-B308-4A88-8B4A-9A9E53DBF7F4]{definition:com.apple.WebKit.Networking[extension][client]}:20109]
+2026-11-17 02:07:16.434 Df NatalOrbit[20002:efad] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-17 02:07:16.435 Df NatalOrbit[20002:efad] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x600001707dc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1436 (elapsed = 1), _expireHandler: (null)
+2026-11-17 02:07:16.435 Df NatalOrbit[20002:efad] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x600002112990> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x600001707dc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1436 (elapsed = 1))
+2026-11-17 02:07:16.435 Df NatalOrbit[20002:efad] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x600002112990> for task identifier: 1
+2026-11-17 02:07:16.441 Df NatalOrbit[20002:efb0] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.Networking instance ID: Optional([_EXExtensionInstanceIdentifier: 2B13623F-B308-4A88-8B4A-9A9E53DBF7F4]) pid: 20109.
+2026-11-17 02:07:16.441 Df NatalOrbit[20002:efb0] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:16.450 A  NatalOrbit[20002:ef9a] (RunningBoardServices) didChangeInheritances
+2026-11-17 02:07:16.624 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [A4FF6F7F-05AF-4FD9-8E12-C7AE4C14FA38] (reporting strategy default)>
+2026-11-17 02:07:16.624 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [CB635D07-E652-4F77-9256-C14C23F8CC95] (reporting strategy default)>
+2026-11-17 02:07:16.624 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] Set activity <nw_activity 50:1 [A4FF6F7F-05AF-4FD9-8E12-C7AE4C14FA38] (reporting strategy default)> as the global parent
+2026-11-17 02:07:16.626 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-17 02:07:16.635 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.natalorbit-default  persistentID: F7B636D7-0870-45F1-8462-5885631A2AF6
+2026-11-17 02:07:16.636 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:16.637 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x10820dcf0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:16.638 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108013d40] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:16.638 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x10820f4b0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:16.674 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:EventDeferring] [0x60000290d730] Scene target of event deferring environments did update: scene: 0x10800c760; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-17 02:07:16.674 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10800c760; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.natalorbit-default
+2026-11-17 02:07:16.675 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ResourceLoadStatistics] StorageAccessPromptQuirkController::didUpdateCachedListData: Loaded 1 storage access prompt(s) quirks from WebPrivacy.
+2026-11-17 02:07:16.681 Df NatalOrbit[20002:ef3e] [com.apple.gamecontroller:Session] Creating the shared game controller session...
+2026-11-17 02:07:16.693 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x6000026063a0; process scope; status: target> was:none
+2026-11-17 02:07:16.693 A  NatalOrbit[20002:ef3e] (GameController) [GCDeviceSession] Activate
+2026-11-17 02:07:16.694 Sd NatalOrbit[20002:0] (EB73264B-09AE-3310-B642-B0B5D9390089) IOHIDManager State
+{
+    DispatchQueue = 0;
+    RunLoop = 1;
+    createOptions = 0;
+    isOpen = 0;
+    openOptions = 0;
+}
+2026-11-17 02:07:16.697 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-17 02:07:16.697 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:TextInput] Started deferring input view updates (01)
+2026-11-17 02:07:16.716 A  NatalOrbit[20002:ef9a] (RunningBoardServices) didChangeInheritances
+2026-11-17 02:07:16.721 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] Reloading input views for key-window scene responder: <WKContentView: 0x10702e200; frame = (0 0; 0 0); opaque = NO; > force:N
+2026-11-17 02:07:16.722 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _reloadInputViewsForKeyWindowSceneResponder: 1 force: 0, fromBecomeFirstResponder: 1 (automaticKeyboard: 1, reloadIdentifier: 5D251D35-3673-4116-AD3E-CBB36331579D)
+2026-11-17 02:07:16.723 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder: <WKContentView: 0x10702e200; frame = (0 0; 0 0); opaque = NO; >, automaticKeyboard: 1, force: 0
+2026-11-17 02:07:16.723 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder, disableAutomaticKeyboardUI return empty
+2026-11-17 02:07:16.738 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:TrackingElementWindowController] Change from input view set: (null)
+2026-11-17 02:07:16.739 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:TrackingElementWindowController] Change to input view set: (null)
+2026-11-17 02:07:16.742 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardLayoutGuide] _moveGuideOffscreenAtEdge: 4
+2026-11-17 02:07:16.742 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardLayoutGuide] changeOffsetConstants: offset is changing to {0, 0} [previous offset: {-1, -1}]
+2026-11-17 02:07:16.743 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardLayoutGuide] changeSizingConstants: size is changing [not transitioning] to {440, 0} [previous size: {1, 0}]
+2026-11-17 02:07:16.760 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardUI] -[_UIKeyboardStateManager initWithPresentationDelegateView:forCustomInputView:] UIDevice.currentDevice._hardwareKeyboardAvailable = YES
+2026-11-17 02:07:16.761 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.763 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000224c00> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.763 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.764 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000224c00> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.789 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x10811ca60] activating connection: mach=true listener=false peer=false name=com.apple.TextInput
+2026-11-17 02:07:16.791 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.793 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000224960> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.793 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.794 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000224960> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.808 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.808 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x600000219d20> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.808 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.809 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x600000219d20> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.811 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.938 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002758e0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.938 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.938 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002758e0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.942 A  NatalOrbit[20002:ef3e] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:16.944 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UIKBFeedbackGenerator] <_UIKBFeedbackGenerator: 0x6000035069f0>: Updating mode. Haptics: unsupported. Haptics: disabled. Ringer: on. Sound: enabled. Mode: audio only
+2026-11-17 02:07:16.946 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:16.947 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002769a0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.948 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:16.948 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002769a0> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:16.949 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:(nil) forSetDelegate:<WKContentView: 0x10702e200> force:NO delayEndInputSession:YES
+2026-11-17 02:07:16.949 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InputSessionChange] endInputSession completion is disabled
+2026-11-17 02:07:16.950 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] [Interface Orientation] was:Interface Unknown now:UIInterfaceOrientationPortrait reason:Using key window scene
+2026-11-17 02:07:16.952 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-17 02:07:17.023 Df NatalOrbit[20002:ef3e] [com.apple.TextInputUI:DynamicKeyplaneView] <TUIKeyplaneView: 0x108216a00> changed keyplane size to {440, 224}; docked
+2026-11-17 02:07:17.024 Df NatalOrbit[20002:ef3e] [com.apple.TextInputUI:DynamicKeyplaneView] Setting dynamic keyplane: Dynamic-QWERTY-British-Small_Capital-Letters
+2026-11-17 02:07:17.051 Df NatalOrbit[20002:efb0] [com.apple.TextInputUI:CandidateGeneration] -[TUIKeyboardCandidateMultiplexer installGeneratorForSource:]_block_invoke: Multiplexer is installing generator for source: 1
+2026-11-17 02:07:17.051 Df NatalOrbit[20002:efb0] [com.apple.TextInputUI:CandidateGeneration] -[TUIKeyboardCandidateMultiplexer installGeneratorForSource:]_block_invoke: Multiplexer is installing generator for source: 3
+2026-11-17 02:07:17.052 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardUI] Creating a new RTI client
+2026-11-17 02:07:17.053 Df NatalOrbit[20002:ef3e] [com.apple.BoardServices:XPCErrors] [C:3] Alloc com.apple.inputservice.input-ui-host
+2026-11-17 02:07:17.053 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x106e08e10] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:17.054 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardUI] creating new AutofillUI connection
+2026-11-17 02:07:17.056 Df NatalOrbit[20002:efad] [com.apple.calls.callkit:Default] Call host has no calls
+2026-11-17 02:07:17.057 Df NatalOrbit[20002:ef3e] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-17 02:07:17.057 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient beginAllowingRemoteTextInput:]  Begin allowing remote text input: C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.114 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UIPeripheralHost] endPlacementForInputViewSet: <<UIInputViewSet: 0x60000370c600>; (empty)> windowScene: <UIWindowScene: 0x10800c760; role: UIWindowSceneSessionRoleApplication; persistentIdentifier: F7B636D7-0870-45F1-8462-5885631A2AF6; activationState: UISceneActivationStateForegroundInactive>
+2026-11-17 02:07:17.126 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-17 02:07:17.126 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardArbiterClientLog] -[_UIRemoteKeyboards prepareToMoveKeyboard:withIAV:isIAVRelevant:showing:notifyRemote:forScene:] position: {{0, 0}, {0, 0}} visible: 0; notifyRemote: 1; isMinimized: NO
+2026-11-17 02:07:17.127 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardVisualMode] Show keyboard with visual mode windowed (0)
+2026-11-17 02:07:17.131 Df NatalOrbit[20002:ef3e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-17 02:07:17.132 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:17.133 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10800c760> (F7B636D7-0870-45F1-8462-5885631A2AF6)
+2026-11-17 02:07:17.136 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.natalorbit-default  persistentID: F7B636D7-0870-45F1-8462-5885631A2AF6
+2026-11-17 02:07:17.136 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-17 02:07:17.137 Df NatalOrbit[20002:ef3e] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-17 02:07:17.137 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = YES)
+2026-11-17 02:07:17.139 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-17 02:07:17.140 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Fullscreen] PlaybackSessionManagerProxy::applicationDidBecomeActive(3817405348)
+2026-11-17 02:07:17.140 A  NatalOrbit[20002:ef3e] (GameController) Notify ApplicationDidBecomeActive
+2026-11-17 02:07:17.140 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.142 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.146 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.150 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.155 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.158 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.162 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.166 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.172 A  NatalOrbit[20002:efb0] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 02:07:17.180 Df NatalOrbit[20002:efb2] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-17 02:07:17.183 Df NatalOrbit[20002:efad] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-17 02:07:17.199 Df NatalOrbit[20002:ef9a] [com.apple.FrontBoard:Common] [FBSSystemService][0xbac8] Sending request to open "com.apple.iMessageAppsViewService"
+2026-11-17 02:07:17.203 Df NatalOrbit[20002:ef3e] (WebKit) WebContent[20106] Installed launch log hook
+2026-11-17 02:07:17.203 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1150b00c0) state = 0 has connection = 0 XPC endpoint message = 0x600003e1ce00
+2026-11-17 02:07:17.203 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1150f41e0) state = 0 has connection = 0 XPC endpoint message = 0x600003e1ce00
+2026-11-17 02:07:17.207 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:17.210 Df NatalOrbit[20002:efad] [com.apple.FrontBoard:Common] [FBSSystemService][0xbac8] Request successful: <BSProcessHandle: 0x600000c763d0; iMessageAppsVie:11526; valid: YES>
+2026-11-17 02:07:17.213 Df NatalOrbit[20002:efb2] [com.apple.xpc:connection] [0x108118c20] activating connection: mach=true listener=false peer=false name=com.apple.iMessageAppsViewService.warmup-connection
+2026-11-17 02:07:17.219 Df NatalOrbit[20002:ef3e] [com.apple.gamecontroller:Session] Connected devices changed (2 added, 0 removed) -> [2] {(
+    <GCController 0x600003d00870 'MFi'/'Gamepad'>,
+    <GCKeyboard 0x60000029dbe0 'Generic Keyboard'>
+)}
+2026-11-17 02:07:17.222 Df NatalOrbit[20002:ef3e] [com.apple.CoreAnalytics:client] No XPC connection in Simulator
+2026-11-17 02:07:17.222 Df NatalOrbit[20002:ef3e] [com.apple.gamecontroller:Session] Connected devices changed (0 added, 0 removed) -> [2] {(
+    <GCController 0x600003d00870 'MFi'/'Gamepad'>,
+    <GCKeyboard 0x60000029dbe0 'Generic Keyboard'>
+)}
+2026-11-17 02:07:17.222 Df NatalOrbit[20002:ef3e] [com.apple.gamecontroller:Session] Connected devices changed (0 added, 0 removed) -> [2] {(
+    <GCController 0x600003d00870 'MFi'/'Gamepad'>,
+    <GCKeyboard 0x60000029dbe0 'Generic Keyboard'>
+)}
+2026-11-17 02:07:17.223 A  NatalOrbit[20002:ef3e] (GameControllerFoundation) [HID Event System Client] Activate
+2026-11-17 02:07:17.223 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::didFinishLaunching:
+2026-11-17 02:07:17.224 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] WebContent process (0x1150b00c0) took 1.331625 seconds to launch
+2026-11-17 02:07:17.224 A  NatalOrbit[20002:ef3e] (libsystem_trace.dylib) Activity for state dumps
+2026-11-17 02:07:17.224 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150b0150 - [PID=20106] ProcessThrottler::didConnectToProcess
+2026-11-17 02:07:17.224 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150b0150 - [PID=20106] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=3, backgroundActivities=7)
+2026-11-17 02:07:17.225 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:17.225 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x600001761ec0 - WKProcessAssertionBackgroundTaskManager: beginBackgroundTaskWithName
+2026-11-17 02:07:17.226 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] WKProcessAssertionBackgroundTaskManager: Took a FinishTaskInterruptable assertion for own process
+2026-11-17 02:07:17.226 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150b00c0 - [PID=20106] WebProcessProxy::didChangeThrottleState: type=2
+2026-11-17 02:07:17.226 Df NatalOrbit[20002:efad] [com.apple.WebKit:ProcessSuspension] 0x1151480c0 - ProcessAssertion::acquireSync Trying to take RBS assertion 'WebProcess Foreground Assertion' for process with PID=20106
+2026-11-17 02:07:17.226 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150b00c0 - [PID=20106] WebProcessProxy::didChangeThrottleState(Foreground) Taking foreground assertion for network process
+2026-11-17 02:07:17.227 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc3c0 - [PID=0, throttler=0x11511c190] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Networking for foreground view(s)'
+2026-11-17 02:07:17.228 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc3f0 - [PID=0, throttler=0x1150f4270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'GPU for foreground view(s)'
+2026-11-17 02:07:17.228 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1150b00c0) state = 1 has connection = 1 XPC endpoint message = 0x600003e1ce00
+2026-11-17 02:07:17.229 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didFinishLaunching:
+2026-11-17 02:07:17.229 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] GPU process (0x1150f41e0) took 1.297071 seconds to launch
+2026-11-17 02:07:17.229 A  NatalOrbit[20002:ef3e] (libsystem_trace.dylib) Activity for state dumps
+2026-11-17 02:07:17.231 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::connectionWillOpen:
+2026-11-17 02:07:17.232 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=20108] ProcessThrottler::didConnectToProcess
+2026-11-17 02:07:17.233 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=20108] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=2, backgroundActivities=1)
+2026-11-17 02:07:17.233 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:17.234 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1150f41e0) state = 1 has connection = 1 XPC endpoint message = 0x600003e1ce00
+2026-11-17 02:07:17.235 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::didFinishLaunching
+2026-11-17 02:07:17.236 A  NatalOrbit[20002:efb0] (CoreServicesInternal) CFURLCreateBookmarkData
+2026-11-17 02:07:17.236 Df NatalOrbit[20002:efad] [com.apple.WebKit:ProcessSuspension] 0x1151480c0 - ProcessAssertion() Successfully granted capability
+2026-11-17 02:07:17.236 Df NatalOrbit[20002:efad] [com.apple.WebKit:ProcessSuspension] 0x115148180 - ProcessAssertion::acquireSync Trying to take RBS assertion 'GPUProcess Foreground Assertion' for process with PID=20108
+2026-11-17 02:07:17.238 F  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] Networking process (0x11511c100) took 1.270461 seconds to launch
+2026-11-17 02:07:17.238 A  NatalOrbit[20002:ef3e] (libsystem_trace.dylib) Activity for state dumps
+2026-11-17 02:07:17.241 Df NatalOrbit[20002:efad] [com.apple.WebKit:ProcessSuspension] 0x115148180 - ProcessAssertion() Successfully granted capability
+2026-11-17 02:07:17.244 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x11511c190 - [PID=20109] ProcessThrottler::didConnectToProcess
+2026-11-17 02:07:17.258 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x11511c190 - [PID=20109] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=2, backgroundActivities=1)
+2026-11-17 02:07:17.258 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:17.258 Df NatalOrbit[20002:ef9a] [com.apple.WebKit:ProcessSuspension] 0x115148240 - ProcessAssertion::acquireSync Trying to take RBS assertion 'NetworkProcess Foreground Assertion' for process with PID=20109
+2026-11-17 02:07:17.259 Df NatalOrbit[20002:ef9a] [com.apple.WebKit:ProcessSuspension] 0x115148240 - ProcessAssertion() Successfully granted capability
+2026-11-17 02:07:17.271 Df NatalOrbit[20002:ef9a] [com.apple.xpc:connection] [0x108110080] activating connection: mach=true listener=false peer=false name=com.apple.SystemConfiguration.NetworkInformation_sim
+2026-11-17 02:07:17.282 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] WebContent[20106] getNetworkProcessConnection: Request connection for core identifier 2
+2026-11-17 02:07:17.282 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc0c0 - [PID=20106, throttler=0x1150b0150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-17 02:07:17.282 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x11511c100 - NetworkProcessProxy::getNetworkProcessConnection: Taking a background assertion because web process pid 20106 (core identifier 2) is requesting a connection
+2026-11-17 02:07:17.283 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] WebContent[20106] [0x1043052a0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:17.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] WebContent[20106] Received Launch Services database
+2026-11-17 02:07:17.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc150 - [PID=20108, throttler=0x1150f4270] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-17 02:07:17.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc210 - [PID=20109, throttler=0x11511c190] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-17 02:07:17.283 Df NatalOrbit[20002:ef3e] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-17 02:07:17.284 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108152620] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-17 02:07:17.290 Sd NatalOrbit[20002:0] (8932B5E7-350E-3E7D-A9DF-0DAD1BBE74A3) UAUserActivity
+UAUserActivityManager supportsActivityContinuation=YES isEnabled=YES serverPid=0 PROJECT:UserActivity-551
+2026-11-17 02:07:17.290 Df NatalOrbit[20002:ef3e] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-17 02:07:17.299 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] WebContent[20106] 0x108048150 - [sessionID=1] WebProcess::initializeLogForwarding: Debug logging enabled: 0
+2026-11-17 02:07:17.299 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] WebContent[20106] WebProcess::platformInitializeWebProcess
+2026-11-17 02:07:17.301 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] WebContent[20106] [0x104606e70] activating connection: mach=false listener=true peer=false name=(anonymous)
+2026-11-17 02:07:17.301 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] WebContent[20106] [0x104606e70] Connection returned listener port: 0x3a07
+2026-11-17 02:07:17.301 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] WebContent[20106] [0x104606fb0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:17.301 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] WebContent[20106] [0x104304b50] activating connection: mach=false listener=false peer=true name=com.apple.xpc.anonymous.0x104606e70.peer[20106].0x104304b50
+2026-11-17 02:07:17.315 Df NatalOrbit[20002:efb0] [com.apple.xpc:connection] [0x10820dcf0] Re-initialization successful; calling out to event handler with XPC_ERROR_CONNECTION_INTERRUPTED
+2026-11-17 02:07:17.315 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXSupportCommon] WebContent[0] Application accessibility enabled: 0, (
+	0   libAccessibility.dylib              0x00007ff8161a0269 _AXSApplicationAccessibilitySetEnabled + 82
+	1   WebKit                              0x00007ff811d1e2af _ZN6WebKit10WebProcess28platformInitializeWebProcessERNS_28WebProcessCreationParametersE + 2349
+	2   WebKit                              0x00007ff811f00a28 _ZN6WebKit10WebProcess20initializeWebProcessEONS_28WebProcessCreationParametersEON3WTF17CompletionHandlerIFvN7WebCore15ProcessIdentityEEEE + 148
+	3   WebKit                              0x00007ff8118842e3 _ZN3IPC18handleMessageAsyncIN8Messages10WebProcess20InitializeWebProcessENS_10ConnectionEN6WebKit10WebProcessES6_FvONS5_28WebProcessCreationParametersEON3WTF17CompletionHandlerIFvN7WebCore15ProcessIdentityEEEEEEEvRT0_RNS_7DecoderEPT1_MT2_T3_ + 275
+	4   WebKit                              0x00007ff8122eb645 _ZN3IPC10Connection15dispatchMessageEN3WTF9UniqueRefINS_7DecoderEEE + 535
+	5   WebKit                              0x00007ff812309290 _Z<…>
+2026-11-17 02:07:17.315 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXSupportCommon] WebContent[0] Stored App AX setting: 0
+2026-11-17 02:07:17.315 Df NatalOrbit[20002:ef3e] [com.apple.Accessibility:AXSupportCommon] WebContent[0] AXS AccessibilityEnabled: (app ax: 0), ax settings: 0, cached: 0
+2026-11-17 02:07:17.315 Df NatalOrbit[20002:ef3e] [com.apple.securityd:SecWarning] WebContent[0] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=20002 task=NatalOrbit[20002]/0#-1 LF=22
+2026-11-17 02:07:17.351 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] <nw_activity 50:1 [A4FF6F7F-05AF-4FD9-8E12-C7AE4C14FA38] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 3295ms
+2026-11-17 02:07:17.352 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] <nw_activity 50:2 [CB635D07-E652-4F77-9256-C14C23F8CC95] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 3295ms
+2026-11-17 02:07:17.352 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [A4FF6F7F-05AF-4FD9-8E12-C7AE4C14FA38] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-17 02:07:17.352 Df NatalOrbit[20002:ef3e] [com.apple.network:activity] Unset the global parent activity
+2026-11-17 02:07:17.393 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::decidePolicyForNavigationAction: frameID=4294967297, isMainFrame=1, navigationID=16
+2026-11-17 02:07:17.395 A  NatalOrbit[20002:efb0] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-17 02:07:17.396 Df NatalOrbit[20002:efb2] [com.apple.xpc:connection] [0x10812f160] activating connection: mach=true listener=false peer=false name=com.apple.Safari.SafeBrowsing.Service
+2026-11-17 02:07:17.397 Df NatalOrbit[20002:f08c] [com.apple.WebKit:RemoteLayerBuffers] WebContent[20106]: [renderingBackend=11] Created rendering backend for pageProxyID=10, webPageID=11
+2026-11-17 02:07:17.398 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] GPUProcessConnection::create - 0x10826ee60
+2026-11-17 02:07:17.418 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:AppSSO] 0x1150680c0 - SOAuthorizationCoordinator::tryAuthorize
+2026-11-17 02:07:17.431 E  NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Result accumulator timeout: 0.250000, exceeded.
+2026-11-17 02:07:17.433 A  NatalOrbit[20002:ef3e] (AppSSO) canPerformAuthorizationWithURL
+2026-11-17 02:07:17.434 A  NatalOrbit[20002:ef3e] (AppSSOCore) canPerformAuthorizationWithURL
+2026-11-17 02:07:17.434 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Assigning candidates of source type kbd to `containerToPush, for autocorrection flow only` - 258B0567
+2026-11-17 02:07:17.435 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Preparing to push <_TUIKeyboardCandidateContainer: 0x60000029db60> to candidate receiver, for request token: 258B0567
+2026-11-17 02:07:17.436 Df NatalOrbit[20002:ef3e] [com.apple.authkit:nto] Fetching native takeover URLs
+2026-11-17 02:07:17.436 Df NatalOrbit[20002:efb2] [com.apple.TextInputUI:CandidateGeneration] containerToPush has an autocorrection list.  pushing to candidate receiver with request token. 258B0567.
+2026-11-17 02:07:17.436 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Performing delayed generation for token=258B0567
+2026-11-17 02:07:17.438 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x1081216b0] activating connection: mach=true listener=false peer=false name=com.apple.ak.authorizationservices.xpc
+2026-11-17 02:07:17.440 Df NatalOrbit[20002:ef9a] [com.apple.authkit:nto] URL shouldn't be processed
+2026-11-17 02:07:17.440 Df NatalOrbit[20002:ef9a] [com.apple.AppSSO:SOConfigurationClient] -[SOConfigurationClient init]  on <SOConfigurationClient: 0x60000027fc60>
+2026-11-17 02:07:17.441 Df NatalOrbit[20002:ef9a] [com.apple.xpc:connection] [0x108027c30] activating connection: mach=true listener=false peer=false name=com.apple.AppSSO.service-xpc
+2026-11-17 02:07:17.441 Df NatalOrbit[20002:ef9a] [com.apple.AppSSO:SOServiceConnection] <SOServiceConnection: 0x60000027fcc0>: new XPC connection
+2026-11-17 02:07:17.442 A  NatalOrbit[20002:ef3e] (libsystem_containermanager.dylib) container_system_group_path_for_identifier
+2026-11-17 02:07:17.443 Df NatalOrbit[20002:ef3e] [com.apple.containermanager:xpc] Requesting container lookup; class = 13, identifier = com.apple.nsurlsessiond, group_identifier = systemgroup.com.apple.nsurlstoragedresources, create = 1, temp = 0, euid = 501, uid = 501
+2026-11-17 02:07:17.449 A  NatalOrbit[20002:ef3e] (libsystem_containermanager.dylib) container_query_t
+2026-11-17 02:07:17.450 Df NatalOrbit[20002:ef3e] [com.apple.containermanager:xpc] Query; euid = 501, uid = 501, class = 13, identifier = [com.apple.nsurlsessiond](1), flags = 900000003
+2026-11-17 02:07:17.453 E  NatalOrbit[20002:ef3e] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-17 02:07:17.453 E  NatalOrbit[20002:ef3e] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-17 02:07:17.462 E  NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Attempted to update accumulator from source type: 0, after completion has already been called for token:[258B0567]. This is an error and will be ignored.
+2026-11-17 02:07:17.470 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _beginSessionWithID:forServices:force:]  Begin text input session. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59, options = <RTISessionOptions: 0x6000002a4980; shouldResign = NO; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-17 02:07:17.479 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/tmp/com.troydunn.natalorbit/WebKit/MediaCache'
+2026-11-17 02:07:17.482 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/MediaKeys/v1'
+2026-11-17 02:07:17.485 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f41e0 - GPUProcessProxy is taking a background assertion because a web process is requesting a connection
+2026-11-17 02:07:17.486 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:AppSSO] SOAuthorizationCoordinator::tryAuthorize: The requested URL is not registered for AppSSO handling. No further action needed.
+2026-11-17 02:07:17.490 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::decidePolicyForNavigationAction: listener called: frameID=4294967297, isMainFrame=1, navigationID=16, policyAction=Use, isAppBoundDomain=0, wasNavigationIntercepted=0
+2026-11-17 02:07:17.490 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::receivedNavigationActionPolicyDecision: frameID=4294967297, isMainFrame=1, navigationID=16, policyAction=Use
+2026-11-17 02:07:17.491 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:TextInput] Stopped deferring input view updates (01)
+2026-11-17 02:07:17.491 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSwapping] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::decidePolicyForNavigationAction: keep using process 20106 for navigation, reason=Process has not yet committed any provisional loads
+2026-11-17 02:07:17.492 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::canTerminateAuxiliaryProcess: returns false (pageCount=1, provisionalPageCount=0, suspendedPageCount=0, m_isInProcessCache=0, m_shutdownPreventingScopeCounter=0)
+2026-11-17 02:07:17.610 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didCreateContextForVisibilityPropagation: webPageProxyID: 10, pagePID: 11, contextID: 3
+2026-11-17 02:07:17.610 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] Created visibility propagation interaction <_UIVisibilityPropagationInteraction: 0x60000261d260> for process with PID=20108
+2026-11-17 02:07:17.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebFrameLoaderClient::dispatchDecidePolicyForNavigationAction: Got policyAction Use from async IPC
+2026-11-17 02:07:17.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Loading] WebContent[20106] 0x1081481c0 - [pageID=11, frameID=4294967297] PolicyChecker::checkNavigationPolicy: continuing because this policyAction from dispatchDecidePolicyForNavigationAction is Use
+2026-11-17 02:07:17.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::stopAllLoaders: m_provisionalDocumentLoader=0, m_documentLoader=4446412800
+2026-11-17 02:07:17.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::stopLoading
+2026-11-17 02:07:17.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 4446429184 (was 0)
+2026-11-17 02:07:17.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::continueLoadAfterNavigationPolicy: Setting provisional document loader (m_provisionalDocumentLoader=4446429184)
+2026-11-17 02:07:17.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ProcessSuspension] WebContent[20106]: [webPageID=11] WebPage::freezeLayerTree: Adding a reason to freeze layer tree (reason=1, new=1, old=0)
+2026-11-17 02:07:17.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setPolicyDocumentLoader: Setting policy document loader to 0 (was 4446429184)
+2026-11-17 02:07:17.613 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::prepareForLoadStart: Starting frame load
+2026-11-17 02:07:17.613 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: ProgressTracker::progressStarted: frameID 4294967297, value 0.100000, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-11-17 02:07:17.613 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::startLoadingMainResource: Starting load
+2026-11-17 02:07:17.613 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=18] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.613 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=18 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.614 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109000000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.614 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.615 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] 0x10826ee60 - GPUProcessConnection::didInitialize
+2026-11-17 02:07:17.617 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::didStartProvisionalLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:07:17.618 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x1150b00c0 - [PID=20106] WebProcessProxy::didStartProvisionalLoadForMainFrame:
+2026-11-17 02:07:17.636 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didReceiveData: Received data during response processing, queuing it.
+2026-11-17 02:07:17.636 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:17.638 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setDocumentLoader: Setting document loader to 4446429184 (was 4446412800)
+2026-11-17 02:07:17.638 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::detachFromFrame
+2026-11-17 02:07:17.638 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, isMainFrame=1] DocumentLoader::stopLoading
+2026-11-17 02:07:17.639 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::transitionToCommitted: Clearing provisional document loader (m_provisionalDocumentLoader=4446429184)
+2026-11-17 02:07:17.640 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setProvisionalDocumentLoader: Setting provisional document loader to 0 (was 4446429184)
+2026-11-17 02:07:17.640 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::didNavigateWithNavigationDataShared:
+2026-11-17 02:07:17.642 E  NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoadStatistics] WebContent[20106] Unable to hide query parameters from script (missing data)
+2026-11-17 02:07:17.643 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ProcessSuspension] WebContent[20106]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=128, new=1, old=1)
+2026-11-17 02:07:17.643 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ProcessSuspension] WebContent[20106]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=128, new=1, old=1)
+2026-11-17 02:07:17.644 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ProcessSuspension] WebContent[20106]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=32, new=1, old=1)
+2026-11-17 02:07:17.644 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::didCommitLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:07:17.652 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] Reloading input views for key-window scene responder: <WKContentView: 0x10702e200; frame = (0 0; 0 0); opaque = NO; > force:N
+2026-11-17 02:07:17.653 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:17.654 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x60000029a620> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:17.654 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:17.656 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x60000029a620> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:17.656 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:<WKContentView: 0x10702e200> forSetDelegate:(nil) force:NO delayEndInputSession:NO
+2026-11-17 02:07:17.661 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=23] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.661 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=23 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.661 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109006800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.661 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=23] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.664 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=24] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.664 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=24 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.664 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109008000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.665 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=24] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.665 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=25] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.666 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=25 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.666 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109008800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.667 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=25] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.667 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=26] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.668 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=26 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.668 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient endRemoteTextInputSessionWithID:options:completion:]  Ending text input session. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59, options = <RTISessionOptions: 0x6000002a5260; shouldResign = YES; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-17 02:07:17.669 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109009000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.669 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=26] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.670 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=27] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.671 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=27 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.671 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109009800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.672 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=27] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.673 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=28] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.674 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=28 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.674 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10900a000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.675 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=28] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.676 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=29] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.677 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=29 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.677 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10900a800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.678 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=29] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.678 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=30] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.678 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=30 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.679 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10900b000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.679 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=30] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.679 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=31] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:17.679 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=31 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:17.679 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10900b800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:17.680 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=31] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:17.680 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=18] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:17.680 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=18 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:17.690 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _endSessionWithID:forServices:options:completion:]  End input session: C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.703 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient endAllowingRemoteTextInput:completion:]  End allowing remote text input: C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.704 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = NO)
+2026-11-17 02:07:17.705 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Text input session suggestions changed. sessionID = (null)
+2026-11-17 02:07:17.707 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-17 02:07:17.716 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _reloadInputViewsForKeyWindowSceneResponder: 1 force: 0, fromBecomeFirstResponder: 0 (automaticKeyboard: 1, reloadIdentifier: 472F50AF-203B-47B7-9597-5D6A5FBC44BF)
+2026-11-17 02:07:17.716 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder: <WKContentView: 0x10702e200; frame = (0 0; 0 0); opaque = NO; >, automaticKeyboard: 1, force: 0
+2026-11-17 02:07:17.717 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardSceneDelegate] _inputViewsForResponder, disableAutomaticKeyboardUI return empty
+2026-11-17 02:07:17.717 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: YES
+2026-11-17 02:07:17.719 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] connected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac360> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:17.719 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] currently observing: NO
+2026-11-17 02:07:17.720 Df NatalOrbit[20002:ef3e] [com.apple.BackBoard:Keyboard] disconnected: (
+    "<BKSHIDKeyboardDevice: 0x6000002ac360> {\134n    senderID: 0xACEFADE00000003;\134n    transport: <nil>;\134n    language: <nil>;\134n    layout: US;\134n    countryCode: 0;\134n    standardType: 4294967295;\134n    subinterfaceID: 0;\134n    capsLockKeyHasLanguageSwitchLabel: NO;\134n    globeKeyLabelHasGlobeSymbol: NO;\134n}"
+)
+2026-11-17 02:07:17.720 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:InputSessionChange] -_teardownExistingDelegate:(nil) forSetDelegate:<WKContentView: 0x10702e200> force:NO delayEndInputSession:NO
+2026-11-17 02:07:17.728 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:SmartReply] Handling responseContextDidChange - existing: (null), new: (null)
+2026-11-17 02:07:17.770 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ProcessSuspension] WebContent[20106]: [webPageID=11] WebPage::unfreezeLayerTree: Removing a reason to freeze layer tree (reason=1, new=0, old=1)
+2026-11-17 02:07:17.770 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [pageID=11, frameID=4294967297, isMainFrame=1] LocalFrameView::fireLayoutRelatedMilestonesIfNeeded: Firing first visually non-empty layout milestone on the main frame
+2026-11-17 02:07:17.770 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstVisuallyNonEmptyLayout)
+2026-11-17 02:07:17.770 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidFirstVisuallyNonEmptyLayoutForFrame
+2026-11-17 02:07:17.770 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::completePageTransitionIfNeeded: dispatching didCompletePageTransition
+2026-11-17 02:07:17.892 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient beginAllowingRemoteTextInput:]  Begin allowing remote text input: C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.893 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _modifyTextEditingAllowedForReason:notify:animated:modifyAllowancesBlock:completion:]  Text editing allowed did change (editingAllowedAfter = YES)
+2026-11-17 02:07:17.903 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:UIPeripheralHost] endPlacementForInputViewSet: <<UIInputViewSet: 0x60000370c600>; (empty)> windowScene: <UIWindowScene: 0x10800c760; role: UIWindowSceneSessionRoleApplication; persistentIdentifier: F7B636D7-0870-45F1-8462-5885631A2AF6; activationState: UISceneActivationStateForegroundActive>
+2026-11-17 02:07:17.910 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardArbiterClientLog] -[_UIRemoteKeyboards prepareToMoveKeyboard:withIAV:isIAVRelevant:showing:notifyRemote:forScene:] position: {{0, 0}, {0, 0}} visible: 0; notifyRemote: 1; isMinimized: NO
+2026-11-17 02:07:17.910 Df NatalOrbit[20002:ef3e] [com.apple.UIKit:KeyboardVisualMode] Show keyboard with visual mode windowed (0)
+2026-11-17 02:07:17.911 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Text input session suggestions changed. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.911 E  NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:RTILog] -[RTIInputSystemClient remoteTextInputSessionWithID:textSuggestionsChanged:]  Can only set suggestions for an active session. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59
+2026-11-17 02:07:17.919 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-17 02:07:17.922 Df NatalOrbit[20002:efb0] [com.apple.TextInputUI:CandidateGeneration] All generators are not complete.
+2026-11-17 02:07:17.924 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] All generators are complete, dispatching to `completionBlockJustOnce`
+2026-11-17 02:07:17.925 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Assigning candidates of source type kbd to `containerToPush, for autocorrection flow only` - 67219F4B
+2026-11-17 02:07:17.925 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Preparing to push <_TUIKeyboardCandidateContainer: 0x6000002aa520> to candidate receiver, for request token: 67219F4B
+2026-11-17 02:07:17.925 Df NatalOrbit[20002:ef9a] [com.apple.TextInputUI:CandidateGeneration] Performing delayed generation for token=67219F4B
+2026-11-17 02:07:17.925 Df NatalOrbit[20002:efb0] [com.apple.TextInputUI:CandidateGeneration] containerToPush has an autocorrection list.  pushing to candidate receiver with request token. 67219F4B.
+2026-11-17 02:07:18.084 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:RemoteLayerTree] RemoteLayerTreeDrawingAreaProxy(13) Unhiding layer tree
+2026-11-17 02:07:18.124 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107037e00 (pageProxyID=10) -[WKWebView _updateVisibleContentRects:] - scroll view state is non-stable, bailing (shouldDeferGeometryUpdates 0, dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-11-17 02:07:18.545 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidFirstLayoutForFrame
+2026-11-17 02:07:18.545 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstLayout)
+2026-11-17 02:07:18.546 Df NatalOrbit[20002:ef3e] [com.apple.RemoteTextInput:InputSessionChange] -[RTIInputSystemClient _beginSessionWithID:forServices:force:]  Begin text input session. sessionID = C533F29F-E758-4EAD-893C-018EB41F7C59, options = <RTISessionOptions: 0x6000002b1120; shouldResign = NO; animated = YES; offscreenDirection = 0; enhancedWindowingModeEnabled = NO
+2026-11-17 02:07:18.546 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=23] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.546 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=23 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.547 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=24] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.547 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=24 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.547 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=25] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.547 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=25 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.548 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=26] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.548 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=26 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.548 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=27] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.548 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=27 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.548 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=28] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.549 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=28 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.549 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=29] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.549 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=29 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.550 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=30] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.550 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=30 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.550 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=31] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.551 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=31 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.551 Df NatalOrbit[20002:f08c] [com.apple.Accessibility:AXCommon] WebContent[20106] Read Per-App on Init: Smart invert = (null)
+2026-11-17 02:07:18.551 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Layout] WebContent[20106]: [webFrameID=4294967297, webPageID=11] WebLocalFrameLoaderClient::dispatchDidReachLayoutMilestone: dispatching DidReachLayoutMilestone (milestones=DidFirstMeaningfulPaint)
+2026-11-17 02:07:18.553 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=75] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.553 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=75 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.553 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109015000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.553 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=75] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.558 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=75] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:18.558 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=75 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:18.650 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107037e00 (pageProxyID=10) -[WKWebView _didCommitLayerTree:] - received a commit (2) while deferring visible content rect updates (dynamicViewportUpdateMode 0, resetViewStateAfterTransactionID 2, sizeChangedSinceLastVisibleContentRectUpdate 0, [_scrollView isZoomBouncing] 0, currentlyAdjustingScrollViewInsetsForKeyboard 0)
+2026-11-17 02:07:18.652 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ViewState] 0x107037e00 (pageProxyID=10) -[WKWebView _updateVisibleContentRects:] - performing first visible content rect update after deferring updates
+2026-11-17 02:07:18.673 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=101] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.673 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=101 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.673 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109019800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.673 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=101] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.681 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=112] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.682 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=112 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.682 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109013000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.682 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=112] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.682 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=113] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.682 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=113 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.683 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109014000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.683 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=113] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.683 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=114] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.683 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=114 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.684 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109015800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.684 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=114] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.686 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=115] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.686 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=115 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.686 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x109018800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.687 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=115] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.922 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=209] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.922 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=209 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.922 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a703800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.922 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=209] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.930 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=214] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.930 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=214 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.930 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a705000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.930 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=214] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.937 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=219] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.938 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=219 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.938 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a707800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.938 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=219] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.956 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=224] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.956 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=224 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.956 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a709000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.956 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=224] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.959 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=229] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.959 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=229 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.959 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a70a800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.959 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=229] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.962 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=234] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.963 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=234 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.963 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a70c800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.963 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=234] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.965 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=235] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.965 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=235 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.965 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a70d000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.965 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=235] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.967 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=240] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.967 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=240 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.967 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a70e800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.967 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=240] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.970 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=245] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.970 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=245 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.970 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a710000, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.970 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=245] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:18.974 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=250] ResourceLoader::willSendRequestInternal: calling completion handler
+2026-11-17 02:07:18.974 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=250 SubResourceLoader::willSendRequestInternal: resource load finished; calling completion handler
+2026-11-17 02:07:18.974 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] 0x1080500e0 - [resourceLoader=0x10a711800, frameLoader=0x1081ac100, frame=0x108194340, webPageID=11, frameID=11, resourceID=11] WebLoaderStrategy::tryLoadingUsingURLSchemeHandler: URL will be handled by a UIProcess URL scheme handler
+2026-11-17 02:07:18.974 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=250] WebURLSchemeTaskProxy::startLoading
+2026-11-17 02:07:19.559 Df NatalOrbit[20002:ef3e] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Getting pending notification requests (async)
+2026-11-17 02:07:19.561 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::didFinishDocumentLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:07:19.562 Df NatalOrbit[20002:efb0] [com.apple.xpc:connection] [0x108035020] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-17 02:07:19.567 Df NatalOrbit[20002:efa3] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Got 0 pending notification [ hasCompletionHandler: 1 ]
+2026-11-17 02:07:19.568 Df NatalOrbit[20002:efa3] [com.apple.UserNotifications:Connections] [com.troydunn.natalorbit] Removing 0 pending notification requests with identifiers (
+)
+2026-11-17 02:07:19.582 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=101] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.582 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=101 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.583 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=112] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.583 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=112 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=113] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=113 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=114] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=114 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=115] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.584 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=115 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.585 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=209] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.585 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=209 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=214] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=214 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=219] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=219 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=224] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.586 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=224 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.587 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=229] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.587 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=229 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.587 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=234] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.588 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=234 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.588 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=235] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.588 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=235 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.589 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=240] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.589 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=240 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.589 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=245] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.590 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=245 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.590 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106] [schemeHandler=1, webPageID=11, frameID=4294967297, taskID=250] WebURLSchemeTaskProxy::didComplete
+2026-11-17 02:07:19.590 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11, frameID=4294967297, resourceID=250 SubResourceLoader::didFinishLoading
+2026-11-17 02:07:19.608 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::setState: main frame load completed
+2026-11-17 02:07:19.608 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]: Memory usage info dump at MainFrameLoadCompleted:
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   page_count: 1
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   backforward_cache_page_count: 0
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   document_count: 1
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   javascript_gc_heap_capacity_mb: 67
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   javascript_gc_heap_extra_memory_size_mb: 19
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   internal_mb: 92
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Loading] 0x107058020 - [pageProxyID=10, webPageID=11, PID=20106] WebPageProxy::didFinishLoadForFrame: frameID=4294967297, isMainFrame=1
+2026-11-17 02:07:19.609 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   compressed_mb: 0
+2026-11-17 02:07:19.610 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115110100 - NavigationState will release its process network assertion soon because the page load completed
+2026-11-17 02:07:19.610 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   phys_footprint_mb: 92
+2026-11-17 02:07:19.611 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc1e0 - [PID=20106, throttler=0x1150b0150] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Client navigation'
+2026-11-17 02:07:19.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   resident_size_mb: 217
+2026-11-17 02:07:19.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]:   virtual_size_mb: 104720
+2026-11-17 02:07:19.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: ProgressTracker::progressCompleted: frameID 4294967297, value 0.900000, tracked frames 1, originating frameID 4294967297, isMainLoad 1
+2026-11-17 02:07:19.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Network] WebContent[20106]: ProgressTracker::finalProgressComplete: value 0.900000, tracked frames 0, originating frameID 4294967297, isMainLoad 1, isMainLoadProgressing 0
+2026-11-17 02:07:19.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:ResourceLoading] WebContent[20106]: [pageID=11 frameID=4294967297 isMainFrame=1] FrameLoader::checkLoadCompleteForThisFrame: Finished frame load
+2026-11-17 02:07:22.612 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115110100 NavigationState is releasing background process assertion because a page load completed
+2026-11-17 02:07:22.612 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc270 - [PID=20106, throttler=0x1150b0150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-11-17 02:07:29.611 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 71675904 bytes of memory after the page load.
+2026-11-17 02:07:34.612 Df NatalOrbit[20002:f08c] [com.apple.WebKit:PerformanceLogging] WebContent[20106]: PerformanceMonitor::measurePostLoadCPUUsage: Process was using 0.2% CPU after the page load.
+2026-11-17 02:07:39.253 Df NatalOrbit[20002:f08c] [com.apple.WebKit:RemoteLayerBuffers] WebContent[20106] RemoteImageBufferSetProxyFlusher::flushAndCollectHandlers - failed
+2026-11-17 02:07:39.253 Df NatalOrbit[20002:f08c] [com.apple.WebKit:RemoteLayerBuffers] WebContent[20106] [renderingBackend=11] RemoteRenderingBackendProxy::didBecomeUnresponsive
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::gpuProcessConnectionDidBecomeUnresponsive
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::childConnectionDidBecomeUnresponsive:
+2026-11-17 02:07:39.255 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didBecomeUnresponsive: GPUProcess with PID 20108 became unresponsive, terminating it
+2026-11-17 02:07:39.255 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AuxiliaryProcessProxy::terminate: PID=20108
+2026-11-17 02:07:39.255 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Background
+2026-11-17 02:07:39.255 Df NatalOrbit[20002:efa6] [com.apple.WebKit:ProcessSuspension] 0x115148300 - ProcessAssertion::acquireSync Trying to take RBS assertion 'XPCConnectionTerminationWatchdog' for process with PID=20108
+2026-11-17 02:07:39.257 Df NatalOrbit[20002:efa6] [com.apple.WebKit:ProcessSuspension] 0x115148300 - ProcessAssertion() Successfully granted capability
+2026-11-17 02:07:39.257 Df NatalOrbit[20002:ef3e] [com.apple.extensionkit:launch] Assertion for extension process 'ExtensionProcess: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: 9A4C153F-1F89-4EAF-9D30-89715122D650]) pid: 20108' invalidated
+2026-11-17 02:07:39.263 Df NatalOrbit[20002:f8de] [com.apple.xpc:connection] [0x108013d40] Re-initialization successful; calling out to event handler with XPC_ERROR_CONNECTION_INTERRUPTED
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::gpuProcessExited: reason=Unresponsive
+2026-11-17 02:07:39.264 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x107056808 - WebProcessPool::gpuProcessDidExit: PID=0, reason=Unresponsive
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150b00c0 - [PID=20106] WebProcessProxy::gpuProcessExited: reason=Unresponsive
+2026-11-17 02:07:39.264 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc3f0 - [PID=0, throttler=0x1150f4270] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'GPU for foreground view(s)'
+2026-11-17 02:07:39.264 E  NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] ProcessAssertion::remainingRunTimeInSeconds failed to get identifier for process with PID=0
+2026-11-17 02:07:39.264 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=0] ProcessThrottler::sendPrepareToSuspendIPC: Sending PrepareToSuspend(1, isSuspensionImminent=0) IPC, remainingRunTime=0.000000s
+2026-11-17 02:07:39.264 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f41e0 - GPUProcessProxy::sendPrepareToSuspend:
+2026-11-17 02:07:39.265 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=0] ProcessThrottler::setThrottleState: Updating process assertion type to 1 (foregroundActivities=0, backgroundActivities=0)
+2026-11-17 02:07:39.266 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Background
+2026-11-17 02:07:39.267 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=0] ProcessThrottler::didDisconnectFromProcess:
+2026-11-17 02:07:39.267 Df NatalOrbit[20002:f8de] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ProcessAssertion::acquireSync Trying to take RBS assertion 'GPUProcess Background Assertion' for process with PID=0
+2026-11-17 02:07:39.271 E  NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] 0x10826ee60 - GPUProcessConnection::didClose
+2026-11-17 02:07:39.272 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] GPUProcessConnection::create - 0x1080a5340
+2026-11-17 02:07:39.274 E  NatalOrbit[20002:f8de] [com.apple.runningboard:assertion] Error acquiring assertion: <Error Domain=RBSAssertionErrorDomain Code=2 "Specified target process 20108 does not exist" UserInfo={NSLocalizedFailureReason=Specified target process 20108 does not exist}>
+2026-11-17 02:07:39.274 Df NatalOrbit[20002:f8de] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ProcessAssertion() Failed to grant capability Background
+2026-11-17 02:07:39.275 E  NatalOrbit[20002:f8de] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ProcessAssertion::acquireSync Failed to acquire RBS assertion 'GPUProcess Background Assertion' for process with PID=0, error: (null)
+2026-11-17 02:07:39.278 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=0] ProcessThrottler::invalidateAllActivities: BEGIN (foregroundActivityCount: 0, backgroundActivityCount: 0)
+2026-11-17 02:07:39.278 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=0] ProcessThrottler::invalidateAllActivities: END
+2026-11-17 02:07:39.283 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108013d40] invalidated after the last release of the connection object
+2026-11-17 02:07:39.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/Caches/com.apple.WebKit.GPU'
+2026-11-17 02:07:39.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/tmp/com.apple.WebKit.GPU'
+2026-11-17 02:07:39.283 Df NatalOrbit[20002:ef3e] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 02:07:39.283 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc0c0 - [PID=0, throttler=0x1150f4270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'Process initialization'
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc150 - [PID=0, throttler=0x1150f4270] ProcessThrottler::Activity::Activity: Starting foreground activity / 'GPU for foreground view(s)'
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/tmp/com.troydunn.natalorbit/WebKit/MediaCache'
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Sandbox] Successfully created a sandbox extension for '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/FCE28CCF-56DC-44F6-9EF3-8918091DCFB0/Library/WebKit/com.troydunn.natalorbit/WebsiteData/MediaKeys/v1'
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f41e0 - GPUProcessProxy is taking a background assertion because a web process is requesting a connection
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ProcessAssertion::processAssertionWasInvalidated() PID=0
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115148180 - ~ProcessAssertion: Releasing process assertion 'GPUProcess Foreground Assertion' for process with PID=20108
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:efa6] [com.apple.extensionkit:launch] Launching process with config: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: F5D2D0D1-35FA-4CB5-9870-1DBD52BC6DF6])
+2026-11-17 02:07:39.284 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1151483c0 - ~ProcessAssertion: Releasing process assertion 'GPUProcess Background Assertion' for process with PID=0
+2026-11-17 02:07:39.288 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x0 - ProcessAssertion: RBS Foreground assertion for process with PID=0 was invalidated
+2026-11-17 02:07:39.487 Df NatalOrbit[20002:efa6] [com.apple.runningboard:process] Starting death monitoring for handle [xpcservice<com.apple.WebKit.GPU([app<com.troydunn.natalorbit((null))>:20002])>{vt hash: 223737757}[uuid:F5D2D0D1-35FA-4CB5-9870-1DBD52BC6DF6]{definition:com.apple.WebKit.GPU[extension][client]}:20833]
+2026-11-17 02:07:39.501 Df NatalOrbit[20002:efa6] [com.apple.extensionkit:launch] Created new process ExtensionProcess: bundleID: com.apple.WebKit.GPU instance ID: Optional([_EXExtensionInstanceIdentifier: F5D2D0D1-35FA-4CB5-9870-1DBD52BC6DF6]) pid: 20833.
+2026-11-17 02:07:39.501 Df NatalOrbit[20002:efa6] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:39.502 Df NatalOrbit[20002:ef3e] [com.apple.xpc:connection] [0x108009fe0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 02:07:39.790 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didFinishLaunching:
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::connectionWillOpen:
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=20833] ProcessThrottler::didConnectToProcess
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150f4270 - [PID=20833] ProcessThrottler::setThrottleState: Updating process assertion type to 3 (foregroundActivities=2, backgroundActivities=2)
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] AssertionCapability::AssertionCapability: taking assertion Foreground
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x11511c100 - NetworkProcessProxy::sendXPCEndpointToProcess(0x1150f41e0) state = 1 has connection = 1 XPC endpoint message = 0x600003e1ce00
+2026-11-17 02:07:39.791 Df NatalOrbit[20002:efa6] [com.apple.WebKit:ProcessSuspension] 0x115148480 - ProcessAssertion::acquireSync Trying to take RBS assertion 'GPUProcess Foreground Assertion' for process with PID=20833
+2026-11-17 02:07:39.791 A  NatalOrbit[20002:f8de] (CoreServicesInternal) CFURLCreateBookmarkData
+2026-11-17 02:07:39.792 Df NatalOrbit[20002:efa6] [com.apple.WebKit:ProcessSuspension] 0x115148480 - ProcessAssertion() Successfully granted capability
+2026-11-17 02:07:39.852 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x1150cc0c0 - [PID=20833, throttler=0x1150f4270] ProcessThrottler::Activity::invalidate: Ending foreground activity / 'Process initialization'
+2026-11-17 02:07:39.968 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] 0x1150f41e0 - GPUProcessProxy::didCreateContextForVisibilityPropagation: webPageProxyID: 10, pagePID: 11, contextID: 3
+2026-11-17 02:07:39.968 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:Process] Created visibility propagation interaction <_UIVisibilityPropagationInteraction: 0x600002615c80> for process with PID=20833
+2026-11-17 02:07:39.969 Df NatalOrbit[20002:f08c] [com.apple.WebKit:Process] WebContent[20106] 0x1080a5340 - GPUProcessConnection::didInitialize
+2026-11-17 02:07:40.453 Df NatalOrbit[20002:f8de] [com.apple.Safari.SafeBrowsing:Database] Service did finish database update with protection type 1 and provider 1
+2026-11-17 02:07:40.453 Df NatalOrbit[20002:f8de] [com.apple.Safari.SafeBrowsing:Database] Service did finish database update with protection type 1 and provider 1
+2026-11-17 02:07:42.464 A  NatalOrbit[20002:f8de] (RunningBoardServices) assertionsDidInvalidate
+2026-11-17 02:07:42.465 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115148300 - ProcessAssertion: RBS Background assertion for process with PID=20108 was invalidated
+2026-11-17 02:07:42.465 A  NatalOrbit[20002:f8de] (RunningBoardServices) processDidExit
+2026-11-17 02:07:42.465 Df NatalOrbit[20002:ef3e] [com.apple.WebKit:ProcessSuspension] 0x115148300 - ProcessAssertion::processAssertionWasInvalidated() PID=20108
+2026-11-17 02:07:42.465 Df NatalOrbit[20002:f8de] [com.apple.runningboard:process] Firing exit handlers for 20108 with context <RBSProcessExitContext| specific, status:<RBSProcessExitStatus| domain:runningboard(15) code:0>>
+2026-11-17 02:07:42.465 Df NatalOrbit[20002:efa6] [com.apple.runningboard:process] Calling process death completion block for handle [xpcservice<com.apple.WebKit.GPU([app<com.troydunn.natalorbit((null))>:20002])>{vt hash: 223737757}[uuid:9A4C153F-1F89-4EAF-9D30-89715122D650]{definition:com.apple.WebKit.GPU[extension][client]}:20108]

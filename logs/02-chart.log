@@ -1,0 +1,5 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-17 02:02:58.483 Df NatalOrbit[16831:cedc] [com.apple.WebKit:ProcessSuspension] 0x11211c100 NavigationState is releasing background process assertion because a page load completed
+2026-11-17 02:02:58.484 Df NatalOrbit[16831:cedc] [com.apple.WebKit:ProcessSuspension] 0x1120d4270 - [PID=16884, throttler=0x1120a8150] ProcessThrottler::Activity::invalidate: Ending background activity / 'Page Load'
+2026-11-17 02:03:05.490 Df NatalOrbit[16831:cfd0] [com.apple.WebKit:PerformanceLogging] WebContent[16884]: PerformanceMonitor::measurePostLoadMemoryUsage: Process was using 85651456 bytes of memory after the page load.
+2026-11-17 02:03:10.491 Df NatalOrbit[16831:cfd0] [com.apple.WebKit:PerformanceLogging] WebContent[16884]: PerformanceMonitor::measurePostLoadCPUUsage: Process was using 22.1% CPU after the page load.
