@@ -18,12 +18,15 @@ struct HomeView: View {
     @State private var syncing = false
     @State private var syncNote = ""
     @State private var syncDone = 0
+    /// QA only (-demo -openHug / -natureRoll).
+    @State private var qaPath: [UUID] = []
+    @State private var qaNatureRoll = false
 
     private var level: LevelInfo { GameEngine.level(for: GameEngine.totalXP(hugs: hugs, activities: activities)) }
     private var streak: Int { GameEngine.currentStreak(hugs) }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $qaPath) {
             ScrollView {
                 VStack(alignment: .leading, spacing: RB.xl) {
                     hero
@@ -62,6 +65,14 @@ struct HomeView: View {
             }
             .sheet(isPresented: $showSettings) { SettingsView() }
             .sensoryFeedback(.success, trigger: syncDone)
+            .sheet(isPresented: $qaNatureRoll) { NatureRollView() }
+            .task {
+                guard DemoData.isOn else { return }
+                let args = ProcessInfo.processInfo.arguments
+                try? await Task.sleep(for: .seconds(1.5))
+                if args.contains("-openHug"), let h = hugs.first { qaPath = [h.id] }
+                if args.contains("-natureRoll") { qaNatureRoll = true }
+            }
         }
     }
 

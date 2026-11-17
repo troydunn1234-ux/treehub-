@@ -20,7 +20,7 @@ enum DemoData {
         seeded = true
         let cal = Calendar.current
         let now = Date()
-        let oakID = UUID(), redwoodID = UUID(), sycamoreID = UUID()
+        let oakID = UUID(uuidString: "0A4C0000-0000-4000-8000-000000000001")!, redwoodID = UUID(), sycamoreID = UUID()
         let trees: [(UUID, String, String, Double, Double, String, Color)] = [
             (oakID, "Grandpa Oak", "Coast Live Oak", 37.7723, -122.4431, "Golden Gate Park, San Francisco", Color(red: 0.35, green: 0.6, blue: 0.3)),
             (redwoodID, "The Giant", "Coast Redwood", 37.1700, -122.2230, "Big Basin, Boulder Creek", Color(red: 0.55, green: 0.3, blue: 0.2)),
