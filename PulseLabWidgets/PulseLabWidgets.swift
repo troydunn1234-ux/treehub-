@@ -111,7 +111,7 @@ struct ReadyDuelWidget: Widget {
                 .containerBackground(for: .widget) { WidgetBackdrop() }
                 .widgetURL(Bridge.deepLink)
         }
-        .configurationDisplayName("Recovery vs Readiness")
+        .configurationDisplayName("Recovery vs readiness")
         .description("WHOOP recovery next to your Apple Watch readiness, with resting HR and sleep on the medium size.")
         .supportedFamilies([.systemSmall, .systemMedium])
         .contentMarginsDisabled()
@@ -170,9 +170,10 @@ struct ReadyDuelView: View {
             .frame(maxWidth: .infinity)
             Rectangle().fill(Color.white.opacity(0.08)).frame(width: 1)
             VStack(alignment: .leading, spacing: 8) {
-                row("Resting HR", "bpm", entry.snap.rhrWatch, entry.snap.rhrWhoop, decimals: 0)
+                row("Resting HR", "bpm", entry.snap.rhrWatch, entry.snap.rhrWhoop, decimals: 0, spokenTitle: String(localized: "Resting heart rate"))
                 Rectangle().fill(Color.white.opacity(0.08)).frame(height: 1)
-                row("Sleep", "h", entry.snap.sleepWatch, entry.snap.sleepWhoop, decimals: 1)
+                    .accessibilityHidden(true)
+                row("Sleep", "h", entry.snap.sleepWatch, entry.snap.sleepWhoop, decimals: 1, spokenTitle: String(localized: "Sleep, hours"))
             }
             .frame(width: 118)
         }
@@ -184,7 +185,8 @@ struct ReadyDuelView: View {
         HStack(spacing: 5) {
             Image(systemName: "waveform.path.ecg").font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Palette.accent).widgetAccentable()
-            Text("Pulse Lab").font(Palette.label(11)).foregroundStyle(Palette.dim)
+                .accessibilityHidden(true)
+            Text(verbatim: "Pulse Lab").font(Palette.label(11)).foregroundStyle(Palette.dim)
             Spacer()
         }
     }
@@ -194,13 +196,15 @@ struct ReadyDuelView: View {
             .font(.system(size: 12, weight: .semibold))
             .foregroundStyle(Palette.faint)
             .frame(width: 22)
+            .accessibilityHidden(true)
     }
 
     private enum Side { case watch, whoop }
 
-    private func score(_ v: Double?, _ label: String, _ side: Side) -> some View {
+    /// Ring coloured by zone like the Today screen; the label carries the tracker's colour.
+    private func score(_ v: Double?, _ label: LocalizedStringKey, _ side: Side) -> some View {
         let base = side == .watch ? Palette.watch : Palette.whoop
-        let ring = side == .whoop ? (v.map(Palette.band) ?? base) : base
+        let ring = v.map(Palette.band) ?? base
         return VStack(spacing: 4) {
             ZStack {
                 Circle().stroke(Color.white.opacity(0.08), lineWidth: 5)
@@ -218,18 +222,32 @@ struct ReadyDuelView: View {
                 .lineLimit(1).minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spokenScore(v, side))
     }
 
-    private func row(_ title: String, _ unit: String, _ w: Double?, _ h: Double?, decimals: Int) -> some View {
+    private func spokenScore(_ v: Double?, _ side: Side) -> String {
+        let name = side == .watch ? String(localized: "Watch readiness") : String(localized: "WHOOP recovery")
+        guard let v else { return String(localized: "\(name): no score yet") }
+        return "\(name) \(Int(v.rounded()))"
+    }
+
+    private func row(_ title: LocalizedStringKey, _ unit: String, _ w: Double?, _ h: Double?, decimals: Int, spokenTitle: String) -> some View {
         VStack(alignment: .leading, spacing: 3) {
             Text(title).font(Palette.label(10)).foregroundStyle(Palette.dim)
             HStack(alignment: .firstTextBaseline, spacing: 6) {
                 value(w, decimals, Palette.watch)
-                Text("/").font(Palette.label(11)).foregroundStyle(Palette.faint)
+                Text(verbatim: "/").font(Palette.label(11)).foregroundStyle(Palette.faint)
                 value(h, decimals, Palette.whoop)
                 Text(unit).font(Palette.label(10)).foregroundStyle(Palette.faint)
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "\(spokenTitle): Watch \(spoken(w, decimals)), WHOOP \(spoken(h, decimals)) \(unit)"))
+    }
+
+    private func spoken(_ v: Double?, _ decimals: Int) -> String {
+        v.map { $0.formatted(.number.precision(.fractionLength(decimals))) } ?? String(localized: "no data")
     }
 
     private func value(_ v: Double?, _ decimals: Int, _ color: Color) -> some View {
@@ -238,21 +256,27 @@ struct ReadyDuelView: View {
     }
 
     private var footer: some View {
-        HStack {
+        HStack(spacing: 4) {
             Text(verdict).font(.system(size: 11, weight: .medium)).foregroundStyle(Palette.dim)
                 .lineLimit(1).minimumScaleFactor(0.8)
             Spacer(minLength: 0)
             if let t = entry.snap.updatedAt {
+                Image(systemName: "arrow.triangle.2.circlepath").font(.system(size: 8, weight: .semibold))
+                    .foregroundStyle(Palette.faint)
+                    .accessibilityHidden(true)
                 Text(t, style: .relative).font(Palette.label(10).monospacedDigit()).foregroundStyle(Palette.faint).lineLimit(1)
+                    .accessibilityLabel(Text("Synced \(t, style: .relative) ago"))
             }
         }
     }
 
     private var verdict: String {
-        guard let a = entry.snap.readiness, let r = entry.snap.recovery else { return entry.snap.isEmpty ? "Open Pulse Lab to sync" : "One tracker has a score" }
-        if a >= 67 && r >= 67 { return "Both say go" }
-        if a < 34 && r < 34 { return "Both say rest" }
-        if abs(a - r) <= 10 { return "Both agree today" }
-        return a > r ? "Watch is more upbeat" : "WHOOP is more upbeat"
+        guard let a = entry.snap.readiness, let r = entry.snap.recovery else {
+            return entry.snap.isEmpty ? String(localized: "Open Pulse Lab to sync") : String(localized: "One tracker has a score")
+        }
+        if a >= 67 && r >= 67 { return String(localized: "Both say go") }
+        if a < 34 && r < 34 { return String(localized: "Both say rest") }
+        if abs(a - r) <= 10 { return String(localized: "Both agree today") }
+        return a > r ? String(localized: "Watch is more upbeat") : String(localized: "WHOOP is more upbeat")
     }
 }

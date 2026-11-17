@@ -1,0 +1,136 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "HRV %lld milliseconds": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "VFC %lld milisegundos"
+          }
+        }
+      }
+    },
+    "No recovery score yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin puntuación de recuperación"
+          }
+        }
+      }
+    },
+    "Recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación"
+          }
+        }
+      }
+    },
+    "Recovery, sleep, HRV and strain.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación, sueño, VFC y esfuerzo."
+          }
+        }
+      }
+    },
+    "Sleep %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño %@"
+          }
+        }
+      }
+    },
+    "Sleep %@ · HRV %@ · Strain %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño %@ · VFC %@ · Esfuerzo %@"
+          }
+        }
+      }
+    },
+    "Strain %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esfuerzo %@"
+          }
+        }
+      }
+    },
+    "Today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy"
+          }
+        }
+      }
+    },
+    "Today's recovery as a gauge.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La recuperación de hoy como indicador."
+          }
+        }
+      }
+    },
+    "WHOOP recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación WHOOP"
+          }
+        }
+      }
+    },
+    "Watch readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación del Watch"
+          }
+        }
+      }
+    },
+    "readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "preparación"
+          }
+        }
+      }
+    },
+    "recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "recuperación"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

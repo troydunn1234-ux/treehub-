@@ -5,23 +5,28 @@ import Charts
 struct MetricDetailSheet: View {
     let metric: MetricKey
     @Environment(LabStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
 
     var body: some View {
         if let def = AllStats.def(metric.statID) {
             StatDetailSheet(def: def)
         } else {
-            ZStack {
+            ZStack(alignment: .topTrailing) {
                 LabBackground()
-                EmptyNote(text: "No \(metric.title.lowercased()) yet.")
+                EmptyNote(text: String(localized: "Nothing has arrived for \(L(metric.title).lowercased()) yet."),
+                          symbol: "tray", title: "No data yet")
+                    .padding(Lab.S.l)
+                    .frame(maxHeight: .infinity)
+                CloseButton { dismiss() }.padding(Lab.S.s)
             }
             .preferredColorScheme(.dark)
         }
     }
 }
 
-/// Every metric's detail, one pattern everywhere: big current value with date and source, what it is,
-/// your normal range shaded on a 7D/30D/90D/1Y chart (90D/1Y stay Pro via RangePicker), min/avg/max and the
-/// trend vs last week, tracker agreement when both measure it, why it matters, how to improve, where the
+/// Every metric's detail, one pattern everywhere: big current value with its day and source, what it is,
+/// your normal range shaded on a 7D/30D/90D/1Y chart (90D/1Y stay Pro via RangePicker), low/average/high and
+/// the trend vs last week, tracker agreement when both measure it, why it matters, how to improve, where the
 /// numbers come from, and related metrics.
 struct StatDetailSheet: View {
     @Environment(LabStore.self) private var store
@@ -52,12 +57,7 @@ struct StatDetailSheet: View {
                         if let primary, let last = series.points(primary).last {
                             hero(series, primary, last, band)
                         } else {
-                            LabPanel(tint: def.section.tint) {
-                                VStack(alignment: .leading, spacing: Lab.S.s) {
-                                    Text("No data yet").font(Lab.title(20)).foregroundStyle(Lab.text)
-                                    Text(info.what).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
-                                }
-                            }
+                            emptyHero
                         }
                         if let edit = whoopEdit { whoopEditButton(edit, series) }
                         chartPanel(series, primary, band)
@@ -68,7 +68,7 @@ struct StatDetailSheet: View {
                         sourcesCard(series)
                         relatedCard(proxy)
                         Text("Pulse Lab is for general wellness and fitness, not medical advice.")
-                            .font(Lab.body(11)).foregroundStyle(Lab.faint)
+                            .font(.footnote).foregroundStyle(Lab.faint)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .multilineTextAlignment(.center)
                     }
@@ -98,27 +98,31 @@ struct StatDetailSheet: View {
 
     private func whoopEditButton(_ edit: WhoopQuickEdit, _ series: StatSeries) -> some View {
         let today = series.whoop.last { $0.day.isToday }
-        let what = edit.field == .steps ? String(localized: "steps") : String(localized: "calories")
+        let title = edit.field == .steps
+            ? (today == nil ? String(localized: "Add today's WHOOP steps") : String(localized: "Edit today's WHOOP steps"))
+            : (today == nil ? String(localized: "Add today's WHOOP calories") : String(localized: "Edit today's WHOOP calories"))
         return Button {
             Lab.tick()
             quickEdit = WhoopQuickEdit(field: edit.field, day: Date().dayStart)
         } label: {
-            HStack(spacing: Lab.S.s) {
-                Image(systemName: today == nil ? "plus.circle.fill" : "pencil.circle.fill").font(.system(size: 18, weight: .bold))
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(today == nil ? String(localized: "Add today's WHOOP \(what)") : String(localized: "Edit WHOOP \(what)"))
-                        .font(Lab.body(15, .bold))
-                    if let t = today {
-                        Text("Today: \(Int(t.value.rounded()).formatted())").font(Lab.mono(10)).opacity(0.8)
-                    }
+            HStack(spacing: Lab.S.sm) {
+                SymbolTile(symbol: today == nil ? "plus" : "pencil", tint: Lab.whoop, size: 32)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(today.map { String(localized: "Today: \(Int($0.value.rounded()).formatted())") }
+                         ?? String(localized: "Type it from the WHOOP app in a few seconds"))
+                        .font(.footnote).foregroundStyle(Lab.dim)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 11, weight: .semibold))
+                Spacer(minLength: Lab.S.xs)
+                Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Lab.faint)
             }
-            .foregroundStyle(Lab.whoop)
-            .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.whoop.opacity(0.1)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.whoop.opacity(0.3)))
+            .padding(Lab.S.sm)
+            .frame(minHeight: 56)
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.whoop.opacity(0.10)))
+            .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.whoop.opacity(0.3)))
+            .contentShape(Rectangle())
         }
         .buttonStyle(PressScale())
     }
@@ -126,59 +130,97 @@ struct StatDetailSheet: View {
     // MARK: Header
 
     private var header: some View {
-        HStack(alignment: .top, spacing: Lab.S.s) {
+        HStack(alignment: .top, spacing: Lab.S.xs) {
             if let back = trail.last {
                 Button {
                     Lab.tick()
                     withAnimation(.snappy) { def = back; trail.removeLast(); solo = nil }
                 } label: {
                     Image(systemName: "chevron.left").font(.system(size: 14, weight: .semibold)).foregroundStyle(Lab.dim)
-                        .frame(width: 36, height: 36).background(Circle().fill(Color.white.opacity(0.07)))
+                        .frame(width: 32, height: 32).background(Circle().fill(Color.white.opacity(0.10)))
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
-                .accessibilityLabel("Back to \(back.title)")
+                .buttonStyle(.plain)
+                .accessibilityLabel(String(localized: "Back to \(L(back.title))"))
             }
             ScreenTitle(kicker: def.section.title, title: def.title)
             CloseButton { dismiss() }
         }
     }
 
-    // MARK: Hero: value, date, source, what it is
+    // MARK: Hero: value, day, source, what it is
 
     private func hero(_ series: StatSeries, _ src: Source, _ last: StatPoint, _ band: ClosedRange<Double>?) -> some View {
         let other: Source = src == .watch ? .whoop : .watch
         let otherLast = series.points(other).last
         let badge = store.badge(def, src, series: series)
-        return LabPanel(tint: def.section.tint) {
-            VStack(alignment: .leading, spacing: 12) {
+        return LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.sm) {
                 HStack(spacing: 6) {
                     SourceBadge(text: badge)
-                    Text(dayLabel(last.day)).font(Lab.label(9)).tracking(0.4).foregroundStyle(last.day.isToday ? Lab.good : Lab.dim)
+                    Text(dayLabel(last.day)).font(.footnote.weight(.semibold)).foregroundStyle(last.day.isToday ? Lab.good : Lab.dim)
                     Spacer(minLength: 0)
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text(fmt(last.value)).font(Lab.number(52, .black)).foregroundStyle(Lab.color(src))
+                    Text(fmt(last.value)).font(Lab.number(52)).foregroundStyle(Lab.color(src))
                         .lineLimit(1).minimumScaleFactor(0.5)
-                    Text(def.unit).font(Lab.body(15, .semibold)).foregroundStyle(Lab.dim)
+                        .contentTransition(.numericText(value: last.value))
+                    Text(def.unit).font(.title3.weight(.semibold)).foregroundStyle(Lab.dim)
+                        .lineLimit(1)
                     Spacer(minLength: 0)
                 }
                 .accessibilityElement(children: .ignore)
-                .accessibilityLabel("\(fmt(last.value)) \(def.unit), \(dayLabel(last.day).lowercased()), from \(badge)")
+                .accessibilityLabel("\(fmt(last.value)) \(def.unit), \(dayLabel(last.day)), \(SourceBadge.display(badge))")
                 if let band { normalLine(last.value, band) }
                 if let o = otherLast {
                     HStack(spacing: 6) {
-                        Circle().fill(Lab.color(other)).frame(width: 6, height: 6)
-                        Text("\(other.name): \(fmt(o.value)) \(def.unit)").font(Lab.body(13, .semibold)).foregroundStyle(Lab.text)
-                        Text(dayLabel(o.day)).font(Lab.label(8)).foregroundStyle(Lab.faint)
+                        SourceChip(source: other)
+                        Text(verbatim: "\(fmt(o.value)) \(def.unit)").font(.subheadline.weight(.semibold).monospacedDigit())
+                            .foregroundStyle(Lab.text)
+                        Text(dayLabel(o.day)).font(.caption).foregroundStyle(Lab.faint)
+                        Spacer(minLength: 0)
                     }
-                    .accessibilityElement(children: .combine)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(other.name): \(fmt(o.value)) \(def.unit), \(dayLabel(o.day))")
                 }
                 Divider().overlay(Lab.line)
                 VStack(alignment: .leading, spacing: 4) {
-                    Text("WHAT THIS IS").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
-                    Text(info.what).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                    Text("What it is").font(.footnote.weight(.semibold)).foregroundStyle(Lab.dim)
+                        .accessibilityAddTraits(.isHeader)
+                    Text(info.what).font(.subheadline).foregroundStyle(Lab.text)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                .accessibilityElement(children: .combine)
             }
+        }
+    }
+
+    /// Nothing has arrived for this metric: what it is, and the one thing to try.
+    private var emptyHero: some View {
+        LabPanel {
+            VStack(spacing: Lab.S.sm) {
+                SymbolTile(symbol: def.section.icon, tint: def.section.tint, size: 52)
+                Text("No data yet").font(.title3.weight(.bold)).foregroundStyle(Lab.text)
+                Text(info.what).font(.subheadline).foregroundStyle(Lab.dim)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text("It shows up here once your tracker records it and it reaches Apple Health or WHOOP. If it never does, check Sources in Settings.")
+                    .font(.footnote).foregroundStyle(Lab.faint)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    Lab.tick()
+                    Task { await store.refresh(.user) }
+                } label: {
+                    Text(store.loading ? String(localized: "Syncing…") : String(localized: "Sync now"))
+                }
+                .buttonStyle(LabPrimaryButton())
+                .disabled(store.loading)
+                .frame(maxWidth: 320)
+                .padding(.top, Lab.S.xs)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, Lab.S.s)
         }
     }
 
@@ -195,7 +237,8 @@ struct StatDetailSheet: View {
         return HStack(alignment: .firstTextBaseline, spacing: 6) {
             Image(systemName: inside ? "checkmark.circle.fill" : (above ? "arrow.up.circle.fill" : "arrow.down.circle.fill"))
                 .foregroundStyle(color)
-            Text(text).font(Lab.body(13, .semibold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
+                .accessibilityHidden(true)
+            Text(text).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
         }
         .accessibilityElement(children: .combine)
     }
@@ -218,25 +261,40 @@ struct StatDetailSheet: View {
 
     private func chartPanel(_ series: StatSeries, _ primary: Source?, _ band: ClosedRange<Double>?) -> some View {
         let w = inRange(series.watch), h = inRange(series.whoop)
-        return LabPanel(tint: def.section.tint) {
-            VStack(alignment: .leading, spacing: 12) {
-                RangePicker(days: $days)
+        return LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.sm) {
+                ViewThatFits(in: .horizontal) {
+                    HStack {
+                        SectionTag("Trend")
+                        Spacer(minLength: Lab.S.s)
+                        RangePicker(days: $days)
+                    }
+                    VStack(alignment: .leading, spacing: Lab.S.s) {
+                        SectionTag("Trend")
+                        RangePicker(days: $days)
+                    }
+                }
                 if !series.watch.isEmpty && !series.whoop.isEmpty { DuelLegend(solo: $solo) }
                 if w.isEmpty && h.isEmpty {
-                    EmptyNote(text: "No \(def.title.lowercased()) in the last \(days) days.")
+                    if series.isEmpty {
+                        EmptyNote(text: "The chart fills in as readings arrive.", symbol: "chart.xyaxis.line", title: "No readings yet")
+                    } else {
+                        EmptyNote(text: String(localized: "Nothing in the last \(days) days. Try a longer range."),
+                                  symbol: "chart.xyaxis.line", title: "No readings in this range")
+                    }
                 } else {
                     DuelChart(watch: w.map { DuelPoint(day: $0.day, value: $0.value, source: .watch) },
                               whoop: h.map { DuelPoint(day: $0.day, value: $0.value, source: .whoop) },
                               unit: def.unit, decimals: def.decimals, height: 220, showAverages: false,
                               showPoints: days <= 30, solo: solo, band: band)
-                        .accessibilityElement(children: .ignore)
-                        .accessibilityLabel(summary(w, h))
+                        .chartSummary(summary(w, h))
                 }
                 if let band, let primary {
-                    HStack(alignment: .top, spacing: 6) {
-                        RoundedRectangle(cornerRadius: 2).fill(Color.white.opacity(0.18)).frame(width: 14, height: 9).padding(.top, 3)
-                        Text("Shaded: your normal range, \(fmt(band.lowerBound))–\(fmt(band.upperBound)) \(def.unit) (\(primary.name), 30-day average ± 1 SD)")
-                            .font(Lab.body(11)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
+                    HStack(alignment: .firstTextBaseline, spacing: 6) {
+                        RoundedRectangle(cornerRadius: 2).fill(Color.white.opacity(0.18)).frame(width: 14, height: 9)
+                            .accessibilityHidden(true)
+                        Text("Shaded band: your normal range, \(fmt(band.lowerBound))–\(fmt(band.upperBound)) \(def.unit) (\(primary.label), 30-day average ± 1 SD).")
+                            .font(.footnote).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                     }
                     .accessibilityElement(children: .combine)
                 }
@@ -244,15 +302,22 @@ struct StatDetailSheet: View {
         }
     }
 
-    // MARK: Min / avg / max / trend
+    // MARK: Low / average / high / trend
 
     private func statsPanel(_ series: StatSeries) -> some View {
         let sources = Source.allCases.filter { !series.points($0).isEmpty }
-        return LabPanel(tint: def.section.tint) {
-            VStack(alignment: .leading, spacing: 12) {
-                Text(days == 365 ? "LAST YEAR" : "LAST \(days) DAYS").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
+        return LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.sm) {
+                HStack(alignment: .firstTextBaseline) {
+                    SectionTag(days == 365 ? String(localized: "Last year") : String(localized: "Last \(days) days"))
+                    Spacer(minLength: Lab.S.s)
+                    if !def.unit.isEmpty {
+                        Text(def.unit).font(.footnote.weight(.medium)).foregroundStyle(Lab.faint)
+                            .accessibilityHidden(true)
+                    }
+                }
                 if sources.isEmpty {
-                    Text("No data yet").font(Lab.body(13)).foregroundStyle(Lab.faint)
+                    EmptyNote(text: "Lowest, average and highest show up once readings arrive.", symbol: "number", title: "No data yet")
                 }
                 ForEach(sources) { s in
                     sourceStats(series.points(s), s)
@@ -264,42 +329,26 @@ struct StatDetailSheet: View {
 
     private func sourceStats(_ all: [StatPoint], _ s: Source) -> some View {
         let v = inRange(all).map(\.value)
-        let cells: [(String, String)] = [("MIN", fmt(v.min())), ("AVG", fmt(Stats.mean(v))), ("MAX", fmt(v.max())), ("DAYS", "\(v.count)")]
-        return VStack(alignment: .leading, spacing: 6) {
-            HStack {
+        let cells: [(String, String?)] = [(String(localized: "Lowest"), v.min().map { fmt($0) }),
+                                          (String(localized: "Average"), Stats.mean(v).map { fmt($0) }),
+                                          (String(localized: "Highest"), v.max().map { fmt($0) }),
+                                          (String(localized: "Days"), "\(v.count)")]
+        return VStack(alignment: .leading, spacing: Lab.S.s) {
+            HStack(spacing: Lab.S.s) {
                 SourceChip(source: s)
-                Spacer()
+                Spacer(minLength: Lab.S.xs)
                 trendView(all)
             }
-            if typeSize.isAccessibilitySize {
-                VStack(alignment: .leading, spacing: 4) {
-                    ForEach(cells.indices, id: \.self) { i in statCell(cells[i].0, cells[i].1, horizontal: true) }
-                }
-            } else {
-                HStack(spacing: Lab.S.s) {
-                    ForEach(cells.indices, id: \.self) { i in statCell(cells[i].0, cells[i].1, horizontal: false) }
+            LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: Lab.S.s, alignment: .leading),
+                                     count: typeSize.isAccessibilitySize ? 2 : 4),
+                      alignment: .leading, spacing: Lab.S.sm) {
+                ForEach(cells.indices, id: \.self) { i in
+                    StatCell(caption: cells[i].0, value: cells[i].1, color: i == 3 ? Lab.dim : Lab.text, size: 18)
                 }
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(s.name): minimum \(fmt(v.min())), average \(fmt(Stats.mean(v))), maximum \(fmt(v.max())), \(v.count) days. \(trendText(all) ?? "")")
-    }
-
-    @ViewBuilder private func statCell(_ label: String, _ value: String, horizontal: Bool) -> some View {
-        if horizontal {
-            HStack {
-                Text(label).font(Lab.label(9)).foregroundStyle(Lab.faint)
-                Spacer()
-                Text(value).font(Lab.number(18)).foregroundStyle(label == "DAYS" ? Lab.dim : Lab.text)
-            }
-        } else {
-            VStack(alignment: .leading, spacing: 2) {
-                Text(value).font(Lab.number(18)).foregroundStyle(label == "DAYS" ? Lab.dim : Lab.text)
-                    .lineLimit(1).minimumScaleFactor(0.6)
-                Text(label).font(Lab.label(8)).foregroundStyle(Lab.faint)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
+        .accessibilityLabel(String(localized: "\(s.name): lowest \(fmt(v.min())), average \(fmt(Stats.mean(v))), highest \(fmt(v.max())) \(def.unit), \(v.count) days.") + " " + (trendText(all) ?? ""))
     }
 
     /// This week's average vs the week before.
@@ -328,16 +377,10 @@ struct StatDetailSheet: View {
             let flat = isFlat(d, c.before)
             let good: Bool? = flat ? nil : info.better.map { ($0 == .higher) == (d > 0) }
             let color: Color = good == nil ? Lab.dim : (good == true ? Lab.good : Lab.warn)
-            HStack(spacing: 4) {
-                Image(systemName: flat ? "arrow.right" : (d > 0 ? "arrow.up.right" : "arrow.down.right"))
-                    .font(.system(size: 11, weight: .semibold))
-                Text(flat ? "steady" : (d > 0 ? "+" : "−") + fmt(abs(d)))
-                    .font(Lab.mono(11, .heavy))
-                Text("VS LAST WK").font(Lab.label(7)).foregroundStyle(Lab.faint)
-            }
-            .foregroundStyle(color)
-            .padding(.horizontal, 8).padding(.vertical, 4)
-            .background(Capsule().fill(color.opacity(0.1)))
+            let amount = (d > 0 ? "+" : "−") + fmt(abs(d))
+            TagChip(flat ? String(localized: "Steady vs last week") : String(localized: "\(amount) vs last week"),
+                    tint: color,
+                    symbol: flat ? "arrow.right" : (d > 0 ? "arrow.up.right" : "arrow.down.right"))
         }
     }
 
@@ -349,20 +392,18 @@ struct StatDetailSheet: View {
     }
 
     private func agreementCard(_ a: Agreement) -> some View {
-        LabPanel(tint: def.section.tint) {
-            VStack(alignment: .leading, spacing: Lab.S.s) {
-                Text("WATCH VS WHOOP").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
+        LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.sm) {
+                CardHeader("Watch vs WHOOP", symbol: "bolt.horizontal.fill", tint: Lab.accent)
                 HStack(spacing: Lab.S.m) {
                     ArcGauge(value: a.score, label: "Agree", color: a.score >= 70 ? Lab.good : a.score >= 45 ? Lab.warn : Lab.bad, size: 84)
                     VStack(alignment: .leading, spacing: 4) {
-                        Text(a.verdict).font(Lab.body(15, .bold)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
-                        Text("\(a.n) days measured by both").font(Lab.mono(11)).foregroundStyle(Lab.dim)
+                        Text(a.verdict).font(.headline).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
+                        Text("\(a.n) days measured by both").font(.footnote).foregroundStyle(Lab.dim)
                     }
                 }
-                Text(a.plain).font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
-                if !a.why.isEmpty {
-                    Text(a.why).font(Lab.body(12)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
-                }
+                Text(a.plain).font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                if !a.why.isEmpty { InfoBox(text: a.why) }
             }
         }
     }
@@ -370,36 +411,31 @@ struct StatDetailSheet: View {
     // MARK: Text cards
 
     private func textCard(_ title: String, _ body: String, icon: String) -> some View {
-        LabPanel(tint: def.section.tint) {
-            VStack(alignment: .leading, spacing: 6) {
-                Label(L(title).uppercased(), systemImage: icon).font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
-                Text(body).font(Lab.body(14)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+        LabPanel {
+            VStack(alignment: .leading, spacing: Lab.S.s) {
+                CardHeader(title, symbol: icon, tint: def.section.tint)
+                Text(body).font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
             }
-            .accessibilityElement(children: .combine)
         }
     }
 
     private var improveCard: some View {
-        LabPanel(tint: def.section.tint) {
+        LabPanel {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("HOW TO IMPROVE", systemImage: "arrow.up.forward.circle.fill").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
+                CardHeader("How to improve", symbol: "arrow.up.forward", tint: def.section.tint)
                 ForEach(info.improve, id: \.self) { tip in
-                    HStack(alignment: .top, spacing: 8) {
-                        Circle().fill(def.section.tint).frame(width: 5, height: 5).padding(.top, 7)
-                        Text(tip).font(Lab.body(14)).foregroundStyle(Lab.text).fixedSize(horizontal: false, vertical: true)
-                    }
+                    LabBullet(tip, tint: def.section.tint, color: Lab.text)
                 }
             }
-            .accessibilityElement(children: .combine)
         }
     }
 
     private func sourcesCard(_ series: StatSeries) -> some View {
         let manual = store.manualDays(def, series: series)
         let first = [series.watch.first?.day, series.whoop.first?.day].compactMap { $0 }.min()
-        return LabPanel(tint: def.section.tint) {
+        return LabPanel {
             VStack(alignment: .leading, spacing: Lab.S.s) {
-                Label("WHERE IT COMES FROM", systemImage: "antenna.radiowaves.left.and.right").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
+                CardHeader("Where it comes from", symbol: "antenna.radiowaves.left.and.right", tint: def.section.tint)
                 if !series.watch.isEmpty {
                     sourceRow(store.badge(def, .watch, series: series), String(localized: "\(series.watch.count) days from Apple Health"))
                 }
@@ -408,12 +444,14 @@ struct StatDetailSheet: View {
                                                   : String(localized: "\(series.whoop.count) days synced from WHOOP"))
                 }
                 if series.isEmpty {
-                    Text("Nothing has arrived yet. Check Sources in Settings and the Health permissions.").font(Lab.body(13)).foregroundStyle(Lab.dim)
+                    Text("Nothing has arrived yet. Check Sources in Settings and the Health permissions.")
+                        .font(.subheadline).foregroundStyle(Lab.dim)
                         .fixedSize(horizontal: false, vertical: true)
                 }
-                Text(L(def.note)).font(Lab.body(12)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
+                Text(L(def.note)).font(.footnote).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
                 if let first {
-                    Text("History from \(first.formatted(.dateTime.month(.abbreviated).day().year()))").font(Lab.mono(10)).foregroundStyle(Lab.faint)
+                    Text("History from \(first.formatted(.dateTime.month(.abbreviated).day().year()))")
+                        .font(.footnote).foregroundStyle(Lab.faint)
                 }
             }
         }
@@ -422,7 +460,7 @@ struct StatDetailSheet: View {
     private func sourceRow(_ badge: String, _ text: String) -> some View {
         HStack(spacing: Lab.S.s) {
             SourceBadge(text: badge)
-            Text(text).font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+            Text(text).font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
             Spacer(minLength: 0)
         }
         .accessibilityElement(children: .combine)
@@ -431,9 +469,9 @@ struct StatDetailSheet: View {
     @ViewBuilder private func relatedCard(_ proxy: ScrollViewProxy) -> some View {
         let links = info.related.filter { $0 != def.id }.compactMap { AllStats.def($0) }
         if !links.isEmpty {
-            LabPanel(tint: def.section.tint) {
-                VStack(alignment: .leading, spacing: Lab.S.s) {
-                    Label("RELATED", systemImage: "point.3.connected.trianglepath.dotted").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.faint)
+            LabPanel {
+                VStack(alignment: .leading, spacing: Lab.S.xs) {
+                    CardHeader("Related", symbol: "point.3.connected.trianglepath.dotted", tint: def.section.tint)
                     ForEach(Array(links.enumerated()), id: \.element.id) { i, link in
                         if i > 0 { Divider().overlay(Lab.line) }
                         relatedRow(link, proxy)
@@ -454,21 +492,23 @@ struct StatDetailSheet: View {
                 proxy.scrollTo("top", anchor: .top)
             }
         } label: {
-            HStack(spacing: Lab.S.s) {
-                Image(systemName: link.section.icon).font(.system(size: 13, weight: .bold)).foregroundStyle(link.section.tint)
-                    .frame(width: 28)
-                Text(L(link.title)).font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
-                Spacer()
+            HStack(spacing: Lab.S.sm) {
+                SymbolTile(symbol: link.section.icon, tint: link.section.tint, size: 30)
+                Text(L(link.title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                    .multilineTextAlignment(.leading)
+                    .fixedSize(horizontal: false, vertical: true)
+                Spacer(minLength: Lab.S.xs)
                 if let v = latest(link) {
-                    Text(v).font(Lab.mono(12)).foregroundStyle(Lab.dim).lineLimit(1)
+                    Text(v).font(.footnote.weight(.medium).monospacedDigit()).foregroundStyle(Lab.dim).lineLimit(1)
                 }
-                Image(systemName: "chevron.right").font(.system(size: 10, weight: .semibold)).foregroundStyle(Lab.faint)
+                Image(systemName: "chevron.right").font(.caption.weight(.semibold)).foregroundStyle(Lab.faint)
             }
-            .padding(.vertical, 6)
+            .padding(.vertical, Lab.S.s)
+            .frame(minHeight: 44)
             .contentShape(Rectangle())
         }
         .buttonStyle(PressScale())
-        .accessibilityHint("Opens \(link.title)")
+        .accessibilityHint(String(localized: "Opens \(L(link.title))"))
     }
 
     private func latest(_ d: StatDef) -> String? {
@@ -482,10 +522,13 @@ struct StatDetailSheet: View {
     private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(def.decimals))) } ?? "—" }
 
     private func summary(_ w: [StatPoint], _ h: [StatPoint]) -> String {
-        [(Source.watch, w), (Source.whoop, h)].map { s, p in
-            guard let m = Stats.mean(p.map(\.value)) else { return "\(s.name): no data" }
-            return "\(s.name) averages \(fmt(m)) \(def.unit) over \(p.count) days"
+        let parts = [(Source.watch, w), (Source.whoop, h)].map { s, p in
+            guard let m = Stats.mean(p.map(\.value)) else { return String(localized: "\(s.name): no data") }
+            return String(localized: "\(s.name) averages \(fmt(m)) \(def.unit) over \(p.count) days")
         }
-        .joined(separator: ". ")
+        let range = days == 365 ? String(localized: "last year") : String(localized: "last \(days) days")
+        let title = L(def.title)
+        let detail = parts.joined(separator: ". ")
+        return "\(title), \(range). \(detail)."
     }
 }

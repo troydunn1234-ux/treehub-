@@ -1,0 +1,236 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "%@: Watch %@, WHOOP %@ %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: Watch %@, WHOOP %@ %@"
+          }
+        }
+      }
+    },
+    "%@: no score yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@: aún sin puntuación"
+          }
+        }
+      }
+    },
+    "Both agree today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambos coinciden hoy"
+          }
+        }
+      }
+    },
+    "Both say go": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambos dicen adelante"
+          }
+        }
+      }
+    },
+    "Both say rest": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ambos dicen descansa"
+          }
+        }
+      }
+    },
+    "One tracker has a score": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Solo un dispositivo tiene puntuación"
+          }
+        }
+      }
+    },
+    "Open Pulse Lab to sync": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Pulse Lab para sincronizar"
+          }
+        }
+      }
+    },
+    "Opens Pulse Lab to today's Watch vs WHOOP scores.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Pulse Lab en las puntuaciones de hoy de Watch vs WHOOP."
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación"
+          }
+        }
+      }
+    },
+    "Recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación"
+          }
+        }
+      }
+    },
+    "Recovery vs readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación vs preparación"
+          }
+        }
+      }
+    },
+    "Resting HR": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo"
+          }
+        }
+      }
+    },
+    "Resting heart rate": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia cardiaca en reposo"
+          }
+        }
+      }
+    },
+    "Sleep": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño"
+          }
+        }
+      }
+    },
+    "Sleep, hours": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sueño, horas"
+          }
+        }
+      }
+    },
+    "Synced %@ ago": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sincronizado hace %@"
+          }
+        }
+      }
+    },
+    "Today's Scores": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntuaciones de hoy"
+          }
+        }
+      }
+    },
+    "WHOOP is more upbeat": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WHOOP es más optimista"
+          }
+        }
+      }
+    },
+    "WHOOP recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación WHOOP"
+          }
+        }
+      }
+    },
+    "WHOOP recovery next to your Apple Watch readiness, with resting HR and sleep on the medium size.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La recuperación de WHOOP junto a la preparación de tu Apple Watch, con FC en reposo y sueño en el tamaño mediano."
+          }
+        }
+      }
+    },
+    "Watch is more upbeat": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El Watch es más optimista"
+          }
+        }
+      }
+    },
+    "Watch readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación del Watch"
+          }
+        }
+      }
+    },
+    "no data": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "sin datos"
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

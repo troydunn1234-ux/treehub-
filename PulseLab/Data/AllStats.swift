@@ -11,11 +11,11 @@ enum StatSection: String, CaseIterable, Identifiable {
         switch self {
         case .recovery: "Recovery"
         case .sleep: "Sleep"
-        case .strain: "Strain & Activity"
+        case .strain: "Strain & activity"
         case .heart: "Heart"
         case .body: "Body"
         case .mobility: "Mobility"
-        case .nutrition: "Nutrition & Mind"
+        case .nutrition: "Nutrition & mind"
         }
     }
     var icon: String {

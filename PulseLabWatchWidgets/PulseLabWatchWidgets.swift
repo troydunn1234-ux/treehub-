@@ -16,7 +16,9 @@ struct PulseLabWatchWidgets: WidgetBundle {
 private enum Shared {
     static let suite = "group.com.troydunn.pulselab"
     static let key = "watchSnapshot"
-    // Same palette as the iPhone app (Lab).
+    // Same palette as the iPhone app (Lab): Watch = cyan, WHOOP = amber, red accent for the brand mark.
+    static let watch = Color(red: 0.25, green: 0.80, blue: 1.00)
+    static let whoop = Color(red: 1.00, green: 0.64, blue: 0.20)
     static let good = Color(red: 0.22, green: 0.84, blue: 0.46)
     static let warn = Color(red: 1.00, green: 0.80, blue: 0.25)
     static let bad = Color(red: 1.00, green: 0.36, blue: 0.32)
@@ -51,6 +53,21 @@ struct PulseEntry: TimelineEntry {
     var sleepText: String {
         guard let m = sleepMin, m > 0 else { return "—" }
         return "\(Int(m) / 60)h\(String(format: "%02d", Int(m) % 60))"
+    }
+
+    /// "WHOOP recovery" or "Watch readiness", for labels and VoiceOver.
+    var scoreName: String { isWhoop ? String(localized: "WHOOP recovery") : String(localized: "Watch readiness") }
+
+    /// Everything on the rectangular complication, in words.
+    var spoken: String {
+        var parts: [String] = [recovery.map { "\(scoreName) \(Int($0.rounded()))" } ?? String(localized: "No recovery score yet")]
+        if let m = sleepMin, m > 0 {
+            let t = Duration.seconds(Int(m.rounded()) * 60).formatted(.units(allowed: [.hours, .minutes], width: .wide))
+            parts.append(String(localized: "Sleep \(t)"))
+        }
+        if let h = hrv { parts.append(String(localized: "HRV \(Int(h.rounded())) milliseconds")) }
+        if let s = strain { parts.append(String(localized: "Strain \(s.formatted(.number.precision(.fractionLength(1))))")) }
+        return parts.joined(separator: ", ")
     }
 }
 
@@ -111,8 +128,8 @@ struct RecoveryGaugeView: View {
     }
 
     private var label: String {
-        guard let r = entry.recovery else { return String(localized: "Recovery not in yet") }
-        return String(localized: "Recovery \(Int(r.rounded())) percent")
+        guard let r = entry.recovery else { return String(localized: "No recovery score yet") }
+        return "\(entry.scoreName) \(Int(r.rounded()))"
     }
 }
 
@@ -135,7 +152,8 @@ struct SummaryView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Text("\(entry.recovery.map { "\(Int($0.rounded()))%" } ?? "—") · \(entry.sleepText) · HRV \(entry.hrv.map { "\(Int($0.rounded()))" } ?? "—")")
+            Text(verbatim: "\(entry.recovery.map { "\(Int($0.rounded()))%" } ?? "—") · \(entry.sleepText) · HRV \(entry.hrv.map { "\(Int($0.rounded()))" } ?? "—")")
+                .accessibilityLabel(entry.spoken)
         default:
             VStack(alignment: .leading, spacing: 1) {
                 HStack(spacing: 4) {
@@ -148,13 +166,16 @@ struct SummaryView: View {
                     Text(entry.recovery.map { "\(Int($0.rounded()))" } ?? "—")
                         .font(.system(size: 22, weight: .semibold, design: .rounded)).monospacedDigit()
                         .foregroundStyle(entry.recovery.map(band) ?? .secondary)
-                    Text(entry.isWhoop ? "recovery" : "readiness").font(.system(size: 12)).foregroundStyle(.secondary)
+                    Text(entry.isWhoop ? String(localized: "recovery") : String(localized: "readiness"))
+                        .font(.system(size: 12, weight: .medium))
+                        .foregroundStyle(entry.isWhoop ? Shared.whoop : Shared.watch)
                 }
                 Text("Sleep \(entry.sleepText) · HRV \(entry.hrv.map { "\(Int($0.rounded()))" } ?? "—") · Strain \(entry.strain.map { $0.formatted(.number.precision(.fractionLength(1))) } ?? "—")")
                     .font(.system(size: 12).monospacedDigit()).lineLimit(1).minimumScaleFactor(0.7)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
-            .accessibilityElement(children: .combine)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(entry.spoken)
         }
     }
 }
