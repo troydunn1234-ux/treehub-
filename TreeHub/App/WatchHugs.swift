@@ -86,6 +86,7 @@ struct WatchHugPrompt: View {
     @State private var here: CLLocationCoordinate2D?
     @State private var fetcher = LocationFetcher()
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     private var trees: [(TreeSummary, Double?)] {
         TreeSummary.build(from: hugs).map { t -> (TreeSummary, Double?) in
@@ -97,9 +98,10 @@ struct WatchHugPrompt: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 16) {
+                VStack(alignment: .leading, spacing: RB.m) {
                     summary
-                    SectionHeader(title: "Which tree?", symbol: "tree.fill")
+                    RBSectionTitle(title: "Which tree?", symbol: "tree.fill")
+                        .padding(.top, RB.s)
                     Button { onPick(nil) } label: {
                         row(name: "New tree", sub: "Make a new friend", photo: nil, symbol: "plus")
                     }
@@ -114,7 +116,7 @@ struct WatchHugPrompt: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(Theme.pad)
+                .padding(RB.screen)
             }
             .forestScreen()
             .navigationTitle("Hug from Watch")
@@ -128,15 +130,15 @@ struct WatchHugPrompt: View {
     }
 
     private var summary: some View {
-        GlassCard(padding: 16) {
-            VStack(alignment: .leading, spacing: 10) {
+        RBCard(tint: Theme.glow) {
+            VStack(alignment: .leading, spacing: RB.m) {
                 Label("\(Format.dayTime(hug.start))", systemImage: "applewatch")
-                    .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.textDim)
-                HStack(spacing: 10) {
-                    StatTile(value: Format.minutes((hug.minutes * 10).rounded() / 10), label: "Hug")
-                    StatTile(value: hug.avgHR.map { "\(Int($0))" } ?? "--", label: "Avg bpm")
+                    .font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
+                LazyVGrid(columns: rbColumns(3, typeSize), spacing: RB.s) {
+                    RBStatTile(value: Format.minutes((hug.minutes * 10).rounded() / 10), label: "Hug", symbol: "timer")
+                    RBStatTile(value: hug.avgHR.map { "\(Int($0))" } ?? "--", label: "Avg bpm", symbol: "heart.fill")
                     if let a = hug.startHR, let b = hug.endHR {
-                        StatTile(value: String(format: "%+.0f", b - a), label: "HR change")
+                        RBStatTile(value: String(format: "%+.0f", b - a), label: "HR change", symbol: "arrow.down.heart.fill", tint: Theme.sky)
                     }
                 }
             }
@@ -144,26 +146,30 @@ struct WatchHugPrompt: View {
     }
 
     private func row(name: String, sub: String, photo: Data?, symbol: String?) -> some View {
-        HStack(spacing: 12) {
+        HStack(spacing: RB.m) {
             ZStack {
                 if let symbol {
-                    Theme.card
-                    Image(systemName: symbol).font(.system(size: 18, weight: .bold)).foregroundStyle(Theme.glow)
+                    Theme.glow.opacity(0.12)
+                    Image(systemName: symbol).font(.headline).foregroundStyle(Theme.glow)
                 } else {
                     PhotoView(data: photo)
                 }
             }
-            .frame(width: 48, height: 48)
-            .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+            .frame(width: 52, height: 52)
+            .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
+            .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text(name).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
-                Text(sub).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                Text(name).font(RB.text(.headline, .bold)).foregroundStyle(.white)
+                Text(sub).font(RB.text(.caption)).foregroundStyle(Theme.textDim)
             }
-            Spacer()
-            Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(Theme.textDim)
+            Spacer(minLength: RB.s)
+            Image(systemName: "chevron.right").font(.footnote.weight(.bold)).foregroundStyle(Theme.textDim)
+                .accessibilityHidden(true)
         }
-        .padding(10)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(RB.m)
+        .background(RB.cardFill, in: RoundedRectangle(cornerRadius: RB.radius - 4, style: .continuous))
+        .overlay(RoundedRectangle(cornerRadius: RB.radius - 4, style: .continuous).strokeBorder(RB.stroke))
         .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
     }
 }

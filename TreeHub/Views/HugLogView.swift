@@ -147,6 +147,7 @@ struct HugLogView: View {
     @State private var showHeartDetails = true
     @State private var showTags = true
     @ObservedObject private var unlock = Unlock.shared
+    @Environment(\.dynamicTypeSize) private var typeSize
     @State private var showPlans = false
     /// The multi-select session sheet (sessions within ±60 min of the photo / hug time).
     @State private var picker: SessionPickRequest?
@@ -208,39 +209,44 @@ struct HugLogView: View {
 
     var body: some View {
         NavigationStack {
-            ZStack {
-                ScrollView {
-                    VStack(spacing: 14) {
-                        if d.fromWatch && editing == nil {
-                            banner("Timed on your Watch", symbol: "applewatch")
-                        }
-                        photosCard.cardAppear()
-                        treeCard.cardAppear()
-                        breathCard.cardAppear()
-                        feelCard.cardAppear()
-                        locationCard.cardAppear()
-                        if !errorText.isEmpty {
-                            Text(errorText).font(Theme.rounded(14)).foregroundStyle(.red)
-                        }
+            ScrollView {
+                VStack(spacing: RB.l) {
+                    if d.fromWatch && editing == nil {
+                        banner("Timed on your Watch", symbol: "applewatch")
                     }
-                    .padding(.horizontal, Theme.pad)
-                    .padding(.top, 8)
-                    .padding(.bottom, 24)
+                    photosCard
+                    treeCard
+                    locationCard
+                    breathCard
+                    walksCard
+                    groundingCard
+                    feelCard
+                    tagsCard
+                    if !errorText.isEmpty {
+                        // The family's friendly error row; the fix (Save, "I'm here now", Pin) sits right above it.
+                        FamilyErrorRow(message: errorText, tint: Theme.glow)
+                            .transition(.opacity)
+                    }
                 }
-                .scrollDismissesKeyboard(.interactively)
-                .scrollIndicators(.hidden)
-                .safeAreaInset(edge: .bottom) {
-                    Button(action: save) {
-                        Label(editing == nil ? "Save this hug" : "Save changes", systemImage: "heart.fill")
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .padding(.horizontal, Theme.pad)
-                    .padding(.top, 12)
-                    .padding(.bottom, 8)
-                    .background {
-                        LinearGradient(colors: [Theme.forestDeep.opacity(0), Theme.forestDeep.opacity(0.92)], startPoint: .top, endPoint: .center)
-                            .ignoresSafeArea()
-                    }
+                .padding(.horizontal, RB.l)
+                .padding(.top, RB.s)
+                .padding(.bottom, RB.xl)
+            }
+            .scrollDismissesKeyboard(.interactively)
+            .scrollIndicators(.hidden)
+            // Sticky Save: always reachable at the bottom.
+            .safeAreaInset(edge: .bottom) {
+                Button(action: save) {
+                    Label(editing == nil ? "Save this hug" : "Save changes", systemImage: "heart.fill")
+                }
+                .buttonStyle(RBPrimaryButtonStyle())
+                .padding(.horizontal, RB.l)
+                .padding(.top, RB.m)
+                .padding(.bottom, RB.s)
+                .background {
+                    Rectangle().fill(.ultraThinMaterial)
+                        .overlay(alignment: .top) { Rectangle().fill(RB.stroke).frame(height: 1) }
+                        .ignoresSafeArea()
                 }
             }
             .forestScreen()
@@ -265,6 +271,10 @@ struct HugLogView: View {
             }
         }
         .onAppear(perform: setup)
+        .sensoryFeedback(.selection, trigger: d.tags)
+        .sensoryFeedback(.impact(weight: .light), trigger: d.barefoot)
+        .sensoryFeedback(.impact(weight: .light), trigger: d.feetInWater)
+        .sensoryFeedback(.selection, trigger: d.waterSetting)
         .paywall(isPresented: $showPlans, spec: RootboundPro.spec, context: "Tree selfies")
         .fullScreenCover(item: $celebration) { c in
             CelebrationView(data: c) {
@@ -276,105 +286,113 @@ struct HugLogView: View {
 
     private func banner(_ text: String, symbol: String) -> some View {
         Label(text, systemImage: symbol)
-            .font(Theme.rounded(14, .bold))
+            .font(RB.text(.subheadline, .bold))
             .foregroundStyle(Theme.forestDeep)
             .padding(.horizontal, 14).padding(.vertical, 8)
-            .background(Theme.leafGradient, in: Capsule())
+            .background(Theme.glow, in: Capsule())
     }
 
     /// Small grey label above a group of fields.
-    private func groupLabel(_ text: String) -> some View {
-        Text(text.uppercased())
-            .font(.system(size: 11, weight: .bold, design: .rounded)).tracking(0.8)
-            .foregroundStyle(Theme.textDim)
-            .accessibilityAddTraits(.isHeader)
+    private func groupLabel(_ text: String) -> some View { RBGroupLabel(text: text) }
+
+    /// One logger section: numbered title, optional one-line hint, content.
+    private func section<C: View>(_ title: String, symbol: String, hint: String? = nil, @ViewBuilder _ content: () -> C) -> some View {
+        RBCard {
+            VStack(alignment: .leading, spacing: RB.m) {
+                VStack(alignment: .leading, spacing: 2) {
+                    RBSectionTitle(title: title, symbol: symbol)
+                    if let hint {
+                        Text(hint).font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+                content()
+            }
+        }
     }
 
     // MARK: Sections
 
     private var photosCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Photos", symbol: "camera.fill")
-                HStack(spacing: 12) {
-                    PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto, tilt: -2) { data, info in
-                        readPhotoMetadata(data, info: info)
-                        Task { await guessSpecies(data) }
-                    }
-                    // Rootbound Pro: the second photo (tree selfie). A selfie that's already on a hug always stays.
-                    PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto, tilt: 2,
-                              locked: !unlock.isPro, onLocked: { showPlans = true }) { data, info in
-                        if d.treePhoto == nil { readPhotoMetadata(data, info: info) }
-                    }
+        section("Photos", symbol: "camera.fill", hint: "The tree photo's time finds your breath sessions; its location pins the tree.") {
+            HStack(spacing: RB.m) {
+                PhotoSlot(title: "Tree", symbol: "tree.fill", data: $d.treePhoto) { data, info in
+                    readPhotoMetadata(data, info: info)
+                    Task { await guessSpecies(data) }
                 }
-                Text("The tree photo's time finds your breath sessions; its location pins the tree.")
-                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                    .fixedSize(horizontal: false, vertical: true)
+                // Rootbound Pro: the second photo (tree selfie). A selfie that's already on a hug always stays.
+                PhotoSlot(title: "You + Tree", symbol: "person.crop.square.fill", data: $d.selfiePhoto,
+                          locked: !unlock.isPro, onLocked: { showPlans = true }) { data, info in
+                    if d.treePhoto == nil { readPhotoMetadata(data, info: info) }
+                }
             }
         }
     }
 
     private var treeCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "The tree", symbol: "leaf.fill")
-                if !trees.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 10) {
-                            treeChoice(id: nil, name: "New tree", sub: "Make a new friend", photo: nil, symbol: "plus")
-                            ForEach(nearbyTrees, id: \.0.id) { pair in
-                                treeChoice(id: pair.0.id, name: pair.0.name,
-                                           sub: pair.1.map { $0 < 1000 ? "\(Int($0)) m away" : Format.distance($0) + " away" } ?? "\(pair.0.hugCount) hugs",
-                                           photo: pair.0.coverPhoto, symbol: nil)
-                            }
+        section("The tree", symbol: "leaf.fill") {
+            if !trees.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: RB.s) {
+                        treeChoice(id: nil, name: "New tree", sub: "Make a new friend", photo: nil, symbol: "plus")
+                        ForEach(nearbyTrees, id: \.0.id) { pair in
+                            treeChoice(id: pair.0.id, name: pair.0.name,
+                                       sub: pair.1.map { $0 < 1000 ? "\(Int($0)) m away" : Format.distance($0) + " away" } ?? "\(pair.0.hugCount) hugs",
+                                       photo: pair.0.coverPhoto, symbol: nil)
                         }
-                        .padding(.vertical, 2)
                     }
+                    .padding(.vertical, 2)
                 }
-                if let id = d.treeID, let t = trees.first(where: { $0.id == id }) {
-                    HStack {
-                        HeartsView(filled: t.bond)
-                        Text("Hug #\(t.hugCount + 1) with \(t.name)").font(Theme.rounded(14)).foregroundStyle(Theme.textDim)
+            }
+            if let id = d.treeID, let t = trees.first(where: { $0.id == id }) {
+                HStack(spacing: RB.s) {
+                    HeartsView(filled: t.bond)
+                    Text("Hug #\(t.hugCount + 1) with \(t.name)").font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
+                }
+            }
+            field("Name", text: $d.treeName, prompt: d.treeID == nil ? "e.g. Grandpa Oak" : "Tree name")
+            field("Species", text: $d.species, prompt: "What kind of tree?")
+            if guessing || !guesses.isEmpty || !guessNote.isEmpty {
+                VStack(alignment: .leading, spacing: RB.s) {
+                    Label(guessing ? "Looking at your photo…" : "Suggested from your photo", systemImage: "sparkles")
+                        .font(RB.text(.caption, .bold)).foregroundStyle(Theme.glow)
+                    if guessing {
+                        HStack(spacing: RB.s) {
+                            ForEach(0..<3, id: \.self) { _ in RBChip(label: "Coast Live Oak · 80%") }
+                        }
+                        .rbSkeleton()
                     }
-                }
-                field("Name", text: $d.treeName, prompt: d.treeID == nil ? "e.g. Grandpa Oak" : "Tree name")
-                field("Species", text: $d.species, prompt: "What kind of tree?")
-                if guessing || !guesses.isEmpty || !guessNote.isEmpty {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Label(guessing ? "Looking at your photo…" : "Suggested from your photo", systemImage: "sparkles")
-                            .font(Theme.rounded(12, .bold)).foregroundStyle(Theme.glow)
-                        if !guesses.isEmpty {
-                            ScrollView(.horizontal, showsIndicators: false) {
-                                HStack(spacing: 8) {
-                                    ForEach(guesses) { g in
-                                        Button { withAnimation(.snappy) { d.species = g.name } } label: {
-                                            Chip(label: "\(g.name) · \(Int((g.confidence * 100).rounded()))%", symbol: "leaf.fill",
-                                                 selected: d.species == g.name)
-                                        }
-                                        .buttonStyle(.plain)
-                                        .haptic()
+                    if !guesses.isEmpty {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: RB.s) {
+                                ForEach(guesses) { g in
+                                    Button { withAnimation(.snappy) { d.species = g.name } } label: {
+                                        RBChip(label: "\(g.name) · \(Int((g.confidence * 100).rounded()))%", symbol: "leaf.fill",
+                                             selected: d.species == g.name)
                                     }
+                                    .buttonStyle(.plain)
+                                    .haptic()
                                 }
                             }
                         }
-                        if !guessNote.isEmpty {
-                            Text(guessNote).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                                .fixedSize(horizontal: false, vertical: true)
-                        }
                     }
-                    .padding(12)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Theme.leaf.opacity(0.12), in: RoundedRectangle(cornerRadius: 12))
-                    .transition(.opacity.combined(with: .move(edge: .top)))
+                    if !guessNote.isEmpty {
+                        Text(guessNote).font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
-                let q = d.species.lowercased()
-                let suggestions = Self.speciesSuggestions.filter { q.isEmpty || ($0.lowercased().contains(q) && $0.lowercased() != q) }
-                if !suggestions.isEmpty {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(suggestions.prefix(12), id: \.self) { s in
-                                Button { d.species = s } label: { Chip(label: s) }.buttonStyle(.plain)
-                            }
+                .padding(RB.m)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .rbInner(Theme.leaf.opacity(0.12))
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+            let q = d.species.lowercased()
+            let suggestions = Self.speciesSuggestions.filter { q.isEmpty || ($0.lowercased().contains(q) && $0.lowercased() != q) }
+            if !suggestions.isEmpty {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: RB.s) {
+                        ForEach(suggestions.prefix(12), id: \.self) { s in
+                            Button { d.species = s } label: { RBChip(label: s) }.buttonStyle(.plain)
                         }
                     }
                 }
@@ -384,29 +402,35 @@ struct HugLogView: View {
 
     private func treeChoice(id: UUID?, name: String, sub: String, photo: Data?, symbol: String?) -> some View {
         let selected = d.treeID == id
+        // Wider tiles and two-line names at the largest text sizes, so names aren't cut short.
+        let big = typeSize.isAccessibilitySize
+        let width: CGFloat = big ? 150 : 96
         return Button {
             withAnimation(.snappy) { selectTree(id) }
         } label: {
             VStack(alignment: .leading, spacing: 6) {
                 ZStack {
                     if let symbol {
-                        RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.08))
-                        Image(systemName: symbol).font(.system(size: 22, weight: .bold)).foregroundStyle(Theme.glow)
+                        Color.white.opacity(0.08)
+                        Image(systemName: symbol).font(.title3.weight(.bold)).foregroundStyle(Theme.glow)
                     } else {
                         PhotoView(data: photo)
                     }
                 }
-                .frame(width: 92, height: 72)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                Text(name).font(Theme.rounded(13, .bold)).foregroundStyle(.white).lineLimit(1)
-                Text(sub).font(Theme.rounded(11, .medium)).foregroundStyle(Theme.textDim).lineLimit(1)
+                .frame(width: width, height: 72)
+                .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
+                Text(name).font(RB.text(.footnote, .bold)).foregroundStyle(.white)
+                    .lineLimit(big ? 2 : 1, reservesSpace: big)
+                Text(sub).font(RB.text(.caption2, .medium)).foregroundStyle(Theme.textDim)
+                    .lineLimit(big ? 2 : 1, reservesSpace: big)
             }
-            .frame(width: 92)
-            .padding(8)
-            .background(selected ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 16))
-            .overlay(RoundedRectangle(cornerRadius: 16).stroke(selected ? Theme.glow : Color.clear, lineWidth: 2))
+            .frame(width: width, alignment: .leading)
+            .padding(RB.s)
+            .background(selected ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.04), in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: 16, style: .continuous).strokeBorder(selected ? Theme.glow : Color.clear, lineWidth: 2))
         }
         .buttonStyle(.plain)
+        .sensoryFeedback(.selection, trigger: selected)
         .accessibilityAddTraits(selected ? .isSelected : [])
     }
 
@@ -429,162 +453,165 @@ struct HugLogView: View {
     }
 
     private var locationCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 12) {
-                SectionHeader(title: "Where", symbol: "mappin.and.ellipse")
-                if let c = d.coordinate {
-                    Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 300, longitudinalMeters: 300)),
-                        interactionModes: []) {
-                        Annotation(d.treeName.isEmpty ? "Tree" : d.treeName, coordinate: c) {
-                            TreePin(photo: d.treePhoto)
-                        }
+        section("Where", symbol: "mappin.and.ellipse") {
+            if let c = d.coordinate {
+                Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 300, longitudinalMeters: 300)),
+                    interactionModes: []) {
+                    Annotation(d.treeName.isEmpty ? "Tree" : d.treeName, coordinate: c) {
+                        TreePin(photo: d.treePhoto)
                     }
-                    .mapStyle(.hybrid(elevation: .realistic))
+                }
+                .mapStyle(.hybrid(elevation: .realistic))
+                .frame(height: 140)
+                .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
+                .id("\(c.latitude),\(c.longitude)")
+                .accessibilityLabel("Map of the tree's pin")
+                VStack(alignment: .leading, spacing: 2) {
+                    if !d.placeName.isEmpty { Text(d.placeName).font(RB.text(.subheadline, .bold)).foregroundStyle(.white) }
+                    Text("\(Format.coord(c)) · \(d.locationSource)").font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                }
+            } else if locating {
+                RoundedRectangle(cornerRadius: RB.inner, style: .continuous).fill(Color.white.opacity(0.08))
                     .frame(height: 140)
-                    .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
-                    .id("\(c.latitude),\(c.longitude)")
-                    VStack(alignment: .leading, spacing: 2) {
-                        if !d.placeName.isEmpty { Text(d.placeName).font(Theme.rounded(15, .bold)) }
-                        Text("\(Format.coord(c)) · \(d.locationSource)").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                    }
-                } else {
-                    Text(locating ? "Finding your spot…" : "No pin yet").font(Theme.rounded(15)).foregroundStyle(Theme.textDim)
-                }
-                HStack(spacing: 8) {
-                    Button { Task { await useCurrentLocation() } } label: {
-                        Chip(label: locating ? "Locating…" : "I'm here now", symbol: "location.fill")
-                    }
-                    .buttonStyle(.plain).disabled(locating)
-                    if let pc = photoCoord {
-                        Button { setCoordinate(pc, source: "From photo") } label: { Chip(label: "Photo's spot", symbol: "photo") }
-                            .buttonStyle(.plain)
-                    }
-                }
-                HStack {
-                    TextField("", text: $pinText, prompt: Text("Paste coordinates or a map link").foregroundStyle(Theme.textDim))
-                        .textInputAutocapitalization(.never).autocorrectionDisabled()
-                        .font(Theme.rounded(14, .regular))
-                    Button("Pin") {
-                        if let c = Geo.parseCoordinates(pinText) {
-                            setCoordinate(c, source: "Pasted pin")
-                            pinText = ""
-                        } else {
-                            errorText = "Couldn't find coordinates in that. Try \"37.77, -122.45\" or a map pin link."
-                        }
-                    }
-                    .font(Theme.rounded(14, .bold))
-                    .disabled(pinText.isEmpty)
-                }
-                .padding(12)
-                .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                    .overlay { Label("Finding your spot…", systemImage: "location.fill").font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim) }
+            } else {
+                Label("No pin yet. Use where you are, the photo's spot, or paste a map link.", systemImage: "mappin.slash")
+                    .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
+            HStack(spacing: RB.s) {
+                Button { Task { await useCurrentLocation() } } label: {
+                    RBChip(label: locating ? "Locating…" : "I'm here now", symbol: "location.fill")
+                }
+                .buttonStyle(.plain).disabled(locating)
+                if let pc = photoCoord {
+                    Button { setCoordinate(pc, source: "From photo") } label: { RBChip(label: "Photo's spot", symbol: "photo") }
+                        .buttonStyle(.plain)
+                }
+            }
+            HStack {
+                TextField("", text: $pinText, prompt: Text("Paste coordinates or a map link").foregroundStyle(Theme.textDim))
+                    .textInputAutocapitalization(.never).autocorrectionDisabled()
+                    .font(RB.text(.subheadline))
+                Button("Pin") {
+                    if let c = Geo.parseCoordinates(pinText) {
+                        setCoordinate(c, source: "Pasted pin")
+                        pinText = ""
+                    } else {
+                        errorText = "Couldn't find coordinates in that. Try \"37.77, -122.45\" or a map pin link."
+                    }
+                }
+                .font(RB.text(.subheadline, .bold))
+                .frame(minWidth: 44, minHeight: 44)
+                .disabled(pinText.isEmpty)
+            }
+            .padding(.horizontal, RB.m)
+            .rbInner()
         }
     }
 
     private var breathCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 14) {
-                SectionHeader(title: "Breathwork", symbol: "wind")
-
-                // 1. Linked Still Pointz / Health sessions
-                VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        groupLabel(d.linked.isEmpty ? "Breath sessions" : "\(d.linked.count) linked session\(d.linked.count == 1 ? "" : "s")")
-                        Spacer()
-                        Button {
-                            Task { await openPicker(around: d.date) }
-                        } label: {
-                            Label(d.linked.isEmpty ? "Find" : "Change", systemImage: "checklist")
-                                .font(Theme.rounded(13, .bold))
-                        }
-                        .disabled(healthBusy)
-                    }
-                    if d.linked.isEmpty {
-                        Text("No Still Pointz or Health sessions linked. Tap Find to look within an hour of the hug.")
-                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                            .fixedSize(horizontal: false, vertical: true)
-                    } else {
-                        ForEach(d.linked) { s in LinkedSessionCard(session: s, compact: true) }
-                    }
-                }
-
-                // 2. The walk (Roamr / Apple Health), shown as a stat under the hug
-                VStack(alignment: .leading, spacing: 8) {
-                    groupLabel(d.walks.isEmpty ? "Walk" : "\(d.walks.count) walk\(d.walks.count == 1 ? "" : "s")")
-                    ForEach(d.walks) { w in LinkedWalkCard(walk: w, compact: true) }
-                    Button { Task { await openWalkPicker() } } label: {
-                        SyncRoamrLabel(busy: walkBusy, title: d.walks.isEmpty ? "Sync Roamr" : "Change walks")
-                    }
-                    .buttonStyle(.plain)
-                    .disabled(walkBusy)
-                    if !walkMessage.isEmpty {
-                        Text(walkMessage).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    if d.walks.isEmpty && !WellnessLinks.roamrInstalled && !walkMessage.isEmpty { GetRoamrCard() }
-                }
-
-                // 3. When + how long
-                VStack(alignment: .leading, spacing: 8) {
-                    groupLabel("The hug")
-                    DatePicker("Started", selection: $d.date, in: ...Date().addingTimeInterval(3600))
-                        .font(Theme.rounded(15))
-                    HStack(spacing: 10) {
-                        NumberField(label: "Minutes", value: $d.durationMin)
-                        NumberField(label: "Avg heart rate", value: $d.avgHR)
-                    }
-                    Menu {
-                        ForEach(Self.exercises, id: \.self) { e in Button(e) { d.exercise = e } }
+        section("Breathwork & heart", symbol: "wind") {
+            // 1. Linked Still Pointz / Health sessions (EXIF time → multi-select picker)
+            VStack(alignment: .leading, spacing: RB.s) {
+                HStack {
+                    groupLabel(d.linked.isEmpty ? "Breath sessions" : "\(d.linked.count) linked session\(d.linked.count == 1 ? "" : "s")")
+                    Spacer()
+                    Button {
+                        Task { await openPicker(around: d.date) }
                     } label: {
-                        HStack {
-                            Text("Practice").font(Theme.rounded(14, .medium)).foregroundStyle(Theme.textDim)
-                            Spacer()
-                            Text(d.exercise.isEmpty ? "Choose" : d.exercise).font(Theme.rounded(15, .bold))
-                            Image(systemName: "chevron.up.chevron.down").font(.system(size: 11, weight: .bold))
-                        }
-                        .foregroundStyle(.white)
-                        .padding(12)
-                        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                        Label(d.linked.isEmpty ? "Find" : "Change", systemImage: "checklist")
+                            .font(RB.text(.subheadline, .bold))
+                            .frame(minHeight: 44)
                     }
+                    .disabled(healthBusy)
                 }
+                if d.linked.isEmpty && healthBusy {
+                    RBSkeletonRow()
+                } else if d.linked.isEmpty {
+                    Text("No Still Pointz or Health sessions linked. Tap Find to look within an hour of the hug.")
+                        .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    ForEach(d.linked) { s in LinkedSessionCard(session: s, compact: true) }
+                }
+            }
 
-                // 4. Fill from Apple Health (Apple Watch heart data)
-                Button {
-                    Task { await pullFromHealth() }
+            Divider().overlay(RB.stroke)
+
+            // 2. When + how long
+            VStack(alignment: .leading, spacing: RB.s) {
+                groupLabel("The hug")
+                DatePicker("Started", selection: $d.date, in: ...Date().addingTimeInterval(3600))
+                    .font(RB.text(.subheadline))
+                HStack(spacing: RB.s) {
+                    NumberField(label: "Minutes", value: $d.durationMin)
+                    NumberField(label: "Avg heart rate", value: $d.avgHR)
+                }
+                Menu {
+                    ForEach(Self.exercises, id: \.self) { e in Button(e) { d.exercise = e } }
                 } label: {
                     HStack {
-                        Image(systemName: healthBusy ? "hourglass" : "applewatch")
-                        Text(healthBusy ? "Reading Apple Health…" : (healthMessage.isEmpty ? "Fill from Apple Watch" : "Refresh from Apple Watch"))
+                        Text("Practice").font(RB.text(.subheadline)).foregroundStyle(Theme.textDim)
+                        Spacer()
+                        Text(d.exercise.isEmpty ? "Choose" : d.exercise).font(RB.text(.subheadline, .bold))
+                        Image(systemName: "chevron.up.chevron.down").font(.caption2.weight(.bold))
                     }
-                    .font(Theme.rounded(15, .bold))
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 11)
-                    .background(Theme.glow.opacity(0.14), in: RoundedRectangle(cornerRadius: 12))
-                    .foregroundStyle(Theme.glow)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, RB.m)
+                    .frame(minHeight: 44)
+                    .rbInner()
                 }
-                .buttonStyle(.plain)
-                .disabled(healthBusy)
-                if !healthMessage.isEmpty {
-                    Text(healthMessage).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                        .fixedSize(horizontal: false, vertical: true)
-                }
-
-                // 5. Rarely edited heart numbers, collapsed
-                DisclosureGroup(isExpanded: $showHeartDetails) {
-                    LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 10) {
-                        NumberField(label: "Lowest HR", value: $d.minHR)
-                        NumberField(label: "Max HR", value: $d.maxHR)
-                        NumberField(label: "HR at start", value: $d.hrStart)
-                        NumberField(label: "HR at end", value: $d.hrEnd)
-                        NumberField(label: "HRV (ms)", value: $d.hrv)
-                        NumberField(label: "Breaths / min", value: $d.respRate)
-                    }
-                    .padding(.top, 8)
-                } label: {
-                    Text(heartSummary).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
-                }
-                .tint(Theme.glow)
             }
+
+            // 3. Fill from Apple Health (Apple Watch heart data)
+            Button {
+                Task { await pullFromHealth() }
+            } label: {
+                HStack(spacing: RB.s) {
+                    if healthBusy { ProgressView().controlSize(.small).tint(Theme.glow) } else { Image(systemName: "applewatch") }
+                    Text(healthBusy ? "Reading Apple Health…" : (healthMessage.isEmpty ? "Fill from Apple Watch" : "Refresh from Apple Watch"))
+                }
+            }
+            .buttonStyle(RBSecondaryButtonStyle(compact: true))
+            .disabled(healthBusy)
+            if !healthMessage.isEmpty {
+                Text(healthMessage).font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            // 4. Heart details (expanded by default)
+            DisclosureGroup(isExpanded: $showHeartDetails) {
+                LazyVGrid(columns: rbColumns(2, typeSize, spacing: RB.s), spacing: RB.s) {
+                    NumberField(label: "Lowest HR", value: $d.minHR)
+                    NumberField(label: "Max HR", value: $d.maxHR)
+                    NumberField(label: "HR at start", value: $d.hrStart)
+                    NumberField(label: "HR at end", value: $d.hrEnd)
+                    NumberField(label: "HRV (ms)", value: $d.hrv)
+                    NumberField(label: "Breaths / min", value: $d.respRate)
+                }
+                .padding(.top, RB.s)
+            } label: {
+                Text(heartSummary).font(RB.text(.subheadline, .bold)).foregroundStyle(Theme.textDim)
+            }
+            .tint(Theme.glow)
+        }
+    }
+
+    /// The walk (Roamr / Apple Health), shown as a stat under the hug.
+    private var walksCard: some View {
+        section("Walks", symbol: "figure.walk", hint: "Walks from Roamr or Apple Health within 2 hours of the hug.") {
+            ForEach(d.walks) { w in LinkedWalkCard(walk: w, compact: true) }
+            Button { Task { await openWalkPicker() } } label: {
+                SyncRoamrLabel(busy: walkBusy, title: d.walks.isEmpty ? "Sync Roamr" : "Change walks")
+            }
+            .buttonStyle(.plain)
+            .disabled(walkBusy)
+            if !walkMessage.isEmpty {
+                Text(walkMessage).font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            if d.walks.isEmpty && !WellnessLinks.roamrInstalled && !walkMessage.isEmpty { GetRoamrCard() }
         }
     }
 
@@ -593,82 +620,99 @@ struct HugLogView: View {
         if let a = d.hrStart, let b = d.hrEnd { parts.append(String(format: "HR %+.0f", b - a)) }
         if let v = d.hrv { parts.append(String(format: "HRV %.0f ms", v)) }
         if let r = d.respRate { parts.append(String(format: "%.1f br/min", r)) }
-        return parts.isEmpty ? "More heart data" : "More heart data · " + parts.joined(separator: " · ")
+        return parts.isEmpty ? "Heart details" : "Heart details · " + parts.joined(separator: " · ")
     }
 
-    private var feelCard: some View {
-        GlassCard {
-            VStack(alignment: .leading, spacing: 14) {
-                SectionHeader(title: "How it felt", symbol: "sparkles")
-                VStack(spacing: 6) {
-                    moodRow("Before", value: $d.moodBefore)
-                    moodRow("After", value: $d.moodAfter)
+    private var groundingCard: some View {
+        section("Grounding", symbol: "shoeprints.fill") {
+            groundingToggle("Barefoot", "Shoes off, feet on the earth (+25 XP)", "shoeprints.fill", on: $d.barefoot)
+            groundingToggle("Feet in water", "Toes in a creek, lake or the ocean (+25 XP)", "drop.fill", on: $d.feetInWater)
+            VStack(alignment: .leading, spacing: RB.s) {
+                groupLabel("Where the tree stands")
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: RB.s) { waterChips }
+                    VStack(spacing: RB.s) { waterChips }
                 }
-                groundingToggle("Barefoot", "Shoes off, feet on the earth (+25 XP)", "shoeprints.fill", on: $d.barefoot)
-                groundingToggle("Feet in water", "Toes in a creek, lake or the ocean (+25 XP)", "drop.fill", on: $d.feetInWater)
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Where the tree stands").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
-                    HStack(spacing: 8) {
-                        waterChip("land", "On land", "tree.fill")
-                        waterChip("edge", "Water's edge", "water.waves.and.arrow.down")
-                        waterChip("water", "Water tree", "water.waves")
-                    }
-                }
-
-                TextField("", text: $d.notes, prompt: Text("How did it feel? Anything the tree told you?").foregroundStyle(Theme.textDim), axis: .vertical)
-                    .lineLimit(3...8)
-                    .font(Theme.rounded(15, .regular))
-                    .padding(12)
-                    .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
-
-                DisclosureGroup(isExpanded: $showTags) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        FlowLayout(spacing: 8) {
-                            ForEach(HugTag.all) { t in
-                                Button {
-                                    withAnimation(.snappy) {
-                                        if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
-                                    }
-                                } label: {
-                                    Chip(label: t.label, selected: d.tags.contains(t.id))
-                                }
-                                .buttonStyle(.plain)
-                                .haptic()
-                            }
-                        }
-                        groupLabel("Weather")
-                        FlowLayout(spacing: 8) {
-                            ForEach(Self.weathers, id: \.1) { w in
-                                Button { d.weather = d.weather == w.1 ? "" : w.1 } label: {
-                                    Chip(label: w.1, symbol: w.0, selected: d.weather == w.1)
-                                }
-                                .buttonStyle(.plain)
-                            }
-                        }
-                    }
-                    .padding(.top, 8)
-                } label: {
-                    Text(tagSummary).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim)
-                }
-                .tint(Theme.glow)
             }
         }
     }
 
-    private var tagSummary: String {
-        let n = d.tags.count + (d.weather.isEmpty ? 0 : 1)
-        return n == 0 ? "Tags & weather" : "Tags & weather · \(n) chosen"
+    @ViewBuilder private var waterChips: some View {
+        waterChip("land", "On land", "tree.fill")
+        waterChip("edge", "Water's edge", "water.waves.and.arrow.down")
+        waterChip("water", "Water tree", "water.waves")
     }
+
+    private var feelCard: some View {
+        section("How it felt", symbol: "sparkles") {
+            VStack(spacing: RB.xs) {
+                moodRow("Before", value: $d.moodBefore)
+                moodRow("After", value: $d.moodAfter)
+            }
+            TextField("", text: $d.notes, prompt: Text("How did it feel? Anything the tree told you?").foregroundStyle(Theme.textDim), axis: .vertical)
+                .lineLimit(3...8)
+                .font(RB.text(.body))
+                .padding(RB.m)
+                .rbInner()
+        }
+    }
+
+    /// The 28 tags + weather (expanded by default).
+    private var tagsCard: some View {
+        RBCard {
+            DisclosureGroup(isExpanded: $showTags) {
+                VStack(alignment: .leading, spacing: RB.m) {
+                    FlowLayout(spacing: RB.s) {
+                        ForEach(HugTag.all) { t in
+                            Button {
+                                withAnimation(.snappy) {
+                                    if d.tags.contains(t.id) { d.tags.remove(t.id) } else { d.tags.insert(t.id) }
+                                }
+                            } label: {
+                                RBChip(label: t.label, selected: d.tags.contains(t.id))
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                    groupLabel("Weather")
+                    FlowLayout(spacing: RB.s) {
+                        ForEach(Self.weathers, id: \.1) { w in
+                            Button { d.weather = d.weather == w.1 ? "" : w.1 } label: {
+                                RBChip(label: w.1, symbol: w.0, selected: d.weather == w.1)
+                            }
+                            .buttonStyle(.plain)
+                        }
+                    }
+                }
+                .padding(.top, RB.m)
+            } label: {
+                HStack(spacing: RB.s) {
+                    Image(systemName: "tag.fill").font(.subheadline.weight(.bold)).foregroundStyle(Theme.glow)
+                    Text("Tags & weather").font(RB.text(.headline, .bold)).foregroundStyle(.white)
+                    if tagCount > 0 {
+                        Text("\(tagCount)").font(RB.text(.caption, .heavy)).monospacedDigit()
+                            .foregroundStyle(Theme.forestDeep)
+                            .padding(.horizontal, 7).padding(.vertical, 2)
+                            .background(Theme.glow, in: Capsule())
+                            .contentTransition(.numericText())
+                    }
+                }
+            }
+            .tint(Theme.glow)
+        }
+    }
+
+    private var tagCount: Int { d.tags.count + (d.weather.isEmpty ? 0 : 1) }
 
     private func moodRow(_ label: String, value: Binding<Int>) -> some View {
         HStack {
-            Text(label).font(Theme.rounded(14, .bold)).foregroundStyle(Theme.textDim).frame(minWidth: 56, alignment: .leading)
+            Text(label).font(RB.text(.subheadline, .bold)).foregroundStyle(Theme.textDim).frame(minWidth: 56, alignment: .leading)
             ForEach(1...5, id: \.self) { i in
                 Button { value.wrappedValue = value.wrappedValue == i ? 0 : i } label: {
                     Text(Self.moods[i - 1])
                         .font(.system(size: value.wrappedValue == i ? 30 : 24))
                         .opacity(value.wrappedValue == 0 || value.wrappedValue == i ? 1 : 0.4)
-                        .frame(maxWidth: .infinity, minHeight: 40)
+                        .frame(maxWidth: .infinity, minHeight: 44)
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("\(label): \(i) of 5")
@@ -676,15 +720,17 @@ struct HugLogView: View {
             }
         }
         .animation(.spring(response: 0.3), value: value.wrappedValue)
+        .sensoryFeedback(.selection, trigger: value.wrappedValue)
     }
 
     private func field(_ label: String, text: Binding<String>, prompt: String) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+        VStack(alignment: .leading, spacing: RB.xs) {
             groupLabel(label)
             TextField("", text: text, prompt: Text(prompt).foregroundStyle(Color.white.opacity(0.35)))
-                .font(Theme.rounded(16, .semibold))
-                .padding(12)
-                .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+                .font(RB.text(.body, .semibold))
+                .padding(.horizontal, RB.m)
+                .frame(minHeight: 48)
+                .rbInner()
         }
     }
 
@@ -814,26 +860,28 @@ struct HugLogView: View {
         }
     }
 
-    /// When the photo was taken, from its EXIF data (with its time-zone offset when present).
     private func groundingToggle(_ title: String, _ detail: String, _ symbol: String, on: Binding<Bool>) -> some View {
         Button {
             withAnimation(.snappy) { on.wrappedValue.toggle() }
         } label: {
-            HStack(spacing: 12) {
-                Image(systemName: symbol).font(.system(size: 20)).frame(width: 26)
+            HStack(spacing: RB.m) {
+                Image(systemName: symbol).font(.title3).frame(width: 28)
+                    .symbolEffect(.bounce, value: on.wrappedValue)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(Theme.rounded(15, .bold))
-                    Text(detail).font(Theme.rounded(12, .medium)).opacity(0.75)
+                    Text(title).font(RB.text(.subheadline, .bold))
+                    Text(detail).font(RB.text(.caption)).opacity(0.75)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
-                Image(systemName: on.wrappedValue ? "checkmark.circle.fill" : "circle").font(.system(size: 22))
+                Spacer(minLength: RB.s)
+                Image(systemName: on.wrappedValue ? "checkmark.circle.fill" : "circle").font(.title3)
+                    .contentTransition(.symbolEffect(.replace))
             }
             .foregroundStyle(on.wrappedValue ? Theme.glow : .white)
-            .padding(12)
-            .background(on.wrappedValue ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+            .padding(RB.m)
+            .frame(minHeight: 56)
+            .rbInner(on.wrappedValue ? Theme.leaf.opacity(0.22) : RB.innerFill)
         }
         .buttonStyle(.plain)
-        .haptic()
         .accessibilityAddTraits(on.wrappedValue ? .isSelected : [])
     }
 
@@ -842,20 +890,21 @@ struct HugLogView: View {
         return Button {
             withAnimation(.snappy) { d.waterSetting = on ? "" : value }
         } label: {
-            VStack(spacing: 4) {
-                Image(systemName: symbol).font(.system(size: 18))
-                Text(label).font(Theme.rounded(12, .bold)).lineLimit(1).minimumScaleFactor(0.8)
+            VStack(spacing: RB.xs) {
+                Image(systemName: symbol).font(.headline)
+                Text(label).font(RB.text(.caption, .bold)).multilineTextAlignment(.center)
             }
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 10)
+            .frame(maxWidth: .infinity, minHeight: 56)
+            .padding(.vertical, RB.xs)
             .foregroundStyle(on ? Theme.glow : .white)
-            .background(on ? Theme.leaf.opacity(0.22) : Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+            .rbInner(on ? Theme.leaf.opacity(0.22) : RB.innerFill)
+            .overlay(RoundedRectangle(cornerRadius: RB.inner, style: .continuous).strokeBorder(on ? Theme.glow.opacity(0.6) : .clear))
         }
         .buttonStyle(.plain)
-        .haptic()
         .accessibilityAddTraits(on ? .isSelected : [])
     }
 
+    /// When the photo was taken, from its EXIF data (with its time-zone offset when present).
     static func photoDate(_ props: [String: Any]) -> Date? {
         guard let exif = props[kCGImagePropertyExifDictionary as String] as? [String: Any],
               let raw = (exif[kCGImagePropertyExifDateTimeOriginal as String] ?? exif[kCGImagePropertyExifDateTimeDigitized as String]) as? String
@@ -1113,10 +1162,12 @@ struct NumberField: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text(label).font(Theme.rounded(11, .bold)).foregroundStyle(Theme.textDim).lineLimit(1)
-            TextField("", text: $text, prompt: Text("–").foregroundStyle(Color.white.opacity(0.3)))
+            Text(label).font(RB.text(.caption, .bold)).foregroundStyle(Theme.textDim).lineLimit(2)
+            TextField("", text: $text, prompt: Text("Add").foregroundStyle(Color.white.opacity(0.3)))
                 .keyboardType(allowNegative ? .numbersAndPunctuation : .decimalPad)
-                .font(Theme.rounded(18, .bold))
+                .font(RB.number(.title3))
+                .monospacedDigit()
+                .accessibilityLabel(label)
                 .focused($focused)
                 .onChange(of: text) { _, t in
                     let cleaned = t.replacingOccurrences(of: ",", with: ".").trimmingCharacters(in: .whitespaces)
@@ -1124,9 +1175,9 @@ struct NumberField: View {
                     else if let v = Double(cleaned), allowNegative || v >= 0 { value = v }
                 }
         }
-        .padding(10)
+        .padding(RB.m)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12))
+        .rbInner()
         .onAppear { text = Self.render(value) }
         .onChange(of: value) { _, v in
             if !focused { text = Self.render(v) }
@@ -1231,35 +1282,42 @@ struct PhotoSlot: View {
     }
 
     private var polaroid: some View {
-            VStack(spacing: 6) {
-                ZStack {
-                    if let data, let ui = UIImage(data: data) {
-                        Image(uiImage: ui).resizable().scaledToFill()
+        ZStack(alignment: .bottomLeading) {
+            if let data, let ui = UIImage(data: data) {
+                Image(uiImage: ui).resizable().scaledToFill()
+                LinearGradient(colors: [.clear, .black.opacity(0.6)], startPoint: .center, endPoint: .bottom)
+                Label(title, systemImage: "pencil")
+                    .font(RB.text(.caption, .bold)).foregroundStyle(.white)
+                    .padding(RB.s)
+            } else {
+                // A soft shimmer while the picked photo loads (no spinner).
+                if loading { RBSkeletonBlock() } else { Color.white.opacity(0.06) }
+                VStack(spacing: 6) {
+                    if !loading {
+                        Image(systemName: symbol).font(.title2.weight(.semibold))
+                    }
+                    Text(title).font(RB.text(.footnote, .bold))
+                    if loading {
+                        Text("Loading photo…").font(RB.text(.caption2)).foregroundStyle(Theme.textDim)
+                    } else if locked {
+                        Label("Pro", systemImage: "lock.fill").font(RB.text(.caption2, .heavy))
+                            .foregroundStyle(Theme.gold)
                     } else {
-                        Color.white.opacity(0.06)
-                        VStack(spacing: 6) {
-                            Image(systemName: loading ? "hourglass" : symbol).font(.system(size: 24, weight: .semibold))
-                            if locked {
-                                Label("Pro", systemImage: "lock.fill").font(.system(size: 12, weight: .heavy, design: .rounded))
-                                    .foregroundStyle(Theme.gold)
-                            } else {
-                                Image(systemName: "plus.circle.fill").font(.system(size: 14))
-                            }
-                        }
-                        .foregroundStyle(Theme.glow)
+                        Text("Camera or library").font(RB.text(.caption2)).foregroundStyle(Theme.textDim)
                     }
                 }
-                .frame(height: 110)
-                .frame(maxWidth: .infinity)
-                .clipShape(RoundedRectangle(cornerRadius: 6))
-                Text(title).font(.system(size: 12, weight: .bold, design: .rounded)).foregroundStyle(Theme.forestDeep)
-                    .lineLimit(1).minimumScaleFactor(0.8)
+                .foregroundStyle(Theme.glow)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                RoundedRectangle(cornerRadius: RB.inner + 2, style: .continuous)
+                    .strokeBorder(Theme.glow.opacity(0.35), style: StrokeStyle(lineWidth: 1.5, dash: [6, 5]))
             }
-            .padding(6)
-            .padding(.bottom, 2)
-            .background(Theme.cream, in: RoundedRectangle(cornerRadius: 8))
-            .rotationEffect(.degrees(tilt))
-            .shadow(color: .black.opacity(0.35), radius: 6, y: 3)
+        }
+        .frame(height: 150)
+        .frame(maxWidth: .infinity)
+        .clipShape(RoundedRectangle(cornerRadius: RB.inner + 2, style: .continuous))
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(loading ? "Loading \(title) photo" : data == nil ? "Add \(title) photo" : "\(title) photo, change")
     }
 }
 

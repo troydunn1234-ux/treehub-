@@ -18,7 +18,7 @@ struct WalkPickerSheet: View {
                 Section {
                     ForEach(candidates) { w in
                         Button { toggle(w) } label: { row(w) }
-                            .listRowBackground(Theme.card)
+                            .listRowBackground(RB.cardFill)
                     }
                 } header: {
                     Text("Within 2 hours of \(around.formatted(date: .omitted, time: .shortened))")
@@ -55,9 +55,9 @@ struct WalkPickerSheet: View {
                 .font(.system(size: 22))
                 .foregroundStyle(selected.contains(w.id) ? Theme.glow : Theme.textDim)
             VStack(alignment: .leading, spacing: 3) {
-                Text(w.summary).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                Text(w.summary).font(RB.text(.headline, .bold)).foregroundStyle(.white)
                 Text(LinkedWalkCard.timeRange(w) + " · " + w.source)
-                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                    .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
             }
             Spacer(minLength: 0)
             Image(systemName: w.symbol).font(.system(size: 18, weight: .semibold)).foregroundStyle(Theme.glow)
@@ -93,34 +93,31 @@ struct LinkedWalkCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(alignment: .firstTextBaseline, spacing: 10) {
-                Image(systemName: walk.symbol).font(.system(size: 15, weight: .bold)).foregroundStyle(Theme.glow)
+        VStack(alignment: .leading, spacing: RB.m) {
+            HStack(alignment: .center, spacing: RB.m) {
+                Image(systemName: walk.symbol)
+                    .font(.subheadline.weight(.bold)).foregroundStyle(Theme.glow)
+                    .frame(width: 36, height: 36)
+                    .background(Theme.glow.opacity(0.15), in: Circle())
+                    .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(walk.summary).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                    Text(walk.summary).font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
                     Text(Self.timeRange(walk) + " · " + walk.source)
-                        .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                 }
                 Spacer(minLength: 0)
             }
             if !compact {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 92), spacing: 8)], alignment: .leading, spacing: 8) {
-                    ForEach(metrics, id: \.1) { m in
-                        VStack(alignment: .leading, spacing: 1) {
-                            Text(m.0).font(Theme.rounded(17, .bold)).foregroundStyle(.white).monospacedDigit()
-                                .lineLimit(1).minimumScaleFactor(0.7)
-                            Text(m.1).font(Theme.rounded(11, .semibold)).foregroundStyle(Theme.textDim)
-                        }
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .accessibilityElement(children: .combine)
-                    }
+                RBGrid(minimum: 92) {
+                    ForEach(metrics, id: \.1) { m in RBMetric(value: m.0, label: m.1) }
                 }
                 if walk.fromRoamr { OpenInRoamrButton(tripID: walk.id) }
             }
         }
-        .padding(14)
+        .padding(RB.m)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .rbInner()
+        .accessibilityElement(children: .contain)
     }
 }
 
@@ -146,8 +143,10 @@ struct OpenInRoamrButton: View {
             }
         } label: {
             Label(WellnessLinks.roamrInstalled ? "Open in Roamr" : "Get Roamr", systemImage: "location.north.circle.fill")
-                .font(Theme.rounded(13, .bold))
+                .font(RB.text(.footnote, .bold))
                 .foregroundStyle(Theme.glow)
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
     }
@@ -164,12 +163,11 @@ struct SyncRoamrLabel: View {
             else { Image(systemName: "arrow.triangle.2.circlepath") }
             Text(busy ? "Syncing…" : title)
         }
-        .font(Theme.rounded(15, .bold))
-        .lineLimit(1).minimumScaleFactor(0.75)
+        .font(RB.text(.subheadline, .bold))
+        .lineLimit(2)
         .foregroundStyle(Theme.glow)
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 11)
-        .background(Theme.glow.opacity(0.14), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .frame(maxWidth: .infinity, minHeight: 44)
+        .background(Theme.glow.opacity(0.15), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
     }
 }
 
@@ -178,46 +176,52 @@ struct GetRoamrCard: View {
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        HStack(spacing: 12) {
+        HStack(spacing: RB.m) {
             Image(systemName: "location.north.circle.fill")
-                .font(.system(size: 22, weight: .bold)).foregroundStyle(Theme.forestDeep)
-                .frame(width: 42, height: 42)
-                .background(Theme.leafGradient, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+                .font(.title3.weight(.bold)).foregroundStyle(Theme.forestDeep)
+                .frame(width: 44, height: 44)
+                .background(Theme.leafGradient, in: RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
+                .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
-                Text("Record walks with Roamr").font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                Text("Record walks with Roamr").font(RB.text(.subheadline, .bold)).foregroundStyle(.white)
                 Text("Your walks and hikes land under the hugs they passed. Walks other apps save to Apple Health count too.")
-                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
             if let u = WellnessLinks.storeURL(bundleID: WellnessLinks.roamrBundleID) {
                 Button("Get") { openURL(u) }
-                    .font(Theme.rounded(14, .heavy))
-                    .padding(.horizontal, 14).padding(.vertical, 7)
+                    .font(RB.text(.subheadline, .heavy))
+                    .padding(.horizontal, RB.l)
+                    .frame(minHeight: 36)
                     .background(Theme.glow, in: Capsule())
                     .foregroundStyle(Theme.forestDeep)
+                    .contentShape(Rectangle())
+                    .frame(minHeight: 44)
                     .buttonStyle(.plain)
+                    .accessibilityLabel("Get Roamr on the App Store")
             }
         }
-        .padding(12)
-        .background(Theme.card, in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+        .padding(RB.m)
+        .rbInner()
     }
 }
 
 /// A tree's page: the walks that brought you to it.
 struct TreeWalksCard: View {
     let hugs: [Hug]
+    @Environment(\.dynamicTypeSize) private var typeSize
 
     var body: some View {
         let walks = GameEngine.uniqueWalks(hugs).sorted { $0.start > $1.start }
         if !walks.isEmpty {
-            GlassCard(padding: 16) {
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Walks", symbol: "figure.walk")
-                    LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-                        StatTile(value: LinkedWalk.distance(walks.reduce(0) { $0 + $1.distanceM }), label: "\(walks.count) walk\(walks.count == 1 ? "" : "s")")
-                        StatTile(value: Format.minutes((walks.reduce(0) { $0 + $1.seconds } / 60).rounded()), label: "Walking")
-                        StatTile(value: "+" + Format.elevation(walks.reduce(0) { $0 + $1.elevGainM }), label: "Climbed")
+            RBCard {
+                VStack(alignment: .leading, spacing: RB.m) {
+                    RBSectionTitle(title: "Walks", symbol: "figure.walk")
+                    LazyVGrid(columns: rbColumns(3, typeSize), spacing: RB.s) {
+                        RBStatTile(value: LinkedWalk.distance(walks.reduce(0) { $0 + $1.distanceM }), label: "\(walks.count) walk\(walks.count == 1 ? "" : "s")")
+                        RBStatTile(value: Format.minutes((walks.reduce(0) { $0 + $1.seconds } / 60).rounded()), label: "Walking")
+                        RBStatTile(value: "+" + Format.elevation(walks.reduce(0) { $0 + $1.elevGainM }), label: "Climbed")
                     }
                     ForEach(walks.prefix(10)) { w in LinkedWalkCard(walk: w, compact: true) }
                 }
@@ -234,7 +238,7 @@ struct PastStrollsView: View {
         ScrollView {
             VStack(spacing: 10) {
                 Text("Walks Rootbound recorded before they moved to Roamr. New walks come from Roamr and show under your hugs.")
-                    .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                    .font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
                     .frame(maxWidth: .infinity, alignment: .leading)
                 ForEach(activities) { a in
                     NavigationLink { ActivityDetailView(activity: a) } label: { ActivityRow(activity: a) }
