@@ -102,7 +102,8 @@ struct TrustContent: View {
                     TrustCard(pick: pick, agreement: pick.compareName.flatMap { n in list.first { $0.metric == n } })
                 }
                 Text("Guidance is general: it's what each tracker is built to measure best. Your own agreement numbers (last 30 days) show where your two units actually line up.")
-                    .font(Lab.body(12)).foregroundStyle(Lab.faint)
+                    .font(.footnote).foregroundStyle(Lab.faint)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             .padding(.horizontal, Lab.S.m)
             .padding(.top, 8)
@@ -117,10 +118,10 @@ struct TrustContent: View {
                 SectionTag("The short version")
                 line(.whoop, "Sleep stages, resting HR, HRV, recovery")
                 line(.watch, "Steps, workouts, calories, SpO₂ spot checks, ECG")
-                HStack(alignment: .top, spacing: Lab.S.s) {
-                    Text("BOTH").font(Lab.label(9)).tracking(0.4).foregroundStyle(Lab.accent)
-                        .padding(.horizontal, 8).padding(.vertical, 4).background(Capsule().fill(Lab.accent.opacity(0.12)))
-                    Text("Respiratory rate, temperature trend").font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
+                HStack(alignment: .firstTextBaseline, spacing: Lab.S.s) {
+                    TagChip("Both", tint: Lab.accent)
+                    Text("Respiratory rate, temperature trend").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
         }
@@ -128,9 +129,10 @@ struct TrustContent: View {
     }
 
     private func line(_ s: Source, _ text: String) -> some View {
-        HStack(alignment: .top, spacing: Lab.S.s) {
+        HStack(alignment: .firstTextBaseline, spacing: Lab.S.s) {
             SourceChip(source: s)
-            Text(text).font(Lab.body(14, .semibold)).foregroundStyle(Lab.text)
+            Text(L(text)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }
@@ -145,22 +147,12 @@ struct TrustCard: View {
     var body: some View {
         LabPanel(tint: tint) {
             VStack(alignment: .leading, spacing: 10) {
-                HStack(spacing: 10) {
-                    Image(systemName: pick.symbol).font(.system(size: 15, weight: .bold)).foregroundStyle(tint)
-                        .frame(width: 30, height: 30).background(Circle().fill(tint.opacity(0.14)))
-                    Text(pick.title).font(Lab.title(17)).foregroundStyle(Lab.text)
-                    Spacer()
-                    badge
-                }
-                Text(pick.headline).font(Lab.body(15, .bold)).foregroundStyle(tint)
-                Text(pick.reason).font(Lab.body(13)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
+                CardHeader(pick.title, symbol: pick.symbol, tint: tint) { badge }
+                Text(pick.headline).font(.subheadline.weight(.bold)).foregroundStyle(tint)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(pick.reason).font(.subheadline).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                 if let why = pick.compareName.flatMap({ Compare.why[$0] }), !why.isEmpty {
-                    HStack(alignment: .top, spacing: 8) {
-                        Image(systemName: "info.circle.fill").foregroundStyle(Lab.accent).font(.system(size: 13)).padding(.top, 2)
-                        Text(why).font(.system(size: 12, design: .rounded)).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(10)
-                    .background(RoundedRectangle(cornerRadius: 12).fill(Lab.accent.opacity(0.08)))
+                    InfoBox(text: why)
                 }
                 if pick.compareName != nil { yourNumbers }
             }
@@ -169,31 +161,30 @@ struct TrustCard: View {
     }
 
     private var badge: some View {
-        Text(pick.trust.map { "TRUST \($0.short)" } ?? "BOTH FINE")
-            .font(Lab.label(9)).tracking(0.4).foregroundStyle(tint)
-            .padding(.horizontal, 8).padding(.vertical, 4)
-            .background(Capsule().fill(tint.opacity(0.12)))
+        TagChip(pick.trust.map { String(localized: "Trust \($0.label)") } ?? String(localized: "Both fine"),
+                tint: tint, symbol: pick.trust == nil ? "equal" : "checkmark")
+            .fixedSize()
     }
 
     @ViewBuilder private var yourNumbers: some View {
         Divider().overlay(Lab.line)
-        HStack(spacing: Lab.S.m) {
-            Text("YOURS · 30D").font(Lab.label(8)).tracking(0.4).foregroundStyle(Lab.faint)
-            if let a = agreement, a.n >= 3 {
+        Text("Yours · last 30 days").font(.footnote.weight(.semibold)).foregroundStyle(Lab.dim)
+        if let a = agreement, a.n >= 3 {
+            HStack(alignment: .top, spacing: Lab.S.m) {
                 if let p = a.agreePercent {
-                    stat(a.trendOnly ? "SAME WAY" : "AGREE", "\(Int(p.rounded()))%", p >= 70 ? Lab.good : p >= 45 ? Lab.warn : Lab.bad)
+                    stat(a.trendOnly ? String(localized: "Same way") : String(localized: "Agree"), "\(Int(p.rounded()))%", p >= 70 ? Lab.good : p >= 45 ? Lab.warn : Lab.bad)
                 }
                 if !a.trendOnly, let b = a.bias {
-                    stat(b >= 0 ? "WATCH +" : "WHOOP +", gap(b, a.unit), b >= 0 ? Lab.watch : Lab.whoop)
+                    stat(b >= 0 ? String(localized: "Watch higher by") : String(localized: "WHOOP higher by"), gap(b, a.unit), b >= 0 ? Lab.watch : Lab.whoop)
                 } else if let r = a.correlation {
-                    stat("R", String(format: "%.2f", r), Lab.text)
+                    stat(String(localized: "Correlation"), r.formatted(.number.precision(.fractionLength(2))), Lab.text)
                 }
-                stat("DAYS", "\(a.n)", Lab.text)
-            } else {
-                Text(agreement.map { $0.n == 0 ? "No days measured by both yet" : "Only \($0.n) day\($0.n == 1 ? "" : "s") so far · needs 3" } ?? "No data yet")
-                    .font(Lab.body(12)).foregroundStyle(Lab.faint)
+                stat(String(localized: "Days"), "\(a.n)", Lab.text)
+                Spacer(minLength: 0)
             }
-            Spacer()
+        } else {
+            Text(agreement.map { $0.n == 0 ? String(localized: "No days measured by both yet") : String(localized: "Only \($0.n) of the 3 days needed so far") } ?? String(localized: "No data yet"))
+                .font(.footnote).foregroundStyle(Lab.faint)
         }
     }
 
@@ -203,8 +194,10 @@ struct TrustCard: View {
 
     private func stat(_ l: String, _ v: String, _ c: Color) -> some View {
         VStack(alignment: .leading, spacing: 1) {
-            Text(v).font(Lab.mono(13, .heavy)).foregroundStyle(c)
-            Text(l).font(Lab.label(7)).tracking(0.4).foregroundStyle(Lab.faint)
+            Text(v).font(Lab.mono(15, .semibold)).foregroundStyle(c)
+            Text(l).font(.caption).foregroundStyle(Lab.faint)
+                .fixedSize(horizontal: false, vertical: true)
         }
+        .accessibilityElement(children: .combine)
     }
 }
