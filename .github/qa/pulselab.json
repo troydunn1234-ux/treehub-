@@ -1,21 +1,164 @@
-{"scheme": "PulseLab", "bundle": "com.troydunn.pulselab",
+{
+ "scheme": "PulseLab",
+ "bundle": "com.troydunn.pulselab",
  "shots": [
-  {"name": "01-today", "args": "-demo -pro -tab today", "wait": 9},
-  {"name": "02-alldata", "args": "-demo -pro -open alldata", "wait": 12},
-  {"name": "03-sources", "args": "-demo -pro -open sources", "wait": 10},
-  {"name": "04-logwhoop", "args": "-demo -pro -open logwhoop", "wait": 9},
-  {"name": "05-logwhoop-morning", "args": "-demo -pro -open logwhoopauto", "wait": 9},
-  {"name": "06-settings", "args": "-demo -pro -tab settings", "wait": 9},
-  {"name": "07-vs-free-teaser", "args": "-demo -free -tab vs", "wait": 9},
-  {"name": "08-paywall", "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99", "wait": 10},
-  {"name": "09-moreapps", "args": "-demo -pro -tab today -open moreapps", "wait": 12},
-  {"name": "10-today-largetype", "args": "-demo -pro -tab today", "wait": 9, "size": "accessibility-large"},
-  {"name": "11-logwhoop-largetype", "args": "-demo -pro -open logwhoop", "wait": 9, "size": "accessibility-large"},
-  {"name": "12-alldata-largetype", "args": "-demo -pro -open alldata", "wait": 12, "size": "accessibility-large"},
-  {"name": "13-today-light", "args": "-demo -pro -tab today", "wait": 9, "appearance": "light"},
-  {"name": "14-vs", "args": "-demo -pro -tab vs", "wait": 9},
-  {"name": "15-sleep", "args": "-demo -pro -tab sleep", "wait": 9},
-  {"name": "16-heart", "args": "-demo -pro -tab heart", "wait": 9},
-  {"name": "17-stack", "args": "-demo -pro -tab stack", "wait": 9},
-  {"name": "18-moves", "args": "-demo -pro -tab moves", "wait": 9}
- ]}
+  {
+   "name": "01-today",
+   "args": "-demo -pro -tab today",
+   "wait": 9
+  },
+  {
+   "name": "02-alldata",
+   "args": "-demo -pro -open alldata",
+   "wait": 12
+  },
+  {
+   "name": "03-sources",
+   "args": "-demo -pro -open sources",
+   "wait": 10
+  },
+  {
+   "name": "04-logwhoop",
+   "args": "-demo -pro -open logwhoop",
+   "wait": 9
+  },
+  {
+   "name": "05-logwhoop-morning",
+   "args": "-demo -pro -open logwhoopauto",
+   "wait": 9
+  },
+  {
+   "name": "06-settings",
+   "args": "-demo -pro -tab settings",
+   "wait": 9
+  },
+  {
+   "name": "07-vs-free-teaser",
+   "args": "-demo -free -tab vs",
+   "wait": 9
+  },
+  {
+   "name": "08-paywall",
+   "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99",
+   "wait": 10
+  },
+  {
+   "name": "09-moreapps",
+   "args": "-demo -pro -tab today -open moreapps",
+   "wait": 12
+  },
+  {
+   "name": "10-today-largetype",
+   "args": "-demo -pro -tab today",
+   "wait": 9,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "11-logwhoop-largetype",
+   "args": "-demo -pro -open logwhoop",
+   "wait": 9,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "12-alldata-largetype",
+   "args": "-demo -pro -open alldata",
+   "wait": 12,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "13-today-light",
+   "args": "-demo -pro -tab today",
+   "wait": 9,
+   "appearance": "light"
+  },
+  {
+   "name": "14-vs",
+   "args": "-demo -pro -tab vs",
+   "wait": 9
+  },
+  {
+   "name": "15-sleep",
+   "args": "-demo -pro -tab sleep",
+   "wait": 9
+  },
+  {
+   "name": "16-heart",
+   "args": "-demo -pro -tab heart",
+   "wait": 9
+  },
+  {
+   "name": "17-stack",
+   "args": "-demo -pro -tab stack",
+   "wait": 9
+  },
+  {
+   "name": "18-moves",
+   "args": "-demo -pro -tab moves",
+   "wait": 9
+  },
+  {
+   "name": "14-moves",
+   "args": "-demo -pro -tab moves",
+   "wait": 9
+  },
+  {
+   "name": "15-vs-pro",
+   "args": "-demo -pro -tab vs",
+   "wait": 9
+  },
+  {
+   "name": "16-heart",
+   "args": "-demo -pro -tab heart",
+   "wait": 9
+  },
+  {
+   "name": "17-sleep",
+   "args": "-demo -pro -tab sleep",
+   "wait": 9
+  },
+  {
+   "name": "18-readiness",
+   "args": "-demo -pro -open readiness",
+   "wait": 11
+  },
+  {
+   "name": "19-hrv-detail",
+   "args": "-demo -pro -open hrv",
+   "wait": 11
+  },
+  {
+   "name": "20-moves-largetype",
+   "args": "-demo -pro -tab moves",
+   "wait": 9,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "21-hrv-detail-largetype",
+   "args": "-demo -pro -open hrv",
+   "wait": 11,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "22-readiness-largetype",
+   "args": "-demo -pro -open readiness",
+   "wait": 11,
+   "size": "accessibility-large"
+  }
+ ],
+ "watch": {
+  "product": "PulseLabWatch",
+  "bundle": "com.troydunn.pulselab.watchkitapp",
+  "shots": [
+   {
+    "name": "w1-home",
+    "args": "-demo",
+    "wait": 8
+   },
+   {
+    "name": "w2-empty",
+    "args": "",
+    "wait": 8
+   }
+  ]
+ }
+}
