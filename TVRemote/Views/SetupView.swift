@@ -23,8 +23,8 @@ struct SetupView: View {
 
     var body: some View {
         ScrollView {
-            // Reader inside the scroll view: when a scan ends with no TV, bring "No TVs found yet" (and its
-            // Search again button) up from under the tab bar.
+            // Reader inside the scroll view: when a scan ends with no TV, "No TVs found yet" (and its
+            // Search again button) is brought up from under the tab bar (see revealNoTVs).
             ScrollViewReader { proxy in
                 VStack(spacing: Look.S.xl) {
                     if onPaired == nil {
@@ -44,7 +44,7 @@ struct SetupView: View {
                               diameter: 250)
                         .padding(.vertical, Look.S.s)
                     switch step {
-                    case .find: findStep
+                    case .find: findStep(proxy)
                     case .pin: pinStep
                     case .allow: allowStep
                     case .done: doneStep
@@ -61,17 +61,6 @@ struct SetupView: View {
                 .padding(.horizontal, Look.S.xl)
                 .padding(.top, Look.S.xl)
                 .padding(.bottom, Look.S.xxl)
-                .onChange(of: store.discovery.searching) { _, searching in
-                    guard !searching else { return }
-                    // A beat later, once the card has been laid out.
-                    Task { @MainActor in
-                        try? await Task.sleep(nanoseconds: 400_000_000)
-                        guard step == .find, !store.discovery.searching, store.discovery.found.isEmpty else { return }
-                        withAnimation(reduceMotion ? nil : .spring(response: 0.55, dampingFraction: 0.9)) {
-                            proxy.scrollTo(SetupView.noTVsID, anchor: .bottom)
-                        }
-                    }
-                }
             }
         }
         .scrollIndicators(.hidden)
@@ -83,7 +72,19 @@ struct SetupView: View {
         .sheet(isPresented: $showCompat) { CompatibilityView().presentationDetents([.large]) }
     }
 
-    private var findStep: some View {
+    /// The empty card just appeared (a scan ended with nothing, however fast): a beat later, once it's laid out,
+    /// scroll it fully into view if it's still the one showing.
+    private func revealNoTVs(_ proxy: ScrollViewProxy) {
+        Task { @MainActor in
+            try? await Task.sleep(nanoseconds: 450_000_000)
+            guard step == .find, !store.discovery.searching, store.discovery.found.isEmpty else { return }
+            withAnimation(reduceMotion ? nil : .spring(response: 0.55, dampingFraction: 0.9)) {
+                proxy.scrollTo(Self.noTVsID, anchor: .bottom)
+            }
+        }
+    }
+
+    private func findStep(_ proxy: ScrollViewProxy) -> some View {
         VStack(spacing: Look.S.l) {
             VStack(spacing: Look.S.s) {
                 CapsLabel("Step 1 of 2", color: Look.cyan)
@@ -122,6 +123,7 @@ struct SetupView: View {
                                    hint: "Check the TV is on and on the same Wi-Fi as this iPhone, then search again.",
                                    actionTitle: "Search again") { store.discovery.start() }
                         .id(SetupView.noTVsID)
+                        .onAppear { revealNoTVs(proxy) }
                         .transition(.opacity.combined(with: .scale(scale: 0.96)))
                 }
             }
