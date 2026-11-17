@@ -12,7 +12,7 @@ struct ActivityRow: View {
                 .frame(width: 64, height: 64)
                 .background(
                     LinearGradient(colors: [Theme.moss.opacity(0.9), Theme.forest], startPoint: .topLeading, endPoint: .bottomTrailing),
-                    in: RoundedRectangle(cornerRadius: 16, style: .continuous))
+                    in: RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous))
                 .overlay(alignment: .bottomTrailing) {
                     Image(systemName: activity.kind.symbol)
                         .font(.system(size: 11, weight: .bold))
@@ -52,10 +52,10 @@ struct ActivityRow: View {
         }
         .padding(14)
         .background {
-            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
-            RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Color.white.opacity(0.05))
+            RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
+            RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(Color.white.opacity(0.05))
         }
-        .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+        .overlay(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
     }

@@ -11,11 +11,13 @@ struct LiveAvatar: View {
     var overLimit: Bool = false     // driving over the speed limit → red glow, tail light, speed lines
 
     @State private var facingLeft = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private static let side: CGFloat = 80
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { timeline in
+        // Reduce Motion: the little figure holds still (the marker still moves along the route).
+        TimelineView(.animation(minimumInterval: 1.0 / 30.0, paused: reduceMotion)) { timeline in
             let t = timeline.date.timeIntervalSinceReferenceDate
             Canvas { context, size in
                 let s = min(size.width, size.height) / Self.side

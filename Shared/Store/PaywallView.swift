@@ -131,6 +131,7 @@ struct PaywallView: View {
                 HStack(alignment: .top, spacing: 14) {
                     Image(systemName: f.icon)
                         .font(.body.weight(.semibold))
+                        .dynamicTypeSize(...DynamicTypeSize.xxxLarge)   // decorative: stays inside its 38 pt tile
                         .foregroundStyle(labelColor)
                         .frame(width: 38, height: 38)
                         .background(RoundedRectangle(cornerRadius: FamilySpacing.innerRadius, style: .continuous)
