@@ -50,6 +50,14 @@ struct TreesView: View {
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.changed)) { _ in friends = FriendShare.friends }
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.incoming)) { _ in openIncoming() }
             .onAppear { openIncoming(); openPendingTree() }
+            // QA only (-demo -openTree): the busiest tree's page.
+            .task {
+                guard DemoData.isOn, ProcessInfo.processInfo.arguments.contains("-openTree") else { return }
+                try? await Task.sleep(for: .seconds(1.5))
+                if let t = trees.max(by: { $0.hugCount < $1.hugCount }) {
+                    var p = NavigationPath(); p.append(t.id); path = p
+                }
+            }
             // rootbound://tree?id=… (back from a Still Pointz breath with this tree)
             .onReceive(NotificationCenter.default.publisher(for: TreeBreaths.openTree)) { _ in openPendingTree() }
             .navigationDestination(for: UUID.self) { id in

@@ -8,92 +8,58 @@
  ],
  "shots": [
   {
-   "name": "01-home",
-   "args": "-demo -pro -tab home",
+   "name": "01-tree",
+   "args": "-demo -pro -tab trees -openTree",
    "wait": 10
   },
   {
-   "name": "02-hug-log",
-   "args": "-demo -pro -hugLog",
-   "wait": 10
-  },
-  {
-   "name": "03-celebrate",
-   "args": "-demo -pro -celebrate",
-   "wait": 12
-  },
-  {
-   "name": "04-grove",
-   "args": "-demo -pro -tab trees",
-   "wait": 10
-  },
-  {
-   "name": "05-collection",
-   "args": "-demo -pro -tab collection",
-   "wait": 10
-  },
-  {
-   "name": "06-tree",
-   "args": "-demo -pro -tab trees",
-   "url": "rootbound://tree?id=0A4C0000-0000-4000-8000-000000000001",
-   "wait": 10
-  },
-  {
-   "name": "07-hug-detail",
+   "name": "02-hug-detail",
    "args": "-demo -pro -openHug",
    "wait": 10
   },
   {
-   "name": "08-nature-roll",
+   "name": "03-nature-roll",
    "args": "-demo -pro -natureRoll",
    "wait": 10
   },
   {
-   "name": "09-home-free",
+   "name": "04-tree-free",
+   "args": "-demo -free -tab trees -openTree",
+   "wait": 10
+  },
+  {
+   "name": "05-home-free",
    "args": "-demo -free -tab home",
    "wait": 10
   },
   {
-   "name": "10-tree-free",
-   "args": "-demo -free -tab trees",
-   "url": "rootbound://tree?id=0A4C0000-0000-4000-8000-000000000001",
+   "name": "06-hug-log",
+   "args": "-demo -pro -hugLog",
    "wait": 10
   },
   {
-   "name": "11-home-largetype",
-   "args": "-demo -pro -tab home",
+   "name": "07-tree-largetype",
+   "args": "-demo -pro -tab trees -openTree",
    "wait": 10,
    "size": "accessibility-large"
   },
   {
-   "name": "12-hug-log-largetype",
+   "name": "08-hug-detail-largetype",
+   "args": "-demo -pro -openHug",
+   "wait": 10,
+   "size": "accessibility-large"
+  },
+  {
+   "name": "09-hug-log-largetype",
    "args": "-demo -pro -hugLog",
    "wait": 10,
    "size": "accessibility-large"
   },
   {
-   "name": "13-tree-largetype",
-   "args": "-demo -pro -tab trees",
-   "url": "rootbound://tree?id=0A4C0000-0000-4000-8000-000000000001",
-   "wait": 10,
-   "size": "accessibility-large"
-  },
-  {
-   "name": "14-hug-detail-largetype",
-   "args": "-demo -pro -openHug",
+   "name": "10-collection-largetype",
+   "args": "-demo -pro -tab collection",
    "wait": 10,
    "size": "accessibility-large"
   }
- ],
- "watch": {
-  "product": "RootboundWatch",
-  "bundle": "com.troydunn.rootbound.watchkitapp",
-  "shots": [
-   {
-    "name": "w1-home",
-    "args": "-demo",
-    "wait": 8
-   }
-  ]
- }
+ ]
 }
