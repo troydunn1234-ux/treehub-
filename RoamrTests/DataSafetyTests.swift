@@ -110,6 +110,8 @@ final class DataSafetyTests: XCTestCase {
 
     @MainActor
     func testTripLinksFromRootboundAreAnswered() {
+        // The test's made-up trip must not stay asked for in the host app.
+        defer { UserDefaults.standard.removeObject(forKey: DriveFinishedNotifier.pendingOpenKey) }
         XCTAssertTrue(RoamrWellness.handle(url: URL(string: "roamr://history")!))
         XCTAssertTrue(RoamrWellness.handle(url: URL(string: "roamr://trip?id=\(UUID().uuidString)")!))
         XCTAssertFalse(RoamrWellness.handle(url: URL(string: "roamr://join?c=ABC")!), "group invites go to GroupSession")

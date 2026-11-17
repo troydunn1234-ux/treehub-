@@ -161,12 +161,13 @@ struct HistoryView: View {
         }
     }
 
-    /// Opens the activity a "Drive finished" notification pointed at, if there is one waiting.
+    /// Opens the activity a "Drive finished" notification (or Rootbound's "Open in Roamr") pointed at, if there is
+    /// one waiting. The request is used up either way: a trip that isn't here any more (deleted after Rootbound
+    /// attached it as a walk) just leaves History open, instead of sending Roamr to History on every open.
     private func openPendingActivity() {
-        guard let raw = UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey),
-              let id = UUID(uuidString: raw) else { return }
-        guard activities.contains(where: { $0.id == id }) else { return }
+        guard let raw = UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) else { return }
         UserDefaults.standard.removeObject(forKey: DriveFinishedNotifier.pendingOpenKey)
+        guard let id = UUID(uuidString: raw), activities.contains(where: { $0.id == id }) else { return }
         path = NavigationPath()
         path.append(id)
     }
