@@ -36,6 +36,12 @@ struct TrackHubApp: App {
         RoamrContext.container = container
         // Apple Watch: live stats out, start/stop in.
         if !TrackDemo.isOn { RoamrWatchBridge.shared.attach(tracker: t, container: container) }
+        // Drive auto-detect is set up at launch, not when the first screen appears: when iOS wakes Roamr
+        // in the background for a cell-tower-level location change there is no window, and the wake only
+        // reaches a location manager that exists during launch. It listens with low-power signals only.
+        let detector = DriveDetector.shared
+        detector.isTracking = { [t] in t.isActive }
+        if !TrackDemo.isOn { detector.refresh() }
     }
 
     var body: some Scene {
@@ -47,6 +53,11 @@ struct TrackHubApp: App {
                 // "Go together" invite links: roamr://join?c=CODE (and the https join page form).
                 .onOpenURL { url in
                     Task { @MainActor in
+                        // roamr://track: a tap on the Live Activity or the Dynamic Island opens the live recording.
+                        if url.scheme?.lowercased() == "roamr", url.host?.lowercased() == "track" {
+                            NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
+                            return
+                        }
                         // roamr://trip?id=… / roamr://history (from Rootbound), else a group invite.
                         if RoamrWellness.handle(url: url) { return }
                         _ = GroupSession.shared.handle(url: url)

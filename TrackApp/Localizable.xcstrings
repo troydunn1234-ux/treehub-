@@ -1222,6 +1222,17 @@
         }
       }
     },
+    "MPG shows up after your second full fill-up.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El MPG aparece después de tu segundo tanque lleno."
+          }
+        }
+      }
+    },
     "Making your card": {
       "extractionState": "manual",
       "localizations": {
@@ -1559,6 +1570,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sin guardar"
+          }
+        }
+      }
+    },
+    "Not yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no"
           }
         }
       }
@@ -2384,6 +2406,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estadísticas"
+          }
+        }
+      }
+    },
+    "Stop": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detener"
           }
         }
       }

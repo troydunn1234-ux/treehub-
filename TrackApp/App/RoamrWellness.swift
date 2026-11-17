@@ -33,8 +33,7 @@ enum RoamrWellness {
         WellnessBridge.publishRoamr(trips: trips)
     }
 
-    /// roamr://trip?id=<uuid> (Rootbound "Open in Roamr") opens that recording; roamr://history opens History;
-    /// roamr://track (a tap on the Live Activity) opens the Track tab with the live recording.
+    /// roamr://trip?id=<uuid> (Rootbound "Open in Roamr") opens that recording; roamr://history opens History.
     static func handle(url: URL) -> Bool {
         guard url.scheme?.lowercased() == "roamr" else { return false }
         switch url.host?.lowercased() {
@@ -45,9 +44,6 @@ enum RoamrWellness {
             return true
         case "history":
             NotificationCenter.default.post(name: DriveFinishedNotifier.openActivityNote, object: nil)
-            return true
-        case "track":
-            NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
             return true
         default:
             return false
