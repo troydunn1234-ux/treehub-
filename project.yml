@@ -510,8 +510,8 @@ targets:
           - CFBundleURLName: com.troydunn.ridequest
             CFBundleURLSchemes: [ridequest]
         WebShellAppGroup: group.com.troydunn.ridequest
-        WebShellBackground: "#050c08"
-        WebShellAccent: "#3dff95"
+        WebShellBackground: "#0a0b0d"
+        WebShellAccent: "#74d8ad"
         WebShellSymbol: flag.checkered
         WebShellBankSync: true
         UIRequiresFullScreen: true

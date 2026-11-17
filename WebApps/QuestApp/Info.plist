@@ -38,9 +38,9 @@
 		<string>UIInterfaceOrientationPortrait</string>
 	</array>
 	<key>WebShellAccent</key>
-	<string>#3dff95</string>
+	<string>#74d8ad</string>
 	<key>WebShellBackground</key>
-	<string>#050c08</string>
+	<string>#0a0b0d</string>
 	<key>WebShellBankSync</key>
 	<true/>
 	<key>WebShellSymbol</key>

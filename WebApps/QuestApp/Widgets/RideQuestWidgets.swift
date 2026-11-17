@@ -15,10 +15,11 @@ struct RideQuestWidgets: WidgetBundle {
 private enum RQShared {
     static let appGroup = "group.com.troydunn.ridequest"
     static let key = "shell.widget"
-    static let bg = Color(red: 0.020, green: 0.047, blue: 0.031)        // #050c08
-    static let panel = Color(red: 0.063, green: 0.141, blue: 0.102)     // #10241a
-    static let neon = Color(red: 0.239, green: 1.0, blue: 0.584)        // #3dff95
-    static let dim = Color(red: 0.55, green: 0.72, blue: 0.62)
+    // The app's calm look: near-black, soft mint for progress, gray for secondary text.
+    static let bg = Color(red: 0.039, green: 0.043, blue: 0.051)        // #0a0b0d
+    static let panel = Color(red: 0.149, green: 0.165, blue: 0.188)     // #262a30
+    static let neon = Color(red: 0.455, green: 0.847, blue: 0.678)      // #74d8ad
+    static let dim = Color(red: 0.663, green: 0.686, blue: 0.722)       // #a9afb8
 
     struct Payload: Decodable {
         let name: String?
@@ -26,6 +27,10 @@ private enum RQShared {
         let goal: Double?
         let left: Double?
         let pct: Double?
+        // exact whole cents (newer app versions send these too)
+        let savedCents: Int?
+        let goalCents: Int?
+        let leftCents: Int?
     }
 
     static func load() -> Payload? {
@@ -33,15 +38,14 @@ private enum RQShared {
         return try? JSONDecoder().decode(Payload.self, from: data)
     }
 
+    /// Always exact to the cent: $8,120.55, never $8,121 or $8.1k.
     static func money(_ v: Double, short: Bool = false) -> String {
-        if short && abs(v) >= 10_000 {
-            return "$" + String(format: "%.1fk", v / 1000).replacingOccurrences(of: ".0k", with: "k")
-        }
         let f = NumberFormatter()
         f.numberStyle = .currency
         f.currencyCode = "USD"
-        f.maximumFractionDigits = abs(v) >= 1000 ? 0 : 2
-        return f.string(from: NSNumber(value: v)) ?? "$\(Int(v))"
+        f.minimumFractionDigits = 2
+        f.maximumFractionDigits = 2
+        return f.string(from: NSNumber(value: v)) ?? String(format: "$%.2f", v)
     }
 }
 
@@ -76,10 +80,12 @@ struct DreamCarProvider: TimelineProvider {
 
     private func entry() -> DreamCarEntry {
         guard let p = RQShared.load() else { return .empty(Date()) }
-        let goal = max(0, p.goal ?? 0), saved = p.saved ?? 0
+        let goal = max(0, p.goalCents.map { Double($0) / 100 } ?? p.goal ?? 0)
+        let saved = p.savedCents.map { Double($0) / 100 } ?? p.saved ?? 0
+        let leftExact = p.leftCents.map { Double($0) / 100 } ?? p.left
         let pct = p.pct ?? (goal > 0 ? saved / goal : 0)
         return DreamCarEntry(date: Date(), name: (p.name?.isEmpty == false ? p.name! : "Dream car"),
-                             saved: saved, goal: goal, left: max(0, p.left ?? (goal - saved)),
+                             saved: saved, goal: goal, left: max(0, leftExact ?? (goal - saved)),
                              pct: min(1, max(0, pct)), hasData: true)
     }
 }
@@ -88,7 +94,7 @@ struct DreamCarWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "RideQuestDreamCar", provider: DreamCarProvider()) { entry in
             DreamCarView(entry: entry)
-                .widgetURL(URL(string: "ridequest://budgets"))
+                .widgetURL(URL(string: "ridequest://home"))
                 .containerBackground(for: .widget) {
                     ZStack {
                         RQShared.bg
@@ -169,11 +175,6 @@ struct DreamCarView: View {
                 HStack {
                     header
                     Spacer()
-                    Text(entry.pct >= 1 ? "QUEST CLEAR" : "LVL \(min(10, Int(entry.pct * 10)))")
-                        .font(.system(size: 10, weight: .heavy, design: .monospaced))
-                        .foregroundStyle(RQShared.bg)
-                        .padding(.horizontal, 6).padding(.vertical, 3)
-                        .background(RQShared.neon)
                 }
                 Spacer(minLength: 0)
                 HStack(alignment: .firstTextBaseline) {
