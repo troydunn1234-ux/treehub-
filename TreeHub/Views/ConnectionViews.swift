@@ -22,9 +22,9 @@ struct TodayConnectionsCard: View {
         let moves = feed.has(WellnessConnect.roamr)
         let ready = feed.has(WellnessConnect.pulseLab)
         if calm || moves || ready {
-            GlassCard(padding: 16) {
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Today across your apps", symbol: "sun.max.fill")
+            RBCard {
+                VStack(alignment: .leading, spacing: RB.m) {
+                    RBSectionTitle(title: "Today across your apps", symbol: "sun.max.fill")
                     TimelineView(.everyMinute) { ctx in
                         LazyVGrid(columns: Array(repeating: GridItem(.flexible(), spacing: 10, alignment: .top),
                                                  count: typeSize.isAccessibilitySize ? 1 : 2),
@@ -172,9 +172,9 @@ struct TreePassingWalksCard: View {
     var body: some View {
         let walks = passing
         if !walks.isEmpty {
-            GlassCard(padding: 16) {
-                VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: "Walks past this tree", symbol: "figure.walk.motion")
+            RBCard {
+                VStack(alignment: .leading, spacing: RB.m) {
+                    RBSectionTitle(title: "Walks past this tree", symbol: "figure.walk.motion")
                     TimelineView(.everyMinute) { ctx in
                         Text(summary(walks, now: ctx.date))
                             .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)

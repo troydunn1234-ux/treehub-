@@ -51,20 +51,20 @@ struct TreeFactCard: View {
     let species: String
     var body: some View {
         if let fact = TreeFacts.fact(for: species) {
-            HStack(alignment: .top, spacing: 12) {
-                Image(systemName: "lightbulb.max.fill")
-                    .font(.system(size: 20, weight: .semibold))
-                    .foregroundStyle(Theme.glow)
-                VStack(alignment: .leading, spacing: 4) {
-                    Text("Did you know?").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow)
-                    Text(fact).font(Theme.rounded(15, .medium)).foregroundStyle(.white)
-                        .fixedSize(horizontal: false, vertical: true)
+            RBCard(tint: Theme.glow) {
+                HStack(alignment: .top, spacing: RB.m) {
+                    Image(systemName: "lightbulb.max.fill")
+                        .font(.title3.weight(.semibold))
+                        .foregroundStyle(Theme.glow)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: RB.xs) {
+                        Text("Did you know?").font(RB.text(.subheadline, .bold)).foregroundStyle(Theme.glow)
+                            .accessibilityAddTraits(.isHeader)
+                        Text(fact).font(RB.text(.body, .medium)).foregroundStyle(.white)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
                 }
             }
-            .padding(14)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(Theme.leaf.opacity(0.14), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.glow.opacity(0.25), lineWidth: 1))
         }
     }
 }

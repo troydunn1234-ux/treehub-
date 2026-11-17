@@ -36,30 +36,35 @@ struct RootboundProLock: View {
 
     var body: some View {
         Button { showPlans = true } label: {
-            HStack(spacing: 14) {
+            HStack(spacing: RB.m) {
                 ZStack(alignment: .bottomTrailing) {
                     Image(systemName: symbol)
-                        .font(.system(size: 20, weight: .bold))
+                        .font(.title3.weight(.bold))
                         .foregroundStyle(Theme.leafGradient)
-                        .frame(width: 44, height: 44)
+                        .frame(width: 48, height: 48)
                         .background(Theme.glow.opacity(0.12), in: Circle())
                     ProLockBadge(tint: Theme.gold).offset(x: 4, y: 4)
                 }
+                .accessibilityHidden(true)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text(title).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
-                    Text(message).font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
+                    Text(title).font(RB.text(.headline, .bold)).foregroundStyle(.white)
+                    Text(message).font(RB.text(.footnote)).foregroundStyle(Theme.textDim)
                         .multilineTextAlignment(.leading)
                         .fixedSize(horizontal: false, vertical: true)
+                    Text("Rootbound Pro").font(RB.text(.caption, .bold)).foregroundStyle(Theme.gold)
                 }
                 Spacer(minLength: 0)
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                Image(systemName: "chevron.right").font(.footnote.weight(.bold)).foregroundStyle(Theme.textDim)
+                    .accessibilityHidden(true)
             }
-            .padding(14)
-            .background(Theme.card, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(Theme.gold.opacity(0.35)))
+            .padding(RB.l)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RB.cardFill, in: RoundedRectangle(cornerRadius: RB.radius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: RB.radius, style: .continuous).strokeBorder(Theme.gold.opacity(0.35)))
             .contentShape(Rectangle())
         }
         .buttonStyle(.plain)
+        .accessibilityHint("Shows Rootbound Pro")
         .paywall(isPresented: $showPlans, spec: RootboundPro.spec, context: context)
     }
 }

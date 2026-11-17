@@ -26,8 +26,10 @@ struct StartHugComplicationView: View {
             case .accessoryRectangular:
                 HStack(spacing: 8) {
                     Image(systemName: "tree.fill").font(.title3).foregroundStyle(glow)
+                        .widgetAccentable()
                     VStack(alignment: .leading, spacing: 1) {
-                        Text("Rootbound").font(.headline)
+                        Text("Rootbound").font(.system(.headline, design: .rounded))
+                            .widgetAccentable()
                         Text("Tap to start a hug").font(.caption).foregroundStyle(.secondary)
                     }
                     Spacer(minLength: 0)
@@ -36,11 +38,13 @@ struct StartHugComplicationView: View {
                 Label("Start hug", systemImage: "tree.fill")
             case .accessoryCorner:
                 Image(systemName: "tree.fill").font(.title3).foregroundStyle(glow)
+                    .widgetAccentable()
                     .widgetLabel("Hug")
             default:
                 ZStack {
                     AccessoryWidgetBackground()
                     Image(systemName: "tree.fill").font(.title3).foregroundStyle(glow)
+                        .widgetAccentable()
                 }
             }
         }

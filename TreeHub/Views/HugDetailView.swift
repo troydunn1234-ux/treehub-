@@ -20,87 +20,26 @@ struct HugDetailView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: Theme.gap + 4) {
+            VStack(alignment: .leading, spacing: RB.l) {
                 hero
-                VStack(alignment: .leading, spacing: Theme.gap + 4) {
-                FlowLayout(spacing: 8) {
-                    Chip(label: "+\(hug.xp) XP", symbol: "star.fill", selected: true)
-                    if hug.barefoot { Chip(label: "Barefoot", symbol: "shoeprints.fill") }
-                    if hug.feetInWater { Chip(label: "Feet in water", symbol: "drop.fill") }
-                    if hug.waterSetting == "water" { Chip(label: "Water tree", symbol: "water.waves") }
-                    if hug.waterSetting == "edge" { Chip(label: "Water's edge", symbol: "water.waves.and.arrow.down") }
-                    if hug.strollID != nil || !hug.linkedWalks.isEmpty { Chip(label: "On a walk", symbol: "figure.walk") }
-                    ForEach(hug.tags, id: \.self) { t in Chip(label: HugTag.label(t)) }
-                    if !hug.weather.isEmpty { Chip(label: hug.weather, symbol: "cloud.sun") }
-                }
+                VStack(alignment: .leading, spacing: RB.l) {
+                    chips
+                    if hug.durationMin > 0 || hug.hasStats { hugStatsCard }
+                    breathworkSection
+                    walksSection
+                    if hug.moodBefore > 0 || hug.moodAfter > 0 { moodCard }
+                    if !hug.notes.isEmpty { notesCard }
+                    if let c = hug.coordinate { mapCard(c) }
 
-                if hug.durationMin > 0 || hug.hasStats {
-                    GlassCard {
-                        VStack(alignment: .leading, spacing: 12) {
-                            SectionHeader(title: "The hug", symbol: hug.fromWatch ? "applewatch" : "heart.fill")
-                            LazyVGrid(columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)], spacing: 8) {
-                                if hug.durationMin > 0 { StatTile(value: Format.minutes(hug.durationMin), label: "Time") }
-                                if hug.avgHR != nil { StatTile(value: Format.number(hug.avgHR), label: "Avg HR") }
-                                if hug.minHR != nil { StatTile(value: Format.number(hug.minHR), label: "Low HR") }
-                                if hug.maxHR != nil { StatTile(value: Format.number(hug.maxHR), label: "Max HR") }
-                                if let drop = hug.hrDrop { StatTile(value: String(format: "%+.0f", -drop), label: "HR change", tint: Theme.sky) }
-                                if let v = hug.hrv { StatTile(value: String(format: "%.0f ms", v), label: "HRV", tint: Theme.sky) }
-                                if hug.respRate != nil { StatTile(value: Format.number(hug.respRate), label: "Breaths/min") }
-                            }
-                            if hug.fromWatch {
-                                Text("Timed on your Apple Watch").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
-                            }
-                        }
+                    Button { editing = true } label: { Label("Edit hug", systemImage: "pencil") }
+                        .buttonStyle(RBPrimaryButtonStyle())
+                        .padding(.top, RB.s)
+                    Button(role: .destructive) { confirmDelete = true } label: {
+                        Label("Delete hug", systemImage: "trash")
                     }
+                    .buttonStyle(RBDestructiveButtonStyle())
                 }
-
-                breathworkSection
-
-                walksSection
-
-                if hug.moodBefore > 0 || hug.moodAfter > 0 {
-                    GlassCard {
-                        HStack {
-                            Text("Mood").font(Theme.rounded(15, .bold))
-                            Spacer()
-                            Text(mood(hug.moodBefore)).font(.system(size: 30))
-                            Image(systemName: "arrow.right").foregroundStyle(Theme.textDim)
-                            Text(mood(hug.moodAfter)).font(.system(size: 30))
-                        }
-                    }
-                }
-
-                if !hug.notes.isEmpty {
-                    GlassCard {
-                        Text(hug.notes).font(.system(size: 16, design: .serif)).foregroundStyle(.white)
-                    }
-                }
-
-                if let c = hug.coordinate {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 400, longitudinalMeters: 400))) {
-                            Annotation(hug.treeName, coordinate: c) { TreePin(photo: hug.treePhoto) }
-                        }
-                        .mapStyle(.hybrid(elevation: .realistic))
-                        .frame(height: 200)
-                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-                        HStack {
-                            Text(hug.placeName.isEmpty ? Format.coord(c) : hug.placeName)
-                                .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
-                            Spacer()
-                            Button("Directions") { MapsLink.open(c, name: hug.treeName) }
-                                .font(Theme.rounded(14, .bold))
-                        }
-                    }
-                }
-
-                Button { editing = true } label: { Label("Edit hug", systemImage: "pencil") }
-                    .buttonStyle(PrimaryButtonStyle())
-                Button(role: .destructive) { confirmDelete = true } label: {
-                    Label("Delete hug", systemImage: "trash").font(Theme.rounded(15, .bold)).frame(maxWidth: .infinity)
-                }
-                }
-                .padding(.horizontal, Theme.pad)
+                .padding(.horizontal, RB.screen)
             }
             .padding(.bottom, 130)
         }
@@ -117,10 +56,8 @@ struct HugDetailView: View {
                 if let ui = UIImage(data: item.data) {
                     Image(uiImage: ui).resizable().scaledToFit().frame(maxWidth: .infinity, maxHeight: .infinity)
                 }
-                Button { fullPhoto = nil } label: {
-                    Image(systemName: "xmark.circle.fill").font(.system(size: 32)).foregroundStyle(.white, .black.opacity(0.5))
-                }
-                .padding()
+                RBIconButton(symbol: "xmark", label: "Close photo") { fullPhoto = nil }
+                    .padding()
             }
         }
         .alert("Delete this hug?", isPresented: $confirmDelete) {
@@ -136,6 +73,114 @@ struct HugDetailView: View {
         } message: {
             Text("Its XP and leaf go with it.")
         }
+    }
+
+    // MARK: Sections
+
+    /// What came with the hug: XP, Watch, grounding, walk, weather and tags.
+    private var chips: some View {
+        FlowLayout(spacing: RB.s) {
+            RBInfoChip(text: "+\(hug.xp) XP", symbol: "star.fill", tint: Theme.gold)
+            if hug.fromWatch { RBInfoChip(text: "Apple Watch", symbol: "applewatch") }
+            if hug.barefoot { RBInfoChip(text: "Barefoot", symbol: "shoeprints.fill") }
+            if hug.feetInWater { RBInfoChip(text: "Feet in water", symbol: "drop.fill", tint: Theme.sky) }
+            if hug.waterSetting == "water" { RBInfoChip(text: "Water tree", symbol: "water.waves", tint: Theme.sky) }
+            if hug.waterSetting == "edge" { RBInfoChip(text: "Water's edge", symbol: "water.waves.and.arrow.down", tint: Theme.sky) }
+            if hug.strollID != nil || !hug.linkedWalks.isEmpty { RBInfoChip(text: "On a walk", symbol: "figure.walk") }
+            if !hug.weather.isEmpty { RBInfoChip(text: hug.weather, symbol: "cloud.sun.fill", tint: .white) }
+            ForEach(hug.tags, id: \.self) { t in RBInfoChip(text: HugTag.label(t), tint: .white) }
+        }
+    }
+
+    /// The hug's own numbers (timer and heart data from the Watch / Apple Health), one stat block each.
+    private var hugStatsCard: some View {
+        RBCard {
+            VStack(alignment: .leading, spacing: RB.m) {
+                RBSectionTitle(title: "The hug", symbol: hug.fromWatch ? "applewatch" : "heart.fill")
+                RBGrid(minimum: 100) {
+                    if hug.durationMin > 0 { RBStatTile(value: Format.minutes(hug.durationMin), label: "Time", symbol: "timer") }
+                    if let a = hug.hrStart, let b = hug.hrEnd {
+                        RBStatTile(value: "\(Int(a.rounded()))→\(Int(b.rounded()))", label: "HR start→end", symbol: "heart.fill")
+                    }
+                    if let drop = hug.hrDrop {
+                        RBStatTile(value: String(format: "%+.0f bpm", -drop), label: "HR change", symbol: "arrow.down.heart.fill", tint: Theme.sky)
+                    }
+                    if let v = hug.hrv { RBStatTile(value: String(format: "%.0f ms", v), label: "HRV", symbol: "waveform.path.ecg", tint: Theme.sky) }
+                    // Every tile carries a symbol so the rows stay the same height.
+                    if hug.avgHR != nil { RBStatTile(value: Format.number(hug.avgHR), label: "Avg bpm", symbol: "heart") }
+                    if hug.minHR != nil { RBStatTile(value: Format.number(hug.minHR), label: "Low bpm", symbol: "arrow.down") }
+                    if hug.maxHR != nil { RBStatTile(value: Format.number(hug.maxHR), label: "Max bpm", symbol: "arrow.up") }
+                    if hug.respRate != nil { RBStatTile(value: Format.number(hug.respRate), label: "Breaths/min", symbol: "lungs.fill", tint: Theme.sky) }
+                }
+                if hug.fromWatch {
+                    Label("Timed on your Apple Watch", systemImage: "applewatch")
+                        .font(RB.text(.caption)).foregroundStyle(Theme.textDim)
+                }
+            }
+        }
+    }
+
+    /// Before → after, each face only when it was picked.
+    private var moodCard: some View {
+        RBCard {
+            HStack(spacing: RB.m) {
+                RBSectionTitle(title: "Mood", symbol: "face.smiling")
+                if hug.moodBefore > 0 {
+                    Text(mood(hug.moodBefore)).font(.largeTitle)
+                }
+                if hug.moodBefore > 0 && hug.moodAfter > 0 {
+                    Image(systemName: "arrow.right").font(.headline).foregroundStyle(Theme.textDim)
+                }
+                if hug.moodAfter > 0 {
+                    Text(mood(hug.moodAfter)).font(.largeTitle)
+                }
+            }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(moodLabel)
+        }
+    }
+
+    private var moodLabel: String {
+        switch (hug.moodBefore > 0, hug.moodAfter > 0) {
+        case (true, true): return "Mood \(hug.moodBefore) before, \(hug.moodAfter) after, out of 5"
+        case (true, false): return "Mood before: \(hug.moodBefore) out of 5"
+        default: return "Mood after: \(hug.moodAfter) out of 5"
+        }
+    }
+
+    private var notesCard: some View {
+        RBCard {
+            VStack(alignment: .leading, spacing: RB.s) {
+                RBSectionTitle(title: "Notes", symbol: "text.quote")
+                Text(hug.notes).font(.system(.body, design: .serif)).foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    private func mapCard(_ c: CLLocationCoordinate2D) -> some View {
+        RBCard(padding: 0) {
+            VStack(alignment: .leading, spacing: 0) {
+                Map(initialPosition: .region(MKCoordinateRegion(center: c, latitudinalMeters: 400, longitudinalMeters: 400))) {
+                    Annotation(hug.treeName, coordinate: c) { TreePin(photo: hug.treePhoto) }
+                }
+                .mapStyle(.hybrid(elevation: .realistic))
+                .frame(height: 180)
+                .accessibilityLabel("Map of \(hug.treeName)")
+                HStack(spacing: RB.m) {
+                    Label(hug.placeName.isEmpty ? Format.coord(c) : hug.placeName, systemImage: "mappin.and.ellipse")
+                        .font(RB.text(.footnote, .semibold)).foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: RB.s)
+                    Button("Directions") { MapsLink.open(c, name: hug.treeName) }
+                        .font(RB.text(.subheadline, .bold))
+                        .frame(minHeight: 44)
+                }
+                .padding(.horizontal, RB.l)
+                .padding(.vertical, RB.xs)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: RB.radius, style: .continuous))
     }
 
     private func refresh() async {
@@ -166,7 +211,7 @@ struct HugDetailView: View {
                     .tabViewStyle(.page(indexDisplayMode: photos.count > 1 ? .always : .never))
                 }
             }
-            .frame(height: 460)
+            .frame(height: 440)
             .overlay {
                 LinearGradient(stops: [
                     .init(color: .black.opacity(0.45), location: 0),
@@ -179,15 +224,16 @@ struct HugDetailView: View {
 
             HStack(alignment: .bottom) {
                 VStack(alignment: .leading, spacing: 4) {
-                    Text(Format.dayTime(hug.date).uppercased())
-                        .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1.2)
+                    Text(Format.dayTime(hug.date))
+                        .font(RB.text(.subheadline, .semibold))
                         .foregroundStyle(Theme.glow)
                     Text(hug.treeName)
-                        .font(Theme.title(36))
+                        .font(Theme.title(34))
                         .foregroundStyle(.white)
-                        .shadow(color: .black.opacity(0.4), radius: 8, y: 3)
-                    if !hug.species.isEmpty {
-                        Text(hug.species).font(Theme.rounded(15, .semibold)).foregroundStyle(.white.opacity(0.8))
+                        .accessibilityAddTraits(.isHeader)
+                    if !hug.species.isEmpty || !hug.placeName.isEmpty {
+                        Text([hug.species, hug.placeName].filter { !$0.isEmpty }.joined(separator: " · "))
+                            .font(RB.text(.subheadline, .medium)).foregroundStyle(.white.opacity(0.8))
                     }
                 }
                 Spacer()
@@ -196,30 +242,30 @@ struct HugDetailView: View {
                         LeafView(leaf: leaf, size: 54)
                         RarityLabel(rarity: leaf.rarity)
                     }
-                    .padding(10)
-                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    .padding(RB.m)
+                    .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: RB.radius, style: .continuous))
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("Leaf found: \(leaf.name), \(leaf.rarity.title)")
                 }
             }
-            .padding(.horizontal, Theme.pad)
-            .padding(.bottom, 4)
+            .padding(.horizontal, RB.screen)
+            .padding(.bottom, RB.xs)
         }
     }
 
     /// Every Still Pointz / Health session linked to this hug, one card each, with totals. Refreshed on open.
     @ViewBuilder private var breathworkSection: some View {
         let sessions = hug.linkedSessions
-        if !sessions.isEmpty || refreshing {
-            GlassCard {
-                VStack(alignment: .leading, spacing: 12) {
-                    HStack {
-                        SectionHeader(title: "Breathwork", symbol: "wind")
-                        if refreshing { ProgressView().controlSize(.small) }
-                    }
+        // Skeleton only while an older hug (no list yet) has its sessions looked up for the first time.
+        if !sessions.isEmpty || (refreshing && !hug.hasLinkList) {
+            RBCard {
+                VStack(alignment: .leading, spacing: RB.m) {
+                    RBSectionTitle(title: sessions.count > 1 ? "Breathwork · \(sessions.count) sessions" : "Breathwork", symbol: "wind", tint: Theme.sky)
                     if sessions.count > 1 { LinkedSessionTotals(sessions: sessions) }
                     ForEach(sessions) { s in LinkedSessionCard(session: s) }
                     if sessions.isEmpty {
-                        Text("Looking for breath sessions around this hug…")
-                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                        RBSkeletonRow()
+                        RBSkeletonRow()
                     }
                 }
             }
@@ -230,9 +276,9 @@ struct HugDetailView: View {
     @ViewBuilder private var walksSection: some View {
         let walks = hug.linkedWalks
         if !walks.isEmpty {
-            GlassCard {
+            RBCard {
                 VStack(alignment: .leading, spacing: 12) {
-                    SectionHeader(title: walks.count == 1 ? "Walk" : "Walks", symbol: walks.first?.symbol ?? "figure.walk")
+                    RBSectionTitle(title: walks.count == 1 ? "Walk" : "Walks", symbol: walks.first?.symbol ?? "figure.walk")
                     ForEach(walks) { w in LinkedWalkCard(walk: w) }
                 }
             }
