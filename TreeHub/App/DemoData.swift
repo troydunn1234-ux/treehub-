@@ -60,6 +60,8 @@ enum DemoData {
                                         startHR: 68 + Double(i), hrDrop: 17, hrv: 48 - Double(i) * 2,
                                         respRate: 5.5 + Double(i) * 0.3)
             session.endHR = 54 + Double(i)
+            session.calmSeconds = p.3 * 60 * 0.7
+            session.pacedBPM = 5.5
             h.linkedSessions = [session]
             h.moodBefore = 3
             h.moodAfter = p.6

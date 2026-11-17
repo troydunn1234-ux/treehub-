@@ -83,8 +83,8 @@ struct SessionPickerSheet: View {
     }
 }
 
-/// One linked breath session as a stat block: practice + time, then HR start→end, drop, HRV, avg, low, end HR and
-/// breathing rate — each only when it's known.
+/// One linked breath session as a stat block: practice + time, then HR start→end, drop, HRV, avg, low, max,
+/// breathing rate, calm-zone time and paced breathing — each only when it's known.
 struct LinkedSessionCard: View {
     let session: LinkedSession
     var compact = false
@@ -110,6 +110,9 @@ struct LinkedSessionCard: View {
         if let v = session.minHR { m.append((Self.bpm(v), "Low bpm", .white)) }
         if let v = session.maxHR { m.append((Self.bpm(v), "Max bpm", .white)) }
         if let v = session.respRate { m.append((String(format: "%.1f", v), "Breaths/min", Theme.sky)) }
+        // Still Pointz (newer builds): time below the starting heart rate and the practice's paced breathing.
+        if let v = session.calmSeconds, v > 0 { m.append((Format.duration(v), "Calm zone", Theme.glow)) }
+        if let v = session.pacedBPM, v > 0 { m.append((String(format: "%.1f", v), "Paced breaths/min", Theme.sky)) }
         return m
     }
 
