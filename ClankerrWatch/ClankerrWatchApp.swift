@@ -334,10 +334,11 @@ struct PadPage: View {
     private func key(_ symbol: String, _ cmd: String, _ label: String, haptic: WKHapticType = .click) -> some View {
         Button { link.press(cmd, haptic: haptic) } label: {
             Image(systemName: symbol)
-                .font(.system(size: 14, weight: .heavy))
+                .font(.system(size: 15, weight: .heavy))
                 .foregroundStyle(.white)
-                .frame(maxWidth: .infinity, minHeight: 34)
+                .frame(maxWidth: .infinity, minHeight: 38)
                 .background(Color.white.opacity(0.1), in: Capsule())
+                .contentShape(Capsule())
         }
         .buttonStyle(.plain)
         .accessibilityLabel(label)
