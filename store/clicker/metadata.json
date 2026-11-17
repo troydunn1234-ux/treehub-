@@ -1,42 +1,42 @@
 {
-  "subtitle": "Every TV. One remote.",
-  "promotionalText": "One remote for VIZIO, Roku, Samsung, LG and Google TV. Tap a tile and your show opens on the big screen. Pay once: no ads, no subscription, no tracking.",
-  "description": "Couch Remote turns your iPhone into a fast, gorgeous remote for the smart TVs in your house, and your Windows PC too. Pay once, keep it forever. No ads, no subscription, no tracking.\n\nWORKS WITH\n• VIZIO SmartCast TVs (2016 and newer)\n• Roku TVs and Roku players: TCL, Hisense, onn., Sharp, Insignia Roku TVs, plus every Roku stick and box\n• Samsung Smart TVs (Tizen, 2016 and newer)\n• LG Smart TVs (webOS, 2014 and newer)\n• Google TV and Android TV: Sony, TCL and Hisense Google TV, Philips Android TV, Chromecast with Google TV, Nvidia Shield\nYour phone and TV must be on the same Wi-Fi.\nDoesn't work with: Amazon Fire TV, Apple TV, game consoles, or older TVs without built-in smart features.\n\nTAP A TILE, IT OPENS ON THE TV\nYour streaming apps live on big glowing tiles. Tap one and it launches on your TV in a second. Pick from more than 100 apps.\n\nA REMOTE THAT FEELS GOOD\nSwipe anywhere on the pad to move, tap to select. Back, Home and Menu are one tap away, plus play/pause, skip, a big volume rocker you can hold, mute, input and power.\n\nEVERY TV IN THE HOUSE\nAdd the living room Samsung, the bedroom Roku and the basement VIZIO. Switch TVs with one tap. Moved a TV or changed your router? Couch Remote finds it again on its own.\n\nON YOUR WRIST\nSteer, change the volume with the Digital Crown and open apps from your Apple Watch.\n\nYOUR PC, FROM BED\nInstall the free PC companion and your phone becomes a trackpad and keyboard for your Windows PC: move the mouse, scroll, type, control media and volume, and open apps.\n\nSET UP IN SECONDS\nCouch Remote finds your TV on your Wi-Fi automatically. Depending on the TV you type the code it shows, choose Allow on the TV, or nothing at all.\n\nPRIVATE BY DESIGN\nNo account, no ads, no servers. Couch Remote talks only to your TV and your PC, directly over your home network.\n\nCouch Remote is an independent app and is not affiliated with or endorsed by VIZIO, Roku, Samsung, LG, Google or Microsoft. These names, and streaming service names, are trademarks of their owners and are used only to describe compatibility.",
-  "keywords": "tv remote,smart tv,universal remote,wifi remote,remote control,streaming,pc remote,trackpad,couch,launcher",
+  "subtitle": "Smart TV remote & app launcher",
+  "promotionalText": "New: scenes, a sleep timer and Siri volume control. Free to download for VIZIO, Roku, Samsung, LG and Google TV; Pro adds every TV, typing and your PC.",
+  "description": "Couch Remote turns your iPhone into a fast, simple remote for the smart TVs in your home, and your Windows PC too. Free to download, with no ads and no tracking.\n\nWORKS WITH\n• VIZIO SmartCast TVs (2016 and newer)\n• Roku TVs and Roku players: TCL, Hisense, onn., Sharp and Insignia Roku TVs, plus every Roku stick and box\n• Samsung Smart TVs (Tizen, 2016 and newer)\n• LG Smart TVs (webOS, 2014 and newer)\n• Google TV and Android TV: Sony, TCL and Hisense Google TV, Philips Android TV, Chromecast with Google TV, Nvidia Shield\nYour phone and TV must be on the same Wi-Fi.\nDoesn't work with: Amazon Fire TV, Apple TV, game consoles, or older TVs without built-in smart features.\n\nTAP A TILE, IT OPENS ON THE TV\nYour streaming apps live on big tiles. Tap one and it opens on your TV in about a second. Build your wall from more than 100 apps and drag them into your own order.\n\nA REMOTE THAT FEELS RIGHT\nSwipe anywhere on the pad to move, tap to select. Back, Home and Menu are one tap away, plus play/pause, skip, a volume rocker you can hold, mute, input and power.\n\nSCENES AND SLEEP TIMER\nRun several steps with one tap, like turning the TV on and opening your movie app, or switching the TV and PC off at bedtime. Set a sleep timer and Couch Remote turns the TV off when it ends, or a notification lets you do it with one tap.\n\nEVERY TV IN THE HOUSE\nAdd the living room Samsung, the bedroom Roku and the basement VIZIO, and switch between them with one tap. Moved a TV or changed your router? Couch Remote finds it again on its own.\n\nTYPE ON YOUR TV\nSearch with your phone's keyboard instead of pecking at an on-screen grid.\n\nYOUR PC, FROM THE COUCH\nInstall the free PC companion and your phone becomes a trackpad and keyboard for your Windows PC: move the mouse, scroll, type, control media and volume, open apps, and put it to sleep.\n\nAPPLE WATCH, SIRI AND CONTROL CENTER\nSteer, change the volume with the Digital Crown and open apps from your Apple Watch. Ask Siri to set the volume, mute or open an app, and keep remote buttons in Control Center.\n\nSET UP IN SECONDS\nCouch Remote finds your TV on your Wi-Fi automatically. Depending on the TV you type the code it shows, choose Allow on the TV, or nothing at all. No TV nearby? Try the demo first.\n\nFREE AND PRO\nThe full remote, the app launcher, the sleep timer and two scenes for one TV are free. Couch Remote Pro is a one-time purchase, with no subscription, that adds unlimited TVs, typing on your TV, the PC remote and unlimited scenes. Try every Pro feature free for 7 days. Bought Couch Remote when it was a paid app? Pro is already yours; if it doesn't show, tap Restore.\n\nPRIVATE BY DESIGN\nNo account, no ads, no servers. Couch Remote talks only to your TV and your PC, directly over your home network.\n\nCouch Remote is an independent app and is not affiliated with or endorsed by VIZIO, Roku, Samsung, LG, Google or Microsoft. These names, and streaming service names, are trademarks of their owners and are used only to describe compatibility.",
+  "keywords": "universal,wifi,control,streaming,pc,trackpad,keyboard,mouse,sleep timer,volume,television,media",
   "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/PRIVACY.md",
   "supportUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/clicker/SUPPORT.md",
   "primaryCategory": "UTILITIES",
   "secondaryCategory": "ENTERTAINMENT",
-  "price": "2.99",
+  "price": "0.0",
   "shots": [
     {
       "file": "clicker-1-apps.png",
-      "eyebrow": "One tap launch",
-      "line1": "Tap a tile.",
-      "line2": "It's on TV.",
-      "sub": "Works with VIZIO, Roku, Samsung, LG, Google TV.",
+      "eyebrow": "Couch Remote",
+      "line1": "Tap a tile,",
+      "line2": "it's on TV.",
+      "sub": "For VIZIO, Roku, Samsung, LG and Google TV.",
       "chips": [
         "100+ streaming apps",
-        "Live now playing"
+        "Now playing"
       ]
     },
     {
       "file": "clicker-2-remote.png",
-      "eyebrow": "The remote",
+      "eyebrow": "Remote",
       "line1": "Swipe to",
       "line2": "steer.",
-      "sub": "A pad, a rocker, zero hunting.",
+      "sub": "Swipe pad, volume rocker and every button.",
       "chips": [
-        "Swipe + tap pad",
+        "Swipe and tap pad",
         "Hold-to-repeat volume"
       ]
     },
     {
       "file": "clicker-5-picker.png",
-      "eyebrow": "Your wall",
+      "eyebrow": "App Wall",
       "line1": "Build your",
       "line2": "app wall.",
-      "sub": "150 apps. Pick, drag, done.",
+      "sub": "Pick from 100+ apps and drag them into place.",
       "chips": [
         "Movies, sports, kids",
         "Drag to reorder"
@@ -44,21 +44,21 @@
     },
     {
       "file": "clicker-3-pc.png",
-      "eyebrow": "PC control",
+      "eyebrow": "PC Remote",
       "line1": "Your PC,",
       "line2": "from bed.",
       "sub": "Trackpad, keyboard and media keys.",
       "chips": [
-        "Trackpad + scroll",
+        "Trackpad and scroll",
         "Open any app"
       ]
     },
     {
       "file": "clicker-4-switcher.png",
       "eyebrow": "Every TV",
-      "line1": "Every brand.",
-      "line2": "One remote.",
-      "sub": "Living room Samsung, bedroom Roku. Switch in a tap.",
+      "line1": "Every brand,",
+      "line2": "one remote.",
+      "sub": "Switch between every TV in the house in a tap.",
       "chips": [
         "Auto reconnect",
         "Mix any brands"
@@ -66,13 +66,13 @@
     },
     {
       "file": "clicker-0-setup.png",
-      "eyebrow": "Private by design",
+      "eyebrow": "Setup",
       "line1": "Pair in",
       "line2": "seconds.",
-      "sub": "Finds VIZIO, Roku, Samsung, LG and Google TV.",
+      "sub": "Finds your TV on Wi-Fi automatically.",
       "chips": [
         "5 TV brands",
-        "Pay once, own it"
+        "No account needed"
       ]
     }
   ],

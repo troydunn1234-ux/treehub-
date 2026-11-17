@@ -1,12 +1,14 @@
 # Couch Remote Privacy Policy
 
-_Last updated: November 8, 2026_
+_Last updated: November 16, 2026_
 
 Couch Remote (formerly Clankerr) is a remote control for your TV and PC. It is built to collect nothing.
 
 **What Couch Remote does**
 - Finds your TVs (VIZIO, Roku, Samsung, LG, Google TV / Android TV) and, if you use it, your PC on your home Wi-Fi, and talks to them directly over your local network.
-- Stores the pairing keys your TVs and PC give it in your iPhone's Keychain, and your list of TVs and chosen apps on your iPhone.
+- Stores the pairing keys your TVs and PC give it in your iPhone's Keychain, and your list of TVs, chosen apps, scenes and settings on your iPhone.
+- The Apple Watch app gets your TV list and sends its button presses through your iPhone over Apple's Watch connection.
+- The sleep timer uses a notification scheduled on your iPhone.
 
 **What Couch Remote does not do**
 - No accounts, sign-ups or logins.
@@ -15,6 +17,9 @@ Couch Remote (formerly Clankerr) is a remote control for your TV and PC. It is b
 
 **Local network access**
 iOS asks for permission to find devices on your local network. Couch Remote uses it only to find and control your TVs and PC.
+
+**Purchases**
+Couch Remote Pro and its free trial are handled entirely by Apple. We never see your payment details.
 
 **Deleting your data**
 Use "Forget" on a TV in the app, or delete the app. Everything Couch Remote stored is removed.

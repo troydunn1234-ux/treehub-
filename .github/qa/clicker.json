@@ -7,7 +7,10 @@
   {"name": "05-paywall", "args": "-demo -paywall -demoPrice 2.99", "wait": 9},
   {"name": "06-moreapps", "args": "-demo -pro -open moreapps", "wait": 12},
   {"name": "07-remote-largetype", "args": "-demo -pro -remote", "wait": 8, "size": "accessibility-large"},
-  {"name": "08-noonboarding", "args": "-noOnboarding", "wait": 8}
+  {"name": "08-noonboarding", "args": "-noOnboarding", "wait": 8},
+  {"name": "09-picker", "args": "-demo -pro -picker", "wait": 8},
+  {"name": "10-pc", "args": "-demo -pro -pc", "wait": 8},
+  {"name": "11-switcher", "args": "-demo -pro -switcher", "wait": 8}
  ],
  "watch": {"product": "ClankerrWatch", "bundle": "com.troydunn.clicker.watchkitapp",
    "shots": [{"name": "w1-home", "args": "-demo", "wait": 8}, {"name": "w2-nophone", "args": "", "wait": 8}]}}

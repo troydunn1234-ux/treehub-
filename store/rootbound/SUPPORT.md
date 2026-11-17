@@ -18,11 +18,14 @@ Rootbound doesn't record walks any more. Record them in Roamr (or any app that s
 **Where are the strolls I recorded in Rootbound?**
 They're kept: Settings (gear on Home) › Walks › Past strolls.
 
+**What is Nature Roll?**
+Tap Nature Roll on Home (or in the Grove). Rootbound looks through your photo library on your iPhone and sorts out the nature shots: sunsets, trails, mountains, forests, water, sky and stars, wildlife and flowers. Nothing is uploaded. Pick Strict, Balanced or Everything to choose how picky it is, tap "Not nature" on any photo it got wrong, or turn a photo into a hug. It works with full or limited photo access.
+
 **My hugs aren't on my new phone**
 Sign in to the same iCloud account and keep iCloud Drive on. Syncing can take a few minutes.
 
 **What does Rootbound Pro add?**
-A one-time purchase (no subscription) that adds tree selfies, tree insights and CSV / GPX export. Everything else is free. Bought Pro on another device? Open Settings (gear on Home) › Restore Purchases.
+A one-time purchase (no subscription) that adds tree selfies, tree insights, CSV / GPX export, and the Nature Roll map and Photos albums. Everything else is free. Bought Pro on another device? Open Settings (gear on Home) › Restore Purchases.
 
 **Contact**
 Open an issue: https://github.com/troydunn1234-ux/treehub-/issues

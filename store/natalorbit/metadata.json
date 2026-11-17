@@ -12,10 +12,10 @@
   "shots": [
     {
       "file": "natal-1-chart.png",
-      "eyebrow": "Your birth sky",
+      "eyebrow": "Natal Orbit",
       "line1": "Born under",
       "line2": "this sky.",
-      "sub": "A real ephemeris, drawn in 3D. Spin it, fly through it.",
+      "sub": "A real ephemeris, drawn in 3D.",
       "chips": [
         "Every planet, exact degree",
         "Pinch, spin, orbit"
@@ -26,7 +26,7 @@
       "eyebrow": "Today",
       "line1": "Today, from",
       "line2": "real skies.",
-      "sub": "Where the planets are right now, against your chart.",
+      "sub": "The planets right now, against your chart.",
       "chips": [
         "Moon phase + sign",
         "Year ahead"
@@ -35,9 +35,9 @@
     {
       "file": "natal-3-three.png",
       "eyebrow": "Big Three",
-      "line1": "Sun. Moon.",
-      "line2": "Rising.",
-      "sub": "Who you are, what you need, how you come across.",
+      "line1": "Sun, Moon",
+      "line2": "and Rising.",
+      "sub": "Who you are, what you need, how you seem.",
       "chips": [
         "Plain-English reads",
         "Placidus or Whole Sign"

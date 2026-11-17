@@ -12,6 +12,12 @@ Start a group with the people button on the Track tab, then share the invite lin
 **Speed limit looks wrong**
 Speed limits come from OpenStreetMap. Roads without a posted limit show an estimate, marked as estimated. Always follow the posted signs.
 
+**The trip map is dark**
+Trips open on the Night map. Tap the map style button on a trip to switch to Day, Satellite or Hybrid.
+
+**How does the gas log work out MPG?**
+Open Roamr › Settings › Gas & MPG (or ask Siri to "Log gas in Roamr") and add each fill-up with gallons and the price. After two full fill-ups, Roamr works out MPG from the odometer readings, or, if you skip the odometer, from the drives it recorded in between.
+
 **Heart rate is missing on a trip**
 Roamr reads heart rate and workouts from Apple Health: Settings › Health › Data Access & Devices › Roamr › Turn On All.
 

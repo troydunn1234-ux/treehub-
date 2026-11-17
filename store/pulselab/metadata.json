@@ -4,9 +4,9 @@
   "scheme": "PulseLab",
   "name": "Pulse Lab: Tracker Face-Off",
   "subtitle": "Compare sleep, HRV & recovery",
-  "promotionalText": "Wear a smartwatch and a WHOOP? See which one you can trust: resting heart rate, HRV, sleep, SpO₂ and calories side by side, day by day.",
-  "keywords": "wearable,hrv,sleep tracker,heart rate,recovery,strain,resting hr,spo2,compare,supplements,readiness",
-  "description": "Pulse Lab puts your Apple Watch data and your WHOOP data side by side, so you can finally see where they agree, where they split, and which one to trust for each number.\n\nTODAY AT A GLANCE\nRecovery, readiness, sleep, resting heart rate, HRV and strain from both trackers on one screen, with a plain-English Lab note about what stands out today.\n\nSLEEP, HEART AND MOVES\nSleep stages and duration, resting heart rate, HRV, respiratory rate, blood oxygen, wrist temperature, steps, active calories and workouts. Every chart shows both trackers in their own colors.\n\nTHE VS LAB\nDay-by-day agreement scores for resting heart rate, HRV, sleep, SpO₂, respiratory rate, temperature and calories, and a running scoreboard of who's winning. \"Who to trust\" explains which tracker is the better source for each metric, backed by your own numbers.\n\nYOUR SUPPLEMENT STACK\nList what you take, check it off each day and Pulse Lab saves it to the Health app as nutrients (vitamin D, magnesium and more). Stack insights compare the next morning's recovery after days you took something versus days you didn't.\n\nEVERY NUMBER, IN ONE PLACE\nThe All data screen lists every metric Pulse Lab syncs with a 7-day sparkline and where it came from. Data check shows exactly what is arriving from the Health app and from WHOOP, so an empty chart is never a mystery.\n\nLOG WHOOP BY HAND\nNo WHOOP connection? Type in the morning's recovery, sleep and strain in seconds, from a morning reminder or with Siri.\n\nSHARE AND EXPORT\nPost the VS scoreboard as a clean card, or export everything as a CSV for your own spreadsheet. Widgets keep today's scores on your Home Screen.\n\nFREE AND PRO\nToday, Sleep, Heart, Moves and Stack, with both trackers side by side for 30 days, are free. Pulse Lab Pro adds the VS lab, Who to trust, 90-day and 1-year history, share cards and CSV export. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics, no servers. Health data and WHOOP data go straight to your iPhone and stay there.\n\nPulse Lab needs the Health app data your watch records; WHOOP data needs a WHOOP membership. Pulse Lab is an independent app, not affiliated with or endorsed by WHOOP. It is for general wellness and is not a medical device.",
+  "promotionalText": "New: see exactly how your Watch readiness is built, put Watch and WHOOP head to head on five numbers, and open any stat for its full story.",
+  "keywords": "wearable,heart rate,resting hr,readiness,strain,spo2,respiratory,supplements,smartwatch,trends,stats",
+  "description": "Pulse Lab puts your Apple Watch data and your WHOOP data side by side, so you can see where they agree, where they split, and which one to trust for each number.\n\nTODAY AT A GLANCE\nWatch readiness and WHOOP recovery side by side at the top, a morning briefing, and a plain-English Lab note about what stands out today.\n\nHEAD TO HEAD\nResting heart rate, HRV, breathing rate, calories and steps, with Watch on the left and WHOOP on the right, each side showing its latest reading and when it's from. Tap a row for its chart.\n\nREADINESS, EXPLAINED\nSee exactly how your Watch readiness score is built: every contributor with today's value, your baseline, the difference and the points it added or took away, what's missing, a 30-day trend and how it lines up with WHOOP recovery.\n\nEVERY STAT HAS A PAGE\nOpen any number for its full story: the latest value with its date and source, your normal range on a chart from 7 days to a year, low, average and high, the trend against last week, how closely the two trackers agree, why it matters and where the data comes from.\n\nSLEEP, HEART AND MOVES\nSleep stages and duration, resting heart rate, HRV, breathing rate, blood oxygen, wrist temperature, steps, active calories and workouts. Every chart shows both trackers in their own colors.\n\nTHE VS LAB\nDay-by-day agreement scores for resting heart rate, HRV, sleep, blood oxygen, breathing rate, temperature and calories, a running scoreboard, and Who to trust, which explains the better source for each metric from your own numbers.\n\nYOUR SUPPLEMENT STACK AND INSIGHTS\nList what you take, check it off each day, and Pulse Lab saves it to Apple Health as nutrients. Insights compare the next morning's recovery, HRV and sleep after days with and without a supplement, a sauna session, a workout, a late meal or alcohol.\n\nEVERY NUMBER, IN ONE PLACE\nAll data lists every metric Pulse Lab syncs with a 7-day sparkline and its source. Data check shows exactly what is arriving from Apple Health and from WHOOP, so an empty chart is never a mystery.\n\nLOG WHOOP BY HAND\nNo WHOOP connection? Type in the morning's recovery, sleep and strain in seconds, from a morning reminder or with Siri.\n\nAPPLE WATCH, WIDGETS AND SHARING\nToday's numbers on your wrist and your Home Screen. Post the VS scoreboard as a clean card, or export everything as a CSV for your own spreadsheet.\n\nFREE AND PRO\nToday, Sleep, Heart, Moves, Stack and Insights, with both trackers side by side for 30 days, are free. Pulse Lab Pro adds the VS lab, Who to trust, 90-day and 1-year history, share cards and CSV export. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics, no servers. Health data and WHOOP data go straight to your iPhone and stay there.\n\nPulse Lab needs the Apple Health data your watch records; WHOOP data needs a WHOOP membership. Pulse Lab is an independent app, not affiliated with or endorsed by WHOOP. It is for general wellness and is not a medical device; readiness and the other scores are estimates, not medical advice.",
   "primaryCategory": "HEALTH_AND_FITNESS",
   "secondaryCategory": "LIFESTYLE",
   "price": "0.0",
@@ -54,19 +54,19 @@
     {
       "file": "pl-1-today.png",
       "eyebrow": "Pulse Lab",
-      "line1": "Two trackers.",
-      "line2": "One truth.",
-      "sub": "Your watch and your WHOOP, side by side.",
+      "line1": "Two trackers,",
+      "line2": "one truth.",
+      "sub": "Watch readiness vs WHOOP recovery.",
       "chips": [
-        "Recovery + readiness",
-        "Daily Lab note"
+        "Readiness explained",
+        "Head to head"
       ]
     },
     {
       "file": "pl-2-vs.png",
-      "eyebrow": "The VS lab",
-      "line1": "Who's",
-      "line2": "right?",
+      "eyebrow": "VS Lab",
+      "line1": "Find out",
+      "line2": "who's right.",
       "sub": "Day-by-day agreement on every metric.",
       "chips": [
         "Resting HR, HRV, SpO₂",
@@ -91,30 +91,30 @@
       "line2": "baseline.",
       "sub": "Resting heart rate, HRV and breathing rate.",
       "chips": [
-        "7, 30, 90 days",
-        "Both in one chart"
+        "Stat detail pages",
+        "Your normal range"
       ]
     },
     {
       "file": "pl-5-stack.png",
       "eyebrow": "Stack",
-      "line1": "Does it",
-      "line2": "work?",
-      "sub": "Check off supplements, see what moves recovery.",
+      "line1": "Track your",
+      "line2": "stack.",
+      "sub": "Log supplements and compare next mornings.",
       "chips": [
-        "Saved to Health",
+        "Saved to Apple Health",
         "Stack insights"
       ]
     },
     {
       "file": "pl-6-moves.png",
       "eyebrow": "Moves",
-      "line1": "Strain vs",
-      "line2": "calories.",
-      "sub": "Steps, workouts and burn, both ways.",
+      "line1": "Every move,",
+      "line2": "side by side.",
+      "sub": "Steps, workouts and burn from both trackers.",
       "chips": [
         "Workouts",
-        "Share + CSV"
+        "Share and CSV"
       ]
     }
   ],

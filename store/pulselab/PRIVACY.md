@@ -1,6 +1,6 @@
 # Pulse Lab Privacy Policy
 
-_Last updated: November 14, 2026_
+_Last updated: November 16, 2026_
 
 Pulse Lab compares the health data your watch saves to Apple Health with your WHOOP data. It is built to collect nothing.
 
@@ -8,6 +8,8 @@ Pulse Lab compares the health data your watch saves to Apple Health with your WH
 - **Apple Health:** with your permission, Pulse Lab reads heart, sleep, activity and workout data. The only thing it writes is the supplements you check off in your Stack, saved as nutrients (like vitamin D or magnesium). It never changes your heart, sleep or workout data.
 - **WHOOP (optional):** after you sign in with WHOOP, Pulse Lab downloads your profile, body measurements, cycles, recovery, sleep and workouts directly from WHOOP to your phone. Sign-in tokens are kept in the iPhone Keychain. Tap Disconnect in Settings to remove them. Numbers you log by hand stay on your phone.
 - Your Stack, settings and cached charts are stored on your iPhone (and shared with Pulse Lab's widgets on the same phone).
+- **Apple Watch:** Pulse Lab's Watch app gets today's numbers from your iPhone over Apple's Watch connection.
+- **Still Pointz** (our breathing app, if you have it): Pulse Lab keeps a summary of today's numbers (like WHOOP recovery, strain and sleep performance, readiness, HRV and resting heart rate) in an App Group container on your iPhone that only our own apps can read, so Still Pointz can suggest a practice. Nothing is uploaded.
 
 **What Pulse Lab does not do**
 - No accounts, sign-ups or logins of its own.

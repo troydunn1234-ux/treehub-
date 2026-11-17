@@ -12,5 +12,10 @@
   {"name": "10-today-largetype", "args": "-demo -pro -tab today", "wait": 9, "size": "accessibility-large"},
   {"name": "11-logwhoop-largetype", "args": "-demo -pro -open logwhoop", "wait": 9, "size": "accessibility-large"},
   {"name": "12-alldata-largetype", "args": "-demo -pro -open alldata", "wait": 12, "size": "accessibility-large"},
-  {"name": "13-today-light", "args": "-demo -pro -tab today", "wait": 9, "appearance": "light"}
+  {"name": "13-today-light", "args": "-demo -pro -tab today", "wait": 9, "appearance": "light"},
+  {"name": "14-vs", "args": "-demo -pro -tab vs", "wait": 9},
+  {"name": "15-sleep", "args": "-demo -pro -tab sleep", "wait": 9},
+  {"name": "16-heart", "args": "-demo -pro -tab heart", "wait": 9},
+  {"name": "17-stack", "args": "-demo -pro -tab stack", "wait": 9},
+  {"name": "18-moves", "args": "-demo -pro -tab moves", "wait": 9}
  ]}

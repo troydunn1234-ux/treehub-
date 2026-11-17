@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Space-separated (pulselab stillpoint roamr clicker natalorbit ridequest)
-        default: pulselab stillpoint roamr clicker natalorbit ridequest
+        description: Space-separated (rootbound pulselab stillpoint roamr clicker natalorbit ridequest)
+        default: rootbound pulselab stillpoint roamr clicker natalorbit ridequest
 
 permissions:
   contents: write

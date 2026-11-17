@@ -5,6 +5,16 @@ name: Update App Store listing
 # and the paywall for in-app purchase review), captions the iPhone ones, and fills in the App Store page from
 # store/<app>/metadata.json: text, screenshots, price, age rating, availability, review notes, build, and the
 # review screenshot on every in-app purchase / subscription. It never submits anything for review.
+#
+# Regenerate the screenshots only (nothing goes to App Store Connect), from what's on main:
+#   gh workflow run listing.yml -R troydunn1234-ux/treehub- --ref main -f app=Rootbound -f upload=false
+#   (app: Rootbound, StillPoint, Roamr, PulseLab, Clicker, NatalOrbit or RideQuest). Rootbound, Still Pointz,
+#   Roamr, Pulse Lab and Couch Remote in one go (one run each, they queue per app):
+#   for a in Rootbound StillPoint Roamr PulseLab Clicker; do
+#     gh workflow run listing.yml -R troydunn1234-ux/treehub- --ref main -f app=$a -f upload=false; done
+# The captioned set lands on the store-shots-<app> branch (raw captures under raw/). Fill in the App Store page
+# with the same command and -f upload=true. Check the text and captions locally first (seconds, no simulator):
+#   python3 .github/scripts/store_lint.py            (every app; or pass store/<app>/metadata.json)
 on:
   workflow_dispatch:
     inputs:
@@ -40,6 +50,11 @@ jobs:
           echo "STORE=$STORE" >> $GITHUB_ENV
           echo "BUNDLE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json'))['bundle'])")" >> $GITHUB_ENV
           echo "HAS_WATCH=$(python3 -c "import json;print('1' if json.load(open('$STORE/metadata.json')).get('watch') else '')")" >> $GITHUB_ENV
+
+      - name: Check the listing text and captions (App Store limits, wording, caption style)
+        run: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
+          python3 .github/scripts/store_lint.py $STORE/metadata.json
 
       - name: Pick newest Xcode
         run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
