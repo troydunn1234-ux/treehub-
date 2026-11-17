@@ -10,8 +10,9 @@ enum HeatKind: String, Codable, CaseIterable, Identifiable, Hashable {
     var title: String { self == .sauna ? "Sauna" : "Steam room" }
     var short: String { self == .sauna ? "Sauna" : "Steam" }
     var symbol: String { self == .sauna ? "flame.fill" : "cloud.fog.fill" }
-    var tint: Color { self == .sauna ? Color(spHex: "#F29A5B") : Color(spHex: "#7FC8D9") }
-    var tint2: Color { self == .sauna ? Color(spHex: "#C2474A") : Color(spHex: "#5B7FD6") }
+    /// Soft ember for the sauna, mist blue for steam: easy to tell apart, calm next to the night blue.
+    var tint: Color { self == .sauna ? Color(spHex: "#F2A07B") : Color(spHex: "#8EC5E8") }
+    var tint2: Color { self == .sauna ? Color(spHex: "#C8665F") : Color(spHex: "#5B7FD6") }
     /// When to send the "time to step out?" nudge.
     var checkInMinutes: Int { self == .sauna ? 20 : 15 }
 }

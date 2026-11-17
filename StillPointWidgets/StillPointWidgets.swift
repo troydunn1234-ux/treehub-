@@ -179,7 +179,12 @@ private struct WidgetGlow: View {
 
 struct StillHomeView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetRenderingMode) private var renderingMode
     let entry: StillEntry
+
+    /// Tinted Home Screen: the system recolours everything by its opacity, so solid fills turn into soft outlines
+    /// (white text on a solid capsule would vanish).
+    private var accented: Bool { renderingMode == .accented }
 
     var body: some View {
         switch family {
@@ -191,8 +196,8 @@ struct StillHomeView: View {
     private var small: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline, spacing: 5) {
-                Flame(lit: entry.streak > 0, size: 15)
-                Text("\(entry.streak)").font(Palette.numbers(30)).foregroundStyle(Palette.ink)
+                Flame(lit: entry.streak > 0, size: 15).widgetAccentable()
+                Text("\(entry.streak)").font(Palette.numbers(30)).foregroundStyle(Palette.ink).widgetAccentable()
                 Text(entry.streak == 1 ? "day" : "days").font(Palette.rounded(12)).foregroundStyle(Palette.dim)
                 Spacer(minLength: 0)
                 GoalRing(entry: entry, size: 34, width: 4, showText: false)
@@ -204,6 +209,7 @@ struct StillHomeView: View {
             Text("TODAY'S ROUTINE").font(Palette.rounded(8, .semibold)).tracking(1.3).foregroundStyle(Palette.faint)
             HStack(alignment: .firstTextBaseline, spacing: 5) {
                 Image(systemName: entry.suggestedSymbol).font(.system(size: 12, weight: .light)).foregroundStyle(Palette.teal)
+                    .widgetAccentable()
                     .accessibilityHidden(true)
                 Text(entry.suggestedTitle)
                     .font(Palette.serif(15)).foregroundStyle(Palette.ink)
@@ -220,8 +226,8 @@ struct StillHomeView: View {
             VStack(alignment: .leading, spacing: 4) {
                 Text("STILL POINT").font(Palette.rounded(10, .semibold)).tracking(1.6).foregroundStyle(Palette.faint)
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Flame(lit: entry.streak > 0, size: 18)
-                    Text("\(entry.streak)").font(Palette.numbers(34)).foregroundStyle(Palette.ink)
+                    Flame(lit: entry.streak > 0, size: 18).widgetAccentable()
+                    Text("\(entry.streak)").font(Palette.numbers(34)).foregroundStyle(Palette.ink).widgetAccentable()
                     Text(entry.streak == 1 ? "day" : "days").font(Palette.rounded(13)).foregroundStyle(Palette.dim)
                 }
                 .accessibilityElement(children: .ignore)
@@ -238,6 +244,7 @@ struct StillHomeView: View {
                                     .font(Palette.rounded(10, .medium)).foregroundStyle(k.tint)
                                     .padding(.horizontal, 8).padding(.vertical, 4)
                                     .background(Capsule().fill(k.tint.opacity(0.16)))
+                                    .overlay(Capsule().stroke(k.tint.opacity(0.30), lineWidth: 0.8))
                             }
                             .accessibilityLabel("Start \(k.title) timer")
                         }
@@ -259,6 +266,7 @@ struct StillHomeView: View {
                 .font(.system(size: 15, weight: .light)).foregroundStyle(Palette.teal)
                 .frame(width: 30, height: 30)
                 .background(Circle().fill(Palette.teal.opacity(0.16)))
+                .widgetAccentable()
                 .accessibilityHidden(true)
             Text(entry.suggestedTitle)
                 .font(Palette.serif(16)).foregroundStyle(Palette.ink)
@@ -267,10 +275,11 @@ struct StillHomeView: View {
                 Text(entry.suggestedDetail).font(Palette.rounded(10)).foregroundStyle(Palette.dim).lineLimit(1)
             }
             Spacer(minLength: 2)
-            Text("Begin")
+            Label("Begin", systemImage: "play.fill")
                 .font(Palette.rounded(12, .semibold)).foregroundStyle(.white)
-                .padding(.horizontal, 14).padding(.vertical, 5)
-                .background(Capsule().fill(Palette.accentFill))
+                .padding(.horizontal, 12).padding(.vertical, 5)
+                .background(Capsule().fill(accented ? AnyShapeStyle(Color.white.opacity(0.18)) : AnyShapeStyle(Palette.accentFill)))
+                .widgetAccentable()
         }
         .padding(10)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
@@ -364,6 +373,7 @@ struct StillAccessoryView: View {
             }
         }
         .gaugeStyle(.accessoryCircularCapacity)
+        .tint(entry.goalReached ? Palette.gold : Palette.accent)
         .widgetAccentable()
         .accessibilityLabel("\(entry.streak) day streak, \(Int(entry.weekMinutes.rounded())) of \(Int(entry.weekGoal)) minutes this week")
     }
@@ -382,6 +392,7 @@ struct StillAccessoryView: View {
             .widgetAccentable()
             Gauge(value: entry.progress) { EmptyView() }
                 .gaugeStyle(.accessoryLinearCapacity)
+                .tint(entry.goalReached ? Palette.gold : Palette.accent)
             Text(entry.practicedToday ? "Done today · \(entry.suggestedTitle)" : entry.suggestedTitle)
                 .font(.system(size: 12, design: .serif))
                 .lineLimit(1).minimumScaleFactor(0.85)
@@ -408,9 +419,10 @@ enum HeatChoice: String, CaseIterable, Identifiable {
     var id: String { rawValue }
     var title: String { self == .sauna ? "Sauna" : "Steam" }
     var symbol: String { self == .sauna ? "flame.fill" : "cloud.fog.fill" }
+    /// Soft ember / mist blue, as HeatKind.tint in the app.
     var tint: Color {
-        self == .sauna ? Color(red: 0xF2 / 255, green: 0x9A / 255, blue: 0x5B / 255)
-                       : Color(red: 0x7F / 255, green: 0xC8 / 255, blue: 0xD9 / 255)
+        self == .sauna ? Color(red: 0xF2 / 255, green: 0xA0 / 255, blue: 0x7B / 255)
+                       : Color(red: 0x8E / 255, green: 0xC5 / 255, blue: 0xE8 / 255)
     }
 }
 
@@ -523,6 +535,7 @@ struct HeatAccessoryView: View {
             AccessoryWidgetBackground()
             VStack(spacing: 0) {
                 Image(systemName: shown.symbol).font(.system(size: entry.start == nil ? 18 : 12, weight: .medium))
+                    .foregroundStyle(shown.tint)
                     .widgetAccentable()
                 if let start = entry.start {
                     Text(start, style: .timer)
@@ -540,9 +553,13 @@ struct HeatAccessoryView: View {
 
     private var rectangular: some View {
         VStack(alignment: .leading, spacing: 1) {
-            Label(entry.start == nil ? shown.title : "In the \(shown.title.lowercased())", systemImage: shown.symbol)
-                .font(.system(size: 14, weight: .semibold, design: .rounded))
-                .widgetAccentable()
+            Label {
+                Text(entry.start == nil ? shown.title : "In the \(shown.title.lowercased())")
+            } icon: {
+                Image(systemName: shown.symbol).foregroundStyle(shown.tint)
+            }
+            .font(.system(size: 14, weight: .semibold, design: .rounded))
+            .widgetAccentable()
             if let start = entry.start {
                 Text(start, style: .timer)
                     .font(.system(size: 24, weight: .light, design: .rounded)).monospacedDigit()
@@ -559,6 +576,7 @@ struct HeatAccessoryView: View {
     private var corner: some View {
         Image(systemName: shown.symbol)
             .font(.system(size: 20, weight: .medium))
+            .foregroundStyle(shown.tint)
             .widgetAccentable()
             .widgetLabel {
                 if let start = entry.start {
