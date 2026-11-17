@@ -16,7 +16,9 @@ struct TrackView: View {
 
     @State private var chosenKind: ActivityKind = .walk
     @Namespace private var kindNS
-    @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
+    // Idle map: a still picture around your last known spot (see idleCamera). It never asks for live
+    // location, so the location arrow stays off until you press Start.
+    @State private var camera: MapCameraPosition = .automatic
     @State private var justFinished: Activity?
     @State private var confirmFinish = false
     @State private var confirmDiscard = false
@@ -29,6 +31,7 @@ struct TrackView: View {
     @State private var probe: RoutePoint?
     @State private var nav = Navigator.shared
     @State private var showDirections = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         NavigationStack {
@@ -87,8 +90,27 @@ struct TrackView: View {
         .ignoresSafeArea(edges: .top)
         .scrollIndicators(.hidden)
         .onAppear {
+            #if !TRACK_APP
             if tracker.authorization == .notDetermined { tracker.requestPermission() }
+            #endif
+            // Roamr asks for location in context (intro, or the first tap on Start).
+            // Back from a recording: drop any follow-me camera so the map stops using location.
+            camera = idleCamera
         }
+    }
+
+    /// A fixed, tilted view of where the phone last was (iOS's cached fix: reading it doesn't turn GPS on).
+    private var idleCamera: MapCameraPosition {
+        guard let c = tracker.lastKnownCoordinate else { return .automatic }
+        return .camera(MapCamera(centerCoordinate: c, distance: 2200, heading: 0, pitch: 45))
+    }
+
+    /// Recording: follow the GPS dot. Paused: GPS is off, so hold still on the last point instead
+    /// of asking the map for live location (which would keep the location arrow on).
+    private var followCamera: MapCameraPosition {
+        if tracker.state == .recording { return .userLocation(followsHeading: false, fallback: .automatic) }
+        guard let c = tracker.lastKnownCoordinate else { return .automatic }
+        return .camera(MapCamera(centerCoordinate: c, distance: tracker.kind == .drive ? 1400 : 700, heading: mapHeading, pitch: 45))
     }
 
     private var screenTitle: String {
@@ -114,7 +136,7 @@ struct TrackView: View {
     /// Full-bleed live map that fades into the page, with the title on top.
     private var mapHero: some View {
         ZStack(alignment: .bottomLeading) {
-            Map(position: $camera) { UserAnnotation() }
+            Map(position: $camera)
                 .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
                 .environment(\.colorScheme, .dark)
                 .allowsHitTesting(false)
@@ -430,7 +452,8 @@ struct TrackView: View {
                                    course: tracker.course, mapHeading: mapHeading, overLimit: tracker.isOverLimit)
                     }
                     .annotationTitles(.hidden)
-                } else {
+                } else if tracker.state == .recording {
+                    // No fix yet: the system dot while GPS warms up (never while paused, GPS is off then).
                     UserAnnotation()
                 }
             }
@@ -452,13 +475,18 @@ struct TrackView: View {
                 if let here = tracker.points.last?.coordinate { nav.update(here, speed: tracker.currentSpeed) }
             }
             .onAppear { followIfNeeded() }
+            // Paused (GPS off): stop asking the map for live location. Recording again: follow you.
+            .onChange(of: tracker.state) { _, state in
+                if state == .paused, camera.followsUserLocation { camera = followCamera }
+                if state == .recording, !chaseCam { camera = followCamera }
+            }
             .overlay { SpeedFX(speed: tracker.kind == .drive || tracker.kind == .bike ? tracker.currentSpeed : 0,
                                overLimit: tracker.isOverLimit).allowsHitTesting(false).ignoresSafeArea() }
             .overlay(alignment: .topTrailing) {
                 VStack(alignment: .trailing, spacing: 10) {
                     Button {
                         withAnimation(.snappy) { chaseCam.toggle() }
-                        if chaseCam { followIfNeeded() } else { camera = .userLocation(followsHeading: false, fallback: .automatic) }
+                        if chaseCam { followIfNeeded() } else { camera = followCamera }
                     } label: {
                         Image(systemName: chaseCam ? "video.fill" : "location.fill")
                             .font(.system(size: 16, weight: .bold))
@@ -535,37 +563,43 @@ struct TrackView: View {
                             .transition(.scale.combined(with: .opacity))
                             .accessibilityLabel("Auto-paused. Resumes when you move.")
                     } else {
+                        let recording = tracker.state == .recording
                         HStack(spacing: 6) {
-                            Circle().fill(tracker.state == .recording ? Color.red : Theme.gold).frame(width: 8, height: 8)
-                            Text(tracker.state == .recording ? "RECORDING" : "PAUSED")
+                            Image(systemName: recording ? "circle.fill" : "pause.circle.fill")
+                                .font(.system(size: recording ? 8 : 12, weight: .bold))
+                                .symbolEffect(.pulse, options: .repeating, isActive: recording && !reduceMotion)
+                            Text(recording ? "RECORDING" : "PAUSED")
                                 .font(.system(size: 11, weight: .heavy, design: .rounded)).tracking(1)
                         }
-                        .foregroundStyle(tracker.state == .recording ? Color.red : Theme.gold)
+                        .foregroundStyle(recording ? Color.red : Theme.gold)
+                        .accessibilityElement(children: .combine)
                     }
                 }
 
-                TimelineView(.periodic(from: .now, by: 1)) { _ in
-                    VStack(spacing: 2) {
-                        Text(Format.duration(tracker.elapsed))
-                            .font(.system(size: 54, weight: .black, design: .rounded))
-                            .monospacedDigit()
-                            .foregroundStyle(tracker.state == .recording ? Color.white : Theme.gold)
-                            .contentTransition(.numericText())
-                            .lineLimit(1)
-                            .minimumScaleFactor(0.6)
+                // Two big numbers you can read at arm's length (time and distance), then the details.
+                HStack(alignment: .top, spacing: 12) {
+                    TimelineView(.periodic(from: .now, by: 1)) { _ in
+                        LiveBigStat(value: Format.duration(tracker.elapsed), unit: nil, label: "Time",
+                                    tint: tracker.state == .recording ? .white : Theme.gold)
+                            .accessibilityElement(children: .ignore)
                             .accessibilityLabel("Elapsed time \(Format.duration(tracker.elapsed))")
-                        Text("TIME").font(.system(size: 10, weight: .heavy, design: .rounded)).tracking(1.2).foregroundStyle(Theme.textDim)
                     }
+                    Rectangle().fill(Color.white.opacity(0.12)).frame(width: 1).padding(.vertical, 6)
+                    LiveBigStat(value: Format.distanceValue(tracker.distance), unit: Format.distanceUnit, label: "Distance", tint: .white)
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Distance \(Format.distance(tracker.distance))")
                 }
+                .fixedSize(horizontal: false, vertical: true)
                 HStack(spacing: 10) {
-                    StatTile(value: Format.distance(tracker.distance), label: "Distance")
-                    StatTile(value: (tracker.kind.isOnFoot
-                             ? Format.paceOrSpeed(distance: tracker.distance, seconds: max(tracker.movingSec, 1), kind: tracker.kind)
-                             : Format.speed(max(0, tracker.currentSpeed))).replacingOccurrences(of: "--", with: "—"),
-                             label: tracker.kind.isOnFoot ? "Avg pace" : "Speed")
-                    StatTile(value: Format.elevation(tracker.elevGain), label: "Climb")
+                    LiveSmallStat(text: livePaceOrSpeed, label: tracker.kind.isOnFoot ? "Avg pace" : "Speed",
+                                  symbol: tracker.kind.isOnFoot ? "stopwatch.fill" : "speedometer")
+                    LiveSmallStat(text: Format.elevation(tracker.elevGain), label: "Climb", symbol: "mountain.2.fill")
                 }
-                if tracker.points.isEmpty {
+                if tracker.state == .paused && !tracker.autoPaused && !tracker.recoveredFromCrash {
+                    // A paused recording really is off: no GPS, no location arrow, until Resume.
+                    Label("GPS is off while paused", systemImage: "location.slash.fill")
+                        .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+                } else if tracker.points.isEmpty && tracker.state == .recording {
                     Text(tracker.accuracy > 35 ? "Weak GPS (±\(Int(tracker.accuracy)) m). Step outside for a better fix." : "Waiting for GPS…")
                         .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
                 }
@@ -585,9 +619,10 @@ struct TrackView: View {
                             .buttonStyle(PrimaryButtonStyle())
                     }
                     #if TRACK_APP
-                    // Stop: always next to Pause/Resume; asks Save / Discard / Keep going.
+                    // Stop: always next to Pause/Resume, in red so it's never mistaken for Pause;
+                    // asks Save / Discard / Keep going.
                     Button { confirmFinish = true } label: { Label("Stop", systemImage: "stop.fill") }
-                        .buttonStyle(PrimaryButtonStyle(gradient: LinearGradient(colors: [.white, Theme.cream], startPoint: .top, endPoint: .bottom)))
+                        .buttonStyle(StopButtonStyle())
                         .accessibilityHint("Save or discard this recording")
                     #else
                     Button { confirmFinish = true } label: { Label("Finish", systemImage: "flag.checkered") }
@@ -613,6 +648,14 @@ struct TrackView: View {
         } message: {
             Text("The route and stats will be gone for good.")
         }
+    }
+
+    /// Avg pace on foot, current speed on wheels; a calm dash (not "--") until there's enough to measure.
+    private var livePaceOrSpeed: String {
+        let raw = tracker.kind.isOnFoot
+            ? Format.paceOrSpeed(distance: tracker.distance, seconds: max(tracker.movingSec, 1), kind: tracker.kind)
+            : Format.speed(max(0, tracker.currentSpeed))
+        return raw.trimmingCharacters(in: .whitespaces) == "--" ? "—" : raw
     }
 
     private var hugCountLabel: String {
@@ -645,5 +688,102 @@ struct TrackView: View {
             if let e = pts.last { a.endPlace = await Geo.placeName(for: e.coordinate) }
             try? context.save()
         }
+    }
+}
+
+// MARK: - Live stats
+
+/// Big glanceable number for the live screen (time, distance), unit set smaller beside it.
+private struct LiveBigStat: View {
+    let value: String
+    let unit: String?
+    let label: String
+    var tint: Color = .white
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 2) {
+            HStack(alignment: .firstTextBaseline, spacing: 4) {
+                Text(value)
+                    .font(.system(size: Theme.scaled(46), weight: .heavy, design: .rounded))
+                    .monospacedDigit()
+                    .foregroundStyle(tint)
+                    .contentTransition(.numericText())
+                    .animation(.snappy, value: value)
+                if let unit {
+                    Text(unit)
+                        .font(.system(size: Theme.scaled(18), weight: .bold, design: .rounded))
+                        .foregroundStyle(Theme.textDim)
+                }
+            }
+            .lineLimit(1)
+            .minimumScaleFactor(0.5)
+            Text(label.uppercased())
+                .font(.system(size: Theme.scaled(11), weight: .heavy, design: .rounded)).tracking(1.2)
+                .foregroundStyle(Theme.textDim)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+/// Secondary live number (pace/speed, climb) in a slim row.
+private struct LiveSmallStat: View {
+    let text: String
+    let label: String
+    let symbol: String
+
+    var body: some View {
+        let parts = TrackingActivityAttributes.valueAndUnit(text)
+        HStack(spacing: 10) {
+            Image(systemName: symbol)
+                .font(.system(size: 13, weight: .bold))
+                .foregroundStyle(Theme.glow)
+                .frame(width: 30, height: 30)
+                .background(Theme.glow.opacity(0.16), in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 0) {
+                HStack(alignment: .firstTextBaseline, spacing: 3) {
+                    Text(parts.value)
+                        .font(.system(size: Theme.scaled(20), weight: .bold, design: .rounded))
+                        .monospacedDigit()
+                        .foregroundStyle(.white)
+                        .contentTransition(.numericText())
+                        .animation(.snappy, value: parts.value)
+                    if !parts.unit.isEmpty {
+                        Text(parts.unit)
+                            .font(.system(size: Theme.scaled(12), weight: .semibold, design: .rounded))
+                            .foregroundStyle(Theme.textDim)
+                    }
+                }
+                .lineLimit(1)
+                .minimumScaleFactor(0.6)
+                Text(label.uppercased())
+                    .font(.system(size: Theme.scaled(10), weight: .bold, design: .rounded)).tracking(0.8)
+                    .foregroundStyle(Theme.textDim)
+                    .lineLimit(1)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 12).padding(.vertical, 10)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label) \(text == "—" ? "not measured yet" : text)")
+    }
+}
+
+/// Red Stop button next to Pause/Resume on the live screen.
+private struct StopButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(Theme.rounded(17, .bold))
+            .foregroundStyle(.white)
+            .padding(.vertical, 15)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background(LinearGradient(colors: [Color(red: 1, green: 0.36, blue: 0.33), Color(red: 0.86, green: 0.17, blue: 0.17)],
+                                       startPoint: .top, endPoint: .bottom),
+                        in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .shadow(color: Color.red.opacity(0.3), radius: configuration.isPressed ? 4 : 12, y: 4)
+            .scaleEffect(configuration.isPressed ? 0.97 : 1)
+            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }

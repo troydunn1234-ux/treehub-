@@ -133,6 +133,17 @@
         }
       }
     },
+    "Answers to common questions, and how to reach us": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respuestas a preguntas frecuentes y cómo contactarnos"
+          }
+        }
+      }
+    },
     "Apple Health isn't available on this device. You can connect it later in Settings.": {
       "extractionState": "manual",
       "localizations": {
@@ -595,6 +606,17 @@
         }
       }
     },
+    "Every walk, run, ride and drive, on a map.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada caminata, carrera, paseo en bici y viaje en auto, en un mapa."
+          }
+        }
+      }
+    },
     "Everyone in the group will see the trip has ended. Your own recording keeps going.": {
       "extractionState": "manual",
       "localizations": {
@@ -716,6 +738,17 @@
         }
       }
     },
+    "GPS is off while paused": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "El GPS está apagado mientras está en pausa"
+          }
+        }
+      }
+    },
     "Gallons": {
       "extractionState": "manual",
       "localizations": {
@@ -771,6 +804,17 @@
         }
       }
     },
+    "Go to Track": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ir a Grabar"
+          }
+        }
+      }
+    },
     "Go together": {
       "extractionState": "manual",
       "localizations": {
@@ -822,6 +866,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Alerta de frenazo"
+          }
+        }
+      }
+    },
+    "Help & contact": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ayuda y contacto"
           }
         }
       }
@@ -1167,6 +1222,17 @@
         }
       }
     },
+    "Making your card": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Creando tu tarjeta"
+          }
+        }
+      }
+    },
     "Making your card…": {
       "extractionState": "manual",
       "localizations": {
@@ -1372,6 +1438,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Lo que sigue"
+          }
+        }
+      }
+    },
+    "No accounts, no ads, no tracking. Your trips stay yours.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin cuentas, sin anuncios, sin rastreo. Tus viajes son tuyos."
           }
         }
       }
@@ -1629,6 +1706,28 @@
         }
       }
     },
+    "Opens in Safari": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre en Safari"
+          }
+        }
+      }
+    },
+    "Opens that trip": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre ese viaje"
+          }
+        }
+      }
+    },
     "Optional. You can change it any time in Settings.": {
       "extractionState": "manual",
       "localizations": {
@@ -1636,6 +1735,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Opcional. Puedes cambiarlo cuando quieras en Ajustes."
+          }
+        }
+      }
+    },
+    "PAUSED": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "EN PAUSA"
           }
         }
       }
@@ -1746,6 +1856,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Precio por galón"
+          }
+        }
+      }
+    },
+    "Privacy Policy": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de privacidad"
+          }
+        }
+      }
+    },
+    "RECORDING": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "GRABANDO"
           }
         }
       }
@@ -1915,6 +2047,17 @@
         }
       }
     },
+    "Roamr uses GPS only while you record. Auto-detect listens with low-power motion signals and takes a few seconds of GPS only when you seem to be driving. Trips are saved on your iPhone and your private iCloud. Nothing is sold or used for ads.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Roamr usa el GPS solo mientras grabas. La detección automática escucha señales de movimiento de bajo consumo y usa unos segundos de GPS solo cuando parece que vas manejando. Tus viajes se guardan en tu iPhone y en tu iCloud privado. Nada se vende ni se usa para anuncios."
+          }
+        }
+      }
+    },
     "Roamr's hard-stop alert is not a replacement for your iPhone's built-in Crash Detection or for calling 911. It can miss crashes and can go off when there wasn't one.": {
       "extractionState": "manual",
       "localizations": {
@@ -1977,6 +2120,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ver Roamr Pro"
+          }
+        }
+      }
+    },
+    "See all time": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ver todo"
           }
         }
       }
@@ -2102,6 +2256,17 @@
         }
       }
     },
+    "Share the card or save it to Photos": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comparte la tarjeta o guárdala en Fotos"
+          }
+        }
+      }
+    },
     "Show all trips": {
       "extractionState": "manual",
       "localizations": {
@@ -2164,6 +2329,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Crea un viaje en grupo y manda un enlace a tus amigos. Todos se ven en un mapa en vivo, con velocidades y quién va adelante o atrás."
+          }
+        }
+      }
+    },
+    "Start a trip": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza un viaje"
           }
         }
       }
@@ -2267,6 +2443,17 @@
         }
       }
     },
+    "Terms of Use": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Términos de uso"
+          }
+        }
+      }
+    },
     "Test the alert": {
       "extractionState": "manual",
       "localizations": {
@@ -2318,6 +2505,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "La ruta y las estadísticas se borrarán para siempre."
+          }
+        }
+      }
+    },
+    "The standard App Store terms": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los términos estándar del App Store"
           }
         }
       }
@@ -2615,6 +2813,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tu nombre"
+          }
+        }
+      }
+    },
+    "Your older trips are under All. Head out and this fills up.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus viajes anteriores están en Todo. Sal y esto se llenará."
+          }
+        }
+      }
+    },
+    "Your trips stay on your iPhone and private iCloud": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus viajes se quedan en tu iPhone y tu iCloud privado"
           }
         }
       }

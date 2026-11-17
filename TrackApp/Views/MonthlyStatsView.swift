@@ -192,6 +192,8 @@ struct MonthlyStatsView: View {
                             y: .value("Distance", b.value))
                         .foregroundStyle(Theme.leafGradient)
                         .cornerRadius(6)
+                        .accessibilityLabel(Text("Week of \(b.week.formatted(.dateTime.month(.wide).day()))"))
+                        .accessibilityValue(Text("\(b.value.formatted(.number.precision(.fractionLength(1)))) \(Format.distanceUnit)"))
                 }
                 .chartXScale(domain: start...end)
                 .chartXAxis {
@@ -308,6 +310,14 @@ struct MonthlyStatsView: View {
                     .font(Theme.rounded(13, .medium))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
+                } label: {
+                    Label("Go to Track", systemImage: "car.fill")
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 6)
             }
             .frame(maxWidth: .infinity)
         }

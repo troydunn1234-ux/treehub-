@@ -141,6 +141,11 @@ struct TrackRootView: View {
         .onChange(of: tracker.autoFinishDue) { _, due in
             if due { autoFinish.ask() }
         }
+        // Auto-finish ("Looks like your drive ended"): the Track screen saves it when it's showing;
+        // from any other tab it's saved here, so a parked drive never keeps GPS running.
+        .onReceive(NotificationCenter.default.publisher(for: AutoFinish.finishNote)) { _ in
+            if tab != "track", tracker.isActive { RoamrContext.finishAndSave(auto: true) }
+        }
         .onReceive(NotificationCenter.default.publisher(for: DriveDetector.startDriveNote)) { _ in
             consumePendingStart()
         }
@@ -180,6 +185,8 @@ struct TrackRootView: View {
         .onChange(of: scenePhase) { _, phase in
             if phase != .active { tracker.persist(); RoamrWellness.publish(context, force: true) }
             if phase == .active {
+                // Not recording? Make sure no Live Activity is left on the Lock Screen (and refresh it if recording).
+                LiveActivityController.shared.sync(with: tracker)
                 RoamrWellness.publish(context)
                 consumePendingStart(); consumePendingAction(); detector.refresh()
                 if UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) != nil { tab = "history" }

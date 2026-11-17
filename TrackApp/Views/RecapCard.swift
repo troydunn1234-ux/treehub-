@@ -26,6 +26,7 @@ struct RecapData {
     var movingSec: Double
     var maxSpeed: Double
     var elevGainM: Double
+    var avgHR: Double?
     var friends: String?
 
     init(_ a: Activity, friends: String? = nil) {
@@ -37,12 +38,45 @@ struct RecapData {
         movingSec = a.movingSec
         maxSpeed = a.maxSpeed
         elevGainM = a.elevGainM
+        avgHR = a.avgHR
         self.friends = friends
     }
 
     var avgLabel: String { kind.isOnFoot ? "Avg pace" : "Avg speed" }
     var avgValue: String { Format.paceOrSpeed(distance: distanceM, seconds: max(movingSec > 0 ? movingSec : elapsedSec, 1), kind: kind).replacingOccurrences(of: "--", with: "—") }
     var topValue: String { maxSpeed > 0 ? Format.speed(maxSpeed) : "—" }
+    var movingValue: String { Format.duration(movingSec > 0 ? movingSec : elapsedSec) }
+
+    /// The four numbers under the big distance, picked for the kind of trip:
+    /// on foot it's pace, climb and heart rate (no "top speed" on a walk); on wheels it's speed.
+    var tiles: [RecapStat] {
+        var out = [
+            RecapStat(value: Format.duration(elapsedSec), label: "Time", symbol: "clock.fill"),
+            RecapStat(value: avgValue, label: avgLabel, symbol: kind.isOnFoot ? "stopwatch.fill" : "speedometer"),
+        ]
+        switch kind {
+        case .walk, .run, .hike:
+            out.append(RecapStat(value: Format.elevation(elevGainM), label: "Climb", symbol: "mountain.2.fill"))
+            if let hr = avgHR, hr > 0 {
+                out.append(RecapStat(value: "\(Int(hr.rounded())) bpm", label: "Avg heart rate", symbol: "heart.fill"))
+            } else {
+                out.append(RecapStat(value: movingValue, label: "Moving time", symbol: "timer"))
+            }
+        case .bike:
+            out.append(RecapStat(value: topValue, label: "Top speed", symbol: "gauge.with.dots.needle.67percent"))
+            out.append(RecapStat(value: Format.elevation(elevGainM), label: "Climb", symbol: "mountain.2.fill"))
+        case .drive:
+            out.append(RecapStat(value: topValue, label: "Top speed", symbol: "gauge.with.dots.needle.67percent"))
+            out.append(RecapStat(value: movingValue, label: "Moving time", symbol: "timer"))
+        }
+        return out
+    }
+}
+
+struct RecapStat: Hashable {
+    let value: String
+    let label: String
+    let symbol: String
 }
 
 // MARK: - Route helpers
@@ -227,14 +261,15 @@ struct RecapCardView: View {
                         .foregroundStyle(.white.opacity(0.8))
                 }
                 .padding(.top, 18)
+                let tiles = data.tiles
                 Grid(horizontalSpacing: 24, verticalSpacing: 24) {
                     GridRow {
-                        tile(Format.duration(data.elapsedSec), "Time", "clock.fill")
-                        tile(data.avgValue, data.avgLabel, "speedometer")
+                        tile(tiles[0])
+                        tile(tiles[1])
                     }
                     GridRow {
-                        tile(data.topValue, "Top speed", "gauge.with.dots.needle.67percent")
-                        tile(Format.elevation(data.elevGainM), "Climb", "mountain.2.fill")
+                        tile(tiles[2])
+                        tile(tiles[3])
                     }
                 }
                 .padding(.top, 26)
@@ -324,39 +359,53 @@ struct RecapCardView: View {
         }
     }
 
+    /// The app icon and the name, so a shared card is clearly a Roamr card.
     private var wordmark: some View {
-        HStack(spacing: 10) {
-            Image(systemName: "location.north.circle.fill")
-                .font(.system(size: format == .story ? 40 : 32, weight: .bold))
-                .foregroundStyle(Theme.leafGradient)
+        let side: CGFloat = format == .story ? 64 : 54
+        return HStack(spacing: 14) {
+            if let icon = FamilyAppInfo.icon {
+                Image(uiImage: icon)
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: side, height: side)
+                    .clipShape(RoundedRectangle(cornerRadius: side * 0.225, style: .continuous))
+                    .overlay(RoundedRectangle(cornerRadius: side * 0.225, style: .continuous)
+                        .strokeBorder(Color.white.opacity(0.22), lineWidth: 1.5))
+            } else {
+                Image(systemName: "location.north.circle.fill")
+                    .font(.system(size: side * 0.8, weight: .bold))
+                    .foregroundStyle(Theme.leafGradient)
+            }
             Text(AppInfo.name)
-                .font(.system(size: format == .story ? 40 : 32, weight: .heavy, design: .rounded))
+                .font(.system(size: format == .story ? 42 : 34, weight: .heavy, design: .rounded))
                 .foregroundStyle(.white)
         }
         .shadow(color: .black.opacity(0.5), radius: 10, y: 3)
     }
 
     private var footer: some View {
-        HStack {
-            Rectangle().fill(Theme.glow.opacity(0.5)).frame(width: 60, height: 4)
+        HStack(spacing: 16) {
+            Capsule().fill(Theme.leafGradient).frame(width: 60, height: 5)
             Text("Tracked with \(AppInfo.name)")
                 .font(.system(size: 28, weight: .bold, design: .rounded))
                 .foregroundStyle(.white.opacity(0.6))
         }
     }
 
-    private func tile(_ value: String, _ label: String, _ symbol: String) -> some View {
+    private func tile(_ stat: RecapStat) -> some View {
         VStack(alignment: .leading, spacing: 10) {
-            Image(systemName: symbol)
+            Image(systemName: stat.symbol)
                 .font(.system(size: 30, weight: .bold))
                 .foregroundStyle(Theme.glow)
-            Text(value)
+            Text(stat.value)
                 .font(.system(size: 64, weight: .heavy, design: .rounded))
+                .monospacedDigit()
                 .foregroundStyle(.white)
                 .lineLimit(1).minimumScaleFactor(0.5)
-            Text(label.uppercased())
+            Text(stat.label.uppercased())
                 .font(.system(size: 24, weight: .bold, design: .rounded)).tracking(2)
                 .foregroundStyle(.white.opacity(0.6))
+                .lineLimit(1).minimumScaleFactor(0.7)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(30)
@@ -368,6 +417,7 @@ struct RecapCardView: View {
         VStack(alignment: .leading, spacing: 6) {
             Text(value)
                 .font(.system(size: 40, weight: .heavy, design: .rounded))
+                .monospacedDigit()
                 .foregroundStyle(.white)
                 .lineLimit(1).minimumScaleFactor(0.5)
             Text(label.uppercased())
@@ -393,6 +443,7 @@ struct RecapShareView: View {
     @State private var maps: [String: UIImage] = [:]
     @State private var rendered: UIImage?
     @State private var loading = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var format: RecapFormat { RecapFormat(rawValue: formatRaw) ?? .story }
     private var key: String { "\(format.rawValue)-\(hideEnds)-\(useMetric)" }
@@ -428,12 +479,16 @@ struct RecapShareView: View {
                     }
                     .buttonStyle(PrimaryButtonStyle())
                     .haptic(.medium)
+                    .accessibilityHint("Share the card or save it to Photos")
                 } else {
-                    Label("Making your card…", systemImage: "hourglass")
-                        .frame(maxWidth: .infinity)
-                        .font(Theme.rounded(17, .bold))
-                        .foregroundStyle(Theme.textDim)
-                        .padding(.vertical, 15)
+                    // Same size and place as the Share button, so nothing jumps when the card is ready.
+                    Button {} label: {
+                        Label("Share", systemImage: "square.and.arrow.up").frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(PrimaryButtonStyle())
+                    .disabled(true)
+                    .opacity(0.45)
+                    .accessibilityLabel("Making your card")
                 }
             }
             .padding(Theme.pad)
@@ -462,7 +517,23 @@ struct RecapShareView: View {
                 .accessibilityValue("\(activity.displayTitle), \(Format.distance(activity.distanceM)), \(Format.duration(activity.elapsedSec))")
                 .animation(.easeInOut(duration: 0.2), value: loading)
         } else {
-            ProgressView().tint(.white)
+            // Placeholder card in the chosen shape while the map snapshot renders (no bare spinner).
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(LinearGradient(colors: [Color.white.opacity(0.08), Color.white.opacity(0.03)], startPoint: .top, endPoint: .bottom))
+                .aspectRatio(format.size.width / format.size.height, contentMode: .fit)
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+                .overlay {
+                    VStack(spacing: 10) {
+                        Image(systemName: activity.kind.symbol)
+                            .font(.system(size: 34, weight: .bold))
+                            .foregroundStyle(Theme.leafGradient)
+                            .symbolEffect(.pulse, options: .repeating, isActive: !reduceMotion)
+                        Text("Making your card…")
+                            .font(Theme.rounded(14, .semibold))
+                            .foregroundStyle(Theme.textDim)
+                    }
+                }
+                .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Making your recap card")
         }
     }

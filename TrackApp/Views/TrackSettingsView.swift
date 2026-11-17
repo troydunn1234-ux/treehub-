@@ -25,14 +25,6 @@ struct TrackSettingsView: View {
 
     private static let spring = Animation.spring(response: 0.4, dampingFraction: 0.82)
 
-    private var versionString: String {
-        Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0"
-    }
-
-    private var buildString: String? {
-        Bundle.main.infoDictionary?["CFBundleVersion"] as? String
-    }
-
     private var tripCountText: String {
         "\(activities.count) \(activities.count == 1 ? "trip" : "trips")"
     }
@@ -52,7 +44,7 @@ struct TrackSettingsView: View {
 
                     sectionLabel("Auto-detect drives")
                     autoDriveCard.cardAppear()
-                    footnote("When you're moving faster than \(Int(autoDriveMph)) mph and not recording, \(AppInfo.name) asks \"Start drive?\". It uses motion and a quick GPS check, never constant GPS, so it's easy on battery.")
+                    footnote("When you're moving faster than \(Int(autoDriveMph)) mph and not recording, \(AppInfo.name) asks \"Start drive?\". It listens with low-power motion and cell-tower signals and only takes a few seconds of GPS to check your speed, so it's easy on battery. Continuous GPS runs only while you record.")
 
                     sectionLabel(String(localized: "Gas & MPG"))
                     gasCard.cardAppear()
@@ -71,8 +63,7 @@ struct TrackSettingsView: View {
 
                     sectionLabel("About")
                     aboutCard.cardAppear()
-
-                    versionFooter
+                    footnote("No accounts, no ads, no tracking. Your trips stay yours.")
                 }
                 .padding(.horizontal, Theme.pad)
                 .padding(.top, 8)
@@ -438,6 +429,12 @@ struct TrackSettingsView: View {
     private var aboutCard: some View {
         GlassCard(padding: 0) {
             VStack(spacing: 0) {
+                // The family About block: app icon, name and version on top, then Pro, More apps, Privacy, Terms, Help.
+                FamilyAboutHeader(name: AppInfo.name, tagline: String(localized: "Every walk, run, ride and drive, on a map."),
+                                  tint: Theme.glow)
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 16)
+                Rectangle().fill(Color.white.opacity(0.08)).frame(height: 1)
                 Button { showPlans = true } label: {
                     row(symbol: "sparkles", tint: Theme.gold,
                         title: "Roamr Pro",
@@ -459,31 +456,15 @@ struct TrackSettingsView: View {
                     divider
                 }
                 if let url = RoamrPro.spec.privacyURL {
-                    Link(destination: url) {
-                        row(symbol: "hand.raised.fill", tint: Theme.sky, title: "Privacy", subtitle: "No accounts, no ads, no tracking") {
-                            Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
+                    linkRow(url, symbol: "hand.raised.fill", tint: Theme.sky, title: "Privacy Policy",
+                            subtitle: "Your trips stay on your iPhone and private iCloud")
                     divider
                 }
-                Link(destination: Self.supportURL) {
-                    row(symbol: "questionmark.bubble.fill", tint: Theme.leaf, title: "Help & contact", subtitle: "Answers to common questions, and how to reach us") {
-                        Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
-                    }
-                    .contentShape(Rectangle())
-                }
-                .buttonStyle(.plain)
+                linkRow(FamilyAboutLinks.standardTerms, symbol: "doc.text.fill", tint: Theme.gold, title: "Terms of Use",
+                        subtitle: "The standard App Store terms")
                 divider
-                row(symbol: "info.circle.fill", tint: Theme.glow,
-                    title: "Version",
-                    subtitle: nil) {
-                    Text(versionString)
-                        .font(Theme.rounded(14, .bold))
-                        .monospacedDigit()
-                        .foregroundStyle(Theme.textDim)
-                }
+                linkRow(Self.supportURL, symbol: "questionmark.bubble.fill", tint: Theme.leaf, title: "Help & contact",
+                        subtitle: "Answers to common questions, and how to reach us")
             }
         }
         .paywall(isPresented: $showPlans, spec: RoamrPro.spec)
@@ -491,25 +472,16 @@ struct TrackSettingsView: View {
 
     static let supportURL = URL(string: "https://github.com/troydunn1234-ux/treehub-/blob/main/store/roamr/SUPPORT.md")!
 
-    private var versionFooter: some View {
-        VStack(spacing: 6) {
-            Image(systemName: "location.north.circle.fill")
-                .font(.system(size: 22, weight: .bold))
-                .foregroundStyle(Theme.leafGradient)
-            Text(footerText)
-                .font(Theme.rounded(12, .semibold))
-                .foregroundStyle(Theme.textDim)
+    private func linkRow(_ url: URL, symbol: String, tint: Color, title: String, subtitle: String) -> some View {
+        Link(destination: url) {
+            row(symbol: symbol, tint: tint, title: title, subtitle: subtitle) {
+                Image(systemName: "arrow.up.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                    .accessibilityHidden(true)
+            }
+            .contentShape(Rectangle())
         }
-        .frame(maxWidth: .infinity)
-        .padding(.top, 16)
-        .accessibilityElement(children: .combine)
-    }
-
-    private var footerText: String {
-        if let build = buildString, build != versionString {
-            return "\(AppInfo.name) \(versionString) (\(build))"
-        }
-        return "\(AppInfo.name) \(versionString)"
+        .buttonStyle(.plain)
+        .accessibilityHint("Opens in Safari")
     }
 
     // MARK: Building blocks

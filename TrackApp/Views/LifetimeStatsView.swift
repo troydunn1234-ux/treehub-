@@ -510,6 +510,14 @@ struct LifetimeStatsView: View {
                 Text("Record a trip from the Track tab. Totals, records, streaks and milestones build up as you go.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
+                } label: {
+                    Label("Start a trip", systemImage: "play.fill")
+                }
+                .buttonStyle(PrimaryButtonStyle())
+                .padding(.top, 6)
             }
             .frame(maxWidth: .infinity)
         }

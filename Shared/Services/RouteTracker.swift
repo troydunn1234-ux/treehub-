@@ -226,6 +226,20 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         restoreIfNeeded()
         // Re-attach the Live Activity for a restored recording, or clear an orphaned one.
         LiveActivityController.shared.sync(with: self)
+        // Swiped away from the app switcher: GPS stops with the app, so take the Live Activity
+        // down too (the recording itself is saved and comes back paused next launch).
+        NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated {
+                self?.persist()
+                LiveActivityController.shared.endBeforeExit()
+            }
+        }
+    }
+
+    /// Where the phone last was, from iOS's location cache (or the newest route point).
+    /// Reading it never turns GPS on, so idle screens can center a map without the location arrow.
+    var lastKnownCoordinate: CLLocationCoordinate2D? {
+        points.last?.coordinate ?? manager.location?.coordinate
     }
 
     // MARK: - Derived
@@ -303,6 +317,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         resumedAt = Date()
         state = .recording
         autoPaused = false
+        recoveredFromCrash = false   // picked back up: the "Recovered your recording" note is done
         slowSince = nil
         fastFixes = 0
         if !wasAuto { beginUpdates() }
@@ -506,6 +521,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
     private func stillCheck() {
         idleCheck()
+        // Keep the Live Activity fresh even when standing still (it's throttled inside), so it only
+        // goes stale if the app has really stopped.
+        if state == .recording { LiveActivityController.shared.update(tracker: self) }
         if state == .paused, autoPaused, let at = autoPausedAt,
            Date().timeIntervalSince(at) >= Self.autoPauseGPSLimit {
             pause()   // auto-pause → manual pause: GPS and the background arrow go off

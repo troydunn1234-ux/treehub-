@@ -10,12 +10,13 @@ enum RoamrContext {
     static var container: ModelContainer?
 
     /// Same as tapping Finish in the app: save the activity, tell listeners, fill in place names.
+    /// `auto`: finished on its own after you stopped moving (trims the idle tail, sends "Drive finished").
     @discardableResult
-    static func finishAndSave() -> Activity? {
+    static func finishAndSave(auto: Bool = false) -> Activity? {
         guard let tracker, tracker.isActive, let container else { return nil }
         let suggestion = tracker.suggestedKind
         let originalKind = tracker.kind
-        guard let a = tracker.finish() else { return nil }
+        guard let a = tracker.finish(auto: auto) else { return nil }
         if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
             && ActivityKind.available.contains(suggestion) { a.kind = suggestion }
         let context = container.mainContext
@@ -23,7 +24,7 @@ enum RoamrContext {
         try? context.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         NotificationCenter.default.post(name: .activitySaved, object: nil, userInfo: [
-            "id": a.id.uuidString, "auto": false, "kind": a.kind.rawValue,
+            "id": a.id.uuidString, "auto": auto, "kind": a.kind.rawValue,
             "distanceM": a.distanceM, "seconds": a.elapsedSec,
         ])
         let pts = a.route

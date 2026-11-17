@@ -70,6 +70,8 @@ struct RoamrIntroView: View {
                     Button("Skip") { onDone() }
                         .font(Theme.rounded(15, .bold))
                         .foregroundStyle(Theme.textDim)
+                        .frame(minWidth: 44, minHeight: 44)
+                        .contentShape(Rectangle())
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 12)
@@ -151,7 +153,7 @@ struct RoamrIntroView: View {
     private var privacyPage: some View {
         IntroPage(symbol: "lock.shield.fill", tint: Theme.gold,
                   title: "Your location stays yours",
-                  text: "Roamr uses GPS only while you record (or for a quick check when auto-detect thinks you're driving). Trips are saved on your iPhone and your private iCloud. Nothing is sold or used for ads.") {
+                  text: "Roamr uses GPS only while you record. Auto-detect listens with low-power motion signals and takes a few seconds of GPS only when you seem to be driving. Trips are saved on your iPhone and your private iCloud. Nothing is sold or used for ads.") {
             VStack(spacing: 10) {
                 if autoDetectAsked {
                     Label("Auto-detect is set up", systemImage: "checkmark.circle.fill")
@@ -174,9 +176,12 @@ struct RoamrIntroView: View {
         Text(key)
             .font(Theme.rounded(15, .heavy))
             .foregroundStyle(.white)
+            .multilineTextAlignment(.center)
             .padding(.horizontal, 18).padding(.vertical, 12)
+            .frame(minHeight: 48)
             .background(Color.white.opacity(0.12), in: Capsule())
             .overlay(Capsule().stroke(Theme.glow.opacity(0.6), lineWidth: 1.2))
+            .contentShape(Capsule())
     }
 }
 
@@ -186,6 +191,8 @@ private struct IntroPage<Extra: View>: View {
     let title: LocalizedStringKey
     let text: LocalizedStringKey
     @ViewBuilder var extra: Extra
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         ScrollView {
@@ -193,10 +200,12 @@ private struct IntroPage<Extra: View>: View {
                 Image(systemName: symbol)
                     .font(.system(size: 64, weight: .bold))
                     .foregroundStyle(tint)
+                    .symbolEffect(.bounce, value: shown)
                     .frame(width: 130, height: 130)
                     .background(tint.opacity(0.14), in: Circle())
                     .accessibilityHidden(true)
                     .padding(.top, 30)
+                    .onAppear { if !reduceMotion { shown.toggle() } }
                 Text(title)
                     .font(.system(.largeTitle, design: .rounded, weight: .heavy))
                     .foregroundStyle(.white)
