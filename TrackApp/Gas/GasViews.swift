@@ -120,23 +120,36 @@ struct GasLogView: View {
         }()
         let thisMonth = months.last.flatMap { Calendar.current.isDate($0.month, equalTo: Date(), toGranularity: .month) ? $0.dollars : nil } ?? 0
         return GlassCard {
-            HStack(alignment: .top) {
-                stat(avg.map { String(format: "%.1f", $0) } ?? "--", String(localized: "Avg MPG"))
-                Spacer()
-                stat(mpgPoints.last.map { String(format: "%.1f", $0.mpg) } ?? "--", String(localized: "Last MPG"))
-                Spacer()
-                stat(thisMonth.formatted(.currency(code: GasFormat.currency)), String(localized: "This month"))
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .top) {
+                    stat(avg.map { String(format: "%.1f", $0) }, String(localized: "Avg MPG"))
+                    Spacer()
+                    stat(mpgPoints.last.map { String(format: "%.1f", $0.mpg) }, String(localized: "Last MPG"))
+                    Spacer()
+                    stat(thisMonth.formatted(.currency(code: GasFormat.currency)), String(localized: "This month"))
+                }
+                if mpgPoints.isEmpty {
+                    // Say why MPG is blank instead of showing a bare dash.
+                    Label("MPG shows up after your second full fill-up.", systemImage: "info.circle")
+                        .font(Theme.rounded(12, .medium))
+                        .foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
             }
         }
     }
 
-    private func stat(_ value: String, _ label: String) -> some View {
+    /// One summary number. nil (not enough fill-ups yet) shows a calm dash and reads "Not yet" to VoiceOver.
+    private func stat(_ value: String?, _ label: String) -> some View {
         VStack(alignment: .leading, spacing: 2) {
-            Text(value).font(Theme.rounded(24, .black)).foregroundStyle(.white).monospacedDigit()
+            Text(value ?? "—").font(Theme.rounded(24, .black)).foregroundStyle(value == nil ? Theme.textDim : Color.white)
+                .monospacedDigit()
                 .minimumScaleFactor(0.6).lineLimit(1)
             Text(label).font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
         }
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(label))
+        .accessibilityValue(value.map { Text($0) } ?? Text("Not yet"))
     }
 
     private var mpgChart: some View {

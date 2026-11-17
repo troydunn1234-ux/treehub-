@@ -277,6 +277,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         let status = manager.authorizationStatus
         Task { @MainActor in
+            let changed = status != self.authorization
             self.authorization = status
             if status == .authorizedWhenInUse && self.wantsAlways {
                 self.wantsAlways = false
@@ -284,9 +285,13 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
                 self.manager.requestAlwaysAuthorization()
             }
             self.cardTick += 1
-            self.watching = false
-            self.manager.stopMonitoringSignificantLocationChanges()
-            self.motion.stopActivityUpdates()
+            // iOS also calls this right after launch with the same answer as before: keep watching then,
+            // so the location change that woke Roamr in the background still reaches us.
+            if changed {
+                self.watching = false
+                self.manager.stopMonitoringSignificantLocationChanges()
+                self.motion.stopActivityUpdates()
+            }
             self.refresh()
         }
     }
