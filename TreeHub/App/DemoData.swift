@@ -23,7 +23,7 @@ enum DemoData {
         let oakID = UUID(), redwoodID = UUID(), sycamoreID = UUID()
         let trees: [(UUID, String, String, Double, Double, String, Color)] = [
             (oakID, "Grandpa Oak", "Coast Live Oak", 37.7723, -122.4431, "Golden Gate Park, San Francisco", Color(red: 0.35, green: 0.6, blue: 0.3)),
-            (redwoodID, "The Giant", "Coast Redwood", 37.1700, -122.2230, "Big Basin, Boulder Creek", Color(red: 0.55, green: 0.3, blue: 0.2)),
+            (redwoodID, "The Giant", "Coast Redwood", 37.7701, -122.4618, "Redwood Grove, Golden Gate Park, San Francisco", Color(red: 0.55, green: 0.3, blue: 0.2)),
             (sycamoreID, "Silver Arms", "California Sycamore", 37.7770, -122.4500, "The Panhandle, San Francisco", Color(red: 0.6, green: 0.65, blue: 0.5)),
         ]
         let plan: [(Int, Int, Int, Double, Bool, [String], Int)] = [
