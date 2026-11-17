@@ -363,7 +363,7 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
       <div id="meta"></div>
       <div class="actions">
         <button id="act-card">Share card</button>
-        <button id="act-link">Copy link</button>
+        <button id="act-link">Share</button>
         <button id="act-own">New chart</button>
       </div>
     </div>
@@ -485,7 +485,7 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
   <section id="own">
     <div class="eyebrow">For anyone</div>
     <h2>Make your own chart</h2>
-    <p class="lede">Enter a birth date, time and city to rebuild this whole page for someone else, then copy a link that opens straight to their chart.</p>
+    <p class="lede">Enter a birth date, time and city to rebuild this whole page for someone else, then share their chart as a picture.</p>
     <form id="own-form" class="mform" autocomplete="off">
       <div class="fld"><label class="f" for="o-name">Name (optional)</label><input type="text" id="o-name" maxlength="20" placeholder="Your name"></div>
       <div class="fld"><label class="f" for="o-date">Birth date</label><input type="date" id="o-date" required min="1900-01-01" max="2035-12-31"></div>
@@ -495,8 +495,8 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
       <button type="submit" class="cta">Build chart</button>
       <p class="err" id="o-err" hidden></p>
     </form>
-    <div class="linkbox"><input type="text" id="share-url" readonly aria-label="Link to this chart"><button id="copy-url">Copy link</button></div>
-    <p class="note" id="share-note">Anyone you send this link to sees this exact chart. They need access to the page itself, so make sure link sharing is on.</p>
+    <div class="linkbox"><button id="copy-url" type="button">Share this chart</button></div>
+    <p class="note" id="share-note">Shares a picture of the chart on screen with its Sun, Moon and rising sign. Nothing is uploaded; the birth details stay on this device.</p>
     <div class="recent" id="recent"></div>
   </section>
 
@@ -768,7 +768,6 @@ const PHASE_NOW=['a fresh start: set an intention','a time to push forward on ne
 const ORIG_D={},ORIG_T={},ORIG_AYOU={},ORIG_BIG={},ORIG_SUMMARY='',ORIG_STEPS=[];
 
 /* ================= state ================= */
-const ART_URL='https://claude.ai/artifact/QywV2h9nfTBPtHoC8phGoz';
 const SC_IX=CITIES.findIndex(c=>c[0]==='Los Angeles, California');
 const ORIGINAL={name:'Ava',y:1996,mo:6,d:21,h:14,mi:32,timeKnown:true,city:SC_IX}; /* sample chart shown on first run and in demos */
 const HAS_ASTRO=typeof Astronomy!=='undefined';
@@ -1566,11 +1565,27 @@ $('card-save').onclick=async()=>{if(!downloadsNS||!cardBlob)return;const nm=(car
   try{await downloadsNS.save({filename:`${nm}-${cardFmt}.png`,data:cardBlob});$('card-msg').textContent=cardKind==='chart'?'Saved.':'Shared.';haptic('success');}
   catch(e){const c=e&&e.code;$('card-msg').textContent=c==='declined'?'Save cancelled.':c==='rate_limited'?'One moment, then try again.':'Saving is not available here. Long-press or right-click the image instead.';if(c==='unavailable'||c==='not_granted'){downloadsNS=null;$('card-save').hidden=true;}}};
 
-/* ================= share link ================= */
-function shareUrl(){return `${ART_URL}#${specToken(SPEC)}`;}
-async function copyText(t,btn){const old=btn.textContent;try{await navigator.clipboard.writeText(t);btn.textContent='Copied';haptic('light');}catch(e){const i=$('share-url');i.value=t;i.focus();i.select();btn.textContent='Press copy';}setTimeout(()=>btn.textContent=old,1600);}
-$('copy-url').onclick=()=>copyText($('share-url').value,$('copy-url'));
-$('act-link').onclick=()=>copyText(shareUrl(),$('act-link'));
+/* ================= share the chart =================
+   A self-contained picture (the square chart card) plus a line of text, handed to the system share sheet.
+   No links: everything someone needs is in the image itself. */
+function shareText(){const sun=P_('sun'),moon=P_('moon');
+  const sgM=CH.moonUnsure?signOf(CH.moonRange[0])+'/'+signOf(CH.moonRange[1]):signOf(moon.lon);
+  const bits=[`☉ ${signOf(sun.lon)} Sun`,`☽ ${sgM} Moon`,...(CH.asc!=null?[`↑ ${signOf(CH.asc)} rising`]:[])];
+  return `${CH.name?CH.name+"'s":'My'} natal chart: ${bits.join(' · ')}. Made with Natal Orbit.`;}
+async function shareChart(btn){const old=btn.textContent;btn.disabled=true;
+  const done=t=>{btn.textContent=t;setTimeout(()=>{btn.textContent=old;},1600);};
+  try{const c=await makeCard('square');const blob=await new Promise(r=>c.toBlob(r,'image/png'));const text=shareText();
+    const nm=((CH.name||'natal-chart')+'-chart').toLowerCase().replace(/[^a-z0-9]+/g,'-')+'.png';
+    let file=null;try{file=blob?new File([blob],nm,{type:'image/png'}):null;}catch(e){file=null;}
+    if(file&&navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],text});haptic('success');done('Shared');}catch(e){if(!(e&&e.name==='AbortError'))toast('Sharing is not available here.');}
+      return;}
+    if(downloadsNS&&blob){try{await downloadsNS.save({filename:nm,data:blob});haptic('success');done('Shared');}catch(e){}return;}
+    if(navigator.share){try{await navigator.share({text});haptic('success');done('Shared');}catch(e){}return;}
+    try{await navigator.clipboard.writeText(text);haptic('light');done('Copied');toast('Chart summary copied');}catch(e){openCard('chart');}
+  }finally{btn.disabled=false;}}
+$('copy-url').onclick=()=>shareChart($('copy-url'));
+$('act-link').onclick=()=>shareChart($('act-link'));
 $('act-own').onclick=()=>{$('own').scrollIntoView({behavior:reduce?'auto':'smooth'});setTimeout(()=>$('o-date').focus({preventScroll:true}),reduce?0:500);};
 
 /* ================= city input ================= */
@@ -1808,7 +1823,6 @@ function loadChart(spec){
   if(viewMode==='sky')exitSky();tour=null;skyOn=false;setOverlay(null);FRIEND=null;
   buildScene();buildSteps();renderHeader();renderChips();renderThree();renderAspects();renderSummary();
   renderToday();renderYear();setupSlider();updateSky(true);renderRecent();
-  $('share-url').value=shareUrl();
   $('match-out').innerHTML='<p class="mempty">Pick a birthday to get a match score, a breakdown of where you click and where you clash, and their planets shown inside your 3D chart.</p>';
   PERSON_IX=-1;renderPeople();
   select('sun');home(true);
