@@ -1,0 +1,13 @@
+OK    01-apps  -demo -pro
+OK    02-remote-quicklaunch  -demo -pro -remote  [1 error/fault log lines]
+OK    03-remote-free  -demo -free -remote
+OK    04-about  -demo -pro -open about
+OK    05-paywall  -demo -paywall -demoPrice 2.99  [4 error/fault log lines]
+OK    06-moreapps  -demo -pro -open moreapps  [7 error/fault log lines]
+OK    07-remote-largetype  -demo -pro -remote  [4 error/fault log lines]
+OK    08-noonboarding  -noOnboarding  [1826 error/fault log lines]
+OK    09-picker  -demo -pro -picker
+OK    10-pc  -demo -pro -pc  [2 error/fault log lines]
+OK    11-switcher  -demo -pro -switcher  [4 error/fault log lines]
+OK    watch-w1-home  -demo  [4 error/fault log lines]
+OK    watch-w2-nophone  

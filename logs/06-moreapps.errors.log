@@ -1,0 +1,7 @@
+2026-11-17 13:17:11.759 E  Clicker[26412:12b25] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-17 13:17:11.771 E  Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-17 13:17:11.776 E  Clicker[26412:12b25] [com.apple.wcd:WC] WCSession is not paired
+2026-11-17 13:17:11.797 E  Clicker[26412:12b42] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-17 13:17:14.322 E  Clicker[26412:12b44] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-17 13:17:15.080 E  Clicker[26412:12b44] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-17 13:17:23.760 F  Clicker[26412:129ef] [com.apple.renderbox:error] building pipeline path_exterior-jba6la8feba4 took 1.089253 seconds

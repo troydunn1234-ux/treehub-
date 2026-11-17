@@ -1,0 +1,382 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-17 13:17:11.542 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d304dc0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-17 13:17:11.690 Df Clicker[26412:129ef] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=26412 task=Clicker[26412]/0#-1 LF=22
+2026-11-17 13:17:11.691 Df Clicker[26412:129ef] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-17 13:17:11.691 Df Clicker[26412:129ef] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-17 13:17:11.753 Df Clicker[26412:129ef] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-17 13:17:11.755 Df Clicker[26412:12b25] [com.apple.xpc:connection] [0x10d3069a0] activating connection: mach=true listener=false peer=false name=com.apple.linkd.autoShortcut
+2026-11-17 13:17:11.755 Df Clicker[26412:129ef] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-17 13:17:11.755 Df Clicker[26412:129ef] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: YES
+2026-11-17 13:17:11.756 A  Clicker[26412:129ef] (WatchConnectivity) activateSession
+2026-11-17 13:17:11.756 Df Clicker[26412:129ef] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-17 13:17:11.756 Df Clicker[26412:129ef] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-17 13:17:11.756 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d406940] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-17 13:17:11.759 E  Clicker[26412:12b25] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-17 13:17:11.763 Df Clicker[26412:129ef] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-11-17 13:17:11.765 Df Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c0ee80, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-17 13:17:11.765 Df Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:] <WCActiveDeviceSwitchTask: 0x6000002092a0, clientReadyForSessionState: YES, taskState: ActivationRequested>
+2026-11-17 13:17:11.765 Df Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession onDelegateQueueIfTriggeringKVO_updateSessionState:triggerKVO:] <WCSessionState: 0x600000c0ee80, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>, triggerKVO: NO
+2026-11-17 13:17:11.770 Df Clicker[26412:12b42] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c0a940, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-17 13:17:11.771 Df Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:]_block_invoke_2 hasContentPending: NO
+2026-11-17 13:17:11.771 E  Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-17 13:17:11.772 Df Clicker[26412:12b42] [com.apple.wcd:WC] -[WCSession onqueue_startNextDeviceSwitch] no tasks queued after <WCActiveDeviceSwitchTask: 0x6000002092a0, clientReadyForSessionState: YES, taskState: ActivationCompleted>
+2026-11-17 13:17:11.776 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10e806590] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-11-17 13:17:11.776 E  Clicker[26412:12b25] [com.apple.wcd:WC] WCSession is not paired
+2026-11-17 13:17:11.776 Df Clicker[26412:12b25] [com.apple.wcd:WC] -[WCSession didSessionStateChange:withChangeHandler:] no change
+2026-11-17 13:17:11.777 Df Clicker[26412:129ef] [com.apple.UserNotifications:Connections] [com.troydunn.clicker] Creating a user notification center
+2026-11-17 13:17:11.778 Df Clicker[26412:129ef] [com.apple.UserNotifications:Connections] [com.troydunn.clicker] Setting 1 notification categories
+2026-11-17 13:17:11.779 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d3079a0] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-17 13:17:11.781 Df Clicker[26412:129ef] [com.apple.runningboard:connection] Initializing connection
+2026-11-17 13:17:11.781 Df Clicker[26412:129ef] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-17 13:17:11.781 Df Clicker[26412:12b42] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-17 13:17:11.781 Df Clicker[26412:12b42] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-17 13:17:11.781 Df Clicker[26412:12b42] [com.apple.xpc:connection] [0x10d307540] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-17 13:17:11.787 A  Clicker[26412:12b44] (RunningBoardServices) didChangeInheritances
+2026-11-17 13:17:11.787 Df Clicker[26412:12b42] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-17 13:17:11.787 Df Clicker[26412:12b42] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.clicker((null))>
+2026-11-17 13:17:11.790 Df Clicker[26412:12b25] [com.apple.xpc:connection] [0x10e805280] activating connection: mach=true listener=false peer=false name=com.apple.linkd.autoShortcut
+2026-11-17 13:17:11.791 Df Clicker[26412:12b25] [com.apple.xpc:connection] [0x10d3069a0] Re-initialization successful; calling out to event handler with XPC_ERROR_CONNECTION_INTERRUPTED
+2026-11-17 13:17:11.797 E  Clicker[26412:12b42] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-17 13:17:11.804 Df Clicker[26412:12b42] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-11-17 13:17:11.838 A  Clicker[26412:12b25] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-17 13:17:11.842 Df Clicker[26412:12b42] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-17 13:17:11.842 Df Clicker[26412:12b42] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-17 13:17:11.843 Df Clicker[26412:12b42] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x6000021114a0>
+2026-11-17 13:17:11.844 Df Clicker[26412:12b42] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x6000021114a0>
+2026-11-17 13:17:11.844 Df Clicker[26412:12b42] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x600001710800>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1532 (elapsed = 0).
+2026-11-17 13:17:11.844 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-17 13:17:11.858 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-17 13:17:11.859 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-17 13:17:11.859 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-17 13:17:11.860 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-17 13:17:11.861 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-17 13:17:11.862 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-17 13:17:11.862 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-17 13:17:11.863 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-17 13:17:11.863 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-17 13:17:11.864 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-17 13:17:11.864 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-17 13:17:11.864 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-17 13:17:11.865 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-17 13:17:11.865 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-17 13:17:11.866 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-17 13:17:11.866 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-17 13:17:11.867 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-17 13:17:11.868 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-17 13:17:11.868 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-17 13:17:11.869 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-17 13:17:11.869 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-17 13:17:11.870 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-17 13:17:11.870 Df Clicker[26412:12b42] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-17 13:17:11.877 Df Clicker[26412:129ef] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=26412 task=Clicker[26412]/0#-1 LF=22
+2026-11-17 13:17:11.881 Df Clicker[26412:12b44] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-17 13:17:11.882 Df Clicker[26412:12b44] [com.apple.xpc:connection] [0x10d70b8c0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 13:17:11.893 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-17 13:17:11.895 Df Clicker[26412:129ef] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-17 13:17:11.895 Df Clicker[26412:129ef] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-17 13:17:11.896 Df Clicker[26412:129ef] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-17 13:17:11.899 Df Clicker[26412:129ef] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000020ad20; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-17 13:17:11.900 Df Clicker[26412:129ef] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x6000030002d0 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-17 13:17:11.906 Df Clicker[26412:129ef] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x6000030002d0 com.apple.frontboard.systemappservices> sent handshake
+2026-11-17 13:17:11.909 Df Clicker[26412:12b44] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-17 13:17:11.911 Df Clicker[26412:12b44] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-17 13:17:11.912 Df Clicker[26412:129ef] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x60000020fb40>
+2026-11-17 13:17:11.924 Df Clicker[26412:12b44] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-17 13:17:11.925 Df Clicker[26412:12b44] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-17 13:17:11.925 Df Clicker[26412:12b44] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-17 13:17:11.929 Df Clicker[26412:129ef] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10d709b70> for initial
+2026-11-17 13:17:11.930 Df Clicker[26412:129ef] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10d709b70> for CADisplay KVO
+2026-11-17 13:17:11.934 Df Clicker[26412:129ef] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-17 13:17:11.935 Df Clicker[26412:129ef] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryL
+2026-11-17 13:17:11.949 Df Clicker[26412:129ef] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-17 13:17:11.949 Df Clicker[26412:129ef] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 13:17:11.949 Df Clicker[26412:129ef] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 13:17:11.950 Df Clicker[26412:129ef] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-17 13:17:11.951 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-17 13:17:11.954 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-17 13:17:11.955 Df Clicker[26412:129ef] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-17 13:17:11.955 Df Clicker[26412:129ef] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-17 13:17:11.955 Df Clicker[26412:129ef] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-17 13:17:11.961 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10e809d20] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-17 13:17:12.017 Df Clicker[26412:129ef] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-17 13:17:12.017 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d40e680] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-17 13:17:12.019 Df Clicker[26412:12b25] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-17 13:17:12.023 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-17 13:17:12.023 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.025 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.025 Df Clicker[26412:129ef] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x600002911110>; with scene: <UIWindowScene: 0x10d70f6a0>
+2026-11-17 13:17:12.025 Df Clicker[26412:129ef] [com.apple.BacklightServices:scenes] 0x600000c2c510 setDelegate:<0x600000c2c660 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.clicker-default
+2026-11-17 13:17:12.026 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.026 Df Clicker[26412:129ef] [com.apple.UIKit:EventDeferring] [0x6000029111f0] Initialized with scene: <UIWindowScene: 0x10d70f6a0>; behavior: <_UIEventDeferringBehavior_iOS: 0x6000002264a0>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-17 13:17:12.029 Df Clicker[26412:129ef] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002610720; process scope; status: target> was:none
+2026-11-17 13:17:12.029 Df Clicker[26412:12b25] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-17 13:17:12.029 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-17 13:17:12.029 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x10d70f6a0; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.clicker-default
+2026-11-17 13:17:12.029 Df Clicker[26412:129ef] [com.apple.UIKit:EventDeferring] [0x6000029111f0] Scene target of event deferring environments did update: scene: 0x10d70f6a0; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-17 13:17:12.030 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10d70f6a0; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.clicker-default
+2026-11-17 13:17:12.030 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c1f6f0: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-17 13:17:12.030 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-17 13:17:12.030 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10d70f6a0; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x10d70f6a0: Window scene became target of keyboard environment
+2026-11-17 13:17:12.031 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.032 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.033 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.224 Df Clicker[26412:129ef] [com.apple.UIKit:Orientation] <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A) Scene updated orientation preferences: none -> ( Pu )
+2026-11-17 13:17:12.234 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-17 13:17:12.234 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x10d70f6a0: Window became key in scene: UIWindow: 0x10e80ed60; contextId: 0x7A8A6247: reason: UIWindowScene: 0x10d70f6a0: Window requested to become key in scene: 0x10e80ed60
+2026-11-17 13:17:12.234 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10d70f6a0; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10e80ed60; reason: UIWindowScene: 0x10d70f6a0: Window requested to become key in scene: 0x10e80ed60
+2026-11-17 13:17:12.234 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10e80ed60; contextId: 0x7A8A6247; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.clicker-default
+2026-11-17 13:17:12.235 Df Clicker[26412:129ef] [com.apple.UIKit:EventDeferring] [0x6000029111f0] Begin local event deferring requested for token: 0x600002602760; environments: 1; reason: UIWindowScene: 0x10d70f6a0: Begin event deferring in keyboardFocus for window: 0x10e80ed60
+2026-11-17 13:17:12.239 Df Clicker[26412:12b44] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002610720; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.clicker-default; status: ancestor> was:target
+2026-11-17 13:17:12.240 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.242 Df Clicker[26412:129ef] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.clicker-default  persistentID: 6666F7B9-5CBC-4D5C-9124-F600D780858A
+2026-11-17 13:17:12.243 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-17 13:17:12.243 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-17 13:17:12.243 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-17 13:17:12.243 Df Clicker[26412:129ef] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-17 13:17:12.244 Df Clicker[26412:12b44] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-17 13:17:12.245 Df Clicker[26412:12b44] [com.apple.xpc:session] [0x60000211c280] Session created.
+2026-11-17 13:17:12.245 Df Clicker[26412:12b44] [com.apple.xpc:session] [0x60000211c280] Session created from connection [0x10d40ee40]
+2026-11-17 13:17:12.245 Df Clicker[26412:12b44] [com.apple.xpc:connection] [0x10d40ee40] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-17 13:17:12.245 Df Clicker[26412:12b44] [com.apple.xpc:session] [0x60000211c280] Session activated
+2026-11-17 13:17:12.247 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:12.258 A  Clicker[26412:129ef] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-17 13:17:12.794 Df Clicker[26412:12b44] [com.apple.xpc:connection] [0x10e80a810] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-17 13:17:12.795 Df Clicker[26412:12b25] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=26412 task=Clicker[26412]/0#-1 LF=22
+2026-11-17 13:17:12.852 Df Clicker[26412:12b25] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-17 13:17:12.852 Df Clicker[26412:12b25] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x600001710800>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1532 (elapsed = 1), _expireHandler: (null)
+2026-11-17 13:17:12.852 Df Clicker[26412:12b25] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x6000021114a0> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x600001710800>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1532 (elapsed = 1))
+2026-11-17 13:17:12.852 Df Clicker[26412:12b25] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x6000021114a0> for task identifier: 1
+2026-11-17 13:17:12.956 A  Clicker[26412:12b25] (RunningBoardServices) didChangeInheritances
+2026-11-17 13:17:13.654 Df Clicker[26412:129ef] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.clicker-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-17 13:17:13.817 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:13.914 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d342220] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-17 13:17:13.915 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10e847e30] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-17 13:17:13.916 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10e827b30] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-17 13:17:13.940 Df Clicker[26412:129ef] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-17 13:17:14.123 Df Clicker[26412:129ef] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-17 13:17:14.137 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d356e70] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-17 13:17:14.322 Df Clicker[26412:129ef] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [3E9CCA15-9D35-4572-9466-2A27F2EEE8B3] (reporting strategy default)>
+2026-11-17 13:17:14.322 Df Clicker[26412:12b44] [com.apple.CoreAnalytics:client] No XPC connection in Simulator
+2026-11-17 13:17:14.322 Df Clicker[26412:129ef] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [ADFD6EC8-35D0-456F-BF82-9BD3FBE8AFA4] (reporting strategy default)>
+2026-11-17 13:17:14.322 E  Clicker[26412:12b44] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-17 13:17:14.322 Df Clicker[26412:129ef] [com.apple.network:activity] Set activity <nw_activity 50:1 [3E9CCA15-9D35-4572-9466-2A27F2EEE8B3] (reporting strategy default)> as the global parent
+2026-11-17 13:17:14.330 A  Clicker[26412:12b44] (RunningBoardServices) didChangeInheritances
+2026-11-17 13:17:14.339 Df Clicker[26412:129ef] [com.apple.runningboard:connection] Creating side-channel connection to com.apple.runningboard
+2026-11-17 13:17:14.340 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d407870] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-17 13:17:14.343 Df Clicker[26412:129ef] [com.apple.runningboard:process] Hit the server for a process handle 1f09f9370000672c that resolved to: [app<com.troydunn.clicker((null))>:26412]
+2026-11-17 13:17:14.347 Df Clicker[26412:129ef] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-17 13:17:14.355 Df Clicker[26412:129ef] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.clicker-default  persistentID: 6666F7B9-5CBC-4D5C-9124-F600D780858A
+2026-11-17 13:17:14.356 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:14.356 Df Clicker[26412:129ef] [com.apple.BackgroundTasks:Framework] Handling app launch
+2026-11-17 13:17:14.361 A  Clicker[26412:12b44] (RunningBoardServices) didChangeInheritances
+2026-11-17 13:17:14.364 Df Clicker[26412:129ef] [com.apple.UIKit:EventDeferring] [0x6000029111f0] Scene target of event deferring environments did update: scene: 0x10d70f6a0; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-17 13:17:14.364 Df Clicker[26412:129ef] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10d70f6a0; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.clicker-default
+2026-11-17 13:17:14.366 Df Clicker[26412:129ef] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-17 13:17:14.371 Df Clicker[26412:129ef] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-17 13:17:14.372 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:14.374 Df Clicker[26412:129ef] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d70f6a0> (6666F7B9-5CBC-4D5C-9124-F600D780858A)
+2026-11-17 13:17:14.376 Df Clicker[26412:129ef] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.clicker-default  persistentID: 6666F7B9-5CBC-4D5C-9124-F600D780858A
+2026-11-17 13:17:14.377 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-17 13:17:14.377 Df Clicker[26412:129ef] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-17 13:17:14.378 Df Clicker[26412:129ef] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-17 13:17:14.454 A  Clicker[26412:12b44] (RunningBoardServices) didChangeInheritances
+2026-11-17 13:17:14.527 Df Clicker[26412:129ef] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-17 13:17:14.528 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d419110] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-17 13:17:14.568 Df Clicker[26412:129ef] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-17 13:17:14.572 Df Clicker[26412:129ef] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-17 13:17:14.695 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:14.696 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:14.843 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:14.860 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:14.874 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:14.927 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:14.977 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:15.031 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:15.071 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:15.079 Df Clicker[26412:129ef] [com.apple.network:activity] <nw_activity 50:1 [3E9CCA15-9D35-4572-9466-2A27F2EEE8B3] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 6497ms
+2026-11-17 13:17:15.079 Df Clicker[26412:129ef] [com.apple.network:activity] <nw_activity 50:2 [ADFD6EC8-35D0-456F-BF82-9BD3FBE8AFA4] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 6497ms
+2026-11-17 13:17:15.079 Df Clicker[26412:129ef] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [3E9CCA15-9D35-4572-9466-2A27F2EEE8B3] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-17 13:17:15.079 Df Clicker[26412:129ef] [com.apple.network:activity] Unset the global parent activity
+2026-11-17 13:17:15.080 E  Clicker[26412:12b44] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-17 13:17:15.121 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:15.273 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:15.423 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:15.423 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:15.626 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:15.626 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:15.741 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:15.882 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:15.883 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:16.458 Df Clicker[26412:12c1c] [com.apple.xpc:connection] [0x10e805280] Re-initialization successful; calling out to event handler with XPC_ERROR_CONNECTION_INTERRUPTED
+2026-11-17 13:17:22.309 Df Clicker[26412:12b44] [com.apple.CFNetwork:Default] Task <A36592DD-8B86-4BC4-8AAD-FC0577444869>.<1> resuming, timeouts(60.0, 604800.0) qos(0x19) voucher((null)) activity(00000000-0000-0000-0000-000000000000)
+2026-11-17 13:17:22.310 A  Clicker[26412:12b44] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-17 13:17:22.400 Df Clicker[26412:12c1c] [com.apple.CFNetwork:Default] Task <CF7EA2F4-4929-4460-B552-D0E455F3E740>.<2> resuming, timeouts(60.0, 604800.0) qos(0x19) voucher((null)) activity(00000000-0000-0000-0000-000000000000)
+2026-11-17 13:17:22.440 Df Clicker[26412:12b44] [com.apple.CFNetwork:Summary] Task <A36592DD-8B86-4BC4-8AAD-FC0577444869>.<1> summary for task success {transaction_duration_ms=110, response_status=200, cache_hit=true}
+2026-11-17 13:17:22.441 Df Clicker[26412:12b44] [com.apple.CFNetwork:Default] Task <A36592DD-8B86-4BC4-8AAD-FC0577444869>.<1> finished successfully
+2026-11-17 13:17:22.441 Df Clicker[26412:12b44] [com.apple.CFNetwork:Summary] Task <CF7EA2F4-4929-4460-B552-D0E455F3E740>.<2> summary for task success {transaction_duration_ms=2, response_status=200, cache_hit=true}
+2026-11-17 13:17:22.441 Df Clicker[26412:12b44] [com.apple.CFNetwork:Default] Task <CF7EA2F4-4929-4460-B552-D0E455F3E740>.<2> finished successfully
+2026-11-17 13:17:22.663 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:22.664 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:22.671 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d364100] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-17 13:17:23.226 Df Clicker[26412:129ef] [com.apple.xpc:connection] [0x10d421b60] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-17 13:17:23.226 A  Clicker[26412:12c1c] (Metal) Metal Compiling Shader
+2026-11-17 13:17:23.697 A  Clicker[26412:12c1c] (Metal) Metal Compiling Shader
+2026-11-17 13:17:23.732 A  Clicker[26412:12b42] (Metal) Metal Compiling Shader
+2026-11-17 13:17:23.760 F  Clicker[26412:129ef] [com.apple.renderbox:error] building pipeline path_exterior-jba6la8feba4 took 1.089253 seconds
+2026-11-17 13:17:23.760 A  Clicker[26412:129ef] (libsystem_trace.dylib) Activity for state dumps
+2026-11-17 13:17:23.763 A  Clicker[26412:12b42] (Metal) Metal Compiling Shader
+2026-11-17 13:17:23.776 A  Clicker[26412:12b44] (Metal) Metal Compiling Shader
+2026-11-17 13:17:23.792 Sd Clicker[26412:0] (EB73264B-09AE-3310-B642-B0B5D9390089) IOHIDManager State
+{
+    DispatchQueue = 0;
+    RunLoop = 1;
+    createOptions = 0;
+    isOpen = 0;
+    openOptions = 0;
+}
+2026-11-17 13:17:23.801 Sd Clicker[26412:0] (8932B5E7-350E-3E7D-A9DF-0DAD1BBE74A3) UAUserActivity
+UAUserActivityManager supportsActivityContinuation=YES isEnabled=YES serverPid=0 PROJECT:UserActivity-551
+2026-11-17 13:17:23.801 Sd Clicker[26412:0] (8932B5E7-350E-3E7D-A9DF-0DAD1BBE74A3) UAUserActivity
+[501BDA0B-8F0F-4D4D-8E75-028EAF5064E0 userInfo.count=1 dirty 
+2026-11-17 13:17:23.974 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:23.974 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:24.158 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:24.429 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:24.429 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:24.461 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:24.773 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:24.773 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:24.890 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:25.223 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:25.223 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:25.372 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:25.674 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:25.674 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:25.791 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.074 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.074 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:26.221 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.222 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:26.343 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.572 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.573 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:26.692 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.960 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:26.961 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:27.073 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:27.307 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:27.307 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:27.425 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:27.605 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:27.605 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:27.964 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:27.964 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:27.972 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:28.210 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:28.210 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:28.414 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:28.415 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:28.505 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:28.522 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:28.571 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:28.722 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:28.922 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:28.922 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:29.040 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:29.255 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:29.255 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:29.423 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:29.424 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:29.671 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:29.671 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:29.789 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.074 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.074 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:30.188 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.460 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.460 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:30.573 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.827 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:30.827 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:30.941 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.263 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.263 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:31.373 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.641 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.642 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:31.758 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.995 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:31.995 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:32.106 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:32.342 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:32.342 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:32.455 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:32.606 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:32.606 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:32.772 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:32.772 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:32.891 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.055 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.055 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:33.174 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.456 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.457 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:33.573 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.805 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:33.806 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:33.923 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:34.199 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:34.199 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:34.345 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:34.356 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:34.405 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:34.741 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:34.741 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:34.857 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.092 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.092 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:35.207 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.357 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.358 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:35.504 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.505 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:35.664 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:35.675 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:35.711 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:35.756 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:35.805 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: stale image queue, 0x10d354b80
+2026-11-17 13:17:36.178 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:36.178 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:36.289 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:36.407 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:36.625 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:36.625 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:36.739 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.028 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.029 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:37.140 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.409 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.409 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:37.524 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.778 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:37.778 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:37.890 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.124 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.124 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:38.240 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.494 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.494 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:38.608 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.824 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:38.825 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:38.939 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.108 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.108 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:39.256 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.256 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:39.373 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.591 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.591 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-17 13:17:39.709 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.955 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBLayer: full image queue, 0x10d354b80
+2026-11-17 13:17:39.956 Df Clicker[26412:129ef] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
