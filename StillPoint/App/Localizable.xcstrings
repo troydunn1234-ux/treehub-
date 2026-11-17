@@ -3952,6 +3952,616 @@
           }
         }
       }
+    },
+    "Log": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro"
+          }
+        }
+      }
+    },
+    "Log · %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro · %lld"
+          }
+        }
+      }
+    },
+    "Heat log, %lld sessions": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Registro de calor, %lld sesiones"
+          }
+        }
+      }
+    },
+    "Start %@ timer": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Iniciar temporizador: %@"
+          }
+        }
+      }
+    },
+    "In the sauna": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la sauna"
+          }
+        }
+      }
+    },
+    "In the steam room": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "En la sala de vapor"
+          }
+        }
+      }
+    },
+    "since %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "desde %@"
+          }
+        }
+      }
+    },
+    "%lld minutes so far": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld minutos hasta ahora"
+          }
+        }
+      }
+    },
+    "Settle in. Slow breaths through the nose.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acomódate. Respira despacio por la nariz."
+          }
+        }
+      }
+    },
+    "Sit low if it's too hot; heat rises.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Siéntate más abajo si hace demasiado calor; el calor sube."
+          }
+        }
+      }
+    },
+    "Let the steam open the airways. Breathe easy.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Deja que el vapor abra las vías respiratorias. Respira con calma."
+          }
+        }
+      }
+    },
+    "Listen to your body. Leave if you feel dizzy or sick.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Escucha a tu cuerpo. Sal si te mareas o te sientes mal."
+          }
+        }
+      }
+    },
+    "That's a full round. Step out, cool down, drink water.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda completa. Sal, enfríate y bebe agua."
+          }
+        }
+      }
+    },
+    "No heat sessions yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay sesiones de calor"
+          }
+        }
+      }
+    },
+    "Start a timer as you walk in. Heart rate from your Watch or WHOOP fills in after.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicia un temporizador al entrar. La frecuencia cardiaca de tu Watch o WHOOP se completa después."
+          }
+        }
+      }
+    },
+    "%lld min of heat in the last 7 days.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min de calor en los últimos 7 días."
+          }
+        }
+      }
+    },
+    "Sauna and steam sessions, with heart rate.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesiones de sauna y vapor, con frecuencia cardiaca."
+          }
+        }
+      }
+    },
+    "min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "min"
+          }
+        }
+      }
+    },
+    "avg": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "media"
+          }
+        }
+      }
+    },
+    "peak": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "máx."
+          }
+        }
+      }
+    },
+    "low": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "mín."
+          }
+        }
+      }
+    },
+    "Heart rate from %@ via Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia cardiaca de %@ a través de Salud"
+          }
+        }
+      }
+    },
+    "Looking up heart rate…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscando la frecuencia cardiaca…"
+          }
+        }
+      }
+    },
+    "No heart rate yet. WHOOP can take a few minutes to sync.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay frecuencia cardiaca. WHOOP puede tardar unos minutos en sincronizar."
+          }
+        }
+      }
+    },
+    "Check again": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Comprobar de nuevo"
+          }
+        }
+      }
+    },
+    "Heart rate during the session, %lld to %lld bpm": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Frecuencia cardiaca durante la sesión, de %1$lld a %2$lld lpm"
+          }
+        }
+      }
+    },
+    "%@ %lld bpm": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@ %2$lld lpm"
+          }
+        }
+      }
+    },
+    "Joints": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Articulaciones"
+          }
+        }
+      }
+    },
+    "Lymph flow": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Flujo linfático"
+          }
+        }
+      }
+    },
+    "Stretch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estiramientos"
+          }
+        }
+      }
+    },
+    "Tree Hugs": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles"
+          }
+        }
+      }
+    },
+    "Circles & mobility": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Círculos y movilidad"
+          }
+        }
+      }
+    },
+    "Pump, tap, drain": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bombeo, toques, drenaje"
+          }
+        }
+      }
+    },
+    "Long, slow lines": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Líneas largas y lentas"
+          }
+        }
+      }
+    },
+    "Paced breathing": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración acompasada"
+          }
+        }
+      }
+    },
+    "Ground yourself with a tree": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Arráigate con un árbol"
+          }
+        }
+      }
+    },
+    "Slow circles through every joint, taking each to the edge of comfortable range. Movement is what feeds cartilage, so this is the fastest way to undo a stiff morning or a long day sitting.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Círculos lentos por cada articulación, llevando cada una al límite de su rango cómodo. El movimiento es lo que nutre el cartílago, así que es la forma más rápida de deshacer una mañana rígida o un largo día sentado."
+          }
+        }
+      }
+    },
+    "Lymph has no pump of its own; it moves when you breathe deeply and squeeze muscles. Light strokes, tapping and calf pumps get it flowing, which is good after sitting, flying or a sauna.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La linfa no tiene bomba propia; se mueve cuando respiras hondo y contraes los músculos. Las caricias suaves, los toques y el bombeo de pantorrillas la ponen en marcha, algo útil después de estar sentado, volar o una sauna."
+          }
+        }
+      }
+    },
+    "Held shapes and flowing sequences that lengthen the big muscle chains: hamstrings, hips, spine and shoulders. Breathe out into each stretch; never bounce.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Posturas sostenidas y secuencias fluidas que alargan las grandes cadenas musculares: isquiotibiales, caderas, columna y hombros. Exhala en cada estiramiento; nunca rebotes."
+          }
+        }
+      }
+    },
+    "Paced breathing patterns from yoga, Zen and modern research. Longer out-breaths calm you; even counts steady you; quick top-ups wake you up.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Patrones de respiración acompasada del yoga, el zen y la investigación moderna. Las exhalaciones largas te calman; las cuentas iguales te estabilizan; las inhalaciones rápidas te despiertan."
+          }
+        }
+      }
+    },
+    "Short breaths for grounding yourself with nature: hands on the bark, arms around a trunk, feet on the ground. Open one from Rootbound's \"Breathe with this tree\" and it's saved under that tree.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiraciones breves para arraigarte en la naturaleza: manos en la corteza, brazos alrededor de un tronco, pies en el suelo. Abre una desde «Breathe with this tree» en Rootbound y se guarda con ese árbol."
+          }
+        }
+      }
+    },
+    "Nothing here yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay nada aquí"
+          }
+        }
+      }
+    },
+    "New practices for this area arrive with updates. The library has plenty meanwhile.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las prácticas nuevas para esta área llegan con las actualizaciones. Mientras tanto, la biblioteca tiene muchas más."
+          }
+        }
+      }
+    },
+    "Open the library": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir la biblioteca"
+          }
+        }
+      }
+    },
+    "All %lld": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todas (%lld)"
+          }
+        }
+      }
+    },
+    "Ready now": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Disponibles ahora"
+          }
+        }
+      }
+    },
+    "With Pro": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Con Pro"
+          }
+        }
+      }
+    },
+    "%lld more": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld más"
+          }
+        }
+      }
+    },
+    "Quick start · %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Inicio rápido · %@"
+          }
+        }
+      }
+    },
+    "Purpose": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Propósito"
+          }
+        }
+      }
+    },
+    "What happens": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Qué ocurre"
+          }
+        }
+      }
+    },
+    "How it feels": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo se siente"
+          }
+        }
+      }
+    },
+    "Best for": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ideal para"
+          }
+        }
+      }
+    },
+    "History": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historia"
+          }
+        }
+      }
+    },
+    "Research & texts": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Investigación y textos"
+          }
+        }
+      }
+    },
+    "Safety": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Seguridad"
+          }
+        }
+      }
+    },
+    "Opens in Safari": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Se abre en Safari"
+          }
+        }
+      }
+    },
+    "About %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Acerca de %@"
+          }
+        }
+      }
+    },
+    "Sauna & recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauna y recuperación"
+          }
+        }
+      }
+    },
+    "Loading recovery numbers": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cargando los datos de recuperación"
+          }
+        }
+      }
+    },
+    "Minutes of heat vs next morning": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutos de calor vs. la mañana siguiente"
+          }
+        }
+      }
     }
   },
   "version": "1.0"
