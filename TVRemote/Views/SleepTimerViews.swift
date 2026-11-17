@@ -86,29 +86,40 @@ private struct CustomSleepSheet: View {
     @State private var minutes = SleepTimer.shared.lastMinutes
 
     var body: some View {
-        VStack(spacing: Look.S.l) {
-            Text("Sleep timer").font(Look.font(20, .heavy)).foregroundStyle(.white)
-            Picker("Minutes", selection: $minutes) {
-                ForEach(Array(stride(from: 5, through: 240, by: 5)), id: \.self) { m in
-                    Text(SleepTimer.label(minutes: m)).tag(m)
+        ScrollView {
+            VStack(spacing: Look.S.l) {
+                Image(systemName: "moon.zzz.fill")
+                    .font(.system(size: 26, weight: .bold)).foregroundStyle(Look.accent)
+                    .accessibilityHidden(true)
+                Text("Sleep timer").font(Look.text(.title3, .heavy)).foregroundStyle(.white)
+                Picker("Minutes", selection: $minutes) {
+                    ForEach(Array(stride(from: 5, through: 240, by: 5)), id: \.self) { m in
+                        Text(SleepTimer.label(minutes: m)).tag(m)
+                    }
                 }
+                .pickerStyle(.wheel)
+                .frame(maxHeight: 160)
+                Button {
+                    SleepTimer.shared.start(minutes: minutes)   // plays its own tap
+                    dismiss()
+                } label: {
+                    Text("Turn TV off in \(SleepTimer.label(minutes: minutes))")
+                        .font(Look.text(.headline, .heavy)).foregroundStyle(.white)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, Look.S.l)
+                        .frame(maxWidth: .infinity, minHeight: 50)
+                        .background(Look.accentH, in: Capsule())
+                }
+                .buttonStyle(SquishStyle(scale: 0.96))
+                Text("Your phone needs to be on the same Wi-Fi as the TV. If iOS pauses Couch Remote, a notification comes up at the end: tap Turn Off TV.")
+                    .font(Look.text(.footnote, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            .pickerStyle(.wheel)
-            .frame(maxHeight: 160)
-            Button {
-                SleepTimer.shared.start(minutes: minutes)
-                dismiss()
-            } label: {
-                Text("Turn TV off in \(SleepTimer.label(minutes: minutes))")
-                    .font(Look.font(16, .heavy)).foregroundStyle(.white)
-                    .frame(maxWidth: .infinity, minHeight: 50)
-                    .background(Look.accent, in: Capsule())
-            }
-            .buttonStyle(SquishStyle(scale: 0.96))
-            Text("Your phone needs to be on the same Wi-Fi as the TV. If iOS pauses Couch Remote, a notification comes up at the end: tap Turn Off TV.")
-                .font(Look.font(12, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+            .padding(Look.S.xl)
         }
-        .padding(Look.S.l)
+        .scrollIndicators(.hidden)
+        .background { Look.bg.ignoresSafeArea() }
+        .preferredColorScheme(.dark)
         .onAppear { minutes = max(5, min(240, (minutes / 5) * 5)) }
     }
 }

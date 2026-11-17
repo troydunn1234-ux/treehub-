@@ -169,17 +169,66 @@ struct ClankerrWatchRoot: View {
     @Environment(RemoteLink.self) private var link
     var body: some View {
         NavigationStack {
-            TabView {
-                PadPage().containerBackground(CW.bg.gradient, for: .tabView)
-                PowerPage().containerBackground(CW.bg.gradient, for: .tabView)
-                AppsPage().containerBackground(CW.bg.gradient, for: .tabView)
-                SleepPage().containerBackground(CW.bg.gradient, for: .tabView)
+            if link.state.paired || RemoteLink.demo {
+                TabView {
+                    PadPage().containerBackground(CW.bg.gradient, for: .tabView)
+                    PowerPage().containerBackground(CW.bg.gradient, for: .tabView)
+                    AppsPage().containerBackground(CW.bg.gradient, for: .tabView)
+                    SleepPage().containerBackground(CW.bg.gradient, for: .tabView)
+                }
+                .tabViewStyle(.verticalPage)
+            } else {
+                // Nothing to control yet: say what to do instead of showing a remote that can't reach a TV.
+                WatchSetupView().containerBackground(CW.bg.gradient, for: .navigation)
             }
-            .tabViewStyle(.verticalPage)
         }
+        .animation(.easeInOut(duration: 0.3), value: link.state.paired)
         .alert("Couch Remote", isPresented: Binding(get: { link.error != nil }, set: { if !$0 { link.error = nil } })) {
             Button("OK", role: .cancel) { link.error = nil }
         } message: { Text(link.error ?? "") }
+    }
+}
+
+/// Shown until the iPhone says a TV is paired: what to do next, and a way to check again.
+struct WatchSetupView: View {
+    @Environment(RemoteLink.self) private var link
+    @State private var tries = 0
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 8) {
+                Image(systemName: link.phoneReachable ? "tv.badge.wifi" : "iphone.slash")
+                    .font(.system(size: 30, weight: .bold))
+                    .foregroundStyle(CW.accent)
+                    .frame(width: 56, height: 56)
+                    .background(Color.white.opacity(0.08), in: Circle())
+                    .symbolEffect(.bounce, value: tries)
+                    .accessibilityHidden(true)
+                Text(link.phoneReachable ? "Pair your TV on iPhone" : "Can't reach your iPhone")
+                    .font(CW.font(16, .heavy))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Text(link.phoneReachable
+                     ? "Open Couch Remote on your iPhone and pick your TV. The remote shows up here."
+                     : "Keep your iPhone nearby with Couch Remote on it, then try again.")
+                    .font(CW.font(12, .medium))
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                Button {
+                    tries += 1
+                    WKInterfaceDevice.current().play(.click)
+                    link.activate()
+                    link.refresh()
+                } label: {
+                    Text("Try Again").font(CW.font(15, .heavy)).frame(maxWidth: .infinity, minHeight: 40)
+                }
+                .tint(CW.violet)
+                .padding(.top, 4)
+            }
+            .padding(.horizontal, 4)
+        }
+        .navigationTitle("Couch Remote")
     }
 }
 
@@ -392,8 +441,19 @@ struct AppsPage: View {
     var body: some View {
         ScrollView {
             if link.state.apps.isEmpty {
-                Text("Pair your TV in Couch Remote on your iPhone and your apps show up here.")
-                    .font(CW.font(13, .medium)).foregroundStyle(.secondary).padding(.top, 8)
+                VStack(spacing: 6) {
+                    Image(systemName: "square.grid.2x2.fill")
+                        .font(.system(size: 24, weight: .bold)).foregroundStyle(CW.accent)
+                        .accessibilityHidden(true)
+                    Text("No apps yet").font(CW.font(15, .heavy))
+                    Text("Add apps to your wall in Couch Remote on your iPhone and they show up here.")
+                        .font(CW.font(12, .medium)).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.top, 8)
+                .accessibilityElement(children: .combine)
             }
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
                 ForEach(link.state.apps) { app in
