@@ -71,6 +71,16 @@
         }
       }
     },
+    "No score yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún sin puntuación"
+          }
+        }
+      }
+    },
     "Not in yet": {
       "localizations": {
         "es": {

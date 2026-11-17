@@ -115,8 +115,9 @@ struct AllDataScreen: View {
                 .frame(height: 6)
                 .accessibilityHidden(true)
                 ViewThatFits(in: .horizontal) {
-                    HStack(spacing: 6) { sourceLegend }
-                    VStack(alignment: .leading, spacing: 6) { sourceLegend }
+                    HStack(spacing: 6) { sourcesLabel; badgesA; badgesB }
+                    VStack(alignment: .leading, spacing: 6) { sourcesLabel; HStack(spacing: 6) { badgesA; badgesB } }
+                    VStack(alignment: .leading, spacing: 6) { sourcesLabel; HStack(spacing: 6) { badgesA }; HStack(spacing: 6) { badgesB } }
                 }
                 Divider().overlay(Lab.line)
                 Toggle(isOn: $hideEmpty.animation(.snappy)) {
@@ -131,10 +132,16 @@ struct AllDataScreen: View {
         }
     }
 
-    @ViewBuilder private var sourceLegend: some View {
+    private var sourcesLabel: some View {
         Text("Sources").font(.footnote.weight(.medium)).foregroundStyle(Lab.dim)
+    }
+
+    @ViewBuilder private var badgesA: some View {
         SourceBadge(text: "WHOOP")
         SourceBadge(text: "WATCH")
+    }
+
+    @ViewBuilder private var badgesB: some View {
         SourceBadge(text: "IPHONE")
         SourceBadge(text: "HEALTH")
     }
@@ -354,7 +361,7 @@ struct StatRowView: View {
         .accessibilityHint("Shows what it is and where it comes from")
     }
 
-    private func fmt(_ v: Double) -> String { v.formatted(.number.precision(.fractionLength(def.decimals))) }
+    private func fmt(_ v: Double) -> String { Lab.fmt(v, def.decimals) }
 }
 
 /// "Today", "Yesterday" or a short date.

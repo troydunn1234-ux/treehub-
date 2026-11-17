@@ -380,7 +380,7 @@ enum PulseLabPro {
     static let spec = PaywallSpec(
         appName: "Pulse Lab",
         headline: "Settle it: Watch vs WHOOP.",
-        tagline: "The full head-to-head lab, 90 days of history and shareable results. Try it free for a week.",
+        tagline: "The full head-to-head lab, 90 days of history and shareable results.",
         tint: Lab.accent, tint2: Lab.whoop,
         features: [
             .init(icon: "bolt.horizontal.fill", title: "The VS tab", detail: "Day-by-day agreement scores for resting HR, HRV, sleep, SpO₂, respiratory rate, temperature and calories — and who's winning."),

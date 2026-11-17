@@ -385,6 +385,8 @@ struct RangePicker: View {
                         Text(d == 365 ? "1Y" : "\(d)D")
                         if d >= 90 && !Unlock.shared.isPro { Image(systemName: "lock.fill").font(.system(size: 8, weight: .bold)) }
                     }
+                    .lineLimit(1)
+                    .fixedSize()
                     .font(Lab.mono(13, .semibold))
                     .foregroundStyle(days == d ? Color.white : Lab.dim)
                     .frame(minWidth: 44, minHeight: 32)

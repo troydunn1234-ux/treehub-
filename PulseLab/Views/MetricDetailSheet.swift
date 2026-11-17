@@ -263,15 +263,22 @@ struct StatDetailSheet: View {
         let w = inRange(series.watch), h = inRange(series.whoop)
         return LabPanel {
             VStack(alignment: .leading, spacing: Lab.S.sm) {
-                ViewThatFits(in: .horizontal) {
-                    HStack {
-                        SectionTag("Trend")
-                        Spacer(minLength: Lab.S.s)
-                        RangePicker(days: $days)
-                    }
+                if typeSize.isAccessibilitySize {
                     VStack(alignment: .leading, spacing: Lab.S.s) {
                         SectionTag("Trend")
                         RangePicker(days: $days)
+                    }
+                } else {
+                    ViewThatFits(in: .horizontal) {
+                        HStack {
+                            SectionTag("Trend")
+                            Spacer(minLength: Lab.S.s)
+                            RangePicker(days: $days)
+                        }
+                        VStack(alignment: .leading, spacing: Lab.S.s) {
+                            SectionTag("Trend")
+                            RangePicker(days: $days)
+                        }
                     }
                 }
                 if !series.watch.isEmpty && !series.whoop.isEmpty { DuelLegend(solo: $solo) }
@@ -514,12 +521,12 @@ struct StatDetailSheet: View {
     private func latest(_ d: StatDef) -> String? {
         let s = d.read(store)
         guard let p = d.primary(s), let v = s.points(p).last?.value else { return nil }
-        return v.formatted(.number.precision(.fractionLength(d.decimals))) + " " + d.unit
+        return Lab.fmt(v, d.decimals) + " " + d.unit
     }
 
     // MARK: Formatting
 
-    private func fmt(_ v: Double?) -> String { v.map { $0.formatted(.number.precision(.fractionLength(def.decimals))) } ?? "—" }
+    private func fmt(_ v: Double?) -> String { v.map { Lab.fmt($0, def.decimals) } ?? "—" }
 
     private func summary(_ w: [StatPoint], _ h: [StatPoint]) -> String {
         let parts = [(Source.watch, w), (Source.whoop, h)].map { s, p in
