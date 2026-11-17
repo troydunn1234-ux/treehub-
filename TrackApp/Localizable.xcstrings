@@ -1,6 +1,17 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@, week of %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%1$@, semana del %2$@"
+          }
+        }
+      }
+    },
     "%lld friends": {
       "extractionState": "manual",
       "localizations": {
@@ -23,6 +34,17 @@
         }
       }
     },
+    "%lld min after": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld min después"
+          }
+        }
+      }
+    },
     "%lld seconds left": {
       "extractionState": "manual",
       "localizations": {
@@ -41,6 +63,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "(Enviado por la alerta de frenazo de Roamr.)"
+          }
+        }
+      }
+    },
+    "A tree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un árbol"
           }
         }
       }
@@ -287,6 +320,50 @@
         }
       }
     },
+    "Breath session": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sesión de respiración"
+          }
+        }
+      }
+    },
+    "Breathwork after": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración después"
+          }
+        }
+      }
+    },
+    "Breathwork on and after this %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración durante y después de esta %@"
+          }
+        }
+      }
+    },
+    "Breathwork on this %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiración en esta %@"
+          }
+        }
+      }
+    },
     "Bring in Garmin and Whoop workouts": {
       "extractionState": "manual",
       "localizations": {
@@ -294,6 +371,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Trae entrenamientos de Garmin y Whoop"
+          }
+        }
+      }
+    },
+    "Brings back trips saved in the wrong place": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recupera viajes guardados en el lugar equivocado"
           }
         }
       }
@@ -540,6 +628,17 @@
         }
       }
     },
+    "During the %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante la %@"
+          }
+        }
+      }
+    },
     "Edit": {
       "extractionState": "manual",
       "localizations": {
@@ -683,6 +782,17 @@
         }
       }
     },
+    "Find missing trips": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buscar viajes perdidos"
+          }
+        }
+      }
+    },
     "Finish": {
       "extractionState": "manual",
       "localizations": {
@@ -723,6 +833,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Semana gratis, luego mensual, anual o de por vida"
+          }
+        }
+      }
+    },
+    "From Rootbound": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde Rootbound"
+          }
+        }
+      }
+    },
+    "From Still Pointz": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Desde Still Pointz"
           }
         }
       }
@@ -1618,6 +1750,17 @@
         }
       }
     },
+    "Nothing in the %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin actividad: %@"
+          }
+        }
+      }
+    },
     "Notice my drives automatically": {
       "extractionState": "manual",
       "localizations": {
@@ -1768,6 +1911,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abre ese viaje"
+          }
+        }
+      }
+    },
+    "Opens this session in Still Pointz": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre esta sesión en Still Pointz"
+          }
+        }
+      }
+    },
+    "Opens this tree in Rootbound": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre este árbol en Rootbound"
           }
         }
       }
@@ -2065,6 +2230,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Reanudar"
+          }
+        }
+      }
+    },
+    "Right after": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Justo después"
           }
         }
       }
@@ -2663,6 +2839,17 @@
         }
       }
     },
+    "Tree hugs on this %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles en esta %@"
+          }
+        }
+      }
+    },
     "Trigger speed": {
       "extractionState": "manual",
       "localizations": {
@@ -2714,6 +2901,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recortar inicio o fin"
+          }
+        }
+      }
+    },
+    "Trips are back": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus viajes han vuelto"
           }
         }
       }
@@ -2791,6 +2989,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Caminatas, carreras, excursiones, paseos en bici y en auto. Toca Iniciar, guarda el teléfono y Roamr traza la ruta, velocidad, tiempo y distancia."
+          }
+        }
+      }
+    },
+    "Week of %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Semana del %@"
           }
         }
       }
@@ -2938,6 +3147,39 @@
         }
       }
     },
+    "drive": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ruta en coche"
+          }
+        }
+      }
+    },
+    "heart −%lld bpm": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "corazón −%lld lpm"
+          }
+        }
+      }
+    },
+    "hike": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "excursión"
+          }
+        }
+      }
+    },
     "iPhone + private iCloud": {
       "extractionState": "manual",
       "localizations": {
@@ -2971,6 +3213,28 @@
         }
       }
     },
+    "ride": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "salida en bici"
+          }
+        }
+      }
+    },
+    "run": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "carrera"
+          }
+        }
+      }
+    },
     "tap a lane": {
       "extractionState": "manual",
       "localizations": {
@@ -2989,6 +3253,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "luego $%@ al año"
+          }
+        }
+      }
+    },
+    "walk": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "caminata"
+          }
+        }
+      }
+    },
+    "with %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "con %@"
           }
         }
       }

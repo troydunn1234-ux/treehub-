@@ -791,6 +791,26 @@
         }
       }
     },
+    "Calm & movement": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Calma y movimiento"
+          }
+        }
+      }
+    },
+    "Calm min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Min de calma"
+          }
+        }
+      }
+    },
     "Calories": {
       "localizations": {
         "es": {
@@ -2231,6 +2251,16 @@
         }
       }
     },
+    "Not yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no"
+          }
+        }
+      }
+    },
     "Nothing from your Watch yet today. Wear it a while, then pull to refresh.": {
       "localizations": {
         "es": {
@@ -2321,6 +2351,36 @@
         }
       }
     },
+    "On foot": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pie"
+          }
+        }
+      }
+    },
+    "On foot, %lld walks": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pie, %lld paseos"
+          }
+        }
+      }
+    },
+    "On foot, 1 walk": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pie, 1 paseo"
+          }
+        }
+      }
+    },
     "One notification each morning at the reminder time below: recovery, sleep vs your week, HRV and resting HR vs your baseline, and one takeaway. If today's WHOOP numbers are missing, it asks you to log them instead, so you never get two.": {
       "localizations": {
         "es": {
@@ -2361,6 +2421,16 @@
         }
       }
     },
+    "Open %@ once to share": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre %@ una vez para compartir"
+          }
+        }
+      }
+    },
     "Open sleep trend": {
       "localizations": {
         "es": {
@@ -2387,6 +2457,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abre los detalles de %@"
+          }
+        }
+      }
+    },
+    "Opens Rootbound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Rootbound"
           }
         }
       }
@@ -2437,6 +2517,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abre tendencias y correlaciones"
+          }
+        }
+      }
+    },
+    "Opens your Journey in Still Pointz": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tu Recorrido en Still Pointz"
+          }
+        }
+      }
+    },
+    "Opens your history in Roamr": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tu historial en Roamr"
           }
         }
       }
@@ -3511,6 +3611,16 @@
         }
       }
     },
+    "Today, from your other apps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy, desde tus otras apps"
+          }
+        }
+      }
+    },
     "Today: %@": {
       "localizations": {
         "es": {
@@ -3547,6 +3657,36 @@
           "stringUnit": {
             "state": "translated",
             "value": "Cada dispositivo separa el sueño ligero y el profundo a su manera, así que los minutos de profundo y REM rara vez coinciden. Fíjate en la tendencia, no en una sola noche."
+          }
+        }
+      }
+    },
+    "Tree hug, %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazo a un árbol, %lld min"
+          }
+        }
+      }
+    },
+    "Tree hugs": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles"
+          }
+        }
+      }
+    },
+    "Tree hugs, %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles, %lld min"
           }
         }
       }

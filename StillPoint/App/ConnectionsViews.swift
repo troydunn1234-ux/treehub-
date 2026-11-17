@@ -42,53 +42,56 @@ struct TodayAcrossAppsStrip: View {
     private var calmTile: AppsTodayTile {
         let list = log.sessions(on: Date())
         let minutes = list.reduce(0) { $0 + $1.minutes }
-        return AppsTodayTile(symbol: "leaf", tint: SP.accent, value: "\(Int(minutes.rounded()))", label: "Calm minutes today",
-                             caption: list.isEmpty ? "Nothing yet today"
-                                 : (list.count == 1 ? "1 session" : "\(list.count) sessions"))
+        return AppsTodayTile(symbol: "leaf", tint: SP.accent, value: "\(Int(minutes.rounded()))", label: String(localized: "Calm minutes today"),
+                             caption: list.isEmpty ? String(localized: "Nothing yet today")
+                                 : (list.count == 1 ? String(localized: "1 session") : String(localized: "\(list.count) sessions")))
     }
 
     private func hugsTile(_ h: WellnessConnect.Today.Hugs?, now: Date) -> AppsTodayTile {
         let peer = WellnessConnect.rootbound
         let tint = Color(spHex: "#8CCB7E")
-        guard let h else { return notShared(peer, symbol: "tree", tint: tint, label: "Tree hugs", url: WellnessConnect.rootboundHome) }
-        var label = h.count == 1 ? "Tree hug today" : "Tree hugs today"
-        if let tree = h.lastTree?.trimmingCharacters(in: .whitespacesAndNewlines), !tree.isEmpty, h.count > 0 { label += ", last with \(tree)" }
+        guard let h else { return notShared(peer, symbol: "tree", tint: tint, label: String(localized: "Tree hugs"), url: WellnessConnect.rootboundHome) }
+        var label = h.count == 1 ? String(localized: "Tree hug today") : String(localized: "Tree hugs today")
+        if let tree = h.lastTree?.trimmingCharacters(in: .whitespacesAndNewlines), !tree.isEmpty, h.count > 0 {
+            label = h.count == 1 ? String(localized: "Tree hug today, last with \(tree)") : String(localized: "Tree hugs today, last with \(tree)")
+        }
         return AppsTodayTile(symbol: "tree", tint: tint, value: "\(h.count)", label: label,
                              caption: "Rootbound · " + WellnessConnect.updatedText(h.updated, now: now),
-                             hint: "Opens Rootbound") { open(WellnessConnect.rootboundHome, peer) }
+                             hint: String(localized: "Opens Rootbound")) { open(WellnessConnect.rootboundHome, peer) }
     }
 
     private func movesTile(_ m: WellnessConnect.Today.Moves?, now: Date) -> AppsTodayTile {
         let peer = WellnessConnect.roamr
         let tint = Color(spHex: "#F2A65A")
-        guard let m else { return notShared(peer, symbol: "figure.walk", tint: tint, label: "Walks", url: WellnessConnect.roamrHistory) }
+        guard let m else { return notShared(peer, symbol: "figure.walk", tint: tint, label: String(localized: "Walks"), url: WellnessConnect.roamrHistory) }
         return AppsTodayTile(symbol: "figure.walk", tint: tint,
                              value: WellnessConnect.distance(m.distanceM, metric: WellnessConnect.localeMetric),
-                             label: m.trips == 0 ? "Walked today" : (m.trips == 1 ? "On foot today, 1 walk" : "On foot today, \(m.trips) walks"),
+                             label: m.trips == 0 ? String(localized: "Walked today")
+                                 : (m.trips == 1 ? String(localized: "On foot today, 1 walk") : String(localized: "On foot today, \(m.trips) walks")),
                              caption: "Roamr · " + WellnessConnect.updatedText(m.updated, now: now),
-                             hint: "Opens your history in Roamr") { open(WellnessConnect.roamrHistory, peer) }
+                             hint: String(localized: "Opens your history in Roamr")) { open(WellnessConnect.roamrHistory, peer) }
     }
 
     private func readyTile(_ r: WellnessConnect.Today.Ready?, now: Date) -> AppsTodayTile {
         let peer = WellnessConnect.pulseLab
         let tint = SP.rose
-        guard let r else { return notShared(peer, symbol: "waveform.path.ecg", tint: tint, label: "Readiness", url: WellnessConnect.pulseLabToday) }
-        var value = "Not yet"
-        var label = r.isToday ? "Readiness today" : "Pulse Lab hasn't refreshed today"
+        guard let r else { return notShared(peer, symbol: "waveform.path.ecg", tint: tint, label: String(localized: "Readiness"), url: WellnessConnect.pulseLabToday) }
+        var value = String(localized: "Not yet")
+        var label = r.isToday ? String(localized: "Readiness today") : String(localized: "Pulse Lab hasn't refreshed today")
         if let v = r.readiness {
-            value = "\(Int(v.rounded()))"; label = "Readiness"
+            value = "\(Int(v.rounded()))"; label = String(localized: "Readiness")
         } else if let v = r.recovery {
-            value = "\(Int(v.rounded()))%"; label = "WHOOP recovery"
+            value = "\(Int(v.rounded()))%"; label = String(localized: "WHOOP recovery")
         }
         return AppsTodayTile(symbol: "waveform.path.ecg", tint: tint, value: value, label: label,
                              caption: "Pulse Lab · " + WellnessConnect.updatedText(r.updated, now: now),
-                             hint: "Opens Today in Pulse Lab") { open(WellnessConnect.pulseLabToday, peer) }
+                             hint: String(localized: "Opens Today in Pulse Lab")) { open(WellnessConnect.pulseLabToday, peer) }
     }
 
     /// Installed, but it hasn't shared anything yet (not opened since it learned to share).
     private func notShared(_ peer: WellnessConnect.Peer, symbol: String, tint: Color, label: String, url: URL) -> AppsTodayTile {
-        AppsTodayTile(symbol: symbol, tint: tint, value: "Not yet", label: label,
-                      caption: "Open \(peer.name) once to share", hint: "Opens \(peer.name)") { open(url, peer) }
+        AppsTodayTile(symbol: symbol, tint: tint, value: String(localized: "Not yet"), label: label,
+                      caption: String(localized: "Open \(peer.name) once to share"), hint: String(localized: "Opens \(peer.name)")) { open(url, peer) }
     }
 
     private func open(_ url: URL, _ peer: WellnessConnect.Peer) {
@@ -194,7 +197,7 @@ struct SessionTreeCard: View {
                     Label(buttonTitle(m), systemImage: feed.has(WellnessConnect.rootbound) ? "arrow.up.forward" : "arrow.down.circle")
                 }
                 .buttonStyle(SPSecondaryButtonStyle(tint: green, fullWidth: true))
-                .accessibilityHint(feed.has(WellnessConnect.rootbound) ? "Opens this tree in Rootbound" : "Opens the App Store")
+                .accessibilityHint(feed.has(WellnessConnect.rootbound) ? String(localized: "Opens this tree in Rootbound") : String(localized: "Opens the App Store"))
             }
             .spCard()
             .sensoryFeedback(.selection, trigger: taps)
@@ -209,9 +212,9 @@ struct SessionTreeCard: View {
 
     private func kicker(_ how: WellnessConnect.TreeMatch.How) -> String {
         switch how {
-        case .linked: return "Linked to a tree hug"
-        case .tagged: return "Breathed with a tree"
-        case .sameTime: return "During a tree hug"
+        case .linked: return String(localized: "Linked to a tree hug")
+        case .tagged: return String(localized: "Breathed with a tree")
+        case .sameTime: return String(localized: "During a tree hug")
         }
     }
 
@@ -219,14 +222,14 @@ struct SessionTreeCard: View {
     private func detail(_ m: WellnessConnect.TreeMatch) -> String? {
         var parts: [String] = []
         if !m.species.isEmpty { parts.append(m.species) }
-        if m.hugCount > 0 { parts.append(m.hugCount == 1 ? "hugged once" : "hugged \(m.hugCount) times") }
-        if let last = m.lastHug { parts.append("last " + last.formatted(.dateTime.month(.abbreviated).day())) }
+        if m.hugCount > 0 { parts.append(m.hugCount == 1 ? String(localized: "hugged once") : String(localized: "hugged \(m.hugCount) times")) }
+        if let last = m.lastHug { let day = last.formatted(.dateTime.month(.abbreviated).day()); parts.append(String(localized: "last \(day)")) }
         return parts.isEmpty ? nil : parts.joined(separator: " · ")
     }
 
     private func buttonTitle(_ m: WellnessConnect.TreeMatch) -> String {
-        guard feed.has(WellnessConnect.rootbound) else { return "Get Rootbound" }
-        return m.treeID == nil ? "Open Rootbound" : "Open tree"
+        guard feed.has(WellnessConnect.rootbound) else { return String(localized: "Get Rootbound") }
+        return m.treeID == nil ? String(localized: "Open Rootbound") : String(localized: "Open tree")
     }
 }
 

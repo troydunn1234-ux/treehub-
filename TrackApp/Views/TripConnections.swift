@@ -42,11 +42,11 @@ struct TripConnectionsSection: View {
 
     private var noun: String {
         switch kind {
-        case .walk: return "walk"
-        case .run: return "run"
-        case .hike: return "hike"
-        case .bike: return "ride"
-        case .drive: return "drive"
+        case .walk: return String(localized: "walk")
+        case .run: return String(localized: "run")
+        case .hike: return String(localized: "hike")
+        case .bike: return String(localized: "ride")
+        case .drive: return String(localized: "drive")
         }
     }
 
@@ -55,9 +55,9 @@ struct TripConnectionsSection: View {
     private func hugsCard(_ hugs: [WellnessBridge.TreeHug]) -> some View {
         GlassCard(padding: 14) {
             VStack(alignment: .leading, spacing: 10) {
-                SectionHeader(title: "Tree hugs on this \(noun)", symbol: "tree.fill")
+                SectionHeader(title: String(localized: "Tree hugs on this \(noun)"), symbol: "tree.fill")
                 ForEach(hugs) { h in hugRow(h) }
-                if let updated = feed.rootbound?.updated { freshness("From Rootbound", updated) }
+                if let updated = feed.rootbound?.updated { freshness(String(localized: "From Rootbound"), updated) }
             }
         }
     }
@@ -69,8 +69,8 @@ struct TripConnectionsSection: View {
         if !h.species.isEmpty { details.append(h.species) }
         let url = h.treeID.map { WellnessConnect.rootboundTree($0) } ?? WellnessConnect.rootboundHome
         return linkRow(symbol: "tree.fill", tint: Color(red: 0.55, green: 0.80, blue: 0.49),
-                       title: name.isEmpty ? "A tree" : name, subtitle: details.joined(separator: " · "),
-                       hint: "Opens this tree in Rootbound") {
+                       title: name.isEmpty ? String(localized: "A tree") : name, subtitle: details.joined(separator: " · "),
+                       hint: String(localized: "Opens this tree in Rootbound")) {
             open(url, WellnessConnect.rootbound)
         }
     }
@@ -79,28 +79,29 @@ struct TripConnectionsSection: View {
 
     private func breathCard(_ breaths: [WellnessConnect.BreathMatch]) -> some View {
         let title: String
-        if breaths.allSatisfy({ !$0.during }) { title = "Breathwork after" }
-        else if breaths.allSatisfy(\.during) { title = "Breathwork on this \(noun)" }
-        else { title = "Breathwork on and after this \(noun)" }
+        if breaths.allSatisfy({ !$0.during }) { title = String(localized: "Breathwork after") }
+        else if breaths.allSatisfy(\.during) { title = String(localized: "Breathwork on this \(noun)") }
+        else { title = String(localized: "Breathwork on and after this \(noun)") }
         return GlassCard(padding: 14) {
             VStack(alignment: .leading, spacing: 10) {
                 SectionHeader(title: title, symbol: "wind")
                 ForEach(breaths) { b in breathRow(b) }
-                if let updated = feed.stillPoint?.updated { freshness("From Still Pointz", updated) }
+                if let updated = feed.stillPoint?.updated { freshness(String(localized: "From Still Pointz"), updated) }
             }
         }
     }
 
     private func breathRow(_ b: WellnessConnect.BreathMatch) -> some View {
         let s = b.session
-        let when = b.during ? "During the \(noun)" : (b.minutesAfter < 1 ? "Right after" : "\(b.minutesAfter) min after")
+        let when = b.during ? String(localized: "During the \(noun)")
+            : (b.minutesAfter < 1 ? String(localized: "Right after") : String(localized: "\(b.minutesAfter) min after"))
         var details = [when, WellnessConnect.minutes(s.minutes)]
-        if let tree = s.treeName, !tree.isEmpty { details.append("with \(tree)") }
-        if let drop = s.hrDrop, drop >= 1 { details.append("heart −\(Int(drop.rounded())) bpm") }
+        if let tree = s.treeName, !tree.isEmpty { details.append(String(localized: "with \(tree)")) }
+        if let drop = s.hrDrop, drop >= 1 { details.append(String(localized: "heart −\(Int(drop.rounded())) bpm")) }
         return linkRow(symbol: "wind", tint: Color(red: 0.56, green: 0.64, blue: 1.0),
-                       title: WellnessConnect.practiceName(s.practice) ?? "Breath session",
+                       title: WellnessConnect.practiceName(s.practice) ?? String(localized: "Breath session"),
                        subtitle: details.joined(separator: " · "),
-                       hint: "Opens this session in Still Pointz") {
+                       hint: String(localized: "Opens this session in Still Pointz")) {
             open(WellnessConnect.stillPointSession(s.id), WellnessConnect.stillPoint)
         }
     }

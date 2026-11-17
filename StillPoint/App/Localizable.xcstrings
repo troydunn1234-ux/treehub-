@@ -4632,6 +4632,496 @@
           }
         }
       }
+    },
+    "Today across your apps": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy en tus apps"
+          }
+        }
+      }
+    },
+    "Calm minutes today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Minutos de calma hoy"
+          }
+        }
+      }
+    },
+    "Nothing yet today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada todavía hoy"
+          }
+        }
+      }
+    },
+    "1 session": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "1 sesión"
+          }
+        }
+      }
+    },
+    "%lld sessions": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld sesiones"
+          }
+        }
+      }
+    },
+    "Tree hugs": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles"
+          }
+        }
+      }
+    },
+    "Tree hug today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazo a un árbol hoy"
+          }
+        }
+      }
+    },
+    "Tree hugs today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles hoy"
+          }
+        }
+      }
+    },
+    "Tree hug today, last with %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazo a un árbol hoy, el último con %@"
+          }
+        }
+      }
+    },
+    "Tree hugs today, last with %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrazos a árboles hoy, el último con %@"
+          }
+        }
+      }
+    },
+    "Opens Rootbound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Rootbound"
+          }
+        }
+      }
+    },
+    "Walks": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paseos"
+          }
+        }
+      }
+    },
+    "Walked today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Caminado hoy"
+          }
+        }
+      }
+    },
+    "On foot today, 1 walk": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pie hoy, 1 paseo"
+          }
+        }
+      }
+    },
+    "On foot today, %lld walks": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "A pie hoy, %lld paseos"
+          }
+        }
+      }
+    },
+    "Opens your history in Roamr": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre tu historial en Roamr"
+          }
+        }
+      }
+    },
+    "Readiness": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación"
+          }
+        }
+      }
+    },
+    "Not yet": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todavía no"
+          }
+        }
+      }
+    },
+    "Readiness today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación hoy"
+          }
+        }
+      }
+    },
+    "Pulse Lab hasn't refreshed today": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Pulse Lab aún no se ha actualizado hoy"
+          }
+        }
+      }
+    },
+    "WHOOP recovery": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación de WHOOP"
+          }
+        }
+      }
+    },
+    "Opens Today in Pulse Lab": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Hoy en Pulse Lab"
+          }
+        }
+      }
+    },
+    "Open %@ once to share": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre %@ una vez para compartir"
+          }
+        }
+      }
+    },
+    "Opens %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre %@"
+          }
+        }
+      }
+    },
+    "Opens this tree in Rootbound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre este árbol en Rootbound"
+          }
+        }
+      }
+    },
+    "Opens the App Store": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre la App Store"
+          }
+        }
+      }
+    },
+    "Linked to a tree hug": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vinculada a un abrazo a un árbol"
+          }
+        }
+      }
+    },
+    "Breathed with a tree": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Respiraste con un árbol"
+          }
+        }
+      }
+    },
+    "During a tree hug": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Durante un abrazo a un árbol"
+          }
+        }
+      }
+    },
+    "hugged once": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "abrazado una vez"
+          }
+        }
+      }
+    },
+    "hugged %lld times": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "abrazado %lld veces"
+          }
+        }
+      }
+    },
+    "last %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "último: %@"
+          }
+        }
+      }
+    },
+    "Get Rootbound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descargar Rootbound"
+          }
+        }
+      }
+    },
+    "Open Rootbound": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Rootbound"
+          }
+        }
+      }
+    },
+    "Open tree": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir árbol"
+          }
+        }
+      }
+    },
+    "%lld minutes %lld seconds left": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Quedan %1$lld minutos y %2$lld segundos"
+          }
+        }
+      }
+    },
+    "Stress estimate: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Estimación de estrés: %@"
+          }
+        }
+      }
+    },
+    "Start on Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empezar en el Watch"
+          }
+        }
+      }
+    },
+    "No recent heart data, so this is picked by time of day.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "No hay datos recientes del corazón, así que se elige según la hora del día."
+          }
+        }
+      }
+    },
+    "Suggestion": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencia"
+          }
+        }
+      }
+    },
+    "Numbers used": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Números usados"
+          }
+        }
+      }
+    },
+    "Score %@ of 3 → %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Puntuación %1$@ de 3 → %2$@"
+          }
+        }
+      }
+    },
+    "How the stress estimate works": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cómo funciona la estimación de estrés"
+          }
+        }
+      }
+    },
+    "Each signal adds points: heart rate above your resting rate (8+ bpm: 1, 15+: 2, 25+: 3), HRV under your own 14-day average (10% under: 1, 25% under: 2) and breathing faster than usual (1.5+/min: 1, 3+: 2). The points are scaled to 0–3: under 0.75 Calm, under 1.5 Balanced, under 2.25 Elevated, then High. It pauses after workouts, sauna and steam, and while you're walking. WHOOP's own Stress Monitor isn't shared with Health, so this is Still Pointz' own estimate from the numbers WHOOP and your Watch save there.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada señal suma puntos: frecuencia cardiaca por encima de tu frecuencia en reposo (8+ lpm: 1, 15+: 2, 25+: 3), VFC por debajo de tu propia media de 14 días (10 % por debajo: 1, 25 % por debajo: 2) y respiración más rápida de lo habitual (1,5+/min: 1, 3+: 2). Los puntos se escalan de 0 a 3: por debajo de 0,75 Calma, por debajo de 1,5 Equilibrado, por debajo de 2,25 Elevado y, a partir de ahí, Alto. Se pausa después de entrenamientos, sauna y baño de vapor, y mientras caminas. El Stress Monitor de WHOOP no se comparte con Salud, así que esta es la estimación propia de Still Pointz a partir de los números que WHOOP y tu Watch guardan allí."
+          }
+        }
+      }
+    },
+    "This is a rough estimate from your own numbers to help pick a practice. It isn't a medical measurement or advice. HRV from WHOOP and from the Watch are measured differently, so each is only compared with its own history.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es una estimación aproximada a partir de tus propios números para ayudarte a elegir una práctica. No es una medición ni un consejo médico. La VFC de WHOOP y la del Watch se miden de forma distinta, así que cada una solo se compara con su propio historial."
+          }
+        }
+      }
+    },
+    "Right now reminders": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recordatorios de Ahora mismo"
+          }
+        }
+      }
+    },
+    "Notifications are off for Still Point. Turn them on in the Settings app to get these.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Still Point están desactivadas. Actívalas en la app Ajustes para recibirlas."
+          }
+        }
+      }
+    },
+    "Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos notificaciones discretas al día con la práctica sugerida para ese momento: la de la mañana según el sueño de anoche, la recuperación y la VFC; la de la noche, una práctica para relajarte según el esfuerzo y la estimación de estrés del día. Tócala para empezar."
+          }
+        }
+      }
+    },
+    "How did it feel?": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Cómo te sentiste?"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

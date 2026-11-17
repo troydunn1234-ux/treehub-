@@ -55,37 +55,40 @@ struct CalmMovementCard: View {
     private func calmTile(_ c: WellnessConnect.Today.Calm?, now: Date) -> LabPeerTile {
         let peer = WellnessConnect.stillPoint
         let tint = Self.stillPointBlue
-        guard let c else { return notShared(peer, symbol: "wind", tint: tint, label: "Calm min", url: WellnessConnect.stillPointJourney) }
-        return LabPeerTile(symbol: "wind", tint: tint, value: "\(Int(c.minutes.rounded()))", label: "Calm min",
+        guard let c else { return notShared(peer, symbol: "wind", tint: tint, label: String(localized: "Calm min"), url: WellnessConnect.stillPointJourney) }
+        return LabPeerTile(symbol: "wind", tint: tint, value: "\(Int(c.minutes.rounded()))", label: String(localized: "Calm min"),
                               caption: "Still Pointz · " + WellnessConnect.updatedText(c.updated, now: now),
-                              hint: "Opens your Journey in Still Pointz") { open(WellnessConnect.stillPointJourney, peer) }
+                              hint: String(localized: "Opens your Journey in Still Pointz")) { open(WellnessConnect.stillPointJourney, peer) }
     }
 
     private func hugsTile(_ h: WellnessConnect.Today.Hugs?, now: Date) -> LabPeerTile {
         let peer = WellnessConnect.rootbound
         let tint = Self.rootboundGreen
-        guard let h else { return notShared(peer, symbol: "tree.fill", tint: tint, label: "Tree hugs", url: WellnessConnect.rootboundHome) }
-        let label = h.count == 0 ? "Tree hugs" : (h.count == 1 ? "Tree hug, \(Int(h.minutes.rounded())) min" : "Tree hugs, \(Int(h.minutes.rounded())) min")
+        guard let h else { return notShared(peer, symbol: "tree.fill", tint: tint, label: String(localized: "Tree hugs"), url: WellnessConnect.rootboundHome) }
+        let mins = Int(h.minutes.rounded())
+        let label = h.count == 0 ? String(localized: "Tree hugs")
+            : (h.count == 1 ? String(localized: "Tree hug, \(mins) min") : String(localized: "Tree hugs, \(mins) min"))
         return LabPeerTile(symbol: "tree.fill", tint: tint, value: "\(h.count)", label: label,
                               caption: "Rootbound · " + WellnessConnect.updatedText(h.updated, now: now),
-                              hint: "Opens Rootbound") { open(WellnessConnect.rootboundHome, peer) }
+                              hint: String(localized: "Opens Rootbound")) { open(WellnessConnect.rootboundHome, peer) }
     }
 
     private func movesTile(_ m: WellnessConnect.Today.Moves?, now: Date) -> LabPeerTile {
         let peer = WellnessConnect.roamr
         let tint = Self.roamrOrange
-        guard let m else { return notShared(peer, symbol: "figure.walk", tint: tint, label: "On foot", url: WellnessConnect.roamrHistory) }
+        guard let m else { return notShared(peer, symbol: "figure.walk", tint: tint, label: String(localized: "On foot"), url: WellnessConnect.roamrHistory) }
         return LabPeerTile(symbol: "figure.walk", tint: tint,
                               value: WellnessConnect.distance(m.distanceM, metric: !Units.imperial),
-                              label: m.trips == 1 ? "On foot, 1 walk" : (m.trips == 0 ? "On foot" : "On foot, \(m.trips) walks"),
+                              label: m.trips == 1 ? String(localized: "On foot, 1 walk")
+                                  : (m.trips == 0 ? String(localized: "On foot") : String(localized: "On foot, \(m.trips) walks")),
                               caption: "Roamr · " + WellnessConnect.updatedText(m.updated, now: now),
-                              hint: "Opens your history in Roamr") { open(WellnessConnect.roamrHistory, peer) }
+                              hint: String(localized: "Opens your history in Roamr")) { open(WellnessConnect.roamrHistory, peer) }
     }
 
     /// Installed, but it hasn't shared anything yet (not opened since it learned to share).
     private func notShared(_ peer: WellnessConnect.Peer, symbol: String, tint: Color, label: String, url: URL) -> LabPeerTile {
-        LabPeerTile(symbol: symbol, tint: tint, value: "Not yet", label: label,
-                       caption: "Open \(peer.name) once to share", hint: "Opens \(peer.name)") { open(url, peer) }
+        LabPeerTile(symbol: symbol, tint: tint, value: String(localized: "Not yet"), label: label,
+                       caption: String(localized: "Open \(peer.name) once to share"), hint: String(localized: "Opens \(peer.name)")) { open(url, peer) }
     }
 
     private func open(_ url: URL, _ peer: WellnessConnect.Peer) {
