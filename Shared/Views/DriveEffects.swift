@@ -8,6 +8,7 @@ struct DriveHUD: View {
     let over: Bool
 
     @State private var pulse = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var shown: Int { Int((max(0, speed) * (Units.metric ? 3.6 : 2.236936)).rounded()) }
     private var unit: String { Units.metric ? "KM/H" : "MPH" }
@@ -47,7 +48,8 @@ struct DriveHUD: View {
             .overlay(Circle().stroke(over ? Color.red : .clear, lineWidth: 3).scaleEffect(pulse ? 1.18 : 1).opacity(pulse ? 0 : 0.9))
             .onChange(of: over) { _, isOver in
                 pulse = false
-                if isOver { withAnimation(.easeOut(duration: 0.9).repeatForever(autoreverses: false)) { pulse = true } }
+                // Reduce Motion: the red ring stays still instead of pulsing.
+                if isOver && !reduceMotion { withAnimation(.easeOut(duration: 0.9).repeatForever(autoreverses: false)) { pulse = true } }
             }
 
             if let limitShown {
@@ -94,6 +96,7 @@ struct OverZoneBadge: View {
 struct SpeedFX: View {
     let speed: Double        // m/s
     let overLimit: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private struct Streak { var x: Double; var y: Double; var len: Double; var phase: Double }
     @State private var streaks: [Streak] = (0..<26).map { _ in
@@ -103,7 +106,8 @@ struct SpeedFX: View {
     var body: some View {
         let intensity = min(1, max(0, (speed - 13) / 22))   // starts ~30 mph, full by ~78 mph
         ZStack {
-            if intensity > 0.01 {
+            // Reduce Motion: no flying streaks (the over-the-limit glow below still shows).
+            if intensity > 0.01 && !reduceMotion {
                 TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
                     let t = tl.date.timeIntervalSinceReferenceDate
                     Canvas { ctx, size in
