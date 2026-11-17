@@ -809,6 +809,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     <h1 class="k-title">Settings</h1>
     <div class="k-card"><div class="k-ch"><h2>Car goal</h2></div><div class="k-form" id="goalSet"></div></div>
     <div class="k-card" id="bankBox"><div class="k-ch"><h2>Bank sync</h2></div><div id="bankBody"></div><p class="k-msg" id="bankMsg" role="status"></p><input type="file" id="ppCsvFile" accept=".csv,text/csv,text/comma-separated-values,text/plain" hidden></div>
+    <div class="k-card"><div class="k-ch"><h2>Transfers to yourself</h2></div><p class="k-note">Bank lines that say "Zelle to" or "Zelle from" this name count as moving your own money, not spending or income. Zelle between two of your linked accounts is caught either way.</p><div class="k-form" id="selfSet" style="margin-top:12px"></div></div>
     <div class="k-card"><div class="k-ch"><h2>Balances you count</h2></div><p class="k-note">Type what a wallet really holds today. Ride Quest keeps your entries and adjusts the starting point to match. Accounts synced with your bank always show the bank's balance.</p><div class="k-form" id="startSet" style="margin-top:12px"></div></div>
     <div class="k-card"><div class="k-ch"><h2>Monthly budgets</h2><span class="k-aux num" id="limTot"></span></div><div id="limitSet"></div>
       <form class="k-two" id="catForm" style="margin-top:12px"><label class="k-f"><span>New category</span><input class="k-in" type="text" id="newCat" autocomplete="off" placeholder="Pets"></label>
@@ -904,7 +905,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     ],
     tx: [], moves: [], billSkip: [],
     /* Extras (arcade, boot animation, scanlines, sounds, theme effects) start off; boot/crt/sound/theme keep their own values for when Extras is on */
-    extras: 0
+    extras: 0,
+    /* your own name as banks print it on Zelle lines ("Zelle to <name>"); empty until you set it in Settings */
+    selfName: ""
   };
   var S = JSON.parse(JSON.stringify(DEF));
   var loaded = false, dirty = false, db = null, editId = null, wkEdit = false, TESTING = false;
@@ -979,7 +982,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   /* ---------- state helpers ---------- */
   var NORM_KEYS = ["start", "goal", "weekGoal", "weekStart", "rev", "boot", "crt", "spins", "bonus", "bestReact", "freeDay", "reactDay", "loot", "theme", "sound", "rateTarget",
     "quests", "bills", "weekAdj", "budgets", "tx", "moves", "bankRules", "bankWallet", "bankMatchedAt", "bankIgnore", "ppOn", "ppCsv", "ppShadow", "bankSkip", "subs", "subSkip",
-    "budgetAlerts", "weeklyRecap", "budgetPings", "billSkip", "extras", "bankAcc"];
+    "budgetAlerts", "weeklyRecap", "budgetPings", "billSkip", "extras", "bankAcc", "selfName"];
   function copyRec(x) { var r = {}; Object.keys(x).forEach(function (k) { r[k] = x[k]; }); return r; }
   function norm(s) {
     var o = JSON.parse(JSON.stringify(DEF));
@@ -1017,6 +1020,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (s.budgetPings && typeof s.budgetPings === "object" && !Array.isArray(s.budgetPings)) o.budgetPings = s.budgetPings;
     if (Array.isArray(s.billSkip)) o.billSkip = s.billSkip.filter(function (x) { return typeof x === "string"; }).slice(-200);
     if (typeof s.extras === "number") o.extras = s.extras ? 1 : 0;
+    if (typeof s.selfName === "string") o.selfName = s.selfName.trim().slice(0, 60);
     if (Array.isArray(s.bankAcc)) o.bankAcc = s.bankAcc.filter(function (a) { return a && typeof a.id === "string" && typeof a.c === "number"; });
     /* anything saved that this version doesn't know about rides along untouched (nothing is ever dropped) */
     Object.keys(s).forEach(function (k) { if (NORM_KEYS.indexOf(k) < 0 && !(k in o)) o[k] = s[k]; });
@@ -1245,8 +1249,16 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     return /saving/i.test(acc.name || "") ? "savings" : "checking";
   }
   function isoDay(sec) { var d = new Date(sec * 1000); return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
+  /* "Zelle to <your name>" / "Zelle from <your name>", only when you've set your name in Settings */
+  function selfZelleRe() {
+    var n = String(S.selfName || "").trim();
+    if (!n) return null;
+    return new RegExp("zelle\\W*(payment\\s+)?(to|from)\\s+" + n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s+") + "(?![a-z])", "i");
+  }
+  function isZelle(t) { return /zelle/i.test((t.description || "") + " " + (t.payee || "")); }
   function looksLikeTransfer(t) {
-    return /transfer|xfer|payment.*thank|autopay|online payment|card payment|pymt|zelle to troy|to savings|from savings|from checking|to checking|discover.*payment|sofi.*(transfer|savings)/i.test((t.description || "") + " " + (t.payee || ""));
+    var text = (t.description || "") + " " + (t.payee || ""), re = selfZelleRe();
+    return /transfer|xfer|payment.*thank|autopay|online payment|card payment|pymt|to savings|from savings|from checking|to checking|discover.*payment|sofi.*(transfer|savings)/i.test(text) || !!(re && re.test(text));
   }
   /* money coming back from a store on a debit account is a refund (spending goes down), not income */
   var REFUND_RE = /\b(refund|refunded|return|returned|reversal|reversed|merchandise credit|credit adj(ustment)?|chargeback|dispute credit)\b/i;
@@ -1577,8 +1589,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       for (var j = i + 1; j < all.length; j++) {
         var y = all[j];
         if (mirror[j] || y.a.id === x.a.id || ppRel(y) || !isFinite(y.c)) continue;
-        /* only pair real transfers: same bank, or one side says transfer/payment (a $5 coffee on the card isn't a transfer) */
-        var related = (x.a.org && x.a.org === y.a.org) || looksLikeTransfer(x.t) || looksLikeTransfer(y.t);
+        /* only pair real transfers: same bank, one side says transfer/payment, or both sides are Zelle between your own linked accounts
+           (a $5 coffee on the card isn't a transfer) */
+        var related = (x.a.org && x.a.org === y.a.org) || looksLikeTransfer(x.t) || looksLikeTransfer(y.t) || (isZelle(x.t) && isZelle(y.t));
         if (related && x.c + y.c === 0 && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 4 * 86400) { mirror[i] = j + 1; mirror[j] = i + 1; break; }
       }
     });
@@ -2486,6 +2499,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       '<label class="k-f"><span>Goal amount</span><input class="k-in num" type="text" inputmode="decimal" data-set="goal.amount" data-money="1" value="' + moneyIn(toC(S.goal.amount)) + '"></label>' +
       '<label class="k-f"><span>Reach it by (month, optional)</span><input class="k-in" type="month" data-set="goal.by" value="' + esc(S.goal.by || "") + '"></label>';
     renderBank();
+    $("selfSet").innerHTML = '<label class="k-f"><span>Your name, for transfers to yourself</span><input class="k-in" type="text" data-set="selfName" autocomplete="name" autocapitalize="words" placeholder="As your bank shows it" value="' + esc(S.selfName || "") + '"></label>';
     var v = walletView();
     $("startSet").innerHTML = v.filter(function (x) { return !x.bank; }).map(function (x) {
       return '<label class="k-f"><span>' + esc(x.w === "cash" ? "Cash on hand now" : x.name + " now") + '</span><input class="k-in num" type="text" inputmode="decimal" data-bal="' + x.w + '" value="' + moneyIn(balC(x.w)) + '"></label>';
@@ -3802,6 +3816,16 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       bankImport(res3); deleteRec(S.tx[0].id); bankImport(res3);
       ok("A bank entry you delete stays deleted after the next sync", !S.tx.length && !S.moves.length);
       S = norm({});
+      ok("Your name for Zelle-to-yourself starts empty", S.selfName === "" && norm({ selfName: " Alex Rivera " }).selfName === "Alex Rivera");
+      bankImport({ accounts: [acc("chk", "Checking", "Testbank", [tx("z1", 1, -60, "ZELLE TO ALEX RIVERA")])] });
+      ok("With no name set, a lone Zelle payment is spending", sumTxC(S.tx) === 6000 && !S.moves.length, S.tx);
+      S = norm({ selfName: "Alex Rivera" });
+      bankImport({ accounts: [acc("chk", "Checking", "Testbank", [tx("z2", 1, -60, "ZELLE TO ALEX RIVERA"), tx("z3", 1, -25, "ZELLE TO SAM LEE"), tx("z4", 0, 40, "Zelle from Alex  Rivera")])] });
+      ok("With your name set, Zelle to/from you is a transfer; Zelle to someone else is still spending", sumTxC(S.tx) === 2500 && S.tx.length === 1 && !S.moves.length, { tx: S.tx, mv: S.moves });
+      S = norm({});
+      bankImport({ accounts: [acc("chk", "Checking", "Testbank", [tx("y1", 1, -300, "ZELLE PAYMENT TO A RIVERA")]), acc("sav", "Savings", "Otherbank", [tx("y2", 0, 300, "Zelle from A Rivera")])] });
+      ok("Zelle between two of your linked accounts (different banks) is a transfer even with no name set", movesOf("checking", "savings").some(function (x) { return toC(x.amt) === 30000; }) && !S.tx.length && !movesOf("outside", "savings").length, { tx: S.tx, mv: S.moves });
+      S = norm({});
       bankImport({ accounts: [acc("sofi", "Checking", "SoFi", [tx("pf1", 1, -10.00, "PAYPAL INST XFER")]), acc("pp", "PayPal Balance", "PayPal", [tx("pf2", 1, -30.00, "Concert Tickets"), tx("pf3", 1, 10.00, "Bank Deposit to PP Account")])] });
       ok("A PayPal purchase paid partly from SoFi counts once ($30.00); the SoFi $10.00 is a transfer", sumTxC(S.tx) === 3000 && movesOf("checking", "paypal").some(function (x) { return toC(x.amt) === 1000; }), S);
 
@@ -4084,6 +4108,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       else if (t.type === "number") v = parseFloat(t.value) || 0;
       else if (t.dataset.int) v = parseInt(t.value, 10);
       else v = t.value;
+      if (k[0] === "selfName") v = String(v).trim().slice(0, 60);
       if (k[0] === "goal" && k[1] === "by" && v && !/^\d{4}-\d{2}$/.test(v)) { toast("Pick a month.", true); renderSoon(); return; }
       if (k.length === 1) S[k[0]] = v; else S[k[0]][k[1]] = v;
       touch(); renderSoon();
