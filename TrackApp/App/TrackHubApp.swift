@@ -7,19 +7,24 @@ import UserNotifications
 struct TrackHubApp: App {
     @State private var tracker: RouteTracker
 
-    let container: ModelContainer = {
+    let container: ModelContainer = TrackHubApp.makeContainer()
+
+    /// Roamr's one store. The app always opens `LocalStore.url` (never pass `storeURL` outside tests):
+    /// RoamrTests/DataSafetyTests.swift reopens a store written at a temporary LocalStore-like path through this
+    /// same code, and .github/scripts/data_guard.py refuses a build that changes the location.
+    static func makeContainer(storeURL: URL = LocalStore.url, demo: Bool = TrackDemo.isOn) -> ModelContainer {
         let schema = Schema([Activity.self, GasVehicle.self, FillUp.self])
-        if TrackDemo.isOn {
+        if demo {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .automatic)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .automatic)) {
             return c
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .none)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)) {
             return c
         }
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-    }()
+    }
 
     init() {
         UserDefaults.standard.register(defaults: ["useMetric": false, DriveDetector.enabledKey: true, DriveFinishedNotifier.enabledKey: true])

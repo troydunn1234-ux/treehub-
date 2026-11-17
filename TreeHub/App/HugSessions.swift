@@ -21,6 +21,8 @@ enum HugSessions {
                               source: "Still Pointz", practice: f.practice, avgHR: f.avgHR, minHR: f.minHR,
                               startHR: f.startHR, hrDrop: f.hrDrop, hrv: f.hrv, respRate: f.respRate)
         s.endHR = f.endHR
+        s.calmSeconds = f.calmSeconds
+        s.pacedBPM = f.breathsPerMin
         return s
     }
 
@@ -57,6 +59,8 @@ enum HugSessions {
             if out.source.isEmpty || out.feedID != nil { out.source = "Still Pointz" }
             out.avgHR = ff.avgHR ?? out.avgHR; out.minHR = ff.minHR ?? out.minHR
             out.startHR = ff.startHR ?? out.startHR; out.hrDrop = ff.hrDrop ?? out.hrDrop; out.hrv = ff.hrv ?? out.hrv
+            out.endHR = ff.endHR ?? out.endHR; out.respRate = ff.respRate ?? out.respRate
+            out.calmSeconds = ff.calmSeconds ?? out.calmSeconds; out.pacedBPM = ff.pacedBPM ?? out.pacedBPM
         }
         let hs = HealthService.shared
         guard hs.isAvailable, !DemoData.isOn else { return out }

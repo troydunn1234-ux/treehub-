@@ -258,25 +258,39 @@ enum TreeBreaths {
 
     /// Every tagged session, newest first (feed merged into the local copy).
     static func all() -> [WellnessBridge.Session] {
-        var cache = loadCache()
+        let cache = loadCache()
         guard let feed = WellnessBridge.stillPoint() else { return cache }
+        let merged = merge(cache: cache, feed: feed)
+        saveCache(merged)
+        return merged
+    }
+
+    /// The local copy updated from Still Pointz' feed. A session the feed no longer has is dropped only when the
+    /// feed still covers its date: the feed keeps 120 days but at most `WellnessBridge.maxItems` sessions, so when
+    /// it is full it only reaches back to its oldest session, and older ones here were trimmed, not discarded.
+    static func merge(cache: [WellnessBridge.Session], feed: WellnessBridge.StillPointPart,
+                      now: Date = Date()) -> [WellnessBridge.Session] {
+        var cache = cache
         let incoming = feed.sessions.filter { $0.treeID != nil }
         let ids = Set(incoming.map(\.id))
-        let window = Date().addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
-        // Discarded in Still Pointz (gone from the feed while still inside its window): drop it here too.
-        cache.removeAll { $0.date >= window && !ids.contains($0.id) }
+        let window = now.addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
+        let full = feed.sessions.count >= WellnessBridge.maxItems
+        let oldest = feed.sessions.map(\.date).min() ?? now
+        // Discarded in Still Pointz (gone from the feed while the feed still covers its date): drop it here too.
+        cache.removeAll { $0.date >= window && (!full || $0.date > oldest) && !ids.contains($0.id) }
         for var s in incoming {
             if let i = cache.firstIndex(where: { $0.id == s.id }) {
                 let old = cache[i]
                 s.avgHR = s.avgHR ?? old.avgHR; s.minHR = s.minHR ?? old.minHR
                 s.startHR = s.startHR ?? old.startHR; s.hrDrop = s.hrDrop ?? old.hrDrop; s.hrv = s.hrv ?? old.hrv
+                s.endHR = s.endHR ?? old.endHR; s.respRate = s.respRate ?? old.respRate
+                s.calmSeconds = s.calmSeconds ?? old.calmSeconds; s.breathsPerMin = s.breathsPerMin ?? old.breathsPerMin
                 cache[i] = s
             } else {
                 cache.append(s)
             }
         }
         cache.sort { $0.date > $1.date }
-        saveCache(cache)
         return cache
     }
 

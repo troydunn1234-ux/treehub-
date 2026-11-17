@@ -63,6 +63,26 @@ struct LinkedWalk: Codable, Hashable, Identifiable {
     }
 }
 
+extension LinkedWalk {
+    /// Lenient like LinkedSession: a walk saved on a hug by any other build always loads. One field that doesn't
+    /// decode must not empty the hug's whole list (editing the hug would then save it empty).
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        id = (try? c.decodeIfPresent(UUID.self, forKey: .id)) ?? UUID()
+        kind = (try? c.decodeIfPresent(String.self, forKey: .kind)) ?? "walk"
+        start = (try? c.decodeIfPresent(Date.self, forKey: .start)) ?? Date(timeIntervalSince1970: 0)
+        end = (try? c.decodeIfPresent(Date.self, forKey: .end)) ?? start
+        distanceM = (try? c.decodeIfPresent(Double.self, forKey: .distanceM)) ?? 0
+        movingSec = (try? c.decodeIfPresent(Double.self, forKey: .movingSec)) ?? 0
+        elevGainM = (try? c.decodeIfPresent(Double.self, forKey: .elevGainM)) ?? 0
+        avgSpeed = try? c.decodeIfPresent(Double.self, forKey: .avgSpeed)
+        topSpeed = try? c.decodeIfPresent(Double.self, forKey: .topSpeed)
+        avgHR = try? c.decodeIfPresent(Double.self, forKey: .avgHR)
+        source = (try? c.decodeIfPresent(String.self, forKey: .source)) ?? ""
+        fromRoamr = (try? c.decodeIfPresent(Bool.self, forKey: .fromRoamr)) ?? false
+    }
+}
+
 /// Finds the walks that go with a hug and keeps them in sync. Read-only on Roamr and Apple Health.
 @MainActor
 enum RoamrWalks {

@@ -6,21 +6,26 @@ import SwiftData
 struct TreeHubApp: App {
     @State private var tracker = RouteTracker()
 
-    let container: ModelContainer = {
+    let container: ModelContainer = TreeHubApp.makeContainer()
+
+    /// Rootbound's one store. The app always opens `LocalStore.url` (never pass `storeURL` outside tests):
+    /// RootboundTests/DataSafetyTests.swift reopens a store written at a temporary LocalStore-like path through this
+    /// same code, and .github/scripts/data_guard.py refuses a build that changes the location.
+    static func makeContainer(storeURL: URL = LocalStore.url, demo: Bool = DemoData.isOn) -> ModelContainer {
         let schema = Schema([Hug.self, Activity.self])
-        if DemoData.isOn {
+        if demo {
             return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
         }
         // Syncs to your private iCloud when the app is signed with iCloud; otherwise stays on the phone.
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .automatic)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .automatic)) {
             return c
         }
-        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: LocalStore.url, cloudKitDatabase: .none)) {
+        if let c = try? ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, url: storeURL, cloudKitDatabase: .none)) {
             return c
         }
         // Last resort so the app still opens.
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true))
-    }()
+    }
 
     init() {
         UserDefaults.standard.register(defaults: ["useMetric": false])

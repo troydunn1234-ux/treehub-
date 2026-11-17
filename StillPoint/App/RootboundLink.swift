@@ -14,9 +14,8 @@ enum StillPointWellness {
         let heat = HeatStore.shared
         enrichTreeSessions(log)
         if let rb = WellnessBridge.rootbound() {
-            let since = Date().addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
             let trees = rb.hugs.map { TreeEntry(id: $0.id, start: $0.date, minutes: $0.minutes, name: $0.tree) }
-            log.mergeTrees(trees, window: since)
+            log.mergeTrees(trees, window: treeWindow(rb))
         }
         var out: [WellnessBridge.Session] = log.records.filter { $0.seconds >= 60 }.map { r in
             var s = WellnessBridge.Session(id: r.id, date: r.start, kind: (r.kind ?? "breath").lowercased(), minutes: r.minutes)
@@ -39,6 +38,14 @@ enum StillPointWellness {
             WellnessBridge.Session(id: $0.id, date: $0.start, kind: $0.kind.rawValue, minutes: $0.minutes)
         }
         WellnessBridge.publishStillPoint(sessions: out, streak: log.streak)
+    }
+
+    /// From when Rootbound's feed lists every hug: 120 days back, or only back to its oldest hug once it holds
+    /// `WellnessBridge.maxItems` (older ones were trimmed, not deleted in Rootbound, so they stay counted here).
+    static func treeWindow(_ rb: WellnessBridge.RootboundPart, now: Date = Date()) -> Date {
+        let since = now.addingTimeInterval(-Double(WellnessBridge.keepDays) * 86400)
+        guard rb.hugs.count >= WellnessBridge.maxItems, let oldest = rb.hugs.map(\.date).min() else { return since }
+        return max(since, oldest)
     }
 
     /// The tree a "Breathe with a tree" request should use: the last one hugged in Rootbound, if any.
