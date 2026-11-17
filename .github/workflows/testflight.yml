@@ -65,6 +65,13 @@ jobs:
           for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
           xcodegen generate
 
+      # Refuses to ship a build that would lose or hide saved data: a SwiftData store opened anywhere but its
+      # pinned place, changed App Groups / iCloud containers, a renamed or removed model field or saved key,
+      # a moved data file, a lost deep link. Also stops permission prompts without real English text (ITMS-90738).
+      # Details and how to fix: .github/scripts/data_guard.py (snapshots in .github/data-guard/).
+      - name: Data guard (nothing saved on the phone may be lost or hidden by this build)
+        run: python3 .github/scripts/data_guard.py --generated
+
       - name: Write API key
         env:
           P8: ${{ secrets.ASC_KEY_P8 }}

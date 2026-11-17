@@ -1,0 +1,69 @@
+{
+  "ClankerrWatch": {
+    "queries": [],
+    "schemes": [
+      "couchremote"
+    ]
+  },
+  "Clicker": {
+    "queries": [],
+    "schemes": [
+      "couchremote"
+    ]
+  },
+  "NatalOrbit": {
+    "queries": [],
+    "schemes": [
+      "natalorbit"
+    ]
+  },
+  "PulseLab": {
+    "queries": [
+      "whoop"
+    ],
+    "schemes": [
+      "pulselab"
+    ]
+  },
+  "RideQuest": {
+    "queries": [],
+    "schemes": [
+      "ridequest"
+    ]
+  },
+  "Roamr": {
+    "queries": [],
+    "schemes": [
+      "roamr"
+    ]
+  },
+  "Rootbound": {
+    "queries": [
+      "roamr",
+      "stillpoint"
+    ],
+    "schemes": [
+      "rootbound"
+    ]
+  },
+  "RootboundWatch": {
+    "queries": [],
+    "schemes": [
+      "rootboundwatch"
+    ]
+  },
+  "StillPoint": {
+    "queries": [
+      "rootbound"
+    ],
+    "schemes": [
+      "stillpoint"
+    ]
+  },
+  "StillPointWatch": {
+    "queries": [],
+    "schemes": [
+      "stillpoint"
+    ]
+  }
+}
