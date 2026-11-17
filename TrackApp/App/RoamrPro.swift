@@ -6,7 +6,7 @@ enum RoamrPro {
     static let spec = PaywallSpec(
         appName: "Roamr",
         headline: "Go further together.",
-        tagline: "Start group trips with friends and get your month-by-month recap. Try it free for a week.",
+        tagline: "Start group trips with friends and get your month-by-month recap.",
         tint: Theme.glow, tint2: Theme.leaf,
         features: [
             .init(icon: "person.2.fill", title: "Start group trips",

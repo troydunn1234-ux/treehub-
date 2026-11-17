@@ -438,8 +438,10 @@ struct TrackSettingsView: View {
                 Button { showPlans = true } label: {
                     row(symbol: "sparkles", tint: Theme.gold,
                         title: "Roamr Pro",
+                        // The free week is only mentioned to people the App Store would still give it to.
                         subtitle: unlock.subscribed ? "Active · change plan or cancel"
-                            : unlock.isPro ? "Lifetime · thank you!" : "Free week, then monthly, yearly or lifetime") {
+                            : unlock.isPro ? "Lifetime · thank you!"
+                            : unlock.introEligible ? "Free week, then monthly, yearly or lifetime" : "Monthly, yearly or lifetime") {
                         Image(systemName: "chevron.right")
                             .font(.system(size: 12, weight: .bold))
                             .foregroundStyle(Theme.textDim)

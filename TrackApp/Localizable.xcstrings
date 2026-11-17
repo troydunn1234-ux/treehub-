@@ -628,6 +628,17 @@
         }
       }
     },
+    "Everything is unlocked. No subscription needed.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Todo está desbloqueado. No necesitas suscripción."
+          }
+        }
+      }
+    },
     "Example": {
       "extractionState": "manual",
       "localizations": {
@@ -1354,6 +1365,17 @@
         }
       }
     },
+    "Monthly, yearly or lifetime": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mensual, anual o de por vida"
+          }
+        }
+      }
+    },
     "Most active month": {
       "extractionState": "manual",
       "localizations": {
@@ -2025,6 +2047,17 @@
         }
       }
     },
+    "Restoring…": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurando…"
+          }
+        }
+      }
+    },
     "Resume": {
       "extractionState": "manual",
       "localizations": {
@@ -2685,6 +2718,17 @@
         }
       }
     },
+    "Try again": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar"
+          }
+        }
+      }
+    },
     "Type": {
       "extractionState": "manual",
       "localizations": {
@@ -2791,6 +2835,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Eres Pro"
+          }
+        }
+      }
+    },
+    "You're Pro for life": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres Pro de por vida"
           }
         }
       }
@@ -2923,6 +2978,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "toca un carril"
+          }
+        }
+      }
+    },
+    "then $%@ per year": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "luego $%@ al año"
           }
         }
       }
