@@ -24,6 +24,24 @@ struct WhoopManualEntry: Codable, Equatable, Identifiable {
     }
 }
 
+extension WhoopManualEntry {
+    /// Only the day is required: an entry written by any other build (fewer or more fields) always loads.
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        day = try c.decode(Date.self, forKey: .day)
+        recovery = try? c.decodeIfPresent(Double.self, forKey: .recovery)
+        strain = try? c.decodeIfPresent(Double.self, forKey: .strain)
+        sleepPerformance = try? c.decodeIfPresent(Double.self, forKey: .sleepPerformance)
+        hrv = try? c.decodeIfPresent(Double.self, forKey: .hrv)
+        rhr = try? c.decodeIfPresent(Double.self, forKey: .rhr)
+        resp = try? c.decodeIfPresent(Double.self, forKey: .resp)
+        steps = try? c.decodeIfPresent(Double.self, forKey: .steps)
+        sleepMin = try? c.decodeIfPresent(Double.self, forKey: .sleepMin)
+        kcal = try? c.decodeIfPresent(Double.self, forKey: .kcal)
+        savedAt = (try? c.decodeIfPresent(Date.self, forKey: .savedAt)) ?? day
+    }
+}
+
 /// Which manual field a number came from, so screens can badge it "WHOOP · MANUAL".
 enum ManualField: String, CaseIterable {
     case recovery, strain, sleepPerformance, hrv, rhr, resp, steps, sleep, kcal
@@ -54,9 +72,24 @@ enum WhoopManualStore {
     }
 
     static func load() -> [Date: WhoopManualEntry] {
-        guard let data = try? Data(contentsOf: url),
-              let list = try? JSONDecoder().decode([WhoopManualEntry].self, from: data) else { return [:] }
+        guard let data = try? Data(contentsOf: url) else { return [:] }
+        let list: [WhoopManualEntry]
+        if let all = try? JSONDecoder().decode([WhoopManualEntry].self, from: data) {
+            list = all
+        } else {
+            // One unreadable entry must not hide the others (and the next save would write over them): read entry
+            // by entry, and keep the file as it was next to it once.
+            list = ((try? JSONDecoder().decode([Lenient].self, from: data)) ?? []).compactMap(\.entry)
+            let copy = url.deletingLastPathComponent().appendingPathComponent("whoop-manual.unreadable.json")
+            if !FileManager.default.fileExists(atPath: copy.path) { try? data.write(to: copy, options: .atomic) }
+        }
         return Dictionary(list.map { ($0.day.dayStart, $0) }, uniquingKeysWith: { a, b in a.savedAt > b.savedAt ? a : b })
+    }
+
+    /// One list element that may not decode.
+    private struct Lenient: Decodable {
+        let entry: WhoopManualEntry?
+        init(from decoder: Decoder) throws { entry = try? WhoopManualEntry(from: decoder) }
     }
 
     /// `push`: hand the change to iCloud (CloudSync); false when the change came from iCloud.

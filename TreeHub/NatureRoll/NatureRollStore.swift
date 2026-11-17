@@ -38,6 +38,16 @@ struct NatureCorrections: Codable, Equatable {
     var moved: [String: [String]] = [:]
 }
 
+extension NatureCorrections {
+    /// Every field optional when reading: fixes saved by any other build always load (a failed decode would start
+    /// from no fixes, and the next save would write over the person's).
+    init(from decoder: Decoder) throws {
+        let c = try decoder.container(keyedBy: CodingKeys.self)
+        notNature = (try? c.decodeIfPresent(Set<String>.self, forKey: .notNature)) ?? []
+        moved = (try? c.decodeIfPresent([String: [String]].self, forKey: .moved)) ?? [:]
+    }
+}
+
 private struct NatureIndex: Codable {
     /// Bumped whenever the scan measures something new, so old indexes are rebuilt.
     var version: Int?
@@ -81,13 +91,15 @@ final class NatureRollStore: ObservableObject {
     private var task: Task<Void, Never>?
     private static let started = "natureRoll.started"
     private static let strictKey = "natureRoll.strictness"
-    private static let correctionsKey = "natureRoll.corrections"
+    /// Where the person's fixes are kept (RootboundTests checks it never moves).
+    static let correctionsKey = "natureRoll.corrections"
 
     /// The person asked for a scan at least once (so a scan never starts on its own before that).
     var hasStarted: Bool { UserDefaults.standard.bool(forKey: Self.started) }
     var canRead: Bool { auth == .authorized || auth == .limited }
 
-    private static var fileURL: URL {
+    /// Application Support/NatureRoll/index.json (RootboundTests checks it never moves).
+    static var fileURL: URL {
         let dir = (try? FileManager.default.url(for: .applicationSupportDirectory, in: .userDomainMask, appropriateFor: nil, create: true))
             ?? FileManager.default.temporaryDirectory
         let folder = dir.appendingPathComponent("NatureRoll", isDirectory: true)
@@ -261,7 +273,9 @@ final class NatureRollStore: ObservableObject {
     func reset() {
         cancel()
         records = [:]; scanned = []; lastScan = nil
-        try? FileManager.default.removeItem(at: Self.fileURL)
+        // On the save queue, after any save still waiting there (else that save would bring the index back).
+        let url = Self.fileURL
+        Self.saveQueue.async { try? FileManager.default.removeItem(at: url) }
         UserDefaults.standard.set(false, forKey: Self.started)
         rebuild()
     }
@@ -349,24 +363,38 @@ final class NatureRollStore: ObservableObject {
             scanned.insert(id)
             if let rec { records[id] = rec; added = true }
         }
-        if added { rebuild() }
-        save()
+        if added { dirty = true }
+        // Re-scoring every kept photo and writing the whole index run at most every couple of seconds while
+        // scanning (every 40 photos made the main thread stutter on big libraries); finish() does the last one.
+        guard Date().timeIntervalSince(lastFlush) > 2 else { return }
+        flush()
     }
 
     private func finish() {
         scanning = false
         lastScan = Date()
         task = nil
+        flush()
+    }
+
+    /// Show what the scan found so far and save the index.
+    private func flush() {
+        lastFlush = Date()
+        if dirty { dirty = false; rebuild() }
         save()
     }
 
     private func save() {
         let idx = NatureIndex(version: Self.indexVersion, records: records, scanned: scanned, lastScan: lastScan)
         let url = Self.fileURL
-        DispatchQueue.global(qos: .utility).async {
+        // One serial queue: an older snapshot can never land on disk after a newer one.
+        Self.saveQueue.async {
             if let data = try? JSONEncoder().encode(idx) { try? data.write(to: url, options: .atomic) }
         }
     }
+    private static let saveQueue = DispatchQueue(label: "natureRoll.save", qos: .utility)
+    private var dirty = false
+    private var lastFlush = Date.distantPast
 }
 
 // MARK: - Vision (on-device)

@@ -363,6 +363,8 @@ enum Compare {
         d.parts = [pHRV, pRHR, pSleep]
         if pResp.value != nil { d.parts.append(pResp) }
         if pTemp.value != nil { d.parts.append(pTemp) }
+        // Whole points per part, so the breakdown (55 + each row's points) always adds up to the score shown.
+        d.parts = d.parts.map { p in var p = p; p.points = p.points.rounded(); return p }
         for p in d.parts { score += p.points }
 
         if hrv == nil { d.missing.append(String(localized: "No HRV from the Watch in the last day. Wear your Watch to sleep for overnight HRV, or take a Breathe session for a spot reading.")) }

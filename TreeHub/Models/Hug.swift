@@ -149,6 +149,9 @@ struct LinkedSession: Codable, Hashable, Identifiable {
     var endHR: Double? = nil
     /// Breaths per minute, when Health has it for the window.
     var respRate: Double? = nil
+    /// From Still Pointz (newer builds): seconds spent below the starting heart rate, and the paced breaths / min.
+    var calmSeconds: Double? = nil
+    var pacedBPM: Double? = nil
 
     var minutes: Double { max(0, end.timeIntervalSince(start) / 60) }
 
@@ -165,22 +168,26 @@ struct LinkedSession: Codable, Hashable, Identifiable {
         self.hrDrop = hrDrop; self.hrv = hrv; self.respRate = respRate
     }
 
+    /// Lenient per field (like LinkedWalk): one value another build wrote differently never empties the hug's whole
+    /// list, which editing the hug would then save empty.
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
-        id = try c.decodeIfPresent(UUID.self, forKey: .id) ?? UUID()
-        feedID = try c.decodeIfPresent(UUID.self, forKey: .feedID)
-        start = try c.decodeIfPresent(Date.self, forKey: .start) ?? Date(timeIntervalSince1970: 0)
-        end = try c.decodeIfPresent(Date.self, forKey: .end) ?? start
-        source = try c.decodeIfPresent(String.self, forKey: .source) ?? ""
-        practice = try c.decodeIfPresent(String.self, forKey: .practice)
-        avgHR = try c.decodeIfPresent(Double.self, forKey: .avgHR)
-        minHR = try c.decodeIfPresent(Double.self, forKey: .minHR)
-        startHR = try c.decodeIfPresent(Double.self, forKey: .startHR)
-        hrDrop = try c.decodeIfPresent(Double.self, forKey: .hrDrop)
-        hrv = try c.decodeIfPresent(Double.self, forKey: .hrv)
-        maxHR = try c.decodeIfPresent(Double.self, forKey: .maxHR)
-        endHR = try c.decodeIfPresent(Double.self, forKey: .endHR)
-        respRate = try c.decodeIfPresent(Double.self, forKey: .respRate)
+        id = (try? c.decodeIfPresent(UUID.self, forKey: .id)) ?? UUID()
+        feedID = try? c.decodeIfPresent(UUID.self, forKey: .feedID)
+        start = (try? c.decodeIfPresent(Date.self, forKey: .start)) ?? Date(timeIntervalSince1970: 0)
+        end = (try? c.decodeIfPresent(Date.self, forKey: .end)) ?? start
+        source = (try? c.decodeIfPresent(String.self, forKey: .source)) ?? ""
+        practice = try? c.decodeIfPresent(String.self, forKey: .practice)
+        avgHR = try? c.decodeIfPresent(Double.self, forKey: .avgHR)
+        minHR = try? c.decodeIfPresent(Double.self, forKey: .minHR)
+        startHR = try? c.decodeIfPresent(Double.self, forKey: .startHR)
+        hrDrop = try? c.decodeIfPresent(Double.self, forKey: .hrDrop)
+        hrv = try? c.decodeIfPresent(Double.self, forKey: .hrv)
+        maxHR = try? c.decodeIfPresent(Double.self, forKey: .maxHR)
+        endHR = try? c.decodeIfPresent(Double.self, forKey: .endHR)
+        respRate = try? c.decodeIfPresent(Double.self, forKey: .respRate)
+        calmSeconds = try? c.decodeIfPresent(Double.self, forKey: .calmSeconds)
+        pacedBPM = try? c.decodeIfPresent(Double.self, forKey: .pacedBPM)
     }
 
     /// Practice name, else where it came from ("Mindfulness", "Still Pointz"…).
