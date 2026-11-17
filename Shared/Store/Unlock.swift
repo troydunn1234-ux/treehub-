@@ -16,6 +16,8 @@ final class Unlock: ObservableObject {
     @Published private(set) var isPro: Bool
     @Published private(set) var product: Product?
     @Published private(set) var busy = false
+    /// `busy` because of a restore (so the paywall spins the Restore link, not the buy button).
+    @Published private(set) var restoring = false
     @Published var message: String?
     /// Set when some part of the app wants the paywall shown; the root view presents it.
     @Published var requested: PaywallRequest?
@@ -27,8 +29,17 @@ final class Unlock: ObservableObject {
     @Published private(set) var trialProduct: Product?
     /// When the trial runs out, once one has been started on this Apple ID.
     @Published private(set) var trialEnds: Date?
-    /// Bought Pro (or bought the app back when it was paid upfront).
+    /// Owns Pro: the lifetime unlock, a live subscription (billing grace period included), or the app bought back
+    /// when it was paid upfront. Not the free trial.
     @Published private(set) var owned = false
+    /// Owns the one-time lifetime unlock (or the paid-upfront app) — separate from a subscription, so the
+    /// paywall can tell a lifetime owner who still has a subscription running that it isn't needed.
+    @Published private(set) var ownsLifetime = false
+    /// The App Store product lookup is running (the paywall shows placeholder plans meanwhile).
+    @Published private(set) var loadingProducts = false
+    /// The last product lookup came back empty (offline, or the App Store didn't answer): the paywall offers "Try again".
+    @Published private(set) var storeUnavailable = false
+    private var pendingLoads = 0
     private var expiryTask: Task<Void, Never>?
 
     // MARK: Subscriptions (opt-in per app via Info.plist "SubscriptionProductIDs")
@@ -112,7 +123,12 @@ final class Unlock: ObservableObject {
     func load() async {
         if Self.screenshots { return }
         guard product == nil || trialProduct == nil || (usesSubscriptions && plans.isEmpty) else { return }
+        // The paywall and the onboarding can both ask at once: "loading" lasts until the last lookup is back.
+        pendingLoads += 1
+        loadingProducts = true
+        defer { pendingLoads -= 1; loadingProducts = pendingLoads > 0 }
         let found = (try? await Product.products(for: [productID, trialProductID] + subscriptionIDs)) ?? []
+        storeUnavailable = found.isEmpty && product == nil && plans.isEmpty
         if product == nil { product = found.first { $0.id == productID } }
         if trialProduct == nil { trialProduct = found.first { $0.id == trialProductID } }
         let subs = found.filter { subscriptionIDs.contains($0.id) }
@@ -154,6 +170,7 @@ final class Unlock: ObservableObject {
         subscribed = sub != nil
         activePlanID = sub?.productID
         renewsOrEnds = sub?.expirationDate
+        ownsLifetime = pro
         if usesSubscriptions, let first = plans.first {
             introEligible = await first.subscription?.isEligibleForIntroOffer ?? false
         }
@@ -246,6 +263,7 @@ final class Unlock: ObservableObject {
                 if case .verified(let t) = verification {
                     await t.finish()
                     owned = true
+                    ownsLifetime = true
                     set(true)
                 } else {
                     message = "Apple couldn't verify that purchase."
@@ -261,11 +279,18 @@ final class Unlock: ObservableObject {
 
     func restore() async {
         guard !busy else { return }
-        busy = true; defer { busy = false }
+        busy = true; restoring = true
+        defer { busy = false; restoring = false }
         message = nil
-        try? await AppStore.sync()
+        var reached = true, cancelled = false
+        do { try await AppStore.sync() }
+        catch StoreKitError.userCancelled { cancelled = true }
+        catch { reached = false }
         await refresh()
-        if !isPro { message = "No previous purchase found for this Apple ID." }
+        // `owned`, not `isPro`: someone in the free trial who restores and has nothing to restore is told so.
+        guard !owned, !cancelled else { return }
+        message = reached ? "No previous purchase found for this Apple ID."
+                          : "Couldn't reach the App Store. Check your connection and try again."
     }
 
     private func set(_ pro: Bool) {

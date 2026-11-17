@@ -57,13 +57,9 @@ enum Theme {
     /// Spacing scale (8-pt grid) so every screen lines up.
     static let pad: CGFloat = 20
     static let gap: CGFloat = 14
-    #if TRACK_APP
-    static let radius: CGFloat = 26
-    #else
-    /// Rootbound: one corner radius for cards, a smaller one for tiles and rows inside them.
-    static let radius: CGFloat = 22
-    static let innerRadius: CGFloat = 14
-    #endif
+    /// Family card corners (continuous): 20 for cards, 12 for tiles and rows inside them.
+    static let radius: CGFloat = 20
+    static let innerRadius: CGFloat = 12
     static func rounded(_ size: CGFloat, _ weight: Font.Weight = .semibold) -> Font { .system(size: scaled(size), weight: weight, design: .rounded) }
 }
 
@@ -170,7 +166,8 @@ struct GlassCard<Content: View>: View {
                 RoundedRectangle(cornerRadius: Theme.radius, style: .continuous)
                     .strokeBorder(LinearGradient(colors: [Color.white.opacity(0.22), Color.white.opacity(0.04)], startPoint: .top, endPoint: .bottom), lineWidth: 1)
             }
-            .shadow(color: .black.opacity(0.22), radius: 14, y: 8)
+            // A soft lift only (family spec: no heavy shadows).
+            .shadow(color: .black.opacity(0.12), radius: 8, y: 4)
     }
 }
 
@@ -229,6 +226,7 @@ struct Chip: View {
     let label: String
     var symbol: String? = nil
     var selected: Bool = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         HStack(spacing: 6) {
@@ -242,22 +240,40 @@ struct Chip: View {
         .background(selected ? AnyShapeStyle(Theme.leafGradient) : AnyShapeStyle(Color.white.opacity(0.08)), in: Capsule())
         .overlay(Capsule().strokeBorder(selected ? Color.clear : Theme.cardStroke, lineWidth: 1))
         .shadow(color: selected ? Theme.glow.opacity(0.35) : .clear, radius: 8, y: 2)
-        .animation(.spring(response: 0.3, dampingFraction: 0.75), value: selected)
+        .animation(reduceMotion ? nil : .spring(response: 0.3, dampingFraction: 0.75), value: selected)
+        .accessibilityAddTraits(selected ? .isSelected : [])
     }
 }
 
+/// The one primary button (family spec: filled accent, 14 pt corners, at least 50 pt tall). Disabled buttons
+/// dim so they don't look tappable; the press spring is skipped with Reduce Motion.
 struct PrimaryButtonStyle: ButtonStyle {
     var gradient: LinearGradient = Theme.leafGradient
     func makeBody(configuration: Configuration) -> some View {
+        PrimaryButtonBody(configuration: configuration, gradient: gradient)
+    }
+}
+
+/// A view (not the style itself) so the enabled state and Reduce Motion come from where the button is shown.
+private struct PrimaryButtonBody: View {
+    let configuration: ButtonStyleConfiguration
+    let gradient: LinearGradient
+    @Environment(\.isEnabled) private var enabled
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
         configuration.label
             .font(Theme.rounded(17, .bold))
             .foregroundStyle(Theme.forestDeep)
+            .multilineTextAlignment(.center)
             .padding(.vertical, 15)
-            .frame(maxWidth: .infinity)
-            .background(gradient, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
-            .shadow(color: Theme.glow.opacity(0.35), radius: configuration.isPressed ? 4 : 14, y: 4)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1)
-            .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+            .padding(.horizontal, 12)
+            .frame(maxWidth: .infinity, minHeight: 50)
+            .background(gradient, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+            .shadow(color: Theme.glow.opacity(enabled ? 0.35 : 0), radius: configuration.isPressed ? 4 : 14, y: 4)
+            .opacity(enabled ? 1 : 0.45)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.97 : 1)
+            .animation(reduceMotion ? nil : .spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
     }
 }
 

@@ -285,11 +285,15 @@ struct TrackView: View {
                         Spacer()
                         if isImported(w) {
                             Image(systemName: "checkmark.circle.fill").foregroundStyle(Theme.glow)
+                                .accessibilityLabel("Imported")
                         } else {
                             Button { importWorkout(w) } label: {
                                 Image(systemName: "plus.circle.fill").font(.system(size: 26)).foregroundStyle(Theme.glow)
+                                    .frame(width: 44, height: 44)
+                                    .contentShape(Rectangle())
                             }
                             .buttonStyle(.plain)
+                            .accessibilityLabel("Import \(w.name)")
                         }
                     }
                     .padding(10)
