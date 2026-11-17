@@ -238,7 +238,7 @@ enum StillPointPro {
     static var freeCount: Int { PracticeLibrary.shared.freeCount }
 
     static var spec: PaywallSpec { PaywallSpec(
-        appName: "Still Point",
+        appName: "Still Pointz",
         headline: "Everything in Still Pointz.",
         tagline: String(localized: "All \(practiceCount) practices from \(traditionCount) traditions, every joint, lymph and stretch routine, the sauna & steam guide, and your whole library on the Watch."),
         tint: SP.accent, tint2: Color(spHex: "#CFC6FF"),

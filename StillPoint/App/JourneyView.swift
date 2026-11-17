@@ -311,7 +311,7 @@ struct SettingsView: View {
                         }
                     }
                 } footer: {
-                    Text(unlock.subscribed ? "Change plan, cancel or restore from here." : "Free trial, monthly, yearly or lifetime.")
+                    Text(unlock.subscribed ? "Change plan, cancel or restore from here." : "Monthly, yearly or lifetime.")
                 }
                 Section {
                     Picker(selection: $log.weeklyGoal) {

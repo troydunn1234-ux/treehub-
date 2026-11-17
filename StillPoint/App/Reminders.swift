@@ -74,7 +74,7 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [Self.requestId])
         let content = UNMutableNotificationContent()
-        content.title = "Still Point"
+        content.title = "Still Pointz"
         content.body = Self.copy()
         content.sound = .default
         content.categoryIdentifier = Self.category
