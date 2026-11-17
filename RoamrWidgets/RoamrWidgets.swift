@@ -25,6 +25,9 @@ private enum Palette {
     static let card: Color = Color.white.opacity(0.07)
 
     static func accent(paused isPaused: Bool) -> Color { isPaused ? paused : orange }
+
+    /// A tap on the Live Activity opens the live recording (Track tab), see RoamrWellness.handle(url:).
+    static let liveURL: URL? = URL(string: "roamr://track")
 }
 
 // MARK: - Live Activity
@@ -32,36 +35,47 @@ private enum Palette {
 struct TrackingLiveActivity: Widget {
     var body: some WidgetConfiguration {
         ActivityConfiguration(for: TrackingActivityAttributes.self) { context in
-            RMLockScreenView(attributes: context.attributes, state: context.state)
+            RMLockScreenView(attributes: context.attributes, state: context.state.shown(stale: context.isStale), stale: context.isStale)
                 .activityBackgroundTint(Palette.background)
                 .activitySystemActionForegroundColor(Palette.amber)
+                .widgetURL(Palette.liveURL)
         } dynamicIsland: { context in
-            DynamicIsland {
+            let state = context.state.shown(stale: context.isStale)
+            return DynamicIsland {
                 DynamicIslandExpandedRegion(.leading) {
-                    RMExpandedLeading(attributes: context.attributes, state: context.state)
+                    RMExpandedLeading(attributes: context.attributes, state: state, stale: context.isStale)
                 }
                 DynamicIslandExpandedRegion(.trailing) {
-                    RMExpandedTrailing(state: context.state)
-                }
-                DynamicIslandExpandedRegion(.center) {
-                    RMExpandedCenter(attributes: context.attributes)
+                    RMExpandedTrailing(state: state)
                 }
                 DynamicIslandExpandedRegion(.bottom) {
-                    RMExpandedBottom(attributes: context.attributes, state: context.state)
+                    RMExpandedBottom(attributes: context.attributes, state: state)
                 }
             } compactLeading: {
-                RMKindIcon(symbol: context.attributes.kindSymbol, paused: context.state.isPaused, size: 14)
+                RMKindIcon(symbol: context.attributes.kindSymbol, paused: state.isPaused, size: 14)
             } compactTrailing: {
-                RMCompactTimer(state: context.state)
+                RMCompactTimer(state: state)
             } minimal: {
-                RMKindIcon(symbol: context.attributes.kindSymbol, paused: context.state.isPaused, size: 13)
+                RMKindIcon(symbol: context.attributes.kindSymbol, paused: state.isPaused, size: 13)
             }
             .keylineTint(Palette.orange)
+            .widgetURL(Palette.liveURL)
         }
     }
 }
 
 // MARK: - Shared pieces
+
+private extension TrackingActivityAttributes.ContentState {
+    /// Gone stale = the app stopped sending updates (closed or crashed). Freeze the clock at the
+    /// last known time and show it like a pause, instead of a timer ticking on with nothing recording.
+    func shown(stale: Bool) -> Self {
+        guard stale, !isPaused else { return self }
+        var s = self
+        s.isPaused = true
+        return s
+    }
+}
 
 /// Live-ticking timer while recording, frozen elapsed time while paused.
 private struct RMTimerText: View {
@@ -91,13 +105,14 @@ private struct RMKindIcon: View {
 
 private struct RMStatusPill: View {
     let paused: Bool
+    var stale: Bool = false
 
     var body: some View {
         HStack(spacing: 5) {
             Circle()
                 .fill(Palette.accent(paused: paused))
                 .frame(width: 6, height: 6)
-            Text(paused ? "PAUSED" : "RECORDING")
+            Text(stale ? "OPEN ROAMR" : paused ? "PAUSED" : "RECORDING")
                 .font(.system(size: 10, weight: .bold, design: .rounded))
                 .kerning(0.8)
                 .foregroundStyle(Palette.accent(paused: paused))
@@ -150,10 +165,11 @@ private struct RMStat: View {
 private struct RMLockScreenView: View {
     let attributes: TrackingActivityAttributes
     let state: TrackingActivityAttributes.ContentState
+    var stale: Bool = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 12) {
-            RMLockHeader(attributes: attributes, state: state)
+            RMLockHeader(attributes: attributes, state: state, stale: stale)
             HStack(alignment: .bottom, spacing: 12) {
                 RMLockTimer(state: state)
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -168,6 +184,7 @@ private struct RMLockScreenView: View {
 private struct RMLockHeader: View {
     let attributes: TrackingActivityAttributes
     let state: TrackingActivityAttributes.ContentState
+    var stale: Bool = false
 
     var body: some View {
         HStack(spacing: 10) {
@@ -199,7 +216,7 @@ private struct RMLockHeader: View {
 
             Spacer(minLength: 4)
 
-            RMStatusPill(paused: state.isPaused)
+            RMStatusPill(paused: state.isPaused, stale: stale)
         }
     }
 }
@@ -244,15 +261,20 @@ private struct RMLockStats: View {
 private struct RMExpandedLeading: View {
     let attributes: TrackingActivityAttributes
     let state: TrackingActivityAttributes.ContentState
+    var stale: Bool = false
 
     var body: some View {
         HStack(spacing: 8) {
-            RMKindIcon(symbol: attributes.kindSymbol, paused: state.isPaused, size: 18)
+            ZStack {
+                Circle().fill(Palette.accent(paused: state.isPaused).opacity(0.18))
+                RMKindIcon(symbol: attributes.kindSymbol, paused: state.isPaused, size: 15)
+            }
+            .frame(width: 34, height: 34)
             VStack(alignment: .leading, spacing: 0) {
                 Text(attributes.kindTitle)
                     .font(.system(size: 15, weight: .semibold, design: .rounded))
                     .foregroundStyle(Palette.text)
-                Text(state.isPaused ? "Paused" : "Recording")
+                Text(stale ? "Open Roamr" : state.isPaused ? "Paused" : "Recording")
                     .font(.system(size: 11, weight: .medium, design: .rounded))
                     .foregroundStyle(Palette.accent(paused: state.isPaused))
             }
@@ -275,17 +297,6 @@ private struct RMExpandedTrailing: View {
             .minimumScaleFactor(0.6)
             .frame(maxWidth: 110, alignment: .trailing)
             .padding(.trailing, 4)
-    }
-}
-
-private struct RMExpandedCenter: View {
-    let attributes: TrackingActivityAttributes
-
-    var body: some View {
-        Text(attributes.appName)
-            .font(.system(size: 11, weight: .semibold, design: .rounded))
-            .foregroundStyle(Palette.amber)
-            .lineLimit(1)
     }
 }
 

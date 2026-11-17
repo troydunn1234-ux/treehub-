@@ -200,6 +200,21 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         manager.allowsBackgroundLocationUpdates = false
     }
 
+    /// After a background wake the live motion feed may be out of date, so ask the motion
+    /// coprocessor what the last 3 minutes looked like (free, no GPS) before any speed check.
+    private func burstIfRecentlyDriving() {
+        guard enabled, watching, !quiet, CMMotionActivityManager.isActivityAvailable() else { return }
+        let now = Date()
+        motion.queryActivityStarting(from: now.addingTimeInterval(-180), to: now, to: .main) { [weak self] list, _ in
+            let driving = (list ?? []).contains { $0.automotive && $0.confidence != .low }
+            guard driving else { return }
+            MainActor.assumeIsolated {
+                self?.lastAutomotive = Date()
+                self?.maybeBurst()
+            }
+        }
+    }
+
     private func handle(_ loc: CLLocation) {
         guard bursting else { return }
         guard loc.horizontalAccuracy >= 0, loc.horizontalAccuracy < 100,
@@ -248,9 +263,13 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
             if self.bursting {
                 for l in locs { self.handle(l) }
             } else {
-                // Woken by a significant location change: only check speed if the motion chip
-                // says we're in a vehicle (walking around town shouldn't turn GPS on).
-                if let t = self.lastAutomotive, Date().timeIntervalSince(t) < 120 { self.maybeBurst() }
+                // Woken by a significant location change (cell/Wi-Fi level, no GPS): only check speed
+                // if the motion chip says we're in a vehicle (walking around town never turns GPS on).
+                if let t = self.lastAutomotive, Date().timeIntervalSince(t) < 120 {
+                    self.maybeBurst()
+                } else {
+                    self.burstIfRecentlyDriving()
+                }
             }
         }
     }

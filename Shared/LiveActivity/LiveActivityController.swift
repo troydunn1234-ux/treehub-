@@ -97,10 +97,16 @@ final class LiveActivityController {
 
         lastUpdate = now
         lastPaused = state.isPaused
-        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: nil)
+        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: staleDate(for: state))
         Task {
             await activity.update(content)
         }
+    }
+
+    /// While recording the app refreshes at least every ~10 s; if it stops (killed, crashed) the Lock
+    /// Screen marks the activity stale instead of a timer ticking on forever. Paused never goes stale.
+    private func staleDate(for state: TrackingActivityAttributes.ContentState) -> Date? {
+        state.isPaused ? nil : Date().addingTimeInterval(120)
     }
 
     /// Sets the number of trees hugged during the current recording (Rootbound).
@@ -111,7 +117,7 @@ final class LiveActivityController {
         var state = activity.content.state
         state.hugs = count
         lastUpdate = Date()
-        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: nil)
+        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: staleDate(for: state))
         Task {
             await activity.update(content)
         }
@@ -141,14 +147,37 @@ final class LiveActivityController {
         }
     }
 
-    /// Call once on launch: ends an orphaned activity if nothing is being recorded,
-    /// otherwise refreshes it (or creates one) for the restored recording.
+    /// Call on launch and whenever the app comes to the front: ends a leftover activity when nothing
+    /// is being recorded, otherwise refreshes it (or creates one) for the current recording.
+    /// A recording brought back after the app was closed waits paused with GPS off, so it gets no
+    /// Live Activity until you tap Resume (nothing sits on the Lock Screen for a trip that isn't moving).
     func sync(with tracker: RouteTracker) {
-        if tracker.state == .idle {
+        let waitingRecovered = tracker.state == .paused && tracker.recoveredFromCrash
+        if tracker.state == .idle || waitingRecovered {
             if !LiveActivity.activities.isEmpty || current != nil { end() }
         } else {
             update(tracker: tracker, force: true)
         }
+    }
+
+    /// The app is being closed (swiped away): end every recording activity before the process goes.
+    /// `end()` hands the work to a Task that may never run once termination starts, so this waits
+    /// (briefly) for ActivityKit to finish.
+    func endBeforeExit() {
+        current = nil
+        lastPaused = nil
+        lastUpdate = .distantPast
+        hugs = 0
+        let all: [LiveActivity] = LiveActivity.activities
+        guard !all.isEmpty else { return }
+        let done = DispatchSemaphore(value: 0)
+        Task.detached {
+            for activity in all {
+                await activity.end(nil, dismissalPolicy: .immediate)
+            }
+            done.signal()
+        }
+        _ = done.wait(timeout: .now() + 2)
     }
 
     // MARK: - Private
@@ -201,7 +230,7 @@ final class LiveActivityController {
         guard enabled else { return }
         let previous: [LiveActivity] = LiveActivity.activities
         let attributes = TrackingActivityAttributes(kindTitle: kind.title, kindSymbol: kind.symbol, appName: appName)
-        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: nil)
+        let content = ActivityContent<TrackingActivityAttributes.ContentState>(state: state, staleDate: staleDate(for: state))
         do {
             let activity: LiveActivity = try LiveActivity.request(attributes: attributes, content: content, pushType: nil)
             current = activity

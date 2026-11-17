@@ -19,7 +19,10 @@
   {"name": "13-recap-largetype", "args": "-demo -pro -open recap", "wait": 14, "size": "accessibility-large"},
   {"name": "14-history-largetype", "args": "-demo -pro -tab history", "wait": 8, "size": "accessibility-large"},
   {"name": "15-track", "args": "-demo -pro -tab track", "wait": 8},
-  {"name": "16-drive", "args": "-demo -autodrive", "wait": 12}
+  {"name": "16-drive", "args": "-demo -autodrive", "wait": 12},
+  {"name": "17-live-run", "args": "-demo -pro -autostart", "wait": 12},
+  {"name": "18-live-run-largetype", "args": "-demo -pro -autostart", "wait": 12, "size": "accessibility-large"},
+  {"name": "19-intro", "args": "-demo -roamrIntro", "wait": 8}
  ],
  "watch": {"product": "RoamrWatch", "bundle": "com.troydunn.roamr.watchkitapp",
    "shots": [{"name": "w1-home", "args": "-demo", "wait": 8}, {"name": "w2-nophone", "args": "", "wait": 8}]}}
