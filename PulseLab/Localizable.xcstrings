@@ -2521,6 +2521,16 @@
         }
       }
     },
+    "Privacy Policy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Política de privacidad"
+          }
+        }
+      }
+    },
     "Pulse Lab is for general wellness and fitness, not medical advice.": {
       "localizations": {
         "es": {
@@ -2807,6 +2817,26 @@
           "stringUnit": {
             "state": "translated",
             "value": "Frecuencia cardiaca en reposo"
+          }
+        }
+      }
+    },
+    "Restore purchase": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurar compra"
+          }
+        }
+      }
+    },
+    "Restoring…": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Restaurando…"
           }
         }
       }
@@ -3351,6 +3381,16 @@
         }
       }
     },
+    "Terms of Use": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Condiciones de uso"
+          }
+        }
+      }
+    },
     "The chart fills in as readings arrive.": {
       "localizations": {
         "es": {
@@ -3537,6 +3577,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "Prueba un rango más largo o lleva ambos dispositivos unos días."
+          }
+        }
+      }
+    },
+    "Try again": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Reintentar"
           }
         }
       }
@@ -4101,6 +4151,26 @@
         }
       }
     },
+    "You're Pro": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres Pro"
+          }
+        }
+      }
+    },
+    "You're Pro for life": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Eres Pro para siempre"
+          }
+        }
+      }
+    },
     "Your VS card": {
       "localizations": {
         "es": {
@@ -4417,6 +4487,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "pasos"
+          }
+        }
+      }
+    },
+    "then $%@ per year": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "luego $%@ al año"
           }
         }
       }

@@ -62,15 +62,9 @@ struct ReadinessSheet: View {
     private func hero(_ d: Compare.ReadinessDetail) -> some View {
         let color = Lab.band(d.score)
         return LabPanel {
-            ViewThatFits(in: .horizontal) {
-                HStack(alignment: .center, spacing: Lab.S.m) {
-                    ArcGauge(value: d.score, label: "Readiness", color: color, size: 140)
-                    heroText(d, color)
-                }
-                VStack(alignment: .leading, spacing: Lab.S.m) {
-                    ArcGauge(value: d.score, label: "Readiness", color: color, size: 140).frame(maxWidth: .infinity)
-                    heroText(d, color)
-                }
+            VStack(alignment: .leading, spacing: Lab.S.m) {
+                ArcGauge(value: d.score, label: "Readiness", color: color, size: 140).frame(maxWidth: .infinity)
+                heroText(d, color)
             }
         }
     }
@@ -162,9 +156,14 @@ struct ReadinessSheet: View {
         return v.formatted(.number.precision(.fractionLength(p.decimals))) + " " + p.unit
     }
 
+    /// "+6 ms", "−12m"; a difference that rounds to nothing reads "±0", never "−0".
     private func signed(_ v: Double, _ p: Part) -> String {
-        if p.kind == .sleep { return (v >= 0 ? "+" : "−") + fmtHM(abs(v) * 60) }
-        return (v >= 0 ? "+" : "−") + abs(v).formatted(.number.precision(.fractionLength(p.decimals))) + " " + p.unit
+        if p.kind == .sleep {
+            if abs(v) * 60 < 1 { return "±0m" }
+            return (v >= 0 ? "+" : "−") + fmtHM(abs(v) * 60)
+        }
+        let zero = abs(v) < 0.5 * pow(10, -Double(p.decimals))
+        return (zero ? "±" : (v >= 0 ? "+" : "−")) + abs(v).formatted(.number.precision(.fractionLength(p.decimals))) + " " + p.unit
     }
 
     /// "Today 48 ms · Baseline 55 ms · −7 ms".

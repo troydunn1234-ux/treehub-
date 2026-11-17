@@ -10,10 +10,16 @@ struct HeartScreen: View {
 
     var body: some View {
         LabScroll(kicker: "Engine room", title: "Heart") {
-            HStack {
-                RangePicker(days: $days)
-                Spacer()
-                DuelLegend(solo: $solo, compact: true)
+            ViewThatFits(in: .horizontal) {
+                HStack {
+                    RangePicker(days: $days)
+                    Spacer(minLength: Lab.S.s)
+                    DuelLegend(solo: $solo, compact: true)
+                }
+                VStack(alignment: .leading, spacing: Lab.S.xs) {
+                    RangePicker(days: $days)
+                    DuelLegend(solo: $solo, compact: true)
+                }
             }
             trend("Resting heart rate", unit: "bpm", lowerIsBetter: true, metric: .rhr) { $0.rhr }
             trend("Heart rate variability", unit: "ms", lowerIsBetter: false, note: "Apple Watch measures SDNN, WHOOP measures RMSSD, so WHOOP usually reads higher. Compare the shape of the lines, not the gap.", metric: .hrv) { $0.hrv }
@@ -36,7 +42,7 @@ struct HeartScreen: View {
         let wAvg = Stats.mean(w.map(\.1)), hAvg = Stats.mean(h.map(\.1))
         return LabPanel(tint: Lab.watch) {
             VStack(alignment: .leading, spacing: 10) {
-                CardHeader(title, subtitle: unit) {
+                CardHeader(title) {
                     if let metric {
                         CardLink("Details") { store.detail = metric }
                             .accessibilityLabel(String(localized: "Open \(L(title).lowercased()) details"))
@@ -64,7 +70,10 @@ struct HeartScreen: View {
 
     private func avgBlock(_ v: Double?, _ s: Source, _ decimals: Int, _ unit: String) -> some View {
         VStack(alignment: .leading, spacing: 0) {
-            CountUp(value: v, decimals: decimals, size: 24, color: Lab.color(s))
+            HStack(alignment: .firstTextBaseline, spacing: 3) {
+                CountUp(value: v, decimals: decimals, size: 24, color: Lab.color(s))
+                if v != nil { Text(unit).font(Lab.label(9)).foregroundStyle(Lab.faint) }
+            }
             Text(String(localized: "\(s.label) average")).font(.caption.weight(.medium)).foregroundStyle(Lab.color(s).opacity(0.8))
         }
         .accessibilityElement(children: .ignore)

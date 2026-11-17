@@ -129,8 +129,9 @@ struct WatchHome: View {
             .tint(Gradient(colors: [WPalette.bad, WPalette.warn, WPalette.good]))
             .scaleEffect(1.4)
             .frame(height: 76)
-            Text(s.isWhoop ? String(localized: "WHOOP recovery") : String(localized: "Watch readiness"))
-                .font(.caption2).foregroundStyle(s.isWhoop ? WPalette.whoop : WPalette.watch)
+            Text(s.recovery == nil ? String(localized: "No score yet")
+                 : s.isWhoop ? String(localized: "WHOOP recovery") : String(localized: "Watch readiness"))
+                .font(.caption2).foregroundStyle(s.recovery == nil ? Color.secondary : (s.isWhoop ? WPalette.whoop : WPalette.watch))
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(s.recovery.map { String(localized: "\(s.isWhoop ? String(localized: "WHOOP recovery") : String(localized: "Watch readiness")) \(Int($0.rounded()))") }
