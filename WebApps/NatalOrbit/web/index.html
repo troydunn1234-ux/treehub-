@@ -1,17 +1,17 @@
 <!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
 <title>Natal Orbit</title>
 <meta name="claude:viewport-fit-sides" content="cover">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* Layout: a full-width 3D orrery up top, tap-to-read cards over it, then stacked sections (today, big three, year ahead, time travel, aspects, friends, make your own). Single dark look by design. */
 :root{
   --void:#05070f;--panel:#0c1020;--panel2:#10152a;--line:#1e2540;--ink:#e8ebf7;--dim:#8a92b4;
   --gold:#f2c46d;--accent:#a78bfa;--accent-hi:#c4b5fd;--accent-ink:#0b0720;--hard:#ff6b7d;--soft:#5fe0c4;--pink:#ff9ad5;
   --fire:#ff8a5c;--earth:#a7cf83;--air:#9fd3ff;--water:#7c93ff;
-  --display:"Syne",-apple-system,system-ui,"Segoe UI",sans-serif;
-  --body:-apple-system,system-ui,"Instrument Sans","Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,Consolas,monospace;
+  /* Family type: system SF for UI, New York (system serif) for reading headlines, SF Mono for data. */
+  --display:-apple-system,system-ui,"Segoe UI",sans-serif;
+  --body:-apple-system,system-ui,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  --serif:ui-serif,"New York",Georgia,"Times New Roman",serif;
   --r-card:20px;--r-inner:12px;
   color-scheme:dark;
 }
@@ -28,11 +28,11 @@ body{background:radial-gradient(1100px 520px at 12% -6%,rgba(124,77,255,.13),tra
 body::before{content:'';position:fixed;top:0;left:0;right:0;height:env(safe-area-inset-top,0px);background:var(--void);z-index:30;pointer-events:none}
 header{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:14px 24px}
 .eyebrow{font-family:var(--mono);font-size:0.647rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-h1{font-family:var(--display);font-weight:800;font-size:clamp(30px,6vw,56px);line-height:1;margin:6px 0 0;letter-spacing:-.02em;text-wrap:balance}
+h1{font-family:var(--display);font-weight:800;font-size:max(clamp(30px,6vw,56px),1.76rem);line-height:1.04;margin:6px 0 0;letter-spacing:-.025em;text-wrap:balance}
 h1 span{color:var(--gold);text-shadow:0 0 18px rgba(242,196,109,.55)}
 .meta{font-family:var(--mono);font-size:0.706rem;color:var(--dim);text-align:right;display:flex;flex-direction:column;gap:10px;align-items:flex-end}
 .actions{display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end}
-h2{font-family:var(--display);font-weight:600;font-size:1.235rem;margin:4px 0 12px;letter-spacing:-.01em;text-wrap:balance}
+h2{font-family:var(--display);font-weight:700;font-size:1.235rem;margin:4px 0 12px;letter-spacing:-.015em;text-wrap:balance}
 p{margin:0 0 10px}
 button{font:inherit;color:var(--ink);background:rgba(12,16,32,.8);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:0.735rem;cursor:pointer;transition:border-color .2s,color .2s,background .2s}
 button:hover{border-color:var(--accent)}
@@ -49,13 +49,13 @@ button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
 .sec-head{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:6px}
 .panel{border:1px solid var(--line);border-radius:var(--r-card);background:linear-gradient(180deg,rgba(255,255,255,.028),transparent 45%),var(--panel);padding:18px}
 .big{background:linear-gradient(180deg,rgba(255,255,255,.028),transparent 45%),var(--panel)!important}
-input[type=text],input[type=date],input[type=time],input[type=search]{font:inherit;color:var(--ink);background:var(--void);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0;width:100%}
+input[type=text],input[type=date],input[type=time],input[type=search]{font:inherit;color:var(--ink);background:var(--void);border:1px solid var(--line);border-radius:var(--r-inner);padding:8px 10px;min-width:0;width:100%}
 input:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
 
 /* stage */
 .stage-wrap{position:relative}
-.stage{position:relative;height:clamp(460px,76vh,760px);border:1px solid var(--line);border-radius:22px;overflow:hidden;background:var(--void);box-shadow:0 30px 80px -40px rgba(124,147,255,.35)}
+.stage{position:relative;height:clamp(460px,76vh,760px);border:1px solid var(--line);border-radius:var(--r-card);overflow:hidden;background:var(--void);box-shadow:0 30px 80px -40px rgba(124,147,255,.35)}
 .stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 45%,transparent 55%,rgba(3,4,10,.75) 100%)}
 #scene{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none;cursor:grab}
 #scene:active{cursor:grabbing}
@@ -69,7 +69,7 @@ label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-tra
 .card h3{font-family:var(--display);font-size:1.059rem;margin:0}
 .card .pos{font-family:var(--mono);font-size:0.706rem;color:var(--dim)}
 .card p{margin:8px 0 0;font-size:0.824rem}
-.card .you{font-family:var(--display);font-weight:600;font-size:0.882rem;line-height:1.35;color:var(--accent);margin-top:10px}
+.card .you{font-family:var(--serif);font-weight:600;font-size:0.941rem;line-height:1.35;color:var(--accent-hi);margin-top:10px}
 .card .asps,.card .pl{margin-top:10px;display:flex;flex-wrap:wrap;gap:6px}
 .card .more{margin-top:12px}
 .tb-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
@@ -90,14 +90,14 @@ label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-tra
 
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chips button{display:flex;align-items:center;gap:8px;border-radius:12px;padding:8px 12px;background:var(--panel)}
-.chips .g{font-size:0.941rem;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;color:var(--pc);background:radial-gradient(circle,color-mix(in srgb,var(--pc) 30%,transparent),transparent 72%)}
+.chips .g{font-size:0.941rem;width:1.75em;height:1.75em;flex:none;display:grid;place-items:center;border-radius:50%;color:var(--pc);background:radial-gradient(circle,color-mix(in srgb,var(--pc) 30%,transparent),transparent 72%)}
 .chips .d{font-family:var(--mono);font-size:0.647rem;color:var(--dim)}
 .chips button[aria-pressed="true"]{border-color:var(--pc);color:var(--ink);box-shadow:0 0 0 1px var(--pc),0 0 24px -6px var(--pc)}
 
 /* today */
 .today{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:16px}
 @media (max-width:820px){.today{grid-template-columns:minmax(0,1fr)}}
-.today .head{font-family:var(--display);font-weight:800;font-size:clamp(22px,3.4vw,30px);line-height:1.15;margin:6px 0 12px;text-wrap:balance}
+.today .head{font-family:var(--serif);font-weight:700;font-size:clamp(1.3rem,3.4vw,1.8rem);line-height:1.18;margin:6px 0 12px;text-wrap:balance}
 .today .body p{font-size:0.912rem}
 .daynav{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
 .big3{width:100%;border-collapse:collapse;margin:4px 0 10px;font-size:0.765rem}
@@ -107,7 +107,7 @@ label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-tra
 .big3 td.mut{color:var(--dim,#8a92b4);font-size:0.706rem}
 .daynav .d{font-family:var(--mono);font-size:0.706rem;color:var(--accent);margin-right:6px}
 .meters{display:flex;flex-direction:column;gap:12px;margin-bottom:16px}
-.meter{display:grid;grid-template-columns:64px minmax(0,1fr);gap:10px;align-items:center;font-size:0.794rem}
+.meter{display:grid;grid-template-columns:4.6em minmax(0,1fr);gap:10px;align-items:center;font-size:0.794rem}
 .meter .dots{display:flex;gap:5px}
 .meter .dots i{flex:1;height:8px;border-radius:4px;background:var(--line)}
 .meter .dots i.on{background:var(--mc,var(--accent));box-shadow:0 0 10px -2px var(--mc,var(--accent))}
@@ -137,31 +137,31 @@ label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-tra
 .people .pp button{border-radius:999px 0 0 999px}
 .people .pp button.rm{border-radius:0 999px 999px 0;padding-inline:8px}
 .people .pp button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent)}
-.sbreak{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin-top:8px;width:100%}
-.sbreak div{border:1px solid var(--line);border-radius:10px;padding:6px 4px;font-family:var(--mono);font-size:0.647rem;color:var(--dim)}
+.sbreak{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,4.2em),1fr));gap:6px;margin-top:8px;width:100%}
+.sbreak div{border:1px solid var(--line);border-radius:var(--r-inner);padding:6px 4px;font-family:var(--mono);font-size:0.647rem;color:var(--dim)}
 .sbreak b{display:block;font-family:var(--display);font-size:0.941rem;color:var(--ink)}
 .mooninfo canvas{flex:none}
 
 .three{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
 .big{border:1px solid var(--line);border-radius:var(--r-card);padding:16px;background:var(--panel)}
 .big .k{font-family:var(--mono);font-size:0.647rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim)}
-.big .v{font-family:var(--display);font-weight:800;font-size:1.765rem;margin:4px 0 2px}
+.big .v{font-family:var(--display);font-weight:800;font-size:min(1.765rem,44px);margin:4px 0 2px;letter-spacing:-.015em;overflow-wrap:anywhere}
 .big .s{font-family:var(--mono);font-size:0.706rem;color:var(--accent)}
 .big p{margin:8px 0 0;font-size:0.824rem;color:var(--dim)}
 .big.phase{display:grid;grid-template-columns:64px minmax(0,1fr);gap:4px 14px;align-items:center}
-.big.phase .v{font-size:1.294rem}
+.big.phase .v{font-size:min(1.294rem,34px)}
 .big.phase p{grid-column:1/-1}
 
 /* year */
 .tl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);-webkit-overflow-scrolling:touch}
 .tl{position:relative;min-width:820px;padding:14px 16px 16px}
-.tl-months{position:relative;height:22px;margin-left:120px;font-family:var(--mono);font-size:0.647rem;color:var(--dim)}
+.tl-months{position:relative;height:22px;margin-left:120px;font-family:var(--mono);font-size:min(0.647rem,13px);color:var(--dim)}
 .tl-months span{position:absolute;top:0;transform:translateX(2px)}
 .tl-row{position:relative;display:grid;grid-template-columns:120px minmax(0,1fr);align-items:stretch;border-top:1px solid var(--line)}
-.tl-row .lab{font-size:0.765rem;padding:8px 8px 8px 0;display:flex;align-items:center;gap:8px}
-.tl-row .lab b{font-size:0.941rem;font-weight:400}
+.tl-row .lab{font-size:min(0.765rem,15px);padding:8px 8px 8px 0;display:flex;align-items:center;gap:8px}
+.tl-row .lab b{font-size:min(0.941rem,18px);font-weight:400}
 .tl-lane{position:relative;min-height:34px}
-.tl-bar{position:absolute;height:22px;border-radius:6px;font-family:var(--mono);font-size:0.647rem;padding:0 6px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;border:1px solid;cursor:pointer;color:var(--ink)}
+.tl-bar{position:absolute;height:22px;border-radius:6px;font-family:var(--mono);font-size:min(0.647rem,12px);padding:0 6px;display:flex;align-items:center;white-space:nowrap;overflow:hidden;border:1px solid;cursor:pointer;color:var(--ink)}
 .tl-bar.hard{background:color-mix(in srgb,var(--hard) 22%,transparent);border-color:color-mix(in srgb,var(--hard) 60%,transparent)}
 .tl-bar.soft{background:color-mix(in srgb,var(--soft) 18%,transparent);border-color:color-mix(in srgb,var(--soft) 55%,transparent)}
 .tl-bar.conj{background:color-mix(in srgb,var(--gold) 20%,transparent);border-color:color-mix(in srgb,var(--gold) 60%,transparent)}
@@ -194,7 +194,7 @@ label.f{font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-tra
 @media (max-width:820px){.cols{grid-template-columns:minmax(0,1fr)}}
 ul.asp{list-style:none;margin:0;padding:0}
 ul.asp li{border-top:1px solid var(--line)}
-.asp-row{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:12px;align-items:baseline;width:100%;text-align:left;background:none;border:0;border-radius:10px;padding:10px 8px;margin:2px 0;font-size:0.882rem}
+.asp-row{display:grid;grid-template-columns:12px minmax(0,1fr) auto;gap:12px;align-items:baseline;width:100%;text-align:left;background:none;border:0;border-radius:var(--r-inner);padding:10px 8px;margin:2px 0;font-size:0.882rem}
 .asp-row:hover{background:var(--panel)}
 .asp-row[aria-pressed="true"]{background:var(--panel);box-shadow:inset 0 0 0 1px var(--accent)}
 .asp-row .dot{width:8px;height:8px;border-radius:50%;align-self:center}
@@ -202,32 +202,32 @@ ul.asp li{border-top:1px solid var(--line)}
 .asp-row .m{display:block;color:var(--dim);font-size:0.794rem}
 .asp-row .orb{font-family:var(--mono);font-size:0.706rem;color:var(--dim);font-variant-numeric:tabular-nums;text-align:right}
 .el{display:flex;flex-direction:column;gap:10px}
-.el .row{display:grid;grid-template-columns:64px minmax(0,1fr) 20px;gap:10px;align-items:center;font-size:0.794rem}
+.el .row{display:grid;grid-template-columns:4.6em minmax(0,1fr) 1.6em;gap:10px;align-items:center;font-size:0.794rem}
 .el .bar{height:8px;border-radius:4px;background:var(--line);overflow:hidden}
 .el .bar i{display:block;height:100%;border-radius:4px}
 .el .n{font-family:var(--mono);text-align:right;color:var(--dim)}
 .summary{font-size:0.971rem;max-width:65ch}
 
 /* forms */
-.mform{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;align-items:end;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);max-width:900px}
+.mform{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,max(150px,9rem)),1fr));gap:12px;align-items:end;padding:16px;border:1px solid var(--line);border-radius:var(--r-card);background:var(--panel);max-width:900px}
 .mform .fld{display:flex;flex-direction:column;gap:6px;min-width:0}
 .mform .chk{display:flex;align-items:center;gap:6px;font-size:0.735rem;color:var(--dim);margin-top:2px}
 .mform .err{grid-column:1/-1;color:var(--hard);font-size:0.794rem;margin:0}
-.mempty{margin-top:14px;color:var(--dim);font-size:0.824rem;border:1px dashed var(--line);border-radius:var(--r-card);padding:16px 18px 16px 52px;max-width:900px;position:relative;min-height:56px}
+.mempty{margin-top:14px;color:var(--dim);font-size:0.824rem;border:1px dashed var(--line);border-radius:var(--r-card);padding:16px 18px 16px calc(18px + 2.1rem);max-width:900px;position:relative;min-height:56px}
 .mempty::before{content:"✦";position:absolute;left:18px;top:14px;font-size:1.176rem;color:var(--accent);text-shadow:0 0 14px rgba(167,139,250,.7)}
 .mres{display:grid;grid-template-columns:210px minmax(0,1fr);gap:28px;margin-top:20px;align-items:start}
 @media (max-width:640px){.mres{grid-template-columns:minmax(0,1fr)}}
 .score{display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center}
 .ring{width:164px;height:164px;border-radius:50%;background:conic-gradient(var(--accent) calc(var(--v) * 1%),var(--line) 0);display:grid;place-items:center;box-shadow:0 0 50px -12px rgba(167,139,250,.55)}
-.ring div{width:136px;height:136px;border-radius:50%;background:var(--void);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:2.471rem}
-.ring small{font-size:1.059rem;color:var(--dim)}
-.verdict{font-family:var(--display);font-weight:600;font-size:1rem;text-wrap:balance}
+.ring div{width:136px;height:136px;border-radius:50%;background:var(--void);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:min(2.471rem,46px);font-variant-numeric:tabular-nums}
+.ring small{font-size:min(1.059rem,20px);color:var(--dim)}
+.verdict{font-family:var(--serif);font-weight:700;font-size:1.059rem;text-wrap:balance;align-self:stretch;text-align:center;overflow-wrap:anywhere}
 .fchips{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
 .pairs{list-style:none;margin:0;padding:0}
-.pairs li{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:11px 0;border-top:1px solid var(--line)}
+.pairs li{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:2px 12px;padding:11px 0;border-top:1px solid var(--line)}
 .pairs .lab{font-weight:600}
 .pairs .sg{font-family:var(--mono);font-size:0.706rem;color:var(--dim);text-align:right}
-.pairs p{grid-column:1/-1;margin:0;font-size:0.794rem;color:var(--dim)}
+.pairs p{flex-basis:100%;margin:0;font-size:0.794rem;color:var(--dim)}
 .pips{display:inline-flex;gap:3px;margin-left:8px;vertical-align:middle}
 .pips i{width:6px;height:6px;border-radius:50%;background:var(--line)}
 .pips i.on{background:var(--accent)}
@@ -254,8 +254,8 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
 @media (prefers-reduced-motion:reduce){.sheet,.scrim,.toast{transition:none}}
 .sheet .x{position:sticky;top:0;float:right;margin:-6px -6px 0 0;z-index:1}
 .sheet .hero{display:flex;align-items:center;gap:16px;margin-bottom:6px}
-.sheet .big-g{font-size:3.294rem;line-height:1;width:72px;height:72px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:radial-gradient(circle,color-mix(in srgb,var(--pc) 28%,transparent),transparent 70%);color:var(--pc)}
-.sheet h3{font-family:var(--display);font-weight:800;font-size:1.765rem;margin:0;line-height:1.05}
+.sheet .big-g{font-size:min(3.294rem,64px);line-height:1;width:1.3em;height:1.3em;flex:none;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);background:radial-gradient(circle,color-mix(in srgb,var(--pc) 28%,transparent),transparent 70%);color:var(--pc)}
+.sheet h3{font-family:var(--display);font-weight:800;font-size:1.765rem;margin:0;line-height:1.05;letter-spacing:-.015em;overflow-wrap:anywhere}
 .sheet .pos{font-family:var(--mono);font-size:0.706rem;color:var(--dim);margin-top:4px}
 .sheet .kw{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 4px}
 .sheet section{border-top:1px solid var(--line);padding-top:16px;margin-top:18px}
@@ -266,28 +266,28 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
 .sheet .asp-i b{font-weight:600}
 .sheet .asp-i .o{font-family:var(--mono);font-size:0.647rem;color:var(--dim);margin-left:6px}
 .sheet .nav{display:flex;justify-content:space-between;gap:8px;margin-top:24px}
-.sheet .foryou{margin-top:18px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--pc) 45%,var(--line));border-radius:14px;background:linear-gradient(160deg,color-mix(in srgb,var(--pc) 14%,transparent),transparent 70%)}
-.sheet .foryou .lead{font-family:var(--display);font-weight:600;font-size:1.118rem;line-height:1.3;color:var(--ink);text-wrap:balance}
+.sheet .foryou{margin-top:18px;padding:16px 18px;border:1px solid color-mix(in srgb,var(--pc) 45%,var(--line));border-radius:var(--r-card);background:linear-gradient(160deg,color-mix(in srgb,var(--pc) 14%,transparent),transparent 70%)}
+.sheet .foryou .lead{font-family:var(--serif);font-weight:600;font-size:1.176rem;line-height:1.3;color:var(--ink);text-wrap:balance}
 .sheet .foryou ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px;font-size:0.853rem}
 .sheet .foryou li::marker{color:var(--pc)}
 .modal{position:fixed;z-index:41;inset:0;display:grid;place-items:center;padding:calc(16px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));pointer-events:none}
 .modal .box{pointer-events:auto;background:var(--panel);border:1px solid var(--line);border-radius:var(--r-card);padding:18px;width:min(560px,100%);max-height:100%;overflow:auto;display:flex;flex-direction:column;gap:12px}
-.modal .box img{display:block;width:auto;max-width:100%;max-height:58vh;margin:0 auto;border-radius:12px;border:1px solid var(--line)}
+.modal .box img{display:block;width:auto;max-width:100%;max-height:58vh;margin:0 auto;border-radius:var(--r-inner);border:1px solid var(--line)}
 .modal .row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between}
 .modal .msg{font-size:0.765rem;color:var(--dim);margin:0}
 
 /* First run: a calm three-step welcome over the night sky. */
-#onb{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:flex-end;background:radial-gradient(900px 600px at 50% -10%,rgba(124,77,255,.22),transparent 60%),radial-gradient(700px 500px at 90% 100%,rgba(47,211,192,.10),transparent 60%),var(--void);padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px))}
+#onb{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;justify-content:flex-start;overflow-y:auto;-webkit-overflow-scrolling:touch;background:radial-gradient(900px 600px at 50% -10%,rgba(124,77,255,.22),transparent 60%),radial-gradient(700px 500px at 90% 100%,rgba(47,211,192,.10),transparent 60%),var(--void);padding:calc(24px + env(safe-area-inset-top,0px)) max(20px,env(safe-area-inset-left,0px)) calc(24px + env(safe-area-inset-bottom,0px)) max(20px,env(safe-area-inset-right,0px))}
 #onb[hidden]{display:none}
 #onb .stars{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(1px 1px at 12% 18%,#fff8 50%,transparent 51%),radial-gradient(1px 1px at 72% 12%,#fff6 50%,transparent 51%),radial-gradient(1.5px 1.5px at 38% 34%,#ffe9b0aa 50%,transparent 51%),radial-gradient(1px 1px at 86% 42%,#fff7 50%,transparent 51%),radial-gradient(1px 1px at 22% 58%,#fff5 50%,transparent 51%),radial-gradient(1.5px 1.5px at 58% 68%,#cfe3ff99 50%,transparent 51%),radial-gradient(1px 1px at 8% 80%,#fff6 50%,transparent 51%),radial-gradient(1px 1px at 94% 86%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 48% 8%,#fff5 50%,transparent 51%),radial-gradient(1px 1px at 66% 48%,#fff4 50%,transparent 51%)}
 #onb .orb{position:absolute;left:50%;top:22%;width:min(46vw,220px);aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;background:radial-gradient(circle at 38% 36%,rgba(242,196,109,.95),rgba(242,196,109,.25) 42%,transparent 66%);box-shadow:0 0 90px 30px rgba(242,196,109,.18),0 0 180px 60px rgba(124,77,255,.12);pointer-events:none}
 #onb .orb::after{content:"";position:absolute;inset:-26%;border-radius:50%;border:1px solid rgba(242,196,109,.25);transform:rotate(-18deg) scaleY(.42)}
 @media (prefers-reduced-motion:no-preference){#onb .orb{animation:breathe 7s ease-in-out infinite}}
 @keyframes breathe{0%,100%{transform:translate(-50%,-50%) scale(1)}50%{transform:translate(-50%,-50%) scale(1.05)}}
-#onb .pane{position:relative;max-width:520px;width:100%;margin:0 auto;display:none;flex-direction:column;gap:14px}
+#onb .pane{position:relative;max-width:520px;width:100%;margin:auto auto 0;display:none;flex-direction:column;gap:14px}
 #onb .pane.on{display:flex}
 #onb .step{font-family:var(--mono);font-size:0.647rem;letter-spacing:.16em;text-transform:uppercase;color:var(--accent)}
-#onb h2{font-size:clamp(28px,7vw,40px);line-height:1.05;margin:0;font-weight:800}
+#onb h2{font-size:max(clamp(28px,7vw,40px),1.65rem);line-height:1.05;margin:0;font-weight:800}
 #onb p{color:var(--dim);font-size:0.882rem;margin:0}
 #onb .fld{display:flex;flex-direction:column;gap:6px}
 #onb .fld .f{font-size:0.735rem;color:var(--dim)}
@@ -312,19 +312,45 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
   .mform .chk input,#onb .chk input{width:22px;height:22px}
 }
 .cta{box-shadow:0 8px 24px -10px rgba(167,139,250,.75)}
-#onb .cta{min-height:50px}
-.big .v,.ring div,.sbreak b,#sky-date,.asp-row .orb,.el .n{font-variant-numeric:tabular-nums}
-/* About */
-.about{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 16px;align-items:center}
-.about .icon{width:64px;height:64px;border-radius:15px;display:grid;place-items:center;font-size:30px;color:#fff;background:radial-gradient(circle at 35% 30%,#c4b5fd,#7c4dff 55%,#2a1a6b);box-shadow:0 10px 30px -10px rgba(167,139,250,.8),inset 0 1px 0 rgba(255,255,255,.35)}
+/* Primary actions: 50 pt filled accent capsules. */
+#onb .cta,.mform .cta,.score .cta{min-height:50px;padding-inline:22px}
+.big .v,.ring div,.sbreak b,#sky-date,.asp-row .orb,.el .n,.transits .o,.syn li .o,.pairs .sg{font-variant-numeric:tabular-nums}
+/* Controls drawn over the 3D sky stay compact at large text sizes (like map controls), so the sky stays visible. */
+.stage button{font-size:min(0.735rem,15px)}
+.chipbar,.chipbar button,.skybar .cap{font-size:min(0.676rem,14px)}
+.toast{font-size:min(0.882rem,18px)}
+.hint{font-size:min(0.647rem,13px)}
+/* Compare table: when the text is large for the space (narrow in ems), each row stacks under its own labels. */
+.mres > div:not(.score){container-type:inline-size}
+@container (max-width:20em){
+  .big3 thead{display:none}
+  .big3,.big3 tbody{display:block}
+  .big3 tr{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px 12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.07)}
+  .big3 td{display:block;border-top:0;padding:0}
+  .big3 td:first-child,.big3 td.mut{grid-column:1/-1}
+  .big3 td.mut:empty{display:none}
+  .big3 td[data-l]::before{content:attr(data-l);display:block;font-family:var(--mono);font-size:0.647rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);overflow-wrap:anywhere}
+}
+/* Settings + About: one quiet card each, rows at least 48 pt. */
+.prefs{display:flex;flex-direction:column;padding-block:6px}
+.pref{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px 16px;min-height:56px;padding:10px 0}
+.pref+.pref{border-top:1px solid var(--line)}
+.pref .pt{flex:1 1 14em;min-width:0}
+.pref .pt b{display:block;font-weight:600}
+.pref .pt small{display:block;color:var(--dim);font-size:0.765rem;line-height:1.4;margin-top:2px}
+.seg{display:inline-flex;padding:3px;gap:3px;border:1px solid var(--line);border-radius:999px;background:var(--void)}
+.seg button{border:0;background:none;color:var(--dim)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:600}
+.about{display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px 16px;align-items:center;margin-top:12px}
+.about .icon{width:64px;height:64px;border-radius:15px;display:block;object-fit:cover;background:var(--void);box-shadow:0 10px 30px -12px rgba(167,139,250,.7),0 0 0 1px rgba(255,255,255,.08)}
 .about h3{font-family:var(--display);font-size:1.18rem;margin:0}
-.about .ver{font-family:var(--mono);font-size:.7rem;color:var(--dim);letter-spacing:.08em}
+.about .ver{color:var(--dim);font-size:0.794rem;line-height:1.4}
 .about .links{grid-column:1/-1;display:flex;flex-direction:column;border-top:1px solid var(--line)}
-.about .links a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:6px 2px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
-.about .links a::after{content:"›";color:var(--dim);font-size:1.2rem}
-.about .links a small{display:block;color:var(--dim);font-size:.76rem}
-.about .more{grid-column:1/-1}
-.about .more h4{margin-top:4px}
+.about .links a{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;padding:8px 2px;color:var(--ink);text-decoration:none;border-bottom:1px solid var(--line)}
+.about .links a:last-child{border-bottom:0}
+.about .links a::after{content:"↗";color:var(--dim);font-size:0.882rem;flex:none}
+.about .links a small{display:block;color:var(--dim);font-size:0.765rem;line-height:1.4}
+.about .links a:active{background:rgba(167,139,250,.08)}
 </style>
 
 <div class="wrap">
@@ -474,15 +500,33 @@ footer{font-family:var(--mono);font-size:0.647rem;color:var(--dim);line-height:1
     <div class="recent" id="recent"></div>
   </section>
 
-  <section id="about" aria-labelledby="about-h">
-    <div class="eyebrow">About</div>
+  <section id="about" aria-labelledby="settings-h">
+    <div class="sec-head"><div><div class="eyebrow">Settings &amp; about</div><h2 id="settings-h">Make it yours</h2></div></div>
+    <div class="panel prefs">
+      <div class="pref">
+        <div class="pt"><b>House system</b><small id="pref-hs-sub">How your chart splits the sky into twelve houses.</small></div>
+        <div class="seg" role="group" aria-label="House system">
+          <button type="button" data-hs="placidus" aria-pressed="true">Placidus</button>
+          <button type="button" data-hs="whole" aria-pressed="false">Whole sign</button>
+        </div>
+      </div>
+      <div class="pref">
+        <div class="pt"><b>Your chart</b><small id="pref-me-sub">Save your birth details so Natal Orbit always opens on your sky.</small></div>
+        <button type="button" id="pref-me">Edit</button>
+      </div>
+      <div class="pref" id="pref-daily" hidden>
+        <div class="pt"><b>Daily reading</b><small id="pref-daily-sub">Off</small></div>
+        <button type="button" id="pref-daily-go">Change</button>
+      </div>
+    </div>
     <div class="panel about">
-      <div class="icon" aria-hidden="true">✦</div>
-      <div><h3 id="about-h">Natal Orbit</h3><div class="ver">Your birth chart as a living 3D sky</div></div>
-      <nav class="links" aria-label="About links">
-        <a href="https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/PRIVACY.md"><span>Privacy<small>Your chart stays on this iPhone. Nothing is collected.</small></span></a>
-        <a href="https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/SUPPORT.md"><span>Help &amp; support<small>Answers to common questions</small></span></a>
+      <img class="icon" src="icon.png" alt="" width="64" height="64">
+      <div><h3 id="about-h">Natal Orbit</h3><div class="ver">Your birth chart as a living 3D sky.</div></div>
+      <nav class="links" aria-label="About Natal Orbit">
+        <a href="https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/PRIVACY.md"><span>Privacy policy<small>Your chart stays on this iPhone. Nothing is collected.</small></span></a>
+        <a href="https://github.com/troydunn1234-ux/treehub-/blob/main/store/natalorbit/SUPPORT.md"><span>Help &amp; support<small>Birth times, cities, house systems</small></span></a>
         <a href="https://github.com/troydunn1234-ux/treehub-/issues"><span>Contact<small>Questions or ideas? Open an issue.</small></span></a>
+        <a href="https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"><span>Terms of use<small>Standard App Store licence</small></span></a>
       </nav>
     </div>
   </section>
@@ -790,7 +834,7 @@ const ang=l=>Math.PI+(l-ROT)*Math.PI/180;
 const at=(l,r,y=0)=>new THREE.Vector3(r*Math.cos(ang(l)),y,-r*Math.sin(ang(l)));
 
 const TXTG=s=>String(s).replace(/([\u2600-\u26FF])(?!\uFE0E)/g,'$1\uFE0E');
-function label(text,{px=64,color='#e8ebf7',font='Syne',w=512,h=128,scale=1,weight=600}={}){
+function label(text,{px=64,color='#e8ebf7',font='system-ui',w=512,h=128,scale=1,weight=600}={}){
   const c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');
   x.font=`${weight} ${px}px ${font}, sans-serif`;x.fillStyle=color;x.textAlign='center';x.textBaseline='middle';
   x.shadowColor='rgba(0,0,0,.8)';x.shadowBlur=8;x.fillText(TXTG(text),w/2,h/2);
@@ -877,7 +921,7 @@ const cloudMat=new THREE.MeshLambertMaterial({color:0xffffff,transparent:true,op
 const clouds=new THREE.Mesh(new THREE.SphereGeometry(.633,64,32),cloudMat);earth.add(clouds);
 realTex('earth_clouds.jpg',t=>{cloudMat.alphaMap=t;cloudMat.opacity=.92;cloudMat.needsUpdate=true;});
 center.add(atmosphere(.62,'#6aaeff',1.35));
-{const youL=label('YOU',{px:44,color:'#cfe0ff',font:'JetBrains Mono',w:256,h:128,scale:.6});youL.position.set(0,1.3,0);center.add(youL);}
+{const youL=label('YOU',{px:44,color:'#cfe0ff',font:'ui-monospace, Menlo',w:256,h:128,scale:.6});youL.position.set(0,1.3,0);center.add(youL);}
 const halo=new THREE.Sprite(new THREE.SpriteMaterial({map:ringTex(),color:new THREE.Color(css('gold')),transparent:true,opacity:.9,depthWrite:false}));scene.add(halo);
 
 // chart-specific group, rebuilt per chart
@@ -894,7 +938,7 @@ function buildScene(){
   SIGNS.forEach((s,i)=>{
     const m=new THREE.Mesh(new THREE.RingGeometry(R_IN,R_OUT,24,1,ang(30*i),Math.PI/6),new THREE.MeshBasicMaterial({color:css(ELEM[i%4]),transparent:true,opacity:.07,side:THREE.DoubleSide,depthWrite:false}));
     m.rotation.x=-Math.PI/2;G.add(m);
-    const lb=label(s.toUpperCase(),{px:44,color:css(ELEM[i%4]),font:'JetBrains Mono',scale:.75});lb.position.copy(at(30*i+15,(R_IN+R_OUT)/2,.05));G.add(lb);});
+    const lb=label(s.toUpperCase(),{px:44,color:css(ELEM[i%4]),font:'ui-monospace, Menlo',scale:.75});lb.position.copy(at(30*i+15,(R_IN+R_OUT)/2,.05));G.add(lb);});
   const lm=new THREE.LineBasicMaterial({color:0x2c3560,transparent:true,opacity:.55});
   for(let d=0;d<360;d+=30)seg(G,at(d,R_IN),at(d,R_OUT),lm);
   const tick=new THREE.LineBasicMaterial({color:0x3a4578,transparent:true,opacity:.3});
@@ -906,8 +950,8 @@ function buildScene(){
     const hm=new THREE.LineBasicMaterial({color:0x3a4578,transparent:true,opacity:.25});
     const axm=new THREE.LineBasicMaterial({color:new THREE.Color(css('gold')),transparent:true,opacity:.85});
     CH.cusps.forEach((c,i)=>{const axis=i%3===0;seg(G,at(c,3),at(c,axis?R_OUT+.9:R_IN),axis?axm:hm);
-      const nx=CH.cusps[(i+1)%12],span=norm(nx-c);const n=label(String(i+1),{px:40,color:'#5d6796',font:'JetBrains Mono',w:128,h:128,scale:.55});n.position.copy(at(c+span/2,3.7,.02));G.add(n);});
-    [['ASC',CH.asc],['MC',CH.mc],['DSC',CH.asc+180],['IC',CH.mc+180]].forEach(([t,l])=>{const s=label(t,{px:52,color:css('gold'),font:'JetBrains Mono',w:256,h:128,scale:.7});s.position.copy(at(l,R_OUT+1.7,.1));G.add(s);});
+      const nx=CH.cusps[(i+1)%12],span=norm(nx-c);const n=label(String(i+1),{px:40,color:'#5d6796',font:'ui-monospace, Menlo',w:128,h:128,scale:.55});n.position.copy(at(c+span/2,3.7,.02));G.add(n);});
+    [['ASC',CH.asc],['MC',CH.mc],['DSC',CH.asc+180],['IC',CH.mc+180]].forEach(([t,l])=>{const s=label(t,{px:52,color:css('gold'),font:'ui-monospace, Menlo',w:256,h:128,scale:.7});s.position.copy(at(l,R_OUT+1.7,.1));G.add(s);});
   }
   CH.planets.forEach((p,i)=>{
     const grp=new THREE.Group();grp.position.copy(at(p.lon,R_P));G.add(grp);
@@ -953,7 +997,7 @@ const ghosts={};
 BODIES.filter(b=>b.k!=='node').concat([{k:'asc',g:'AC',c:'#ff9ad5'}]).forEach(b=>{const g=new THREE.Group();
   const ball=new THREE.Mesh(new THREE.SphereGeometry(b.k==='sun'?.2:.14,20,12),new THREE.MeshBasicMaterial({color:b.c}));g.add(ball);
   const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:b.c,transparent:true,opacity:.7,depthWrite:false,blending:THREE.AdditiveBlending}));gl.scale.setScalar(1.1);g.add(gl);
-  const lb=label(b.g,{px:b.k==='asc'?56:80,color:'#ffffff',font:b.k==='asc'?'JetBrains Mono':'serif',w:128,h:128,scale:.6});lb.position.set(0,.5,0);g.add(lb);
+  const lb=label(b.g,{px:b.k==='asc'?56:80,color:'#ffffff',font:b.k==='asc'?'ui-monospace, Menlo':'serif',w:128,h:128,scale:.6});lb.position.set(0,.5,0);g.add(lb);
   ov.add(g);ghosts[b.k]={g,ball,gl,lb,c:b.c};});
 let contactLines=new THREE.Group();ov.add(contactLines);
 let ovMode=null;
@@ -1103,7 +1147,7 @@ function moonIcon(cv,illumElong,size){const x=cv.getContext('2d');const dpr=Math
   x.fill();}
 function renderThree(){
   const sun=P_('sun'),moon=P_('moon'),ph=CH.phase;
-  const hx=(p,lead)=>p.h&&HOUSE_TXT[p.h]?` ${lead} your ${ord(p.h)} house of ${HOUSE_TXT[p.h].a}, so ${HOUSE_TXT[p.h].n.replace(/^It shapes/,'it shapes').replace(/^People notice/,'people notice').replace(/^This/,'this')}.`:'';
+  const hx=(p,lead)=>p.h&&HOUSE_TXT[p.h]?` ${lead} your ${ord(p.h)} house of ${HOUSE_TXT[p.h].a}, so ${HOUSE_TXT[p.h].n.replace(/^[A-Z]/,c=>c.toLowerCase())}.`:'';
   const bt=IS_ORIG?ORIG_BIG:{sun:SIGN_TXT[signOf(sun.lon)].sun+hx(sun,'Your Sun sits in'),moon:`You feel at home when ${SIGN_TXT[signOf(moon.lon)].need}.`+(CH.moonUnsure?'':hx(moon,'Your Moon lives in')),rising:CH.asc!=null?`First impression: ${SIGN_TXT[signOf(CH.asc)].rising}.`:''};
   const ms=CH.moonUnsure?`${signOf(CH.moonRange[0])} or ${signOf(CH.moonRange[1])}`:signOf(moon.lon);
   $('three').innerHTML=`<div class="big"><div class="k">Sun · core self</div><div class="v">${signOf(sun.lon)}</div><div class="s">${fmtDeg(sun.lon)}${sun.h?` · ${ord(sun.h)} house`:''}</div><p>${esc(bt.sun)}</p></div>
@@ -1318,8 +1362,8 @@ function buildSky(){
     const A=hv(...a).multiplyScalar(SR*.99),B=hv(...b).multiplyScalar(SR*.99);lp.push(A.x,A.y,A.z,B.x,B.y,B.z);}}));
   const lg=new THREE.BufferGeometry();lg.setAttribute('position',new THREE.Float32BufferAttribute(lp,3));
   skyG.add(new THREE.LineSegments(lg,new THREE.LineBasicMaterial({color:0x4a68b8,transparent:true,opacity:.45,fog:false})));
-  CON_NAMES.forEach(([n,ra,de])=>{const [al,az]=eqToHor(date,obs,ra,de);if(al<3)return;const s=label(n.toUpperCase(),{px:30,color:'#7d93d6',font:'JetBrains Mono',w:512,h:64,scale:10,weight:500});s.material.fog=false;s.position.copy(hv(al,az).multiplyScalar(SR*.97));skyG.add(s);});
-  STAR_NAMES.filter(s=>s[2]!=='Toliman').forEach(([ra,de,n])=>{const [al,az]=eqToHor(date,obs,ra,de);if(al<2)return;const s=label(n,{px:30,color:'#c9d4ff',font:'Instrument Sans',w:256,h:64,scale:8,weight:500});s.material.fog=false;s.position.copy(hv(al-1.3,az+1.6).multiplyScalar(SR*.97));skyG.add(s);});
+  CON_NAMES.forEach(([n,ra,de])=>{const [al,az]=eqToHor(date,obs,ra,de);if(al<3)return;const s=label(n.toUpperCase(),{px:30,color:'#7d93d6',font:'ui-monospace, Menlo',w:512,h:64,scale:10,weight:500});s.material.fog=false;s.position.copy(hv(al,az).multiplyScalar(SR*.97));skyG.add(s);});
+  STAR_NAMES.filter(s=>s[2]!=='Toliman').forEach(([ra,de,n])=>{const [al,az]=eqToHor(date,obs,ra,de);if(al<2)return;const s=label(n,{px:30,color:'#c9d4ff',font:'system-ui',w:256,h:64,scale:8,weight:500});s.material.fog=false;s.position.copy(hv(al-1.3,az+1.6).multiplyScalar(SR*.97));skyG.add(s);});
   // ecliptic + sign glyphs
   const T=(date.getTime()/DAY+2440587.5-2451545)/36525,eps=(23.4392911-0.0130042*T)*Math.PI/180;
   const ecl2eq=l=>{const L=l*Math.PI/180;return [norm(Math.atan2(Math.sin(L)*Math.cos(eps),Math.cos(L))*180/Math.PI),Math.asin(Math.sin(eps)*Math.sin(L))*180/Math.PI];};
@@ -1329,12 +1373,12 @@ function buildSky(){
   // ground + horizon + cardinal points
   const ground=new THREE.Mesh(new THREE.CircleGeometry(440,64),new THREE.MeshBasicMaterial({color:0x04050a,fog:false}));ground.rotation.x=-Math.PI/2;ground.position.y=-1.5;skyG.add(ground);
   const hp=[];for(let a=0;a<=360;a+=2)hp.push(hv(0,a).multiplyScalar(SR*.95));skyG.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints(hp),new THREE.LineBasicMaterial({color:0x3a4578,fog:false})));
-  [['N',0],['NE',45],['E',90],['SE',135],['S',180],['SW',225],['W',270],['NW',315]].forEach(([t,az])=>{const s=label(t,{px:t.length>1?40:56,color:t.length>1?'#5d6796':'#f2c46d',font:'JetBrains Mono',w:256,h:128,scale:t.length>1?8:11});s.material.fog=false;s.position.copy(hv(2.2,az).multiplyScalar(SR*.93));skyG.add(s);});
+  [['N',0],['NE',45],['E',90],['SE',135],['S',180],['SW',225],['W',270],['NW',315]].forEach(([t,az])=>{const s=label(t,{px:t.length>1?40:56,color:t.length>1?'#5d6796':'#f2c46d',font:'ui-monospace, Menlo',w:256,h:128,scale:t.length>1?8:11});s.material.fog=false;s.position.copy(hv(2.2,az).multiplyScalar(SR*.93));skyG.add(s);});
   // planets
   BODIES.filter(b=>b.k!=='node').forEach(b=>{const eq=Astronomy.Equator(b.b,date,obs,true,true);const h=Astronomy.Horizon(date,obs,eq.ra,eq.dec,'normal');
     const v=hv(h.altitude,h.azimuth).multiplyScalar(SR*.9);const sz=b.k==='sun'?40:b.k==='moon'?30:12;
     const gl=new THREE.Sprite(new THREE.SpriteMaterial({map:GLOW,color:b.c,transparent:true,opacity:.95,depthWrite:false,blending:THREE.AdditiveBlending,fog:false}));gl.scale.setScalar(sz);gl.position.copy(v);skyG.add(gl);
-    const lb=label(`${b.g} ${b.n}`,{px:44,color:b.c,font:'Instrument Sans',w:512,h:96,scale:10,weight:600});lb.material.fog=false;lb.position.copy(hv(h.altitude+(b.k==='sun'?5:3.2),h.azimuth).multiplyScalar(SR*.9));skyG.add(lb);
+    const lb=label(`${b.g} ${b.n}`,{px:44,color:b.c,font:'system-ui',w:512,h:96,scale:10,weight:600});lb.material.fog=false;lb.position.copy(hv(h.altitude+(b.k==='sun'?5:3.2),h.azimuth).multiplyScalar(SR*.9));skyG.add(lb);
     const hit=new THREE.Mesh(new THREE.SphereGeometry(10,8,6),new THREE.MeshBasicMaterial({visible:false}));hit.position.copy(v);hit.userData={k:b.k,alt:h.altitude,az:h.azimuth};skyG.add(hit);skyPicks.push(hit);});
   const dstr=date.toLocaleString('en-US',{month:'short',day:'numeric',year:'numeric',hour:'numeric',minute:'2-digit',timeZone:CH.tz});
   $('sky-cap').textContent=`Sky over ${CH.place.split(',')[0]} · ${dstr}${sunH.altitude>-6?' · daylight removed':''}`;
@@ -1405,7 +1449,7 @@ function drawWheel(x,cx,cy,R){
   x.strokeStyle='rgba(60,70,120,.6)';x.beginPath();x.arc(cx,cy,R*.3,0,7);x.stroke();
   for(let i=0;i<12;i++){const [a1,b1]=P(i*30,R*.84),[a2,b2]=P(i*30,R);x.beginPath();x.moveTo(a1,b1);x.lineTo(a2,b2);x.strokeStyle='rgba(60,70,120,.8)';x.lineWidth=1;x.stroke();}
   if(CH.cusps){CH.cusps.forEach((c,i)=>{const [a1,b1]=P(c,R*.3),[a2,b2]=P(c,i%3===0?R*1.04:R*.84);x.beginPath();x.moveTo(a1,b1);x.lineTo(a2,b2);x.strokeStyle=i%3===0?'rgba(242,196,109,.75)':'rgba(70,80,140,.45)';x.lineWidth=i%3===0?2:1;x.stroke();});
-    x.fillStyle='#f2c46d';x.font=`600 ${R*.05}px JetBrains Mono, monospace`;const [ax,ay]=P(CH.asc,R*1.1);x.fillText('ASC',ax,ay);const [mx,my]=P(CH.mc,R*1.09);x.fillText('MC',mx,my);}
+    x.fillStyle='#f2c46d';x.font=`600 ${R*.05}px ui-monospace, Menlo, monospace`;const [ax,ay]=P(CH.asc,R*1.1);x.fillText('ASC',ax,ay);const [mx,my]=P(CH.mc,R*1.09);x.fillText('MC',mx,my);}
   const pos={};const sorted=[...CH.planets].sort((a,b)=>norm(a.lon-ROT)-norm(b.lon-ROT));let lastA=-99;
   sorted.forEach(p=>{let a=norm(p.lon-ROT);if(a-lastA<8)a=lastA+8;lastA=a;pos[p.k]=a+ROT;});
   CH.aspects.forEach(a=>{const [x1,y1]=P(CH.planets.find(p=>p.k===a.a).lon,R*.62),[x2,y2]=P(CH.planets.find(p=>p.k===a.b).lon,R*.62);x.beginPath();x.moveTo(x1,y1);x.lineTo(x2,y2);
@@ -1423,23 +1467,23 @@ async function makeCard(fmt){
   const tstr=CH.timeKnown?new Date(CH.utc).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',timeZone:CH.tz}).toLowerCase():'';
   x.textAlign='center';x.textBaseline='alphabetic';
   const top=fmt==='square'?84:fmt==='wall'?330:150;
-  x.fillStyle='#f2c46d';x.font='500 26px JetBrains Mono, monospace';x.fillText((CH.name?CH.name.toUpperCase()+' · ':'')+'NATAL CHART',W/2,top);
-  x.fillStyle='#8a92b4';x.font='400 24px JetBrains Mono, monospace';x.fillText(`${dstr}${tstr?' · '+tstr:''} · ${CH.place.split(',')[0]}`,W/2,top+44);
+  x.fillStyle='#f2c46d';x.font='500 26px ui-monospace, Menlo, monospace';x.fillText((CH.name?CH.name.toUpperCase()+' · ':'')+'NATAL CHART',W/2,top);
+  x.fillStyle='#8a92b4';x.font='400 24px ui-monospace, Menlo, monospace';x.fillText(`${dstr}${tstr?' · '+tstr:''} · ${CH.place.split(',')[0]}`,W/2,top+44);
   const big=[['☉',signOf(sun.lon),'SUN'],['☽',sgM,'MOON'],...(CH.asc!=null?[['↑',signOf(CH.asc),'RISING']]:[])];
   if(fmt==='square'){
     drawWheel(x,330,600,250);
-    x.textAlign='left';big.forEach(([g,s,k],i)=>{const y=330+i*170;x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(k,640,y);
-      x.fillStyle='#e8ebf7';x.font='800 64px Syne, sans-serif';x.fillText(s,640,y+66);x.fillStyle='#f2c46d';x.font='54px serif';x.fillText(TXTG(g),960,y+64);});
+    x.textAlign='left';big.forEach(([g,s,k],i)=>{const y=330+i*170;x.fillStyle='#8a92b4';x.font='500 22px ui-monospace, Menlo, monospace';x.fillText(k,640,y);
+      x.fillStyle='#e8ebf7';x.font='800 64px system-ui, sans-serif';x.fillText(s,640,y+66);x.fillStyle='#f2c46d';x.font='54px serif';x.fillText(TXTG(g),960,y+64);});
     x.textAlign='center';
   }else{
     const cy=fmt==='wall'?1080:780,R=fmt==='wall'?400:380;drawWheel(x,W/2,cy,R);
     const by=cy+R+150;const colW=W/big.length;
     big.forEach(([g,s,k],i)=>{const cx=colW*i+colW/2;x.fillStyle='#f2c46d';x.font='60px serif';x.fillText(TXTG(g),cx,by);
-      x.fillStyle='#e8ebf7';x.font=`800 ${s.length>9?46:54}px Syne, sans-serif`;x.fillText(s,cx,by+74);x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(k,cx,by+112);});
-    if(fmt==='story'){x.fillStyle='#e8ebf7';x.font='600 34px Syne, sans-serif';const ph=CH.phase;x.fillText(`Born under a ${ph.name}`,W/2,by+210);
-      x.fillStyle='#8a92b4';x.font='400 28px Instrument Sans, sans-serif';const R0=reading('sun');wrapText(x,R0.you,860).slice(0,3).forEach((l,i)=>x.fillText(l,W/2,by+262+i*40));}
+      x.fillStyle='#e8ebf7';x.font=`800 ${s.length>9?46:54}px system-ui, sans-serif`;x.fillText(s,cx,by+74);x.fillStyle='#8a92b4';x.font='500 22px ui-monospace, Menlo, monospace';x.fillText(k,cx,by+112);});
+    if(fmt==='story'){x.fillStyle='#e8ebf7';x.font='600 34px system-ui, sans-serif';const ph=CH.phase;x.fillText(`Born under a ${ph.name}`,W/2,by+210);
+      x.fillStyle='#8a92b4';x.font='400 28px system-ui, sans-serif';const R0=reading('sun');wrapText(x,R0.you,860).slice(0,3).forEach((l,i)=>x.fillText(l,W/2,by+262+i*40));}
   }
-  x.fillStyle='#5d6796';x.font='500 20px JetBrains Mono, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-(fmt==='wall'?220:56));
+  x.fillStyle='#5d6796';x.font='500 20px ui-monospace, Menlo, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-(fmt==='wall'?220:56));
   return c;}
 let cardBlob=null;
 let cardKind='chart';
@@ -1449,65 +1493,65 @@ function cardBg(x,W,H,seed){
   const R_=rng(seed%2147483646+1);for(let i=0;i<420;i++){const s=R_()*1.7+.3;x.globalAlpha=.25+R_()*.6;x.fillStyle=R_()<.15?'#bcd0ff':'#fff';x.beginPath();x.arc(R_()*W,R_()*H,s,0,7);x.fill();}x.globalAlpha=1;
   // thin gold frame
   x.strokeStyle='rgba(242,196,109,.55)';x.lineWidth=2;x.strokeRect(48,48,W-96,H-96);x.strokeStyle='rgba(242,196,109,.18)';x.strokeRect(60,60,W-120,H-120);}
-function cardFoot(x,W,H){x.fillStyle='#5d6796';x.font='500 20px JetBrains Mono, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-96);}
+function cardFoot(x,W,H){x.fillStyle='#5d6796';x.font='500 20px ui-monospace, Menlo, monospace';x.textAlign='center';x.fillText('NATAL ORBIT',W/2,H-96);}
 function cardLines(x,text,cx,y,maxW,lh,max){const ls=wrapText(x,text,maxW).slice(0,max||9);ls.forEach((l,i)=>x.fillText(l,cx,y+i*lh));return y+ls.length*lh;}
 async function makeTodayCard(){
   try{await document.fonts.ready;}catch(e){}
   const T=LAST_TODAY,W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   cardBg(x,W,H,Math.floor((T?T.ms:Date.now())/864e5));x.textAlign='center';x.textBaseline='alphabetic';
   const dstr=new Date(T?T.ms:Date.now()).toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',timeZone:VIEW_TZ});
-  x.fillStyle='#f2c46d';x.font='500 26px JetBrains Mono, monospace';x.fillText(((CH.name?CH.name.toUpperCase()+' · ':'')+'DAILY READING'),W/2,190);
-  x.fillStyle='#8a92b4';x.font='400 26px JetBrains Mono, monospace';x.fillText(dstr,W/2,236);
-  if(!T){x.fillStyle='#e8ebf7';x.font='700 54px Syne, sans-serif';x.fillText('Open Today to make your card',W/2,H/2);cardFoot(x,W,H);return c;}
+  x.fillStyle='#f2c46d';x.font='500 26px ui-monospace, Menlo, monospace';x.fillText(((CH.name?CH.name.toUpperCase()+' · ':'')+'DAILY READING'),W/2,190);
+  x.fillStyle='#8a92b4';x.font='400 26px ui-monospace, Menlo, monospace';x.fillText(dstr,W/2,236);
+  if(!T){x.fillStyle='#e8ebf7';x.font='700 54px system-ui, sans-serif';x.fillText('Open Today to make your card',W/2,H/2);cardFoot(x,W,H);return c;}
   // moon
   const mc=document.createElement('canvas');moonIcon(mc,T.phase.elong,150);const my=300;
   x.save();x.shadowColor='rgba(242,196,109,.45)';x.shadowBlur=40;x.drawImage(mc,W/2-75,my,150,150);x.restore();
-  x.fillStyle='#8a92b4';x.font='500 24px JetBrains Mono, monospace';x.fillText(`${T.phase.name.toUpperCase()} · ${Math.round(T.phase.illum*100)}% LIT`,W/2,my+196);
+  x.fillStyle='#8a92b4';x.font='500 24px ui-monospace, Menlo, monospace';x.fillText(`${T.phase.name.toUpperCase()} · ${Math.round(T.phase.illum*100)}% LIT`,W/2,my+196);
   // headline
-  x.fillStyle='#f4e6c4';x.font='700 66px Syne, sans-serif';x.save();x.shadowColor='rgba(242,196,109,.35)';x.shadowBlur=24;
+  x.fillStyle='#f4e6c4';x.font='700 66px ui-serif, Georgia, serif';x.save();x.shadowColor='rgba(242,196,109,.35)';x.shadowBlur=24;
   let y=cardLines(x,T.head,W/2,640,880,80,4);x.restore();
   // meters
   y+=70;const mw=260,gap=40,mx0=W/2-(mw*3+gap*2)/2;
-  (T.meters||[]).forEach(([n,v,col],i)=>{const cx=mx0+i*(mw+gap)+mw/2;x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(n.toUpperCase(),cx,y);
+  (T.meters||[]).forEach(([n,v,col],i)=>{const cx=mx0+i*(mw+gap)+mw/2;x.fillStyle='#8a92b4';x.font='500 22px ui-monospace, Menlo, monospace';x.fillText(n.toUpperCase(),cx,y);
     for(let k=0;k<5;k++){x.beginPath();x.arc(cx-80+k*40,y+40,13,0,7);x.fillStyle=k<v?col:'rgba(255,255,255,.12)';if(k<v){x.shadowColor=col;x.shadowBlur=14;}x.fill();x.shadowBlur=0;}});
   y+=140;
   // good for / go easy on
-  x.fillStyle='#f2c46d';x.font='500 24px JetBrains Mono, monospace';x.fillText('GOOD DAY FOR',W/2,y);
-  x.fillStyle='#e8ebf7';x.font='500 36px Instrument Sans, sans-serif';y=cardLines(x,(T.good||[]).join(' · '),W/2,y+54,880,48,3);
-  y+=36;x.fillStyle='#ff8fa8';x.font='500 24px JetBrains Mono, monospace';x.fillText('GO EASY ON',W/2,y);
-  x.fillStyle='#e8ebf7';x.font='500 36px Instrument Sans, sans-serif';y=cardLines(x,(T.easy||[]).join(' · '),W/2,y+54,880,48,2);
+  x.fillStyle='#f2c46d';x.font='500 24px ui-monospace, Menlo, monospace';x.fillText('GOOD DAY FOR',W/2,y);
+  x.fillStyle='#e8ebf7';x.font='500 36px system-ui, sans-serif';y=cardLines(x,(T.good||[]).join(' · '),W/2,y+54,880,48,3);
+  y+=36;x.fillStyle='#ff8fa8';x.font='500 24px ui-monospace, Menlo, monospace';x.fillText('GO EASY ON',W/2,y);
+  x.fillStyle='#e8ebf7';x.font='500 36px system-ui, sans-serif';y=cardLines(x,(T.easy||[]).join(' · '),W/2,y+54,880,48,2);
   // the sky behind it
   y+=60;x.strokeStyle='rgba(242,196,109,.35)';x.lineWidth=1.5;x.beginPath();x.moveTo(W/2-160,y);x.lineTo(W/2+160,y);x.stroke();y+=70;
-  x.fillStyle='#aab1d0';x.font='400 30px Instrument Sans, sans-serif';
+  x.fillStyle='#aab1d0';x.font='400 30px system-ui, sans-serif';
   T.lines.concat([T.moonLine]).forEach(t=>{if(y<H-260)y=cardLines(x,t,W/2,y,860,42,3)+26;});
   cardFoot(x,W,H);return c;}
 async function makeMatchCard(){
   try{await document.fonts.ready;}catch(e){}
   const M=LAST_MATCH,W=1080,H=1920,c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d');
   cardBg(x,W,H,Math.floor(CH.utc/6e4)+(M?M.pct:0));x.textAlign='center';x.textBaseline='alphabetic';
-  if(!M){x.fillStyle='#e8ebf7';x.font='700 54px Syne, sans-serif';x.fillText('Compare with a friend first',W/2,H/2);cardFoot(x,W,H);return c;}
+  if(!M){x.fillStyle='#e8ebf7';x.font='700 54px system-ui, sans-serif';x.fillText('Compare with a friend first',W/2,H/2);cardFoot(x,W,H);return c;}
   const me=(CH.name||'You').toUpperCase(),them=M.name.toUpperCase();
-  x.fillStyle='#f2c46d';x.font='500 26px JetBrains Mono, monospace';x.fillText('COMPATIBILITY',W/2,190);
-  x.fillStyle='#e8ebf7';x.font='800 64px Syne, sans-serif';let ty=cardLines(x,`${me} & ${them}`,W/2,280,900,74,2);
+  x.fillStyle='#f2c46d';x.font='500 26px ui-monospace, Menlo, monospace';x.fillText('COMPATIBILITY',W/2,190);
+  x.fillStyle='#e8ebf7';x.font='800 64px system-ui, sans-serif';let ty=cardLines(x,`${me} & ${them}`,W/2,280,900,74,2);
   // score ring
   const cy=ty+250,R=190;x.lineWidth=26;x.lineCap='round';x.strokeStyle='rgba(255,255,255,.08)';x.beginPath();x.arc(W/2,cy,R,0,7);x.stroke();
   const g=x.createLinearGradient(W/2-R,cy-R,W/2+R,cy+R);g.addColorStop(0,'#f2c46d');g.addColorStop(1,'#ff8fa8');x.strokeStyle=g;
   x.save();x.shadowColor='rgba(242,196,109,.6)';x.shadowBlur=30;x.beginPath();x.arc(W/2,cy,R,-Math.PI/2,-Math.PI/2+Math.PI*2*M.pct/100);x.stroke();x.restore();x.lineCap='butt';
-  x.fillStyle='#f4e6c4';x.font='800 150px Syne, sans-serif';x.fillText(String(M.pct),W/2-18,cy+52);x.font='700 54px Syne, sans-serif';x.fillText('%',W/2+x.measureText(String(M.pct)).width/2+70,cy+52);
-  x.fillStyle='#f2c46d';x.font='700 46px Syne, sans-serif';x.fillText(M.verdict,W/2,cy+R+100);
+  x.fillStyle='#f4e6c4';x.font='800 150px system-ui, sans-serif';x.fillText(String(M.pct),W/2-18,cy+52);x.font='700 54px system-ui, sans-serif';x.fillText('%',W/2+x.measureText(String(M.pct)).width/2+70,cy+52);
+  x.fillStyle='#f2c46d';x.font='700 48px ui-serif, Georgia, serif';x.fillText(M.verdict,W/2,cy+R+100);
   // big three, side by side
   let y=cy+R+190;const c1=W/2-250,c2=W/2,c3=W/2+250;
-  x.fillStyle='#8a92b4';x.font='500 22px JetBrains Mono, monospace';x.fillText(me.slice(0,12),c1,y);x.fillText(them.slice(0,12),c3,y);y+=26;
+  x.fillStyle='#8a92b4';x.font='500 22px ui-monospace, Menlo, monospace';x.fillText(me.slice(0,12),c1,y);x.fillText(them.slice(0,12),c3,y);y+=26;
   M.me.forEach((m,i)=>{const t=M.them[i];y+=82;x.fillStyle='#f2c46d';x.font='54px serif';x.fillText(TXTG(m[0]),c2,y);
-    x.fillStyle='#8a92b4';x.font='500 18px JetBrains Mono, monospace';x.fillText(m[1].toUpperCase(),c2,y+30);
-    x.fillStyle='#e8ebf7';x.font=`700 ${m[2].length>10?34:42}px Syne, sans-serif`;x.fillText(m[2],c1,y);x.font=`700 ${t[2].length>10?34:42}px Syne, sans-serif`;x.fillText(t[2],c3,y);});
+    x.fillStyle='#8a92b4';x.font='500 18px ui-monospace, Menlo, monospace';x.fillText(m[1].toUpperCase(),c2,y+30);
+    x.fillStyle='#e8ebf7';x.font=`700 ${m[2].length>10?34:42}px system-ui, sans-serif`;x.fillText(m[2],c1,y);x.font=`700 ${t[2].length>10?34:42}px system-ui, sans-serif`;x.fillText(t[2],c3,y);});
   y+=110;
   // score breakdown
-  [['SIGNS',M.pairPct],['ELEMENTS',M.bal],['ASPECTS',M.asp]].forEach(([n,v],i)=>{const cx=W/2+(i-1)*280;x.fillStyle='#f4e6c4';x.font='800 58px Syne, sans-serif';x.fillText(String(v),cx,y);
-    x.fillStyle='#8a92b4';x.font='500 20px JetBrains Mono, monospace';x.fillText(n,cx,y+36);});
-  y+=110;x.fillStyle='#aab1d0';x.font='400 30px Instrument Sans, sans-serif';y=cardLines(x,M.el,W/2,y,860,42,2)+20;
-  x.fillStyle='#f2c46d';x.font='500 22px JetBrains Mono, monospace';if(M.top.length&&y<H-330){x.fillText('STRONGEST CONNECTIONS',W/2,y+20);y+=70;}
-  x.fillStyle='#e8ebf7';x.font='400 30px Instrument Sans, sans-serif';M.top.forEach(t=>{if(y<H-240)y=cardLines(x,t,W/2,y,860,42,2)+18;});
+  [['SIGNS',M.pairPct],['ELEMENTS',M.bal],['ASPECTS',M.asp]].forEach(([n,v],i)=>{const cx=W/2+(i-1)*280;x.fillStyle='#f4e6c4';x.font='800 58px system-ui, sans-serif';x.fillText(String(v),cx,y);
+    x.fillStyle='#8a92b4';x.font='500 20px ui-monospace, Menlo, monospace';x.fillText(n,cx,y+36);});
+  y+=110;x.fillStyle='#aab1d0';x.font='400 30px system-ui, sans-serif';y=cardLines(x,M.el,W/2,y,860,42,2)+20;
+  x.fillStyle='#f2c46d';x.font='500 22px ui-monospace, Menlo, monospace';if(M.top.length&&y<H-330){x.fillText('STRONGEST CONNECTIONS',W/2,y+20);y+=70;}
+  x.fillStyle='#e8ebf7';x.font='400 30px system-ui, sans-serif';M.top.forEach(t=>{if(y<H-240)y=cardLines(x,t,W/2,y,860,42,2)+18;});
   cardFoot(x,W,H);return c;}
 async function renderCard(){$('card-img').src='';const c=cardKind==='today'?await makeTodayCard():cardKind==='match'?await makeMatchCard():await makeCard(cardFmt);$('card-img').src=c.toDataURL('image/png');cardBlob=await new Promise(r=>c.toBlob(r,'image/png'));
   ['story','square','wall'].forEach(f=>$('fmt-'+f).setAttribute('aria-pressed',String(f===cardFmt)));}
@@ -1519,12 +1563,12 @@ $('act-card').onclick=openCard;$('card-x').onclick=closeCard;
 ['story','square','wall'].forEach(f=>$('fmt-'+f).onclick=()=>{cardFmt=f;renderCard();});
 $('day-share').onclick=()=>openCard('today');
 $('card-save').onclick=async()=>{if(!downloadsNS||!cardBlob)return;const nm=(cardKind==='match'&&LAST_MATCH?(CH.name||'me')+'-and-'+LAST_MATCH.name:(CH.name||'natal-chart')+(cardKind==='today'?'-today':'')).toLowerCase().replace(/[^a-z0-9]+/g,'-');
-  try{await downloadsNS.save({filename:`${nm}-${cardFmt}.png`,data:cardBlob});$('card-msg').textContent=cardKind==='chart'?'Saved.':'Shared.';}
+  try{await downloadsNS.save({filename:`${nm}-${cardFmt}.png`,data:cardBlob});$('card-msg').textContent=cardKind==='chart'?'Saved.':'Shared.';haptic('success');}
   catch(e){const c=e&&e.code;$('card-msg').textContent=c==='declined'?'Save cancelled.':c==='rate_limited'?'One moment, then try again.':'Saving is not available here. Long-press or right-click the image instead.';if(c==='unavailable'||c==='not_granted'){downloadsNS=null;$('card-save').hidden=true;}}};
 
 /* ================= share link ================= */
 function shareUrl(){return `${ART_URL}#${specToken(SPEC)}`;}
-async function copyText(t,btn){const old=btn.textContent;try{await navigator.clipboard.writeText(t);btn.textContent='Copied';}catch(e){const i=$('share-url');i.value=t;i.focus();i.select();btn.textContent='Press copy';}setTimeout(()=>btn.textContent=old,1600);}
+async function copyText(t,btn){const old=btn.textContent;try{await navigator.clipboard.writeText(t);btn.textContent='Copied';haptic('light');}catch(e){const i=$('share-url');i.value=t;i.focus();i.select();btn.textContent='Press copy';}setTimeout(()=>btn.textContent=old,1600);}
 $('copy-url').onclick=()=>copyText($('share-url').value,$('copy-url'));
 $('act-link').onclick=()=>copyText(shareUrl(),$('act-link'));
 $('act-own').onclick=()=>{$('own').scrollIntoView({behavior:reduce?'auto':'smooth'});setTimeout(()=>$('o-date').focus({preventScroll:true}),reduce?0:500);};
@@ -1597,8 +1641,8 @@ function runMatch(remember){const err=$('m-err');err.hidden=true;
   const bigOf=(lons,asc,unsure,range)=>[['☉','Sun',lons.sun],['☽','Moon',lons.moon,unsure?`${signOf(range[0])}/${signOf(range[1])}`:null],['↑','Rising',asc]];
   const myBig=bigOf(mine,CH.asc,CH.moonUnsure,CH.moonRange),thBig=bigOf(fl,F.asc,F.moonUnsure,F.moonRange);
   const ELFIT=(a,b)=>{if(a===b)return 'same element';const pr=[a,b].sort().join('-');return pr==='air-fire'||pr==='earth-water'?'elements that feed each other':pr==='air-earth'||pr==='fire-water'?'elements that take translating':'an easy mix';};
-  const bigRows=myBig.map((m,i)=>{const t=thBig[i];if(m[2]==null||t[2]==null)return `<tr><td>${m[0]} ${m[1]}</td><td>${m[2]==null?'—':m[3]||signOf(m[2])}</td><td>${t[2]==null?'—':t[3]||signOf(t[2])}</td><td class="mut">${m[1]==='Rising'?'Needs both birth times and cities':''}</td></tr>`;
-    const ea=ELEM[signIx(m[2])%4],eb=ELEM[signIx(t[2])%4];return `<tr><td>${m[0]} ${m[1]}</td><td>${m[3]||signOf(m[2])} <small>${ea}</small></td><td>${t[3]||signOf(t[2])} <small>${eb}</small></td><td class="mut">${cap(ELFIT(ea,eb))}</td></tr>`;}).join('');
+  const bigRows=myBig.map((m,i)=>{const t=thBig[i];if(m[2]==null||t[2]==null)return `<tr><td>${m[0]} ${m[1]}</td><td data-l="You">${m[2]==null?'—':m[3]||signOf(m[2])}</td><td data-l="${esc(name)}">${t[2]==null?'—':t[3]||signOf(t[2])}</td><td class="mut">${m[1]==='Rising'?'Needs both birth times and cities':''}</td></tr>`;
+    const ea=ELEM[signIx(m[2])%4],eb=ELEM[signIx(t[2])%4];return `<tr><td>${m[0]} ${m[1]}</td><td data-l="You">${m[3]||signOf(m[2])} <small>${ea}</small></td><td data-l="${esc(name)}">${t[3]||signOf(t[2])} <small>${eb}</small></td><td class="mut">${cap(ELFIT(ea,eb))}</td></tr>`;}).join('');
   const parts=[['sign pairs',pairPct],['element balance',bal.score],['chart-to-chart aspects',asp]].sort((a,b)=>b[1]-a[1]);
   const softN=syn.filter(x=>!x.hard).length,hardN=syn.length-softN;
   const why=`Lifted most by your ${parts[0][0]} (${parts[0][1]}), held back most by your ${parts[2][0]} (${parts[2][1]}). Between your charts there ${softN===1?'is':'are'} ${softN} easy connection${softN===1?'':'s'} and ${hardN} tense one${hardN===1?'':'s'}${syn[0]?`; the strongest is their ${syn[0].t.n} ${syn[0].A.n} your ${syn[0].m.n}`:''}.`;
@@ -1608,7 +1652,7 @@ function runMatch(remember){const err=$('m-err');err.hidden=true;
   out.innerHTML=`<div class="mres"><div class="score"><div class="ring" style="--v:${pct}"><div><span>${pct}<small>%</small></span></div></div><div class="verdict">${verdict}</div><div class="fchips">${fc.map(([g,s])=>`<span class="tag">${g} ${s}</span>`).join('')}</div>
      <div class="sbreak" role="list"><div role="listitem"><b>${pairPct}</b>signs</div><div role="listitem"><b>${bal.score}</b>elements</div><div role="listitem"><b>${asp}</b>aspects</div></div>
      <button class="cta" id="m-3d">See ${esc(name)} in 3D</button><button id="m-share" style="margin-top:8px">Share card</button></div>
-   <div><h2 style="font-size:17px;margin-top:0">You and ${esc(name)}</h2>
+   <div><h2 style="font-size:1rem;margin-top:0">You and ${esc(name)}</h2>
      <table class="big3"><thead><tr><th></th><th>You</th><th>${esc(name)}</th><th></th></tr></thead><tbody>${bigRows}</tbody></table>
      <p class="note"><b>Why ${pct}%:</b> ${esc(why)}</p>
      <ul class="pairs">${rows.join('')}</ul>
@@ -1623,7 +1667,7 @@ function runMatch(remember){const err=$('m-err');err.hidden=true;
   $('m-share').onclick=()=>openCard('match');
   $('m-3d').onclick=()=>{stopTour();if(viewMode==='sky')exitSky();skyOn=false;placeGhosts(fl,css('pink'),syn.slice(0,8).filter(s=>s.m.k!=='asc').map(s=>({t:s.t.k,n:s.m.k})),F.asc);setOverlay('friend',`${name}'s planets`,css('pink'));
     document.querySelector('.stage').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});};}
-$('match-form').addEventListener('submit',e=>{e.preventDefault();runMatch(true);});
+$('match-form').addEventListener('submit',e=>{e.preventDefault();const before=LAST_MATCH;runMatch(true);if(LAST_MATCH&&LAST_MATCH!==before)haptic('success');});
 renderPeople();
 
 /* ================= make your own ================= */
@@ -1642,7 +1686,7 @@ $('own-form').addEventListener('submit',e=>{e.preventDefault();const err=$('o-er
   const [h,mi]=unk?[12,0]:$('o-time').value.split(':').map(Number);
   const s={name:$('o-name').value.trim().replace(/[^A-Za-z0-9 ]/g,'').slice(0,20),y,mo,d,h,mi,timeKnown:!unk,city:ci};
   if($('o-mine').checked)saveProfile(s);
-  loadChart(s);saveRecent(specToken(s),`${s.name?s.name+' · ':''}${fdate(CH.utc,CH.tz)}`);renderRecent();scrollTo({top:0,behavior:reduce?'auto':'smooth'});});
+  loadChart(s);saveRecent(specToken(s),`${s.name?s.name+' · ':''}${fdate(CH.utc,CH.tz)}`);renderRecent();haptic('success');scrollTo({top:0,behavior:reduce?'auto':'smooth'});});
 $('o-mine').checked=!profile();
 
 /* ================= your own chart (profile) ================= */
@@ -1673,7 +1717,7 @@ $('onb-3').addEventListener('submit',e=>{e.preventDefault();const err=$('ob-err3
 
 /* Launch flags from the app shell arrive in the hash: #demo, #demo&sec=today */
 function launchFlags(){const h=(location.hash||'').slice(1);if(!h.startsWith('demo'))return null;const f={demo:true};h.split('&').slice(1).forEach(kv=>{const [k,v]=kv.split('=');f[k]=v||true;});return f;}
-function goSection(sec){const map={chart:null,today:'today-sec',three:'three-h',year:'year-sec',sky:'sky',aspects:'asplist',compare:'match',own:'own',about:'about'};
+function goSection(sec){const map={chart:null,today:'today-sec',three:'three-h',year:'year-sec',sky:'sky',aspects:'asplist',compare:'match',own:'own',about:'about',settings:'about'};
   if(sec==='share'){setTimeout(()=>$('act-card').click(),600);return;}
   const id=map[sec];if(id===undefined)return;if(id===null){scrollTo(0,0);return;}
   const go=()=>{const el=$(id);if(el)el.scrollIntoView({block:'start',behavior:'auto'});};
@@ -1717,7 +1761,7 @@ function syncDaily(){
 function renderRemind(){
   const box=$('remind');if(!box||!NATIVE)return;box.hidden=false;const p=dailyPref();
   $('rm-on').textContent=p.on?'On':'Off';$('rm-on').setAttribute('aria-pressed',String(p.on));$('rm-time').value=p.t;
-  $('rm-sub').textContent=p.on?`Your reading arrives every day at ${fmtClock(p.t)}.`:"Get today's reading as a notification each morning.";}
+  $('rm-sub').textContent=p.on?`Your reading arrives every day at ${fmtClock(p.t)}.`:"Get today's reading as a notification each morning.";renderPrefs();}
 async function setDaily(on){
   const p=dailyPref();
   if(on){
@@ -1732,6 +1776,32 @@ if(NATIVE){
   document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncDaily();});
   renderRemind();}
 
+/* ================= settings ================= */
+/* House system, your saved chart and the daily reading in one place (Settings & about at the bottom of the page). */
+function pad2(n){return String(n).padStart(2,'0');}
+function profileLine(p){
+  const d=new Date(Date.UTC(p.y,p.mo-1,p.d)).toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric',timeZone:'UTC'});
+  const t=p.timeKnown?' · '+fmtClock(`${pad2(p.h)}:${pad2(p.mi)}`):' · time unknown';
+  const c=CITIES[p.city]?' · '+CITIES[p.city][0].split(',')[0]:'';
+  return `${p.name?p.name+': ':''}${d}${t}${c}`;}
+function renderPrefs(){
+  document.querySelectorAll('[data-hs]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.hs===(HOUSE_PREF==='whole'?'whole':'placidus'))));
+  const hs=$('pref-hs-sub');if(hs)hs.textContent=HOUSE_PREF==='whole'?'Whole sign: each house is one sign, counted from your rising sign.':'Placidus: houses divided by time. The classic default.';
+  const prof=profile(),me=$('pref-me-sub'),meBtn=$('pref-me');
+  if(me)me.textContent=prof?profileLine(prof):'Not saved yet. Save yours so Natal Orbit always opens on your sky.';
+  if(meBtn)meBtn.textContent=prof?'Edit':'Add mine';
+  const row=$('pref-daily');if(row){row.hidden=!NATIVE;if(NATIVE){const p=dailyPref();$('pref-daily-sub').textContent=p.on?`On, every day at ${fmtClock(p.t)}.`:"Off. Get today's reading as a morning notification.";}}}
+function editMyChart(){const p=profile();
+  if(p){$('o-name').value=p.name||'';$('o-date').value=`${p.y}-${pad2(p.mo)}-${pad2(p.d)}`;$unk.checked=!p.timeKnown;$('o-time').disabled=!p.timeKnown;
+    $('o-time').value=p.timeKnown?`${pad2(p.h)}:${pad2(p.mi)}`:'';$('o-city').value=CITIES[p.city]?CITIES[p.city][0]:'';}
+  $('o-mine').checked=true;$('o-err').hidden=true;
+  $('own').scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'});
+  setTimeout(()=>$('o-date').focus({preventScroll:true}),reduce?0:500);}
+document.querySelectorAll('[data-hs]').forEach(b=>b.onclick=()=>{const v=b.dataset.hs;if(v===HOUSE_PREF)return;
+  setHousePref(v);haptic('light');toast(v==='whole'?'Whole sign houses':'Placidus houses');});
+$('pref-me').onclick=editMyChart;
+$('pref-daily-go').onclick=()=>{const r=$('remind');if(r&&!r.hidden)r.scrollIntoView({behavior:reduce?'auto':'smooth',block:'center'});};
+
 /* ================= load a chart ================= */
 function loadChart(spec){
   SPEC=spec;IS_ORIG=sameSpec(spec,ORIGINAL);CH=specToChart(spec);
@@ -1743,7 +1813,8 @@ function loadChart(spec){
   PERSON_IX=-1;renderPeople();
   select('sun');home(true);
   if(soundOn&&AC){stopDrone();startDrone();}
-  try{syncDaily();}catch(e){}}
+  try{syncDaily();}catch(e){}
+  renderPrefs();}
 
 /* ================= render loop ================= */
 let composer=null;

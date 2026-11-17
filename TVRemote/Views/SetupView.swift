@@ -62,7 +62,7 @@ struct SetupView: View {
         .scrollDismissesKeyboard(.interactively)
         .onAppear { store.discovery.start() }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: step)
-        .sensoryFeedback(.success, trigger: step) { _, new in new == .done }
+        // (The paired "success" tap comes from TVStore.completePairing, so it isn't doubled here.)
         .sensoryFeedback(.impact(weight: .light), trigger: store.discovery.found.count) { old, new in new > old }
         .sheet(isPresented: $showCompat) { CompatibilityView().presentationDetents([.large]) }
     }
@@ -114,8 +114,9 @@ struct SetupView: View {
                 HStack(spacing: Look.S.s) {
                     TextField("", text: $manualIP, prompt: Text("TV's IP, like 192.168.1.40").foregroundStyle(Look.faint))
                         .keyboardType(.decimalPad).font(Look.font(15, .semibold)).foregroundStyle(.white)
-                        .padding(.horizontal, Look.S.m).frame(height: 48)
-                        .glass(14)
+                        .padding(.horizontal, Look.S.m).frame(height: 50)
+                        .glass(Look.R.inner)
+                        .accessibilityLabel("TV's IP address")
                     Button("Connect") {
                         Task {
                             busy = true
@@ -129,14 +130,15 @@ struct SetupView: View {
                         }
                     }
                     .font(Look.font(15, .heavy)).foregroundStyle(.white)
-                    .padding(.horizontal, Look.S.l).frame(height: 48)
-                    .background(Look.accentH, in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                    .padding(.horizontal, Look.S.l).frame(height: 50)
+                    .background(Look.accentH, in: Capsule())
                     .opacity(manualIP.isEmpty ? 0.4 : 1)
                     .disabled(manualIP.isEmpty)
                 }
                 .padding(.top, Look.S.s)
             } label: {
-                Text("Enter the TV's address yourself").font(Look.font(14, .bold)).foregroundStyle(Look.dim)
+                Text("Enter the TV's address yourself").font(Look.text(.subheadline, .bold)).foregroundStyle(Look.dim)
+                    .frame(minHeight: 44, alignment: .leading)
             }
             .tint(Look.dim)
             .padding(.top, Look.S.xs)
@@ -145,9 +147,10 @@ struct SetupView: View {
                 Label("No TV handy? Try the demo", systemImage: "sparkles")
                     .font(Look.font(15, .heavy))
                     .foregroundStyle(Look.accentH)
-                    .padding(.horizontal, 18).padding(.vertical, 12)
+                    .padding(.horizontal, 18).frame(minHeight: 50)
                     .background(Capsule().stroke(Look.accentH, lineWidth: 1.5))
             }
+            .buttonStyle(SquishStyle(scale: 0.96))
             .padding(.top, Look.S.s)
             .accessibilityHint("Explore the app with pretend TVs")
         }

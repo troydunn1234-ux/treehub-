@@ -10,13 +10,8 @@ struct ScenesRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: Look.S.m) {
             SectionHeader(title: "Scenes") {
-                Button { editing = true } label: {
-                    Text("Edit").font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
-                        .padding(.horizontal, Look.S.m).frame(minHeight: 32)
-                        .background(Look.cyan.opacity(0.12), in: Capsule())
-                }
-                .buttonStyle(SquishStyle())
-                .accessibilityLabel("Edit scenes")
+                ChipButton(title: "Edit") { editing = true }
+                    .accessibilityLabel("Edit scenes")
             }
             ScrollView(.horizontal) {
                 HStack(spacing: Look.S.s) {
@@ -34,7 +29,7 @@ struct ScenesRow: View {
                     } label: {
                         HStack(spacing: 6) {
                             Image(systemName: "plus").font(.system(size: 13, weight: .heavy))
-                            Text("New").font(Look.font(14, .heavy))
+                            Text(scenes.scenes.isEmpty ? "Make your first scene" : "New").font(Look.font(14, .heavy))
                         }
                         .foregroundStyle(Look.dim)
                         .padding(.horizontal, Look.S.l).frame(height: 48)
@@ -87,38 +82,55 @@ struct ScenesView: View {
     var body: some View {
         NavigationStack {
             List {
-                Section {
-                    ForEach(scenes.scenes) { scene in
-                        Button { editingScene = scene } label: {
-                            HStack(spacing: Look.S.m) {
-                                Text(scene.emoji).font(.system(size: 26)).frame(width: 36)
-                                VStack(alignment: .leading, spacing: 2) {
-                                    Text(scene.name).font(Look.font(17, .heavy)).foregroundStyle(.white)
-                                    Text(scene.steps.map(\.title).joined(separator: " → "))
-                                        .font(Look.font(12, .semibold)).foregroundStyle(Look.dim).lineLimit(2)
+                if scenes.scenes.isEmpty {
+                    Section {
+                        EmptyStateCard(symbol: "wand.and.stars",
+                                       title: "No scenes yet",
+                                       hint: "A scene runs several steps with one tap: TV on, open an app, set the volume.",
+                                       actionTitle: "New scene") {
+                            if scenes.canAdd() { editingScene = RemoteScene(name: "", emoji: "✨", steps: []) }
+                        }
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets())
+                    }
+                } else {
+                    Section {
+                        ForEach(scenes.scenes) { scene in
+                            Button { editingScene = scene } label: {
+                                HStack(spacing: Look.S.m) {
+                                    Text(scene.emoji).font(.system(size: 26)).frame(width: 36)
+                                        .accessibilityHidden(true)
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text(scene.name).font(Look.text(.headline, .heavy)).foregroundStyle(.white)
+                                        Text(scene.steps.map(\.title).joined(separator: " → "))
+                                            .font(Look.text(.caption, .semibold)).foregroundStyle(Look.dim).lineLimit(3)
+                                    }
+                                    Spacer(minLength: Look.S.s)
+                                    Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Look.faint)
+                                        .accessibilityHidden(true)
                                 }
-                                Spacer()
-                                Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(Look.faint)
+                                .padding(.vertical, 4)
+                                .frame(minHeight: 44)
                             }
-                            .padding(.vertical, 4)
+                            .listRowBackground(Color.white.opacity(0.06))
+                        }
+                        .onDelete { idx in for i in idx.sorted(by: >) where i < scenes.scenes.count { scenes.remove(scenes.scenes[i]) } }
+                        .onMove { from, to in scenes.move(from: from, to: to) }
+                    } header: {
+                        Text("Tap a scene to edit it. Say “Run Movie night in Couch Remote” to Siri to run one.")
+                            .font(Look.text(.footnote, .medium)).foregroundStyle(Look.dim).textCase(nil)
+                    }
+                    Section {
+                        Button {
+                            if scenes.canAdd() { editingScene = RemoteScene(name: "", emoji: "✨", steps: []) }
+                        } label: {
+                            Label(scenes.scenes.count >= SceneStore.freeLimit && !Unlock.shared.isPro ? "New scene (Pro)" : "New scene",
+                                  systemImage: "plus.circle.fill")
+                                .font(Look.text(.body, .heavy)).foregroundStyle(Look.cyan)
+                                .frame(minHeight: 44)
                         }
                         .listRowBackground(Color.white.opacity(0.06))
                     }
-                    .onDelete { idx in for i in idx.sorted(by: >) where i < scenes.scenes.count { scenes.remove(scenes.scenes[i]) } }
-                    .onMove { from, to in scenes.move(from: from, to: to) }
-                } header: {
-                    Text("Tap a scene to edit it. Say “Run Movie night in Couch Remote” to Siri to run one.")
-                        .font(Look.font(12, .medium)).foregroundStyle(Look.dim).textCase(nil)
-                }
-                Section {
-                    Button {
-                        if scenes.canAdd() { editingScene = RemoteScene(name: "", emoji: "✨", steps: []) }
-                    } label: {
-                        Label(scenes.scenes.count >= SceneStore.freeLimit && !Unlock.shared.isPro ? "New scene (Pro)" : "New scene",
-                              systemImage: "plus.circle.fill")
-                            .font(Look.font(16, .heavy)).foregroundStyle(Look.cyan)
-                    }
-                    .listRowBackground(Color.white.opacity(0.06))
                 }
             }
             .scrollContentBackground(.hidden)
@@ -158,7 +170,7 @@ struct SceneEditor: View {
                             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
                             .onChange(of: scene.emoji) { _, v in if v.count > 1 { scene.emoji = String(v.suffix(1)) } }
                             .accessibilityLabel("Emoji")
-                        TextField("Scene name", text: $scene.name).font(Look.font(18, .heavy))
+                        TextField("Scene name", text: $scene.name).font(Look.text(.title3, .heavy))
                     }
                     .listRowBackground(Color.white.opacity(0.06))
                 }
@@ -166,14 +178,23 @@ struct SceneEditor: View {
                     ForEach(Array(scene.steps.enumerated()), id: \.offset) { i, step in
                         HStack(spacing: Look.S.m) {
                             Image(systemName: step.symbol).font(.system(size: 15, weight: .bold)).foregroundStyle(Look.cyan).frame(width: 26)
-                            Text(step.title).font(Look.font(16, .bold)).foregroundStyle(.white)
-                            Spacer()
-                            Text("\(i + 1)").font(Look.font(12, .heavy)).foregroundStyle(Look.faint)
+                                .accessibilityHidden(true)
+                            Text(step.title).font(Look.text(.body, .bold)).foregroundStyle(.white)
+                            Spacer(minLength: Look.S.s)
+                            Text("\(i + 1)").font(Look.font(12, .heavy)).foregroundStyle(Look.faint).monospacedDigit()
+                                .accessibilityLabel("Step \(i + 1)")
                         }
+                        .frame(minHeight: 44)
                         .listRowBackground(Color.white.opacity(0.06))
                     }
                     .onDelete { scene.steps.remove(atOffsets: $0) }
                     .onMove { scene.steps.move(fromOffsets: $0, toOffset: $1) }
+                    if scene.steps.isEmpty {
+                        Label("No steps yet. Add the first one below.", systemImage: "list.bullet.indent")
+                            .font(Look.text(.subheadline, .semibold)).foregroundStyle(Look.dim)
+                            .frame(minHeight: 44)
+                            .listRowBackground(Color.white.opacity(0.03))
+                    }
                     Menu {
                         Button { scene.steps.append(.tvPower(on: true)) } label: { Label("TV on", systemImage: "power.circle.fill") }
                         Button { scene.steps.append(.tvPower(on: false)) } label: { Label("TV off", systemImage: "power.circle") }
@@ -198,17 +219,19 @@ struct SceneEditor: View {
                             } label: { Label("Switch TV", systemImage: "tv.and.mediabox") }
                         }
                     } label: {
-                        Label("Add step", systemImage: "plus.circle.fill").font(Look.font(16, .heavy)).foregroundStyle(Look.cyan)
+                        Label("Add step", systemImage: "plus.circle.fill").font(Look.text(.body, .heavy)).foregroundStyle(Look.cyan)
+                            .frame(minHeight: 44)
                     }
                     .listRowBackground(Color.white.opacity(0.06))
                 } header: {
                     Text("Steps run in order, with a short pause between them.")
-                        .font(Look.font(12, .medium)).foregroundStyle(Look.dim).textCase(nil)
+                        .font(Look.text(.footnote, .medium)).foregroundStyle(Look.dim).textCase(nil)
                 }
                 if !isNew {
                     Section {
                         Button(role: .destructive) { scenes.remove(scene); dismiss() } label: {
-                            Label("Delete scene", systemImage: "trash").font(Look.font(16, .heavy))
+                            Label("Delete scene", systemImage: "trash").font(Look.text(.body, .heavy))
+                                .frame(minHeight: 44)
                         }
                         .listRowBackground(Color.white.opacity(0.06))
                     }
@@ -224,7 +247,12 @@ struct SceneEditor: View {
                     Button("Save") {
                         scene.name = scene.name.trimmingCharacters(in: .whitespaces)
                         if scene.emoji.isEmpty { scene.emoji = "✨" }
-                        if isNew { if scenes.add(scene) { dismiss() } } else { scenes.update(scene); dismiss() }
+                        var saved = true
+                        if isNew { saved = scenes.add(scene) } else { scenes.update(scene) }
+                        if saved {
+                            UINotificationFeedbackGenerator().notificationOccurred(.success)
+                            dismiss()
+                        }
                     }
                     .disabled(!canSave)
                 }

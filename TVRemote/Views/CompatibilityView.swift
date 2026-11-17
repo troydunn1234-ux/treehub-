@@ -38,47 +38,54 @@ struct CompatibilityView: View {
                         Button { dismiss() } label: {
                             Image(systemName: "xmark").font(.system(size: 14, weight: .heavy)).foregroundStyle(.white)
                                 .frame(width: 36, height: 36).glassCircle()
+                                .frame(width: 44, height: 44).contentShape(Circle())
                         }
+                        .buttonStyle(SquishStyle())
                         .accessibilityLabel("Close")
                     }
                     Text("Which TVs\nwork?").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
+                        .minimumScaleFactor(0.7)
+                        .accessibilityAddTraits(.isHeader)
                     Label("Your phone and TV must be on the same Wi-Fi.", systemImage: "wifi")
-                        .font(Look.font(14, .bold)).foregroundStyle(Look.dim)
+                        .font(Look.text(.subheadline, .bold)).foregroundStyle(Look.dim)
+                        .fixedSize(horizontal: false, vertical: true)
 
                     ForEach(Self.rows) { r in
                         VStack(alignment: .leading, spacing: 6) {
                             HStack(spacing: Look.S.s) {
                                 BrandChip(brand: r.brand)
-                                Text(r.title).font(Look.font(17, .heavy)).foregroundStyle(.white)
+                                Text(r.title).font(Look.text(.headline, .heavy)).foregroundStyle(.white)
+                                    .fixedSize(horizontal: false, vertical: true)
                             }
-                            Text(r.detail).font(Look.font(14, .medium)).foregroundStyle(Look.dim)
+                            Text(r.detail).font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim)
                                 .fixedSize(horizontal: false, vertical: true)
                             Label(r.pairing, systemImage: "lock.open.fill")
-                                .font(Look.font(13, .semibold)).foregroundStyle(Look.cyan)
+                                .font(Look.text(.footnote, .semibold)).foregroundStyle(Look.cyan)
                                 .fixedSize(horizontal: false, vertical: true)
                         }
                         .padding(Look.S.m)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .glass(18)
+                        .glass(Look.R.card)
                         .accessibilityElement(children: .combine)
                     }
 
                     VStack(alignment: .leading, spacing: 6) {
                         Label("Doesn't work with", systemImage: "xmark.circle.fill")
-                            .font(Look.font(15, .heavy)).foregroundStyle(.orange)
-                        Text(Self.notSupported).font(Look.font(14, .medium)).foregroundStyle(Look.dim)
+                            .font(Look.text(.headline, .heavy)).foregroundStyle(.orange)
+                        Text(Self.notSupported).font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim)
                             .fixedSize(horizontal: false, vertical: true)
                     }
                     .padding(Look.S.m)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .glass(18, tint: .orange)
+                    .glass(Look.R.card, tint: .orange)
 
                     Text("Couch Remote is an independent app and isn't affiliated with or endorsed by VIZIO, Roku, Samsung, LG or Google. Brand names are used only to say which TVs work.")
-                        .font(Look.font(12, .medium)).foregroundStyle(Look.faint)
+                        .font(Look.text(.caption, .medium)).foregroundStyle(Look.faint)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(Look.S.xl)
             }
         }
+        .preferredColorScheme(.dark)
     }
 }

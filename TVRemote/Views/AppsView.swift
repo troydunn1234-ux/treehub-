@@ -51,45 +51,47 @@ struct AppsView: View {
 
                     VStack(alignment: .leading, spacing: Look.S.m) {
                         SectionHeader(title: "Your apps") {
-                            Button { editing = true } label: {
-                                Text("Edit").font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
-                                    .padding(.horizontal, Look.S.m).frame(minHeight: 32)
-                                    .background(Look.cyan.opacity(0.12), in: Capsule())
-                            }
-                            .buttonStyle(SquishStyle())
-                            .accessibilityLabel("Edit your apps")
+                            ChipButton(title: "Edit") { editing = true }
+                                .accessibilityLabel("Edit your apps")
                         }
-                        LazyVGrid(columns: cols, spacing: Look.S.m) {
-                            ForEach(Array(store.favoriteApps.enumerated()), id: \.element.id) { i, app in
-                                AppTile(app: app, isPlaying: store.nowPlaying == app.name, launching: launching == app.name) { frame in
-                                    fireBeam(from: frame, color: app.colors.first ?? Look.magenta)
-                                    Task {
-                                        launching = app.name
-                                        await store.launch(app)
-                                        try? await Task.sleep(nanoseconds: 600_000_000)
-                                        launching = nil
+                        if store.favoriteApps.isEmpty {
+                            EmptyStateCard(symbol: "square.grid.2x2.fill",
+                                           title: "Your app wall is empty",
+                                           hint: "Pick the streaming apps you use. Each one opens on the TV with one tap.",
+                                           actionTitle: "Add apps") { editing = true }
+                        } else {
+                            LazyVGrid(columns: cols, spacing: Look.S.m) {
+                                ForEach(Array(store.favoriteApps.enumerated()), id: \.element.id) { i, app in
+                                    AppTile(app: app, isPlaying: store.nowPlaying == app.name, launching: launching == app.name) { frame in
+                                        fireBeam(from: frame, color: app.colors.first ?? Look.magenta)
+                                        Task {
+                                            launching = app.name
+                                            await store.launch(app)
+                                            try? await Task.sleep(nanoseconds: 600_000_000)
+                                            launching = nil
+                                        }
+                                    }
+                                    .opacity(appeared ? 1 : 0)
+                                    .offset(y: appeared || reduceMotion ? 0 : 28)
+                                    .animation(.spring(response: 0.55, dampingFraction: 0.8).delay(Double(i) * 0.035), value: appeared)
+                                    .contextMenu {
+                                        Button(role: .destructive) { store.toggleFavorite(app) } label: { Label("Remove from my apps", systemImage: "minus.circle") }
                                     }
                                 }
-                                .opacity(appeared ? 1 : 0)
-                                .offset(y: appeared || reduceMotion ? 0 : 28)
-                                .animation(.spring(response: 0.55, dampingFraction: 0.8).delay(Double(i) * 0.035), value: appeared)
-                                .contextMenu {
-                                    Button(role: .destructive) { store.toggleFavorite(app) } label: { Label("Remove from my apps", systemImage: "minus.circle") }
+                                Button { editing = true } label: {
+                                    VStack(spacing: Look.S.s) {
+                                        Image(systemName: "plus").font(.system(size: 22, weight: .heavy)).foregroundStyle(.white)
+                                            .frame(width: 48, height: 48)
+                                            .glassCircle()
+                                        Text("Add apps").font(Look.font(14, .heavy)).foregroundStyle(Look.dim)
+                                    }
+                                    .frame(maxWidth: .infinity).frame(height: AppTile.height)
+                                    .background(RoundedRectangle(cornerRadius: 26, style: .continuous)
+                                        .strokeBorder(Color.white.opacity(0.16), style: StrokeStyle(lineWidth: 1.5, dash: [6, 7])))
                                 }
+                                .buttonStyle(SquishStyle())
+                                .accessibilityLabel("Add apps")
                             }
-                            Button { editing = true } label: {
-                                VStack(spacing: Look.S.s) {
-                                    Image(systemName: "plus").font(.system(size: 22, weight: .heavy)).foregroundStyle(.white)
-                                        .frame(width: 48, height: 48)
-                                        .glassCircle()
-                                    Text("Add apps").font(Look.font(14, .heavy)).foregroundStyle(Look.dim)
-                                }
-                                .frame(maxWidth: .infinity).frame(height: AppTile.height)
-                                .background(RoundedRectangle(cornerRadius: 26, style: .continuous)
-                                    .strokeBorder(Color.white.opacity(0.16), style: StrokeStyle(lineWidth: 1.5, dash: [6, 7])))
-                            }
-                            .buttonStyle(SquishStyle())
-                            .accessibilityLabel("Add apps")
                         }
                     }
                 }
@@ -138,7 +140,7 @@ struct AppsView: View {
                 (Text(greeting) + Text(".").foregroundColor(Look.magenta))
                     .font(Look.display(38)).tracking(-1).foregroundStyle(.white)
                     .lineLimit(1).minimumScaleFactor(0.7)
-                Text("What are we watching?").font(Look.font(16, .semibold)).foregroundStyle(Look.dim)
+                Text("What are we watching?").font(Look.text(.callout, .semibold)).foregroundStyle(Look.dim)
             }
         }
         .padding(.top, Look.S.s)
@@ -163,6 +165,8 @@ struct AppsView: View {
             .padding(.leading, Look.S.s).padding(.trailing, Look.S.m).frame(minHeight: 36)
             .glassCapsule(tint: store.reachable ? .white : .orange, glow: store.reachable ? nil : .orange, strength: store.reachable ? 1 : 2)
             .animation(.snappy, value: store.reconnecting)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
         }
         .buttonStyle(SquishStyle())
         .disabled(store.reachable)
@@ -183,7 +187,7 @@ struct AppsView: View {
                 Text(title).font(Look.font(12, .heavy)).foregroundStyle(.white.opacity(0.9))
             }
             .frame(maxWidth: .infinity).frame(height: 84)
-            .glass(20)
+            .glass(Look.R.card)
         }
         .buttonStyle(SquishStyle())
         .accessibilityLabel(title)
@@ -318,13 +322,15 @@ private struct IdleHero: View {
                 .background(Look.accent, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .shadow(color: Look.magenta.opacity(0.5), radius: 12)
             VStack(alignment: .leading, spacing: 3) {
-                Text("Nothing playing").font(Look.font(19, .heavy)).foregroundStyle(.white)
-                Text("Tap an app below to start it on your TV.").font(Look.font(13, .semibold)).foregroundStyle(Look.dim)
+                Text("Nothing playing").font(Look.text(.title3, .heavy)).foregroundStyle(.white)
+                Text("Tap an app below to start it on your TV.").font(Look.text(.footnote, .semibold)).foregroundStyle(Look.dim)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer(minLength: 0)
         }
         .padding(Look.S.l)
-        .glass(28, tint: Look.violet, glow: Look.violet)
+        .glass(Look.R.card, tint: Look.violet, glow: Look.violet)
+        .accessibilityElement(children: .combine)
     }
 }
 

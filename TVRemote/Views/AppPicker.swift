@@ -137,7 +137,9 @@ struct AppPicker: View {
                 if !query.isEmpty {
                     Button { query = "" } label: {
                         Image(systemName: "xmark.circle.fill").font(.system(size: 17)).foregroundStyle(Look.dim)
+                            .frame(width: 44, height: 44).contentShape(Rectangle())
                     }
+                    .padding(.trailing, -Look.S.s)
                     .accessibilityLabel("Clear search")
                 }
             }
@@ -175,13 +177,15 @@ struct AppPicker: View {
     @ViewBuilder private var grid: some View {
         let apps = results
         if apps.isEmpty {
-            VStack(spacing: Look.S.m) {
-                Image(systemName: "sparkle.magnifyingglass").font(.system(size: 40, weight: .bold))
-                    .foregroundStyle(Look.accent)
-                Text("Nothing called \u{201C}\(query)\u{201D}").font(Look.font(18, .heavy)).foregroundStyle(.white)
-                Text("Try another name or category.").font(Look.font(14, .semibold)).foregroundStyle(Look.dim)
+            // Designed empty state: a search with no match, or a category with nothing in it.
+            EmptyStateCard(symbol: "sparkle.magnifyingglass",
+                           title: query.isEmpty ? "No \(category.title) apps here yet" : "Nothing called \u{201C}\(query)\u{201D}",
+                           hint: query.isEmpty ? "Try another category, or search the whole list." : "Try another name, or look in All.",
+                           actionTitle: query.isEmpty && category == .all ? nil : "Show all apps") {
+                withAnimation(spring) { query = ""; category = .all }
             }
-            .frame(maxWidth: .infinity).padding(.top, 60)
+            .padding(.horizontal, 20)
+            .padding(.top, Look.S.xl)
         } else {
             LazyVGrid(columns: cols, spacing: Look.S.m) {
                 ForEach(Array(apps.enumerated()), id: \.element.id) { i, app in

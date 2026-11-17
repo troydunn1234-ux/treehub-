@@ -23,7 +23,10 @@ struct KeyboardBar: View {
                     Text("Done").font(Look.font(15, .heavy)).foregroundStyle(.white)
                         .padding(.horizontal, 16).padding(.vertical, 8)
                         .background(Look.accentH, in: Capsule())
+                        .frame(minHeight: 44)
+                        .contentShape(Rectangle())
                 }
+                .buttonStyle(SquishStyle())
                 .accessibilityLabel("Close the keyboard")
             }
 
@@ -44,7 +47,10 @@ struct KeyboardBar: View {
                     if !text.isEmpty {
                         Button { text = "" } label: {
                             Image(systemName: "xmark.circle.fill").font(.system(size: 18)).foregroundStyle(Look.dim)
+                                .frame(width: 44, height: 44)
+                                .contentShape(Rectangle())
                         }
+                        .padding(.vertical, -10)
                         .accessibilityLabel("Clear")
                     }
                 }
@@ -56,11 +62,12 @@ struct KeyboardBar: View {
 
                 Text(store.tvWantsKeyboard ? "Your TV's text box is open. Type here and it shows up there."
                                            : "Pick a search box on the TV, then type here. Return searches.")
-                    .font(Look.font(12, .semibold)).foregroundStyle(Look.dim)
+                    .font(Look.text(.footnote, .semibold)).foregroundStyle(Look.dim)
+                    .fixedSize(horizontal: false, vertical: true)
             } else {
                 // VIZIO SmartCast has no text-entry command on its local API.
                 Text("VIZIO TVs don't accept typing from phones. Use your TV remote's voice button, or search inside the streaming app's own phone app, then use the arrows here to pick a result.")
-                    .font(Look.font(14, .semibold)).foregroundStyle(.white.opacity(0.85))
+                    .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -118,7 +125,11 @@ struct KeyboardButton: View {
                 .font(.system(size: size * 0.4, weight: .heavy)).foregroundStyle(.white)
                 .frame(width: size, height: size)
                 .glassCircle(glow: Look.cyan)
+                // Small faces still get a full 44 pt target.
+                .frame(width: max(size, 44), height: max(size, 44))
+                .contentShape(Circle())
         }
+        .buttonStyle(SquishStyle())
         .accessibilityLabel("Type on TV")
     }
 }
@@ -136,7 +147,10 @@ struct SearchChip: View {
             .foregroundStyle(.white)
             .padding(.horizontal, 14).padding(.vertical, 9)
             .glassCapsule(glow: Look.cyan)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
         }
+        .buttonStyle(SquishStyle())
         .accessibilityLabel("Search on TV")
         .accessibilityHint("Opens search on the TV and the keyboard on your phone")
     }

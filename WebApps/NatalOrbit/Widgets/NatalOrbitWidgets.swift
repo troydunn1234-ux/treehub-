@@ -45,11 +45,17 @@ struct ReadingEntry: TimelineEntry {
     let moon: String
     let good: String
     let hasChart: Bool
+    /// A chart is saved but its week of readings has run out (the app hasn't been opened for a while).
+    var needsRefresh = false
 
     static let sample = ReadingEntry(date: Date(), name: "Ava", head: "A good day to say what you mean",
                                      moon: "☽ Moon in Leo · Waxing Gibbous", good: "Good day for: honest talks, making plans", hasChart: true)
     static func empty(_ date: Date) -> ReadingEntry {
         ReadingEntry(date: date, name: "", head: "Open Natal Orbit to set up your chart", moon: "", good: "", hasChart: false)
+    }
+    static func stale(_ date: Date, name: String) -> ReadingEntry {
+        ReadingEntry(date: date, name: name, head: "Open Natal Orbit for today's reading", moon: "", good: "", hasChart: false,
+                     needsRefresh: true)
     }
 }
 
@@ -74,7 +80,9 @@ struct ReadingProvider: TimelineProvider {
     }
 
     private func entry(for date: Date) -> ReadingEntry {
-        guard let p = NOShared.load(), let d = p.days.first(where: { $0.d == NOShared.dayKey(date) }) else { return .empty(date) }
+        // No saved chart: the app writes an empty list of days.
+        guard let p = NOShared.load(), !p.days.isEmpty else { return .empty(date) }
+        guard let d = p.days.first(where: { $0.d == NOShared.dayKey(date) }) else { return .stale(date, name: p.name ?? "") }
         return ReadingEntry(date: date, name: p.name ?? "", head: d.head, moon: d.moon ?? "", good: d.good ?? "", hasChart: true)
     }
 }
@@ -109,12 +117,13 @@ struct ReadingView: View {
     var body: some View {
         switch family {
         case .accessoryInline:
-            Label(entry.hasChart ? entry.head : "Set up your chart", systemImage: "sparkles")
+            Label(entry.hasChart ? entry.head : (entry.needsRefresh ? "Open for today's reading" : "Set up your chart"),
+                  systemImage: "sparkles")
         case .accessoryRectangular:
             VStack(alignment: .leading, spacing: 1) {
                 Label(entry.name.isEmpty ? "Today" : "Today for \(entry.name)", systemImage: "sparkles")
                     .font(.caption2.weight(.semibold)).lineLimit(1).widgetAccentable()
-                Text(entry.hasChart ? entry.head : "Open Natal Orbit to set up your chart")
+                Text(entry.hasChart || entry.needsRefresh ? entry.head : "Open Natal Orbit to set up your chart")
                     .font(.system(.footnote, design: .serif).weight(.semibold))
                     .lineLimit(2).minimumScaleFactor(0.85)
             }
@@ -172,7 +181,7 @@ struct ReadingView: View {
                 .font(.system(size: family == .systemSmall ? 15 : 17, weight: .semibold, design: .serif))
                 .foregroundStyle(NOShared.ink)
                 .lineLimit(2)
-            Text("Open Natal Orbit and save your chart.")
+            Text(entry.needsRefresh ? "Open Natal Orbit for this week's readings." : "Open Natal Orbit and save your chart.")
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundStyle(NOShared.dim)
                 .lineLimit(2)

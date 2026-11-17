@@ -396,6 +396,27 @@ struct PrimaryButtonStyle: ButtonStyle {
     }
 }
 
+/// Small tinted capsule action ("Edit", "All apps"): 32 pt to look at, a full 44 pt to hit.
+struct ChipButton: View {
+    let title: String
+    var tint: Color = Look.cyan
+    let action: () -> Void
+
+    var body: some View {
+        Button {
+            UISelectionFeedbackGenerator().selectionChanged()
+            action()
+        } label: {
+            Text(title).font(Look.font(13, .heavy)).foregroundStyle(tint)
+                .padding(.horizontal, Look.S.m).frame(minHeight: 32)
+                .background(tint.opacity(0.12), in: Capsule())
+                .frame(minHeight: 44)
+                .contentShape(Rectangle())
+        }
+        .buttonStyle(SquishStyle())
+    }
+}
+
 // MARK: - States
 
 /// Designed empty state (family spec): symbol, title, one-line hint and one primary action.
@@ -439,6 +460,7 @@ struct EmptyStateCard: View {
 /// The app's own icon, for About screens (falls back to a branded tile).
 struct AppIconTile: View {
     var size: CGFloat = 72
+    /// The primary icon set, else the bundled "More apps" copy of this app's icon (Shared/Store/MoreAppsIcons.xcassets).
     private static let icon: UIImage? = {
         if let icons = Bundle.main.infoDictionary?["CFBundleIcons"] as? [String: Any],
            let primary = icons["CFBundlePrimaryIcon"] as? [String: Any],
@@ -446,7 +468,7 @@ struct AppIconTile: View {
            let img = UIImage(named: name) {
             return img
         }
-        return UIImage(named: "AppIcon")
+        return UIImage(named: "moreapps-clicker") ?? UIImage(named: "AppIcon")
     }()
 
     var body: some View {

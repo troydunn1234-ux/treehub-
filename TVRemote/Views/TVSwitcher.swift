@@ -76,7 +76,7 @@ struct TVSwitcherSheet: View {
                         HStack(spacing: Look.S.m) {
                             Image(systemName: "plus").font(.system(size: 18, weight: .heavy)).foregroundStyle(Look.cyan)
                                 .frame(width: 48, height: 48)
-                                .background(Look.cyan.opacity(0.12), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                .background(Look.cyan.opacity(0.12), in: RoundedRectangle(cornerRadius: Look.R.inner, style: .continuous))
                             VStack(alignment: .leading, spacing: 2) {
                                 Text("Add another TV").font(Look.text(.headline, .heavy)).foregroundStyle(.white)
                                 Text("Pair a TV on this Wi-Fi").font(Look.text(.caption, .semibold)).foregroundStyle(Look.dim)
@@ -97,7 +97,7 @@ struct TVSwitcherSheet: View {
         .presentationDragIndicator(.visible)
         .presentationCornerRadius(36)
         .preferredColorScheme(.dark)
-        .sensoryFeedback(.selection, trigger: store.tv?.id)
+        .sensoryFeedback(.warning, trigger: store.tvs.count) { old, new in new < old }
         .onChange(of: store.tvs.count) { _, n in if n == 0 { dismiss() } }
         .confirmationDialog("Forget \(forgetting?.name ?? "this TV")?", isPresented: Binding(get: { forgetting != nil }, set: { if !$0 { forgetting = nil } }), titleVisibility: .visible) {
             Button("Forget TV", role: .destructive) { if let t = forgetting { withAnimation(.snappy) { store.forget(t) } } }
@@ -110,15 +110,20 @@ struct TVSwitcherSheet: View {
         let status = active ? (store.reconnecting ? "Searching…" : store.reachable ? "Connected" : "Offline") : "Saved"
         return HStack(spacing: 0) {
             Button {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                if !active { withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { store.switchTo(t) } }
+                // One tap of feedback: a selection tick when switching, a light tap when it's already the TV.
+                if active {
+                    UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                } else {
+                    UISelectionFeedbackGenerator().selectionChanged()
+                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) { store.switchTo(t) }
+                }
                 dismiss()
             } label: {
                 HStack(spacing: Look.S.m) {
                     Image(systemName: "tv.fill").font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
                         .frame(width: 48, height: 48)
                         .background(active ? AnyShapeStyle(Look.accent) : AnyShapeStyle(Color.white.opacity(0.08)),
-                                    in: RoundedRectangle(cornerRadius: 14, style: .continuous))
+                                    in: RoundedRectangle(cornerRadius: Look.R.inner, style: .continuous))
                         .shadow(color: active ? Look.violet.opacity(0.6) : .clear, radius: 10)
                     VStack(alignment: .leading, spacing: 3) {
                         Text(t.name).font(Look.text(.headline, .heavy)).foregroundStyle(.white).lineLimit(2)

@@ -34,9 +34,10 @@ private struct PCPairing: View {
 
                 if let e = pc.lastError {
                     Label(e, systemImage: "exclamationmark.triangle.fill")
-                        .font(Look.font(14, .semibold)).foregroundStyle(.white)
+                        .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
+                        .fixedSize(horizontal: false, vertical: true)
                         .padding(Look.S.m).frame(maxWidth: .infinity)
-                        .glass(18, tint: .orange, glow: .orange, strength: 1.5)
+                        .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
                 }
             }
             .padding(.horizontal, Look.S.xl)
@@ -56,7 +57,7 @@ private struct PCPairing: View {
                 Text("Run your PC\nfrom bed.").font(Look.display(38)).tracking(-1).foregroundStyle(.white)
                     .multilineTextAlignment(.center)
                 Text("Open the Couch Remote PC app (ClankerrPC.exe) on your computer, on the same Wi-Fi as your phone.")
-                    .font(Look.font(15, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
+                    .font(Look.text(.subheadline, .medium)).foregroundStyle(Look.dim).multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
             }
             if pc.state == .connecting {
@@ -304,12 +305,7 @@ private struct ConnectedPC: View {
     private var appsRow: some View {
         VStack(alignment: .leading, spacing: Look.S.s) {
             SectionHeader(title: "Apps") {
-                Button { showApps = true } label: {
-                    Text("All apps").font(Look.font(13, .heavy)).foregroundStyle(Look.cyan)
-                        .padding(.horizontal, Look.S.m).frame(minHeight: 32)
-                        .background(Look.cyan.opacity(0.12), in: Capsule())
-                }
-                .buttonStyle(SquishStyle())
+                ChipButton(title: "All apps") { showApps = true }
             }
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: Look.S.m) {
