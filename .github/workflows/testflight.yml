@@ -110,6 +110,10 @@ jobs:
           WHOOP_ID: ${{ secrets.WHOOP_CLIENT_ID }}
           WHOOP_SECRET: ${{ secrets.WHOOP_CLIENT_SECRET }}
         run: |
+          # Minutes since 2026-01-01: always higher than any earlier build (run_number restarts at 1 for builds
+          # shipped through "Ship several apps"), so TestFlight always treats the newest upload as the latest.
+          BUILD_NUMBER=$(( ($(date -u +%s) - 1767225600) / 60 ))
+          echo "Build number $BUILD_NUMBER"
           set -o pipefail
           archive() {
             rm -rf build/App.xcarchive
@@ -123,7 +127,7 @@ jobs:
               -authenticationKeyIssuerID "$ISS" \
               DEVELOPMENT_TEAM="$TEAM" \
               CODE_SIGN_STYLE=Automatic \
-              CURRENT_PROJECT_VERSION=${{ github.run_number }} \
+              CURRENT_PROJECT_VERSION="$BUILD_NUMBER" \
               WHOOP_CLIENT_ID="$WHOOP_ID" \
               WHOOP_CLIENT_SECRET="$WHOOP_SECRET" \
               | tee archive.log | grep -E "error:|ARCHIVE (SUCCEEDED|FAILED)" || true
