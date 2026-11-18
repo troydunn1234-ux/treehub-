@@ -17,7 +17,8 @@ enum RootboundFeedSync {
     static func start(hugs: [Hug], context: ModelContext) {
         guard !DemoData.isOn else { return }
         Self.context = context
-        if !hugs.isEmpty { RootboundWellness.publish(hugs: hugs) }
+        // Shortly after the first frame rather than inside it (encoding every hug and writing the file).
+        if !hugs.isEmpty { schedule() }
         guard saveObserver == nil else { return }
         saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { _ in
             MainActor.assumeIsolated { schedule() }

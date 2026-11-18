@@ -135,10 +135,12 @@ extension BreatheWithTreeButton {
 /// Home: Still Pointz minutes this week and today's Breath & Bark. Hidden entirely when Still Pointz has shared nothing.
 struct CalmMinutesCard: View {
     let hugs: [Hug]
-    @State private var sessions: [WellnessBridge.Session] = []
     @State private var showGet = false
+    /// Still Pointz' part of the feed as last read (WellnessFeed reloads it when the app becomes active and when
+    /// Still Pointz saves a session in the background, e.g. one from the Watch), so the card updates live.
+    private var feed: WellnessFeed { WellnessFeed.shared }
+    private var sessions: [WellnessBridge.Session] { (feed.stillPoint?.sessions ?? []).filter(\.isCalm) }
     @Environment(\.openURL) private var openURL
-    @Environment(\.scenePhase) private var scenePhase
 
     var body: some View {
         VStack(spacing: 8) {
@@ -191,8 +193,11 @@ struct CalmMinutesCard: View {
                 if showGet { BreatheWithTreeButton.storeCard(title: "Open in Still Pointz", openURL: openURL) }
             }
         }
-        .onAppear(perform: reload)
-        .onChange(of: scenePhase) { _, p in if p == .active { reload() } }
+        .onAppear {
+            feed.refreshIfStale()
+            reload()
+        }
+        .onChange(of: feed.stillPoint?.updated) { _, _ in reload() }
     }
 
     private func line(breathed: Bool, hugged: Bool) -> String {
@@ -214,7 +219,6 @@ struct CalmMinutesCard: View {
     }
 
     private func reload() {
-        sessions = RootboundWellness.calmSessions()
         _ = TreeBreaths.all()   // keep the per-tree copy current
         BreathBark.sync(hugs: hugs)
     }
