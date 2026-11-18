@@ -72,6 +72,11 @@ final class LabStore {
     /// Rebuild the merged days after a manual edit, without reading Health or WHOOP again.
     private func remerge() {
         if Self.isDemo { loadDemo(); return }
+        // Before the saved history is read, a manual edit is laid over it once it arrives (merge applies manual).
+        guard cacheLoaded || cacheLoad == nil else {
+            Task { await cacheReady(); remerge() }
+            return
+        }
         merge(health: healthCache ?? HealthPull.Result())
         lastPull = Date()
         afterRefresh()
@@ -128,9 +133,26 @@ final class LabStore {
     var readinessUsesYesterday: Bool { readinessDetailToday?.usedYesterday ?? false }
     /// Today's readiness with every contributor itemised (the readiness detail screen).
     var readinessDetailToday: Compare.ReadinessDetail? {
-        Compare.readinessDetail(day: Date(), watch: watchDays, sleeps: sleeps, carryOver: true)
+        // Reading both arrays keeps SwiftUI watching them even when the remembered answer is used.
+        let watch = watchDays, nights = sleeps
+        let day = Date().dayStart
+        if let m = readinessMemo, m.day == day, m.version == dataVersion { return m.detail }
+        let detail = Compare.readinessDetail(day: Date(), watch: watch, sleeps: nights, carryOver: true)
+        readinessMemo = (day, dataVersion, detail)
+        return detail
     }
-    var recoveryToday: Double? { whoopDays.last(where: { $0.recovery != nil })?.recovery }
+
+    /// Bumped whenever the merged days / nights change; remembered answers below are only reused for the same version
+    /// and day (Today reads readiness several times per redraw, and each read sorted two years of days).
+    @ObservationIgnored private var dataVersion = 0
+    @ObservationIgnored private var readinessMemo: (day: Date, version: Int, detail: Compare.ReadinessDetail?)?
+    @ObservationIgnored private var agreementsMemo: (day: Date, version: Int, list: [Agreement])?
+    /// This morning's WHOOP recovery (yesterday's until today's is scored). Never an older one: a recovery from
+    /// days ago shown beside today's readiness would be a wrong head-to-head.
+    var recoveryToday: Double? {
+        guard let d = whoopDays.last(where: { $0.recovery != nil }), d.day >= Date().dayStart.adding(days: -1) else { return nil }
+        return d.recovery
+    }
 
     func connectHealth() async {
         let ok = await HealthPull.shared.requestAccess()
@@ -187,14 +209,30 @@ final class LabStore {
         return syncStage
     }
 
+    /// Reading the 2-year Health cache from disk (off the main thread, so launch draws its first frame right away).
+    /// Every refresh waits for it first: a refresh that started without the cache would re-read 2 years of history.
+    @ObservationIgnored private var cacheLoad: Task<Void, Never>?
+    @ObservationIgnored private var cacheLoaded = false
+
     init() {
-        guard !Self.isDemo, let snap = HealthCache.load() else { return }
-        healthCache = snap.result
-        historyFrom = snap.backfilledFrom
-        healthSynced = snap.savedAt
-        lastPull = snap.savedAt
-        merge(health: snap.result)
-        loadedOnce = true
+        guard !Self.isDemo else { return }
+        cacheLoad = Task { @MainActor [weak self] in
+            let snap = await Task.detached(priority: .userInitiated) { HealthCache.load() }.value
+            guard let self else { return }
+            defer { self.cacheLoaded = true }
+            guard let snap, self.healthCache == nil else { return }
+            self.healthCache = snap.result
+            self.historyFrom = snap.backfilledFrom
+            self.healthSynced = snap.savedAt
+            self.lastPull = snap.savedAt
+            self.merge(health: snap.result)
+            self.loadedOnce = true
+        }
+    }
+
+    /// Waits until the saved Health history is in memory (instant after the first time).
+    private func cacheReady() async {
+        if let t = cacheLoad { await t.value }
     }
 
     /// Observer queries + background delivery for every Health type (no-op until Health was asked).
@@ -223,6 +261,7 @@ final class LabStore {
     /// Start over: read the full 2 years from Health and WHOOP's whole history again.
     func rebuildHistory() async {
         guard !loading else { return }
+        await cacheReady()
         HealthCache.clear()
         healthCache = nil
         historyFrom = nil
@@ -238,6 +277,7 @@ final class LabStore {
             return
         }
         loading = true
+        await cacheReady()
         healthProgress = 0
         syncStage = "Apple Health"
         defer {
@@ -339,10 +379,20 @@ final class LabStore {
     }
 
     /// Agreement scores over the last 30 days (what Today, the weekly summary and Trust all read).
-    var agreements30: [Agreement] { Compare.agreements(watch: watchDays, whoop: whoopDays, sleeps: sleeps, days: 30) }
+    var agreements30: [Agreement] {
+        let watch = watchDays, whoop = whoopDays, nights = sleeps
+        let day = Date().dayStart
+        if let m = agreementsMemo, m.day == day, m.version == dataVersion { return m.list }
+        let list = Compare.agreements(watch: watch, whoop: whoop, sleeps: nights, days: 30)
+        agreementsMemo = (day, dataVersion, list)
+        return list
+    }
 
     /// Push fresh numbers to the widget and refresh the weekly notification text.
     private func afterRefresh() {
+        // A background wake that found nothing (Health locked and no saved history readable yet) must not blank
+        // the widget, the Watch or what Still Pointz / Rootbound show: keep what was shared until there's data.
+        if !hasAnyData && UIApplication.shared.applicationState == .background { return }
         let b = Briefing.build(self)
         briefing = b
         MorningBriefing.latest = b
@@ -360,7 +410,7 @@ final class LabStore {
     /// beats a WHOOP value found in Health (it's what you read off the WHOOP app, prefilled from Health).
     private func applyManual(api: [DayStat], apiNights: Set<Date>) {
         var marks: [Date: Set<ManualField>] = [:]
-        guard !manual.isEmpty else { manualMarks = [:]; return }
+        guard !manual.isEmpty else { manualMarks = [:]; dataVersion += 1; return }
         let apiByDay = Dictionary(api.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
         var byDay = Dictionary(whoopDays.map { ($0.day, $0) }, uniquingKeysWith: { a, _ in a })
         var nights = sleeps
@@ -401,6 +451,7 @@ final class LabStore {
         whoopDays = byDay.values.sorted { $0.day < $1.day }
         sleeps = nights.sorted { $0.night < $1.night }
         manualMarks = marks
+        dataVersion += 1
     }
 
     /// WHOOP API wins where it has data; WHOOP samples found in Apple Health fill the gaps.
@@ -496,6 +547,7 @@ final class LabStore {
         var wd = watchDays
         for i in wd.indices { wd[i].recovery = Compare.readiness(day: wd[i].day, watch: watchDays, sleeps: sleeps) }
         watchDays = wd
+        dataVersion += 1
         healthAsked = true
         lastPull = Date()
         loadedOnce = true

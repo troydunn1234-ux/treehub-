@@ -31,6 +31,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var idleSince: Date?
     /// Set when you've been stopped longer than the auto-finish setting; the app asks, then finishes.
     private(set) var autoFinishDue = false
+    /// Called when `autoFinishDue` turns on. Set at launch (not by a screen), so a recording running with no
+    /// screen up (started from the Watch with the app in the background) still finishes after you stop.
+    @ObservationIgnored var onAutoFinishDue: (() -> Void)?
     /// Idle seconds dropped from the end of the last finished recording (shown once in the summary).
     private(set) var lastTrimmedSec: Double = 0
     @ObservationIgnored private var lastMovingAt: Date?
@@ -230,9 +233,13 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         // down too (the recording itself is saved and comes back paused next launch).
         NotificationCenter.default.addObserver(forName: UIApplication.willTerminateNotification, object: nil, queue: .main) { [weak self] _ in
             MainActor.assumeIsolated {
-                self?.persist()
+                self?.persist(wait: true)
                 LiveActivityController.shared.endBeforeExit()
             }
+        }
+        // Going to the background (where iOS may later end the app without notice): save every point so far.
+        NotificationCenter.default.addObserver(forName: UIApplication.didEnterBackgroundNotification, object: nil, queue: .main) { [weak self] _ in
+            MainActor.assumeIsolated { self?.persist() }
         }
     }
 
@@ -471,6 +478,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         if autoFinishAfter > 0, let since = idleSince, !autoFinishDue,
            now.timeIntervalSince(since) >= autoFinishAfter {
             autoFinishDue = true
+            onAutoFinishDue?()
         }
     }
 
@@ -768,19 +776,32 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         return dir.appendingPathComponent("active-recording.json")
     }
 
-    func persist() {
+    /// Snapshot writes and the clear after Finish run in order on one background queue, so a long recording's
+    /// JSON (thousands of points) is never encoded on the main thread, and a late write can't bring back a
+    /// recording that was already finished.
+    nonisolated private static let diskQueue = DispatchQueue(label: "roamr.recording.snapshot", qos: .utility)
+
+    /// Saves the recording so it survives the app being closed. `wait`: block until it's on disk
+    /// (the app is about to be terminated or suspended).
+    func persist(wait: Bool = false) {
         unsavedCount = 0
         guard state != .idle, let startDate else { return }
         let snap = Snapshot(state: state, kind: kind, startDate: startDate, accumulated: accumulated,
                             resumedAt: resumedAt, points: points, distance: distance,
                             elevGain: elevGain, maxSpeed: maxSpeed, movingSec: movingSec, sessionID: sessionID)
-        if let data = try? JSONEncoder().encode(snap) {
-            try? data.write(to: Self.snapshotURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        let url = Self.snapshotURL
+        let write = {
+            if let data = try? JSONEncoder().encode(snap) {
+                try? data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            }
         }
+        if wait { Self.diskQueue.sync(execute: write) } else { Self.diskQueue.async(execute: write) }
     }
 
     private func clearPersisted() {
-        try? FileManager.default.removeItem(at: Self.snapshotURL)
+        let url = Self.snapshotURL
+        // After any snapshot still queued, so the finished recording isn't written back.
+        Self.diskQueue.async { try? FileManager.default.removeItem(at: url) }
     }
 
     private func restoreIfNeeded() {

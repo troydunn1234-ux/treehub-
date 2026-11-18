@@ -44,9 +44,14 @@ enum TripRescue {
         return report.restoredAnything ? report : nil
     }
 
+    /// One rescue at a time (the launch run and Settings > Find missing trips can't overlap).
+    private static var running = false
+
     static func run(in context: ModelContext) async -> Report {
         var r = Report()
-        guard !TrackDemo.isOn, let stray = GroupStoreRescue.strayStoreURL else { return r }
+        guard !TrackDemo.isOn, !running, let stray = GroupStoreRescue.strayStoreURL else { return r }
+        running = true
+        defer { running = false }
         r.checkedOldStore = true
         do {
             let scratch = try await Task.detached(priority: .userInitiated) {

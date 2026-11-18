@@ -21,20 +21,26 @@ enum Rivalry {
         }
         let int: (Double) -> String = { "\(Int($0.rounded()))" }
         add("Ready", store.readinessToday, store.recoveryToday, higherWins: true, int)
-        let ws = store.lastNight(.watch), hs = store.lastNight(.whoop)
+        // Only recent numbers go head to head (last night / today / yesterday, the same ones the Today rows show):
+        // a Watch reading from last week against this morning's WHOOP would crown the wrong winner.
+        let since = Date().dayStart.adding(days: -1)
+        let ws = store.lastNight(.watch).flatMap { $0.night >= since ? $0 : nil }
+        let hs = store.lastNight(.whoop).flatMap { $0.night >= since ? $0 : nil }
         add("Sleep", ws.map(\.asleepMin), hs.map(\.asleepMin), higherWins: true) { fmtHM($0) }
         add("Deep", ws.map(\.deepMin), hs.map(\.deepMin), higherWins: true) { fmtHM($0) }
-        let w = store.today(.watch), h = store.today(.whoop)
-        add("Resting HR", w?.rhr, h?.rhr, higherWins: false, int)
+        add("Resting HR", store.reading(.watch, \.rhr, recent: "rhr")?.value,
+            store.reading(.whoop, \.rhr, manual: .rhr)?.value, higherWins: false, int)
         add("HRV trend", hrvVsBaseline(store, .watch), hrvVsBaseline(store, .whoop), higherWins: true) { "\(Int(($0 * 100 - 100).rounded()))%" }
-        add("Breathing", w?.resp, h?.resp, higherWins: false) { String(format: "%.1f", $0) }
+        add("Breathing", store.reading(.watch, \.resp, recent: "resp")?.value,
+            store.reading(.whoop, \.resp, manual: .resp)?.value, higherWins: false) { String(format: "%.1f", $0) }
         return out
     }
 
-    /// Today's HRV ÷ the source's own 7-day average (so SDNN and RMSSD compare fairly).
+    /// Today's HRV ÷ the source's own 7-day average (so SDNN and RMSSD compare fairly). Nil unless the newest HRV
+    /// is from today or yesterday.
     @MainActor private static func hrvVsBaseline(_ store: LabStore, _ s: Source) -> Double? {
         let recent = store.days(s).recent(8)
-        guard let today = recent.last?.hrv else { return nil }
+        guard let last = recent.last, last.day >= Date().dayStart.adding(days: -1), let today = last.hrv else { return nil }
         guard let base = Stats.mean(recent.dropLast().compactMap(\.hrv)), base > 0 else { return nil }
         return today / base
     }

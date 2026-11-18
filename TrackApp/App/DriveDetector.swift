@@ -36,6 +36,8 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
 
     /// In-app banner ("Driving? Start drive") while Roamr is open.
     var showBanner = false
+    /// When the banner went up (it comes down by itself once it's too old to mean you're still driving).
+    @ObservationIgnored private var bannerShownAt: Date?
     private(set) var authorization: CLAuthorizationStatus = .notDetermined
     private(set) var notificationsAllowed = true
     /// Bumped to re-evaluate the one-time "Set Location to Always" card.
@@ -121,6 +123,7 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
 
     /// Start or stop watching to match the toggle. Safe to call often.
     func refresh() {
+        if showBanner, let at = bannerShownAt, !Self.promptStillFresh(sentAt: at) { showBanner = false }
         Task {
             let s = await UNUserNotificationCenter.current().notificationSettings()
             self.notificationsAllowed = s.authorizationStatus == .authorized || s.authorizationStatus == .provisional
@@ -232,6 +235,13 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         UserDefaults.standard.set(Date().timeIntervalSince1970, forKey: Self.lastPromptKey)
         if UIApplication.shared.applicationState == .active {
             withAnimationIfNeeded { showBanner = true }
+            let shownAt = Date()
+            bannerShownAt = shownAt
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: UInt64(Self.promptMaxAge * 1_000_000_000))
+                guard let self, self.bannerShownAt == shownAt else { return }
+                self.showBanner = false
+            }
             UINotificationFeedbackGenerator().notificationOccurred(.warning)
             return
         }
@@ -243,6 +253,14 @@ final class DriveDetector: NSObject, CLLocationManagerDelegate {
         content.interruptionLevel = .timeSensitive
         let req = UNNotificationRequest(identifier: Self.requestID, content: content, trigger: nil)
         UNUserNotificationCenter.current().add(req)
+    }
+
+    /// How long a "Start drive?" notification can still start a drive when tapped.
+    nonisolated static let promptMaxAge: TimeInterval = 15 * 60
+
+    /// True while a "Start drive?" sent at `sentAt` is recent enough that you're probably still driving.
+    nonisolated static func promptStillFresh(sentAt: Date, now: Date = Date()) -> Bool {
+        now.timeIntervalSince(sentAt) < promptMaxAge
     }
 
     /// Asks the app to start a drive (from the notification or the banner).
@@ -308,7 +326,11 @@ final class DriveNotificationRouter: NSObject, UNUserNotificationCenterDelegate 
         let id = response.notification.request.content.categoryIdentifier
         if id == DriveDetector.categoryID && response.actionIdentifier != DriveDetector.laterActionID
             && response.actionIdentifier != UNNotificationDismissActionIdentifier {
-            DispatchQueue.main.async { DriveDetector.requestStartDrive() }
+            // An old "Start drive?" tapped later from Notification Center (you've long since parked) only opens
+            // Roamr: starting a recording then would record a phantom drive while you stand still.
+            if DriveDetector.promptStillFresh(sentAt: response.notification.date) {
+                DispatchQueue.main.async { DriveDetector.requestStartDrive() }
+            }
         } else if id == DriveFinishedNotifier.categoryID {
             if let raw = response.notification.request.content.userInfo[DriveFinishedNotifier.activityKey] as? String {
                 DispatchQueue.main.async { DriveFinishedNotifier.requestOpen(raw) }
@@ -395,6 +417,13 @@ final class AutoFinish {
     func finishNow() {
         stop()
         NotificationCenter.default.post(name: Self.finishNote, object: nil)
+        // No screen took it (Roamr running in the background without its window, e.g. a recording started from
+        // the Watch): save it here so a parked recording never keeps GPS on.
+        DispatchQueue.main.async {
+            MainActor.assumeIsolated {
+                if RoamrContext.tracker?.isActive == true { RoamrContext.finishAndSave(auto: true) }
+            }
+        }
     }
 
     private func stop() {

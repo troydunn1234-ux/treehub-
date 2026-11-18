@@ -31,6 +31,8 @@ struct TrackView: View {
     @State private var probe: RoutePoint?
     @State private var nav = Navigator.shared
     @State private var showDirections = false
+    /// The live line and its speed colors, rebuilt once per new GPS point instead of on every map frame.
+    @State private var liveRoute = LiveRouteCache()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
@@ -397,7 +399,8 @@ struct TrackView: View {
         ZStack(alignment: .bottom) {
             MapReader { proxy in
             Map(position: $camera) {
-                let coords = tracker.points.map(\.coordinate)
+                let line = liveRoute.update(tracker.points, drive: tracker.kind == .drive)
+                let coords = line.coords
                 if nav.isNavigating, let r = nav.active {
                     NavRouteContent(route: r, traveledIndex: nav.traveledIndex, destination: nav.destination)
                 }
@@ -407,13 +410,13 @@ struct TrackView: View {
                 }
                 if tracker.kind == .drive {
                     // Neon route colored by speed vs the limit, with a soft glow under it.
-                    ForEach(SpeedZones.segments(tracker.points)) { seg in
+                    ForEach(line.segments) { seg in
                         MapPolyline(coordinates: seg.coords)
                             .stroke(seg.band.color.opacity(0.28), style: StrokeStyle(lineWidth: 16, lineCap: .round, lineJoin: .round))
                         MapPolyline(coordinates: seg.coords)
                             .stroke(seg.band.color, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
                     }
-                    ForEach(SpeedZones.overZones(tracker.points)) { z in
+                    ForEach(line.overZones) { z in
                         Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
                     }
                     ForEach(tracker.laneChanges, id: \.t) { c in
@@ -465,8 +468,12 @@ struct TrackView: View {
                 MapCompass()
             }
             .onMapCameraChange(frequency: .continuous) { ctx in
-                mapHeading = ctx.camera.heading
-                mapPitch = ctx.camera.pitch
+                // Only real turns redraw the screen (every camera frame used to rebuild the whole live view).
+                let h = ctx.camera.heading, p = ctx.camera.pitch
+                if abs(h - mapHeading) >= 1.5 || abs(p - mapPitch) >= 1.5 {
+                    mapHeading = h
+                    mapPitch = p
+                }
             }
             .onTapGesture { pt in showProbe(RouteProbe.nearest(tracker.points, tap: pt, proxy: proxy)) }
             }
@@ -785,5 +792,26 @@ private struct StopButtonStyle: ButtonStyle {
             .shadow(color: Color.red.opacity(0.3), radius: configuration.isPressed ? 4 : 12, y: 4)
             .scaleEffect(configuration.isPressed ? 0.97 : 1)
             .animation(.spring(response: 0.25, dampingFraction: 0.7), value: configuration.isPressed)
+    }
+}
+
+
+/// The live recording's line on the map: coordinates, speed-colored segments and over-the-limit stretches,
+/// rebuilt when a GPS point arrives (about once a second) rather than on every frame the map animates.
+@MainActor
+final class LiveRouteCache {
+    private var key: (count: Int, lastT: Double, drive: Bool) = (-1, 0, false)
+    private(set) var coords: [CLLocationCoordinate2D] = []
+    private(set) var segments: [SpeedSegment] = []
+    private(set) var overZones: [OverZone] = []
+
+    func update(_ pts: [RoutePoint], drive: Bool) -> LiveRouteCache {
+        let lastT = pts.last?.t ?? 0
+        guard key.count != pts.count || key.lastT != lastT || key.drive != drive else { return self }
+        key = (pts.count, lastT, drive)
+        coords = pts.map(\.coordinate)
+        segments = drive ? SpeedZones.segments(pts) : []
+        overZones = drive ? SpeedZones.overZones(pts) : []
+        return self
     }
 }

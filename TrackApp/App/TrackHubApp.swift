@@ -39,6 +39,9 @@ struct TrackHubApp: App {
         _tracker = State(initialValue: t)
         RoamrContext.tracker = t
         RoamrContext.container = container
+        // Auto-finish works without a screen too (the Track screen's banner shows the same countdown).
+        AutoFinish.shared.attach(t)
+        t.onAutoFinishDue = { AutoFinish.shared.ask() }
         // Apple Watch: live stats out, start/stop in.
         if !TrackDemo.isOn { RoamrWatchBridge.shared.attach(tracker: t, container: container) }
         // Drive auto-detect is set up at launch, not when the first screen appears: when iOS wakes Roamr

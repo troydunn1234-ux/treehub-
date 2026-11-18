@@ -17,6 +17,9 @@ final class RoamrWatchBridge: NSObject {
     private var trips: [[String: Any]] = []
     private var tripsFetchedAt = Date.distantPast
     private var wasActive = false
+    /// A trip was saved, edited or deleted since the last list sent to the watch.
+    private var tripsDirty = true
+    private var saveObserver: NSObjectProtocol?
 
     func attach(tracker: RouteTracker, container: ModelContainer) {
         guard WCSession.isSupported() else { return }
@@ -29,6 +32,12 @@ final class RoamrWatchBridge: NSObject {
         timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
             Task { @MainActor in self?.tick() }
         }
+        // The recent-trips list only changes when something is saved: re-read it then, not on a timer.
+        if saveObserver == nil {
+            saveObserver = NotificationCenter.default.addObserver(forName: ModelContext.didSave, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.tripsDirty = true }
+            }
+        }
     }
 
     // MARK: Sending
@@ -40,7 +49,7 @@ final class RoamrWatchBridge: NSObject {
 
     private func tick() {
         guard watchReady, let tracker else { return }
-        if tracker.isActive != wasActive { wasActive = tracker.isActive; tripsFetchedAt = .distantPast }
+        if tracker.isActive != wasActive { wasActive = tracker.isActive; tripsDirty = true }
         let state = snapshot()
         if tracker.isActive, WCSession.default.isReachable {
             var live = state
@@ -48,8 +57,9 @@ final class RoamrWatchBridge: NSObject {
             WCSession.default.sendMessage(live, replyHandler: nil, errorHandler: nil)
         }
         // Application context is the "latest state" the watch reads when it opens; keep it fresh but light.
+        // Idle, it only goes out when something changed (no once-a-minute resend that wakes both devices).
         let key = contextKey(state)
-        let stale = Date().timeIntervalSince(lastContextAt) > (tracker.isActive ? 10 : 60)
+        let stale = tracker.isActive && Date().timeIntervalSince(lastContextAt) > 10
         if key != lastContextKey || stale {
             lastContextKey = key
             lastContextAt = Date()
@@ -59,9 +69,10 @@ final class RoamrWatchBridge: NSObject {
 
     private func contextKey(_ s: [String: Any]) -> String {
         let tracking = s["tracking"] as? Bool ?? false
-        let n = (s["trips"] as? [[String: Any]])?.count ?? 0
-        let first = (s["trips"] as? [[String: Any]])?.first?["date"] as? Double ?? 0
-        return "\(tracking)|\(s["kind"] ?? "")|\(s["paused"] ?? "")|\(n)|\(first)"
+        let list = (s["trips"] as? [[String: Any]]) ?? []
+        // Every trip's date, title and distance, so a renamed or trimmed trip also reaches the watch.
+        let trips = list.map { "\($0["date"] ?? "")/\($0["title"] ?? "")/\($0["dist"] ?? "")/\($0["kind"] ?? "")" }.joined(separator: ";")
+        return "\(tracking)|\(s["kind"] ?? "")|\(s["paused"] ?? "")|\(s["metric"] ?? "")|\(trips)"
     }
 
     func snapshot() -> [String: Any] {
@@ -89,7 +100,11 @@ final class RoamrWatchBridge: NSObject {
     }
 
     private func refreshTripsIfNeeded() {
-        guard Date().timeIntervalSince(tripsFetchedAt) > 30, let container else { return }
+        guard let container else { return }
+        // Recording: at most every 30 s. Idle: only after a save.
+        let due = tripsDirty || (tracker?.isActive == true && Date().timeIntervalSince(tripsFetchedAt) > 30)
+        guard due else { return }
+        tripsDirty = false
         tripsFetchedAt = Date()
         var fd = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.start, order: .reverse)])
         fd.fetchLimit = 3
@@ -123,7 +138,7 @@ final class RoamrWatchBridge: NSObject {
         default:
             break
         }
-        tripsFetchedAt = .distantPast
+        tripsDirty = true
         lastContextKey = ""
         return snapshot()
     }
@@ -139,6 +154,8 @@ final class RoamrWatchBridge: NSObject {
         let context = container.mainContext
         context.insert(a)
         try? context.save()
+        // Finished from the Watch (often with Roamr in the background): Rootbound sees the walk right away.
+        RoamrWellness.publish(context, force: true)
         let pts = a.route
         Task {
             if let s = pts.first { a.startPlace = await Geo.placeName(for: s.coordinate) }

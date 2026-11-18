@@ -23,16 +23,28 @@ enum HealthCache {
     }
 
     static func load() -> Snapshot? {
+        // A save still being written finishes first.
+        queue.sync {}
         guard let data = try? Data(contentsOf: url),
               let snap = try? JSONDecoder().decode(Snapshot.self, from: data),
               snap.version == version else { return nil }
         return snap
     }
 
+    /// Saves and clears run in order on one background queue: two years of days are a big JSON file, and
+    /// writing it on the main thread after every refresh made scrolling hitch.
+    private static let queue = DispatchQueue(label: "pulselab.health-cache", qos: .utility)
+
     static func save(_ snap: Snapshot) {
-        guard let data = try? JSONEncoder().encode(snap) else { return }
-        try? data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        let fileURL = Self.url
+        queue.async {
+            guard let data = try? JSONEncoder().encode(snap) else { return }
+            try? data.write(to: fileURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        }
     }
 
-    static func clear() { try? FileManager.default.removeItem(at: url) }
+    static func clear() {
+        let fileURL = Self.url
+        queue.async { try? FileManager.default.removeItem(at: fileURL) }
+    }
 }

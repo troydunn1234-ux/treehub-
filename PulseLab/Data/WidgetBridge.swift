@@ -43,8 +43,18 @@ enum WidgetBridge {
         d.set(Date().dayStart.timeIntervalSince1970, forKey: Key.briefingDay)
         put(b.hrv, Key.hrv)
         put(store.whoopDays.stat(on: Date())?.strain ?? b.strainYesterday, Key.strain)
+        // Reload the widgets only when what they show changed: refreshes run on every new Health sample, and each
+        // reload spends the widgets' daily budget (then they stop updating until iOS gives more).
+        let shown = [Key.recovery, Key.readiness, Key.rhrWatch, Key.rhrWhoop, Key.sleepWatch, Key.sleepWhoop,
+                     Key.briefingSpoken, Key.briefingDay, Key.hrv, Key.strain]
+            .map { "\(d.object(forKey: $0) ?? "-")" }.joined(separator: "|")
+        guard shown != lastShown else { return }
+        lastShown = shown
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()
         #endif
     }
+
+    /// What the widgets were last reloaded with (this launch).
+    @MainActor private static var lastShown: String?
 }

@@ -28,14 +28,68 @@ enum RoamrWellness {
                                         distanceM: a.distanceM, movingSec: a.movingSec, elevGainM: a.elevGainM,
                                         avgSpeed: a.distanceM / secs, topSpeed: a.maxSpeed, avgHR: a.avgHR)
             // Coarse ends for walks, runs, hikes and rides only (drives don't need them).
-            if a.kind != .drive {
-                let pts = a.route
-                if let f = pts.first { t.startLat = WellnessBridge.coarse(f.lat); t.startLng = WellnessBridge.coarse(f.lng) }
-                if let l = pts.last { t.endLat = WellnessBridge.coarse(l.lat); t.endLng = WellnessBridge.coarse(l.lng) }
+            if a.kind != .drive, let ends = coarseEnds(a) {
+                t.startLat = ends.startLat; t.startLng = ends.startLng
+                t.endLat = ends.endLat; t.endLng = ends.endLng
             }
             return t
         }
         WellnessBridge.publishRoamr(trips: trips)
+    }
+
+    // MARK: Route ends without decoding routes
+
+    struct Ends: Equatable { var startLat: Double; var startLng: Double; var endLat: Double; var endLng: Double }
+
+    /// Coarse start / end per trip, remembered by id + end time + distance (a trim or edit changes those), so a
+    /// publish (on every save and every trip back to the front) doesn't read and decode up to 300 routes on the
+    /// main thread: only trips it hasn't seen yet are read, and only their first and last points are decoded.
+    private static var endsCache: [UUID: (key: String, ends: Ends?)] = [:]
+
+    private static var seeded = false
+
+    private static func cacheKey(end: Date, distanceM: Double) -> String { "\(end.timeIntervalSince1970)|\(distanceM)" }
+
+    /// The feed already published holds every trip's coarse ends: start from it, so even the first publish after
+    /// a launch only reads routes of trips that are new or changed since.
+    private static func seedFromFeed() {
+        guard !seeded else { return }
+        seeded = true
+        for t in WellnessBridge.roamr()?.trips ?? [] where t.kind != ActivityKind.drive.rawValue {
+            guard let a = t.startLat, let b = t.startLng, let c = t.endLat, let d = t.endLng, endsCache[t.id] == nil else { continue }
+            endsCache[t.id] = (cacheKey(end: t.end, distanceM: t.distanceM), Ends(startLat: a, startLng: b, endLat: c, endLng: d))
+        }
+    }
+
+    private static func coarseEnds(_ a: Activity) -> Ends? {
+        seedFromFeed()
+        let key = cacheKey(end: a.end, distanceM: a.distanceM)
+        if let hit = endsCache[a.id], hit.key == key { return hit.ends }
+        var ends: Ends?
+        if let data = a.routeData, let fl = routeEnds(data) ?? fullEnds(a) {
+            ends = Ends(startLat: WellnessBridge.coarse(fl.first.lat), startLng: WellnessBridge.coarse(fl.first.lng),
+                        endLat: WellnessBridge.coarse(fl.last.lat), endLng: WellnessBridge.coarse(fl.last.lng))
+        }
+        endsCache[a.id] = (key, ends)
+        return ends
+    }
+
+    private static func fullEnds(_ a: Activity) -> (first: RoutePoint, last: RoutePoint)? {
+        let pts = a.route
+        guard let f = pts.first, let l = pts.last else { return nil }
+        return (f, l)
+    }
+
+    /// First and last point of a stored route (`Activity.routeData`, a JSON array of flat point objects) without
+    /// decoding the points in between. Nil when the data doesn't look like that (the caller then decodes it all).
+    nonisolated static func routeEnds(_ data: Data) -> (first: RoutePoint, last: RoutePoint)? {
+        let open = UInt8(ascii: "{"), close = UInt8(ascii: "}")
+        guard let s0 = data.firstIndex(of: open), let e0 = data[s0...].firstIndex(of: close),
+              let e1 = data.lastIndex(of: close), let s1 = data[..<e1].lastIndex(of: open), s1 >= s0 else { return nil }
+        let dec = JSONDecoder()
+        guard let f = try? dec.decode(RoutePoint.self, from: Data(data[s0...e0])),
+              let l = try? dec.decode(RoutePoint.self, from: Data(data[s1...e1])) else { return nil }
+        return (f, l)
     }
 
     /// Any save also re-publishes (2 s after the last one): a trip finished from the Watch (saved without the

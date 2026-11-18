@@ -30,7 +30,11 @@ struct ActivityDetailView: View {
     private var strollHugs: [Hug] { allHugs.filter { $0.strollID == activity.id } }
     #endif
 
-    private var coords: [CLLocationCoordinate2D] { activity.route.map(\.coordinate) }
+    /// The route, decoded once (and again only after a trim or type change), not on every redraw: the page redraws
+    /// on every frame of a sheet drag, and decoding a long drive each time made it stutter.
+    @State private var routeCache = TripRouteCache()
+    private var route: TripRouteCache { routeCache.load(activity) }
+    private var coords: [CLLocationCoordinate2D] { route.coords }
 
     var body: some View {
         layout
@@ -67,15 +71,18 @@ struct ActivityDetailView: View {
         }
         #endif
         .sheet(isPresented: $showTrim) {
-            TrimSheet(activity: activity) { startT, endT in
+            TrimSheet(activity: activity, points: route.points) { startT, endT in
                 activity.trim(startT: startT, endT: endT)
                 try? context.save()
-                gpxURL = GPX.write(activity)
             }
             .presentationDetents([.large])
             .presentationDragIndicator(.visible)
         }
-        .onAppear { gpxURL = GPX.write(activity) }
+        // The GPX file is built off the main thread, again after a trim.
+        .task(id: route.version) {
+            let r = route
+            gpxURL = await GPX.file(points: r.points, title: activity.displayTitle, kind: activity.kind, start: activity.start)
+        }
         .onDisappear { try? context.save() }
         .alert("Delete this activity?", isPresented: $confirmDelete) {
             Button("Delete", role: .destructive) {
@@ -332,7 +339,7 @@ struct ActivityDetailView: View {
 
     /// Lane changes: total, quick cuts, and per 10 miles.
     private var laneCard: some View {
-        let lanes = activity.laneChanges
+        let lanes = route.laneChanges
         let cuts = lanes.filter(\.quick).count
         let miles = activity.distanceM / 1609.344
         let per10 = miles > 0.5 ? Double(lanes.count) / miles * 10 : 0
@@ -360,9 +367,9 @@ struct ActivityDetailView: View {
 
     /// Speed legend and how much of the drive was over the limit.
     private var speedCard: some View {
-        let pts = activity.route
-        let zones = SpeedZones.overZones(pts)
-        let known = pts.filter { $0.limit > 0 }.count
+        let pts = route.points
+        let zones = route.overZones
+        let known = pts.contains { $0.limit > 0 } ? 1 : 0
         return GlassCard(padding: 14) {
             VStack(alignment: .leading, spacing: 10) {
                 HStack(spacing: 10) {
@@ -399,16 +406,16 @@ struct ActivityDetailView: View {
                     .annotationTitles(.hidden)
             }
             if activity.kind == .drive {
-                ForEach(SpeedZones.segments(activity.route)) { seg in
+                ForEach(route.segments) { seg in
                     MapPolyline(coordinates: seg.coords)
                         .stroke(seg.band.color.opacity(0.3), style: StrokeStyle(lineWidth: 14, lineCap: .round, lineJoin: .round))
                     MapPolyline(coordinates: seg.coords)
                         .stroke(seg.band.color, style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
                 }
-                ForEach(SpeedZones.overZones(activity.route)) { z in
+                ForEach(route.overZones) { z in
                     Annotation("", coordinate: z.peak, anchor: .bottom) { OverZoneBadge(overMph: z.peakOverMph) }
                 }
-                ForEach(activity.laneChanges, id: \.t) { c in
+                ForEach(route.laneChanges, id: \.t) { c in
                     Annotation("", coordinate: CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)) { LaneMarker(change: c) }
                         .annotationTitles(.hidden)
                 }
@@ -438,7 +445,7 @@ struct ActivityDetailView: View {
         .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
         .onTapGesture { pt in
             guard activity.kind == .drive else { return }
-            let p = RouteProbe.nearest(activity.route, tap: pt, proxy: proxy)
+            let p = RouteProbe.nearest(route.points, tap: pt, proxy: proxy)
             withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) { probe = p }
             if let p {
                 UISelectionFeedbackGenerator().selectionChanged()
@@ -589,11 +596,7 @@ extension ActivityDetailView {
 
     // MARK: Map
 
-    private var routeLatSpan: Double {
-        let lats = coords.map(\.latitude)
-        guard let lo = lats.min(), let hi = lats.max() else { return 0.01 }
-        return max(hi - lo, 0.002)
-    }
+    private var routeLatSpan: Double { route.latSpan }
 
     private func clusters(_ zones: [OverZone]) -> [ZoneCluster] {
         // Roughly one bubble's height (~8% of the visible map) in degrees.
@@ -613,7 +616,7 @@ extension ActivityDetailView {
 
     /// Turn / lane-change icons only once you've zoomed in (or when there are just a few).
     private var showLaneMarkers: Bool {
-        let n = activity.laneChanges.count
+        let n = route.laneChanges.count
         if n <= 6 { return true }
         guard let v = visibleSpan else { return false }
         return v < routeLatSpan * 0.5
@@ -627,19 +630,19 @@ extension ActivityDetailView {
                 if activity.kind == .drive {
                     MapPolyline(coordinates: coords)
                         .stroke(casing, style: StrokeStyle(lineWidth: 11, lineCap: .round, lineJoin: .round))
-                    ForEach(SpeedZones.segments(activity.route)) { seg in
+                    ForEach(route.segments) { seg in
                         MapPolyline(coordinates: seg.coords)
                             .stroke(seg.band.color, style: StrokeStyle(lineWidth: 7, lineCap: .round, lineJoin: .round))
                     }
                     if showLaneMarkers {
-                        ForEach(activity.laneChanges, id: \.t) { c in
+                        ForEach(route.laneChanges, id: \.t) { c in
                             Annotation("", coordinate: CLLocationCoordinate2D(latitude: c.lat, longitude: c.lng)) {
                                 LaneMarker(change: c).scaleEffect(0.72)
                             }
                             .annotationTitles(.hidden)
                         }
                     }
-                    ForEach(clusters(SpeedZones.overZones(activity.route))) { z in
+                    ForEach(clusters(route.overZones)) { z in
                         Annotation("", coordinate: z.coord, anchor: .bottom) {
                             OverZoneBadge(overMph: z.peakOverMph)
                                 .scaleEffect(0.88, anchor: .bottom)
@@ -695,7 +698,7 @@ extension ActivityDetailView {
             }
             .onTapGesture { pt in
                 guard activity.kind == .drive else { return }
-                let p = RouteProbe.nearest(activity.route, tap: pt, proxy: proxy)
+                let p = RouteProbe.nearest(route.points, tap: pt, proxy: proxy)
                 withAnimation(.spring(response: 0.35, dampingFraction: 0.75)) { probe = p }
                 if let p {
                     UISelectionFeedbackGenerator().selectionChanged()
@@ -925,14 +928,26 @@ extension ActivityDetailView {
 
 enum GPX {
     static func write(_ a: Activity) -> URL? {
-        let pts = a.route
+        build(points: a.route, title: a.displayTitle, kind: a.kind, start: a.start, appName: AppInfo.name)
+    }
+
+    /// Same file, built off the main thread (a long route is thousands of formatted points).
+    static func file(points: [RoutePoint], title: String, kind: ActivityKind, start: Date) async -> URL? {
+        guard points.count > 1 else { return nil }
+        let app = AppInfo.name
+        return await Task.detached(priority: .utility) {
+            build(points: points, title: title, kind: kind, start: start, appName: app)
+        }.value
+    }
+
+    private static func build(points pts: [RoutePoint], title: String, kind: ActivityKind, start: Date, appName: String) -> URL? {
         guard pts.count > 1 else { return nil }
         let iso = ISO8601DateFormatter()
         var s = """
         <?xml version="1.0" encoding="UTF-8"?>
-        <gpx version="1.1" creator="\(AppInfo.name)" xmlns="http://www.topografix.com/GPX/1/1">
-        <metadata><time>\(iso.string(from: a.start))</time></metadata>
-        <trk><name>\(escape(a.displayTitle))</name><type>\(a.kind.rawValue)</type><trkseg>
+        <gpx version="1.1" creator="\(appName)" xmlns="http://www.topografix.com/GPX/1/1">
+        <metadata><time>\(iso.string(from: start))</time></metadata>
+        <trk><name>\(escape(title))</name><type>\(kind.rawValue)</type><trkseg>
 
         """
         for p in pts {
@@ -941,7 +956,7 @@ enum GPX {
             s += "<time>\(iso.string(from: Date(timeIntervalSince1970: p.t)))</time></trkpt>\n"
         }
         s += "</trkseg></trk></gpx>\n"
-        let name = "\(AppInfo.name)-\(a.kind.title)-\(Int(a.start.timeIntervalSince1970)).gpx"
+        let name = "\(appName)-\(kind.title)-\(Int(start.timeIntervalSince1970)).gpx"
         let url = FileManager.default.temporaryDirectory.appendingPathComponent(name)
         do { try s.write(to: url, atomically: true, encoding: .utf8); return url } catch { return nil }
     }
@@ -963,25 +978,55 @@ struct TrimSheet: View {
     @State private var endT: Double = 1
     @State private var loaded = false
     private let pts: [RoutePoint]
+    private let allCoords: [CLLocationCoordinate2D]
+    /// Distance from the first point to each point, counted the way `Activity.stats` counts it, so the kept
+    /// distance under the sliders is one subtraction instead of re-measuring the route on every drag frame.
+    private let cumulative: [Double]
 
-    init(activity: Activity, onTrim: @escaping (Double, Double) -> Void) {
+    init(activity: Activity, points: [RoutePoint]? = nil, onTrim: @escaping (Double, Double) -> Void) {
         self.activity = activity
         self.onTrim = onTrim
-        self.pts = activity.route
+        let pts = points ?? activity.route
+        self.pts = pts
+        self.allCoords = pts.map(\.coordinate)
+        self.cumulative = TrimSheet.cumulativeDistance(pts)
+    }
+
+    /// cum[i] = Activity.stats(pts[0...i]).distance, for every i.
+    static func cumulativeDistance(_ pts: [RoutePoint]) -> [Double] {
+        guard !pts.isEmpty else { return [] }
+        var out = [0.0]
+        out.reserveCapacity(pts.count)
+        var d = 0.0
+        for i in 1..<pts.count {
+            let a = pts[i - 1], b = pts[i]
+            let dt = b.t - a.t
+            if dt > 0 {
+                let step = CLLocation(latitude: a.lat, longitude: a.lng).distance(from: CLLocation(latitude: b.lat, longitude: b.lng))
+                if step / dt <= 95 { d += step }
+            }
+            out.append(d)
+        }
+        return out
     }
 
     private var lo: Double { pts.first?.t ?? 0 }
     private var hi: Double { pts.last?.t ?? 1 }
-    private var kept: [RoutePoint] { pts.filter { $0.t >= startT && $0.t <= endT } }
-    private var keptCoords: [CLLocationCoordinate2D] { kept.map(\.coordinate) }
+    /// Indices of the points between the two handles (empty when none).
+    private var keptRange: ClosedRange<Int>? {
+        guard let a = pts.firstIndex(where: { $0.t >= startT }), let b = pts.lastIndex(where: { $0.t <= endT }), a <= b else { return nil }
+        return a...b
+    }
+    private var keptCount: Int { keptRange?.count ?? 0 }
+    private var keptCoords: [CLLocationCoordinate2D] { keptRange.map { Array(allCoords[$0]) } ?? [] }
+    private var keptDistance: Double { keptRange.map { cumulative[$0.upperBound] - cumulative[$0.lowerBound] } ?? 0 }
     private var cut: Double { max(0, (startT - lo) + (hi - endT)) }
 
     var body: some View {
-        let s = Activity.stats(kept)
         NavigationStack {
             VStack(spacing: 16) {
                 Map(initialPosition: .automatic) {
-                    MapPolyline(coordinates: pts.map(\.coordinate))
+                    MapPolyline(coordinates: allCoords)
                         .stroke(Color.white.opacity(0.18), style: StrokeStyle(lineWidth: 4, lineCap: .round, lineJoin: .round))
                     if keptCoords.count > 1 {
                         MapPolyline(coordinates: keptCoords)
@@ -1006,7 +1051,7 @@ struct TrimSheet: View {
 
                 HStack(spacing: 10) {
                     stat(Format.duration(max(0, endT - startT)), "Time")
-                    stat(Format.distance(s.distance), "Distance")
+                    stat(Format.distance(keptDistance), "Distance")
                     stat(cut >= 60 ? "−\(Int((cut / 60).rounded())) min" : "—", "Cut")
                 }
 
@@ -1019,7 +1064,7 @@ struct TrimSheet: View {
                     Text(cut >= 1 ? "Trim" : "Nothing to trim").frame(maxWidth: .infinity)
                 }
                 .buttonStyle(PrimaryButtonStyle())
-                .disabled(cut < 1 || kept.count < 2)
+                .disabled(cut < 1 || keptCount < 2)
             }
             .padding(Theme.pad)
             .forestScreen()
@@ -1057,5 +1102,40 @@ struct TrimSheet: View {
         .frame(maxWidth: .infinity)
         .padding(.vertical, 10)
         .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 14))
+    }
+}
+
+
+/// A trip's decoded route and the map geometry built from it (speed-colored segments, over-the-limit stretches,
+/// lane changes), made once per route instead of on every redraw of the trip page.
+@MainActor
+final class TripRouteCache {
+    private var key: String?
+    private(set) var points: [RoutePoint] = []
+    private(set) var coords: [CLLocationCoordinate2D] = []
+    private(set) var segments: [SpeedSegment] = []
+    private(set) var overZones: [OverZone] = []
+    private(set) var laneChanges: [LaneChange] = []
+    /// North-south size of the route in degrees (at least 0.002).
+    private(set) var latSpan: Double = 0.01
+    /// Goes up whenever the route is rebuilt (after a trim or a type change).
+    private(set) var version = 0
+
+    /// Rebuilds only when the stored route, lane changes, end time or type changed.
+    @discardableResult
+    func load(_ a: Activity) -> TripRouteCache {
+        let k = "\(a.routeData?.count ?? -1)|\(a.laneChangesData?.count ?? -1)|\(a.end.timeIntervalSince1970)|\(a.kindRaw)"
+        guard k != key else { return self }
+        key = k
+        version += 1
+        points = a.route
+        coords = points.map(\.coordinate)
+        let drive = a.kind == .drive
+        segments = drive ? SpeedZones.segments(points) : []
+        overZones = drive ? SpeedZones.overZones(points) : []
+        laneChanges = a.laneChanges
+        let lats = coords.map(\.latitude)
+        if let lo = lats.min(), let hi = lats.max() { latSpan = max(hi - lo, 0.002) } else { latSpan = 0.01 }
+        return self
     }
 }

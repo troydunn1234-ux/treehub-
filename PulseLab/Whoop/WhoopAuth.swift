@@ -188,9 +188,11 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
         let (data, resp) = try await URLSession.shared.data(for: req)
         let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
         guard code == 200 else {
-            if code == 400 || code == 401, form["grant_type"] == "refresh_token" { disconnect() }
-            let msg = (try? JSONSerialization.jsonObject(with: data) as? [String: Any])
-                .flatMap { ($0["error_description"] as? String) ?? ($0["error"] as? String) } ?? "HTTP \(code)"
+            let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any]
+            if form["grant_type"] == "refresh_token", Self.refreshTokenIsDead(status: code, error: json?["error"] as? String) {
+                disconnect()
+            }
+            let msg = json.flatMap { ($0["error_description"] as? String) ?? ($0["error"] as? String) } ?? "HTTP \(code)"
             throw AuthError.tokenFailed(msg)
         }
         struct TokenResponse: Decodable {
@@ -206,6 +208,15 @@ final class WhoopAuth: NSObject, ASWebAuthenticationPresentationContextProviding
     }
 
     // MARK: helpers
+
+    /// Whether a failed refresh means the saved refresh token can never work again (so WHOOP must be connected
+    /// again). Only `invalid_grant` (revoked or expired token), or a bare 401 with no OAuth error code, says that.
+    /// Anything else (a WHOOP outage, rate limit, a request or app-credential problem) keeps the tokens, so the
+    /// next sync can simply try again instead of silently disconnecting you.
+    nonisolated static func refreshTokenIsDead(status: Int, error: String?) -> Bool {
+        if let error { return error == "invalid_grant" }
+        return status == 401
+    }
 
     private static func randomState() -> String {
         var bytes = [UInt8](repeating: 0, count: 16)

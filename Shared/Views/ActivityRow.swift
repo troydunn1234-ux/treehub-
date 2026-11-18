@@ -8,7 +8,7 @@ struct ActivityRow: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            RouteThumbnail(points: activity.route.map(\.coordinate))
+            RouteThumbnail(points: RouteThumbCache.coords(for: activity))
                 .frame(width: 64, height: 64)
                 .background(
                     LinearGradient(colors: [Theme.moss.opacity(0.9), Theme.forest], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -103,5 +103,31 @@ struct RouteThumbnail: View {
             gc.fill(Path(ellipseIn: CGRect(x: s.x - 3, y: s.y - 3, width: 6, height: 6)), with: .color(.white))
             gc.fill(Path(ellipseIn: CGRect(x: e.x - 3, y: e.y - 3, width: 6, height: 6)), with: .color(Theme.gold))
         }
+    }
+}
+
+
+/// Thinned route outlines for list thumbnails, kept per trip (by id + end time + distance, so a trim redraws it):
+/// a list row used to decode the whole stored route every time it was drawn.
+@MainActor
+enum RouteThumbCache {
+    private static var store: [UUID: (key: String, coords: [CLLocationCoordinate2D])] = [:]
+
+    static func coords(for a: Activity) -> [CLLocationCoordinate2D] {
+        let key = "\(a.end.timeIntervalSince1970)|\(a.distanceM)"
+        if let hit = store[a.id], hit.key == key { return hit.coords }
+        let thin = thinned(a.route.map(\.coordinate))
+        if store.count >= 600 { store.removeAll(keepingCapacity: true) }
+        store[a.id] = (key, thin)
+        return thin
+    }
+
+    /// At most ~300 points, always keeping the first and last (what RouteThumbnail draws anyway).
+    nonisolated static func thinned(_ all: [CLLocationCoordinate2D], max: Int = 300) -> [CLLocationCoordinate2D] {
+        guard all.count > max, max > 1 else { return all }
+        let step = all.count / max + 1
+        var out = stride(from: 0, to: all.count, by: step).map { all[$0] }
+        if let last = all.last, out.count < all.count, step > 1, (all.count - 1) % step != 0 { out.append(last) }
+        return out
     }
 }

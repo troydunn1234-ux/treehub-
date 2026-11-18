@@ -40,12 +40,14 @@ final class TripMapCache {
         if let img = memory.object(forKey: key as NSString) { return img }
         if let running = inflight[key] { return await running.value }
         let file = dir?.appendingPathComponent(key + ".jpg")
-        // Decode the route here (main actor, SwiftData object) before going async.
-        let coords = Self.thin(a.route.map(\.coordinate))
+        // Only the stored bytes are taken here (main actor, SwiftData object). They're decoded off the main thread,
+        // and only when there's no saved picture yet.
+        let routeData = a.routeData
         let task = Task<UIImage?, Never> { @MainActor in
             if let file, let data = await Self.read(file), let img = UIImage(data: data, scale: 3) {
                 return img
             }
+            let coords = await Self.decodeThin(routeData)
             guard coords.count > 1, let img = await Self.snapshot(coords) else { return nil }
             if let file, let jpg = img.jpegData(compressionQuality: 0.82) {
                 Task.detached(priority: .utility) { try? jpg.write(to: file, options: .atomic) }
@@ -69,7 +71,16 @@ final class TripMapCache {
         await Task.detached(priority: .userInitiated) { try? Data(contentsOf: file) }.value
     }
 
-    private static func thin(_ c: [CLLocationCoordinate2D], maxCount: Int = 600) -> [CLLocationCoordinate2D] {
+    /// The route's coordinates, thinned for drawing, decoded on a background thread.
+    private nonisolated static func decodeThin(_ data: Data?) async -> [CLLocationCoordinate2D] {
+        guard let data else { return [] }
+        return await Task.detached(priority: .userInitiated) {
+            guard let pts = try? JSONDecoder().decode([RoutePoint].self, from: data) else { return [] }
+            return thin(pts.map(\.coordinate))
+        }.value
+    }
+
+    private nonisolated static func thin(_ c: [CLLocationCoordinate2D], maxCount: Int = 600) -> [CLLocationCoordinate2D] {
         guard c.count > maxCount else { return c }
         let step = Double(c.count - 1) / Double(maxCount - 1)
         return (0..<maxCount).map { c[min(c.count - 1, Int((Double($0) * step).rounded()))] }
@@ -261,7 +272,7 @@ struct TripCard: View {
                 }
             } else {
                 // Placeholder while the snapshot renders: the plain route drawing.
-                RouteThumbnail(points: activity.route.map(\.coordinate))
+                RouteThumbnail(points: RouteThumbCache.coords(for: activity))
                     .opacity(0.5)
                     .redacted(reason: .placeholder)
             }

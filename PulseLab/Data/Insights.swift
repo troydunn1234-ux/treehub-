@@ -21,7 +21,8 @@ enum Insights {
     @MainActor
     static func build(_ store: LabStore, days: Int = 30) -> [Insight] {
         var out: [Insight] = []
-        let ag = Compare.agreements(watch: store.watchDays, whoop: store.whoopDays, sleeps: store.sleeps, days: days)
+        let ag = days == 30 ? store.agreements30
+            : Compare.agreements(watch: store.watchDays, whoop: store.whoopDays, sleeps: store.sleeps, days: days)
         func a(_ m: String) -> Agreement? { ag.first { $0.metric == m && $0.n >= 3 } }
 
         // Resting HR gap

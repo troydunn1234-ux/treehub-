@@ -66,7 +66,8 @@ final class WhoopClient {
         cycles = []; recoveries = []; sleeps = []; workouts = []
         lastSync = nil
         backfilled = false
-        try? FileManager.default.removeItem(at: Self.cacheURL)
+        let url = Self.cacheURL
+        Self.diskQueue.async { try? FileManager.default.removeItem(at: url) }
     }
 
     // MARK: sync
@@ -250,11 +251,17 @@ final class WhoopClient {
         return dir.appendingPathComponent("whoop-cache.json")
     }
 
+    /// Cache writes (and the delete on disconnect) run in order off the main thread.
+    nonisolated private static let diskQueue = DispatchQueue(label: "pulselab.whoop-cache", qos: .utility)
+
     private func saveCache() {
         let snap = WhoopSnapshot(profile: profile, body: body, cycles: cycles, recoveries: recoveries,
                                  sleeps: sleeps, workouts: workouts, lastSync: lastSync)
-        if let data = try? WhoopJSON.cacheEncoder.encode(snap) {
-            try? data.write(to: Self.cacheURL, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+        let url = Self.cacheURL
+        Self.diskQueue.async {
+            if let data = try? WhoopJSON.cacheEncoder.encode(snap) {
+                try? data.write(to: url, options: [.atomic, .completeFileProtectionUntilFirstUserAuthentication])
+            }
         }
     }
 

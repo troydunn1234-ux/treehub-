@@ -22,6 +22,8 @@ enum RoamrContext {
         let context = container.mainContext
         context.insert(a)
         try? context.save()
+        // Rootbound sees the walk right away, even when no Roamr screen is up to hear .activitySaved.
+        RoamrWellness.publish(context, force: true)
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         NotificationCenter.default.post(name: .activitySaved, object: nil, userInfo: [
             "id": a.id.uuidString, "auto": auto, "kind": a.kind.rawValue,

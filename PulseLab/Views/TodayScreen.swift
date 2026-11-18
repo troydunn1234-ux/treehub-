@@ -30,7 +30,8 @@ struct TodayScreen: View {
             if streak >= 2 { StreakChip(days: streak) }
             sleepDuel
             RivalryHero(rounds: Rivalry.rounds(store),
-                        watchBPM: store.today(.watch)?.rhr, whoopBPM: store.today(.whoop)?.rhr,
+                        watchBPM: store.reading(.watch, \.rhr, recent: "rhr")?.value,
+                        whoopBPM: store.reading(.whoop, \.rhr, manual: .rhr)?.value,
                         readiness: store.readinessToday, recovery: store.recoveryToday,
                         note: gaugeNote, showGauges: false)
             InsightsButton()
