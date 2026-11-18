@@ -119,15 +119,51 @@ final class NatureRollStore: ObservableObject {
            let c = try? JSONDecoder().decode(NatureCorrections.self, from: data) {
             corrections = c
         }
-        if let data = try? Data(contentsOf: Self.fileURL), let idx = try? JSONDecoder().decode(NatureIndex.self, from: data),
-           idx.version == Self.indexVersion {
-            records = idx.records; scanned = idx.scanned; lastScan = idx.lastScan
-        } else {
-            // An index from an older model (or none): start over, the next scan redoes every photo.
-            try? FileManager.default.removeItem(at: Self.fileURL)
+        // The index can hold tens of thousands of photos: read and decode it off the main thread (Rootbound
+        // touches this store as it becomes active at launch, and reading it there held up the first frame).
+        let url = Self.fileURL
+        let version = Self.indexVersion
+        Task.detached(priority: .userInitiated) {
+            var loaded: NatureIndex?
+            if let data = try? Data(contentsOf: url), let idx = try? JSONDecoder().decode(NatureIndex.self, from: data),
+               idx.version == version {
+                loaded = idx
+            } else if FileManager.default.fileExists(atPath: url.path) {
+                // An index from an older model (or unreadable): start over, the next scan redoes every photo.
+                // On the save queue, so it can never remove an index a newer save already wrote.
+                NatureRollStore.saveQueue.sync {
+                    if let data = try? Data(contentsOf: url),
+                       let idx = try? JSONDecoder().decode(NatureIndex.self, from: data), idx.version == version {
+                        loaded = idx
+                    } else {
+                        try? FileManager.default.removeItem(at: url)
+                    }
+                }
+            }
+            let result = loaded
+            await MainActor.run { NatureRollStore.shared.indexDidLoad(result) }
         }
-        rebuild()
     }
+
+    /// The saved index is in (or there was none). Scans asked for before this start now.
+    private func indexDidLoad(_ idx: NatureIndex?) {
+        // Reset ("Forget everything") before the index came in: keep it forgotten.
+        if let idx, !resetBeforeLoad {
+            records = idx.records; scanned = idx.scanned; lastScan = idx.lastScan
+        }
+        indexLoaded = true
+        rebuild()
+        if scanWhenLoaded {
+            scanWhenLoaded = false
+            if canRead, !scanning { start() }
+        }
+    }
+
+    /// The saved index has been read. Until then a scan waits: started from an empty index it would redo every
+    /// photo and then save over the real index.
+    private var indexLoaded = false
+    private var scanWhenLoaded = false
+    private var resetBeforeLoad = false
 
     // MARK: Queries
 
@@ -256,12 +292,14 @@ final class NatureRollStore: ObservableObject {
     func scanIfAllowed() {
         refreshAuth()
         guard hasStarted, canRead, !scanning else { return }
+        guard indexLoaded else { scanWhenLoaded = true; return }
         start()
     }
 
     func scanNow() async {
         UserDefaults.standard.set(true, forKey: Self.started)
         guard await requestAccess(), !scanning else { return }
+        guard indexLoaded else { scanWhenLoaded = true; return }
         start()
     }
 
@@ -272,6 +310,8 @@ final class NatureRollStore: ObservableObject {
     /// Forget everything Nature Roll found (the photos themselves are untouched; "Not nature" fixes are kept).
     func reset() {
         cancel()
+        scanWhenLoaded = false
+        if !indexLoaded { resetBeforeLoad = true }
         records = [:]; scanned = []; lastScan = nil
         // On the save queue, after any save still waiting there (else that save would bring the index back).
         let url = Self.fileURL
@@ -392,7 +432,7 @@ final class NatureRollStore: ObservableObject {
             if let data = try? JSONEncoder().encode(idx) { try? data.write(to: url, options: .atomic) }
         }
     }
-    private static let saveQueue = DispatchQueue(label: "natureRoll.save", qos: .utility)
+    nonisolated static let saveQueue = DispatchQueue(label: "natureRoll.save", qos: .utility)
     private var dirty = false
     private var lastFlush = Date.distantPast
 }

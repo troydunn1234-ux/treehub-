@@ -51,7 +51,8 @@ final class WatchLink: NSObject, ObservableObject, WCSessionDelegate {
             if let d = dict[SyncKey.rightNow] as? Data, let s = try? JSONDecoder().decode(Suggestion.self, from: d) {
                 MainActor.assumeIsolated { RightNow.shared.applyRemote(s) }
             }
-            if dict[SyncKey.command] as? String == SyncKey.start, let id = dict[SyncKey.practiceId] as? String {
+            if dict[SyncKey.command] as? String == SyncKey.start, let id = dict[SyncKey.practiceId] as? String,
+               !SyncKey.isStaleStart(dict) {
                 let mins = dict[SyncKey.minutes] as? Int ?? Prefs.shared.settings.defaultMinutes
                 self.pendingStart = (id, mins, dict["warmUpId"] as? String)
             }

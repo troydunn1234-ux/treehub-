@@ -527,12 +527,12 @@ struct RBSkeletonBlock: View {
 struct RBPhotoFill: View {
     let data: Data?
     var placeholderSymbol = "tree.fill"
+    /// Longest side on screen, in points: the photo is decoded at that size, once (RBPhotoCache.swift).
+    var points: CGFloat = 440
 
     var body: some View {
-        ZStack {
-            if let data, let ui = UIImage(data: data) {
-                Image(uiImage: ui).resizable().scaledToFill()
-            } else {
+        RBCachedPhoto(data: data, points: points) {
+            ZStack {
                 LinearGradient(colors: [Theme.moss, Theme.forest], startPoint: .top, endPoint: .bottom)
                 Image(systemName: placeholderSymbol)
                     .font(.system(size: 44, weight: .semibold))

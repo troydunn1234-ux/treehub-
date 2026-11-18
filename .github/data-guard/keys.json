@@ -131,6 +131,7 @@
     "rb.pendingAction",
     "rb.pendingActionAt",
     "rb.treeBreaths",
+    "rb.watch.waitingHugs",
     "rb.watchHugs",
     "rescue.groupStore.hugs.v1",
     "reviews.lastAsked",

@@ -172,4 +172,15 @@ enum SyncKey {
     static let streakDay = "streakDay"
     /// The iPhone's "Right now" suggestion (JSON-encoded Suggestion).
     static let rightNow = "rightNow"
+    /// When the iPhone sent a "start" (seconds since 1970).
+    static let sentAt = "sentAt"
+    /// A start that waited this long (Watch off or out of range) is dropped instead of starting by surprise.
+    static let startMaxAge: TimeInterval = 120
+
+    /// True for a "start this practice" that was queued and only arrived long after it was sent. Older iPhone
+    /// builds don't stamp the time; those always start.
+    static func isStaleStart(_ dict: [String: Any], now: Date = Date()) -> Bool {
+        guard let sent = dict[sentAt] as? Double else { return false }
+        return now.timeIntervalSince1970 - sent > startMaxAge
+    }
 }

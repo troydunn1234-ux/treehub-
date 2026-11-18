@@ -43,6 +43,8 @@ final class PhoneLink: NSObject, ObservableObject, WCSessionDelegate {
         guard WCSession.isSupported(), WCSession.default.activationState == .activated, canUseWatch else { done(false); return }
         var msg: [String: Any] = [SyncKey.command: SyncKey.start, SyncKey.practiceId: plan.practice.id, SyncKey.minutes: plan.minutes]
         if let w = plan.warmUp { msg["warmUpId"] = w.id }
+        // A queued transfer can reach a Watch that was off for hours: the Watch ignores a start that old.
+        msg[SyncKey.sentAt] = Date().timeIntervalSince1970
         if WCSession.default.isReachable {
             WCSession.default.sendMessage(msg, replyHandler: { _ in DispatchQueue.main.async { done(true) } },
                                           errorHandler: { _ in

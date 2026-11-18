@@ -350,14 +350,26 @@ final class SessionLog: ObservableObject {
         guard let i = records.firstIndex(where: { $0.id == id }) else { return }
         var r = records[i]
         change(&r)
+        guard r != records[i] else { return }
         records[i] = r
-        persist()
+        persist(wait: false)
     }
 
     func record(_ id: UUID) -> SessionRecord? { records.first { $0.id == id } }
 
-    private func persist() {
-        if let d = try? JSONEncoder().encode(records) { UserDefaults.standard.set(d, forKey: key) }
+    /// Writes go through one serial queue, so an older snapshot can never land after a newer one.
+    private static let saveQueue = DispatchQueue(label: "sp.sessions.save", qos: .userInitiated)
+
+    /// `wait`: a new or removed session is on disk before this returns. Heart-data patches (update) are
+    /// encoded off the main thread: with hundreds of sessions and their heart curves the whole log is a few MB of
+    /// JSON, and encoding it on every late Health answer made the results screen stutter.
+    private func persist(wait: Bool = true) {
+        let snapshot = records
+        let key = self.key
+        let write = {
+            if let d = try? JSONEncoder().encode(snapshot) { UserDefaults.standard.set(d, forKey: key) }
+        }
+        if wait { Self.saveQueue.sync(execute: write) } else { Self.saveQueue.async(execute: write) }
         WidgetBridge.publish()
         onActivityChange?()
     }

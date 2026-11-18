@@ -69,6 +69,14 @@ struct RootView: View {
     @State private var watchLog: WatchHugLog?
     /// Hugs brought back after the Nov 15 storage mix-up (HugRescue), shown once.
     @State private var rescueReport: HugRescue.Report?
+    /// The rescue report waits here while another sheet is up (two sheets on one view: iOS drops the second,
+    /// and the report is only produced once).
+    @State private var queuedRescue: HugRescue.Report?
+    /// The hug logger for a Watch hug, opened as soon as "pick tree" has closed.
+    @State private var queuedWatchLog: WatchHugLog?
+
+    /// A sheet RootView owns is up (the hug logger, the Watch prompt / logger or the rescue report).
+    private var sheetUp: Bool { showHugLog || watchPrompt != nil || watchLog != nil || rescueReport != nil }
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -100,15 +108,25 @@ struct RootView: View {
         // Once after this update: bring back hugs saved in the wrong place on Nov 15.
         .task {
             try? await Task.sleep(for: .seconds(1.5))
-            if let report = await HugRescue.runOnce(in: context) { rescueReport = report }
+            if let report = await HugRescue.runOnce(in: context) {
+                queuedRescue = report
+                presentQueuedRescue()
+            }
+        }
+        .onChange(of: sheetUp) { _, up in
+            if !up {
+                // A sheet closed: what was waiting (the Watch hug's logger, then the rescue report) once it's gone.
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { presentQueued() }
+            }
         }
         .sheet(item: $rescueReport) { report in
             HugRescueSheet(report: report)
         }
         .sheet(item: $watchPrompt) { h in
             WatchHugPrompt(hug: h, onPick: { tree in
+                // The logger opens once the prompt has gone (onChange(of: sheetUp) -> presentQueued).
+                queuedWatchLog = WatchHugLog(hug: h, treeID: tree)
                 watchPrompt = nil
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { watchLog = WatchHugLog(hug: h, treeID: tree) }
             }, onDiscard: {
                 watchInbox.remove(h.id)
                 watchPrompt = nil
@@ -135,7 +153,8 @@ struct RootView: View {
         .onOpenURL { url in
             // From Still Pointz: rootbound://hug opens the hug logger, rootbound://home just opens Home.
             if url.scheme == FriendShare.scheme, url.host == "hug" {
-                if !showHugLog { tab = .home; showHugLog = true }
+                tab = .home
+                if !sheetUp { showHugLog = true }
                 return
             }
             if url.scheme == FriendShare.scheme, url.host == "home" { tab = .home; return }
@@ -177,8 +196,26 @@ struct RootView: View {
 
     /// Shows the newest Watch hug that still needs a tree (unless another sheet is already up).
     private func openWatchHug() {
-        guard let h = watchInbox.pending.first, watchPrompt == nil, watchLog == nil, !showHugLog else { return }
+        guard let h = watchInbox.pending.first, !sheetUp else { return }
         watchPrompt = h
+    }
+
+    /// What was waiting for the screen to be free: the Watch hug's logger first, then the rescue report.
+    private func presentQueued() {
+        guard !sheetUp else { return }
+        if let w = queuedWatchLog {
+            queuedWatchLog = nil
+            watchLog = w
+            return
+        }
+        presentQueuedRescue()
+    }
+
+    /// The rescue report, once nothing else is on screen.
+    private func presentQueuedRescue() {
+        guard let r = queuedRescue, !sheetUp, queuedWatchLog == nil, demoCelebration == nil else { return }
+        queuedRescue = nil
+        rescueReport = r
     }
 
     /// Siri / Shortcuts / Control Center actions (RootboundActions.swift).
@@ -186,7 +223,9 @@ struct RootView: View {
         guard let action = RootboundPending.take() else { return }
         switch action {
         case .logHug:
-            showHugLog = true
+            // Never on top of the Watch prompt / logger (iOS would drop it); Home's "Hug a tree" is right there.
+            tab = .home
+            if !sheetUp { showHugLog = true }
         case .home:
             showHugLog = false
             tab = .home

@@ -70,27 +70,56 @@ enum WidgetBridge {
     }
 
     /// Call after every session save, goal change, and on launch / foreground.
+    ///
+    /// Calls come in bursts (a session, then its heart rate, HRV and breathing rate as Health answers; the Watch
+    /// re-sending it): they're folded into one publish half a second after the last, on the main thread, and the
+    /// widgets are only asked to reload when what they show actually changed. Each reload spends the widgets'
+    /// daily refresh budget, and one publish per heart-rate patch used it up, leaving the widget stale by evening.
     static func publish(log: SessionLog = .shared, library lib: PracticeLibrary = .shared) {
+        let schedule = {
+            pending?.cancel()
+            let work = DispatchWorkItem { publishNow(log: log, library: lib) }
+            pending = work
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5, execute: work)
+        }
+        if Thread.isMainThread { schedule() } else { DispatchQueue.main.async(execute: schedule) }
+    }
+
+    /// Main thread only (publish() takes care of it).
+    private static var pending: DispatchWorkItem?
+    /// What was last written for the widgets (everything but the timestamp), to skip identical reloads.
+    private static var lastPublished: [String: String] = [:]
+
+    /// Writes the widget values now and reloads the widgets when they changed.
+    static func publishNow(log: SessionLog = .shared, library lib: PracticeLibrary = .shared) {
         let suggestion = suggestedPractice(library: lib, log: log)
-        let d = UserDefaults(suiteName: suite) ?? .standard
-        d.set(log.streak, forKey: Key.streak)
-        d.set(log.bestStreak, forKey: Key.bestStreak)
-        d.set(log.practicedToday, forKey: Key.practicedToday)
+        let streak = log.streak
+        let practicedToday = log.practicedToday
         // The streak's last day: today if practiced, else yesterday (the streak counts up to yesterday).
         let today = Calendar.current.startOfDay(for: Date())
-        let lastDay = log.practicedToday ? today : Calendar.current.date(byAdding: .day, value: -1, to: today) ?? today
-        d.set(log.streak > 0 ? lastDay.timeIntervalSince1970 : 0, forKey: Key.streakDay)
+        let lastDay = practicedToday ? today : Calendar.current.date(byAdding: .day, value: -1, to: today) ?? today
         let usual = Prefs.shared.settings.defaultMinutes
         let mins = suggestion.minutes.contains(usual) ? usual : suggestion.defaultMinutes
         let label = suggestion.focus?.title ?? lib.tradition(suggestion.traditionId)?.name ?? "Breathe"
-        d.set("\(label) · \(mins) min", forKey: Key.suggestedDetail)
-        d.set(suggestion.focus?.symbol ?? "wind", forKey: Key.suggestedSymbol)
         let hour = Calendar.current.component(.hour, from: Date())
-        d.set((sittingPractice(library: lib, hour: hour, now: Date(), skip: []) ?? lib.quickPractice).id, forKey: Key.breatheId)
-        d.set(log.calendarWeekMinutes, forKey: Key.weekMinutes)
-        d.set(log.weeklyGoal, forKey: Key.weekGoal)
-        d.set(suggestion.title, forKey: Key.suggestedTitle)
-        d.set(suggestion.id, forKey: Key.suggestedId)
+        let values: [String: Any] = [
+            Key.streak: streak,
+            Key.bestStreak: log.bestStreak,
+            Key.practicedToday: practicedToday,
+            Key.streakDay: streak > 0 ? lastDay.timeIntervalSince1970 : 0,
+            Key.suggestedDetail: "\(label) · \(mins) min",
+            Key.suggestedSymbol: suggestion.focus?.symbol ?? "wind",
+            Key.breatheId: (sittingPractice(library: lib, hour: hour, now: Date(), skip: []) ?? lib.quickPractice).id,
+            Key.weekMinutes: log.calendarWeekMinutes,
+            Key.weekGoal: log.weeklyGoal,
+            Key.suggestedTitle: suggestion.title,
+            Key.suggestedId: suggestion.id,
+        ]
+        let fingerprint = values.mapValues { "\($0)" }
+        guard fingerprint != lastPublished else { return }
+        lastPublished = fingerprint
+        let d = UserDefaults(suiteName: suite) ?? .standard
+        for (k, v) in values { d.set(v, forKey: k) }
         d.set(Date().timeIntervalSince1970, forKey: Key.updated)
         #if canImport(WidgetKit)
         WidgetCenter.shared.reloadAllTimelines()

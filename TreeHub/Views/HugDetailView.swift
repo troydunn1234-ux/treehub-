@@ -201,7 +201,7 @@ struct HugDetailView: View {
                 } else {
                     TabView {
                         ForEach(photos, id: \.0) { item in
-                            PhotoView(data: item.1)
+                            RBPhotoView(data: item.1, points: 500)
                                 .frame(maxWidth: .infinity)
                                 .clipped()
                                 .contentShape(Rectangle())

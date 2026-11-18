@@ -414,7 +414,7 @@ struct HugLogView: View {
                         Color.white.opacity(0.08)
                         Image(systemName: symbol).font(.title3.weight(.bold)).foregroundStyle(Theme.glow)
                     } else {
-                        PhotoView(data: photo)
+                        RBPhotoView(data: photo, points: max(width, 72))
                     }
                 }
                 .frame(width: width, height: 72)
@@ -766,7 +766,8 @@ struct HugLogView: View {
                 Task {
                     guard let p = await NatureRollPhotos.original(prefillAssetID) else { return }
                     readPhotoMetadata(p.data, info: p.info)
-                    d.treePhoto = ImageTools.compressed(p.data)
+                    let raw = p.data
+                    d.treePhoto = await Task.detached(priority: .userInitiated) { ImageTools.compressed(raw) }.value
                     await guessSpecies(p.data)
                 }
             }
@@ -1138,7 +1139,7 @@ struct TreePin: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            PhotoView(data: photo)
+            RBPhotoView(data: photo, points: size)
                 .frame(width: size, height: size)
                 .clipShape(Circle())
                 .overlay(Circle().stroke(Theme.glow, lineWidth: 3))
@@ -1261,7 +1262,8 @@ struct PhotoSlot: View {
                 if let raw = try? await newItem.loadTransferable(type: Data.self) {
                     let info = await PhotoAssetInfo.lookup(newItem.itemIdentifier, raw: raw)
                     onPicked(raw, info)
-                    data = ImageTools.compressed(raw)
+                    // Shrinking a 12–48 MP original takes a moment: off the main thread, so the form stays live.
+                    data = await Task.detached(priority: .userInitiated) { ImageTools.compressed(raw) }.value
                 }
                 loading = false
                 item = nil
@@ -1270,7 +1272,11 @@ struct PhotoSlot: View {
         .fullScreenCover(isPresented: $showCamera) {
             CameraPicker(onImage: { raw in
                 onPicked(raw, nil)
-                data = ImageTools.compressed(raw)
+                loading = true
+                Task {
+                    data = await Task.detached(priority: .userInitiated) { ImageTools.compressed(raw) }.value
+                    loading = false
+                }
             }, onClose: { showCamera = false })
             .ignoresSafeArea()
         }
@@ -1283,8 +1289,8 @@ struct PhotoSlot: View {
 
     private var polaroid: some View {
         ZStack(alignment: .bottomLeading) {
-            if let data, let ui = UIImage(data: data) {
-                Image(uiImage: ui).resizable().scaledToFill()
+            if let data {
+                RBCachedPhoto(data: data, points: 200) { RBSkeletonBlock() }
                 LinearGradient(colors: [.clear, .black.opacity(0.6)], startPoint: .center, endPoint: .bottom)
                 Label(title, systemImage: "pencil")
                     .font(RB.text(.caption, .bold)).foregroundStyle(.white)

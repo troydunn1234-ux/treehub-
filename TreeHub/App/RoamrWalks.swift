@@ -152,9 +152,18 @@ enum RoamrWalks {
     /// App open / "Sync Roamr": hugs of the last 60 days that never had walks looked at get the walks around them
     /// (no prompt); walks already attached get Roamr's latest numbers (a trim, late heart rate).
     /// Returns how many walks were newly attached.
+    /// An automatic sync is already running (app open and becoming active both start one at launch).
+    private static var autoSyncRunning = false
+
     @discardableResult
     static func sync(_ hugs: [Hug], context: ModelContext, ask: Bool = false) async -> Int {
         guard !DemoData.isOn else { return 0 }
+        // Automatic syncs don't pile up; "Sync Roamr" (ask) always runs.
+        if !ask {
+            guard !autoSyncRunning else { return 0 }
+            autoSyncRunning = true
+        }
+        defer { if !ask { autoSyncRunning = false } }
         let since = Date().addingTimeInterval(-Double(syncDays) * 86400)
         let recent = hugs.filter { $0.date >= since }
         let open = recent.filter { !$0.hasWalkList }
@@ -165,14 +174,15 @@ enum RoamrWalks {
         guard !walks.isEmpty else { return 0 }
         var added = 0
         var changed = false
-        for h in open {
+        // A hug deleted while Health was answering is left alone.
+        for h in open where !h.isDeleted && h.modelContext != nil && !h.hasWalkList {
             let m = matches(h, in: walks)
             guard !m.isEmpty else { continue }
             h.linkedWalks = m
             added += m.count
             changed = true
         }
-        for h in linked {
+        for h in linked where !h.isDeleted && h.modelContext != nil {
             let fresh = h.linkedWalks.map { w in walks.first(where: { $0.id == w.id }) ?? w }
             if fresh != h.linkedWalks { h.linkedWalks = fresh; changed = true }
         }

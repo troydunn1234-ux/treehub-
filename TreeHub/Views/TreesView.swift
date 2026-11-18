@@ -144,7 +144,7 @@ struct TreesView: View {
             if let id = selectedTree, let t = mapped.first(where: { $0.id == id }) {
                 NavigationLink(value: t.id) {
                     HStack(spacing: RB.m) {
-                        PhotoView(data: t.coverPhoto).frame(width: 56, height: 56)
+                        RBPhotoView(data: t.coverPhoto, points: 56).frame(width: 56, height: 56)
                             .clipShape(RoundedRectangle(cornerRadius: RB.inner, style: .continuous))
                         VStack(alignment: .leading, spacing: 3) {
                             Text(t.name).font(RB.text(.headline, .bold)).foregroundStyle(.white)
@@ -203,7 +203,7 @@ struct TreeCard: View {
 
     var body: some View {
         ZStack(alignment: .bottomLeading) {
-            PhotoView(data: tree.coverPhoto)
+            RBPhotoView(data: tree.coverPhoto, points: 420)
                 .frame(height: 220)
                 .frame(maxWidth: .infinity)
                 .clipped()

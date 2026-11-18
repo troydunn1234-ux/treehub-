@@ -218,7 +218,14 @@ struct TreeSummary: Identifiable {
     var coordinate: CLLocationCoordinate2D?
     var placeName: String
     var hugs: [Hug]           // newest first
-    var coverPhoto: Data?
+
+    /// Cover = the oldest tree photo (the first meeting), else the newest selfie. Looked up only when a view shows
+    /// it: the photos live outside the database, so building summaries (badges, the hug logger's tree list, the
+    /// feed) no longer reads every tree's photo file from disk.
+    var coverPhoto: Data? {
+        if let h = hugs.last(where: { $0.treePhoto != nil }) { return h.treePhoto }
+        return hugs.first?.selfiePhoto
+    }
 
     var hugCount: Int { hugs.count }
     var totalMinutes: Double { hugs.reduce(0) { $0 + $1.durationMin } }
@@ -247,15 +254,13 @@ struct TreeSummary: Identifiable {
             groups[h.treeID, default: []].append(h)
         }
         return order.compactMap { id in
-            guard let list = groups[id], let newest = list.first else { return nil }
+            guard let list = groups[id], !list.isEmpty else { return nil }
             let name = list.first(where: { !$0.treeName.isEmpty })?.treeName ?? "Unnamed tree"
             let species = list.first(where: { !$0.species.isEmpty })?.species ?? ""
             let coord = list.first(where: { $0.coordinate != nil })?.coordinate
             let place = list.first(where: { !$0.placeName.isEmpty })?.placeName ?? ""
-            // Cover = the oldest tree photo (the first meeting)
-            let cover = list.reversed().first(where: { $0.treePhoto != nil })?.treePhoto ?? newest.selfiePhoto
             return TreeSummary(id: id, name: name, species: species, coordinate: coord,
-                               placeName: place, hugs: list, coverPhoto: cover)
+                               placeName: place, hugs: list)
         }
     }
 }

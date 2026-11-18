@@ -152,7 +152,7 @@ struct WatchHugPrompt: View {
                     Theme.glow.opacity(0.12)
                     Image(systemName: symbol).font(.headline).foregroundStyle(Theme.glow)
                 } else {
-                    PhotoView(data: photo)
+                    RBPhotoView(data: photo, points: 52)
                 }
             }
             .frame(width: 52, height: 52)

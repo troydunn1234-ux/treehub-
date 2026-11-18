@@ -91,6 +91,17 @@ final class Router: ObservableObject {
 
     func run(_ plan: SessionPlan) {
         Prefs.shared.markRecent(plan.practice.id)
+        // A link or Siri can arrive while Settings or the heat guide is up: presenting the session in the same
+        // moment they close is dropped by iOS (nothing would start). Close them first, then start.
+        if showSettings || showHeatGuide {
+            showSettings = false
+            showHeatGuide = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in
+                guard let self, self.running == nil else { return }
+                self.running = plan
+            }
+            return
+        }
         running = plan
     }
 
@@ -108,7 +119,6 @@ final class Router: ObservableObject {
         guard let p = PracticeLibrary.shared.practice(id) else { return }
         if PracticeLibrary.shared.isLocked(p) { show(p); return }
         guard running == nil else { return }
-        showSettings = false
         tab = 0
         let usual = minutes ?? Prefs.shared.settings.defaultMinutes
         let mins = p.minutes.contains(usual) ? usual : p.defaultMinutes
@@ -119,10 +129,15 @@ final class Router: ObservableObject {
     @MainActor
     func handle(heat kind: HeatKind) {
         guard running == nil else { return }
-        showSettings = false
         tab = 0
         if HeatStore.shared.active == nil { HeatStore.shared.start(kind) }
-        showHeatGuide = true
+        if showSettings {
+            // Let Settings close before the guide covers the screen (both at once: iOS drops the guide).
+            showSettings = false
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) { [weak self] in self?.showHeatGuide = true }
+        } else {
+            showHeatGuide = true
+        }
     }
 
     /// Queue a practice to start (from an App Intent); the app picks it up when it is in front.

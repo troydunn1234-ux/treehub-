@@ -5,7 +5,13 @@ import WatchConnectivity
 /// the iPhone app isn't running). Hugs not yet confirmed as sent are kept here so nothing is lost.
 final class PhoneLink: NSObject, WCSessionDelegate {
     static let shared = PhoneLink()
-    private var waiting: [[String: Any]] = []
+    /// Hugs finished before the connection was ready. Kept on the Watch (not just in memory), so a hug ended
+    /// right as the app was closed still reaches the iPhone the next time it opens. Main thread only.
+    private var waiting: [[String: Any]] {
+        get { UserDefaults.standard.array(forKey: Self.waitingKey) as? [[String: Any]] ?? [] }
+        set { UserDefaults.standard.set(Array(newValue.suffix(50)), forKey: Self.waitingKey) }
+    }
+    private static let waitingKey = "rb.watch.waitingHugs"
 
     func activate() {
         guard WCSession.isSupported() else { return }

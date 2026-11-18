@@ -17,27 +17,31 @@ enum StillPointWellness {
             let trees = rb.hugs.map { TreeEntry(id: $0.id, start: $0.date, minutes: $0.minutes, name: $0.tree) }
             log.mergeTrees(trees, window: treeWindow(rb))
         }
-        var out: [WellnessBridge.Session] = log.records.filter { $0.seconds >= 60 }.map { r in
-            var s = WellnessBridge.Session(id: r.id, date: r.start, kind: (r.kind ?? "breath").lowercased(), minutes: r.minutes)
-            s.end = r.end
-            s.practice = r.practiceId
-            s.treeID = r.treeID
-            s.treeName = r.treeName
-            s.avgHR = r.hrAvg
-            s.minHR = r.hrMin
-            s.startHR = r.hrStart
-            s.hrDrop = r.hrDrop
-            s.hrv = r.hrv
-            s.endHR = r.hrEnd
-            s.respRate = r.respiratoryRate
-            s.calmSeconds = r.calmZoneSeconds
-            s.breathsPerMin = r.breathsPerMinute
-            return s
-        }
+        var out: [WellnessBridge.Session] = log.records.filter { $0.seconds >= 60 }.map(feedSession)
         out += heat.history.filter { $0.end != nil && $0.minutes >= 1 }.map {
             WellnessBridge.Session(id: $0.id, date: $0.start, kind: $0.kind.rawValue, minutes: $0.minutes)
         }
         WellnessBridge.publishStillPoint(sessions: out, streak: log.streak)
+    }
+
+    /// One session as Rootbound, Roamr and Pulse Lab see it in stillpoint.json: its time, practice, the tree it was
+    /// done with and every heart number Still Pointz has for it (pure, so it's testable).
+    static func feedSession(_ r: SessionRecord) -> WellnessBridge.Session {
+        var s = WellnessBridge.Session(id: r.id, date: r.start, kind: (r.kind ?? "breath").lowercased(), minutes: r.minutes)
+        s.end = r.end
+        s.practice = r.practiceId
+        s.treeID = r.treeID
+        s.treeName = r.treeName
+        s.avgHR = r.hrAvg
+        s.minHR = r.hrMin ?? r.hrLow
+        s.startHR = r.hrStart
+        s.hrDrop = r.hrDrop
+        s.hrv = r.hrv
+        s.endHR = r.hrEnd
+        s.respRate = r.respiratoryRate
+        s.calmSeconds = r.calmZoneSeconds
+        s.breathsPerMin = r.breathsPerMinute
+        return s
     }
 
     /// From when Rootbound's feed lists every hug: 120 days back, or only back to its oldest hug once it holds
@@ -179,9 +183,7 @@ extension Router {
     /// Start a short session from a stillpoint://session link. Ignored while a session is running.
     func handle(session req: StillPointWellness.SessionRequest) {
         guard running == nil else { return }
-        showSettings = false
-        showHeatGuide = false
-        tab = 0
+        tab = 0   // run() closes Settings / the heat guide first when they're up
         let p = StillPointWellness.calmPractice(preferred: req.practiceId)
         var plan = SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: req.minutes)
         plan.treeName = req.treeName
