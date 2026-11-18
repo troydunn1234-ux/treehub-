@@ -442,33 +442,33 @@ struct StreakGoalCard: View {
             .accessibilityElement(children: .combine)
             .accessibilityLabel("\(log.streak) day streak. \(log.streakLine)")
 
-            // Weekly goal ring
-            ZStack {
-                Circle().stroke(Color.white.opacity(0.08), lineWidth: 7)
-                Circle()
-                    .trim(from: 0, to: progress)
-                    .stroke(log.goalReached ? SP.goldGlow : LinearGradient(colors: [SP.accent, SP.indigo], startPoint: .top, endPoint: .bottom),
-                            style: StrokeStyle(lineWidth: 7, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
-                    .shadow(color: (log.goalReached ? SP.gold : SP.teal).opacity(0.35), radius: 6)
-                    .animation(reduceMotion ? nil : .easeOut(duration: 1.1), value: progress)
-                VStack(spacing: 1) {
-                    Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(22)).foregroundStyle(SP.ink)
-                    Text("of \(Int(log.weeklyGoal)) min").font(SP.rounded(9, .semibold)).tracking(0.6).foregroundStyle(SP.faint)
+            // Weekly goal ring, with "Goal met" under it (an overlay on the card covered the ring's "of 30 min").
+            VStack(spacing: 8) {
+                ZStack {
+                    Circle().stroke(Color.white.opacity(0.08), lineWidth: 7)
+                    Circle()
+                        .trim(from: 0, to: progress)
+                        .stroke(log.goalReached ? SP.goldGlow : LinearGradient(colors: [SP.accent, SP.indigo], startPoint: .top, endPoint: .bottom),
+                                style: StrokeStyle(lineWidth: 7, lineCap: .round))
+                        .rotationEffect(.degrees(-90))
+                        .shadow(color: (log.goalReached ? SP.gold : SP.teal).opacity(0.35), radius: 6)
+                        .animation(reduceMotion ? nil : .easeOut(duration: 1.1), value: progress)
+                    VStack(spacing: 1) {
+                        Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(22)).foregroundStyle(SP.ink)
+                        Text("of \(Int(log.weeklyGoal)) min").font(SP.rounded(9, .semibold)).tracking(0.6).foregroundStyle(SP.faint)
+                    }
+                }
+                .frame(width: 84, height: 84)
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Weekly goal: \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week")
+                if log.goalReached {
+                    SPChip(text: "Goal met", color: SP.gold).fixedSize()
                 }
             }
-            .frame(width: 84, height: 84)
-            .accessibilityElement(children: .ignore)
-            .accessibilityLabel("Weekly goal: \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week")
         }
         .padding(18)
         .background(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).fill(SP.card))
         .overlay(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).stroke(SP.stroke, lineWidth: 1))
-        .overlay(alignment: .bottomTrailing) {
-            if log.goalReached {
-                SPChip(text: "Goal met", color: SP.gold).padding(10)
-            }
-        }
         .onAppear { withAnimation { appeared = true } }
     }
 }
