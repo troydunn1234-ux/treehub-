@@ -39,7 +39,7 @@ jobs:
   listing:
     # Apple-silicon runner: the simulators run several times faster than on Intel, where Roamr's capture
     # (iPhone + 13-inch iPad + Watch) starved the runner until it "lost communication" (3 runs in a row).
-    runs-on: macos-15
+    runs-on: macos-15-intel
     timeout-minutes: 95
     steps:
       - uses: actions/checkout@v4
