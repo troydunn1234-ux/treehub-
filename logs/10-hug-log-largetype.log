@@ -1,0 +1,431 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-18 04:06:29.302 F  Rootbound[34688:17990] [com.apple.locationd.Legacy:Generic_deprecated] could not read user kCFPreferencesCurrentUser uid/gid
+2026-11-18 04:06:29.302 A  Rootbound[34688:17990] (libsystem_trace.dylib) Activity for state dumps
+2026-11-18 04:06:29.303 Df Rootbound[34688:17990] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-18 04:06:29.313 Df Rootbound[34688:17990] [com.apple.xpc:connection] [0x107204ae0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-18 04:06:29.320 E  Rootbound[34688:17990] [com.apple.locationd.Core:Core] {"msg":"file does not exist... clearing", "file":/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, "error":Error Domain=NSCocoaErrorDomain Code=260 "The file “com.apple.CoreMotion.plist” couldn’t be opened because there is no such file." UserInfo={NSFilePath=/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSURL=file:///Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS%2026.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed%20Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSUnderlyingError=0x600000c00300 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}}
+2026-11-18 04:06:29.321 A  Rootbound[34688:17990] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:06:29.322 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.322 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":initWithEffectiveBundleIdentifier:bundlePath:websiteIdentifier:delegate:silo:, "self":"0x60000000c1e0", "identifier":(null), "bundlePath":(null)}
+2026-11-18 04:06:29.323 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"client allocated", "client":"0x107204d40"}
+2026-11-18 04:06:29.323 A  Rootbound[34688:17977] (CoreLocation) CL: _CLClientCreateConnection
+2026-11-18 04:06:29.323 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"_CLClientCreateConnection", "event":activity, "client":"0x107204d40"}
+2026-11-18 04:06:29.324 A  Rootbound[34688:17991] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-18 04:06:29.324 Df Rootbound[34688:17991] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-18 04:06:29.324 Df Rootbound[34688:17991] [com.apple.xpc:connection] [0x107204ed0] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-18 04:06:29.326 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:29.327 A  Rootbound[34688:17991] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:29.327 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:29.327 A  Rootbound[34688:17991] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:29.327 A  Rootbound[34688:17991] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-18 04:06:29.328 Df Rootbound[34688:17991] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-18 04:06:29.328 Df Rootbound[34688:17991] [com.apple.xpc:connection] [0x107104340] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-18 04:06:29.329 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.329 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDelegate:, "self":"0x60000000c1e0", "delegate":"0x108009200"}
+2026-11-18 04:06:29.329 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.329 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDesiredAccuracy:, "self":"0x60000000c1e0", "accuracy":"-1.000000"}
+2026-11-18 04:06:29.329 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.329 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setPausesLocationUpdatesAutomatically:, "self":"0x60000000c1e0", "pausesLocationUpdatesAutomatically":0}
+2026-11-18 04:06:29.329 A  Rootbound[34688:17977] (CoreLocation) CL: CLInternalGetAuthorizationStatus
+2026-11-18 04:06:29.329 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLInternalGetAuthorizationStatus", "event":activity}
+2026-11-18 04:06:29.333 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107104500] activating connection: mach=true listener=false peer=false name=com.apple.locationd.synchronous
+2026-11-18 04:06:29.336 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.336 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setActivityType:, "self":"0x60000000c1e0", "activityType":3}
+2026-11-18 04:06:29.336 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:29.336 A  Rootbound[34688:17991] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:29.337 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:29.337 A  Rootbound[34688:17991] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:29.337 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.337 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDistanceFilter:, "self":"0x60000000c1e0", "distance":"4.000000"}
+2026-11-18 04:06:29.402 Df Rootbound[34688:17977] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.sessionservices
+2026-11-18 04:06:29.405 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107104630] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:06:29.410 Df Rootbound[34688:17977] [com.apple.activitykit:pushToken] Activated ActivityPushTokenClient connection
+2026-11-18 04:06:29.414 Df Rootbound[34688:17977] [com.apple.activitykit:outputClient] Activated ActivityOutputClient connection
+2026-11-18 04:06:29.426 Df Rootbound[34688:17991] [com.apple.activitykit:pushToken] Push tokens changed: [:]
+2026-11-18 04:06:29.427 Df Rootbound[34688:17977] [com.apple.activitykit:activityClient] Activated ActivityClient connection
+2026-11-18 04:06:29.436 Df Rootbound[34688:17977] [com.apple.activitykit:outputClient] Fetched descriptors for content states: []
+2026-11-18 04:06:29.437 Df Rootbound[34688:17977] [com.apple.activitykit:outputClient] Fetched descriptors for content states: []
+2026-11-18 04:06:29.546 Df Rootbound[34688:17977] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-18 04:06:29.546 Df Rootbound[34688:17977] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: YES
+2026-11-18 04:06:29.546 A  Rootbound[34688:17977] (WatchConnectivity) activateSession
+2026-11-18 04:06:29.546 Df Rootbound[34688:17977] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-18 04:06:29.546 Df Rootbound[34688:17977] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-18 04:06:29.546 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x10730b200] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-18 04:06:29.554 Df Rootbound[34688:179a0] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c14060, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-18 04:06:29.554 Df Rootbound[34688:179a0] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:] <WCActiveDeviceSwitchTask: 0x600000218860, clientReadyForSessionState: YES, taskState: ActivationRequested>
+2026-11-18 04:06:29.554 Df Rootbound[34688:179a0] [com.apple.wcd:WC] -[WCSession onDelegateQueueIfTriggeringKVO_updateSessionState:triggerKVO:] <WCSessionState: 0x600000c14060, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>, triggerKVO: NO
+2026-11-18 04:06:29.554 Df Rootbound[34688:179a0] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c14180, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-18 04:06:29.555 Df Rootbound[34688:17991] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:]_block_invoke_2 hasContentPending: NO
+2026-11-18 04:06:29.556 Df Rootbound[34688:179a0] [com.apple.wcd:WC] -[WCSession onqueue_startNextDeviceSwitch] no tasks queued after <WCActiveDeviceSwitchTask: 0x600000218860, clientReadyForSessionState: YES, taskState: ActivationCompleted>
+2026-11-18 04:06:29.556 E  Rootbound[34688:179a2] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-18 04:06:29.573 E  Rootbound[34688:179a2] [com.apple.wcd:WC] WCSession is not paired
+2026-11-18 04:06:29.573 Df Rootbound[34688:179a2] [com.apple.wcd:WC] -[WCSession didSessionStateChange:withChangeHandler:] no change
+2026-11-18 04:06:29.577 A  Rootbound[34688:179a0] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:06:29.577 Df Rootbound[34688:17977] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:29.579 Df Rootbound[34688:179a1] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.frontboard.systemappservices
+2026-11-18 04:06:29.579 Df Rootbound[34688:179a1] [com.apple.xpc:connection] [0x1073051f0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:06:29.584 Df Rootbound[34688:17991] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-18 04:06:29.584 Df Rootbound[34688:17991] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-18 04:06:29.584 Df Rootbound[34688:17991] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x60000210fb60>
+2026-11-18 04:06:29.584 Df Rootbound[34688:17991] [com.apple.runningboard:connection] Initializing connection
+2026-11-18 04:06:29.584 Df Rootbound[34688:17991] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-18 04:06:29.584 Df Rootbound[34688:179a2] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-18 04:06:29.585 Df Rootbound[34688:179a2] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-18 04:06:29.585 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-18 04:06:29.586 Df Rootbound[34688:179a2] [com.apple.xpc:connection] [0x1071060f0] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-18 04:06:29.586 Df Rootbound[34688:17977] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-18 04:06:29.586 Df Rootbound[34688:17977] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-18 04:06:29.587 A  Rootbound[34688:179a0] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:29.587 Df Rootbound[34688:17977] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-18 04:06:29.589 Df Rootbound[34688:179a2] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-18 04:06:29.589 Df Rootbound[34688:179a2] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.rootbound((null))>
+2026-11-18 04:06:29.591 Df Rootbound[34688:17991] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x60000210fb60>
+2026-11-18 04:06:29.591 Df Rootbound[34688:17991] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x600001719c40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1688 (elapsed = 0).
+2026-11-18 04:06:29.591 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-18 04:06:29.592 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-18 04:06:29.593 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-18 04:06:29.593 Df Rootbound[34688:17977] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000021c060; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-18 04:06:29.594 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-18 04:06:29.594 Df Rootbound[34688:17977] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x60000300ce10 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-18 04:06:29.595 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-18 04:06:29.595 Df Rootbound[34688:17977] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x60000300ce10 com.apple.frontboard.systemappservices> sent handshake
+2026-11-18 04:06:29.597 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:06:29.598 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-18 04:06:29.598 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:06:29.599 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:06:29.599 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-18 04:06:29.600 Df Rootbound[34688:17977] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x6000002131e0>
+2026-11-18 04:06:29.600 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-18 04:06:29.600 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-18 04:06:29.601 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-18 04:06:29.601 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:06:29.601 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-18 04:06:29.602 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-18 04:06:29.603 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-18 04:06:29.604 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-18 04:06:29.604 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:06:29.605 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-18 04:06:29.606 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-18 04:06:29.606 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-18 04:06:29.607 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:06:29.607 Df Rootbound[34688:17991] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-18 04:06:29.609 Df Rootbound[34688:17977] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x106f0a940> for initial
+2026-11-18 04:06:29.609 Df Rootbound[34688:179a0] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-18 04:06:29.609 Df Rootbound[34688:17977] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x106f0a940> for CADisplay KVO
+2026-11-18 04:06:29.612 Df Rootbound[34688:179a0] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-18 04:06:29.613 Df Rootbound[34688:17977] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-18 04:06:29.614 Df Rootbound[34688:17977] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryAccessibilityL
+2026-11-18 04:06:29.622 Df Rootbound[34688:179a0] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-18 04:06:29.622 Df Rootbound[34688:179a0] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-18 04:06:29.623 Df Rootbound[34688:179a0] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-18 04:06:29.624 Df Rootbound[34688:17977] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-18 04:06:29.624 Df Rootbound[34688:17977] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:06:29.625 Df Rootbound[34688:17977] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:06:29.625 Df Rootbound[34688:17977] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:06:29.627 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-18 04:06:29.631 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-18 04:06:29.631 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.631 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onClientEventRegistration:, "self":"0x60000000c1e0", "clientKey":icom.troydunn.rootbound:}
+2026-11-18 04:06:29.631 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x60000000c1e0", "delegate":"0x108009200", "selector":locationManagerDidChangeAuthorization:, "authorizationStatus":4, "limitsPrecision":0, "isAuthorizedForWidgetUpdates":0}
+2026-11-18 04:06:29.632 Df Rootbound[34688:17977] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-18 04:06:29.632 Df Rootbound[34688:17977] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-18 04:06:29.632 Df Rootbound[34688:17977] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-18 04:06:29.636 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107210010] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-18 04:06:29.687 Df Rootbound[34688:17977] [com.apple.BoardServices:XPCErrors] [C:3] Alloc com.apple.backboard.hid-services.xpc
+2026-11-18 04:06:29.687 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x10720b1d0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:06:29.689 Df Rootbound[34688:179a0] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-18 04:06:29.691 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-18 04:06:29.692 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.693 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.694 Df Rootbound[34688:17977] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x600002915880>; with scene: <UIWindowScene: 0x107211110>
+2026-11-18 04:06:29.694 Df Rootbound[34688:17977] [com.apple.BacklightServices:scenes] 0x600000c2cf60 setDelegate:<0x600000c2d0b0 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.rootbound-default
+2026-11-18 04:06:29.695 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.695 Df Rootbound[34688:17977] [com.apple.UIKit:EventDeferring] [0x600002915b20] Initialized with scene: <UIWindowScene: 0x107211110>; behavior: <_UIEventDeferringBehavior_iOS: 0x600000231420>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-18 04:06:29.697 Df Rootbound[34688:17977] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x60000260b660; process scope; status: target> was:none
+2026-11-18 04:06:29.698 Df Rootbound[34688:179a0] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x107211110; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.rootbound-default
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:EventDeferring] [0x600002915b20] Scene target of event deferring environments did update: scene: 0x107211110; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x107211110; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.rootbound-default
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c2daa0: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x107211110; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x107211110: Window scene became target of keyboard environment
+2026-11-18 04:06:29.698 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.699 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.701 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.852 Df Rootbound[34688:17977] [com.apple.UIKit:Orientation] <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46) Scene updated orientation preferences: none -> ( Pu )
+2026-11-18 04:06:29.864 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-18 04:06:29.864 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x107211110: Window became key in scene: UIWindow: 0x10730cc10; contextId: 0x8E455CC3: reason: UIWindowScene: 0x107211110: Window requested to become key in scene: 0x10730cc10
+2026-11-18 04:06:29.864 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x107211110; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10730cc10; reason: UIWindowScene: 0x107211110: Window requested to become key in scene: 0x10730cc10
+2026-11-18 04:06:29.864 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10730cc10; contextId: 0x8E455CC3; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.rootbound-default
+2026-11-18 04:06:29.865 Df Rootbound[34688:17977] [com.apple.UIKit:EventDeferring] [0x600002915b20] Begin local event deferring requested for token: 0x6000026105a0; environments: 1; reason: UIWindowScene: 0x107211110: Begin event deferring in keyboardFocus for window: 0x10730cc10
+2026-11-18 04:06:29.869 Df Rootbound[34688:179a4] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x60000260b660; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.rootbound-default; status: ancestor> was:target
+2026-11-18 04:06:29.871 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.873 Df Rootbound[34688:17977] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.rootbound-default  persistentID: 85CDF2E1-27FB-41E0-9999-B72F874A5C46
+2026-11-18 04:06:29.873 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-18 04:06:29.874 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-18 04:06:29.874 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:29.874 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onWillEnterForeground:, "self":"0x60000000c1e0", "notification":NSConcreteNotification 0x600000234f20 {name = UIApplicationWillEnterForegroundNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x10720d340>}}
+2026-11-18 04:06:29.874 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-18 04:06:29.874 Df Rootbound[34688:17977] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-18 04:06:29.875 Df Rootbound[34688:179a5] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-18 04:06:29.875 Df Rootbound[34688:179a5] [com.apple.xpc:session] [0x600002117c50] Session created.
+2026-11-18 04:06:29.875 Df Rootbound[34688:179a5] [com.apple.xpc:session] [0x600002117c50] Session created from connection [0x10710f6c0]
+2026-11-18 04:06:29.876 Df Rootbound[34688:179a5] [com.apple.xpc:connection] [0x10710f6c0] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-18 04:06:29.876 Df Rootbound[34688:179a5] [com.apple.xpc:session] [0x600002117c50] Session activated
+2026-11-18 04:06:29.877 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:29.888 A  Rootbound[34688:17977] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-18 04:06:30.185 A  Rootbound[34688:17977] (TCC) tcc_send_request_authorization() IPC
+2026-11-18 04:06:30.185 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107211a60] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-18 04:06:30.188 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107211a60] invalidated after the last release of the connection object
+2026-11-18 04:06:30.188 A  Rootbound[34688:17977] (TCC) TCCAccessRequest() IPC
+2026-11-18 04:06:30.188 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107215f00] activating connection: mach=true listener=false peer=false name=com.apple.tccd
+2026-11-18 04:06:30.191 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107215f00] invalidated after the last release of the connection object
+2026-11-18 04:06:30.216 Df Rootbound[34688:179a5] [com.apple.xpc:connection] [0x106f150e0] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-18 04:06:30.218 Df Rootbound[34688:179a4] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:30.517 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x10730ffd0] activating connection: mach=true listener=false peer=false name=com.apple.lsd.open
+2026-11-18 04:06:30.522 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "stillpoint://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:30.523 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:30.523 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:30.615 Df Rootbound[34688:179a4] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-18 04:06:30.615 Df Rootbound[34688:179a4] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x600001719c40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1688 (elapsed = 1), _expireHandler: (null)
+2026-11-18 04:06:30.616 Df Rootbound[34688:179a4] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x60000210fb60> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x600001719c40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1688 (elapsed = 1))
+2026-11-18 04:06:30.616 Df Rootbound[34688:179a4] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x60000210fb60> for task identifier: 1
+2026-11-18 04:06:30.719 A  Rootbound[34688:179a5] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:30.766 Df Rootbound[34688:17977] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-18 04:06:30.857 Df Rootbound[34688:17977] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.rootbound-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:06:30.858 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:31.896 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:31.896 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:31.897 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:31.897 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:31.897 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:31.898 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:31.898 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:31.898 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:31.899 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:31.955 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:31.955 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":initWithEffectiveBundleIdentifier:bundlePath:websiteIdentifier:delegate:silo:, "self":"0x60000001a990", "identifier":(null), "bundlePath":(null)}
+2026-11-18 04:06:31.955 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"client allocated", "client":"0x10726ebe0"}
+2026-11-18 04:06:31.955 A  Rootbound[34688:17977] (CoreLocation) CL: _CLClientCreateConnection
+2026-11-18 04:06:31.955 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"_CLClientCreateConnection", "event":activity, "client":"0x10726ebe0"}
+2026-11-18 04:06:31.955 A  Rootbound[34688:179a0] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-18 04:06:31.955 Df Rootbound[34688:179a0] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-18 04:06:31.955 Df Rootbound[34688:179a0] [com.apple.xpc:connection] [0x106f571c0] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-18 04:06:31.956 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:31.956 A  Rootbound[34688:179a0] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:31.957 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:31.957 A  Rootbound[34688:179a0] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:31.957 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:31.957 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDelegate:, "self":"0x60000001a990", "delegate":"0x6000002fe760"}
+2026-11-18 04:06:31.958 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:31.958 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDesiredAccuracy:, "self":"0x60000001a990", "accuracy":"-1.000000"}
+2026-11-18 04:06:32.218 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:32.218 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:32.219 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:32.361 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:32.522 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107216910] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:32.523 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x106f5cde0] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:32.524 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x106f78520] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:32.577 Df Rootbound[34688:17977] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-18 04:06:32.578 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x10737be30] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-18 04:06:32.836 A  Rootbound[34688:179a4] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:32.849 A  Rootbound[34688:179a0] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:32.865 Df Rootbound[34688:17977] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [B8AF9932-92C8-4595-8C3A-B3735E5A6D59] (reporting strategy default)>
+2026-11-18 04:06:32.869 Df Rootbound[34688:17977] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [B8228D44-4784-4373-8226-44F29919E4D1] (reporting strategy default)>
+2026-11-18 04:06:32.869 Df Rootbound[34688:17977] [com.apple.network:activity] Set activity <nw_activity 50:1 [B8AF9932-92C8-4595-8C3A-B3735E5A6D59] (reporting strategy default)> as the global parent
+2026-11-18 04:06:32.946 A  Rootbound[34688:179a0] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:33.163 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107217ca0] activating connection: mach=true listener=false peer=false name=com.apple.distributed_notifications@1v3
+2026-11-18 04:06:33.920 Df Rootbound[34688:179a2] [com.apple.calls.callkit:Default] Call host has no calls
+2026-11-18 04:06:34.203 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:34.215 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:34.357 Df Rootbound[34688:17977] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.rootbound-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:06:34.568 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:34.719 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:35.041 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:35.041 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onClientEventRegistration:, "self":"0x60000001a990", "clientKey":icom.troydunn.rootbound:}
+2026-11-18 04:06:35.041 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x60000001a990", "delegate":"0x6000002fe760", "selector":locationManagerDidChangeAuthorization:, "authorizationStatus":4, "limitsPrecision":0, "isAuthorizedForWidgetUpdates":0}
+2026-11-18 04:06:35.042 Df Rootbound[34688:17977] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-18 04:06:35.045 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:35.629 Df Rootbound[34688:17977] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.rootbound-default  persistentID: 85CDF2E1-27FB-41E0-9999-B72F874A5C46
+2026-11-18 04:06:35.630 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:35.630 Df Rootbound[34688:17977] [com.apple.UIKit:EventDeferring] [0x600002915b20] Scene target of event deferring environments did update: scene: 0x107211110; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-18 04:06:35.630 Df Rootbound[34688:17977] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x107211110; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.rootbound-default
+2026-11-18 04:06:35.640 Df Rootbound[34688:17977] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-18 04:06:35.678 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:35.679 Df Rootbound[34688:179a4] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:35.685 Df Rootbound[34688:179a4] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:35.690 Df Rootbound[34688:179a1] (CoreVideo) Pixel format registry initialized. Constant classes enabled.
+2026-11-18 04:06:35.810 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:35.810 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":requestLocation, "self":"0x60000001a990"}
+2026-11-18 04:06:35.810 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:35.811 A  Rootbound[34688:179a0] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:35.896 Df Rootbound[34688:179a0] [com.apple.HealthKit:auth] Requesting prompting authorization to share (
+), read (
+    HKWorkoutTypeIdentifier,
+    HKQuantityTypeIdentifierRestingHeartRate,
+    HKCategoryTypeIdentifierMindfulSession,
+    HKQuantityTypeIdentifierHeartRateVariabilitySDNN,
+    HKQuantityTypeIdentifierRespiratoryRate,
+    HKQuantityTypeIdentifierHeartRate
+)
+2026-11-18 04:06:35.897 Df Rootbound[34688:179a0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:35.898 Df Rootbound[34688:179a4] [com.apple.xpc:connection] [0x106f48300] activating connection: mach=true listener=false peer=false name=com.apple.healthd.server
+2026-11-18 04:06:35.899 Df Rootbound[34688:179a0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:35.902 E  Rootbound[34688:17ba7] [com.apple.HealthKit:auth] FAILED prompting authorization request to share (
+), read (
+    HKWorkoutTypeIdentifier,
+    HKQuantityTypeIdentifierRestingHeartRate,
+    HKCategoryTypeIdentifierMindfulSession,
+    HKQuantityTypeIdentifierHeartRateVariabilitySDNN,
+    HKQuantityTypeIdentifierRespiratoryRate,
+    HKQuantityTypeIdentifierHeartRate
+), error Missing com.apple.developer.healthkit entitlement.
+2026-11-18 04:06:35.967 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:35.967 A  Rootbound[34688:17ba7] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:35.967 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x60000001a990", "delegate":"0x6000002fe760", "selector":locationManager:didUpdateLocations:, "location":<private>, "eventType":kCLConnectionMessageLocation}
+2026-11-18 04:06:36.428 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:36.504 Df Rootbound[34688:17977] [com.apple.UIKit:_UIVisualStyleRegistry] Note: no default visual style class registered as fallback for stylable class UIActivityIndicatorView
+2026-11-18 04:06:36.504 Df Rootbound[34688:17977] [com.apple.UIKit:_UIVisualStyleRegistry] Note: no default visual style class registered as fallback for stylable class UIActivityIndicatorView
+2026-11-18 04:06:36.627 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:36.897 Df Rootbound[34688:17977] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-18 04:06:36.899 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:36.900 Df Rootbound[34688:17977] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107211110> (85CDF2E1-27FB-41E0-9999-B72F874A5C46)
+2026-11-18 04:06:36.903 Df Rootbound[34688:17977] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.rootbound-default  persistentID: 85CDF2E1-27FB-41E0-9999-B72F874A5C46
+2026-11-18 04:06:36.903 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-18 04:06:36.903 Df Rootbound[34688:17977] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-18 04:06:36.906 Df Rootbound[34688:17977] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-18 04:06:36.906 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:36.906 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onDidBecomeActive:, "self":"0x60000000c1e0", "notification":NSConcreteNotification 0x600000387ca0 {name = UIApplicationDidBecomeActiveNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x10720d340>}}
+2026-11-18 04:06:36.908 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "stillpoint://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:36.909 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:36.910 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:36.911 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:36.911 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onDidBecomeActive:, "self":"0x60000001a990", "notification":NSConcreteNotification 0x600000387ca0 {name = UIApplicationDidBecomeActiveNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x10720d340>}}
+2026-11-18 04:06:36.911 Df Rootbound[34688:17977] [com.apple.HealthKit:process_state] App did become active
+2026-11-18 04:06:36.911 E  Rootbound[34688:179a0] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:36.941 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:37.294 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:37.294 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:37.295 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:37.295 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:37.295 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:37.296 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:37.296 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:37.296 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:37.297 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:37.298 A  Rootbound[34688:17977] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:37.298 Df Rootbound[34688:17977] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:37.300 E  Rootbound[34688:17977] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:37.300 A  Rootbound[34688:17977] (TCC) TCCAccessRequest() IPC
+2026-11-18 04:06:37.323 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:37.776 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:38.199 Df Rootbound[34688:17977] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-18 04:06:38.202 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x10737cbe0] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-18 04:06:38.264 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:38.609 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:38.751 A  Rootbound[34688:17977] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:06:38.752 A  Rootbound[34688:17977] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:06:38.760 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107205d50] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.768 Df Rootbound[34688:179a0] [com.apple.xpc:connection] [0x10726d590] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.769 Df Rootbound[34688:179a0] [com.apple.xpc:connection] [0x106fdc670] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.776 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x1072f2950] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.869 Df Rootbound[34688:179a0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:38.870 Df Rootbound[34688:179a0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=34688 task=Rootbound[34688]/0#-1 LF=22
+2026-11-18 04:06:38.900 Df Rootbound[34688:17977] [com.apple.GeoServices:ResourceManifest] Did not find downloaded resource "default.csv" at "(null)", trying fallback
+2026-11-18 04:06:38.907 E  Rootbound[34688:17977] [com.apple.GeoServices:ResourceManifest] Failed to locate resource named "default.csv"
+2026-11-18 04:06:38.942 Df Rootbound[34688:17977] [com.apple.GeoServices:ResourceManifest] Did not find downloaded resource "groundSettings.json" at "(null)", trying fallback
+2026-11-18 04:06:38.982 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x1073eefa0] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.984 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x11d8063f0] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:38.997 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x1073b36d0] activating connection: mach=true listener=true peer=false name=com.apple.notifyd.matching
+2026-11-18 04:06:39.015 Df Rootbound[34688:17977] [com.apple.GeoServices:ResourceManifest] Did not find downloaded resource "CurrencyStyleAttributes.plist" at "(null)", trying fallback
+2026-11-18 04:06:39.038 Df Rootbound[34688:17977] [com.apple.GeoServices:ResourceManifest] Did not find downloaded resource "NonTiledAssets.pb" at "(null)", trying fallback
+2026-11-18 04:06:39.065 E  Rootbound[34688:17977] [com.apple.coreanimation:API] CAMetalLayer ignoring invalid setDrawableSize width=0.000000 height=0.000000
+2026-11-18 04:06:39.085 Df Rootbound[34688:17977] (AggregateDictionary) AggregateDictionary is not supported on this platform
+2026-11-18 04:06:39.129 Df Rootbound[34688:17977] [com.apple.CoreAnalytics:client] No XPC connection in Simulator
+2026-11-18 04:06:39.133 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x11bf4a0f0] activating connection: mach=true listener=false peer=false name=com.apple.geoanalyticsd
+2026-11-18 04:06:39.217 Df Rootbound[34688:17977] [com.apple.UIKit:Feedback] generator <UISelectionFeedbackGenerator: 0x6000035249a0> cannot play feedback <nil: 0x0> (enabled=0)
+2026-11-18 04:06:39.217 Df Rootbound[34688:17977] [com.apple.UIKit:Feedback] generator <UISelectionFeedbackGenerator: 0x6000035249a0> cannot play feedback <nil: 0x0> (enabled=0)
+2026-11-18 04:06:39.239 Df Rootbound[34688:17977] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.rootbound-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:06:39.275 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.275 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":initWithEffectiveBundleIdentifier:bundlePath:websiteIdentifier:delegate:silo:, "self":"0x6000000db2e0", "identifier":(null), "bundlePath":(null)}
+2026-11-18 04:06:39.276 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"client allocated", "client":"0x1072b72e0"}
+2026-11-18 04:06:39.276 A  Rootbound[34688:17977] (CoreLocation) CL: _CLClientCreateConnection
+2026-11-18 04:06:39.276 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"_CLClientCreateConnection", "event":activity, "client":"0x1072b72e0"}
+2026-11-18 04:06:39.276 A  Rootbound[34688:17ba7] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-18 04:06:39.276 Df Rootbound[34688:17ba7] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-18 04:06:39.276 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:39.276 Df Rootbound[34688:17ba7] [com.apple.xpc:connection] [0x107349100] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-18 04:06:39.276 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:39.276 A  Rootbound[34688:17ba7] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:39.277 A  Rootbound[34688:17ba7] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:39.277 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.277 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDelegate:, "self":"0x6000000db2e0", "delegate":"0x6000035423c0"}
+2026-11-18 04:06:39.278 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.278 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDistanceFilter:, "self":"0x6000000db2e0", "distance":"-1.000000"}
+2026-11-18 04:06:39.278 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.278 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDesiredAccuracy:, "self":"0x6000000db2e0", "accuracy":"-1.000000"}
+2026-11-18 04:06:39.278 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.279 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setActivityType:, "self":"0x6000000db2e0", "activityType":0}
+2026-11-18 04:06:39.279 A  Rootbound[34688:17977] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-18 04:06:39.279 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.279 A  Rootbound[34688:17ba7] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-18 04:06:39.280 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setAllowsAlteredAccessoryLocations:, "self":"0x6000000db2e0", "enabled":1}
+2026-11-18 04:06:39.281 A  Rootbound[34688:179a0] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.281 Df Rootbound[34688:179a0] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onClientEventRegistration:, "self":"0x6000000db2e0", "clientKey":icom.troydunn.rootbound:}
+2026-11-18 04:06:39.285 Df Rootbound[34688:17ba7] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x6000000db2e0", "delegate":"0x6000035423c0", "selector":locationManagerDidChangeAuthorization:, "authorizationStatus":4, "limitsPrecision":0, "isAuthorizedForWidgetUpdates":0}
+2026-11-18 04:06:39.285 A  Rootbound[34688:17ba7] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.285 Df Rootbound[34688:17ba7] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.285 A  Rootbound[34688:17ba7] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.285 Df Rootbound[34688:17ba7] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.285 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.286 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.286 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.286 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.293 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107277940] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:39.395 Df Rootbound[34688:17977] (libMobileGestalt.dylib) Could not retrieve region info
+2026-11-18 04:06:39.419 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x106f79180] activating connection: mach=true listener=false peer=false name=com.apple.geod
+2026-11-18 04:06:39.469 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.469 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.469 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.469 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.470 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.470 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.470 A  Rootbound[34688:17977] (CoreLocation) CL: CLLocationManager
+2026-11-18 04:06:39.470 Df Rootbound[34688:17977] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":desiredAccuracy, "self":"0x6000000db2e0"}
+2026-11-18 04:06:39.472 Df Rootbound[34688:17977] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-18 04:06:39.499 Df Rootbound[34688:17977] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-18 04:06:39.601 Df Rootbound[34688:17ba7] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-18 04:06:39.601 Df Rootbound[34688:17ba7] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-18 04:06:39.602 Df Rootbound[34688:17ba7] [com.apple.network:path] nw_path_evaluator_start [44108E72-C6F4-4521-957A-232937710B6B Hostname#e45a98b6:443 generic, url: https://configuration.ls.apple.com/config/defaults, attribution: developer]
+	path: satisfied (Path is satisfied), interface: en0
+2026-11-18 04:06:39.651 Df Rootbound[34688:17977] (libMobileGestalt.dylib) Failed to copyDeviceTreeProperty(IODeviceTree:/arm-io soc-generation)
+2026-11-18 04:06:39.651 Df Rootbound[34688:17977] (libMobileGestalt.dylib) Failed to get current SOC Generation string
+2026-11-18 04:06:39.674 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x1072be1e0] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-18 04:06:40.273 Df Rootbound[34688:17977] [com.apple.xpc:connection] [0x107365490] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-18 04:06:40.273 A  Rootbound[34688:17ba7] (Metal) Metal Compiling Shader
+2026-11-18 04:06:40.772 A  Rootbound[34688:179a1] (Metal) Metal Compiling Shader
+2026-11-18 04:06:40.802 A  Rootbound[34688:179a1] (Metal) Metal Compiling Shader
+2026-11-18 04:06:40.817 A  Rootbound[34688:179a0] (Metal) Metal Compiling Shader
+2026-11-18 04:06:40.821 A  Rootbound[34688:179a0] (Metal) Metal Compiling Shader
+2026-11-18 04:06:40.998 Df Rootbound[34688:17977] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:47.841 A  Rootbound[34688:179a4] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:06:49.181 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.191 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.197 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.264 A  Rootbound[34688:17f45] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.280 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.285 A  Rootbound[34688:17f45] (Metal) Metal Compiling Shader
+2026-11-18 04:06:49.291 A  Rootbound[34688:17f45] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.253 A  Rootbound[34688:17f48] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.265 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.273 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.298 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.305 A  Rootbound[34688:17991] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.316 A  Rootbound[34688:17f48] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.323 A  Rootbound[34688:17f48] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.330 A  Rootbound[34688:17f47] (Metal) Metal Compiling Shader
+2026-11-18 04:06:51.336 A  Rootbound[34688:17f47] (Metal) Metal Compiling Shader
+2026-11-18 04:06:52.585 A  Rootbound[34688:17f43] (Metal) Metal Compiling Shader
+2026-11-18 04:06:52.593 A  Rootbound[34688:17f4b] (Metal) Metal Compiling Shader
+2026-11-18 04:06:52.600 A  Rootbound[34688:17f43] (Metal) Metal Compiling Shader

@@ -1,0 +1,12 @@
+OK    01-home  -demo -pro -tab home
+OK    02-hug-log  -demo -pro -hugLog  [8 error/fault log lines]
+OK    03-celebrate  -demo -pro -celebrate  [13 error/fault log lines]
+OK    04-grove  -demo -pro -tab trees  [13 error/fault log lines]
+OK    05-collection  -demo -pro -tab collection  [13 error/fault log lines]
+OK    06-home-free  -demo -free -tab home  [12 error/fault log lines]
+OK    07-grove-free  -demo -free -tab trees  [12 error/fault log lines]
+OK    08-paywall  -demo -paywall -demoPrice 4.99  [12 error/fault log lines]
+OK    09-home-largetype  -demo -pro -tab home  [12 error/fault log lines]
+OK    10-hug-log-largetype  -demo -pro -hugLog  [16 error/fault log lines]
+OK    11-grove-largetype  -demo -pro -tab trees  [12 error/fault log lines]
+OK    watch-w1-home  -demo  [1 error/fault log lines]
