@@ -37,9 +37,27 @@ final class WatchSync: NSObject, WCSessionDelegate {
         guard WCSession.isSupported(), !LabStore.isDemo else { return }
         activate()
         let s = WCSession.default
-        guard s.activationState == .activated, s.isPaired, s.isWatchAppInstalled else { return }
-        try? s.updateApplicationContext(Self.payload(store))
+        guard s.activationState == .activated else { pushWhenActivated = true; return }
+        guard s.isPaired, s.isWatchAppInstalled else { return }
+        let payload = Self.payload(store)
+        // Refreshes run on every new Health sample: only send when the numbers changed (or hourly, so the
+        // Watch's "updated" time stays honest). Each send wakes the Watch.
+        var numbers = payload
+        numbers.removeValue(forKey: Key.updatedAt)
+        let same = (lastSent?.isEqual(numbers as NSDictionary) ?? false) && Date().timeIntervalSince(lastSentAt) < 3600
+        guard !same else { return }
+        do {
+            try s.updateApplicationContext(payload)
+            lastSent = numbers as NSDictionary
+            lastSentAt = Date()
+        } catch {}
     }
+
+    /// The numbers (without the time) last handed to the Watch, and when.
+    private var lastSent: NSDictionary?
+    private var lastSentAt = Date.distantPast
+    /// A refresh finished before the session was ready: send its numbers once it is.
+    private var pushWhenActivated = false
 
     @MainActor
     static func payload(_ store: LabStore) -> [String: Any] {
@@ -69,7 +87,12 @@ final class WatchSync: NSObject, WCSessionDelegate {
 
     func session(_ session: WCSession, activationDidCompleteWith activationState: WCSessionActivationState, error: Error?) {
         guard activationState == .activated else { return }
-        Task { @MainActor in self.push(LabStore.shared) }
+        // Only numbers a refresh has built (at launch the briefing is still empty and would blank the Watch).
+        Task { @MainActor in
+            guard self.pushWhenActivated else { return }
+            self.pushWhenActivated = false
+            self.push(LabStore.shared)
+        }
     }
     func sessionDidBecomeInactive(_ session: WCSession) {}
     func sessionDidDeactivate(_ session: WCSession) { WCSession.default.activate() }
