@@ -1,0 +1,18 @@
+2026-11-18 04:07:24.757 E  StillPoint[23631:11085] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-18 04:07:24.773 E  StillPoint[23631:11085] [com.apple.wcd:WC] WCSession is not paired
+2026-11-18 04:07:32.514 F  StillPoint[23631:10fef] [com.apple.renderbox:error] building pipeline primitive_gradient-geba2ga2ca8feba4 took 1.358699 seconds
+2026-11-18 04:07:36.236 E  StillPoint[23631:11085] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-18 04:07:41.561 E  StillPoint[23631:11086] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-18 04:07:41.562 E  StillPoint[23631:11086] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.938 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.941 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.959 E  StillPoint[23631:112e2] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:07:41.962 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.965 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.967 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:41.969 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:42.216 E  StillPoint[23631:112f3] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-18 04:07:42.595 E  StillPoint[23631:112fb] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-18 04:07:43.812 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:44.071 E  StillPoint[23631:10fef] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:45.885 E  StillPoint[23631:110ae] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics

@@ -1,0 +1,92 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-18 04:06:54.797 Df StillPoint[22495:10535] [com.apple.xpc:connection] [0x10a310c70] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-18 04:06:54.799 Df StillPoint[22495:1056c] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=22495 task=StillPoint[22495]/0#-1 LF=22
+2026-11-18 04:06:54.821 Df StillPoint[22495:1049f] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10a60b070> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:06:54.994 Df StillPoint[22495:1056c] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-18 04:06:54.994 Df StillPoint[22495:1056c] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x60000171dc40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1286 (elapsed = 1), _expireHandler: (null)
+2026-11-18 04:06:54.995 Df StillPoint[22495:1056c] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x600002104870> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x60000171dc40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1286 (elapsed = 1))
+2026-11-18 04:06:54.995 Df StillPoint[22495:1056c] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x600002104870> for task identifier: 1
+2026-11-18 04:06:55.110 A  StillPoint[22495:1056c] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:55.474 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a5242c0] activating connection: mach=true listener=false peer=false name=com.apple.lsd.open
+2026-11-18 04:06:55.483 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:55.485 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:55.486 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:56.485 Df StillPoint[22495:1049f] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-18 04:06:56.699 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:57.093 Df StillPoint[22495:1049f] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.stillpoint-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:06:57.903 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a6c3640] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:57.905 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a357410] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:57.906 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a337f60] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:06:58.334 Df StillPoint[22495:1049f] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-18 04:06:58.335 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a38e250] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-18 04:06:58.589 A  StillPoint[22495:1056c] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:58.596 Df StillPoint[22495:1049f] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [73F3B489-1EEC-4A4B-887C-83F631C65A4D] (reporting strategy default)>
+2026-11-18 04:06:58.596 Df StillPoint[22495:1049f] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [C01BAFD5-82AA-464A-A5D0-6FCD62D808B8] (reporting strategy default)>
+2026-11-18 04:06:58.596 Df StillPoint[22495:1049f] [com.apple.network:activity] Set activity <nw_activity 50:1 [73F3B489-1EEC-4A4B-887C-83F631C65A4D] (reporting strategy default)> as the global parent
+2026-11-18 04:06:58.603 Df StillPoint[22495:1049f] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-18 04:06:58.604 A  StillPoint[22495:10535] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:58.606 Df StillPoint[22495:1049f] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.stillpoint-default  persistentID: 374DFE96-9354-4FA0-861C-B743E7AEF316
+2026-11-18 04:06:58.611 Df StillPoint[22495:1049f] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10a60b070> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:06:58.700 A  StillPoint[22495:1056c] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:06:58.754 Df StillPoint[22495:1049f] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-11-18 04:06:58.765 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a535480] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-11-18 04:06:58.911 Df StillPoint[22495:1049f] [com.apple.UIKit:EventDeferring] [0x6000029159d0] Scene target of event deferring environments did update: scene: 0x10a60b070; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-18 04:06:58.912 Df StillPoint[22495:1049f] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10a60b070; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default
+2026-11-18 04:06:58.933 Df StillPoint[22495:1049f] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-18 04:06:58.993 Df StillPoint[22495:1056c] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-11-18 04:06:59.248 Df StillPoint[22495:1049f] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-18 04:06:59.258 Df StillPoint[22495:1049f] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10a60b070> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:06:59.277 Df StillPoint[22495:1049f] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10a60b070> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:06:59.423 Df StillPoint[22495:1049f] [com.apple.HealthKit:query] Executing query <HKSampleQuery 42C8B4 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate endDate >= CAST(816667613.839715, "NSDate") AND startDate < CAST(816667913.839715, "NSDate") AND offsetFromStartDate >= CAST(816667613.839715, "NSDate")
+2026-11-18 04:06:59.428 Df StillPoint[22495:10535] [com.apple.xpc:connection] [0x10a5e2e60] activating connection: mach=true listener=false peer=false name=com.apple.healthd.server
+2026-11-18 04:06:59.435 Df StillPoint[22495:10569] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 42C8B4 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:59.436 Df StillPoint[22495:1049f] [com.apple.HealthKit:query] Executing query <HKSampleQuery 44A522 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate endDate >= CAST(816577613.840090, "NSDate") AND startDate < CAST(816578213.840090, "NSDate") AND offsetFromStartDate >= CAST(816577613.840090, "NSDate")
+2026-11-18 04:06:59.438 Df StillPoint[22495:1049f] [com.apple.HealthKit:query] Executing query <HKStatisticsQuery D0DB31 QoS=Default> for type HKQuantityTypeIdentifierHeartRateVariabilitySDNN with predicate endDate >= CAST(816577553.840090, "NSDate") AND startDate < CAST(816578393.840090, "NSDate") AND offsetFromStartDate >= CAST(816577553.840090, "NSDate")
+2026-11-18 04:06:59.442 Df StillPoint[22495:10569] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 44A522 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:59.444 Df StillPoint[22495:10806] [com.apple.HealthKit:query] Stopping query <HKStatisticsQuery D0DB31 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:59.464 Df StillPoint[22495:1049f] [com.apple.HealthKit:query] Executing query <HKStatisticsQuery 99D729 QoS=Default> for type HKQuantityTypeIdentifierRespiratoryRate with predicate endDate >= CAST(816577613.840090, "NSDate") AND startDate < CAST(816578273.840090, "NSDate") AND offsetFromStartDate >= CAST(816577613.840090, "NSDate")
+2026-11-18 04:06:59.465 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.466 Df StillPoint[22495:10532] [com.apple.HealthKit:query] Stopping query <HKStatisticsQuery 99D729 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:59.466 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.472 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.475 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.476 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.477 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.478 Df StillPoint[22495:1049f] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Getting notification settings (async)
+2026-11-18 04:06:59.480 Df StillPoint[22495:1049f] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.stillpoint-default  persistentID: 374DFE96-9354-4FA0-861C-B743E7AEF316
+2026-11-18 04:06:59.481 Df StillPoint[22495:1049f] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-18 04:06:59.484 Df StillPoint[22495:10532] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-18 04:06:59.488 Df StillPoint[22495:1049f] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-18 04:06:59.507 Df StillPoint[22495:1049f] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-18 04:06:59.512 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:59.514 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:59.516 Df StillPoint[22495:1049f] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:06:59.516 Df StillPoint[22495:1049f] [com.apple.HealthKit:process_state] App did become active
+2026-11-18 04:06:59.517 E  StillPoint[22495:10535] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:06:59.519 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.519 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.520 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.522 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.522 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.522 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.523 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.523 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.524 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.525 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:06:59.525 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:06:59.528 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:06:59.574 Df StillPoint[22495:1049f] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-18 04:06:59.575 Df StillPoint[22495:1049f] [com.apple.xpc:connection] [0x10a376fe0] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-18 04:07:00.151 A  StillPoint[22495:1049f] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:07:00.152 Df StillPoint[22495:1049f] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:07:00.155 E  StillPoint[22495:1049f] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:07:00.193 Df StillPoint[22495:1049f] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Getting pending notification requests (async)
+2026-11-18 04:07:00.194 Df StillPoint[22495:10535] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Got 0 pending notification [ hasCompletionHandler: 1 ]
+2026-11-18 04:07:00.194 Df StillPoint[22495:10535] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Removing 0 pending notification requests with identifiers (
+)
+2026-11-18 04:07:00.201 Df StillPoint[22495:1049f] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-18 04:07:00.206 Df StillPoint[22495:1049f] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-18 04:07:01.017 Df StillPoint[22495:1049f] [com.apple.network:activity] <nw_activity 50:1 [73F3B489-1EEC-4A4B-887C-83F631C65A4D] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 10274ms
+2026-11-18 04:07:01.017 Df StillPoint[22495:1049f] [com.apple.network:activity] <nw_activity 50:2 [C01BAFD5-82AA-464A-A5D0-6FCD62D808B8] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 10274ms
+2026-11-18 04:07:01.018 Df StillPoint[22495:1049f] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [73F3B489-1EEC-4A4B-887C-83F631C65A4D] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-18 04:07:01.018 Df StillPoint[22495:1049f] [com.apple.network:activity] Unset the global parent activity

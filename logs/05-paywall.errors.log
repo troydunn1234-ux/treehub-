@@ -1,0 +1,11 @@
+2026-11-18 04:09:19.170 E  StillPoint[25350:121b0] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-18 04:09:19.188 E  StillPoint[25350:121b0] [com.apple.wcd:WC] WCSession is not paired
+2026-11-18 04:09:23.569 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.578 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.731 E  StillPoint[25350:121ae] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:09:23.734 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.736 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.737 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.740 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:23.894 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:09:24.073 E  StillPoint[25350:120ff] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED

@@ -1,0 +1,15 @@
+2026-11-18 04:02:55.944 E  StillPoint[16442:cc4c] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-18 04:03:00.140 E  StillPoint[16442:cc4c] [com.apple.wcd:WC] WCSession is not paired
+2026-11-18 04:03:03.486 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-18 04:03:03.486 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-18 04:03:04.372 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-18 04:03:04.372 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-18 04:03:04.449 F  StillPoint[16442:c8fc] [com.apple.renderbox:error] building pipeline primitive_coverage-emba5dba7feba4 took 0.964289 seconds
+2026-11-18 04:03:05.421 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.430 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.431 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.435 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:06.310 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:06.314 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:06.329 E  StillPoint[16442:d04f] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:07.266 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED

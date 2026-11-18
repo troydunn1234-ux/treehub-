@@ -1,0 +1,270 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-18 04:02:32.759 Df StillPoint[16442:c8fc] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-18 04:02:32.768 Df StillPoint[16442:c8fc] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-18 04:02:32.768 Df StillPoint[16442:c8fc] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: YES
+2026-11-18 04:02:32.768 A  StillPoint[16442:c8fc] (WatchConnectivity) activateSession
+2026-11-18 04:02:32.768 Df StillPoint[16442:c8fc] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-18 04:02:32.768 Df StillPoint[16442:c8fc] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-18 04:02:32.769 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d404760] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-18 04:02:32.785 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d404fa0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-18 04:02:33.111 Df StillPoint[16442:c8fc] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Creating a user notification center
+2026-11-18 04:02:33.113 Df StillPoint[16442:c8fc] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Setting 1 notification categories
+2026-11-18 04:02:33.680 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d106a60] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-18 04:02:42.298 Df StillPoint[16442:c8fc] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Getting notification settings (async)
+2026-11-18 04:02:42.301 Df StillPoint[16442:c94a] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-18 04:02:42.352 A  StillPoint[16442:c94a] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-18 04:02:44.274 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-18 04:02:44.274 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-18 04:02:44.275 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x600002112d50>
+2026-11-18 04:02:44.275 Df StillPoint[16442:cc4c] [com.apple.runningboard:connection] Initializing connection
+2026-11-18 04:02:44.275 Df StillPoint[16442:cc4c] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-18 04:02:44.275 Df StillPoint[16442:cdd5] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-18 04:02:44.275 Df StillPoint[16442:cdd5] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-18 04:02:44.275 Df StillPoint[16442:cdd5] [com.apple.xpc:connection] [0x10d1074d0] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-18 04:02:44.776 A  StillPoint[16442:c94a] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:02:44.776 Df StillPoint[16442:c8fc] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=16442 task=StillPoint[16442]/0#-1 LF=22
+2026-11-18 04:02:44.825 Df StillPoint[16442:cdd5] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-18 04:02:44.826 Df StillPoint[16442:cdd5] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.stillpoint((null))>
+2026-11-18 04:02:44.848 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x600002112d50>
+2026-11-18 04:02:44.848 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x60000171c440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1037 (elapsed = 0).
+2026-11-18 04:02:44.850 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-18 04:02:44.867 Df StillPoint[16442:ce12] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-18 04:02:44.868 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-18 04:02:44.868 Df StillPoint[16442:ce12] [com.apple.xpc:connection] [0x10d413bc0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:02:44.869 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-18 04:02:44.870 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-18 04:02:44.870 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-18 04:02:44.872 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:02:44.874 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-18 04:02:44.874 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-18 04:02:44.875 Df StillPoint[16442:c8fc] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-18 04:02:44.876 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:02:44.876 Df StillPoint[16442:c8fc] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-18 04:02:44.877 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:02:44.878 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-18 04:02:44.878 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-18 04:02:44.879 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-18 04:02:44.880 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-18 04:02:44.881 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-18 04:02:44.881 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x600000218200; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-18 04:02:44.881 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:02:44.882 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x6000030058c0 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-18 04:02:44.883 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-18 04:02:44.884 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x6000030058c0 com.apple.frontboard.systemappservices> sent handshake
+2026-11-18 04:02:44.884 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-18 04:02:44.885 Df StillPoint[16442:c8fc] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x6000002187e0>
+2026-11-18 04:02:44.885 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-18 04:02:44.888 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-18 04:02:44.888 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:02:44.890 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-18 04:02:44.891 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-18 04:02:44.892 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-18 04:02:44.892 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:02:44.892 Df StillPoint[16442:cc4c] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-18 04:02:44.893 Df StillPoint[16442:ce1d] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-18 04:02:44.895 Df StillPoint[16442:ce1d] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-18 04:02:44.909 Df StillPoint[16442:ce1d] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-18 04:02:44.910 Df StillPoint[16442:ce1d] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-18 04:02:44.910 Df StillPoint[16442:ce1d] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-18 04:02:45.486 Df StillPoint[16442:c8fc] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10d1083e0> for initial
+2026-11-18 04:02:45.487 Df StillPoint[16442:c8fc] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10d1083e0> for CADisplay KVO
+2026-11-18 04:02:45.489 Df StillPoint[16442:c8fc] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-18 04:02:45.490 Df StillPoint[16442:c8fc] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryL
+2026-11-18 04:02:45.507 Df StillPoint[16442:c8fc] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-18 04:02:45.507 Df StillPoint[16442:c8fc] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:02:45.507 Df StillPoint[16442:c8fc] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:02:45.508 Df StillPoint[16442:c8fc] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:02:45.510 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-18 04:02:45.688 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-18 04:02:45.689 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-18 04:02:45.690 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-18 04:02:45.690 Df StillPoint[16442:c8fc] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-18 04:02:45.695 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d608760] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-18 04:02:45.877 Df StillPoint[16442:ce12] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-18 04:02:45.878 Df StillPoint[16442:ce12] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x60000171c440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1037 (elapsed = 1), _expireHandler: (null)
+2026-11-18 04:02:45.878 Df StillPoint[16442:ce12] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x600002112d50> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x60000171c440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1037 (elapsed = 1))
+2026-11-18 04:02:45.878 Df StillPoint[16442:ce12] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x600002112d50> for task identifier: 1
+2026-11-18 04:02:45.985 A  StillPoint[16442:ce12] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:02:54.457 Df StillPoint[16442:c8fc] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-18 04:02:54.457 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d60e150] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:02:54.459 Df StillPoint[16442:ce13] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-18 04:02:54.503 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Will add backgroundTask with taskName: Persistent SceneSession Map Update, expirationHandler: <__NSGlobalBlock__: 0x7ff840854ae0>
+2026-11-18 04:02:54.503 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-18 04:02:54.504 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-18 04:02:54.504 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x600002119d10>
+2026-11-18 04:02:54.505 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x600002119d10>
+2026-11-18 04:02:54.505 Df StillPoint[16442:c8fc] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x60000172c440>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 1047 (elapsed = 0).
+2026-11-18 04:02:54.506 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-18 04:02:54.507 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.509 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.509 Df StillPoint[16442:c8fc] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x600002910230>; with scene: <UIWindowScene: 0x10d10c480>
+2026-11-18 04:02:54.510 Df StillPoint[16442:c8fc] [com.apple.BacklightServices:scenes] 0x600000c299e0 setDelegate:<0x600000c2a0d0 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.stillpoint-default
+2026-11-18 04:02:54.510 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.511 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventDeferring] [0x600002910a10] Initialized with scene: <UIWindowScene: 0x10d10c480>; behavior: <_UIEventDeferringBehavior_iOS: 0x600000227760>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-18 04:02:54.514 Df StillPoint[16442:c8fc] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002605f80; process scope; status: target> was:none
+2026-11-18 04:02:54.514 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-18 04:02:54.514 Df StillPoint[16442:ce13] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-18 04:02:54.514 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x10d10c480; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default
+2026-11-18 04:02:54.515 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventDeferring] [0x600002910a10] Scene target of event deferring environments did update: scene: 0x10d10c480; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-18 04:02:54.515 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10d10c480; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default
+2026-11-18 04:02:54.516 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c1d320: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-18 04:02:54.517 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-18 04:02:54.518 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10d10c480; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x10d10c480: Window scene became target of keyboard environment
+2026-11-18 04:02:54.518 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.520 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.522 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.775 Df StillPoint[16442:c8fc] [com.apple.UIKit:Orientation] <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316) Scene updated orientation preferences: none -> ( Pu )
+2026-11-18 04:02:54.783 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-18 04:02:54.783 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x10d10c480: Window became key in scene: UIWindow: 0x10d10e9f0; contextId: 0x8A072A5: reason: UIWindowScene: 0x10d10c480: Window requested to become key in scene: 0x10d10e9f0
+2026-11-18 04:02:54.783 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10d10c480; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10d10e9f0; reason: UIWindowScene: 0x10d10c480: Window requested to become key in scene: 0x10d10e9f0
+2026-11-18 04:02:54.783 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10d10e9f0; contextId: 0x8A072A5; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default
+2026-11-18 04:02:54.784 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventDeferring] [0x600002910a10] Begin local event deferring requested for token: 0x600002613000; environments: 1; reason: UIWindowScene: 0x10d10c480: Begin event deferring in keyboardFocus for window: 0x10d10e9f0
+2026-11-18 04:02:54.792 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.794 Df StillPoint[16442:cc4c] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002605f80; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default; status: ancestor> was:target
+2026-11-18 04:02:54.796 Df StillPoint[16442:c8fc] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.stillpoint-default  persistentID: 374DFE96-9354-4FA0-861C-B743E7AEF316
+2026-11-18 04:02:54.797 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-18 04:02:54.797 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-18 04:02:54.798 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-18 04:02:54.798 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-18 04:02:54.800 Df StillPoint[16442:ce13] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-18 04:02:54.801 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:54.806 Df StillPoint[16442:ce13] [com.apple.xpc:session] [0x600002115fe0] Session created.
+2026-11-18 04:02:54.810 A  StillPoint[16442:c8fc] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-18 04:02:54.813 Df StillPoint[16442:ce13] [com.apple.xpc:session] [0x600002115fe0] Session created from connection [0x10d41a410]
+2026-11-18 04:02:54.813 Df StillPoint[16442:ce13] [com.apple.xpc:connection] [0x10d41a410] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-18 04:02:54.820 Df StillPoint[16442:ce13] [com.apple.xpc:session] [0x600002115fe0] Session activated
+2026-11-18 04:02:55.007 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 2
+2026-11-18 04:02:55.008 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Ending task with identifier 2 and description: <_UIBackgroundTaskInfo: 0x60000172c440>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 1047 (elapsed = 0), _expireHandler: <__NSGlobalBlock__: 0x7ff840854ae0>
+2026-11-18 04:02:55.008 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x600002119d10> (used by background task with identifier 2: <_UIBackgroundTaskInfo: 0x60000172c440>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 1047 (elapsed = 0))
+2026-11-18 04:02:55.008 Df StillPoint[16442:cc4c] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x600002119d10> for task identifier: 2
+2026-11-18 04:02:55.479 Df StillPoint[16442:ce13] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c2b5a0, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-18 04:02:55.480 Df StillPoint[16442:ce13] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:] <WCActiveDeviceSwitchTask: 0x600000206100, clientReadyForSessionState: YES, taskState: ActivationRequested>
+2026-11-18 04:02:55.480 Df StillPoint[16442:ce13] [com.apple.wcd:WC] -[WCSession onDelegateQueueIfTriggeringKVO_updateSessionState:triggerKVO:] <WCSessionState: 0x600000c2b5a0, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>, triggerKVO: NO
+2026-11-18 04:02:55.576 Df StillPoint[16442:cc4c] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:]_block_invoke_2 hasContentPending: NO
+2026-11-18 04:02:55.581 Df StillPoint[16442:ce13] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c1b1e0, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-18 04:02:55.923 Df StillPoint[16442:ce13] [com.apple.wcd:WC] -[WCSession onqueue_startNextDeviceSwitch] no tasks queued after <WCActiveDeviceSwitchTask: 0x600000206100, clientReadyForSessionState: YES, taskState: ActivationCompleted>
+2026-11-18 04:02:55.944 E  StillPoint[16442:cc4c] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-18 04:02:56.555 Df StillPoint[16442:ce13] [com.apple.xpc:connection] [0x10d41a930] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-18 04:02:56.560 Df StillPoint[16442:ce1a] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=16442 task=StillPoint[16442]/0#-1 LF=22
+2026-11-18 04:02:56.868 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:02:58.886 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d42de90] activating connection: mach=true listener=false peer=false name=com.apple.lsd.open
+2026-11-18 04:02:58.904 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:02:58.907 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:02:58.911 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:03:00.140 E  StillPoint[16442:cc4c] [com.apple.wcd:WC] WCSession is not paired
+2026-11-18 04:03:00.315 Df StillPoint[16442:cc4c] [com.apple.wcd:WC] -[WCSession didSessionStateChange:withChangeHandler:] no change
+2026-11-18 04:03:02.335 Df StillPoint[16442:c8fc] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-18 04:03:02.475 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:03:02.789 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.stillpoint-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:03:03.304 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d1e1f00] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:03:03.305 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d43d340] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:03:03.306 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d594100] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:03:03.477 Df StillPoint[16442:c8fc] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-18 04:03:03.479 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d683590] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-18 04:03:03.486 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-18 04:03:03.486 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-18 04:03:03.488 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d59f590] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-18 04:03:03.637 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d5905c0] activating connection: mach=false listener=false peer=false name=com.apple.MTLCompilerService
+2026-11-18 04:03:03.637 A  StillPoint[16442:cc4c] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.372 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-18 04:03:04.372 E  StillPoint[16442:c8fc] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-18 04:03:04.373 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.431 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.449 F  StillPoint[16442:c8fc] [com.apple.renderbox:error] building pipeline primitive_coverage-emba5dba7feba4 took 0.964289 seconds
+2026-11-18 04:03:04.449 A  StillPoint[16442:c8fc] (libsystem_trace.dylib) Activity for state dumps
+2026-11-18 04:03:04.450 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.483 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.494 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.503 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.508 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.527 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.544 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.555 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.615 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.626 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.644 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.783 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.788 A  StillPoint[16442:ce13] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.799 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.842 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.935 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:04.961 A  StillPoint[16442:d038] (Metal) Metal Compiling Shader
+2026-11-18 04:03:05.390 Df StillPoint[16442:c8fc] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [F0EDF230-F8CE-43E1-A53E-9137DA368F31] (reporting strategy default)>
+2026-11-18 04:03:05.390 Df StillPoint[16442:c8fc] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [04E23790-91DA-4983-84A8-0DA7B4EB5DB2] (reporting strategy default)>
+2026-11-18 04:03:05.390 Df StillPoint[16442:c8fc] [com.apple.network:activity] Set activity <nw_activity 50:1 [F0EDF230-F8CE-43E1-A53E-9137DA368F31] (reporting strategy default)> as the global parent
+2026-11-18 04:03:05.398 A  StillPoint[16442:ce13] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:03:05.409 Df StillPoint[16442:c8fc] [com.apple.HealthKit:query] Executing query <HKSampleQuery 86F7B1 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate endDate >= CAST(816667353.103611, "NSDate") AND startDate < CAST(816667653.103611, "NSDate") AND offsetFromStartDate >= CAST(816667353.103611, "NSDate")
+2026-11-18 04:03:05.411 Df StillPoint[16442:ce13] [com.apple.xpc:connection] [0x10d6140d0] activating connection: mach=true listener=false peer=false name=com.apple.healthd.server
+2026-11-18 04:03:05.411 Df StillPoint[16442:c8fc] [com.apple.HealthKit:query] Executing query <HKSampleQuery C7DA33 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate endDate >= CAST(816577353.105479, "NSDate") AND startDate < CAST(816577953.105479, "NSDate") AND offsetFromStartDate >= CAST(816577353.105479, "NSDate")
+2026-11-18 04:03:05.414 Df StillPoint[16442:c8fc] [com.apple.HealthKit:query] Executing query <HKStatisticsQuery F15E79 QoS=Default> for type HKQuantityTypeIdentifierHeartRateVariabilitySDNN with predicate endDate >= CAST(816577293.105479, "NSDate") AND startDate < CAST(816578133.105479, "NSDate") AND offsetFromStartDate >= CAST(816577293.105479, "NSDate")
+2026-11-18 04:03:05.415 Df StillPoint[16442:ce13] [com.apple.HealthKit:query] Stopping query <HKSampleQuery C7DA33 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:05.415 Df StillPoint[16442:d04f] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 86F7B1 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:05.416 Df StillPoint[16442:c8fc] [com.apple.HealthKit:query] Executing query <HKStatisticsQuery 1DBE2A QoS=Default> for type HKQuantityTypeIdentifierRespiratoryRate with predicate endDate >= CAST(816577353.105479, "NSDate") AND startDate < CAST(816578013.105479, "NSDate") AND offsetFromStartDate >= CAST(816577353.105479, "NSDate")
+2026-11-18 04:03:05.416 Df StillPoint[16442:d038] [com.apple.HealthKit:query] Stopping query <HKStatisticsQuery F15E79 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:05.417 Df StillPoint[16442:ce13] [com.apple.HealthKit:query] Stopping query <HKStatisticsQuery 1DBE2A QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:05.419 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:05.420 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:05.421 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.423 A  StillPoint[16442:d038] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:03:05.430 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:05.430 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:05.430 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.431 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:05.431 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:05.431 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.432 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:05.432 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:05.435 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:05.436 Df StillPoint[16442:c8fc] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-18 04:03:05.473 Df StillPoint[16442:c8fc] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-11-18 04:03:05.482 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d10e040] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-11-18 04:03:05.492 Df StillPoint[16442:c8fc] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-18 04:03:05.495 Df StillPoint[16442:d038] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-11-18 04:03:05.567 Df StillPoint[16442:c8fc] [com.apple.UIKit:EventDeferring] [0x600002910a10] Scene target of event deferring environments did update: scene: 0x10d10c480; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-18 04:03:05.568 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10d10c480; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.stillpoint-default
+2026-11-18 04:03:05.576 Sd StillPoint[16442:0] (EB73264B-09AE-3310-B642-B0B5D9390089) IOHIDManager State
+{
+    DispatchQueue = 0;
+    RunLoop = 1;
+    createOptions = 0;
+    isOpen = 0;
+    openOptions = 0;
+}
+2026-11-18 04:03:05.577 Df StillPoint[16442:c8fc] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-18 04:03:05.578 Df StillPoint[16442:c8fc] [com.apple.xpc:connection] [0x10d619830] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-18 04:03:05.606 A  StillPoint[16442:ce13] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:03:06.299 Df StillPoint[16442:c8fc] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.stillpoint-default  persistentID: 374DFE96-9354-4FA0-861C-B743E7AEF316
+2026-11-18 04:03:06.300 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:03:06.304 Df StillPoint[16442:c8fc] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-18 04:03:06.306 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:03:06.307 Df StillPoint[16442:c8fc] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10d10c480> (374DFE96-9354-4FA0-861C-B743E7AEF316)
+2026-11-18 04:03:06.310 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:06.310 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:06.310 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:06.312 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:06.312 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:06.314 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:06.314 Df StillPoint[16442:c8fc] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Getting notification settings (async)
+2026-11-18 04:03:06.316 Df StillPoint[16442:c8fc] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.stillpoint-default  persistentID: 374DFE96-9354-4FA0-861C-B743E7AEF316
+2026-11-18 04:03:06.317 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-18 04:03:06.317 Df StillPoint[16442:c8fc] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-18 04:03:06.320 Df StillPoint[16442:c8fc] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-18 04:03:06.321 Df StillPoint[16442:d04f] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-18 04:03:06.323 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:03:06.325 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:03:06.327 Df StillPoint[16442:c8fc] (UIKitCore) -canOpenURL: failed for URL: "pulselab://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-18 04:03:06.327 Df StillPoint[16442:c8fc] [com.apple.HealthKit:process_state] App did become active
+2026-11-18 04:03:06.329 E  StillPoint[16442:d04f] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:03:07.261 Df StillPoint[16442:c8fc] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-18 04:03:07.265 Df StillPoint[16442:c8fc] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-18 04:03:07.265 A  StillPoint[16442:c8fc] (libsystem_containermanager.dylib) container_create_or_lookup_app_group_path_by_app_group_identifier
+2026-11-18 04:03:07.265 Df StillPoint[16442:c8fc] [com.apple.containermanager:xpc] Requesting app group container lookup; identifier = group.com.troydunn.wellness, euid = 501, uid = 501, platform = 7
+2026-11-18 04:03:07.266 E  StillPoint[16442:c8fc] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-18 04:03:07.298 Df StillPoint[16442:c8fc] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Getting pending notification requests (async)
+2026-11-18 04:03:07.301 Df StillPoint[16442:cc4c] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Got 0 pending notification [ hasCompletionHandler: 1 ]
+2026-11-18 04:03:07.301 Df StillPoint[16442:cc4c] [com.apple.UserNotifications:Connections] [com.troydunn.stillpoint] Removing 0 pending notification requests with identifiers (
+)
+2026-11-18 04:03:07.988 Df StillPoint[16442:c8fc] [com.apple.network:activity] <nw_activity 50:1 [F0EDF230-F8CE-43E1-A53E-9137DA368F31] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 40583ms
+2026-11-18 04:03:07.989 Df StillPoint[16442:c8fc] [com.apple.network:activity] <nw_activity 50:2 [04E23790-91DA-4983-84A8-0DA7B4EB5DB2] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 40584ms
+2026-11-18 04:03:07.990 Df StillPoint[16442:c8fc] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [F0EDF230-F8CE-43E1-A53E-9137DA368F31] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-18 04:03:07.991 Df StillPoint[16442:c8fc] [com.apple.network:activity] Unset the global parent activity

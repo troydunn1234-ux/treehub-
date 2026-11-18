@@ -1,0 +1,298 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-18 04:16:23.717 Df StillPointWatch[37529:1a3bb] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-18 04:16:23.718 Df StillPointWatch[37529:1a3bb] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: NO
+2026-11-18 04:16:23.718 A  StillPointWatch[37529:1a3bb] (WatchConnectivity) activateSession
+2026-11-18 04:16:23.718 Df StillPointWatch[37529:1a3bb] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-18 04:16:23.718 Df StillPointWatch[37529:1a3bb] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-18 04:16:23.718 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e858dc0] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-18 04:16:23.719 Df StillPointWatch[37529:1a3bb] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-18 04:16:23.726 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e859400] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-18 04:16:23.729 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:auth] Requesting prompting authorization to share (
+    HKCategoryTypeIdentifierMindfulSession,
+    HKWorkoutTypeIdentifier
+), read (
+    HKCategoryTypeIdentifierMindfulSession,
+    HKQuantityTypeIdentifierHeartRate,
+    HKQuantityTypeIdentifierRespiratoryRate,
+    HKQuantityTypeIdentifierHeartRateVariabilitySDNN,
+    HKWorkoutTypeIdentifier
+)
+2026-11-18 04:16:23.730 Df StillPointWatch[37529:1a3be] [com.apple.xpc:connection] [0x10e8592c0] activating connection: mach=true listener=false peer=false name=com.apple.healthd.server
+2026-11-18 04:16:23.734 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e859680] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-18 04:16:23.738 Df StillPointWatch[37529:1a3bb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:23.738 Df StillPointWatch[37529:1a3bb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:23.740 Df StillPointWatch[37529:1a3bb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:23.743 E  StillPointWatch[37529:1a3be] [com.apple.HealthKit:auth] FAILED prompting authorization request to share (
+    HKCategoryTypeIdentifierMindfulSession,
+    HKWorkoutTypeIdentifier
+), read (
+    HKCategoryTypeIdentifierMindfulSession,
+    HKQuantityTypeIdentifierHeartRate,
+    HKQuantityTypeIdentifierRespiratoryRate,
+    HKQuantityTypeIdentifierHeartRateVariabilitySDNN,
+    HKWorkoutTypeIdentifier
+), error Missing com.apple.developer.healthkit entitlement.
+2026-11-18 04:16:23.799 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:query] Executing query <HKObserverQuery 881B43 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate (null)
+2026-11-18 04:16:23.800 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Stopping query <HKObserverQuery 881B43 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:23.800 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:background] Returning back the update handler after success for query <HKObserverQuery  QoS=Default state=deactivated>
+2026-11-18 04:16:23.801 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:query] Executing query <HKObserverQuery C78E48 QoS=Default> for type HKQuantityTypeIdentifierHeartRateVariabilitySDNN with predicate (null)
+2026-11-18 04:16:23.801 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:query] Executing query <HKObserverQuery 3C99DA QoS=Default> for type HKQuantityTypeIdentifierRestingHeartRate with predicate (null)
+2026-11-18 04:16:23.801 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:query] Stopping query <HKObserverQuery C78E48 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:23.801 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:background] Returning back the update handler after success for query <HKObserverQuery  QoS=Default state=deactivated>
+2026-11-18 04:16:23.802 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:query] Executing query <HKObserverQuery FF7CB3 QoS=Default> for type HKCategoryTypeIdentifierSleepAnalysis with predicate (null)
+2026-11-18 04:16:23.802 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:query] Stopping query <HKObserverQuery 3C99DA QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:23.802 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:background] Returning back the update handler after success for query <HKObserverQuery  QoS=Default state=deactivated>
+2026-11-18 04:16:23.802 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:query] Executing query <HKObserverQuery AA28B6 QoS=Default> for type HKWorkoutTypeIdentifier with predicate (null)
+2026-11-18 04:16:23.802 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Stopping query <HKObserverQuery FF7CB3 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:23.803 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:background] Returning back the update handler after success for query <HKObserverQuery  QoS=Default state=deactivated>
+2026-11-18 04:16:23.803 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:query] Stopping query <HKObserverQuery AA28B6 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:23.803 Df StillPointWatch[37529:1a3bf] [com.apple.HealthKit:background] Returning back the update handler after success for query <HKObserverQuery  QoS=Default state=deactivated>
+2026-11-18 04:16:23.839 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] WKApplicationExtensionMain:127: applicationDelegateClassName=SwiftUI.ExtensionDelegate
+2026-11-18 04:16:23.879 Df StillPointWatch[37529:1a3be] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3be] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3be] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x10e95f340>
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3be] [com.apple.runningboard:connection] Initializing connection
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3be] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3bf] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3bf] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-18 04:16:23.880 Df StillPointWatch[37529:1a3bf] [com.apple.xpc:connection] [0x10e841b80] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-18 04:16:23.882 A  StillPointWatch[37529:1a3c0] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:16:23.883 Df StillPointWatch[37529:1a3bf] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-18 04:16:23.883 Df StillPointWatch[37529:1a3bf] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.stillpoint.watchkitapp((null))>
+2026-11-18 04:16:23.883 A  StillPointWatch[37529:1a3c1] (CoreFoundation) Loading Preferences From System CFPrefsD
+2026-11-18 04:16:23.883 Df StillPointWatch[37529:1a3be] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x10e95f340>
+2026-11-18 04:16:23.884 Df StillPointWatch[37529:1a3be] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x10e99ee40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1856 (elapsed = 0).
+2026-11-18 04:16:23.884 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-18 04:16:23.890 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-18 04:16:23.891 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-18 04:16:23.891 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:16:23.892 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:16:23.892 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-18 04:16:23.892 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-18 04:16:23.893 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-18 04:16:23.893 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-18 04:16:23.893 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-18 04:16:23.894 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-18 04:16:23.894 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-18 04:16:23.895 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-18 04:16:23.895 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:16:23.895 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-18 04:16:23.896 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-18 04:16:23.896 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-18 04:16:23.896 Df StillPointWatch[37529:1a3be] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-18 04:16:23.923 Df StillPointWatch[37529:1a3bb] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:23.924 Df StillPointWatch[37529:1a3c2] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-18 04:16:23.925 Df StillPointWatch[37529:1a3c2] [com.apple.xpc:connection] [0x10e842800] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:16:23.936 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:SaltUICore] SaltUICore was linked successfully!
+2026-11-18 04:16:23.938 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-18 04:16:23.939 Df StillPointWatch[37529:1a3bb] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-18 04:16:23.946 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplication init]:58: Inited
+2026-11-18 04:16:23.946 Df StillPointWatch[37529:1a3bb] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-18 04:16:23.946 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-18 04:16:23.948 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x10ea25f20; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-18 04:16:23.951 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x10e9c01e0 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-18 04:16:23.951 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x10e9c01e0 com.apple.frontboard.systemappservices> sent handshake
+2026-11-18 04:16:23.953 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <CUISWatchKitApplicationSceneTransitionContext> on FBSSceneTransitionContext
+2026-11-18 04:16:23.953 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneSettings setting counterpart class: PUICMutableApplicationSceneSettings
+2026-11-18 04:16:23.953 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneSettingsExtension on FBSSceneSettings
+2026-11-18 04:16:23.954 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-18 04:16:23.955 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneClientSettings setting counterpart class: PUICMutableApplicationSceneClientSettings
+2026-11-18 04:16:23.956 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneClientSettingsExtension on FBSSceneClientSettings
+2026-11-18 04:16:23.957 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-18 04:16:23.959 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <PUICApplicationSceneTransitionContextInterface> on FBSSceneTransitionContext
+2026-11-18 04:16:23.959 Df StillPointWatch[37529:1a3c2] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-18 04:16:23.972 Df StillPointWatch[37529:1a3bb] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x10eaac060>
+2026-11-18 04:16:23.980 Df StillPointWatch[37529:1a3bb] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-18 04:16:23.981 Df StillPointWatch[37529:1a3bb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:16:23.982 Df StillPointWatch[37529:1a3bb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:16:23.982 Df StillPointWatch[37529:1a3bb] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-18 04:16:23.984 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-18 04:16:23.986 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10e841900> for initial
+2026-11-18 04:16:23.987 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10e841900> for CADisplay KVO
+2026-11-18 04:16:23.989 Df StillPointWatch[37529:1a3bb] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = (null)
+2026-11-18 04:16:24.014 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:didFinishLaunchingSuspendedWithOptions:]:780: launched suspended
+2026-11-18 04:16:24.014 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:353: com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] setMainExtensionAndApplicationBundles:24: extensionBundle: /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/8CFC8C1A-8CD1-43E0-8177-AF3300E518DB/StillPointWatch.app, appBundle /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/8CFC8C1A-8CD1-43E0-8177-AF3300E518DB/StillPointWatch.app
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] +[SPRemoteInterface startRemoteInterfaceWithBundle:]:308: startRemoteInterfaceWithBundle:NSBundle </Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/8CFC8C1A-8CD1-43E0-8177-AF3300E518DB/StillPointWatch.app> (loaded)
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3862: SwiftUI.ExtensionDelegate
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3876: Created WKExtensionDelegate of class SwiftUI.ExtensionDelegate
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _extensionDelegateDidChange]:3883: delegate <SwiftUI.ExtensionDelegate: 0x10ea790e0> _handlesBGTasks=1
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] +[SPRemoteInterface _remoteIdentifier]_block_invoke:344: ComF:->ComD Gizmo app identifier com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPRemoteInterface setApplicationConnection:]:4091: connection=<SPExtensionConnection: 0x10e843840>
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3951: did begin using
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3970: no complication implemented so not instantiating complication server.
+2026-11-18 04:16:24.015 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:378: Set up native app for com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.016 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke:873: Got applicationRootInterfaceControllerClass SwiftUI.InterfaceController from extensionDelegate
+2026-11-18 04:16:24.016 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:933: self.hasReceivedNonClockKitEvent == NO
+2026-11-18 04:16:24.016 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-18 04:16:24.017 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-18 04:16:24.017 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-18 04:16:24.017 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-18 04:16:24.019 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate didReceiveNonClockKitEvent]:3358: firstNonClockKitEvent=1
+2026-11-18 04:16:24.019 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:282: connecting to gizmoappd for serverIdentifier=com.troydunn.stillpoint.watchkitapp clientIdentifier=92990001
+2026-11-18 04:16:24.019 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e842bc0] activating connection: mach=true listener=false peer=false name=com.apple.gizmoappd
+2026-11-18 04:16:24.020 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:291: Began suspended launch
+2026-11-18 04:16:24.020 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:945: root view controller hasn't loaded yet
+2026-11-18 04:16:24.020 A  StillPointWatch[37529:1a3bb] (PepperUICore) Scene didInitializeWithEvent
+2026-11-18 04:16:24.020 Df StillPointWatch[37529:1a3c2] [com.apple.watchkit:default] -[SPExtensionConnection setExtensionIsDebugging:]:1014: for com.troydunn.stillpoint.watchkitapp, extensionIsDebugging=0
+2026-11-18 04:16:24.024 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x11284a600> (com.troydunn.stillpoint.watchkitapp)
+2026-11-18 04:16:24.025 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomWatch to LastOneWins
+2026-11-18 04:16:24.025 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:EventDeferring] [0x10eaa3480] Initialized with scene: <UIWindowScene: 0x11284a600>; behavior: <_UIEventDeferringBehavior_Default: 0x112854fa0>; availableForProcess: 1, systemShellManagesKeyboardFocus: 0
+2026-11-18 04:16:24.025 Df StillPointWatch[37529:1a3bb] [com.apple.BacklightServices:scenes] 0x10eaa7300 setDelegate:<0x10eaa75d0 _UIBacklightEnvironment> hasDelegate:YES for environment:com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.026 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10e843d40; >
+2026-11-18 04:16:24.026 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10e843d40; >
+2026-11-18 04:16:24.026 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10e85c140; >
+2026-11-18 04:16:24.029 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.029 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.030 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10e843d40; >
+2026-11-18 04:16:24.038 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e85c780] activating connection: mach=true listener=false peer=false name=com.apple.Carousel.CSLSDetentService
+2026-11-18 04:16:24.040 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke_2:973: Calling applicationDidFinishLaunching on <SwiftUI.ExtensionDelegate: 0x10ea790e0>
+2026-11-18 04:16:24.041 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:detents] received preferences
+2026-11-18 04:16:24.042 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:detents] CSLSDetentServiceConnection: service com.apple.Carousel.CSLSDetentService connected
+2026-11-18 04:16:24.042 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:detents] received detents, mapped by type {
+}
+2026-11-18 04:16:24.048 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke:978: This process is session-capable. checking for existing sessions.
+2026-11-18 04:16:24.049 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e85ca00] activating connection: mach=true listener=false peer=false name=com.apple.carousel.sessionservice
+2026-11-18 04:16:24.049 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] scheduling service block for startConnection at position 0
+2026-11-18 04:16:24.050 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewController:createCompanionControllerClass:properties:initializationContextID:info:gestureDescriptions:interfaceControllerCreationCompletion:]:1753: GizF:<-GizApp controllerClass=SwiftUI.InterfaceController
+2026-11-18 04:16:24.051 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface createViewController:className:properties:contextID:info:gestureDescriptions:clientIdentifier:interfaceControllerCreationCompletion:]_block_invoke_3:3149: !!! Create controller - clientIdentifier:92990001, viewControllerIdentifier:92990002, className:SwiftUI.InterfaceController
+2026-11-18 04:16:24.052 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-18 04:16:24.053 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2439: registering controller <SwiftUI.InterfaceController: 0x11282f020> with id 92990002 and clientIdentifier 92990001
+2026-11-18 04:16:24.055 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2452: _interfaceControllers={
+    92990002 = "<SwiftUI.InterfaceController: 0x11282f020>";
+}
+2026-11-18 04:16:24.056 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2462: Found 0 pending blocks for view controller with ID 92990002. Executing them now.
+2026-11-18 04:16:24.056 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-18 04:16:24.059 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] preparing to execute service block for startConnection
+2026-11-18 04:16:24.059 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] executing service block for startConnection with lock <BSEventQueueLock: 0x1128808e0; reason: startConnection>
+2026-11-18 04:16:24.060 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] executing XPC service block for startConnection
+2026-11-18 04:16:24.061 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] scheduling service block for initialization at position 1
+2026-11-18 04:16:24.062 Df StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] scheduling service block for existingRunningSessionsForBundleID at position 1
+2026-11-18 04:16:24.065 E  StillPointWatch[37529:1a3c2] [com.apple.Carousel:sessions] could not connect to service for com.troydunn.stillpoint.watchkitapp Error Domain=com.apple.CarouselServices.SessionErrorDomain Code=14 "client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting" UserInfo={NSLocalizedDescription=client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting}
+2026-11-18 04:16:24.066 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] preparing to execute service block for initialization
+2026-11-18 04:16:24.066 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] executing service block for initialization with lock <BSEventQueueLock: 0x112882000; reason: initialization>
+2026-11-18 04:16:24.066 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] executing XPC service block for initialization
+2026-11-18 04:16:24.066 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] preparing to execute service block for existingRunningSessionsForBundleID
+2026-11-18 04:16:24.067 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.067 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] executing service block for existingRunningSessionsForBundleID with lock <BSEventQueueLock: 0x112882180; reason: existingRunningSessionsForBundleID>
+2026-11-18 04:16:24.068 Df StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] executing XPC service block for existingRunningSessionsForBundleID
+2026-11-18 04:16:24.069 E  StillPointWatch[37529:1a3c4] [com.apple.Carousel:sessions] existingSessionsForBundleID encountered server error Error Domain=com.apple.CarouselServices.SessionErrorDomain Code=14 "client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting" UserInfo={NSLocalizedDescription=client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting}
+2026-11-18 04:16:24.069 Df StillPointWatch[37529:1a3c4] [com.apple.watchkit:default] -[SPRemoteInterface _appRecoverAnyExtendedRuntimeSession:]_block_invoke:4305: Got 0 existing running sessions
+2026-11-18 04:16:24.070 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:sessions] scheduling service block for existingScheduledSessionsForBundleID at position 1
+2026-11-18 04:16:24.070 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:sessions] preparing to execute service block for existingScheduledSessionsForBundleID
+2026-11-18 04:16:24.071 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:sessions] executing service block for existingScheduledSessionsForBundleID with lock <BSEventQueueLock: 0x112882ba0; reason: existingScheduledSessionsForBundleID>
+2026-11-18 04:16:24.071 Df StillPointWatch[37529:1a3c0] [com.apple.Carousel:sessions] executing XPC service block for existingScheduledSessionsForBundleID
+2026-11-18 04:16:24.072 E  StillPointWatch[37529:1a3c0] [com.apple.Carousel:sessions] existingScheduledSessionsForBundleID encountered server error Error Domain=com.apple.CarouselServices.SessionErrorDomain Code=14 "client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting" UserInfo={NSLocalizedDescription=client is not entitled and _clientBundleID Generated-0953362B-F5BD-4006-8849-B2EFDC2316A5 does not match requested bundleID com.troydunn.stillpoint.watchkitapp. rejecting}
+2026-11-18 04:16:24.074 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.075 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-18 04:16:24.075 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x11284a600: Window became key in scene: UIWindow: 0x112847400; contextId: 0xE65675DD: reason: UIWindowScene: 0x11284a600: Window requested to become key in scene: 0x112847400
+2026-11-18 04:16:24.076 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x11284a600; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x112847400; reason: UIWindowScene: 0x11284a600: Window requested to become key in scene: 0x112847400
+2026-11-18 04:16:24.076 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x112847400; contextId: 0xE65675DD; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.076 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:EventDeferring] [0x10eaa3480] Begin local event deferring requested for token: 0x10ea7bc00; environments: 1; reason: UIWindowScene: 0x11284a600: Begin event deferring in keyboardFocus for window: 0x112847400
+2026-11-18 04:16:24.077 Df StillPointWatch[37529:1a3bb] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-18 04:16:24.077 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e85dcc0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-18 04:16:24.080 Df StillPointWatch[37529:1a3c4] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-18 04:16:24.080 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureNegativeInteraction: 0x10ea7c000>) installed: NO -> YES
+2026-11-18 04:16:24.080 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUICrownPressDismissGestureInteraction: 0x1128c4300>) installed: NO -> YES
+2026-11-18 04:16:24.082 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureNegativeInteraction: 0x10ea7c000> -> <UIWindow: 0x112847400; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x1128987f0>; backgroundColor = <UIDynamicSystemColor: 0x10ea726c0; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10ea739c0>>
+2026-11-18 04:16:24.082 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] didMoveToView: <WAGUICrownPressDismissGestureInteraction: 0x1128c4300> -> <UIWindow: 0x112847400; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x1128e0180>; backgroundColor = <UIDynamicSystemColor: 0x10ea726c0; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10ea739c0>>
+2026-11-18 04:16:24.082 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:WatchGesturesApplication] Enabled default watch gesture pinch interactions for key window: <UIWindow: 0x112847400; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x1128e0180>; backgroundColor = <UIDynamicSystemColor: 0x10ea726c0; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10ea739c0>>
+2026-11-18 04:16:24.083 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:677: isSuspended=1, isSuspendedUnderLock=0, isSuspendedEventsOnly=0
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface forwardDidEnterForegroundToScenesInViewController:]:3567: viewControllerID=92990002
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:705: Updating appState
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 1 to 0
+2026-11-18 04:16:24.084 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 1 to 0
+2026-11-18 04:16:24.085 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]:1023: Updating appState
+2026-11-18 04:16:24.086 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-18 04:16:24.086 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-18 04:16:24.087 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 0 to 0
+2026-11-18 04:16:24.087 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 0 to 0
+2026-11-18 04:16:24.088 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1041: creating os_transaction appActive-0929C540-04CD-4013-BF16-A937DFE7A2D0
+2026-11-18 04:16:24.088 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1047: Calling applicationDidBecomeActive on <SwiftUI.ExtensionDelegate: 0x10ea790e0>
+2026-11-18 04:16:24.089 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewControllerActivate:]:1771: GizF:<-GizApp vcID=92990002
+2026-11-18 04:16:24.089 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _createActiveViewControllerTransaction:]:4729: created os_transaction activeVC-92990002-9872A0B5-D6B1-4BAD-B541-EBFB3D96D209, _activeViewControllerTransactions={
+    92990002 = "<OS_os_transaction: activeVC-92990002-9872A0B5-D6B1-4BAD-B541-EBFB3D96D209>";
+}
+2026-11-18 04:16:24.090 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] +[SPRemoteInterface setControllerActive:]:1140: after setting 92990002 active, __controllerActive={
+    92990002 = 1;
+}
+2026-11-18 04:16:24.090 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-18 04:16:24.090 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _activateViewController:clientIdentifier:]:3273: Calling willActivate for 92990002
+2026-11-18 04:16:24.091 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-18 04:16:24.092 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.stillpoint.watchkitapp  persistentID: com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.092 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2048 -> 6144; animating application lifecycle event: 0
+2026-11-18 04:16:24.093 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6144 -> 4096; animating application lifecycle event: 0
+2026-11-18 04:16:24.093 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4096 -> 0; animating application lifecycle event: 0
+2026-11-18 04:16:24.093 Df StillPointWatch[37529:1a3bb] [com.apple.HealthKit:process_state] App did become active
+2026-11-18 04:16:24.093 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-18 04:16:24.094 E  StillPointWatch[37529:1a3c0] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.094 Df StillPointWatch[37529:1a3c2] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-18 04:16:24.095 Df StillPointWatch[37529:1a3c2] [com.apple.xpc:session] [0x10ea7eda0] Session created.
+2026-11-18 04:16:24.095 Df StillPointWatch[37529:1a3c2] [com.apple.xpc:session] [0x10ea7eda0] Session created from connection [0x10e85e300]
+2026-11-18 04:16:24.096 Df StillPointWatch[37529:1a3c2] [com.apple.xpc:connection] [0x10e85e300] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-18 04:16:24.096 Df StillPointWatch[37529:1a3c2] [com.apple.xpc:session] [0x10ea7eda0] Session activated
+2026-11-18 04:16:24.140 Df StillPointWatch[37529:1a3bb] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-11-18 04:16:24.142 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e85c000] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-11-18 04:16:24.144 Df StillPointWatch[37529:1a3c0] [com.apple.chrono:widget] reloadTimelines(ofKind:) - reloaded timelines of kind 'StillPointHeat.sauna'
+2026-11-18 04:16:24.145 Df StillPointWatch[37529:1a3c0] [com.apple.chrono:widget] reloadTimelines(ofKind:) - reloaded timelines of kind 'StillPointHeat.steam'
+2026-11-18 04:16:24.381 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureViewInteraction: 0x10e870dc0>) installed: NO -> YES
+2026-11-18 04:16:24.382 Df StillPointWatch[37529:1a3bb] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureViewInteraction: 0x10e870dc0> -> <SwiftUI.HostingScrollView: 0x112c84000; baseClass = UIScrollView; frame = (0 0; 0 0); clipsToBounds = YES; gestureRecognizers = <NSArray: 0x112c79140>; layer = <CALayer: 0x112c78db0>; contentOffset: {0, 0}; contentSize: {0, 0}; adjustedContentInset: {0, 0, 0, 0}>
+2026-11-18 04:16:24.408 Df StillPointWatch[37529:1a3bb] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):com.troydunn.stillpoint.watchkitapp] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-18 04:16:24.415 Df StillPointWatch[37529:1a3c0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:24.480 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.480 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-18 04:16:24.527 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e837200] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:16:24.528 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e870500] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:16:24.529 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e870640] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-18 04:16:24.544 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.544 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-18 04:16:24.573 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.574 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-18 04:16:24.581 Df StillPointWatch[37529:1a3bb] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-18 04:16:24.582 Df StillPointWatch[37529:1a3bb] [com.apple.xpc:connection] [0x10e82f980] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-18 04:16:24.618 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface finishActivatingVCWithID:completion:]:3396: interfaceViewControllerId is active, calling block immediately = 92990002
+2026-11-18 04:16:24.618 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-18 04:16:24.618 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface didAppearViewController:clientIdentifier:]_block_invoke_4:3340: Calling didAppear for 92990002
+2026-11-18 04:16:24.618 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-18 04:16:24.619 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.620 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-18 04:16:24.621 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] [com.troydunn.stillpoint.watchkitapp] updating status bar hidden = NO
+2026-11-18 04:16:24.621 Df StillPointWatch[37529:1a3bb] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-18 04:16:24.623 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:ExternalGestureCollector] Active external gesture recognizers did change: <_UIExternalGestureCollection: 0x112e9c770; active gestures: "doubleTap, flick">
+2026-11-18 04:16:24.625 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-18 04:16:24.625 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x10e99ee40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1856 (elapsed = 1), _expireHandler: (null)
+2026-11-18 04:16:24.625 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x10e95f340> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x10e99ee40>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 1856 (elapsed = 1))
+2026-11-18 04:16:24.626 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x10e95f340> for task identifier: 1
+2026-11-18 04:16:24.628 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-18 04:16:24.631 Df StillPointWatch[37529:1a3bb] [com.apple.watchkit:default] -[SPRemoteInterface _appRecoverAnyExtendedRuntimeSession:]_block_invoke_2:4309: Got 0 existing scheduled sessions
+2026-11-18 04:16:24.648 Df StillPointWatch[37529:1a3c2] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-11-18 04:16:24.648 Df StillPointWatch[37529:1a3c0] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=37529 task=StillPointWatch[37529]/0#-1 LF=22
+2026-11-18 04:16:24.669 A  StillPointWatch[37529:1a3bb] (PepperUICore) Scene handleEvent
+2026-11-18 04:16:24.673 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Executing query <HKSampleQuery 8ED596 QoS=Default> for type HKQuantityTypeIdentifierHeartRate with predicate endDate >= CAST(816667284.668176, "NSDate") AND startDate < CAST(816668304.668177, "NSDate") AND offsetFromStartDate >= CAST(816667284.668176, "NSDate")
+2026-11-18 04:16:24.673 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 8ED596 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.675 Df StillPointWatch[37529:1a3c0] [com.apple.HealthKit:query] Executing query <HKSampleQuery 2286F2 QoS=Default> for type HKQuantityTypeIdentifierRestingHeartRate with predicate endDate >= CAST(816408984.674828, "NSDate") AND startDate < CAST(816668304.674829, "NSDate") AND offsetFromStartDate >= CAST(816408984.674828, "NSDate")
+2026-11-18 04:16:24.675 Df StillPointWatch[37529:1a3c0] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 2286F2 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.676 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Executing query <HKSampleQuery AD9EB5 QoS=Default> for type HKQuantityTypeIdentifierHeartRateVariabilitySDNN with predicate endDate >= CAST(816581784.675826, "NSDate") AND startDate < CAST(816668304.675826, "NSDate") AND offsetFromStartDate >= CAST(816581784.675826, "NSDate")
+2026-11-18 04:16:24.676 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Stopping query <HKSampleQuery AD9EB5 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.677 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Executing query <HKSampleQuery A782A0 QoS=Default> for type HKQuantityTypeIdentifierRespiratoryRate with predicate endDate >= CAST(816581784.676734, "NSDate") AND startDate < CAST(816668304.676734, "NSDate") AND offsetFromStartDate >= CAST(816581784.676734, "NSDate")
+2026-11-18 04:16:24.677 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Stopping query <HKSampleQuery A782A0 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.678 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.stillpoint.watchkitapp  persistentID: com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:24.679 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Executing query <HKStatisticsQuery 0E7A35 QoS=Default> for type HKQuantityTypeIdentifierStepCount with predicate endDate >= CAST(816667284.668171, "NSDate") AND startDate < CAST(816668184.668171, "NSDate") AND offsetFromStartDate >= CAST(816667284.668171, "NSDate")
+2026-11-18 04:16:24.680 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Stopping query <HKStatisticsQuery 0E7A35 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.682 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Executing query <HKSampleQuery 08F506 QoS=Default> for type HKCategoryTypeIdentifierSleepAnalysis with predicate endDate >= CAST(816631200.000000, "NSDate") AND startDate < CAST(816668184.668171, "NSDate") AND offsetFromStartDate >= CAST(816631200.000000, "NSDate")
+2026-11-18 04:16:24.683 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 08F506 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.686 Df StillPointWatch[37529:1a3be] [com.apple.HealthKit:query] Executing query <HKSampleQuery 5C9DF0 QoS=Default> for type HKWorkoutTypeIdentifier with predicate endDate >= CAST(816642000.000000, "NSDate") AND startDate < CAST(816668184.668171, "NSDate") AND offsetFromStartDate >= CAST(816642000.000000, "NSDate")
+2026-11-18 04:16:24.687 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Stopping query <HKSampleQuery 5C9DF0 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.687 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Executing query <HKSampleQuery C45B66 QoS=Default> for type HKCategoryTypeIdentifierMindfulSession with predicate endDate >= CAST(816652800.000000, "NSDate") AND startDate < CAST(816668184.668171, "NSDate") AND offsetFromStartDate >= CAST(816652800.000000, "NSDate")
+2026-11-18 04:16:24.688 Df StillPointWatch[37529:1a3c2] [com.apple.HealthKit:query] Stopping query <HKSampleQuery C45B66 QoS=Default state=deactivated> with error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-18 04:16:24.817 Df StillPointWatch[37529:1a3bb] [com.apple.network:activity] Unsetting the global parent activity (null)
+2026-11-18 04:16:24.818 Df StillPointWatch[37529:1a3bb] [com.apple.network:activity] Unset the global parent activity
+2026-11-18 04:16:25.068 A  StillPointWatch[37529:1a3bb] (PepperUICore) Scene handleEvent
+2026-11-18 04:16:25.069 A  StillPointWatch[37529:1a3c0] (RunningBoardServices) didChangeInheritances
+2026-11-18 04:16:25.069 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.stillpoint.watchkitapp  persistentID: com.troydunn.stillpoint.watchkitapp
+2026-11-18 04:16:25.071 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] performBacklightSceneUpdate isOn = 1 wasOn = 1
+2026-11-18 04:16:25.072 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Non-animated transitionTraitsInUpdate about to call _componentDidUpdateTraitOverrides on <UIWindowScene: 0x11284a600; role: UIWindowSceneSessionRoleApplication; persistentIdentifier: com.troydunn.stillpoint.watchkitapp; activationState: UISceneActivationStateForegroundActive>
+2026-11-18 04:16:25.072 Df StillPointWatch[37529:1a3bb] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10e861cc0; >
+2026-11-18 04:16:25.119 A  StillPointWatch[37529:1a3c0] (RunningBoardServices) didChangeInheritances
