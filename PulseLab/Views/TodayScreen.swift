@@ -22,6 +22,8 @@ struct TodayScreen: View {
                           })
             // Calm minutes, tree hugs and walks today from Still Pointz, Rootbound and Roamr (hidden without them).
             CalmMovementCard()
+            FromYourAppsCard(me: WellnessConnect.pulseLab, accent: Lab.accent, metric: !Units.imperial)
+            RecoveryAcrossAppsCard()
             BriefingCard()
             LogWhoopCard()
             numbersHeader

@@ -118,6 +118,8 @@ struct HistoryView: View {
                         togetherSection
                     }
 
+                    if filter == nil { FromYourAppsCard(me: WellnessConnect.roamr, accent: Theme.glow, metric: Units.metric).padding(.horizontal, Theme.pad) }
+
                     if groupList.isEmpty {
                         emptyState
                             .padding(.horizontal, Theme.pad)

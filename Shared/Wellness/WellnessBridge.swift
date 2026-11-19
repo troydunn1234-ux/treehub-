@@ -6,7 +6,8 @@ import UIKit
 //
 // The feed lives in the shared App Group `group.com.troydunn.wellness` as two small JSON files, one per app,
 // so each app only ever writes its own file (no races) and reads the other's:
-//   rootbound.json   recent tree hugs (date, minutes, tree name, species; never coordinates) + hug streak
+//   rootbound.json   recent tree hugs (date, minutes, tree name, species; never coordinates) + hug streak,
+//                    plus which Roamr trips passed which trees (ids and names only, worked out in Rootbound)
 //   stillpoint.json  recent Still Pointz sessions (date, kind, minutes) + practice streak
 //   pulselab.json    Pulse Lab's daily summary (WHOOP recovery / strain / sleep performance, readiness, HRV,
 //                    resting HR) so Still Pointz can suggest one practice from it. Numbers only, today's day.
@@ -105,6 +106,39 @@ enum WellnessBridge {
         var updated = Date()
         var streak = 0
         var hugs: [TreeHug] = []
+        /// Roamr trips that went by Rootbound's trees (worked out in Rootbound, which knows where its trees are):
+        /// trip id plus each tree's id and name, never a coordinate. Optional: older Rootbound builds don't write it.
+        var tripTrees: [TripTrees]? = nil
+    }
+
+    /// The trees one Roamr trip passed (it started or ended within ~250 m, or a hug of the tree happened on it).
+    struct TripTrees: Codable, Hashable {
+        var tripID: UUID
+        var trees: [NearTree]
+    }
+
+    struct NearTree: Codable, Hashable, Identifiable {
+        var treeID: UUID
+        var name: String
+        var species: String = ""
+        /// True when a hug of this tree happened on the trip (else the trip only started or ended nearby).
+        var hugged: Bool = false
+        var id: UUID { treeID }
+
+        init(treeID: UUID, name: String, species: String = "", hugged: Bool = false) {
+            self.treeID = treeID; self.name = name; self.species = species; self.hugged = hugged
+        }
+
+        // species / hugged may be missing in a hand-trimmed or future-trimmed feed: default them.
+        init(from decoder: Decoder) throws {
+            let c = try decoder.container(keyedBy: CodingKeys.self)
+            treeID = try c.decode(UUID.self, forKey: .treeID)
+            name = try c.decodeIfPresent(String.self, forKey: .name) ?? ""
+            species = try c.decodeIfPresent(String.self, forKey: .species) ?? ""
+            hugged = try c.decodeIfPresent(Bool.self, forKey: .hugged) ?? false
+        }
+
+        private enum CodingKeys: String, CodingKey { case treeID, name, species, hugged }
     }
 
     struct StillPointPart: Codable {
@@ -153,9 +187,10 @@ enum WellnessBridge {
     // MARK: Rootbound side
 
     /// Rootbound: replace its half of the feed.
-    static func publishRootbound(hugs: [TreeHug], streak: Int) {
+    static func publishRootbound(hugs: [TreeHug], streak: Int, tripTrees: [TripTrees]? = nil) {
         let kept = hugs.filter { $0.date >= cutoff }.sorted { $0.date > $1.date }.prefix(maxItems)
-        save(RootboundPart(updated: Date(), streak: streak, hugs: Array(kept)), "rootbound.json")
+        let trips = tripTrees.map { Array($0.filter { !$0.trees.isEmpty }.prefix(maxItems)) }
+        save(RootboundPart(updated: Date(), streak: streak, hugs: Array(kept), tripTrees: trips), "rootbound.json")
     }
 
     /// Still Pointz reads this.

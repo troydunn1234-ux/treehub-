@@ -21,7 +21,8 @@ enum RootboundWellness {
             if !walks.isEmpty { t.walkIDs = walks }
             return t
         }
-        WellnessBridge.publishRootbound(hugs: items, streak: GameEngine.currentStreak(hugs))
+        WellnessBridge.publishRootbound(hugs: items, streak: GameEngine.currentStreak(hugs),
+                                        tripTrees: RoamrTreeLinks.compute(hugs: hugs))
     }
 
     /// Still Pointz guided sessions (not sauna / steam), newest first. Empty when Still Pointz isn't there.

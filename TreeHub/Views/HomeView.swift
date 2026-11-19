@@ -46,6 +46,7 @@ struct HomeView: View {
                                 statsGrid
                                 // Today across the family apps (ConnectionViews.swift), then Still Pointz minutes.
                                 TodayConnectionsCard(hugs: hugs)
+                                FromYourAppsCard(me: WellnessConnect.rootbound, accent: Theme.glow, metric: Units.metric)
                                 CalmMinutesCard(hugs: hugs)
                             }
                             // 3. Memories and goals.

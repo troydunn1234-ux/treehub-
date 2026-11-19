@@ -28,6 +28,7 @@ struct JourneyView: View {
 
                     // Today in Rootbound, Roamr and Pulse Lab (ConnectionsViews.swift; hidden without them).
                     TodayAcrossAppsStrip()
+                    FromYourAppsCard(me: WellnessConnect.stillPoint, accent: SP.accent)
 
                     // 2. What you've reached, and what's next.
                     JourneyMilestoneStrip()
