@@ -2,18 +2,18 @@
   "copyright": "2026 Troy Dunn",
   "bundle": "com.troydunn.rootbound",
   "scheme": "Rootbound",
-  "name": "Rootbound: Hug Trees",
-  "subtitle": "Tree hugs, breathwork & XP",
-  "promotionalText": "New: hugs link every breath session and Roamr walk, Nature Roll finds the nature in your camera roll, and trees in water earn bonus XP. Start a hug from your Watch.",
-  "keywords": "nature,forest bathing,grounding,earthing,barefoot,mindfulness,hiking,outdoors,journal,park,walk,game",
-  "description": "Rootbound turns time with trees into a calm little game. Step outside, find a tree, slow down and log the moment. Every hug earns XP, grows your grove and brings you back to the trees that ground you.\n\nLOG A TREE HUG\nSnap the tree, pin it on the map (live, from the photo, or from a pasted map link) and tag the moment from more than two dozen vibes, like sunrise, trail, birdsong or phone-free. Note your mood before and after, flip on barefoot, and mark a tree at the water's edge or standing in water for bonus XP.\n\nBREATHWORK, LINKED FOR YOU\nBreathed at the tree? Rootbound finds every Still Pointz and mindful session within an hour of your tree photo and links them all to the hug, with practice, minutes, heart rate, heart-rate drop, HRV and breathing rate from Apple Health. Tap Breathe with this tree to start a short Still Pointz session named after it, and earn a Breath & Bark bonus on days you do both.\n\nAPPLE WATCH\nStart a hug from your wrist or the complication. Rootbound times it with live heart rate, taps your wrist at the start and the end, and your iPhone asks which tree it was.\n\nWALKS FROM ROAMR\nRecord walks and hikes in Roamr and tap Sync Roamr: each walk shows up under the hugs it led to (Walk · 2.3 mi · 48 min · +410 ft), and every tree adds up the miles that brought you there. Walks other apps save to Apple Health count too.\n\nNATURE ROLL\nRootbound looks through your camera roll on your iPhone and sorts out the nature: sunsets, trails, mountains, forests, water, sky and stars, wildlife and flowers. See what you shot on this day in past years, or turn a photo into a hug.\n\nWHAT TREE IS THIS?\nRootbound suggests the species from your photo with on-device image recognition, then shares a fact about it.\n\nXP, LEVELS AND RARE LEAVES\nClimb from Seedling to Ancient One. Earn badges for streaks, seasons, sunrises, water trees, long sits and loyal friendships, and collect 12 leaves, from the Oak Leaf to the Golden Elder Leaf said to fall once a century.\n\nYOUR GROVE\nEvery tree you've hugged lives in your grove, with friendship hearts, hug history, breath sessions, walks and a map of all your trees. Tap one for walking directions back.\n\nSIRI, WIDGETS AND CONTROL CENTER\nAsk Siri to log a tree hug, start one from Control Center, and keep your streak on your Home Screen.\n\nFREE AND PRO\nLogging hugs, the map, your grove, linked breathwork and walks, Nature Roll, XP and every badge and leaf are free. One optional purchase unlocks Rootbound Pro for good, with no subscription: tree selfies (a second photo on every hug), tree insights (mood lift, how your heart rate settles and your favorite time of day with each tree), CSV and GPX export, and the Nature Roll map and Photos albums.\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your hugs live on your iPhone and in your own private iCloud, so they follow you to a new phone and nobody else can read them. Nature Roll runs entirely on your iPhone; no photo is uploaded.\n\nRootbound is for fun and general wellbeing. Heart data is shown for your interest and is not medical advice.",
+  "name": "Rootbound: Tree Hug Tracker",
+  "subtitle": "Tree hugs timed on your Watch",
+  "promotionalText": "Hold a real tree and watch your heart rate settle on your wrist. Every hug gets a pin on your own tree map, a name, a species and a growing friendship.",
+  "keywords": "forest bathing,shinrin yoku,grounding,earthing,heart rate,calm,nature,map,species,outdoors,game",
+  "description": "Rootbound is a log for one thing: hugging real trees. Start a hug on your Apple Watch, hold the tree, and see your heart rate settle. Every tree you hug gets a pin on your own tree map, a name, a suggested species and a friendship that grows each time you come back.\n\nTIME A HUG ON YOUR WATCH\nStart a hug from the Rootbound Watch app or its complication. It shows your heart rate live, taps your wrist at the start and the end, and keeps your start and end heart rate, so you can see how much you settled while you held the tree. Your iPhone then asks which tree it was. No Watch? Log a hug on your iPhone with a photo.\n\nYOUR OWN TREE MAP\nEvery hug pins its tree on a map (live, from the photo's location, or from a pasted map link). See all your trees at once and tap one for walking directions back. Share your trees with a friend through a link or QR code and see theirs on your map.\n\nGET TO KNOW EACH TREE\nName your trees. Rootbound suggests the species from your photo with on-device image recognition and shares a fact about it. Each tree keeps its own page: every hug, your friendship hearts, how your heart rate settles there and the breath sessions and walks that led to it.\n\nLOG THE MOMENT\nA photo of the tree, your mood before and after, barefoot, a tree at the water's edge, and vibe tags like sunrise, trail, birdsong or phone-free.\n\nBREATHWORK AND WALKS, LINKED FOR YOU\nBreathed at the tree? Rootbound links Still Pointz and other mindful sessions from Apple Health within an hour of the hug, with minutes, heart rate, HRV and breathing rate. Walks recorded in Roamr, or saved to Apple Health by other apps, show up under the hugs they led to.\n\nA GENTLE GAME\nEach hug earns XP, from Seedling to Ancient One, with badges for streaks, sunrises, long sits and loyal tree friendships, and 12 leaves to collect.\n\nNATURE ROLL\nRootbound can sort the nature photos in your camera roll on your iPhone (sunsets, trails, forests, water, wildlife) and turn one into a hug. Nothing is uploaded.\n\nSIRI, WIDGETS AND CONTROL CENTER\nAsk Siri to log a tree hug, start one from Control Center or the Home Screen widget, and start a Watch hug from a complication.\n\nFREE AND PRO\nLogging hugs, Watch timing, the tree map, your grove, linked breathwork and walks, Nature Roll, XP and every badge and leaf are free. One optional purchase unlocks Rootbound Pro for good, with no subscription: tree selfies (a second photo on every hug), tree insights (mood lift, how your heart rate settles and your favorite time of day with each tree), CSV and GPX export, and the Nature Roll map and Photos albums.\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your hugs live on your iPhone and in your own private iCloud, so they follow you to a new phone and nobody else can read them.\n\nRootbound is for fun and general wellbeing. Heart data is shown for your interest and is not medical advice.",
   "primaryCategory": "HEALTH_AND_FITNESS",
   "secondaryCategory": "LIFESTYLE",
   "price": "0.0",
   "ageRating": {
     "healthOrWellnessTopics": true
   },
-  "reviewNotes": "No account or sign-in.\n\nTo try it: tap the big Hug button on Home, add a photo (or skip), and save; the celebration screen shows the XP. The Grove and Collection tabs fill up as hugs are logged. Walks are recorded in our separate Roamr app (or any app that saves walking workouts to Apple Health): \"Sync Roamr\" on Home attaches walks within two hours of a hug to it. Rootbound itself no longer records walks.\n\nIn-app purchase: Rootbound Pro (com.troydunn.rootbound.pro) is a one-time non-consumable, no subscription. It unlocks the second \"You + Tree\" selfie photo on a hug, the Tree insights card on each tree in the Grove, CSV / GPX export in Settings, and the map and Photos albums in Nature Roll. To see the paywall: tap the \"You + Tree\" photo slot when logging a hug, open a tree in the Grove and tap Tree insights, open Nature Roll, tap Map and tap the Nature map card, or open Settings (gear on Home) and tap Rootbound Pro. Restore Purchases is in Settings and on the paywall. Logging hugs with a tree photo, the map, walks from Roamr, Nature Roll's sorting, badges, leaves and the JSON export stay free.\n\nPermissions: location while in use (pin the tree), camera and photos (tree photos; and Nature Roll, which only after the person opens it from Home or the Grove and starts a scan, reads the photo library on the device with Apple's image recognition to sort nature photos, works with Limited access and uploads nothing), HealthKit: the iPhone app only reads (heart rate, HRV, breathing rate, mindful minutes, workouts including walks and hikes); the optional Apple Watch app runs a Mind & Body workout session during a hug to measure heart rate and saves that workout to Health. Data syncs only to the user's own private iCloud (CloudKit private database). Roamr shares a summary of recent trips (times, distance, climb, speed, average heart rate and start / end rounded to about 100 m) with Rootbound on the device through a shared App Group, and Still Pointz shares recent breath sessions the same way (Rootbound shares hug dates, lengths, tree names and species, never locations); nothing is uploaded.",
+  "reviewNotes": "No account or sign-in.\n\nWhat sets Rootbound apart: it logs real, physical tree hugs. The Apple Watch app times a hug with live heart rate (start and end heart rate are kept on the hug), every tree is pinned on the user's own tree map, and each tree has a name, a suggested species and its own history. The first-launch welcome and the top card on Home lead with this.\n\nTo try it: tap Log your first hug (or the heart button in the tab bar) on Home, add a photo (or skip), and save; the celebration screen shows the XP. The Grove and Collection tabs fill up as hugs are logged. Walks are recorded in our separate Roamr app (or any app that saves walking workouts to Apple Health): \"Sync Roamr\" on Home attaches walks within two hours of a hug to it. Rootbound itself no longer records walks.\n\nIn-app purchase: Rootbound Pro (com.troydunn.rootbound.pro) is a one-time non-consumable, no subscription. It unlocks the second \"You + Tree\" selfie photo on a hug, the Tree insights card on each tree in the Grove, CSV / GPX export in Settings, and the map and Photos albums in Nature Roll. To see the paywall: tap the \"You + Tree\" photo slot when logging a hug, open a tree in the Grove and tap Tree insights, open Nature Roll, tap Map and tap the Nature map card, or open Settings (gear on Home) and tap Rootbound Pro. Restore Purchases is in Settings and on the paywall. Logging hugs with a tree photo, the map, walks from Roamr, Nature Roll's sorting, badges, leaves and the JSON export stay free.\n\nPermissions: location while in use (pin the tree), camera and photos (tree photos; and Nature Roll, which only after the person opens it from Home or the Grove and starts a scan, reads the photo library on the device with Apple's image recognition to sort nature photos, works with Limited access and uploads nothing), HealthKit: the iPhone app only reads (heart rate, HRV, breathing rate, mindful minutes, workouts including walks and hikes); the optional Apple Watch app runs a Mind & Body workout session during a hug to measure heart rate and saves that workout to Health. Data syncs only to the user's own private iCloud (CloudKit private database). Roamr shares a summary of recent trips (times, distance, climb, speed, average heart rate and start / end rounded to about 100 m) with Rootbound on the device through a shared App Group, and Still Pointz shares recent breath sessions the same way (Rootbound shares hug dates, lengths, tree names and species, never locations); nothing is uploaded.",
   "location": "37.7772,-122.4500",
   "grant": [
     "location",
@@ -50,34 +50,34 @@
     {
       "file": "rb-1-home.png",
       "eyebrow": "Rootbound",
-      "line1": "Go hug",
-      "line2": "a tree.",
-      "sub": "A calm little game that gets you outside.",
+      "line1": "Hug a",
+      "line2": "real tree.",
+      "sub": "Your heart rate, live, while you hold on.",
       "chips": [
-        "Streaks and levels",
-        "Walks from Roamr"
+        "Live heart rate",
+        "Your tree map"
       ]
     },
     {
       "file": "rb-2-log.png",
       "eyebrow": "New Hug",
-      "line1": "Every hug,",
+      "line1": "Every tree,",
       "line2": "remembered.",
-      "sub": "Photo, map pin, vibe tags and how you felt.",
+      "sub": "Photo, map pin, species and how you felt.",
       "chips": [
-        "Breathwork linked",
-        "Water tree bonus"
+        "Species from photo",
+        "Mood before and after"
       ]
     },
     {
       "file": "rb-3-celebrate.png",
       "eyebrow": "Level Up",
-      "line1": "Earn XP and",
-      "line2": "rare leaves.",
-      "sub": "Badges for sunrises, streaks and long sits.",
+      "line1": "Feel it,",
+      "line2": "then grow.",
+      "sub": "XP, rare leaves and badges for every hug.",
       "chips": [
         "12 rare leaves",
-        "Dozens of badges"
+        "Streaks and levels"
       ]
     },
     {
@@ -85,10 +85,10 @@
       "eyebrow": "Your Grove",
       "line1": "Tree friends",
       "line2": "for life.",
-      "sub": "Hearts, breaths and walks for every tree.",
+      "sub": "Each tree keeps its hugs, heart rate and walks.",
       "chips": [
         "Directions back",
-        "Map of every tree"
+        "Friendship hearts"
       ]
     },
     {
