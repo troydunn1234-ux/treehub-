@@ -6,7 +6,20 @@ import SwiftData
 struct TreeHubApp: App {
     @State private var tracker = RouteTracker()
 
+    /// Runs before the store opens (declared above `container`): people updating from a version without the
+    /// welcome already have a store, so they skip it. Read-only on the store file; it only sets the welcome's flag.
+    private let skippedWelcomeForReturning: Bool = TreeHubApp.skipWelcomeIfReturning()
+
     let container: ModelContainer = TreeHubApp.makeContainer()
+
+    private static func skipWelcomeIfReturning() -> Bool {
+        let key = "onboarding.seen.v\(RootboundOnboard.spec.version)"
+        let d = UserDefaults.standard
+        guard !d.bool(forKey: key), !DemoData.isOn,
+              FileManager.default.fileExists(atPath: LocalStore.url.path(percentEncoded: false)) else { return false }
+        d.set(true, forKey: key)
+        return true
+    }
 
     /// Rootbound's one store. The app always opens `LocalStore.url` (never pass `storeURL` outside tests):
     /// RootboundTests/DataSafetyTests.swift reopens a store written at a temporary LocalStore-like path through this
@@ -38,6 +51,8 @@ struct TreeHubApp: App {
             LaunchGate { RootView() }
                 // Rootbound Pro: "-demo -paywall" (review screenshot) and Unlock.shared.gate(...) open the paywall here.
                 .paywallHost(spec: RootboundPro.spec)
+                // First launch: three pages on the hug itself (RootboundOnboard.swift).
+                .onboarding(RootboundOnboard.spec)
                 .environment(tracker)
                 .preferredColorScheme(.dark)
                 .tint(Theme.glow)

@@ -3,6 +3,8 @@ import SwiftData
 import MapKit
 
 struct TreesView: View {
+    /// Home's "Open tree map" sets this; the Grove opens on its map once.
+    static var startOnMap = false
     @Query(sort: \Hug.date, order: .reverse) private var hugs: [Hug]
     @State private var mode = 0
     @State private var camera: MapCameraPosition = .automatic
@@ -49,7 +51,10 @@ struct TreesView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.changed)) { _ in friends = FriendShare.friends }
             .onReceive(NotificationCenter.default.publisher(for: FriendShare.incoming)) { _ in openIncoming() }
-            .onAppear { openIncoming(); openPendingTree() }
+            .onAppear {
+                if Self.startOnMap { Self.startOnMap = false; mode = 1 }
+                openIncoming(); openPendingTree()
+            }
             // rootbound://tree?id=… (back from a Still Pointz breath with this tree)
             .onReceive(NotificationCenter.default.publisher(for: TreeBreaths.openTree)) { _ in openPendingTree() }
             .navigationDestination(for: UUID.self) { id in

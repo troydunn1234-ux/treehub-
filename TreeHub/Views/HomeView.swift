@@ -30,22 +30,27 @@ struct HomeView: View {
                     Group {
                         // 1. You: level + streak, then the two things to do.
                         VStack(spacing: RB.m) {
-                            levelCard
-                            quickActions
-                            if !syncNote.isEmpty { syncResult }
+                            // New users meet the hug itself first (Watch heart rate, tree map, tree identity);
+                            // level and streak come once there's a hug to count.
+                            if !hugs.isEmpty { levelCard }
                             if !watchInbox.pending.isEmpty { watchHugCard }
+                            HugSignatureCard(hugs: hugs, logHug: { showHugLog = true }, openMap: openTreeMap)
+                            if !hugs.isEmpty { quickActions }
+                            if !syncNote.isEmpty { syncResult }
                         }
                         .padding(.top, -RB.xxl - RB.s)
                         // 2. Your numbers, always recomputed from the hugs + linked sessions.
-                        VStack(alignment: .leading, spacing: RB.m) {
-                            RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill")
-                            statsGrid
-                            // Today across the family apps (ConnectionViews.swift), then Still Pointz minutes.
-                            TodayConnectionsCard(hugs: hugs)
-                            CalmMinutesCard(hugs: hugs)
+                        if !hugs.isEmpty {
+                            VStack(alignment: .leading, spacing: RB.m) {
+                                RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill")
+                                statsGrid
+                                // Today across the family apps (ConnectionViews.swift), then Still Pointz minutes.
+                                TodayConnectionsCard(hugs: hugs)
+                                CalmMinutesCard(hugs: hugs)
+                            }
+                            // 3. Memories and goals.
+                            recentHugs
                         }
-                        // 3. Memories and goals.
-                        if hugs.isEmpty { firstHugCard } else { recentHugs }
                         if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         nextBadges
                         NatureRollEntryCard()
@@ -100,6 +105,10 @@ struct HomeView: View {
                     Text("Last hug · \(latest.treeName) · \(Format.day(latest.date))")
                         .font(RB.text(.footnote, .medium)).foregroundStyle(.white.opacity(0.8))
                         .lineLimit(2)
+                } else {
+                    Text("Tree hugs, timed on your wrist.")
+                        .font(RB.text(.subheadline, .medium)).foregroundStyle(.white.opacity(0.85))
+                        .fixedSize(horizontal: false, vertical: true)
                 }
             }
             .padding(.horizontal, RB.screen)
@@ -241,12 +250,10 @@ struct HomeView: View {
         .pressable()
     }
 
-    private var firstHugCard: some View {
-        RBCard {
-            RBEmptyState(symbol: "tree.fill", title: "Log your first hug",
-                         hint: "Snap the tree; your Apple Watch and Still Pointz sessions fill in the rest.",
-                         actionTitle: "Hug a tree") { showHugLog = true }
-        }
+    /// The Grove tab, on its map.
+    private func openTreeMap() {
+        TreesView.startOnMap = true
+        tab = .trees
     }
 
     private var recentHugs: some View {
