@@ -208,7 +208,7 @@ final class PCClient {
         }
         state = .connecting
         retry += 1
-        if retry > 6 { state = .disconnected; lastError = "Can't reach your PC. Is the PC app (Clankerr PC) running?"; return }
+        if retry > 6 { state = .disconnected; lastError = "Can't reach your PC. Is Couch Remote PC running on it, on the same Wi-Fi?"; return }
         let delay = min(10.0, pow(1.8, Double(retry)))
         reconnectTask = Task {
             try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))

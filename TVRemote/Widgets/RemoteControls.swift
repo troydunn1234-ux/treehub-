@@ -3,13 +3,14 @@ import SwiftUI
 import WidgetKit
 
 // Couch Remote on the iPhone: Control Center / Lock Screen / Action button controls for the TV (iOS 18+),
-// plus a Lock Screen widget that opens the remote. The controls run TVControlKeyIntent
+// plus a Lock Screen widget that opens the remote and a Home Screen widget with power/volume/mute buttons (HomeRemoteWidget.swift). The controls run TVControlKeyIntent
 // (TVRemote/App/RemoteControlIntents.swift) in the app's process, so the TV gets the key without opening the app.
 
 @main
 struct ClickerWidgets: WidgetBundle {
     var body: some Widget {
         CouchRemoteLockWidget()
+        CouchRemoteHomeWidget()
         if #available(iOS 18.0, *) {
             TVPowerControl()
             TVVolumeUpControl()

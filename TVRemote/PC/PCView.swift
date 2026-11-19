@@ -33,11 +33,20 @@ private struct PCPairing: View {
                 if pc.state == .needsCode { codeEntry } else { finder }
 
                 if let e = pc.lastError {
-                    Label(e, systemImage: "exclamationmark.triangle.fill")
-                        .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
-                        .fixedSize(horizontal: false, vertical: true)
-                        .padding(Look.S.m).frame(maxWidth: .infinity)
-                        .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
+                    VStack(spacing: Look.S.s) {
+                        Label(e, systemImage: "exclamationmark.triangle.fill")
+                            .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
+                            .fixedSize(horizontal: false, vertical: true)
+                        if pc.pc != nil, pc.state == .disconnected {
+                            Button("Try again") { pc.connect() }
+                                .font(Look.font(14, .heavy)).foregroundStyle(.white)
+                                .frame(minHeight: 44).padding(.horizontal, Look.S.l)
+                                .background(Color.white.opacity(0.14), in: Capsule())
+                                .accessibilityHint("Connects to \(pc.pc?.name ?? "your PC") again")
+                        }
+                    }
+                    .padding(Look.S.m).frame(maxWidth: .infinity)
+                    .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
                 }
             }
             .padding(.horizontal, Look.S.xl)
@@ -83,6 +92,12 @@ private struct PCPairing: View {
             }
             if pc.searching && pc.found.isEmpty {
                 Text("Looking for PCs…").font(Look.font(13, .bold)).foregroundStyle(Look.dim)
+            } else if pc.found.isEmpty, pc.pc == nil, pc.state == .disconnected {
+                EmptyStateCard(symbol: "desktopcomputer.trianglebadge.exclamationmark",
+                               title: "No PC found yet",
+                               hint: "Open Couch Remote PC on your Windows computer and keep it on the same Wi-Fi, then search again. Or type its IP below.",
+                               actionTitle: "Search again") { pc.stopSearch(); pc.startSearch() }
+                    .transition(.opacity.combined(with: .scale(scale: 0.96)))
             }
             HStack(spacing: Look.S.s) {
                 TextField("", text: $manualIP, prompt: Text("PC's IP, like 192.168.1.20").foregroundStyle(Look.faint))

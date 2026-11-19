@@ -38,6 +38,7 @@ struct SetupView: View {
                         .accessibilityElement(children: .combine)
                         .accessibilityLabel("Couch Remote")
                     }
+                    if onPaired == nil, step == .find { WhatItDoes() }
                     RadarView(scanning: step == .find || step == .allow,
                               icon: step == .find ? "tv" : step == .allow ? "hand.tap.fill" : step == .done ? "checkmark" : "lock.open.fill",
                               blips: step == .find ? store.discovery.found.count : 0,
@@ -50,12 +51,22 @@ struct SetupView: View {
                     case .done: doneStep
                     }
                     if let e = store.errorText {
-                        Label(e, systemImage: "exclamationmark.triangle.fill")
-                            .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
-                            .padding(Look.S.m)
-                            .frame(maxWidth: .infinity)
-                            .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
-                            .transition(.opacity)
+                        VStack(spacing: Look.S.s) {
+                            Label(e, systemImage: "exclamationmark.triangle.fill")
+                                .font(Look.text(.subheadline, .semibold)).foregroundStyle(.white)
+                                .fixedSize(horizontal: false, vertical: true)
+                            // Pairing with a TV failed while picking it: one tap tries the same TV again.
+                            if step == .find, let tv = chosen, !busy {
+                                Button("Try \(tv.name) again") { Task { await pick(tv) } }
+                                    .font(Look.font(14, .heavy)).foregroundStyle(.white)
+                                    .frame(minHeight: 44).padding(.horizontal, Look.S.l)
+                                    .background(Color.white.opacity(0.14), in: Capsule())
+                            }
+                        }
+                        .padding(Look.S.m)
+                        .frame(maxWidth: .infinity)
+                        .glass(Look.R.card, tint: .orange, glow: .orange, strength: 1.5)
+                        .transition(.opacity)
                     }
                 }
                 .padding(.horizontal, Look.S.xl)
@@ -285,6 +296,38 @@ struct SetupView: View {
             UINotificationFeedbackGenerator().notificationOccurred(.error)
             pin = ""
         }
+    }
+}
+
+/// First screen: what sets Couch Remote apart, in three honest lines (each is a real feature of the app).
+private struct WhatItDoes: View {
+    private let rows: [(String, String, String)] = [
+        ("tv.and.mediabox.fill", "Five TV brands, one app", "VIZIO, Roku, Samsung, LG and Google TV, side by side"),
+        ("square.grid.2x2.fill", "Your apps as big tiles", "Tap a streaming app and it opens on the TV"),
+        ("desktopcomputer", "Your Windows PC too", "Trackpad, keyboard and media keys with the free PC app"),
+    ]
+    var body: some View {
+        VStack(alignment: .leading, spacing: Look.S.m) {
+            ForEach(rows, id: \.1) { r in
+                HStack(alignment: .top, spacing: Look.S.m) {
+                    Image(systemName: r.0)
+                        .font(.system(size: 16, weight: .bold)).foregroundStyle(Look.accent)
+                        .frame(width: 34, height: 34)
+                        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 10, style: .continuous))
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(r.1).font(Look.text(.subheadline, .heavy)).foregroundStyle(.white)
+                        Text(r.2).font(Look.text(.footnote, .medium)).foregroundStyle(Look.dim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 0)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+        .padding(Look.S.l)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .glass(Look.R.card)
     }
 }
 
