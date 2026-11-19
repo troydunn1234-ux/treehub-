@@ -669,6 +669,9 @@ targets:
     deploymentTarget: "10.0"
     sources:
       - path: RoamrWatch
+    dependencies:
+      - target: RoamrWatchWidgets
+        embed: true
     info:
       path: RoamrWatch/Info.plist
       properties:
@@ -684,6 +687,26 @@ targets:
         TARGETED_DEVICE_FAMILY: "4"
         SKIP_INSTALL: YES
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  # Roamr Watch complications (launcher: one tap to Start drive / Walk / Ride / Run). No App Group: data-free.
+  RoamrWatchWidgets:
+    type: app-extension
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - path: RoamrWatchWidgets
+    info:
+      path: RoamrWatchWidgets/RoamrWatchWidgets.plist
+      properties:
+        CFBundleVersion: "$(CURRENT_PROJECT_VERSION)"
+        CFBundleShortVersionString: "$(MARKETING_VERSION)"
+        CFBundleDisplayName: Roamr
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.troydunn.roamr.watchkitapp.widgets
+        SKIP_INSTALL: YES
 
   # Food Book on Apple Watch
   # Couch Remote (was Clankerr) on Apple Watch
