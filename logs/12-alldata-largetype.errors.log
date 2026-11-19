@@ -1,0 +1,4 @@
+2026-11-19 14:48:50.221 E  PulseLab[29379:149fb] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-19 14:48:50.225 E  PulseLab[29379:149fb] [com.apple.wcd:WC] WCSession is not paired
+2026-11-19 14:48:53.524 E  PulseLab[29379:149da] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-19 14:48:53.529 F  PulseLab[29379:149da] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0

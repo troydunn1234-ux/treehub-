@@ -1,0 +1,2 @@
+2026-11-19 14:48:15.235 E  PulseLab[27698:13a43] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-19 14:48:15.248 E  PulseLab[27698:13a43] [com.apple.wcd:WC] WCSession is not paired
