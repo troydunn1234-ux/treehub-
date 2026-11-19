@@ -434,7 +434,7 @@ struct PracticeDetailView: View {
                         .sensoryFeedback(.success, trigger: sentToWatch)
                         .disabled(!link.canUseWatch)
                         if !link.canUseWatch {
-                            Text("Install Still Point on your Apple Watch to start from here.")
+                            Text("Install Still Pointz on your Apple Watch to start from here.")
                                 .font(SP.rounded(12)).foregroundStyle(SP.faint)
                         }
                     }

@@ -18,7 +18,7 @@ struct BreatheNowControl: ControlWidget {
             }
         }
         .displayName("Breathe Now")
-        .description("Opens Still Point and begins today's suggested practice.")
+        .description("Opens Still Pointz and begins today's suggested practice.")
     }
 }
 #endif

@@ -8,7 +8,7 @@ import Foundation
 
 struct BreatheNowControlIntent: AppIntent {
     static var title: LocalizedStringResource = "Breathe Now"
-    static var description = IntentDescription("Opens Still Point and begins today's suggested practice.")
+    static var description = IntentDescription("Opens Still Pointz and begins today's suggested practice.")
     static var openAppWhenRun = true
     /// Shortcuts already offers StartBreathingIntent; this one is for the control only.
     static var isDiscoverable: Bool = false

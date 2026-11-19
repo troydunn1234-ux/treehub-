@@ -461,7 +461,7 @@ struct WhoopNote: View {
     var body: some View {
         HStack(alignment: .top, spacing: SP.s3) {
             Image(systemName: "info.circle").foregroundStyle(SP.accent).accessibilityHidden(true)
-            Text("Using WHOOP? Turn on the Apple Health integration in the WHOOP app and allow Heart Rate. Still Point reads the readings that fall inside each sauna or steam session. An Apple Watch or Garmin works the same way.")
+            Text("Using WHOOP? Turn on the Apple Health integration in the WHOOP app and allow Heart Rate. Still Pointz reads the readings that fall inside each sauna or steam session. An Apple Watch or Garmin works the same way.")
                 .font(.footnote).foregroundStyle(SP.dim)
                 .fixedSize(horizontal: false, vertical: true)
         }

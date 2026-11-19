@@ -200,8 +200,8 @@ struct JourneyView: View {
         HStack(spacing: 12) {
             Image(systemName: "heart.circle").font(.system(size: 15, weight: .light)).foregroundStyle(SP.faint).frame(width: 26)
             VStack(alignment: .leading, spacing: 2) {
-                Text(e.source).font(SP.serif(16)).foregroundStyle(SP.dim).lineLimit(1)
-                Text(e.start.formatted(.dateTime.hour().minute()) + " · from Apple Watch Mindfulness")
+                Text(e.source).font(SP.serif(16)).foregroundStyle(SP.dim).lineLimit(2)
+                Text(e.start.formatted(.dateTime.hour().minute()) + " · " + String(localized: "from Apple Health"))
                     .font(SP.rounded(12)).foregroundStyle(SP.faint)
             }
             Spacer()
@@ -324,7 +324,7 @@ struct SettingsView: View {
                     }
                 } header: { Text("Rhythm") } footer: {
                     if reminders.enabled && reminders.denied {
-                        Text("Notifications are off for Still Point. Turn them on in the Settings app to get the reminder.")
+                        Text("Notifications are off for Still Pointz. Turn them on in the Settings app to get the reminder.")
                     } else {
                         Text("A quiet nudge once a day, at a time you choose. Nothing else, ever.")
                     }
@@ -372,7 +372,7 @@ struct SettingsView: View {
                 }
                 Section("Apple Watch") {
                     LabeledContent("Watch", value: link.watchPaired ? "Paired" : "Not paired")
-                    LabeledContent("Still Point on Watch", value: link.watchAppInstalled ? "Installed" : "Not installed")
+                    LabeledContent("Still Pointz on Watch", value: link.watchAppInstalled ? "Installed" : "Not installed")
                     Text("These settings are shared with your Watch automatically.").font(.footnote).foregroundStyle(.secondary)
                 }
                 MoreAppsGate { Section { MoreAppsRow() } }

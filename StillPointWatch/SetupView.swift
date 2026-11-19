@@ -28,7 +28,7 @@ struct SetupView: View {
                 if lib.isLocked(practice) {
                     VStack(spacing: 6) {
                         Image(systemName: "lock.fill").font(.system(size: 16)).foregroundStyle(SP.gold)
-                        Text("Part of Still Point Pro").font(SP.serif(15)).foregroundStyle(SP.ink)
+                        Text("Part of Still Pointz Pro").font(SP.serif(15)).foregroundStyle(SP.ink)
                         Text("Unlock once on your iPhone and it appears here.").font(SP.rounded(11)).foregroundStyle(SP.faint)
                             .multilineTextAlignment(.center)
                     }

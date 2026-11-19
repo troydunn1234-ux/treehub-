@@ -54,7 +54,7 @@ struct PracticeQuery: EntityStringQuery {
 /// Locked practices open their page instead, where the unlock lives.
 struct StartPracticeIntent: AppIntent {
     static var title: LocalizedStringResource = "Start a Practice"
-    static var description = IntentDescription("Opens Still Point and begins the practice you choose.")
+    static var description = IntentDescription("Opens Still Pointz and begins the practice you choose.")
     static var openAppWhenRun = true
 
     @Parameter(title: "Practice")
@@ -77,7 +77,7 @@ struct StartPracticeIntent: AppIntent {
 /// "Start Still Point breathing": no questions asked, the best quick breath for right now.
 struct StartBreathingIntent: AppIntent {
     static var title: LocalizedStringResource = "Breathe Now"
-    static var description = IntentDescription("Opens Still Point and begins a short breathing practice suited to the time of day.")
+    static var description = IntentDescription("Opens Still Pointz and begins a short breathing practice suited to the time of day.")
     static var openAppWhenRun = true
 
     @MainActor
@@ -217,7 +217,7 @@ struct EndHeatIntent: AppIntent {
 /// "Breathe with a tree": a short grounding breath named after the last tree hugged in Rootbound (if any).
 struct BreatheWithTreeIntent: AppIntent {
     static var title: LocalizedStringResource = "Breathe with a Tree"
-    static var description = IntentDescription("Opens Still Point for a short grounding breath with a tree, named after the last tree you hugged in Rootbound.")
+    static var description = IntentDescription("Opens Still Pointz for a short grounding breath with a tree, named after the last tree you hugged in Rootbound.")
     static var openAppWhenRun = true
 
     @MainActor

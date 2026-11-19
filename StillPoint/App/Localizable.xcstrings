@@ -5242,6 +5242,66 @@
           }
         }
       }
+    },
+    "Install Still Pointz on your Apple Watch to start from here.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Instala Still Pointz en tu Apple Watch para empezar desde aquí."
+          }
+        }
+      }
+    },
+    "Notifications are off for Still Pointz. Turn them on in the Settings app to get these.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Still Pointz están desactivadas. Actívalas en la app Ajustes para recibirlas."
+          }
+        }
+      }
+    },
+    "Using WHOOP? Turn on the Apple Health integration in the WHOOP app and allow Heart Rate. Still Pointz reads the readings that fall inside each sauna or steam session. An Apple Watch or Garmin works the same way.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Usas WHOOP? Activa la integración con Salud en la app de WHOOP y permite Frecuencia cardiaca. Still Pointz lee las mediciones que caen dentro de cada sesión de sauna o vapor. Un Apple Watch o un Garmin funcionan igual."
+          }
+        }
+      }
+    },
+    "Still Pointz on Watch": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still Pointz en el Watch"
+          }
+        }
+      }
+    },
+    "Notifications are off for Still Pointz. Turn them on in the Settings app to get the reminder.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Still Pointz están desactivadas. Actívalas en la app Ajustes para recibir el recordatorio."
+          }
+        }
+      }
+    },
+    "from Apple Health": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "de Apple Salud"
+          }
+        }
+      }
     }
   },
   "version": "1.0"

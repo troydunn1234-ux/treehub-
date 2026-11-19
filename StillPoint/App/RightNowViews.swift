@@ -418,7 +418,7 @@ struct DailyMomentsSettings: View {
             }
         } header: { Text("Right now reminders") } footer: {
             if moments.status == .denied {
-                Text("Notifications are off for Still Point. Turn them on in the Settings app to get these.")
+                Text("Notifications are off for Still Pointz. Turn them on in the Settings app to get these.")
             } else {
                 Text("Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it.")
             }
