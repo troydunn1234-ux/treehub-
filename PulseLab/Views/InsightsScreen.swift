@@ -34,8 +34,16 @@ struct InsightsScreen: View {
                         .font(Lab.label(9)).foregroundStyle(Lab.faint)
 
                     if loadingExtras {
-                        ProgressView().tint(Lab.watch).frame(maxWidth: .infinity)
-                            .accessibilityLabel(String(localized: "Reading sauna, food and drink data"))
+                        // Placeholder rows (not a spinner) while sauna, food and drink data is read.
+                        VStack(spacing: 10) {
+                            ForEach(0..<2, id: \.self) { _ in
+                                RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous)
+                                    .fill(Lab.inset)
+                                    .frame(height: 64)
+                            }
+                        }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel(String(localized: "Reading sauna, food and drink data"))
                     }
                     if results.isEmpty && !loadingExtras {
                         emptyState

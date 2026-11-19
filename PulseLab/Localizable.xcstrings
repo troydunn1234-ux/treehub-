@@ -161,6 +161,17 @@
         }
       }
     },
+    "%lld bpm apart": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld lpm de diferencia"
+          }
+        }
+      }
+    },
     "%lld days": {
       "localizations": {
         "en": {
@@ -351,6 +362,17 @@
         }
       }
     },
+    "3 of 4 agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "3 de 4 coinciden"
+          }
+        }
+      }
+    },
     "8 am by default. It asks you to log WHOOP when today's numbers are missing. Change it any time in Settings.": {
       "localizations": {
         "es": {
@@ -377,6 +399,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Unos días más en los que ambos dispositivos midan lo mismo y el veredicto se completará."
+          }
+        }
+      }
+    },
+    "A readiness score built from your Watch, next to WHOOP recovery, with every part explained.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una puntuación de preparación hecha con tu Watch, junto a la recuperación de WHOOP, con cada parte explicada."
           }
         }
       }
@@ -461,6 +494,17 @@
         }
       }
     },
+    "Agree or split": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden o no"
+          }
+        }
+      }
+    },
     "Agreement scores and a readiness score from your Watch to sit next to WHOOP recovery.": {
       "localizations": {
         "es": {
@@ -497,6 +541,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Permitir leer bebidas"
+          }
+        }
+      }
+    },
+    "And the rest of your day": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Y el resto de tu día"
           }
         }
       }
@@ -771,6 +826,17 @@
         }
       }
     },
+    "Both trackers tell the same story today.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy los dos cuentan lo mismo."
+          }
+        }
+      }
+    },
     "Breathing rate": {
       "localizations": {
         "es": {
@@ -891,6 +957,28 @@
         }
       }
     },
+    "Compares each tracker with its own week": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compara cada uno con su propia semana"
+          }
+        }
+      }
+    },
+    "Compares yesterday with each tracker's own week": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Compara ayer con la semana de cada uno"
+          }
+        }
+      }
+    },
     "Connect Apple Health": {
       "localizations": {
         "es": {
@@ -987,6 +1075,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Día a día"
+          }
+        }
+      }
+    },
+    "Day-by-day agreement over weeks: which one reads higher, by how much, and why they differ.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coincidencia día a día durante semanas: cuál marca más alto, por cuánto y por qué difieren."
+          }
+        }
+      }
+    },
+    "Day-by-day face-off": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cara a cara día a día"
           }
         }
       }
@@ -1107,6 +1217,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Baja %@ %@ frente a la semana pasada."
+          }
+        }
+      }
+    },
+    "Down %lld%%": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Baja %lld %%"
           }
         }
       }
@@ -1247,6 +1368,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Todo lo que se sincroniza"
+          }
+        }
+      }
+    },
+    "Example": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ejemplo"
           }
         }
       }
@@ -1931,12 +2063,34 @@
         }
       }
     },
+    "Needs a reading from both": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesita una lectura de los dos"
+          }
+        }
+      }
+    },
     "Needs at least 3 days where both trackers measured %@.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Necesita al menos 3 días en los que ambos dispositivos midieran %@."
+          }
+        }
+      }
+    },
+    "Needs last night from both": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Necesita la noche de los dos"
           }
         }
       }
@@ -2141,6 +2295,17 @@
         }
       }
     },
+    "No sleep": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin sueño"
+          }
+        }
+      }
+    },
     "No stages from last night": {
       "localizations": {
         "es": {
@@ -2177,6 +2342,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aún no hay entrenamientos"
+          }
+        }
+      }
+    },
+    "Not compared": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sin comparar"
           }
         }
       }
@@ -2741,6 +2917,17 @@
         }
       }
     },
+    "Readiness next to recovery": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Preparación junto a recuperación"
+          }
+        }
+      }
+    },
     "Readiness over 30 days: average %lld, from %lld to %lld.": {
       "localizations": {
         "es": {
@@ -2901,6 +3088,17 @@
         }
       }
     },
+    "Resting HR, HRV, sleep and strain from both trackers, each marked, with one agreement score for the day.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo, VFC, sueño y esfuerzo de los dos, cada uno marcado, con una puntuación de coincidencia del día."
+          }
+        }
+      }
+    },
     "Resting HR, HRV, sleep stages, breathing, blood oxygen, temperature, calories and workouts from your Watch and WHOOP, side by side.": {
       "localizations": {
         "es": {
@@ -2977,6 +3175,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Misma dirección (SDNN vs RMSSD)"
+          }
+        }
+      }
+    },
+    "Same night": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misma noche"
+          }
+        }
+      }
+    },
+    "Same reading": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Misma lectura"
           }
         }
       }
@@ -3121,6 +3341,17 @@
         }
       }
     },
+    "Sleep stages, heart, moves, a morning briefing and your supplement stack.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fases del sueño, corazón, movimiento, un resumen matutino y tus suplementos."
+          }
+        }
+      }
+    },
     "Sleep stages, resting HR, HRV, recovery": {
       "localizations": {
         "es": {
@@ -3157,6 +3388,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Fuentes"
+          }
+        }
+      }
+    },
+    "Split": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difieren"
+          }
+        }
+      }
+    },
+    "Split on %@.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difieren en %@."
           }
         }
       }
@@ -3541,6 +3794,28 @@
         }
       }
     },
+    "They agree on %lld of %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden en %1$lld de %2$lld"
+          }
+        }
+      }
+    },
+    "They agree on all %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden en los %lld"
+          }
+        }
+      }
+    },
     "They average about the same.": {
       "localizations": {
         "es": {
@@ -3577,6 +3852,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Suben y bajan muy a la par."
+          }
+        }
+      }
+    },
+    "They split on all %lld": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Difieren en los %lld"
           }
         }
       }
@@ -3811,6 +4097,17 @@
         }
       }
     },
+    "Up %lld%%": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sube %lld %%"
+          }
+        }
+      }
+    },
     "Uses yesterday's readings": {
       "localizations": {
         "es": {
@@ -3831,6 +4128,17 @@
         }
       }
     },
+    "Usual": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Lo normal"
+          }
+        }
+      }
+    },
     "VO₂ max": {
       "localizations": {
         "es": {
@@ -3847,6 +4155,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Veredicto · %lld días"
+          }
+        }
+      }
+    },
+    "WATCH VS WHOOP · TODAY": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "WATCH VS WHOOP · HOY"
           }
         }
       }
@@ -4031,6 +4350,17 @@
         }
       }
     },
+    "Waiting for both trackers": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a los dos"
+          }
+        }
+      }
+    },
     "Walking HR": {
       "localizations": {
         "es": {
@@ -4101,12 +4431,34 @@
         }
       }
     },
+    "Watch vs WHOOP.\nHead to head.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch vs WHOOP.\nCara a cara."
+          }
+        }
+      }
+    },
     "Wear both for a couple of days and nights. Every metric unlocks after 3 days measured by both.": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Lleva ambos un par de días y noches. Cada métrica se desbloquea tras 3 días medidos por ambos."
+          }
+        }
+      }
+    },
+    "Wear both? Pulse Lab puts their readings side by side and shows where they agree and where they split.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "¿Llevas los dos? Pulse Lab pone sus lecturas lado a lado y muestra en qué coinciden y en qué no."
           }
         }
       }
@@ -4377,6 +4729,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "por encima"
+          }
+        }
+      }
+    },
+    "agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coinciden"
           }
         }
       }

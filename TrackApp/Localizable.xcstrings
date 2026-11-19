@@ -1,6 +1,17 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ this week": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ esta semana"
+          }
+        }
+      }
+    },
     "%@, week of %@": {
       "extractionState": "manual",
       "localizations": {
@@ -8,6 +19,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%1$@, semana del %2$@"
+          }
+        }
+      }
+    },
+    "%lld fill-ups": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld repostajes"
           }
         }
       }
@@ -118,6 +140,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Agregar a Favoritos"
+          }
+        }
+      }
+    },
+    "After 2 fills": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tras 2 repostajes"
           }
         }
       }
@@ -239,6 +272,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "La detección automática está lista"
+          }
+        }
+      }
+    },
+    "Auto-detect listens with low-power motion signals and takes a few seconds of GPS only when you seem to be driving. GPS runs only while you record. Trips stay on your iPhone and in your private iCloud. Nothing is sold or used for ads.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "La detección automática usa señales de movimiento de bajo consumo y solo unos segundos de GPS cuando parece que conduces. El GPS solo funciona mientras grabas. Los viajes se quedan en tu iPhone y en tu iCloud privado. Nada se vende ni se usa para anuncios."
           }
         }
       }
@@ -430,6 +474,17 @@
         }
       }
     },
+    "Catch every drive, privately": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detecta cada viaje, en privado"
+          }
+        }
+      }
+    },
     "Choose someone to text": {
       "extractionState": "manual",
       "localizations": {
@@ -595,6 +650,28 @@
         }
       }
     },
+    "Drive detect off": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detección de viajes desactivada"
+          }
+        }
+      }
+    },
+    "Drive detect on": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Detección de viajes activada"
+          }
+        }
+      }
+    },
     "Drive finished alert": {
       "extractionState": "manual",
       "localizations": {
@@ -602,6 +679,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Aviso de viaje terminado"
+          }
+        }
+      }
+    },
+    "Drives, rides, hikes, runs and walks, each saved with its route, speed, time and distance. Roamr notices when a drive starts, records it with one tap and finishes it when you park.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajes en coche, en bici, caminatas, carreras y paseos, cada uno guardado con su ruta, velocidad, tiempo y distancia. Roamr nota cuando empiezas a conducir, lo graba con un toque y lo termina cuando aparcas."
           }
         }
       }
@@ -635,6 +723,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Durante la %@"
+          }
+        }
+      }
+    },
+    "EVERY MILE MAPPED": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "CADA MILLA EN EL MAPA"
           }
         }
       }
@@ -701,6 +800,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Estimado con el movimiento del teléfono. Es más preciso con el teléfono en un soporte."
+          }
+        }
+      }
+    },
+    "Every drive, ride, hike, run and walk lands here with its route on a night map. Turn on drive detect in Settings and Roamr catches drives as they start.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada viaje en coche, en bici, caminata, carrera y paseo llega aquí con su ruta en un mapa nocturno. Activa la detección de viajes en Ajustes y Roamr detecta los viajes en coche al empezar."
+          }
+        }
+      }
+    },
+    "Every mile, mapped": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada milla, en el mapa"
+          }
+        }
+      }
+    },
+    "Every trip lands in a night-map history, grouped by week with its route. Log a fill-up and Roamr works out MPG for each vehicle from the drives it mapped.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada viaje queda en un historial con mapa nocturno, agrupado por semana y con su ruta. Anota un repostaje y Roamr calcula el consumo de cada vehículo a partir de los viajes que mapeó."
           }
         }
       }
@@ -859,6 +991,17 @@
         }
       }
     },
+    "Fuel & vehicles": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Combustible y vehículos"
+          }
+        }
+      }
+    },
     "Fuel spend by month": {
       "extractionState": "manual",
       "localizations": {
@@ -947,6 +1090,17 @@
         }
       }
     },
+    "Go Together: friends live on one map": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Vamos juntos: tus amigos en vivo en un mapa"
+          }
+        }
+      }
+    },
     "Go to Track": {
       "extractionState": "manual",
       "localizations": {
@@ -1031,6 +1185,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ocultar inicio y fin"
+          }
+        }
+      }
+    },
+    "Hike": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Senderismo"
           }
         }
       }
@@ -1321,6 +1486,17 @@
         }
       }
     },
+    "Log a fill-up and Roamr works out MPG from the drives it mapped, plus what you spend on gas each month.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Anota un repostaje y Roamr calcula el consumo a partir de los viajes que mapeó, y lo que gastas en gasolina cada mes."
+          }
+        }
+      }
+    },
     "Log fill-ups, see MPG and monthly fuel spend": {
       "extractionState": "manual",
       "localizations": {
@@ -1361,6 +1537,28 @@
           "stringUnit": {
             "state": "translated",
             "value": "Busca una vez la gasolinera más cercana. Roamr no sigue tu ubicación para esto."
+          }
+        }
+      }
+    },
+    "MPG and monthly fuel spend per vehicle": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumo y gasto mensual en combustible por vehículo"
+          }
+        }
+      }
+    },
+    "MPG per vehicle from these drives": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Consumo por vehículo de estos viajes"
           }
         }
       }
@@ -1607,6 +1805,17 @@
         }
       }
     },
+    "Night-map trip history with weekly totals": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Historial con mapa nocturno y totales semanales"
+          }
+        }
+      }
+    },
     "No accounts, no ads, no tracking. Your trips stay yours.": {
       "extractionState": "manual",
       "localizations": {
@@ -1695,6 +1904,17 @@
         }
       }
     },
+    "No trips yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Aún no hay viajes"
+          }
+        }
+      }
+    },
     "Not now": {
       "extractionState": "manual",
       "localizations": {
@@ -1757,6 +1977,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Sin actividad: %@"
+          }
+        }
+      }
+    },
+    "Nothing mapped this week": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Nada mapeado esta semana"
           }
         }
       }
@@ -1838,6 +2069,17 @@
         }
       }
     },
+    "Open Gas & MPG": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abrir Gasolina y consumo"
+          }
+        }
+      }
+    },
     "Open Roamr on your iPhone and allow location first.": {
       "extractionState": "manual",
       "localizations": {
@@ -1911,6 +2153,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Abre ese viaje"
+          }
+        }
+      }
+    },
+    "Opens the gas log": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre el registro de gasolina"
           }
         }
       }
@@ -2234,6 +2487,17 @@
         }
       }
     },
+    "Ride": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Bici"
+          }
+        }
+      }
+    },
     "Right after": {
       "extractionState": "manual",
       "localizations": {
@@ -2296,6 +2560,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "La alerta de frenazo de Roamr no reemplaza la Detección de choques integrada del iPhone ni llamar al 911. Puede no detectar un choque o activarse cuando no lo hubo."
+          }
+        }
+      }
+    },
+    "Run": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Carrera"
           }
         }
       }
@@ -2839,6 +3114,17 @@
         }
       }
     },
+    "Track fuel for every vehicle": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Controla el combustible de cada vehículo"
+          }
+        }
+      }
+    },
     "Tree hugs on this %@": {
       "extractionState": "manual",
       "localizations": {
@@ -2978,6 +3264,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Versión"
+          }
+        }
+      }
+    },
+    "Walk": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paseo"
           }
         }
       }
@@ -3132,6 +3429,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Tus viajes se quedan en tu iPhone y tu iCloud privado"
+          }
+        }
+      }
+    },
+    "Your trips, your fuel": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tus viajes, tu combustible"
           }
         }
       }
