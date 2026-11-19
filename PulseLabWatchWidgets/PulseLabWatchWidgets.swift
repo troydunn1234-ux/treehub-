@@ -10,6 +10,7 @@ struct PulseLabWatchWidgets: WidgetBundle {
     var body: some Widget {
         RecoveryGaugeComplication()
         SummaryComplication()
+        AgreementComplication()
     }
 }
 
@@ -33,8 +34,14 @@ struct PulseEntry: TimelineEntry {
     var hrv: Double?
     var strain: Double?
     var updatedAt: Date?
+    /// Today's Watch vs WHOOP agreement (0–100) and how many metrics agree / were compared.
+    var agreeScore: Double?
+    var agreeOn = 0
+    var agreeOf = 0
+    var agreeSplit = ""
 
-    static let placeholder = PulseEntry(recovery: 72, sleepMin: 432, hrv: 61, strain: 11.4, updatedAt: Date())
+    static let placeholder = PulseEntry(recovery: 72, sleepMin: 432, hrv: 61, strain: 11.4, updatedAt: Date(),
+                                        agreeScore: 75, agreeOn: 3, agreeOf: 4, agreeSplit: "HRV")
 
     static func read() -> PulseEntry {
         guard let d = UserDefaults(suiteName: Shared.suite)?.dictionary(forKey: Shared.key) else { return PulseEntry() }
@@ -45,8 +52,15 @@ struct PulseEntry: TimelineEntry {
         e.hrv = d["hrv"] as? Double
         e.strain = d["strain"] as? Double
         if let t = d["updatedAt"] as? Double { e.updatedAt = Date(timeIntervalSince1970: t) }
-        // Yesterday's numbers aren't today's recovery: show them as missing after midnight.
-        if let u = e.updatedAt, !Calendar.current.isDateInToday(u) { e.recovery = nil }
+        e.agreeScore = d["agreeScore"] as? Double
+        e.agreeOn = d["agreeOn"] as? Int ?? 0
+        e.agreeOf = d["agreeOf"] as? Int ?? 0
+        e.agreeSplit = d["agreeSplit"] as? String ?? ""
+        // Yesterday's numbers aren't today's recovery (or agreement): show them as missing after midnight.
+        if let u = e.updatedAt, !Calendar.current.isDateInToday(u) {
+            e.recovery = nil
+            e.agreeScore = nil; e.agreeOn = 0; e.agreeOf = 0; e.agreeSplit = ""
+        }
         return e
     }
 
@@ -177,5 +191,82 @@ struct SummaryView: View {
             .accessibilityElement(children: .ignore)
             .accessibilityLabel(entry.spoken)
         }
+    }
+}
+
+// MARK: - Agreement
+
+/// Today's Watch vs WHOOP agreement score: circular gauge, corner, rectangular and inline.
+struct AgreementComplication: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "PulseLabAgreement", provider: PulseProvider()) { e in
+            AgreementComplicationView(entry: e)
+                .containerBackground(for: .widget) { Color.clear }
+        }
+        .configurationDisplayName("Watch vs WHOOP")
+        .description("How closely your Watch and WHOOP agree today.")
+        .supportedFamilies([.accessoryCircular, .accessoryCorner, .accessoryRectangular, .accessoryInline])
+    }
+}
+
+struct AgreementComplicationView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: PulseEntry
+
+    private var scoreText: String { entry.agreeScore.map { "\(Int($0))" } ?? "–" }
+    private var headline: String {
+        entry.agreeOf > 0 ? String(localized: "\(entry.agreeOn) of \(entry.agreeOf) agree") : String(localized: "Waiting for both")
+    }
+    private var spoken: String {
+        guard let a = entry.agreeScore else { return String(localized: "Watch versus WHOOP: no agreement score yet") }
+        return String(localized: "Watch versus WHOOP agree \(Int(a)) percent, \(headline)")
+    }
+    private var gradient: Gradient { Gradient(colors: [Shared.watch, Shared.whoop]) }
+
+    var body: some View {
+        Group {
+            switch family {
+            case .accessoryCorner:
+                Text(scoreText)
+                    .font(.system(size: 20, weight: .semibold, design: .rounded))
+                    .widgetCurvesContent()
+                    .widgetLabel {
+                        Gauge(value: entry.agreeScore ?? 0, in: 0...100) { Text(verbatim: "VS") }
+                            .tint(gradient)
+                    }
+            case .accessoryRectangular:
+                VStack(alignment: .leading, spacing: 1) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "bolt.horizontal.fill").font(.system(size: 11, weight: .semibold))
+                        Text("Watch vs WHOOP").font(.system(size: 12, weight: .semibold))
+                    }
+                    .foregroundStyle(Shared.accent)
+                    .widgetAccentable()
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text(entry.agreeScore.map { "\(Int($0))%" } ?? "–")
+                            .font(.system(size: 22, weight: .semibold, design: .rounded)).monospacedDigit()
+                            .foregroundStyle(entry.agreeScore.map(band) ?? .secondary)
+                        Text(headline).font(.system(size: 12, weight: .medium)).lineLimit(1).minimumScaleFactor(0.8)
+                    }
+                    Text(entry.agreeOf == 0 ? String(localized: "Open Pulse Lab to sync")
+                         : entry.agreeSplit.isEmpty ? String(localized: "Same story today") : String(localized: "Split: \(entry.agreeSplit)"))
+                        .font(.system(size: 12)).foregroundStyle(.secondary).lineLimit(1).minimumScaleFactor(0.8)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            case .accessoryInline:
+                Text(verbatim: "VS \(entry.agreeScore.map { "\(Int($0))%" } ?? "–") · \(headline)")
+            default:
+                Gauge(value: entry.agreeScore ?? 0, in: 0...100) {
+                    Text(verbatim: "VS")
+                } currentValueLabel: {
+                    Text(scoreText).font(.system(size: 18, weight: .semibold, design: .rounded)).monospacedDigit()
+                }
+                .gaugeStyle(.accessoryCircular)
+                .tint(gradient)
+                .widgetAccentable()
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(spoken)
     }
 }

@@ -101,7 +101,7 @@ struct HistoryView: View {
         let list = filtered
         let total: Double = list.reduce(0.0) { $0 + $1.distanceM }
         let noun = list.count == 1 ? "trip" : "trips"
-        return "\(list.count) \(noun) · \(Format.distance(total))"
+        return "\(list.count) \(noun) · \(Format.distance(total)) mapped"
     }
 
     var body: some View {
@@ -113,6 +113,9 @@ struct HistoryView: View {
                         .padding(.horizontal, Theme.pad)
 
                     filterRow
+
+                    // Drives: the fuel log for them is one tap away.
+                    if filter == .drive { fuelRow.padding(.horizontal, Theme.pad).transition(.opacity) }
 
                     if filter == nil, !groupLog.trips.isEmpty {
                         togetherSection
@@ -232,6 +235,33 @@ struct HistoryView: View {
         }
         .contentMargins(.horizontal, Theme.pad, for: .scrollContent)
         .sensoryFeedback(.selection, trigger: filter)
+    }
+
+    private var fuelRow: some View {
+        Button { GasLogRequest.open() } label: {
+            HStack(spacing: 10) {
+                Image(systemName: "fuelpump.fill")
+                    .font(.system(size: 13, weight: .bold))
+                    .foregroundStyle(Theme.forestDeep)
+                    .frame(width: 30, height: 30)
+                    .background(Theme.goldGradient, in: Circle())
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("Gas & MPG").font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                    Text("MPG per vehicle from these drives").font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                }
+                Spacer(minLength: 6)
+                Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                    .accessibilityHidden(true)
+            }
+            .padding(.horizontal, 14).padding(.vertical, 10)
+            .frame(minHeight: 44)
+            .background(Theme.gold.opacity(0.1), in: RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous))
+            .overlay(RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous).strokeBorder(Theme.gold.opacity(0.3)))
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .accessibilityHint(Text("Opens the gas log"))
     }
 
     // MARK: Week sections
@@ -380,7 +410,7 @@ struct HistoryView: View {
                     .font(Theme.rounded(20, .bold))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                Text(filter == nil ? "Every walk, run, ride and drive you record lands here with its map."
+                Text(filter == nil ? "Every drive, ride, hike, run and walk lands here with its route on a night map. Turn on drive detect in Settings and Roamr catches drives as they start."
                                    : "Pick \(filter?.title ?? "it") on the Track tab before you start, or change a trip's type from its page.")
                     .font(Theme.rounded(14, .medium))
                     .foregroundStyle(Theme.textDim)

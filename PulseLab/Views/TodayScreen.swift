@@ -11,7 +11,13 @@ struct TodayScreen: View {
     var body: some View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
+        let agreement = TodayAgreement.build(store)
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
+            // Pulse Lab's signature first: where Watch and WHOOP agree and split today.
+            AgreementCard(agreement: agreement, onOpen: { openDetail($0) }, onFaceOff: {
+                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
+            })
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
                           sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday,
                           onReadiness: { openDetail(.readiness) },

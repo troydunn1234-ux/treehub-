@@ -27,6 +27,11 @@ final class WatchStore: NSObject, ObservableObject, WCSessionDelegate {
         var strainIsToday = false
         var takeaway: String?
         var updatedAt: Date?
+        /// Today's Watch vs WHOOP agreement (0–100), metrics agreeing / compared, and the ones they split on.
+        var agreeScore: Double?
+        var agreeOn = 0
+        var agreeOf = 0
+        var agreeSplit = ""
 
         init() {}
         init(_ d: [String: Any]) {
@@ -42,6 +47,10 @@ final class WatchStore: NSObject, ObservableObject, WCSessionDelegate {
             strainIsToday = d["strainIsToday"] as? Bool ?? false
             takeaway = d["takeaway"] as? String
             if let t = d["updatedAt"] as? Double { updatedAt = Date(timeIntervalSince1970: t) }
+            agreeScore = d["agreeScore"] as? Double
+            agreeOn = d["agreeOn"] as? Int ?? 0
+            agreeOf = d["agreeOf"] as? Int ?? 0
+            agreeSplit = d["agreeSplit"] as? String ?? ""
         }
         var isEmpty: Bool { recovery == nil && sleepMin == nil && hrv == nil && strain == nil }
     }

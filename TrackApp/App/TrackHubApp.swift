@@ -124,6 +124,16 @@ struct TrackRootView: View {
         }
         // "Go together": live group activities with friends (TrackApp/Group).
         .groupTogether(tab: $tab)
+        // Roamr's signature on the home screen: miles mapped this week and whether drives are caught on their own.
+        .overlay(alignment: .topLeading) {
+            if tab == "track" && !tracker.isActive && !detector.showBanner && !detector.showAlwaysCard {
+                MilesMappedChip(onOpenHistory: { tab = "history" }, onOpenSettings: { tab = "settings" })
+                    .padding(.leading, 16)
+                    .padding(.trailing, 76)
+                    .padding(.top, 2)
+                    .transition(.opacity)
+            }
+        }
         .overlay(alignment: .top) {
             if detector.showBanner && !tracker.isActive {
                 DriveBanner(onStart: startDriveFromPrompt, onDismiss: { detector.dismissBanner() })
