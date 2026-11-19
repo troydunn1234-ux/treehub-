@@ -1,6 +1,7 @@
 import SwiftUI
 import HealthKit
 import UserNotifications
+import WidgetKit
 
 /// iPhone wiring for the "Right now" card: Pulse Lab's summary, sending the pick to the Watch, the optional nudge.
 enum StillPointRightNow {
@@ -24,11 +25,26 @@ enum StillPointRightNow {
                 lastSent = s
                 PhoneLink.shared.rightNowData = try? JSONEncoder().encode(s)
                 PhoneLink.shared.pushSettings()
+                publishForWidget(s)
             }
             DailyMoments.shared.reschedule(m)
         }
         model.startObserving()
         DailyMoments.shared.enableBackgroundIfNeeded()
+    }
+
+    /// The "Right now" Home Screen / Lock Screen widget (StillPointWidgets.swift, kind "StillPointRightNow") reads
+    /// these from the Still Pointz App Group. New keys only; the routine widget's keys are untouched.
+    static func publishForWidget(_ s: Suggestion) {
+        guard let d = UserDefaults(suiteName: WidgetBridge.suite) else { return }
+        d.set(s.practiceId, forKey: "rightNowId")
+        d.set(s.title, forKey: "rightNowTitle")
+        d.set(s.minutes, forKey: "rightNowMinutes")
+        d.set(s.because, forKey: "rightNowBecause")
+        d.set(s.timeOnly, forKey: "rightNowTimeOnly")
+        d.set(s.stressLevel ?? -1, forKey: "rightNowStress")
+        d.set(s.computedAt.timeIntervalSince1970, forKey: "rightNowAt")
+        WidgetCenter.shared.reloadTimelines(ofKind: "StillPointRightNow")
     }
 }
 
@@ -408,5 +424,72 @@ struct DailyMomentsSettings: View {
             }
         }
         .onAppear { moments.refreshStatus() }
+    }
+}
+
+// MARK: - Home: the two reminders, under the Right now card
+
+/// "Morning pick 6:00 AM · Bedtime pick 9:30 PM", so the gentle reminders are visible from Today.
+/// Before notifications are allowed it offers to turn them on; afterwards a tap opens Settings to change the times.
+struct MomentsStrip: View {
+    @ObservedObject private var moments = DailyMoments.shared
+    @EnvironmentObject var router: Router
+    @State private var taps = 0
+
+    private var anyOn: Bool { moments.morningOn || moments.bedtimeOn }
+
+    var body: some View {
+        Button {
+            taps += 1
+            if moments.status == .notDetermined { moments.request() } else { router.showSettings = true }
+        } label: {
+            HStack(spacing: SP.s3) {
+                Image(systemName: moments.allowed && anyOn ? "bell.badge" : "bell")
+                    .font(.system(size: 16, weight: .medium)).foregroundStyle(SP.accent)
+                    .frame(width: 36, height: 36)
+                    .background(Circle().fill(SP.accent.opacity(0.12)))
+                    .accessibilityHidden(true)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title).font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Text(detail).font(.footnote).foregroundStyle(SP.dim)
+                        .monospacedDigit()
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(SP.faint)
+                    .accessibilityHidden(true)
+            }
+            .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .spCard(padding: SP.s3)
+        .sensoryFeedback(.selection, trigger: taps)
+        .onAppear { moments.refreshStatus() }
+        .accessibilityHint(moments.status == .notDetermined ? "Asks to allow notifications" : "Opens Settings to change the reminder times")
+    }
+
+    private var times: String {
+        var parts: [String] = []
+        if moments.morningOn { parts.append(String(localized: "Morning \(moments.morningTime.formatted(date: .omitted, time: .shortened))")) }
+        if moments.bedtimeOn { parts.append(String(localized: "Bedtime \(moments.bedtimeTime.formatted(date: .omitted, time: .shortened))")) }
+        return parts.joined(separator: " · ")
+    }
+
+    private var title: String {
+        switch moments.status {
+        case .notDetermined: return String(localized: "Get a gentle morning and bedtime pick")
+        case .denied: return String(localized: "Reminders are off")
+        default: return anyOn ? String(localized: "Right now reminders") : String(localized: "Reminders are off")
+        }
+    }
+
+    private var detail: String {
+        switch moments.status {
+        case .notDetermined: return String(localized: "Tap to allow quiet notifications with that moment's practice.")
+        case .denied: return String(localized: "Notifications are off for Still Pointz in the Settings app.")
+        default: return anyOn ? times : String(localized: "Turn on a morning or bedtime pick in Settings.")
+        }
     }
 }

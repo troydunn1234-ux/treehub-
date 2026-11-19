@@ -64,6 +64,8 @@ struct HomeView: View {
 
                     // Hero: one practice for this moment, from WHOOP / Watch numbers in Health and Pulse Lab.
                     RightNowCard()
+                    // The two gentle reminders (6 AM and bedtime picks), visible from Today.
+                    MomentsStrip()
 
                     // Sauna / steam stays right under the hero: one tap as you walk in (live timer while one runs).
                     HeatCard()

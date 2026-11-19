@@ -14,6 +14,7 @@ struct StillPointWidgets: WidgetBundle {
         SteamComplication()
         #else
         StillPointWidget()
+        RightNowWidget()
         StillPointComplication()
         if #available(iOS 18.0, *) {
             BreatheNowControl()
@@ -224,7 +225,7 @@ struct StillHomeView: View {
     private var medium: some View {
         HStack(spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("STILL POINT").font(Palette.rounded(10, .semibold)).tracking(1.6).foregroundStyle(Palette.faint)
+                Text("STILL POINTZ").font(Palette.rounded(10, .semibold)).tracking(1.6).foregroundStyle(Palette.faint)
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Flame(lit: entry.streak > 0, size: 18).widgetAccentable()
                     Text("\(entry.streak)").font(Palette.numbers(34)).foregroundStyle(Palette.ink).widgetAccentable()
@@ -635,3 +636,154 @@ private struct GoalRing: View {
         .accessibilityLabel("\(Int(entry.weekMinutes.rounded())) of \(Int(entry.weekGoal)) minutes this week")
     }
 }
+
+// MARK: - "Right now" widget (iPhone Home Screen + Lock Screen)
+
+#if !os(watchOS)
+/// The single practice Still Pointz picked for this moment from Watch / WHOOP numbers in Health.
+/// Written by the app (StillPoint/App/RightNowViews.swift, StillPointRightNow.publishForWidget).
+struct RightNowEntry: TimelineEntry {
+    var date: Date
+    var practiceId: String
+    var title: String
+    var minutes: Int
+    var because: String
+    var timeOnly: Bool
+    var stress: Int
+    var computedAt: Date?
+
+    var hasPick: Bool { !title.isEmpty }
+    var url: URL? { Bridge.practiceURL(practiceId) }
+    /// Picks are about this moment: older than 3 hours, the widget says so instead of presenting it as current.
+    var stale: Bool { computedAt.map { date.timeIntervalSince($0) > 3 * 3600 } ?? true }
+
+    var stressLabel: String? {
+        switch stress {
+        case 0: return "Calm"
+        case 1: return "Balanced"
+        case 2: return "Elevated"
+        case 3: return "High"
+        default: return nil
+        }
+    }
+
+    static let placeholder = RightNowEntry(date: Date(), practiceId: "resonance", title: "Resonance Breathing", minutes: 5,
+                                           because: "Your heart rate is 12 bpm above resting", timeOnly: false, stress: 2,
+                                           computedAt: Date())
+
+    static func current(date: Date = Date()) -> RightNowEntry {
+        let d = UserDefaults(suiteName: Bridge.suite) ?? .standard
+        let at = d.double(forKey: "rightNowAt")
+        return RightNowEntry(date: date,
+                             practiceId: d.string(forKey: "rightNowId") ?? "",
+                             title: d.string(forKey: "rightNowTitle") ?? "",
+                             minutes: max(1, d.integer(forKey: "rightNowMinutes")),
+                             because: d.string(forKey: "rightNowBecause") ?? "",
+                             timeOnly: d.bool(forKey: "rightNowTimeOnly"),
+                             stress: d.object(forKey: "rightNowStress") as? Int ?? -1,
+                             computedAt: at > 0 ? Date(timeIntervalSince1970: at) : nil)
+    }
+}
+
+struct RightNowProvider: TimelineProvider {
+    func placeholder(in context: Context) -> RightNowEntry { .placeholder }
+    func getSnapshot(in context: Context, completion: @escaping (RightNowEntry) -> Void) {
+        let e = RightNowEntry.current()
+        completion(context.isPreview && !e.hasPick ? .placeholder : e)
+    }
+    func getTimeline(in context: Context, completion: @escaping (Timeline<RightNowEntry>) -> Void) {
+        // The app reloads this kind whenever its pick changes; an extra entry marks it stale after 3 hours.
+        let now = Date()
+        let e = RightNowEntry.current(date: now)
+        var entries = [e]
+        if let at = e.computedAt, !e.stale {
+            var later = e
+            later.date = at.addingTimeInterval(3 * 3600 + 60)
+            entries.append(later)
+        }
+        completion(Timeline(entries: entries, policy: .atEnd))
+    }
+}
+
+struct RightNowWidget: Widget {
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: "StillPointRightNow", provider: RightNowProvider()) { entry in
+            RightNowWidgetView(entry: entry)
+                .widgetURL(entry.hasPick ? entry.url : URL(string: "stillpoint://practice/"))
+        }
+        .configurationDisplayName("Right now")
+        .description("The one practice picked for this moment from your heart rate, HRV and sleep. Tap to begin.")
+        .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
+        .contentMarginsDisabled()
+    }
+}
+
+struct RightNowWidgetView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: RightNowEntry
+
+    var body: some View {
+        Group {
+            switch family {
+            case .accessoryRectangular: rectangular
+            case .accessoryInline: Label(entry.hasPick ? "\(entry.title) · \(entry.minutes) min" : "Right now", systemImage: "sparkles")
+            case .systemMedium: home(medium: true)
+            default: home(medium: false)
+            }
+        }
+        .containerBackground(for: .widget) {
+            if family == .systemSmall || family == .systemMedium {
+                ZStack { Palette.background; WidgetGlow() }
+            } else {
+                Color.clear
+            }
+        }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(entry.hasPick ? "Right now: \(entry.title), \(entry.minutes) minutes. \(entry.because)" : "Right now. Open Still Pointz for a pick.")
+    }
+
+    private var rectangular: some View {
+        VStack(alignment: .leading, spacing: 1) {
+            Label("Right now", systemImage: "sparkles").font(.caption2.weight(.semibold)).widgetAccentable()
+            Text(entry.hasPick ? entry.title : "Open for a pick").font(.headline).lineLimit(1).minimumScaleFactor(0.8)
+            Text(entry.hasPick ? "\(entry.minutes) min\(entry.stressLabel.map { " · \($0)" } ?? "")" : "From your Watch or WHOOP")
+                .font(.caption).foregroundStyle(.secondary).lineLimit(1)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var footnote: String {
+        guard entry.hasPick else { return "Open Still Pointz once to get a pick from your Watch or WHOOP data." }
+        if entry.stale, let at = entry.computedAt {
+            return "Picked at \(at.formatted(date: .omitted, time: .shortened)) · open for a fresh one"
+        }
+        return entry.because
+    }
+
+    private func home(medium: Bool) -> some View {
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 6) {
+                Label("RIGHT NOW", systemImage: "sparkles")
+                    .font(Palette.rounded(9, .semibold)).tracking(1.3).foregroundStyle(Palette.faint)
+                    .widgetAccentable()
+                Spacer(minLength: 0)
+                if medium, let s = entry.stressLabel, !entry.stale {
+                    Text("Stress: \(s)").font(Palette.rounded(10, .medium)).foregroundStyle(Palette.teal).lineLimit(1)
+                }
+            }
+            Text(entry.hasPick ? entry.title : "Breathe")
+                .font(Palette.serif(medium ? 20 : 17)).foregroundStyle(Palette.ink)
+                .lineLimit(2).minimumScaleFactor(0.75)
+            if entry.hasPick {
+                Text("\(entry.minutes) min").font(Palette.rounded(11, .medium)).foregroundStyle(Palette.dim).monospacedDigit()
+            }
+            Spacer(minLength: 2)
+            Text(footnote)
+                .font(Palette.rounded(10)).foregroundStyle(Palette.faint)
+                .lineLimit(medium ? 2 : 3).minimumScaleFactor(0.85)
+        }
+        .padding(14)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+    }
+}
+#endif

@@ -5122,6 +5122,126 @@
           }
         }
       }
+    },
+    "One practice, right now.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Una práctica, ahora mismo."
+          }
+        }
+      }
+    },
+    "Still Pointz reads your heart rate, HRV, breathing rate and last night's sleep from your Apple Watch or WHOOP in Health, and picks the one practice that fits this moment. Why this? shows every number behind it.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Still Pointz lee tu frecuencia cardiaca, VFC, frecuencia respiratoria y el sueño de anoche de tu Apple Watch o WHOOP en Salud, y elige la práctica que encaja con este momento. ¿Por qué esta? muestra cada número detrás de la elección."
+          }
+        }
+      }
+    },
+    "Tap Sauna or Steam as you walk in. Heat-safe breathing, bench moves and a timer, with your heart rate for each session.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca Sauna o Vapor al entrar. Respiración segura con calor, movimientos en el banco y un temporizador, con tu frecuencia cardiaca en cada sesión."
+          }
+        }
+      }
+    },
+    "Gentle 6 AM and bedtime picks.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sugerencias suaves a las 6 AM y antes de dormir."
+          }
+        }
+      }
+    },
+    "Two quiet notifications a day, each with that moment's practice: a morning pick from your night, a wind-down shaped by your day. Health and notifications are asked the first time they're needed. Nothing leaves your devices.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Dos notificaciones discretas al día, cada una con la práctica de ese momento: una por la mañana según tu noche y otra para relajarte según tu día. Salud y las notificaciones se piden la primera vez que hacen falta. Nada sale de tus dispositivos."
+          }
+        }
+      }
+    },
+    "Morning %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Mañana %@"
+          }
+        }
+      }
+    },
+    "Bedtime %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Noche %@"
+          }
+        }
+      }
+    },
+    "Get a gentle morning and bedtime pick": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recibe una sugerencia suave por la mañana y antes de dormir"
+          }
+        }
+      }
+    },
+    "Reminders are off": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Los recordatorios están desactivados"
+          }
+        }
+      }
+    },
+    "Tap to allow quiet notifications with that moment's practice.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca para permitir notificaciones discretas con la práctica de ese momento."
+          }
+        }
+      }
+    },
+    "Notifications are off for Still Pointz in the Settings app.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Las notificaciones de Still Pointz están desactivadas en Ajustes."
+          }
+        }
+      }
+    },
+    "Turn on a morning or bedtime pick in Settings.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Activa una sugerencia de mañana o de noche en Ajustes."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
