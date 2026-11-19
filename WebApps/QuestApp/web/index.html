@@ -1852,6 +1852,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     r.stAt = typeof x.stAt === "string" ? x.stAt : (st === "active" ? "" : today()); r.note = typeof x.note === "string" ? x.note : ""; r.url = typeof x.url === "string" ? x.url : "";
     r.via = x.via === "apple" ? "apple" : ""; r.m = typeof x.m === "string" ? x.m : ""; r.vary = x.vary ? 1 : 0;
     r.due = /^\d{4}-\d{2}-\d{2}$/.test(x.due || "") ? x.due : ""; r.dueNote = typeof x.dueNote === "string" ? x.dueNote : ""; r.last = typeof x.last === "string" ? x.last : "";
+    r.mt = typeof x.mt === "string" ? x.mt.slice(0, 120) : "";
     return r;
   }
   function subSeed() {
@@ -1890,7 +1891,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function subById(id) { return (S.subs || []).filter(function (x) { return x.id === id; })[0]; }
   function billById(id) { return (S.bills || []).filter(function (x) { return x.id === id; })[0]; }
+  function reEsc(q) { return q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
+  /* "Shows on your statement as": plain words, comma-separated ("NFLX, PAYPAL *NETFLIX"); each one matches anywhere in the bank line */
+  function mtAlts(mt) { return String(mt || "").split(",").map(function (q) { return q.trim(); }).filter(function (q) { return q.length >= 2; }).map(reEsc); }
   function subRe(x) {
+    var alts = mtAlts(x.mt);
+    if (alts.length) { try { return new RegExp(alts.join("|") + (x.m ? "|" + x.m : "") + (x.via === "apple" ? "|" + APPLE_M : ""), "i"); } catch (e) {} }
     var src = x.m || (x.via === "apple" ? APPLE_M : "");
     if (!src) { var w = payeeKey(x.n).split(" ").filter(function (q) { return q.length >= 3 && ["the", "plus", "pro", "premium", "membership", "subscription", "store", "my", "bill", "payment", "monthly"].indexOf(q) < 0; })[0]; if (!w) return null; src = w; }
     if (x.via === "apple" && src.indexOf("apple") < 0) src += "|" + APPLE_M;
@@ -2087,16 +2093,20 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     });
     return al;
   }
+  /* "Name, price, monthly|yearly, YYYY-MM-DD": the last three fields are read from the end, so a name may hold commas
+     ("Acme, Inc") and a price may carry a $ and thousands commas ("1,250.00"). Tabs work as separators too (pasted from a sheet). */
+  var SUB_LINE = /^(.+?)\s*[,\t]\s*\$?\s*(\d{1,3}(?:,\d{3})+(?:\.\d+)?|\d+(?:\.\d+)?|\.\d+)\s*[,\t]\s*([A-Za-z]+)\s*[,\t]\s*(\d{4}-\d{2}-\d{2})\s*$/;
   function parseSubLines(txt) {
     var ok = [], bad = [];
     String(txt || "").split(/\r?\n/).forEach(function (line) {
       var raw = line.trim(); if (!raw) return;
-      var p = raw.split(",").map(function (q) { return q.trim(); });
-      if (p.length < 4) { bad.push(raw); return; }
-      var date = p[p.length - 1], cyc = p[p.length - 2].toLowerCase(), pc = parseC(p[p.length - 3]), name = p.slice(0, p.length - 3).join(", ");
+      var q = SUB_LINE.exec(raw);
+      if (!q) { bad.push(raw); return; }
+      var name = q[1].replace(/^["']|["']$/g, "").trim(), pc = parseC(q[2]), cyc = q[3].toLowerCase(), date = q[4];
       if (/^(mo|month|monthly)$/.test(cyc)) cyc = "monthly"; else if (/^(yr|year|yearly|annual|annually)$/.test(cyc)) cyc = "yearly"; else cyc = "";
-      if (!name || !isFinite(pc) || pc < 0 || !cyc || !/^\d{4}-\d{2}-\d{2}$/.test(date)) { bad.push(raw); return; }
-      ok.push({ n: name, amt: fromC(pc), cyc: cyc, next: date });
+      var dt = new Date(+date.slice(0, 4), +date.slice(5, 7) - 1, +date.slice(8, 10)), realDay = dt.getMonth() === +date.slice(5, 7) - 1 && dt.getDate() === +date.slice(8, 10);
+      if (!name || !isFinite(pc) || pc < 0 || !cyc || !realDay) { bad.push(raw); return; }
+      ok.push({ n: name.slice(0, 60), amt: fromC(pc), cyc: cyc, next: date });
     });
     return { ok: ok, bad: bad };
   }
@@ -2107,7 +2117,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       var ex = S.subs.filter(function (x) { return x.n.toLowerCase() === y.n.toLowerCase(); })[0];
       if (ex) { ex.amt = y.amt; ex.cyc = y.cyc; ex.next = y.next; upd++; } else { S.subs.push(cleanSub(y)); add++; }
     });
-    $("sbPasteMsg").textContent = (add || upd ? "Added " + add + ", updated " + upd + "." : "Nothing imported.") + (r.bad.length ? " Couldn't read " + r.bad.length + " line" + (r.bad.length === 1 ? "" : "s") + ": " + r.bad.slice(0, 3).join(" | ") : "");
+    var nx = "";
+    if (add || upd) {
+      REC = null; var its = recurItems();
+      nx = " Next charge: " + r.ok.slice(0, 4).map(function (y) { var it = its.filter(function (i) { return i.kind === "sub" && i.n.toLowerCase() === y.n.toLowerCase(); })[0]; return y.n + " " + (it ? dayShort(it.next) : dayShort(y.next)); }).join(", ") + (r.ok.length > 4 ? ", ..." : "") + ".";
+    }
+    $("sbPasteMsg").textContent = (add || upd ? "Added " + add + ", updated " + upd + "." + nx : "Nothing imported.") + (r.bad.length ? " Couldn't read " + r.bad.length + " line" + (r.bad.length === 1 ? "" : "s") + ": " + r.bad.slice(0, 3).join(" | ") : "");
     if (add || upd) { $("sbPaste").value = r.bad.join("\n"); touch(); renderAll(); beep("coin"); }
   }
 
@@ -2279,7 +2294,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var last = it.lastD ? "last " + fmtC(it.lastC) + " on " + dayShort(it.lastD) : (it.refC > 0 ? "no charge seen yet" : "price not known yet");
     var sub = it.cad.lbl + " · " + last;
     var when = it.st === "ended" ? "Ended" : it.late ? "Due " + dayShort(it.next) : (it.days >= 0 && it.days <= 7 ? relDay(it.next) : dayShort(it.next));
-    var small = it.varies && it.minC !== undefined ? fmtC(it.minC) + "–" + fmtC(it.maxC) : when;
+    var small = it.varies && it.minC !== undefined ? fmtC(it.minC) + "–" + fmtC(it.maxC) : (it.st === "ended" || it.late ? when : "Next " + when);
     return '<button class="k-row" type="button" data-act="' + (it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(it.id) + '"' + (it.st === "ended" ? ' style="opacity:.55"' : "") + '>' +
       '<span class="k-ic' + (it.late || it.st === "failing" ? " warn" : "") + '">' + kico(it.kind === "sub" ? "sub" : "bill") + "</span>" +
       '<span class="k-mid"><span class="k-t">' + esc(it.n) + '</span><span class="k-s k-wrap">' + stTag + esc(sub) + "</span>" + (it.varies ? '<span class="k-s">Next ' + esc(when) + "</span>" : "") + "</span>" +
@@ -2325,7 +2340,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var list = entryList().slice(0, 6);
     $("hRecent").innerHTML = '<div class="k-ch"><h2>Recent activity</h2></div>' +
       (list.length ? '<div class="k-list">' + list.map(function (e) { return entryRow(e, true); }).join("") + "</div>" + '<button class="k-more" type="button" data-act="goact">All activity</button>'
-        : '<p class="k-empty">Nothing yet. ' + (BANK.on ? "Connect your bank in Settings, or tap + to add a purchase." : "Tap + to add a purchase or a paycheck.") + "</p>");
+        : '<p class="k-empty">Nothing yet. ' + (BANK.on ? "Connect your bank in Settings, or tap + to add a purchase." : "Tap + to add a purchase or a paycheck.") + "</p>" + '<button class="k-more" type="button" data-act="qa">Add a purchase</button>');
   }
   function renderHomeExtras() {
     $("hExtras").innerHTML = S.extras ? '<button class="k-nudge" type="button" data-tab="extras" style="background:var(--k-s1);border-color:var(--k-line)"><span class="k-ic">' + kico("star") + "</span><span><b>Extras</b> · arcade, quests and charts</span>" + CHEV + "</button>" : "";
@@ -2379,7 +2394,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       $("actSum").innerHTML = '<div class="k-trio" style="margin:0"><div><span class="k-lab">Spent</span><b class="num">' + fmtC(spent) + '</b></div><div><span class="k-lab">Money in</span><b class="num k-pos">' + fmtC(inC) + '</b></div><div><span class="k-lab">Entries</span><b class="num">' + list.length + "</b></div></div>" +
         (outC ? '<p class="k-note" style="margin-top:8px">Paid out to other people or accounts: ' + fmtC(outC) + ".</p>" : "");
     }
-    if (!list.length) { $("actList").innerHTML = '<p class="k-empty">Nothing here for ' + esc(monName(mon)) + ". Tap + to add a purchase.</p>"; return; }
+    if (!list.length) { $("actList").innerHTML = '<p class="k-empty">Nothing here for ' + esc(monName(mon)) + ".</p><button class=\"k-more\" type=\"button\" data-act=\"qa\">Add a purchase</button>"; return; }
     var t0 = today(), y0 = addDays(t0, -1), h = "", lastD = "";
     list.forEach(function (e) {
       if (e.d !== lastD) { lastD = e.d; h += '<div class="k-dayh">' + (e.d === t0 ? "Today" : e.d === y0 ? "Yesterday" : esc(dayLbl(e.d))) + "</div>"; }
@@ -2449,9 +2464,10 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   /* ---------- Bills ---------- */
   function renderBillsScr() {
     var items = REC || recurItems(), tot = recurTotals(items), al = recurAlerts(items);
+    var nMo = items.filter(function (it) { return isLive(it) && it.cad.k === "monthly"; }).length;
     $("sbSum").innerHTML = '<div class="k-kv">' +
+      '<div><span class="k-lab">Monthly total</span><b class="num">' + fmtC(tot.moC) + "</b><small>" + nMo + " monthly bill" + (nMo === 1 ? "" : "s") + "</small></div>" +
       '<div><span class="k-lab">Due in the next 7 days</span><b class="num">' + fmtC(tot.weekC) + "</b><small>" + tot.nWeek + " charge" + (tot.nWeek === 1 ? "" : "s") + "</small></div>" +
-      '<div><span class="k-lab">Every month</span><b class="num">' + fmtC(tot.moC) + "</b><small>monthly ones</small></div>" +
       '<div><span class="k-lab">Every year</span><b class="num">' + fmtC(tot.yrC) + "</b><small>yearly ones</small></div>" +
       '<div><span class="k-lab">All of them, per year</span><b class="num">' + fmtC(tot.perYearC) + "</b><small>each price × its charges a year</small></div></div>" +
       (tot.nVary ? '<p class="k-note" style="margin-top:12px">' + tot.nVary + " vary from charge to charge; totals use the latest charge.</p>" : "") +
@@ -2652,6 +2668,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       '<label class="k-f"><span>Status</span><select class="k-sel" name="st">' + opts(Object.keys(SUB_ST).map(function (k) { return [k, SUB_ST[k]]; }), x ? x.st : "active") + "</select></label></div>" +
       swRow("subvary", x ? !!x.vary : false, "Price varies", "Like a utility bill: shows the range instead of one price.") +
       '<label class="k-f"><span>Note</span><input class="k-in" name="note" autocomplete="off" value="' + esc(x ? x.note || "" : "") + '"></label>' +
+      '<label class="k-f"><span>Shows on your statement as (optional)</span><input class="k-in" name="mt" autocomplete="off" autocapitalize="characters" value="' + esc(x ? x.mt || "" : "") + '" placeholder="NFLX, PAYPAL *NETFLIX"></label>' +
+      '<p class="k-note">Bank and PayPal charges are matched to this by name and price. Leave it empty to match the name above; separate several with commas.</p>' +
       (it && it.lastD ? '<p class="k-note">Ride Quest uses the latest real charge as the price and predicts the next date from the rhythm of your charges.</p>' : "") +
       (x ? '<span class="k-lab">Recent charges</span>' + chargeList(it) : "") +
       '<p class="k-msg bad" data-msg></p><div class="k-btns"><button class="k-btn" type="submit">Save</button>' + (lk ? '<a class="k-btn ghost" href="' + esc(lk) + '" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;display:grid;place-items:center">Manage</a>' : "") +
@@ -2668,9 +2686,9 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (!x) x = S.subs.filter(function (y) { return y.n.toLowerCase() === n.toLowerCase(); })[0];
     if (x) {
       var st = F.st.value;
-      x.n = n.slice(0, 60); x.amt = fromC(c); x.cyc = F.cyc.value === "yearly" ? "yearly" : "monthly"; x.next = nx; x.note = F.note.value.trim(); x.vary = vary ? 1 : 0;
+      x.n = n.slice(0, 60); x.amt = fromC(c); x.cyc = F.cyc.value === "yearly" ? "yearly" : "monthly"; x.next = nx; x.note = F.note.value.trim(); x.vary = vary ? 1 : 0; x.mt = F.mt.value.trim().slice(0, 120);
       if (SUB_ST[st] && st !== x.st) { x.st = st; x.stAt = st === "active" ? "" : today(); }
-    } else S.subs.push(cleanSub({ n: n, amt: fromC(c), cyc: F.cyc.value, next: nx, st: F.st.value, note: F.note.value.trim(), vary: vary ? 1 : 0 }));
+    } else S.subs.push(cleanSub({ n: n, amt: fromC(c), cyc: F.cyc.value, next: nx, st: F.st.value, note: F.note.value.trim(), vary: vary ? 1 : 0, mt: F.mt.value.trim() }));
     closeSheet(); touch(); renderAll(); beep("coin"); toast("Saved " + n);
   }
   function openBill(id) {
@@ -3914,6 +3932,30 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       items = recurItems(); it = items[0];
       ok("Charges every 28 days are read as every 4 weeks (next = last + 28 days)", it.cad.k === "days" && it.cad.n === 28 && it.next === addDays(g3, 28), it.cad);
       ok("Sub totals: a 4-weekly $29.99 is 13 charges a year ($389.87)", recurTotals(items).perYearC === 2999 * 13);
+      /* pasted list: exact cents, commas in prices and names, next charge and monthly total */
+      var pl = parseSubLines("Rent, 1,250.00, monthly, 2026-12-01\nAcme, Inc, $9.99, yearly, 2027-01-15\nGym\t29.99\tmonthly\t2026-12-05\nBroken, 5, weekly, 2026-12-01\nBad date, 5.00, monthly, 2026-02-30\n\n");
+      ok("Paste a list reads $1,250.00 (thousands comma), a name with a comma, a $ sign and tabs; bad lines are reported", pl.ok.length === 3 && pl.bad.length === 2 && pl.ok[0].n === "Rent" && toC(pl.ok[0].amt) === 125000 &&
+        pl.ok[1].n === "Acme, Inc" && toC(pl.ok[1].amt) === 999 && pl.ok[1].cyc === "yearly" && pl.ok[2].n === "Gym" && toC(pl.ok[2].amt) === 2999, pl);
+      S = norm({});
+      S.subs = parseSubLines("Music Box, 11.99, monthly, " + addDays(t0, -3) + "\nVideo Pass, 7.99, monthly, " + addDays(t0, 12) + "\nCloud Drive, 99.99, yearly, " + addDays(t0, 40)).ok.map(cleanSub);
+      items = recurItems(); tot = recurTotals(items);
+      it = items.filter(function (i) { return i.n === "Music Box"; })[0];
+      ok("An imported bill with a past date shows its next charge (a month on)", it.next === addCycle(addDays(t0, -3), "monthly") && it.days > 0, it.next);
+      ok("Monthly total of imported bills is exact: $11.99 + $7.99 = $19.98 (yearly kept apart)", tot.moC === 1998 && tot.yrC === 9999 && fmtC(tot.moC) === "$19.98", tot);
+      /* matching charges to bills by merchant name and amount (bank or PayPal) */
+      S = norm({});
+      var mA = addDays(t0, -35), mB = addDays(t0, -5);
+      S.subs = [cleanSub({ n: "App Store small", amt: 0.99, cyc: "monthly", next: t0, mt: "APPLE.COM/BILL" }), cleanSub({ n: "App Store big", amt: 9.99, cyc: "monthly", next: t0, mt: "APPLE.COM/BILL" }),
+        cleanSub({ n: "Streaming", amt: 15.49, cyc: "monthly", next: t0, mt: "PAYPAL *STRMCO, STRMCO" })];
+      [[mA, 0.99, "APPLE.COM/BILL"], [mA, 9.99, "APPLE.COM/BILL"], [mB, 0.99, "APPLE.COM/BILL"], [mB, 9.99, "APPLE.COM/BILL"], [mA, 15.49, "PAYPAL *STRMCO 402-935-7733"], [mB, 15.49, "STRMCO"]].forEach(function (x, k) {
+        S.tx.push({ id: "mm" + k, d: x[0], cat: "Subscriptions", what: x[2], amt: x[1], acct: k === 4 ? "paypal" : "checking", bank: { id: "a:mm" + k, key: payeeKey(x[2]), desc: x[2] } });
+      });
+      items = recurItems();
+      var bySub = {}; items.forEach(function (i) { bySub[i.n] = i.ch.map(function (t) { return toC(t.amt); }); });
+      ok("Two bills with the same merchant each get the charges at their own price ($0.99 x2, $9.99 x2)", bySub["App Store small"].join() === "99,99" && bySub["App Store big"].join() === "999,999", bySub);
+      ok("A PayPal line (PAYPAL *STRMCO) and a bank line (STRMCO) both match by statement name and price", bySub["Streaming"].join() === "1549,1549", bySub);
+      ok("Statement names with * and / are taken literally, not as patterns", subRe({ n: "x", mt: "PAYPAL *STRMCO" }).test("PAYPAL *STRMCO") && !subRe({ n: "x", mt: "PAYPAL *STRMCO" }).test("PAYPA STRMCO"));
+      ok("A saved subscription without a statement name still loads and matches by its name", cleanSub({ n: "Gym Club", amt: 1 }).mt === "" && subRe(cleanSub({ n: "Gym Club", amt: 1 })).test("GYM CLUB 123"));
 
       /* ===== the car goal ===== */
       S = norm({ goal: { name: "Dream car", amount: 20000, by: "" }, start: { savings: 8120.55, checking: 0, cash: 0, paypal: 0 } }); BANK.st = null;
