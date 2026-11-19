@@ -1,7 +1,7 @@
 import SwiftUI
 import CoreLocation
 
-/// Roamr's first-run intro: three screens (record, Go Together, location privacy).
+/// Roamr's first-run intro: three screens (every mile mapped, trips and fuel, auto-detect and privacy).
 /// Permissions are asked in context: location on the Record screen when you tap Allow, drive
 /// auto-detect (Always location, motion, notifications) on the privacy screen only if you opt in.
 /// Contacts/notifications for the hard-stop alert are asked in Settings when you turn it on.
@@ -120,40 +120,88 @@ struct RoamrIntroView: View {
 
     // MARK: Pages
 
+    /// 1 · The signature: every mile mapped (drives noticed on their own, everything else one tap).
     private var recordPage: some View {
-        IntroPage(symbol: "location.north.circle.fill", tint: Theme.glow,
-                  title: "Record every trip",
-                  text: "Walks, runs, hikes, rides and drives. Tap Start, put your phone away, and Roamr maps the route, speed, time and distance.") {
-            if tracker.canTrack {
-                Label("Location is on", systemImage: "checkmark.circle.fill")
-                    .font(Theme.rounded(15, .bold)).foregroundStyle(Theme.glow)
-            } else if tracker.denied {
-                Button {
-                    if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
-                } label: { pill("Open Settings to allow location") }
-                .buttonStyle(.plain)
-            } else {
-                Button { tracker.requestPermission() } label: { pill("Allow location while recording") }
+        IntroPage(symbol: "point.topleft.down.to.point.bottomright.curvepath.fill", tint: Theme.glow,
+                  title: "Every mile, mapped",
+                  text: "Drives, rides, hikes, runs and walks, each saved with its route, speed, time and distance. Roamr notices when a drive starts, records it with one tap and finishes it when you park.") {
+            VStack(spacing: 14) {
+                kindStrip
+                if tracker.canTrack {
+                    Label("Location is on", systemImage: "checkmark.circle.fill")
+                        .font(Theme.rounded(15, .bold)).foregroundStyle(Theme.glow)
+                } else if tracker.denied {
+                    Button {
+                        if let url = URL(string: UIApplication.openSettingsURLString) { UIApplication.shared.open(url) }
+                    } label: { pill("Open Settings to allow location") }
                     .buttonStyle(.plain)
-                    .accessibilityHint(Text("Shows the iPhone location permission prompt"))
+                } else {
+                    Button { tracker.requestPermission() } label: { pill("Allow location while recording") }
+                        .buttonStyle(.plain)
+                        .accessibilityHint(Text("Shows the iPhone location permission prompt"))
+                }
             }
         }
     }
 
+    /// Drive · Ride · Hike · Run · Walk, as small glowing chips.
+    private var kindStrip: some View {
+        let kinds: [(String, LocalizedStringKey)] = [("car.fill", "Drive"), ("bicycle", "Ride"), ("figure.hiking", "Hike"),
+                                                     ("figure.run", "Run"), ("figure.walk", "Walk")]
+        return ViewThatFits(in: .horizontal) {
+            HStack(spacing: 8) { ForEach(kinds.indices, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
+            VStack(spacing: 8) {
+                HStack(spacing: 8) { ForEach(0..<3, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
+                HStack(spacing: 8) { ForEach(3..<5, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
+            }
+        }
+        .accessibilityElement(children: .combine)
+    }
+
+    private func kindChip(_ symbol: String, _ title: LocalizedStringKey) -> some View {
+        Label(title, systemImage: symbol)
+            .font(Theme.rounded(12, .bold))
+            .foregroundStyle(.white)
+            .lineLimit(1)
+            .padding(.horizontal, 10).padding(.vertical, 7)
+            .background(Theme.glow.opacity(0.14), in: Capsule())
+            .overlay(Capsule().stroke(Theme.glow.opacity(0.35), lineWidth: 1))
+    }
+
+    /// 2 · What you get from those miles: the night-map history and the fuel log per vehicle.
     private var togetherPage: some View {
-        IntroPage(symbol: "person.2.fill", tint: Theme.sky,
-                  title: "Go Together",
-                  text: "Start a group trip and send friends a link. Everyone sees each other on one live map, with speeds and who's ahead or behind.") {
-            Text("Only people with your trip code can see you, and only until the trip ends.")
-                .font(Theme.rounded(13, .semibold)).foregroundStyle(Theme.textDim)
-                .multilineTextAlignment(.center)
+        IntroPage(symbol: "fuelpump.fill", tint: Theme.gold,
+                  title: "Your trips, your fuel",
+                  text: "Every trip lands in a night-map history, grouped by week with its route. Log a fill-up and Roamr works out MPG for each vehicle from the drives it mapped.") {
+            VStack(alignment: .leading, spacing: 10) {
+                bullet("moon.stars.fill", "Night-map trip history with weekly totals")
+                bullet("gauge.with.dots.needle.67percent", "MPG and monthly fuel spend per vehicle")
+                bullet("person.2.fill", "Go Together: friends live on one map")
+            }
+            .padding(.horizontal, 4)
         }
     }
 
+    private func bullet(_ symbol: String, _ text: LocalizedStringKey) -> some View {
+        HStack(alignment: .top, spacing: 10) {
+            Image(systemName: symbol)
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Theme.gold)
+                .frame(width: 22)
+                .accessibilityHidden(true)
+            Text(text)
+                .font(Theme.rounded(14, .semibold))
+                .foregroundStyle(.white.opacity(0.9))
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+    }
+
+    /// 3 · Auto-detect (opt-in) and how location is kept private.
     private var privacyPage: some View {
-        IntroPage(symbol: "lock.shield.fill", tint: Theme.gold,
-                  title: "Your location stays yours",
-                  text: "Roamr uses GPS only while you record. Auto-detect listens with low-power motion signals and takes a few seconds of GPS only when you seem to be driving. Trips are saved on your iPhone and your private iCloud. Nothing is sold or used for ads.") {
+        IntroPage(symbol: "lock.shield.fill", tint: Theme.sky,
+                  title: "Catch every drive, privately",
+                  text: "Auto-detect listens with low-power motion signals and takes a few seconds of GPS only when you seem to be driving. GPS runs only while you record. Trips stay on your iPhone and in your private iCloud. Nothing is sold or used for ads.") {
             VStack(spacing: 10) {
                 if autoDetectAsked {
                     Label("Auto-detect is set up", systemImage: "checkmark.circle.fill")

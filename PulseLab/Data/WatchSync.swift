@@ -21,6 +21,11 @@ final class WatchSync: NSObject, WCSessionDelegate {
         static let takeaway = "takeaway"
         static let updatedAt = "updatedAt"
         static let command = "command"
+        // Today's Watch vs WHOOP agreement (TodayAgreement), for the agreement complication.
+        static let agreeScore = "agreeScore"
+        static let agreeOn = "agreeOn"
+        static let agreeOf = "agreeOf"
+        static let agreeSplit = "agreeSplit"
     }
 
     private var activated = false
@@ -73,6 +78,11 @@ final class WatchSync: NSObject, WCSessionDelegate {
         put(b.hrvBase, Key.hrvBase)
         put(b.rhr, Key.rhr)
         put(b.rhrBase, Key.rhrBase)
+        let agree = TodayAgreement.build(store)
+        put(agree.score, Key.agreeScore)
+        p[Key.agreeOn] = agree.agreeing
+        p[Key.agreeOf] = agree.compared
+        p[Key.agreeSplit] = agree.splits.joined(separator: ", ")
         if let t = store.whoopDays.stat(on: Date())?.strain {
             p[Key.strain] = t
             p[Key.strainIsToday] = true

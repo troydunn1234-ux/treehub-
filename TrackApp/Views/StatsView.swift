@@ -190,6 +190,8 @@ struct StatsView: View {
                             byTypeSection
                         }
                         chartCard.cardAppear()
+                        // Fuel and vehicles: per-vehicle MPG and this month's spend (the gas log, one tap away).
+                        FuelSummaryCard().cardAppear()
                         recordsSection
                     }
                 }

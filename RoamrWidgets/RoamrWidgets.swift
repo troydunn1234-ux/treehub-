@@ -6,6 +6,7 @@ import WidgetKit
 struct RoamrWidgets: WidgetBundle {
     var body: some Widget {
         TrackingLiveActivity()
+        RoamrQuickStartWidget()
         if #available(iOS 18.0, *) {
             StartTrackingControl()
             StartDriveControl()

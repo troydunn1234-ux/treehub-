@@ -25,6 +25,12 @@ enum WidgetBridge {
         static let briefingDay = "briefingDay"
         static let hrv = "hrv"
         static let strain = "strain"
+        // Today's Watch vs WHOOP agreement (TodayAgreement): score 0–100, metrics agreeing / compared, and the
+        // names of the ones they split on ("HRV, Sleep"; empty when none).
+        static let agreeScore = "agreeScore"
+        static let agreeOn = "agreeOn"
+        static let agreeOf = "agreeOf"
+        static let agreeSplit = "agreeSplit"
     }
 
     @MainActor
@@ -43,10 +49,16 @@ enum WidgetBridge {
         d.set(Date().dayStart.timeIntervalSince1970, forKey: Key.briefingDay)
         put(b.hrv, Key.hrv)
         put(store.whoopDays.stat(on: Date())?.strain ?? b.strainYesterday, Key.strain)
+        let agree = TodayAgreement.build(store)
+        put(agree.score, Key.agreeScore)
+        d.set(agree.agreeing, forKey: Key.agreeOn)
+        d.set(agree.compared, forKey: Key.agreeOf)
+        d.set(agree.splits.joined(separator: ", "), forKey: Key.agreeSplit)
         // Reload the widgets only when what they show changed: refreshes run on every new Health sample, and each
         // reload spends the widgets' daily budget (then they stop updating until iOS gives more).
         let shown = [Key.recovery, Key.readiness, Key.rhrWatch, Key.rhrWhoop, Key.sleepWatch, Key.sleepWhoop,
-                     Key.briefingSpoken, Key.briefingDay, Key.hrv, Key.strain]
+                     Key.briefingSpoken, Key.briefingDay, Key.hrv, Key.strain,
+                     Key.agreeScore, Key.agreeOn, Key.agreeOf, Key.agreeSplit]
             .map { "\(d.object(forKey: $0) ?? "-")" }.joined(separator: "|")
         guard shown != lastShown else { return }
         lastShown = shown

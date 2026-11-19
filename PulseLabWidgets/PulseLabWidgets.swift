@@ -13,6 +13,7 @@ import WidgetKit
 @main
 struct PulseLabWidgets: WidgetBundle {
     var body: some Widget {
+        AgreementWidget()
         ReadyDuelWidget()
         if #available(iOS 18.0, *) {
             PulseLabTodayControl()
@@ -34,6 +35,11 @@ enum Bridge {
         var sleepWatch: Double?
         var sleepWhoop: Double?
         var updatedAt: Date?
+        // Today's Watch vs WHOOP agreement (WidgetBridge.Key.agree*).
+        var agreeScore: Double?
+        var agreeOn = 0
+        var agreeOf = 0
+        var agreeSplit = ""
 
         var isEmpty: Bool { recovery == nil && readiness == nil && rhrWatch == nil && rhrWhoop == nil }
 
@@ -56,6 +62,12 @@ enum Bridge {
         s.sleepWatch = signed("sleepWatch")
         s.sleepWhoop = signed("sleepWhoop")
         if let t = opt("updatedAt") { s.updatedAt = Date(timeIntervalSince1970: t) }
+        s.agreeScore = opt("agreeScore")
+        s.agreeOn = d.integer(forKey: "agreeOn")
+        s.agreeOf = d.integer(forKey: "agreeOf")
+        s.agreeSplit = d.string(forKey: "agreeSplit") ?? ""
+        // Yesterday's agreement isn't today's: show it as waiting after midnight.
+        if let u = s.updatedAt, !Calendar.current.isDateInToday(u) { s.agreeScore = nil; s.agreeOf = 0; s.agreeOn = 0; s.agreeSplit = "" }
         return s
     }
 }

@@ -45,6 +45,7 @@ enum WatchDemo {
         "recovery": 72.0, "recoveryKind": "whoop", "sleepMin": 446.0, "sleepAvgMin": 421.0,
         "hrv": 61.0, "hrvBase": 56.0, "rhr": 52.0, "rhrBase": 53.4, "strain": 11.4, "strainIsToday": false,
         "takeaway": "Slept longer than your week and HRV is above your usual: a good day to train.",
+        "agreeScore": 75.0, "agreeOn": 3, "agreeOf": 4, "agreeSplit": "HRV",
         "updatedAt": Date().timeIntervalSince1970,
     ])
 }
@@ -69,6 +70,7 @@ struct WatchHome: View {
                         .padding(.vertical, 4)
                         .accessibilityElement(children: .combine)
                     } else {
+                        if s.agreeOf > 0 { agreementRow(s) }
                         row("moon.zzz.fill", WPalette.violet, String(localized: "Sleep"),
                             s.sleepMin.map { watchHM($0) },
                             s.sleepMin.flatMap { m in s.sleepAvgMin.map { a in delta(m - a, minutes: true) } },
@@ -136,6 +138,32 @@ struct WatchHome: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(s.recovery.map { String(localized: "\(s.isWhoop ? String(localized: "WHOOP recovery") : String(localized: "Watch readiness")) \(Int($0.rounded()))") }
                             ?? String(localized: "No recovery score yet"))
+    }
+
+    /// Pulse Lab's signature: how closely Watch and WHOOP agree today (resting HR, HRV, sleep, strain).
+    private func agreementRow(_ s: WatchStore.Snapshot) -> some View {
+        HStack(spacing: 8) {
+            Image(systemName: "bolt.horizontal.fill").font(.footnote.weight(.semibold))
+                .foregroundStyle(LinearGradient(colors: [WPalette.watch, WPalette.whoop], startPoint: .leading, endPoint: .trailing))
+                .frame(width: 20).accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Watch vs WHOOP").font(.caption2).foregroundStyle(.secondary)
+                Text(String(localized: "\(s.agreeOn) of \(s.agreeOf) agree"))
+                    .font(.system(.headline, design: .rounded)).lineLimit(1).minimumScaleFactor(0.7)
+                if !s.agreeSplit.isEmpty {
+                    Text(String(localized: "Split: \(s.agreeSplit)")).font(.caption2).foregroundStyle(WPalette.warn).lineLimit(1)
+                }
+            }
+            Spacer(minLength: 4)
+            if let a = s.agreeScore {
+                Text("\(Int(a))%").font(.system(.title3, design: .rounded).weight(.semibold)).monospacedDigit()
+                    .foregroundStyle(WPalette.band(a))
+            }
+        }
+        .padding(.horizontal, 10).padding(.vertical, 6)
+        .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.white.opacity(0.08)))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "Watch versus WHOOP: \(s.agreeOn) of \(s.agreeOf) agree\(s.agreeSplit.isEmpty ? "" : ", split on " + s.agreeSplit)"))
     }
 
     /// One number: tinted icon, title, value (or "Not in yet"), and its change vs your usual with that context.

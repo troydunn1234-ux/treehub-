@@ -62,6 +62,16 @@ enum TrackDemo {
             a.route = pts
             context.insert(a)
         }
+        // Gas & MPG: one vehicle with a few full fill-ups (odometer readings), so Stats and the gas log aren't empty.
+        let car = GasVehicle(name: "Daily driver")
+        context.insert(car)
+        let fills: [(Int, Double, Double, Double)] = [(34, 11.2, 4.79, 41_220), (22, 10.6, 4.65, 41_540),
+                                                       (11, 11.0, 4.59, 41_872), (2, 10.4, 4.69, 42_181)]
+        for f in fills {
+            let date = cal.date(byAdding: .day, value: -f.0, to: now) ?? now
+            context.insert(FillUp(vehicleID: car.id, date: date, gallons: f.1, pricePerGallon: f.2, total: 0,
+                                  odometer: f.3, station: "Corner station"))
+        }
         try? context.save()
     }
 }

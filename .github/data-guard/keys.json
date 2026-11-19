@@ -36,6 +36,9 @@
     "vizioCertPin.\\(…)"
   ],
   "PulseLab": [
+    "agreeOf",
+    "agreeOn",
+    "agreeSplit",
     "allDataHideEmpty",
     "briefingDay",
     "briefingSpoken",

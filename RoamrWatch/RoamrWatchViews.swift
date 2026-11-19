@@ -161,6 +161,8 @@ struct StartView: View {
                 small("bike", "Ride")
                 small("run", "Run")
             }
+            Text("Every mile, mapped")
+                .font(RW.font(11, .semibold)).foregroundStyle(.secondary)
             if link.sending { ProgressView().tint(RW.amber) }
             else if !link.reachable && !PhoneLink.demo {
                 Label("iPhone not in reach", systemImage: "iphone.slash")
@@ -195,8 +197,18 @@ struct TripsView: View {
         let s = link.state
         List {
             if s.trips.isEmpty {
-                Text("Your trips show up here after you finish one.")
-                    .font(RW.font(13, .medium)).foregroundStyle(.secondary)
+                VStack(spacing: 6) {
+                    Image(systemName: "point.topleft.down.to.point.bottomright.curvepath.fill")
+                        .font(.system(size: 22, weight: .bold)).foregroundStyle(RW.amber)
+                        .accessibilityHidden(true)
+                    Text("No trips yet").font(RW.font(15, .heavy))
+                    Text("Every drive, ride and walk you finish shows up here.")
+                        .font(RW.font(12, .medium)).foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 6)
+                .listRowBackground(Color.clear)
             }
             ForEach(s.trips) { t in
                 HStack(spacing: 10) {

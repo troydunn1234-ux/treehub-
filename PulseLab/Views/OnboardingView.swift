@@ -40,24 +40,63 @@ struct OnboardingView: View {
     private var compares: some View {
         ScrollView {
             VStack(spacing: 20) {
-                pulseArt.padding(.top, 36)
-                Text(String(localized: "Two trackers.\nOne lab.")).font(Lab.display(38)).foregroundStyle(Lab.text)
+                pulseArt.padding(.top, 28)
+                Text(String(localized: "Watch vs WHOOP.\nHead to head."))
+                    .font(Lab.display(36)).foregroundStyle(Lab.text)
                     .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
+                Text(String(localized: "Wear both? Pulse Lab puts their readings side by side and shows where they agree and where they split."))
+                    .font(Lab.body(15)).foregroundStyle(Lab.dim)
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
+                samplePreview
                 VStack(alignment: .leading, spacing: 14) {
-                    feature("chart.xyaxis.line", String(localized: "Head to head"),
-                            String(localized: "Resting HR, HRV, sleep stages, breathing, blood oxygen, temperature, calories and workouts from your Watch and WHOOP, side by side."))
-                    feature("scope", String(localized: "Who agrees"),
-                            String(localized: "Agreement scores and a readiness score from your Watch to sit next to WHOOP recovery."))
-                    feature("sun.max.fill", String(localized: "Morning briefing"),
-                            String(localized: "Recovery, sleep vs your week and HRV vs your baseline in one card."))
-                    feature("chart.dots.scatter", String(localized: "Insights"),
-                            String(localized: "How your next morning looks after supplements, sauna, workouts and late meals."))
+                    feature("checkmark.circle.fill", String(localized: "Agree or split"),
+                            String(localized: "Resting HR, HRV, sleep and strain from both trackers, each marked, with one agreement score for the day."))
+                    feature("scope", String(localized: "Who to trust"),
+                            String(localized: "Day-by-day agreement over weeks: which one reads higher, by how much, and why they differ."))
+                    feature("gauge.with.dots.needle.67percent", String(localized: "Readiness next to recovery"),
+                            String(localized: "A readiness score built from your Watch, next to WHOOP recovery, with every part explained."))
+                    feature("sun.max.fill", String(localized: "And the rest of your day"),
+                            String(localized: "Sleep stages, heart, moves, a morning briefing and your supplement stack."))
                 }
                 .padding(.horizontal, 8)
             }
             .padding(.horizontal, 24)
         }
+    }
+
+    /// A labelled sample of the Today card, so the very first screen shows what the comparison looks like.
+    private var samplePreview: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Text(String(localized: "Example")).font(.caption.weight(.bold)).foregroundStyle(Lab.faint)
+                Spacer()
+                Text(String(localized: "3 of 4 agree")).font(.caption.weight(.bold)).foregroundStyle(Lab.good)
+            }
+            sampleRow(String(localized: "Resting HR"), "52", "54", agree: true)
+            sampleRow(String(localized: "HRV"), String(localized: "Up 9%"), String(localized: "Down 4%"), agree: false)
+            sampleRow(String(localized: "Sleep"), "7h 12m", "6h 58m", agree: true)
+        }
+        .padding(Lab.S.sm)
+        .background(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).fill(Lab.panel))
+        .overlay(RoundedRectangle(cornerRadius: Lab.innerRadius, style: .continuous).strokeBorder(Lab.line))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(String(localized: "Example: resting heart rate and sleep agree, HRV splits. 3 of 4 agree."))
+    }
+
+    private func sampleRow(_ title: String, _ watch: String, _ whoop: String, agree: Bool) -> some View {
+        HStack(spacing: 8) {
+            Text(title).font(.footnote.weight(.semibold)).foregroundStyle(Lab.dim)
+                .frame(maxWidth: .infinity, alignment: .leading)
+            Text(watch).font(Lab.number(15)).foregroundStyle(Lab.watch)
+            Text("vs").font(.caption2).foregroundStyle(Lab.faint)
+            Text(whoop).font(Lab.number(15)).foregroundStyle(Lab.whoop)
+            Image(systemName: agree ? "checkmark.circle.fill" : "arrow.left.arrow.right.circle.fill")
+                .foregroundStyle(agree ? Lab.good : Lab.warn)
+        }
+        .lineLimit(1).minimumScaleFactor(0.8)
     }
 
     private func feature(_ icon: String, _ title: String, _ text: String) -> some View {
