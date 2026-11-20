@@ -55,14 +55,18 @@ final class TopSpeedTests: XCTestCase {
 
     func testRealAccelerationIsKept() {
         // 20 → 36 m/s at 2 m/s², held for 20 s, then back down.
-        let speeds = Array(repeating: 20.0, count: 30) + (1...8).map { 20 + Double($0) * 2 }
-            + Array(repeating: 36.0, count: 20) + Array(repeating: 25.0, count: 30)
+        var speeds: [Double] = Array(repeating: 20.0, count: 30)
+        speeds += (1...8).map { (i: Int) -> Double in 20 + Double(i) * 2 }
+        speeds += Array(repeating: 36.0, count: 20)
+        speeds += Array(repeating: 25.0, count: 30)
         XCTAssertEqual(TopSpeed.compute(from: samples(speeds), kind: .drive), 36, accuracy: 0.01)
     }
 
     func testTopMustBeSustained() {
         // One honest-looking 2 s burst to 10 m/s on a 3 m/s run doesn't count; 10 s at 5 m/s does.
-        var speeds = Array(repeating: 3.0, count: 60) + Array(repeating: 5.0, count: 10) + Array(repeating: 3.0, count: 30)
+        var speeds: [Double] = Array(repeating: 3.0, count: 60)
+        speeds += Array(repeating: 5.0, count: 10)
+        speeds += Array(repeating: 3.0, count: 30)
         speeds[20] = 6; speeds[21] = 6
         XCTAssertEqual(TopSpeed.compute(from: samples(speeds), kind: .run), 5, accuracy: 0.01)
     }
@@ -70,7 +74,9 @@ final class TopSpeedTests: XCTestCase {
     func testImplausibleForTheKindIsDropped() {
         // A "walk" at 20 m/s (45 mph) has no believable readings; a bike can't do 40 m/s (90 mph) either.
         XCTAssertEqual(TopSpeed.compute(from: samples(Array(repeating: 20, count: 60)), kind: .walk), 0)
-        let bike = Array(repeating: 8.0, count: 60) + Array(repeating: 40.0, count: 10) + Array(repeating: 8.0, count: 10)
+        var bike: [Double] = Array(repeating: 8.0, count: 60)
+        bike += Array(repeating: 40.0, count: 10)
+        bike += Array(repeating: 8.0, count: 10)
         XCTAssertEqual(TopSpeed.compute(from: samples(bike), kind: .bike), 8, accuracy: 0.01)
         XCTAssertLessThanOrEqual(TopSpeed.cap(for: .walk), 6.71)
         XCTAssertLessThanOrEqual(TopSpeed.cap(for: .drive), 62.6)
@@ -107,7 +113,7 @@ final class TopSpeedTests: XCTestCase {
     }
 
     func testLiveAccumulatorMatchesCompute() {
-        var speeds = (0..<200).map { 10 + 5 * sin(Double($0) / 15) }
+        var speeds: [Double] = (0..<200).map { (i: Int) -> Double in 10 + 5 * sin(Double(i) / 15) }
         speeds[77] = 60
         let s = samples(speeds)
         var acc = TopSpeed.Accumulator(kind: .bike)
@@ -140,7 +146,10 @@ final class TopSpeedTests: XCTestCase {
     func testApplyKindRecomputesForTheNewKind() {
         let a = Activity()
         a.kind = .walk
-        a.route = route(Array(repeating: 1.4, count: 30) + Array(repeating: 25, count: 60) + Array(repeating: 1.4, count: 30))
+        var speeds: [Double] = Array(repeating: 1.4, count: 30)
+        speeds += Array(repeating: 25.0, count: 60)
+        speeds += Array(repeating: 1.4, count: 30)
+        a.route = route(speeds)
         a.maxSpeed = 1.4
         a.applyKind(.drive)
         XCTAssertEqual(a.kind, .drive)
