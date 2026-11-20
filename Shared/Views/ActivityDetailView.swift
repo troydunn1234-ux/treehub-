@@ -146,7 +146,7 @@ struct ActivityDetailView: View {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
                         ForEach(ActivityKind.available) { k in
-                            Button { activity.kind = k } label: {
+                            Button { activity.applyKind(k) } label: {
                                 Image(systemName: k.symbol)
                                     .font(.system(size: 18, weight: .semibold))
                                     .frame(maxWidth: .infinity)

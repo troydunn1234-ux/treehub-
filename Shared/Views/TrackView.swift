@@ -145,14 +145,24 @@ struct TrackView: View {
         #endif
     }
 
-    /// Full-bleed live map that fades into the page, with the title on top.
+    /// Roamr has no big "Track" word on top (the tab bar already says it), so its map is a little shorter and the
+    /// pinned chips and Start sit higher.
+    private var heroHeight: CGFloat {
+        #if TRACK_APP
+        return 340
+        #else
+        return 400
+        #endif
+    }
+
+    /// Full-bleed live map that fades into the page, with the title on top (Roamr: just the week line).
     private var mapHero: some View {
         ZStack(alignment: .bottomLeading) {
             Map(position: $camera)
                 .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
                 .environment(\.colorScheme, .dark)
                 .allowsHitTesting(false)
-                .frame(height: 400)
+                .frame(height: heroHeight)
                 .overlay {
                     LinearGradient(stops: [
                         .init(color: Theme.forestDeep.opacity(0.55), location: 0),
@@ -162,10 +172,12 @@ struct TrackView: View {
                     ], startPoint: .top, endPoint: .bottom)
                 }
             VStack(alignment: .leading, spacing: 4) {
+                #if !TRACK_APP
                 Text(screenTitle)
                     .font(Theme.title(44))
                     .foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.4), radius: 10, y: 4)
+                #endif
                 Text(screenSubtitle)
                     .font(Theme.rounded(14, .semibold))
                     .foregroundStyle(.white.opacity(0.8))
@@ -706,7 +718,7 @@ struct TrackView: View {
         guard let a = tracker.finish(auto: auto) else { return }
         // If the motion chip strongly disagrees (e.g. you picked Walk but drove), switch it; you can change it back.
         if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
-            && ActivityKind.available.contains(suggestion) { a.kind = suggestion }
+            && ActivityKind.available.contains(suggestion) { a.applyKind(suggestion) }
         #if TRACK_APP
         // Starts and ends at pinned places: name it ("Home → Work") unless it already has a name.
         if a.title.isEmpty, let t = CommuteStore.autoTitle(a.route) { a.title = t }
