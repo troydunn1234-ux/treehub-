@@ -28,6 +28,7 @@
     "pricePerGallon": "Double",
     "station": "String",
     "total": "Double",
+    "tripMiles": "Double?",
     "vehicleID": "UUID?"
   },
   "GasVehicle": {

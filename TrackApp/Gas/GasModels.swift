@@ -32,6 +32,9 @@ final class FillUp {
     /// Filled the tank all the way (MPG is only figured between full fill-ups).
     var full: Bool = true
     var notes: String = ""
+    /// Miles driven on this tank (trip meter, e.g. from a pasted note). nil = not entered: MPG then comes from the
+    /// odometer or Roamr's drives instead.
+    var tripMiles: Double? = nil
 
     init(vehicleID: UUID?, date: Date, gallons: Double, pricePerGallon: Double, total: Double,
          odometer: Double?, station: String, full: Bool = true) {
@@ -58,8 +61,10 @@ enum GasMath {
         var miles: Double
         var gallons: Double
         var mpg: Double
-        /// true = from odometer readings, false = from drives Roamr recorded in between.
+        /// true = from odometer readings (or the miles you noted for the tank), false = from drives Roamr recorded in between.
         var fromOdometer: Bool
+        /// From the miles noted for this tank (tripMiles).
+        var fromTrip: Bool = false
     }
 
     struct MonthSpend: Identifiable {
@@ -71,7 +76,8 @@ enum GasMath {
 
     static let metersPerMile = 1609.344
 
-    /// MPG for each full fill-up after the first: miles driven since the previous full fill-up
+    /// MPG per fill-up. A fill-up with the tank's miles noted (tripMiles) is simply those miles ÷ its gallons.
+    /// Otherwise, for each full fill-up after the first: miles driven since the previous full fill-up
     /// (odometer difference when both have one, otherwise Roamr-recorded drive miles in between)
     /// divided by the gallons put in since then (partial fill-ups in between included).
     static func mpg(fills: [FillUp], drives: [Activity]) -> [MPGPoint] {
@@ -81,6 +87,17 @@ enum GasMath {
         var lastFull: FillUp?
         var gallonsSince = 0.0
         for f in sorted {
+            if let trip = f.tripMiles, trip > 0, f.gallons > 0.1 {
+                let v = trip / f.gallons
+                if v.isFinite && v < 200 {
+                    out.append(MPGPoint(id: f.id, date: f.date, miles: trip, gallons: f.gallons, mpg: v,
+                                        fromOdometer: true, fromTrip: true))
+                }
+                // This tank is accounted for: the next odometer/drive figure starts from here.
+                lastFull = f
+                gallonsSince = 0
+                continue
+            }
             guard let prev = lastFull else {
                 if f.full { lastFull = f; gallonsSince = 0 }
                 continue
@@ -122,11 +139,24 @@ enum GasMath {
 
     /// Rough fuel cost of a drive: miles ÷ average MPG × latest price per gallon.
     static func driveCost(meters: Double, fills: [FillUp], drives: [Activity]) -> Double? {
+        guard let e = fuelEconomy(fills: fills, drives: drives) else { return nil }
+        return meters / metersPerMile / e.mpg * e.pricePerGallon
+    }
+
+    /// Recent average MPG (last 5 figures) and the latest price per gallon, for cost estimates.
+    static func fuelEconomy(fills: [FillUp], drives: [Activity]) -> (mpg: Double, pricePerGallon: Double)? {
         let points = mpg(fills: fills, drives: drives).suffix(5)
         guard !points.isEmpty else { return nil }
         let avg = points.reduce(0) { $0 + $1.miles } / max(0.1, points.reduce(0) { $0 + $1.gallons })
         guard let price = fills.sorted(by: { $0.date > $1.date }).first(where: { $0.unitPrice > 0 })?.unitPrice,
               avg > 0 else { return nil }
-        return meters / metersPerMile / avg * price
+        return (avg, price)
+    }
+
+    /// The fill-ups of one vehicle, same split as the Gas & MPG screen: fill-ups without a vehicle belong to the first.
+    static func fills(for vehicleID: UUID?, all: [FillUp], vehicles: [GasVehicle]) -> [FillUp] {
+        guard let id = vehicleID ?? vehicles.first?.id else { return all.filter { $0.vehicleID == nil } }
+        let isFirst = id == vehicles.first?.id
+        return all.filter { $0.vehicleID == id || (isFirst && $0.vehicleID == nil) }
     }
 }

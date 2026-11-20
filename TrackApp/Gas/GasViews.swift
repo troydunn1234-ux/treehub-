@@ -17,6 +17,7 @@ struct GasLogView: View {
     @AppStorage("gas.vehicleID") private var vehicleRaw = ""
 
     @State private var adding = false
+    @State private var pasting = false
     @State private var naming = false
     @State private var newName = ""
     @State private var didAutoOpen = false
@@ -53,11 +54,21 @@ struct GasLogView: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Done") { dismiss() } }
                 ToolbarItem(placement: .primaryAction) {
-                    Button { startAdd() } label: { Label("Log a fill-up", systemImage: "plus.circle.fill") }
+                    Menu {
+                        Button { startAdd() } label: { Label("Log a fill-up", systemImage: "plus.circle") }
+                        Button { pasting = true } label: { Label("Paste fill-ups from notes", systemImage: "doc.on.clipboard") }
+                    } label: {
+                        Label("Add fill-ups", systemImage: "plus.circle.fill")
+                    } primaryAction: {
+                        startAdd()
+                    }
                 }
             }
             .sheet(isPresented: $adding) {
                 AddFillUpView(vehicleID: vehicle?.id)
+            }
+            .sheet(isPresented: $pasting) {
+                FillUpImportView(vehicleID: vehicle?.id)
             }
             .alert(Text("Name your vehicle"), isPresented: $naming) {
                 TextField(String(localized: "My truck"), text: $newName)
@@ -166,7 +177,7 @@ struct GasLogView: View {
                 }
                 .frame(height: 170)
             }
-            Text("Gold dots use your odometer. Blue dots use the drives Roamr recorded between fill-ups.")
+            Text("Gold dots use your odometer or the miles you noted for the tank. Blue dots use the drives Roamr recorded between fill-ups.")
                 .font(Theme.rounded(11, .medium)).foregroundStyle(Theme.textDim)
         }
     }
@@ -196,12 +207,10 @@ struct GasLogView: View {
                         Text("Log gallons and price each time you fill up. With two full fill-ups Roamr can work out your MPG, from the odometer or from the drives it recorded.")
                             .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                             .fixedSize(horizontal: false, vertical: true)
-                        Button { startAdd() } label: {
-                            Text("Log a fill-up").font(Theme.rounded(14, .heavy)).foregroundStyle(Theme.forestDeep)
-                                .padding(.horizontal, 16).padding(.vertical, 10)
-                                .background(Theme.goldGradient, in: Capsule())
+                        ViewThatFits(in: .horizontal) {
+                            HStack(spacing: 10) { logButton; pasteButton }
+                            VStack(alignment: .leading, spacing: 10) { logButton; pasteButton }
                         }
-                        .buttonStyle(.plain)
                     }
                 }
             } else {
@@ -223,6 +232,25 @@ struct GasLogView: View {
                 }
             }
         }
+    }
+
+    private var logButton: some View {
+        Button { startAdd() } label: {
+            Text("Log a fill-up").font(Theme.rounded(14, .heavy)).foregroundStyle(Theme.forestDeep)
+                .padding(.horizontal, 16).frame(minHeight: 44)
+                .background(Theme.goldGradient, in: Capsule())
+        }
+        .buttonStyle(.plain)
+    }
+
+    /// Bring in a list of tanks kept in a phone note.
+    private var pasteButton: some View {
+        Button { pasting = true } label: {
+            Label("Paste from notes", systemImage: "doc.on.clipboard").font(Theme.rounded(14, .heavy)).foregroundStyle(Theme.gold)
+                .padding(.horizontal, 16).frame(minHeight: 44)
+                .background(Theme.gold.opacity(0.15), in: Capsule())
+        }
+        .buttonStyle(.plain)
     }
 
     private func fillRow(_ f: FillUp) -> some View {
@@ -248,7 +276,8 @@ struct GasLogView: View {
     private func detail(_ f: FillUp) -> String {
         var parts = [String(format: "%.2f gal", f.gallons)]
         if f.unitPrice > 0 { parts.append(f.unitPrice.formatted(.currency(code: GasFormat.currency)) + "/gal") }
-        if let o = f.odometer { parts.append(String(localized: "\(Int(o)) mi")) }
+        if let t = f.tripMiles, t > 0 { parts.append(String(localized: "\(Int(t.rounded())) mi on tank")) }
+        if let o = f.odometer { parts.append(String(localized: "odo \(Int(o))")) }
         if !f.full { parts.append(String(localized: "partial")) }
         if !f.station.isEmpty { parts.append(f.station) }
         return parts.joined(separator: " · ")

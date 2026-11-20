@@ -99,7 +99,7 @@ enum TripRescue {
 
     static let vehicleProperties: Set<String> = ["id", "name", "created"]
     static let fillUpProperties: Set<String> = [
-        "id", "vehicleID", "date", "gallons", "pricePerGallon", "total", "odometer", "station", "full", "notes",
+        "id", "vehicleID", "date", "gallons", "pricePerGallon", "total", "odometer", "station", "full", "notes", "tripMiles",
     ]
 
     static func copy(of o: GasVehicle) -> GasVehicle {
@@ -114,6 +114,7 @@ enum TripRescue {
                        total: o.total, odometer: o.odometer, station: o.station, full: o.full)
         f.id = o.id
         f.notes = o.notes
+        f.tripMiles = o.tripMiles
         return f
     }
 }
