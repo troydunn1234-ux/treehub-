@@ -125,6 +125,16 @@ button.k-row { cursor: pointer; }
 .k-tag.warn { background: rgba(241,189,98,.14); color: var(--k-warn); }
 .k-tag.bad { background: rgba(244,144,136,.14); color: var(--k-neg); }
 .k-tag.ok { background: rgba(116,216,173,.13); color: var(--k-pos); }
+.k-bankst { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: var(--k-s1); border: 1px solid var(--k-line); }
+.k-bankst .k-mid { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.k-tag.pp { background: rgba(90,169,255,.14); color: #5aa9ff; text-transform: none; letter-spacing: 0; margin-left: 0; margin-right: 2px; }
+.k-budrow { display: flex; flex-direction: column; gap: 8px; width: 100%; background: none; border: 0; padding: 4px 0; color: inherit; text-align: left; font: inherit; min-height: 44px; }
+.k-budtop { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+.k-budtop b { font-size: 1.6rem; font-weight: 700; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.k-of2 { font-size: .86rem; color: var(--k-t2); }
+.k-budleft { font-size: .86rem; color: var(--k-t2); font-weight: 600; }
+.k-budleft.neg { color: var(--k-neg); }
+.k-budrow .k-bar { display: block; height: 8px; }
 .k-dayh { font-size: .74rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--k-t3); padding: 14px 0 4px; }
 .k-dayh:first-child { padding-top: 2px; }
 .k-total { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding-top: 12px; margin-top: 2px; border-top: 1px solid var(--k-line2); font-weight: 700; }
@@ -1571,7 +1581,11 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (S.tx.indexOf(o) >= 0) { if (toC(o.amt) !== -c) o.amt = fromC(-c); }
     else if (toC(o.amt) !== Math.abs(c)) o.amt = fromC(Math.abs(c));
   }
-  function bankImport(res) {
+  /* A charge on SoFi paid through PayPal ("PAYPAL *NETFLIX", "PAYPAL INST XFER NETFLIX"): with PayPal itself not synced,
+     it's the purchase (money left the bank for a store), never a transfer between your own accounts. */
+  function ppSpendLine(a, t, c, pp) { return !pp && c < 0 && !isCredit(a) && isPPLine(t); }
+  function bankImport(res, opt) {
+    opt = opt || {};
     var seen = {}, added = 0, inc = 0, skipped = 0, merged = 0;
     function mark(o) { if (o.bank) { if (o.bank.id) seen[o.bank.id] = o; if (o.bank.pid) seen[o.bank.pid] = o; if (o.bank.oid) seen[o.bank.oid] = o; } }
     S.tx.forEach(mark); S.moves.forEach(mark);
@@ -1599,7 +1613,14 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       var t = x.t, a = x.a, c = x.c, id = t.id ? a.id + ":" + t.id : "";
       if (!id || !isFinite(c) || !c) return;
       var existing = seen[id];
+      /* older versions skipped SoFi's "PAYPAL INST XFER ..." purchases as transfers; bring those back (they were never shown, so never deleted) */
+      if (existing === true && opt.ppBack && ppSpendLine(a, t, c, pp) && looksLikeTransfer(t) && !mirror[i] && (S.bankSkip || []).indexOf(id) >= 0 &&
+        !S.tx.concat(S.moves).some(function (o) { return o.bank && (o.bank.id === id || o.bank.pid === id || o.bank.oid === id); })) {
+        S.bankSkip = S.bankSkip.filter(function (z) { return z !== id; }); existing = null;
+      }
       if (existing === true) return;
+      /* the one-time look further back only brings in PayPal purchases from before the usual window */
+      if (opt.oldBefore && !existing && (t.posted || t.transacted || 0) < opt.oldBefore && !ppSpendLine(a, t, c, pp)) return;
       if (existing) {
         if (existing.bank && existing.bank.pend) {
           /* pending that has now posted (same id): the bank's final amount and date win */
@@ -1667,7 +1688,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
         }
         S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return;
       }
-      if (looksLikeTransfer(t) && !(pp && !isCredit(a) && isPPLine(t))) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
+      if (looksLikeTransfer(t) && !(pp && !isCredit(a) && isPPLine(t)) && !ppSpendLine(a, t, c, pp)) { S.bankSkip = (S.bankSkip || []).concat([id]).slice(-800); skipped++; return; }
       var text = t.payee || t.description || "Bank purchase", key = payeeKey(text);
       var when = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000);
       var bank = { id: id, org: a.org || a.name, key: key, pend: !!t.pending, acc: a.id };
@@ -1714,9 +1735,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var last = (BANK.st && BANK.st.lastSync) ? BANK.st.lastSync * 1000 : 0;
     if (!manual && last && Date.now() - last < BANK_EVERY) return;
     BANK.busy = true; BANK.msg = "Syncing with your bank…"; renderBank(); renderStatus();
-    var since = last ? Math.floor(last / 1000) - BANK_BACK : Math.floor(Date.now() / 1000) - 30 * 86400;
+    var since = last ? Math.floor(last / 1000) - BANK_BACK : Math.floor(Date.now() / 1000) - 30 * 86400, opt = {};
+    /* once: look 75 days back for SoFi charges paid through PayPal that older versions skipped, so repeating ones show up under Bills */
+    if (!S.ppBack && last) { opt = { ppBack: 1, oldBefore: since }; since = Math.min(since, Math.floor(Date.now() / 1000) - 75 * 86400); }
     bankNative({ op: "simplefin", action: "sync", since: since }).then(function (res) {
-      var r = bankImport(res || {});
+      var r = bankImport(res || {}, opt);
+      if (res && res.accounts && !S.ppBack) { S.ppBack = 1; touch(); }
       var matched = bankReconcile(res || {});
       BANK.busy = false;
       var errs = (res && res.errors && res.errors.length) ? " " + res.errors.length + " bank message(s): " + res.errors.join(" ").slice(0, 140) : "";
@@ -1740,56 +1764,40 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var box = $("bankBody"); if (!box) return;
     var st = BANK.st || {}, body = "";
     if (!BANK.on) {
-      body = '<p class="k-note">Bank sync works in the Ride Quest app on your iPhone. Here you can still log entries by hand.</p>' + (S.ppCsv ? instRows(st) : "") + ppCsvBlock();
+      body = '<p class="k-note">Bank sync runs in the Ride Quest app on your iPhone. Here you can still add entries by hand.</p>' + importBlock();
     } else if (!st.connected) {
       body = '<ol class="k-steps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and connect SoFi there.</li>' +
-        "<li>In SimpleFIN Bridge, make a new <b>setup token</b> and copy it.</li><li>Come back here and tap the button. Purchases then show up on their own.</li></ol>" +
-        '<div class="k-btns" style="margin-top:12px"><button class="k-btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting…" : "Paste setup token") + "</button></div>" +
-        (S.ppCsv ? instRows(st) : "") + ppCsvBlock();
+        "<li>In SimpleFIN Bridge, make a <b>setup token</b> and copy it.</li><li>Tap the button below. Purchases then come in on their own.</li></ol>" +
+        '<div class="k-btns" style="margin-top:12px"><button class="k-btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting…" : "Paste setup token") + "</button></div>" + importBlock();
     } else {
-      var accs = st.accounts || [];
-      body = '<div class="k-list">' + (accs.length ? accs.map(function (a) {
-        var off = bankIgnored(a);
-        var to = off ? "Off, not synced" : isCredit(a) ? "Card, purchases count as spending" : ("Shows as " + (walletFor(a) === "savings" ? "Car savings" : walletFor(a) === "cash" ? "Cash" : walletFor(a) === "paypal" ? "PayPal" : "Checking"));
-        return '<div class="k-set"' + (off ? ' style="opacity:.55"' : "") + '><div><div class="k-t">' + esc(a.name) + '</div><div class="k-s">' + esc(a.org) + " · " + esc(to) + "</div></div>" +
-          '<button class="k-btn ghost sm" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '">' + (off ? "Use" : "Stop") + "</button></div>";
-      }).join("") : '<p class="k-note">Connected. Tap Sync now to pull your accounts.</p>') + "</div>" +
-        '<p class="k-note" style="margin-top:10px">' + (st.lastSync ? "Last synced " + esc(whenLbl(st.lastSync)) + ". " : "") + esc(bankPendingNote()) +
-        "Syncs on its own each hour you open the app. Your bank's data reaches SimpleFIN a few times a day, so a brand-new charge can take a while to appear.</p>" +
-        '<div class="k-btns" style="margin-top:12px"><button class="k-btn" type="button" data-act="banksync">' + (BANK.busy ? "Syncing…" : "Sync now") + '</button><button class="k-btn ghost" type="button" data-act="bankoff">Disconnect</button></div>' +
-        instRows(st) + (accs.some(isPayPalAcc) ? "" : '<details class="k-det" style="margin-top:14px"><summary>Add PayPal</summary>' + ppSteps() + ppCsvBlock() + "</details>");
+      var accs = st.accounts || [], live = accs.filter(function (a) { return !bankIgnored(a); }), orgs = [];
+      live.forEach(function (a) { var o = isPayPalAcc(a) ? "PayPal" : (a.org || a.name || "Bank"); if (orgs.indexOf(o) < 0) orgs.push(o); });
+      var when = BANK.busy ? "Syncing now…" : st.lastSync ? "Last synced " + whenLbl(st.lastSync) + " · syncs hourly" : "Not synced yet";
+      body = '<div class="k-bankst"><span class="k-ic">' + kico("bank") + '</span><span class="k-mid"><span class="k-t">' + esc((orgs.join(", ") || "Your bank") + " via SimpleFIN") + '</span><span class="k-s">' + esc(when) + '</span></span><span class="k-tag ok">On</span></div>' +
+        (bankPendingNote() ? '<p class="k-note" style="margin-top:8px">' + esc(bankPendingNote()) + "</p>" : "") +
+        '<div class="k-btns" style="margin-top:12px"><button class="k-btn" type="button" data-act="banksync"' + (BANK.busy ? " disabled" : "") + ">" + (BANK.busy ? "Syncing…" : "Sync now") + "</button></div>" +
+        '<p class="k-note" style="margin-top:12px">PayPal purchases are picked up from your bank automatically and show as the store, tagged <span class="k-tag pp">via PayPal</span>. New charges can take a few hours to reach SimpleFIN.</p>' +
+        '<details class="k-det" style="margin-top:14px"><summary>Accounts (' + accs.length + ")</summary>" + (accs.length ? '<div class="k-list">' + accs.map(function (a) {
+          var off = bankIgnored(a);
+          var to = off ? "Off, not synced" : isCredit(a) ? "Card · purchases count as spending" : ("Shows as " + (walletFor(a) === "savings" ? "Car savings" : walletFor(a) === "cash" ? "Cash" : walletFor(a) === "paypal" ? "PayPal" : "Checking"));
+          return '<div class="k-set"' + (off ? ' style="opacity:.55"' : "") + '><div><div class="k-t">' + esc(a.name) + '</div><div class="k-s">' + esc((a.org ? a.org + " · " : "") + to) + "</div></div>" +
+            '<button class="k-btn ghost sm" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '">' + (off ? "Use" : "Stop") + "</button></div>";
+        }).join("") + "</div>" : '<p class="k-note">Tap Sync now to pull your accounts.</p>') +
+        '<div class="k-btns" style="margin-top:12px"><button class="k-btn danger" type="button" data-act="bankoff">Disconnect bank</button></div></details>' + importBlock();
     }
     box.innerHTML = body;
     $("bankMsg").textContent = BANK.msg || "";
   }
-  /* One status row per institution (SoFi, PayPal, ...): accounts, last sync, how fresh the bank's data is. */
-  function instRows(st) {
-    var g = {}, order = [];
-    ((st && st.accounts) || []).forEach(function (a) {
-      var k = isPayPalAcc(a) ? "PayPal" : (a.org || a.name || "Bank");
-      if (!g[k]) { g[k] = { n: 0, off: 0, asOf: 0 }; order.push(k); }
-      g[k].n++; if (bankIgnored(a)) g[k].off++;
-      if (+a.balanceDate > 0) g[k].asOf = Math.max(g[k].asOf, +a.balanceDate);
-    });
-    var rows = order.map(function (k) {
-      var x = g[k];
-      return '<div class="k-set"><div><div class="k-t">' + esc(k) + '</div><div class="k-s">' + x.n + " account" + (x.n === 1 ? "" : "s") + (x.off ? " (" + x.off + " off)" : "") + " · SimpleFIN" +
-        (x.asOf ? " · data as of " + esc(whenLbl(x.asOf)) : "") + '</div></div><span class="k-tag ' + (x.off === x.n ? "" : "ok") + '">' + (x.off === x.n ? "Off" : "On") + "</span></div>";
-    });
+  /* the PayPal CSV, tucked away: only needed for PayPal activity that never touches the bank (money already sitting in PayPal) */
+  function importBlock() {
+    var done = "";
     if (S.ppCsv) {
       var n = S.tx.concat(S.moves).filter(function (o) { return o.bank && o.bank.csv; }).length;
-      rows.push('<div class="k-set"><div><div class="k-t">PayPal (CSV)</div><div class="k-s">' + n + " entr" + (n === 1 ? "y" : "ies") + " · imported " + esc(whenLbl(S.ppCsv.at)) + (S.ppCsv.last ? " · activity through " + esc(dayLbl(S.ppCsv.last)) : "") + '</div></div><span class="k-tag">CSV</span></div>');
+      done = '<div class="k-set"><div><div class="k-t">PayPal activity (CSV)</div><div class="k-s">' + n + " entr" + (n === 1 ? "y" : "ies") + " · imported " + esc(whenLbl(S.ppCsv.at)) + (S.ppCsv.last ? " · through " + esc(dayLbl(S.ppCsv.last)) : "") + "</div></div></div>";
     }
-    return rows.length ? '<div class="k-list" style="margin-top:14px">' + rows.join("") + "</div>" : "";
-  }
-  function ppSteps() {
-    return '<ol class="k-steps"><li>Open <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">SimpleFIN Bridge</a> and sign in.</li>' +
-      "<li>Tap <b>Add institution</b>, search <b>PayPal</b>, and sign in to PayPal there.</li>" +
-      "<li>Come back here and tap <b>Sync now</b>. PayPal becomes its own wallet, and PayPal purchases paid from SoFi count once.</li></ol>";
-  }
-  function ppCsvBlock() {
-    return '<p class="k-note" style="margin-top:12px">No PayPal in SimpleFIN? On paypal.com open <b>Activity</b>, tap <b>Download</b>, pick <b>CSV</b>, save it to Files, then import it here. Importing the same file again adds nothing twice.</p>' +
-      '<div class="k-btns" style="margin-top:10px"><button class="k-btn ghost" type="button" data-act="ppcsv">Import PayPal activity (CSV)</button></div>';
+    return '<details class="k-det" style="margin-top:10px"><summary>Import a file</summary>' + done +
+      '<p class="k-note" style="margin-top:8px">Only needed for PayPal purchases paid from your PayPal balance. On paypal.com: <b>Activity</b>, <b>Download</b>, <b>CSV</b>. Importing the same file twice adds nothing twice.</p>' +
+      '<div class="k-btns" style="margin-top:10px"><button class="k-btn ghost" type="button" data-act="ppcsv">Import PayPal CSV</button></div></details>';
   }
   /* "Balances include $42.10 in pending charges. Bank balance as of 3:10 PM." */
   function bankPendingNote() {
@@ -1902,6 +1910,61 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     if (x.via === "apple" && src.indexOf("apple") < 0) src += "|" + APPLE_M;
     try { return new RegExp(src, "i"); } catch (e) { return null; }
   }
+  /* ---- bank descriptors, cleaned: "PAYPAL *NETFLIX.COM 402-935-7733 CA" -> netflix (via PayPal) ----
+     Strips PayPal wrappers (PAYPAL *, PP*, PAYPAL INST XFER, PAYPAL DES:... ID:..., a PayPal prefix or suffix), phone numbers,
+     web endings (.COM), store numbers and ids (anything with a digit), company endings and a trailing state code. */
+  var US_ST = " AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC ";
+  var CO_END = { com: 1, net: 1, org: 1, inc: 1, llc: 1, corp: 1, ltd: 1, co: 1, www: 1, pmts: 1, payment: 1, payments: 1, purchase: 1, debit: 1, pos: 1, ach: 1, web: 1, recurring: 1 };
+  function descClean(s) {
+    var x = String(s || "").toUpperCase(), pp = /PAY\s?PAL|(^|[^A-Z])PP\s?\*|\bPYPL\b/.test(x);
+    var des = /PAY\s?PAL\s+DES:.*?\bID:\s*(.*?)(\s+INDN:|\s+CO\s*ID:|$)/.exec(x);
+    if (des) x = des[1]; /* ACH style: the store sits in ID:, the rest (your name, PayPal's ids) is dropped */
+    x = x.replace(/PAY\s?PAL\s+DES:\S*/g, " ")
+      .replace(/PAY\s?PAL\s*(INST(ANT)?\.?\s*(XFER|TRANSFER)|TRANSFER|ECHECK|PURCHASE)/g, " ")
+      .replace(/PAY\s?PAL\s*\*|(^|[^A-Z])PP\s?\*|\bPYPL\s?\*?|PAY\s?PAL/g, " ")
+      .replace(/\(?\b\d{3}\)?[-. ]?\d{3}[-. ]?\d{4}\b/g, " ")
+      .replace(/\.(COM|NET|ORG|IO|TV|CO|US)\b/g, " ").replace(/\bWWW\./g, " ")
+      .replace(/[^A-Z0-9& ]+/g, " ");
+    var tk = x.toLowerCase().split(/\s+/).filter(function (w) { return w && !/\d/.test(w) && !CO_END[w]; });
+    if (tk.length >= 2 && US_ST.indexOf(" " + tk[tk.length - 1].toUpperCase() + " ") >= 0) tk.pop();
+    return { tk: tk, pp: pp, name: tk.join(" ") };
+  }
+  /* "Netflix" from "PAYPAL *NETFLIX.COM 402-935-7733 CA" (looks only, the bank's text stays as it came) */
+  function cleanMerchant(s) {
+    var c = descClean(s);
+    if (!c.tk.length) return c.pp ? "PayPal" : String(s || "").trim();
+    return c.tk.map(function (w) { return (w.length <= 2 && w !== "x") || KEEP_CAPS[w.toUpperCase()] ? w.toUpperCase() : w.charAt(0).toUpperCase() + w.slice(1); }).join(" ");
+  }
+  function viaPayPal(t) { return !!(t && ((t.bank && t.bank.pp) || PP_RE.test((t.what || "") + " " + ((t.bank && (t.bank.desc || t.bank.was)) || "")))); }
+  /* the words a charge's text boils down to (store name and the bank's text, both cleaned) */
+  function chargeTokens(t) { return descClean(t.what).tk.concat(descClean((t.bank && t.bank.desc) || "").tk); }
+  var NAME_SKIP = ["the", "plus", "pro", "premium", "membership", "subscription", "subscriptions", "store", "my", "bill", "payment", "monthly", "yearly", "annual", "app", "service", "inc", "llc", "corp", "com"];
+  /* does a name (or "shows on your statement as" entry) appear in a charge? whole words only: "x" matches "X CORP", never "XBOX";
+     a longer first word may run into the next one ("spotify" in "SPOTIFYUSA") */
+  function nameHit(name, tks) {
+    var nt = descClean(name).tk, sig = nt.filter(function (w) { return NAME_SKIP.indexOf(w) < 0; });
+    var w = (sig.length ? sig : nt)[0];
+    if (!w) return false;
+    var whole = nt.join("");
+    for (var i = 0; i < tks.length; i++) {
+      if (tks[i] === w || (w.length >= 4 && tks[i].indexOf(w) === 0)) return true;
+      if (nt.length > 1 && whole.length >= 5 && tks[i] === whole) return true; /* "YOUTUBETV" for YouTube TV */
+    }
+    return false;
+  }
+  /* what matches a subscription or bill: the old literal statement names / learned pattern (kept), or its name and statement names, cleaned */
+  function subMatcher(x) {
+    var re = (mtAlts(x.mt).length || x.m || x.via === "apple") ? subRe(x) : null;
+    var names = [x.n].concat(String(x.mt || "").split(",")).map(function (q) { return String(q || "").trim(); }).filter(Boolean);
+    if (!re && !names.length) return null;
+    return {
+      test: function (text, t) {
+        if (re && re.test(text)) return true;
+        var tks = t ? chargeTokens(t) : descClean(text).tk;
+        return names.some(function (q) { return nameHit(q, tks); });
+      }
+    };
+  }
   function chargeText(t) { return (t.what || "") + " " + ((t.bank && t.bank.key) || "") + " " + ((t.bank && t.bank.desc) || ""); }
   /* how far a charge may be from the price it's compared with and still be the same subscription: 25% (60% if it varies), at least $1 */
   function tolC(it) { return Math.max(100, Math.round(it.ref * (it.vary ? 0.6 : 0.25))); }
@@ -1913,7 +1976,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     list.forEach(function (t) {
       var text = chargeText(t), c = toC(t.amt), best = null, bd = Infinity, zero = null, any = false;
       items.forEach(function (it) {
-        if (!it.re || !it.re.test(text)) return;
+        if (!it.re || !it.re.test(text, t)) return;
         any = true;
         if (it.ref > 0) { var d = Math.abs(c - it.ref); if (d <= tolC(it) && d < bd) { bd = d; best = it; } }
         else if (!zero) zero = it;
@@ -1928,7 +1991,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       var g = 0;
       while (g++ < 60) {
         var lastT = it.ch[it.ch.length - 1], due = stepCad(lastT.d, cadence(it.ch, it.cyc)), pick = null, pd = 99;
-        un.forEach(function (t) { if (t.d <= lastT.d || !it.re.test(chargeText(t))) return; var dd = Math.abs(daysBetween(due, t.d)); if (dd <= 7 && dd < pd) { pd = dd; pick = t; } });
+        un.forEach(function (t) { if (t.d <= lastT.d || !it.re.test(chargeText(t), t)) return; var dd = Math.abs(daysBetween(due, t.d)); if (dd <= 7 && dd < pd) { pd = dd; pick = t; } });
         if (!pick) break;
         it.ch.push(pick); un.splice(un.indexOf(pick), 1);
       }
@@ -2003,8 +2066,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   /* every subscription and bill, matched to its charges, with price, rhythm and next date */
   function recurItems() {
     var t0 = today(), items = [];
-    (S.subs || []).forEach(function (x) { items.push({ kind: "sub", x: x, id: x.id, n: x.n, re: subRe(x), refC: toC(x.amt), cyc: x.cyc === "yearly" ? "yearly" : "monthly", st: x.st, vary: !!x.vary }); });
-    (S.bills || []).forEach(function (b) { items.push({ kind: "bill", x: b, id: b.id, n: b.n, re: subRe({ n: b.n, m: b.m || "" }), refC: toC(b.amt), cyc: "monthly", st: "active", vary: !!b.vary, day: b.day }); });
+    (S.subs || []).forEach(function (x) { items.push({ kind: "sub", x: x, id: x.id, n: x.n, re: subMatcher(x), refC: toC(x.amt), cyc: x.cyc === "yearly" ? "yearly" : "monthly", st: x.st, vary: !!x.vary }); });
+    (S.bills || []).forEach(function (b) { items.push({ kind: "bill", x: b, id: b.id, n: b.n, re: subMatcher({ n: b.n, m: b.m || "", mt: b.mt || "" }), refC: toC(b.amt), cyc: "monthly", st: "active", vary: !!b.vary, day: b.day }); });
     var un = matchCharges(items);
     items.forEach(function (it) { describeItem(it, t0); });
     items.un = un;
@@ -2047,17 +2110,20 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function merchantName(t) { return String(t.what || (t.bank && t.bank.name) || "").trim(); }
   function merchantKey(t) { return payeeKey(merchantName(t)); }
+  /* the same store however the bank wrapped it: "PAYPAL *NETFLIX.COM 402-935-7733 CA", "PP*NETFLIX" and "NETFLIX.COM" are all "netflix" */
+  function storeKey(t) { var c = descClean(merchantName(t)); if (!c.tk.length && t.bank && t.bank.desc) c = descClean(t.bank.desc); return c.tk.slice(0, 3).join(" "); }
   /* repeating charges (same place, same price, a month or a year apart) that aren't on your list yet */
   function detectSubs(items) {
     var used = {}; (items || []).forEach(function (it) { it.ch.forEach(function (t) { used[t.id] = 1; }); });
     var g = {}, skip = S.subSkip || [], t0 = today(), out = [];
     S.tx.forEach(function (t) {
       if (!(toC(t.amt) > 0) || used[t.id]) return;
-      var k = merchantKey(t); if (!k || k.length < 3) return;
+      var k = storeKey(t); if (!k || k.length < 3) return;
       (g[k] = g[k] || []).push(t);
     });
     Object.keys(g).forEach(function (k) {
-      if (skip.indexOf(k) >= 0) return;
+      /* "Not recurring" taps saved by older versions used the raw key */
+      if (skip.indexOf(k) >= 0 || g[k].some(function (t) { return skip.indexOf(merchantKey(t)) >= 0; })) return;
       var byDay = [], seen = {};
       g[k].slice().sort(byDateAsc).forEach(function (t) { if (!seen[t.d]) { seen[t.d] = 1; byDay.push(t); } });
       if (byDay.length < 2) return;
@@ -2072,7 +2138,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       if (daysBetween(last.d, t0) > (cyc === "monthly" ? 70 : 400)) return;
       var cad = cadence(recent, cyc), next = stepCad(last.d, cad), gg = 0;
       while (next < t0 && gg++ < 40) next = stepCad(next, cad);
-      out.push({ k: k, name: merchantName(last).slice(0, 40), c: toC(last.amt), cyc: cyc, next: next, n: byDay.length, lastD: last.d });
+      out.push({ k: k, name: (merchantName(last) || (last.bank && last.bank.desc) || "").slice(0, 60), c: toC(last.amt), cyc: cyc, next: next, n: byDay.length, lastD: last.d, pp: byDay.some(viaPayPal) });
     });
     return out;
   }
@@ -2160,6 +2226,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   var KEEP_CAPS = { USA: 1, LLC: 1, INC: 1, ATM: 1, AMC: 1, IRS: 1, ACH: 1, POS: 1, DMV: 1, KFC: 1, CVS: 1, BP: 1, TJ: 1, SQ: 1, PP: 1, TST: 1, DD: 1, UPS: 1, USPS: 1, ATT: 1, HBO: 1, NBA: 1, NFL: 1, ESPN: 1, IHOP: 1 };
   function prettyName(s) {
     s = String(s || "").trim();
+    /* PayPal wrappers, phone numbers and web endings: just the store ("PAYPAL *NETFLIX.COM 402-935-7733 CA" -> "Netflix") */
+    if (!/^pay\s?pal( funding| to bank| refund|:)/i.test(s) && (PP_RE.test(s) || /\d{3}[-. ]\d{3}[-. ]\d{4}|\.COM\b/i.test(s))) return (/^refund: /i.test(s) ? "Refund: " : "") + cleanMerchant(s.replace(/^refund: /i, ""));
     if (!s || /[a-z]/.test(s) || !/[A-Z]{2}/.test(s)) return s;
     return s.split(/(\s+)/).map(function (w) {
       var m = /^([^A-Z]*)([A-Z][A-Z']*)(.*)$/.exec(w);
@@ -2292,12 +2360,12 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var price = it.varies ? "Varies" : fmtC(it.priceC), stTag = "";
     if (it.kind === "sub" && it.st !== "active") stTag = '<span class="k-tag ' + (it.st === "failing" ? "bad" : it.st === "cancel" ? "warn" : "") + '">' + esc(SUB_ST[it.st]) + "</span> ";
     var last = it.lastD ? "last " + fmtC(it.lastC) + " on " + dayShort(it.lastD) : (it.refC > 0 ? "no charge seen yet" : "price not known yet");
-    var sub = it.cad.lbl + " · " + last;
+    var sub = it.cad.lbl + " · " + last, ppTag = it.ch && it.ch.length && viaPayPal(it.ch[it.ch.length - 1]) ? '<span class="k-tag pp">via PayPal</span> ' : "";
     var when = it.st === "ended" ? "Ended" : it.late ? "Due " + dayShort(it.next) : (it.days >= 0 && it.days <= 7 ? relDay(it.next) : dayShort(it.next));
     var small = it.varies && it.minC !== undefined ? fmtC(it.minC) + "–" + fmtC(it.maxC) : (it.st === "ended" || it.late ? when : "Next " + when);
     return '<button class="k-row" type="button" data-act="' + (it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(it.id) + '"' + (it.st === "ended" ? ' style="opacity:.55"' : "") + '>' +
       '<span class="k-ic' + (it.late || it.st === "failing" ? " warn" : "") + '">' + kico(it.kind === "sub" ? "sub" : "bill") + "</span>" +
-      '<span class="k-mid"><span class="k-t">' + esc(it.n) + '</span><span class="k-s k-wrap">' + stTag + esc(sub) + "</span>" + (it.varies ? '<span class="k-s">Next ' + esc(when) + "</span>" : "") + "</span>" +
+      '<span class="k-mid"><span class="k-t">' + esc(it.n) + '</span><span class="k-s k-wrap">' + stTag + ppTag + esc(sub) + "</span>" + (it.varies ? '<span class="k-s">Next ' + esc(when) + "</span>" : "") + "</span>" +
       '<span class="k-amt num">' + price + "<small>" + esc(small) + "</small></span></button>";
   }
   function renderBillsCard() {
@@ -2462,16 +2530,45 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
 
   /* ---------- Bills ---------- */
+  /* the budget the Bills screen compares against: your "Subscriptions" category's monthly limit (the same number as in Settings > Monthly budgets) */
+  function subBudget() { return S.budgets.filter(function (b) { return /^subscriptions?$/i.test(String(b.n).trim()); })[0] || S.budgets.filter(function (b) { return /subscri/i.test(b.n); })[0] || null; }
+  function setSubBudgetC(c) {
+    var b = subBudget();
+    if (!b) { b = { n: "Subscriptions", l: 0 }; S.budgets.push(b); }
+    b.l = fromC(c);
+    return b;
+  }
+  function openSubBudget() {
+    var b = subBudget(), items = REC || recurItems(), tot = recurTotals(items);
+    editId = "sub-budget";
+    openSheet('<div class="k-sh"><h2>Subscriptions budget</h2><button class="k-link" type="button" data-act="sheetclose">Cancel</button></div>' +
+      '<form class="k-form" data-form="subbud"><label class="k-f"><span>Monthly budget</span><input class="k-in k-bigin num" name="amt" inputmode="decimal" autocomplete="off" placeholder="0.00" value="' + (b && toC(b.l) > 0 ? moneyIn(toC(b.l)) : "") + '" autofocus></label>' +
+      '<p class="k-note">Your monthly bills come to <b class="num">' + fmtC(tot.moC) + "</b> right now. This is the same limit as the " + esc(b ? b.n : "Subscriptions") + " category in Settings &gt; Monthly budgets.</p>" +
+      '<p class="k-msg bad" data-msg></p><div class="k-btns"><button class="k-btn" type="submit">Save</button></div></form>', "Subscriptions budget");
+  }
+  function subBudgetSubmit(form) {
+    var c = parseC(form.elements.amt.value);
+    if (!isFinite(c) || c <= 0) { sheetMsg(form, "Enter a monthly amount above $0.00, like 45.00."); return; }
+    var b = setSubBudgetC(c);
+    closeSheet(); touch(); renderAll(); beep("coin"); toast(b.n + " budget: " + fmtC(c) + " a month");
+  }
   function renderBillsScr() {
     var items = REC || recurItems(), tot = recurTotals(items), al = recurAlerts(items);
     var nMo = items.filter(function (it) { return isLive(it) && it.cad.k === "monthly"; }).length;
-    $("sbSum").innerHTML = '<div class="k-kv">' +
-      '<div><span class="k-lab">Monthly total</span><b class="num">' + fmtC(tot.moC) + "</b><small>" + nMo + " monthly bill" + (nMo === 1 ? "" : "s") + "</small></div>" +
-      '<div><span class="k-lab">Due in the next 7 days</span><b class="num">' + fmtC(tot.weekC) + "</b><small>" + tot.nWeek + " charge" + (tot.nWeek === 1 ? "" : "s") + "</small></div>" +
-      '<div><span class="k-lab">Every year</span><b class="num">' + fmtC(tot.yrC) + "</b><small>yearly ones</small></div>" +
-      '<div><span class="k-lab">All of them, per year</span><b class="num">' + fmtC(tot.perYearC) + "</b><small>each price × its charges a year</small></div></div>" +
-      (tot.nVary ? '<p class="k-note" style="margin-top:12px">' + tot.nVary + " vary from charge to charge; totals use the latest charge.</p>" : "") +
-      (tot.cancelC ? '<p class="k-note" style="margin-top:8px">Marked to cancel: ' + fmtC(tot.cancelC) + " a year once they stop.</p>" : "");
+    var sb = subBudget(), bl = sb ? toC(sb.l) : 0, pr = bl > 0 ? tot.moC / bl : 0;
+    var budH = sb && bl > 0
+      ? '<button class="k-budrow" type="button" data-act="subbudget" aria-label="Change the subscriptions budget, now ' + esc(fmtC(bl)) + '">' +
+        '<span class="k-budtop"><span><b class="num">' + fmtC(tot.moC) + '</b> <span class="k-of2">of <span class="num">' + fmtC(bl) + "</span> budget</span></span>" +
+        '<span class="k-budleft num' + (tot.moC > bl ? " neg" : "") + '">' + (tot.moC > bl ? fmtC(tot.moC - bl) + " over" : fmtC(bl - tot.moC) + " left") + "</span></span>" +
+        '<span class="k-bar' + (pr > 1 ? " over" : pr >= 0.85 ? " warn" : "") + '" role="img" aria-label="' + pctTxt(tot.moC, bl) + ' of the budget"><i style="width:' + (Math.min(1, pr) * 100).toFixed(2) + '%"></i></span>' +
+        '<span class="k-s">' + nMo + " monthly bill" + (nMo === 1 ? "" : "s") + " · tap to change the budget</span></button>"
+      : '<div class="k-budrow"><span class="k-budtop"><span><b class="num">' + fmtC(tot.moC) + '</b> <span class="k-of2">a month · ' + nMo + " monthly bill" + (nMo === 1 ? "" : "s") + '</span></span><button class="k-link" type="button" data-act="subbudget">Set a budget</button></span></div>';
+    $("sbSum").innerHTML = '<div class="k-ch"><h2>Monthly total</h2></div>' + budH +
+      '<div class="k-kv k-kv3" style="margin-top:16px;grid-template-columns:repeat(auto-fit,minmax(min(5.2rem,100%),1fr))">' +
+      '<div><span class="k-lab">Next 7 days</span><b class="num">' + fmtC(tot.weekC) + "</b><small>" + tot.nWeek + " charge" + (tot.nWeek === 1 ? "" : "s") + "</small></div>" +
+      '<div><span class="k-lab">Yearly ones</span><b class="num">' + fmtC(tot.yrC) + "</b><small>once a year</small></div>" +
+      '<div><span class="k-lab">All, per year</span><b class="num">' + fmtC(tot.perYearC) + "</b><small>every charge</small></div></div>" +
+      (tot.nVary || tot.cancelC ? '<p class="k-note" style="margin-top:12px">' + (tot.nVary ? tot.nVary + " vary from charge to charge; totals use the latest charge. " : "") + (tot.cancelC ? "Marked to cancel: " + fmtC(tot.cancelC) + " a year once they stop." : "") + "</p>" : "");
     var box = $("sbAlerts");
     box.hidden = !al.length;
     box.innerHTML = '<div class="k-ch"><h2>Needs you</h2></div>' + al.map(function (a) {
@@ -2481,13 +2578,14 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var live = items.filter(function (it) { return it.st !== "ended"; }).sort(function (a, b) { return (a.late ? -1 : 0) - (b.late ? -1 : 0) || (a.next < b.next ? -1 : a.next > b.next ? 1 : 0); });
     var ended = items.filter(function (it) { return it.st === "ended"; });
     $("sbList").innerHTML = '<div class="k-ch"><h2>Upcoming</h2><span class="k-aux">by next charge</span></div>' +
-      (live.length ? '<div class="k-list">' + live.map(function (it) { return billRow(it, true); }).join("") + "</div>" : '<p class="k-empty">Nothing yet. Add a subscription below, or connect your bank and repeating charges show up under Spotted.</p>') +
+      (live.length ? '<div class="k-list">' + live.map(function (it) { return billRow(it, true); }).join("") + "</div>" : '<p class="k-empty">Nothing yet. Add one below, or add a repeating bank charge from Looks like a subscription.</p>') +
       (ended.length ? '<div class="k-dayh" style="padding-top:16px">Ended</div><div class="k-list">' + ended.map(function (it) { return billRow(it, true); }).join("") + "</div>" : "");
     var found = detectSubs(items);
-    $("sbFound").innerHTML = '<div class="k-ch"><h2>Spotted at your bank</h2></div>' + (found.length ? '<div class="k-list">' + found.map(function (b) {
-      return '<div class="k-spot"><div class="k-row"><span class="k-ic">' + kico("sub") + '</span><span class="k-mid"><span class="k-t">' + esc(prettyName(b.name)) + '</span><span class="k-s">' + (b.cyc === "yearly" ? "Yearly" : "Monthly") + " \u00b7 seen " + b.n + " times \u00b7 last " + esc(dayShort(b.lastD)) + '</span></span><span class="k-amt num">' + fmtC(b.c) + "</span></div>" +
-        '<div class="k-btns inline"><button class="k-btn sm" type="button" data-act="sbadd" data-k="' + esc(b.k) + '" data-n="' + esc(prettyName(b.name)) + '" data-amt="' + fromC(b.c) + '" data-cyc="' + b.cyc + '" data-next="' + b.next + '">Add</button><button class="k-btn ghost sm" type="button" data-act="sbskip" data-k="' + esc(b.k) + '">Not recurring</button></div></div>';
-    }).join("") + "</div>" : '<p class="k-empty">' + (BANK.st && BANK.st.connected ? "Nothing new. Charges that repeat show up here after the second one." : "Connect your bank in Settings and repeating charges show up here.") + "</p>");
+    $("sbFound").innerHTML = '<div class="k-ch"><h2>Looks like a subscription</h2>' + (found.length ? '<span class="k-aux">from your bank</span>' : "") + "</div>" + (found.length ? '<div class="k-list">' + found.map(function (b) {
+      var nm = prettyName(b.name);
+      return '<div class="k-spot"><div class="k-row"><span class="k-ic">' + kico("sub") + '</span><span class="k-mid"><span class="k-t">' + esc(nm) + '</span><span class="k-s k-wrap">' + (b.pp ? '<span class="k-tag pp">via PayPal</span> ' : "") + (b.cyc === "yearly" ? "Yearly" : "Monthly") + " \u00b7 " + b.n + " charges \u00b7 last " + esc(dayShort(b.lastD)) + '</span></span><span class="k-amt num">' + fmtC(b.c) + "</span></div>" +
+        '<div class="k-btns inline"><button class="k-btn sm" type="button" data-act="sbadd" data-k="' + esc(b.k) + '" data-n="' + esc(nm) + '" data-amt="' + fromC(b.c) + '" data-cyc="' + b.cyc + '" data-next="' + b.next + '" aria-label="Add ' + esc(nm) + '">Add</button><button class="k-btn ghost sm" type="button" data-act="sbskip" data-k="' + esc(b.k) + '">Not a subscription</button></div></div>';
+    }).join("") + "</div>" : '<p class="k-empty">' + (BANK.st && BANK.st.connected ? "Nothing new. A charge that repeats about monthly shows up here after its second time, PayPal ones included." : "Once your bank is synced (Settings), charges that repeat show up here to add in one tap.") + "</p>");
   }
 
   /* ---------- Settings ---------- */
@@ -2653,7 +2751,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
   }
   function chargeList(it) {
     if (!it || !it.ch || !it.ch.length) return '<p class="k-note">No matching charge seen yet. Once one comes in from your bank, its exact amount becomes the price.</p>';
-    return '<div class="k-kvlist">' + it.ch.slice(-6).reverse().map(function (t) { return "<div><span>" + esc(dayShort(t.d)) + (isPend(t) ? " (pending)" : "") + "</span><span>" + fmtC(toC(t.amt)) + "</span></div>"; }).join("") + "</div>";
+    return '<div class="k-kvlist">' + it.ch.slice(-6).reverse().map(function (t) { return "<div><span>" + esc(dayShort(t.d)) + (isPend(t) ? " (pending)" : "") + (viaPayPal(t) ? ' <span class="k-tag pp">via PayPal</span>' : "") + '</span><span class="num">' + fmtC(toC(t.amt)) + "</span></div>"; }).join("") + "</div>";
   }
   function openSub(id) {
     var x = id ? subById(id) : null, it = x && REC ? REC.filter(function (i) { return i.kind === "sub" && i.id === id; })[0] : null, lk = x ? subLink(x) : "";
@@ -2668,8 +2766,8 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       '<label class="k-f"><span>Status</span><select class="k-sel" name="st">' + opts(Object.keys(SUB_ST).map(function (k) { return [k, SUB_ST[k]]; }), x ? x.st : "active") + "</select></label></div>" +
       swRow("subvary", x ? !!x.vary : false, "Price varies", "Like a utility bill: shows the range instead of one price.") +
       '<label class="k-f"><span>Note</span><input class="k-in" name="note" autocomplete="off" value="' + esc(x ? x.note || "" : "") + '"></label>' +
-      '<label class="k-f"><span>Shows on your statement as (optional)</span><input class="k-in" name="mt" autocomplete="off" autocapitalize="characters" value="' + esc(x ? x.mt || "" : "") + '" placeholder="NFLX, PAYPAL *NETFLIX"></label>' +
-      '<p class="k-note">Bank and PayPal charges are matched to this by name and price. Leave it empty to match the name above; separate several with commas.</p>' +
+      '<label class="k-f"><span>Shows on your statement as (optional)</span><input class="k-in" name="mt" autocomplete="off" autocapitalize="characters" value="' + esc(x ? x.mt || "" : "") + '" placeholder="NFLX"></label>' +
+      '<p class="k-note">Bank charges are matched by name and price, PayPal ones too (PAYPAL *NETFLIX counts as Netflix). Only fill this in if your bank shows a different name; separate several with commas.</p>' +
       (it && it.lastD ? '<p class="k-note">Ride Quest uses the latest real charge as the price and predicts the next date from the rhythm of your charges.</p>' : "") +
       (x ? '<span class="k-lab">Recent charges</span>' + chargeList(it) : "") +
       '<p class="k-msg bad" data-msg></p><div class="k-btns"><button class="k-btn" type="submit">Save</button>' + (lk ? '<a class="k-btn ghost" href="' + esc(lk) + '" target="_blank" rel="noopener" style="text-align:center;text-decoration:none;display:grid;place-items:center">Manage</a>' : "") +
@@ -3957,6 +4055,59 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
       ok("Statement names with * and / are taken literally, not as patterns", subRe({ n: "x", mt: "PAYPAL *STRMCO" }).test("PAYPAL *STRMCO") && !subRe({ n: "x", mt: "PAYPAL *STRMCO" }).test("PAYPA STRMCO"));
       ok("A saved subscription without a statement name still loads and matches by its name", cleanSub({ n: "Gym Club", amt: 1 }).mt === "" && subRe(cleanSub({ n: "Gym Club", amt: 1 })).test("GYM CLUB 123"));
 
+      /* ===== PayPal charges on the bank, cleaned and matched to bills (made-up stores) ===== */
+      ok("PayPal wrappers, phone, .COM and state code are stripped: PAYPAL *NETFLIX.COM 402-935-7733 CA -> Netflix",
+        cleanMerchant("PAYPAL *NETFLIX.COM 402-935-7733 CA") === "Netflix" && cleanMerchant("PP*NETFLIX") === "Netflix" && cleanMerchant("PAYPAL INST XFER NETFLIX") === "Netflix" &&
+        cleanMerchant("PAYPAL *NETFLIX") === "Netflix" && cleanMerchant("NETFLIX PAYPAL") === "Netflix" && cleanMerchant("PAYPAL *X CORP") === "X" && cleanMerchant("PAYPAL INST XFER") === "PayPal",
+        [cleanMerchant("PAYPAL *NETFLIX.COM 402-935-7733 CA"), cleanMerchant("PP*NETFLIX"), cleanMerchant("PAYPAL INST XFER NETFLIX"), cleanMerchant("PAYPAL *X CORP")]);
+      ok("ACH style PayPal line keeps only the store (the name on the account is dropped)", cleanMerchant("PAYPAL DES:INST XFER ID:GAMESHOP COM INDN:SAM SAMPLE CO ID:PAYPALSI77 WEB") === "Gameshop",
+        cleanMerchant("PAYPAL DES:INST XFER ID:GAMESHOP COM INDN:SAM SAMPLE CO ID:PAYPALSI77 WEB"));
+      ok("Bank lines without PayPal look the same as before", prettyName("SAFEWAY 1460") === "Safeway 1460" && prettyName("PayPal funding: Netflix") === "PayPal funding: Netflix" && prettyName("PAYPAL *NETFLIX.COM 402-935-7733 CA") === "Netflix",
+        [prettyName("SAFEWAY 1460"), prettyName("PAYPAL *NETFLIX.COM 402-935-7733 CA")]);
+      S = norm({});
+      var pA = addDays(t0, -36), pB = addDays(t0, -6);
+      S.subs = [cleanSub({ n: "Netflix", amt: 15.49, cyc: "monthly", next: t0 }), cleanSub({ n: "X Subscription", amt: 8, cyc: "monthly", next: t0 }),
+        cleanSub({ n: "Spotify", amt: 11.99, cyc: "monthly", next: t0 }), cleanSub({ n: "Max", amt: 9.99, cyc: "monthly", next: t0 })];
+      [[pA, 15.49, "PAYPAL *NETFLIX.COM 402-935-7733 CA"], [pB, 15.49, "PP*NETFLIX"], [addDays(t0, -3), 15.49, "PAYPAL INST XFER NETFLIX"],
+        [pA, 8, "PAYPAL *XBOX"], [pB, 8, "PAYPAL *X CORP"], [pB, 11.99, "SPOTIFYUSA"], [pB, 9.99, "MAXWELL HARDWARE"], [addDays(t0, -2), 80, "PAYPAL *NETFLIX GIFT"]].forEach(function (x, k) {
+        S.tx.push({ id: "pq" + k, d: x[0], cat: "Subscriptions", what: x[2], amt: x[1], acct: "checking", bank: { id: "s:pq" + k, key: payeeKey(x[2]), org: "SoFi" } });
+      });
+      items = recurItems();
+      var byN = {}; items.forEach(function (i) { byN[i.n] = i.ch.map(function (t) { return t.id; }).sort().join(); });
+      ok("A bill named Netflix matches PAYPAL *NETFLIX.COM 402-935-7733 CA, PP*NETFLIX and PAYPAL INST XFER NETFLIX with no setup", byN["Netflix"] === "pq0,pq1,pq2", byN);
+      ok("Price tolerance still holds: an $80.00 PayPal Netflix charge isn't the $15.49 plan", byN["Netflix"].indexOf("pq7") < 0, byN);
+      ok("Whole words only: PAYPAL *XBOX is not X Subscription, PAYPAL *X CORP is", byN["X Subscription"] === "pq4", byN);
+      ok("Spotify matches SPOTIFYUSA; Max does not match MAXWELL HARDWARE", byN["Spotify"] === "pq5" && byN["Max"] === "", byN);
+      var nfx = items.filter(function (i) { return i.n === "Netflix"; })[0];
+      ok("Matched PayPal charges carry a via PayPal tag", viaPayPal(nfx.ch[0]) && billRow(nfx, true).indexOf("via PayPal") >= 0 && !viaPayPal({ what: "SAFEWAY 1460", bank: {} }));
+      /* SoFi only (no PayPal in SimpleFIN): PayPal purchases come in as purchases, not transfers */
+      S = norm({}); BANK.st = null;
+      bankImport({ accounts: [acc("sofi", "Checking", "SoFi", [tx("x1", 3, -15.49, "PAYPAL INST XFER NETFLIX"), tx("x2", 2, -6.5, "PAYPAL *GAMESHOP 402-935-7733 CA"), tx("x3", 1, 50, "PAYPAL TRANSFER")])] });
+      ok("Without PayPal synced, SoFi's PAYPAL INST XFER NETFLIX is a $15.49 purchase (not skipped as a transfer)", S.tx.some(function (t) { return t.amt === 15.49 && prettyName(t.what) === "Netflix"; }) && sumTxC(S.tx) === 2199 && !S.ppOn, S.tx);
+      ok("Money in from PayPal is still not counted as a purchase", !S.tx.some(function (t) { return toC(t.amt) < 0; }));
+      S = norm({ bankSkip: ["sofi:y1"] }); BANK.st = null;
+      var sofiY = function () { return { accounts: [acc("sofi", "Checking", "SoFi", [tx("y1", 40, -9.99, "PAYPAL INST XFER GAMESHOP")])] }; };
+      bankImport(sofiY());
+      ok("A line you deleted stays deleted on a normal sync", S.tx.length === 0);
+      bankImport(sofiY(), { ppBack: 1, oldBefore: day(10) });
+      ok("The one-time look back brings in a PayPal purchase older versions skipped", S.tx.length === 1 && S.tx[0].amt === 9.99 && S.bankSkip.indexOf("sofi:y1") < 0, S.tx);
+      S = norm({}); BANK.st = null;
+      bankImport({ accounts: [acc("sofi", "Checking", "SoFi", [tx("z1", 40, -4.25, "COFFEE HUT")])] }, { ppBack: 1, oldBefore: day(10) });
+      ok("The look back adds nothing but PayPal purchases from before the usual window", S.tx.length === 0, S.tx);
+      /* suggestions */
+      S = norm({});
+      [[addDays(t0, -64), "PAYPAL *STREAMBOX.COM 402-935-7733 CA"], [addDays(t0, -33), "PP*STREAMBOX"], [addDays(t0, -3), "PAYPAL INST XFER STREAMBOX"]].forEach(function (x, k) {
+        S.tx.push({ id: "sg" + k, d: x[0], cat: "Subscriptions", what: x[1], amt: 12.99, acct: "checking", bank: { id: "s:sg" + k, key: payeeKey(x[1]), org: "SoFi" } });
+      });
+      var fd = detectSubs(recurItems());
+      ok("Repeating PayPal charges on the bank are offered as one subscription named Streambox", fd.length === 1 && prettyName(fd[0].name) === "Streambox" && fd[0].c === 1299 && fd[0].pp && fd[0].cyc === "monthly", fd);
+      /* the subscriptions budget */
+      S = norm({});
+      var sbd = subBudget();
+      ok("The subscriptions budget is the Subscriptions category limit, set to the cent", !!sbd && setSubBudgetC(4567) === sbd && sbd.l === 45.67 && toC(subBudget().l) === 4567, sbd);
+      S.budgets = S.budgets.filter(function (b) { return !/subscri/i.test(b.n); });
+      ok("No budget yet: Set a budget adds one", subBudget() === null && setSubBudgetC(3001).n === "Subscriptions" && toC(subBudget().l) === 3001);
+
       /* ===== the car goal ===== */
       S = norm({ goal: { name: "Dream car", amount: 20000, by: "" }, start: { savings: 8120.55, checking: 0, cash: 0, paypal: 0 } }); BANK.st = null;
       var g = goalInfo();
@@ -4024,6 +4175,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "delrec") arm(t, function () { deleteRec(id); closeSheet(); touch(); renderAll(); toast("Deleted"); });
     else if (a === "subedit") openSub(id);
     else if (a === "subnew") openSub(null);
+    else if (a === "subbudget") openSubBudget();
     else if (a === "billedit") openBill(id);
     else if (a === "subvary") t.setAttribute("aria-checked", t.getAttribute("aria-checked") === "true" ? "false" : "true");
     else if (a === "sbdel") arm(t, function () { S.subs = (S.subs || []).filter(function (x) { return x.id !== id; }); closeSheet(); touch(); renderAll(); toast("Removed"); });
@@ -4031,7 +4183,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     else if (a === "sbadd") {
       var nm2 = t.dataset.n;
       S.subs = S.subs || [];
-      if (!S.subs.some(function (x) { return x.n.toLowerCase() === nm2.toLowerCase(); })) S.subs.push(cleanSub({ n: nm2, amt: parseFloat(t.dataset.amt) || 0, cyc: t.dataset.cyc, next: t.dataset.next, m: t.dataset.k }));
+      if (!S.subs.some(function (x) { return x.n.toLowerCase() === nm2.toLowerCase(); })) S.subs.push(cleanSub({ n: nm2, amt: parseFloat(t.dataset.amt) || 0, cyc: t.dataset.cyc, next: t.dataset.next, m: t.dataset.k.length >= 4 ? "\\b" + reEsc(t.dataset.k) + "\\b" : "" }));
       S.subSkip = (S.subSkip || []).concat([t.dataset.k]).slice(-200); touch(); renderAll(); beep("coin"); toast("Added: " + nm2);
     }
     else if (a === "sbskip") { S.subSkip = (S.subSkip || []).concat([t.dataset.k]).slice(-200); touch(); renderAll(); }
@@ -4102,7 +4254,7 @@ body.glitch h1, body.glitch .lu h2, body.glitch .banner b { animation: glitch .5
     var f = e.target, k = f.dataset && f.dataset.form;
     if (k) {
       e.preventDefault();
-      try { if (k === "qa") qaSubmit(f); else if (k === "edit") editSubmit(f); else if (k === "sub") subSubmit(f); else if (k === "bill") billSubmit(f); }
+      try { if (k === "qa") qaSubmit(f); else if (k === "edit") editSubmit(f); else if (k === "sub") subSubmit(f); else if (k === "bill") billSubmit(f); else if (k === "subbud") subBudgetSubmit(f); }
       catch (err) { toast("Error: " + (err && err.message), true); diag("submit-exception", err && (err.stack || err.message)); }
     }
   });
