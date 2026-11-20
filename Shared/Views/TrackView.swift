@@ -31,6 +31,9 @@ struct TrackView: View {
     @State private var probe: RoutePoint?
     @State private var nav = Navigator.shared
     @State private var showDirections = false
+    #if TRACK_APP
+    @State private var showPins = false
+    #endif
     /// The live line and its speed colors, rebuilt once per new GPS point instead of on every map frame.
     @State private var liveRoute = LiveRouteCache()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -55,6 +58,9 @@ struct TrackView: View {
                 DirectionsSheet(nav: nav, origin: tracker.points.last?.coordinate, onGo: startNavigation)
                     .presentationDragIndicator(.visible)
             }
+            #if TRACK_APP
+            .sheet(isPresented: $showPins) { PinnedPlacesView() }
+            #endif
             .onAppear {
                 // Screenshots (-demo -nav): follow a fake route along the demo drive.
                 if Navigator.demo, nav.phase == .idle {
@@ -74,6 +80,10 @@ struct TrackView: View {
                 mapHero
                 VStack(alignment: .leading, spacing: Theme.gap + 4) {
                     if tracker.denied { deniedCard }
+                    #if TRACK_APP
+                    PinnedChipsRow(origin: tracker.lastKnownCoordinate, onGo: goToPin, onManage: { showPins = true })
+                    PinSuggestionCard(activities: Array(activities.prefix(150)))
+                    #endif
                     kindPicker
                     startButton
                     Label("Keeps recording with your phone locked", systemImage: "lock.fill")
@@ -184,6 +194,22 @@ struct TrackView: View {
         chaseCam = true
         withAnimation(.snappy) { nav.go() }
     }
+
+    #if TRACK_APP
+    /// A pinned chip: plan the drive from here and go (directions + recording). Falls back to the Directions
+    /// sheet if there's no route, and asks for location first if it was never granted.
+    private func goToPin(_ p: NavPlace) {
+        guard tracker.canTrack else {
+            if tracker.denied { showDirections = true } else { tracker.requestPermission() }
+            return
+        }
+        nav.mode = .drive
+        Task {
+            await nav.plan(to: p, from: tracker.lastKnownCoordinate)
+            if nav.phase == .preview { startNavigation() } else { showDirections = true }
+        }
+    }
+    #endif
 
     private var deniedCard: some View {
         GlassCard {
@@ -681,6 +707,10 @@ struct TrackView: View {
         // If the motion chip strongly disagrees (e.g. you picked Walk but drove), switch it; you can change it back.
         if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
             && ActivityKind.available.contains(suggestion) { a.kind = suggestion }
+        #if TRACK_APP
+        // Starts and ends at pinned places: name it ("Home → Work") unless it already has a name.
+        if a.title.isEmpty, let t = CommuteStore.autoTitle(a.route) { a.title = t }
+        #endif
         context.insert(a)
         try? context.save()
         UINotificationFeedbackGenerator().notificationOccurred(.success)

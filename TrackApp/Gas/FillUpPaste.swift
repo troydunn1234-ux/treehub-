@@ -109,9 +109,9 @@ enum FillUpPaste {
                 switch (before, after) {
                 case let (b?, a?) where a > b:
                     d = noon(b.addingTimeInterval(a.timeIntervalSince(b) / 2), calendar)
-                case let (b?, _):
+                case (let b?, _):
                     d = calendar.date(byAdding: .day, value: 1, to: b).map { min($0, now) }
-                case let (nil, a?):
+                case (nil, let a?):
                     d = calendar.date(byAdding: .day, value: -1, to: a)
                 default:
                     d = noon(now, calendar)

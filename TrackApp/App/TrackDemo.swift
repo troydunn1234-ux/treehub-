@@ -62,6 +62,37 @@ enum TrackDemo {
             a.route = pts
             context.insert(a)
         }
+        // Commutes between the demo pins (made-up spots), so the Track chips and History's Commutes have data.
+        let pins = CommuteStore.demoPins
+        let legs: [(Int, Int, Int, Double)] = [(0, 0, 1, 19), (1, 1, 0, 24), (1, 0, 1, 21), (2, 1, 0, 27), (2, 0, 1, 18),
+                                                (3, 1, 2, 9), (4, 0, 1, 22)]   // (days ago, from, to, minutes)
+        for (k, l) in legs.enumerated() {
+            let from = pins[l.1].coordinate, to = pins[l.2].coordinate
+            let a = Activity()
+            a.kind = .drive
+            let day = cal.date(byAdding: .day, value: -l.0, to: now) ?? now
+            a.start = cal.date(bySettingHour: l.1 == 0 ? 8 : 17, minute: 5 + k * 3, second: 0, of: day) ?? day
+            a.end = a.start.addingTimeInterval(l.3 * 60)
+            a.movingSec = l.3 * 60 * 0.85
+            a.maxSpeed = 24
+            a.startPlace = pins[l.1].place.subtitle
+            a.endPlace = pins[l.2].place.subtitle
+            var pts: [RoutePoint] = []
+            let n = 60
+            for i in 0...n {
+                let f = Double(i) / Double(n)
+                let bend = sin(f * .pi) * 0.004
+                let loc = CLLocation(coordinate: CLLocationCoordinate2D(latitude: from.latitude + (to.latitude - from.latitude) * f + bend,
+                                                                        longitude: from.longitude + (to.longitude - from.longitude) * f - bend),
+                                     altitude: 20, horizontalAccuracy: 5, verticalAccuracy: 5,
+                                     timestamp: a.start.addingTimeInterval(l.3 * 60 * f))
+                pts.append(RoutePoint(loc))
+            }
+            a.route = pts
+            a.distanceM = Activity.stats(pts).distance
+            a.title = CommuteMath.title(from: from, to: to, pins: pins) ?? ""
+            context.insert(a)
+        }
         // Gas & MPG: one vehicle with a few full fill-ups (odometer readings), so Stats and the gas log aren't empty.
         let car = GasVehicle(name: "Daily driver")
         context.insert(car)

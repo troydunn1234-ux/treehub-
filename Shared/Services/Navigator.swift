@@ -372,6 +372,21 @@ final class Navigator {
         Self.save(favorites, "navFavorites")
     }
 
+    func clearHome() { home = nil; UserDefaults.standard.removeObject(forKey: "navHome") }
+    func clearWork() { work = nil; UserDefaults.standard.removeObject(forKey: "navWork") }
+
+    /// Stars a place under its own name (a pinned spot like "Gym"). Replaces `replacing` in place when given,
+    /// so renaming or moving a pin keeps its spot in the row.
+    func pinFavorite(_ p: NavPlace, replacing old: NavPlace? = nil) {
+        if let old, let i = favorites.firstIndex(where: { $0.id == old.id }) {
+            favorites[i] = p
+        } else if !isFavorite(p) {
+            favorites.append(p)
+            favorites = Array(favorites.prefix(20))
+        }
+        Self.save(favorites, "navFavorites")
+    }
+
     private func remember(_ p: NavPlace) {
         recents.removeAll { $0.id == p.id }
         recents.insert(p, at: 0)

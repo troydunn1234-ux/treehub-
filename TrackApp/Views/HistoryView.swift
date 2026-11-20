@@ -13,6 +13,10 @@ struct HistoryView: View {
     @State private var path = NavigationPath()
     /// Go together trips you took part in (kept on this phone).
     @ObservedObject private var groupLog = GroupHistory.shared
+    /// A trip end being pinned under a name you type ("Her place").
+    @State private var namingPin: NavPlace?
+    @State private var pinName = ""
+    @State private var pinned = 0
 
     /// One calendar week of trips, split into days, with totals for the header.
     private struct WeekGroup: Identifiable {
@@ -117,6 +121,10 @@ struct HistoryView: View {
                     // Drives: the fuel log for them is one tap away.
                     if filter == .drive { fuelRow.padding(.horizontal, Theme.pad).transition(.opacity) }
 
+                    if filter == nil || filter == .drive {
+                        CommuteSection(activities: activities).padding(.horizontal, Theme.pad)
+                    }
+
                     if filter == nil, !groupLog.trips.isEmpty {
                         togetherSection
                     }
@@ -148,7 +156,17 @@ struct HistoryView: View {
             }
             .navigationDestination(for: String.self) { route in
                 if route == "monthly" { MonthlyStatsView() }
+                else if route.hasPrefix("commute:") { CommuteDetailView(routeID: String(route.dropFirst("commute:".count))) }
             }
+            .alert(Text("Name this place"), isPresented: Binding(get: { namingPin != nil }, set: { if !$0 { namingPin = nil } })) {
+                TextField(String(localized: "Her place"), text: $pinName)
+                Button("Pin") {
+                    let n = pinName.trimmingCharacters(in: .whitespaces)
+                    if let p = namingPin, !n.isEmpty { PinTarget.custom(name: n, replacing: nil).apply(p); pinned += 1 }
+                }
+                Button("Cancel", role: .cancel) {}
+            }
+            .sensoryFeedback(.success, trigger: pinned)
             .onAppear { openPendingActivity() }
             .task {
                 // -demo -open monthly / activity / recap (simulator QA), once the demo trips are in.
@@ -302,10 +320,30 @@ struct HistoryView: View {
                 ForEach(day.items) { (a: Activity) in
                     NavigationLink(value: a.id) { TripCard(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
                         .pressable()
+                        .contextMenu { pinMenu(a) }
                         .cardAppear()
                         .transition(.opacity.combined(with: .move(edge: .bottom)))
                 }
             }
+        }
+    }
+
+    // MARK: Pin a trip's start or end
+
+    @ViewBuilder private func pinMenu(_ a: Activity) -> some View {
+        if let t = CommuteStore.trip(a) {
+            pinSubmenu(String(localized: "Pin where it started"), NavPlace(name: t.fromName, subtitle: "", coordinate: t.from))
+            pinSubmenu(String(localized: "Pin where it ended"), NavPlace(name: t.toName, subtitle: "", coordinate: t.to))
+        }
+    }
+
+    private func pinSubmenu(_ title: String, _ place: NavPlace) -> some View {
+        Menu {
+            Button { PinTarget.home.apply(place); pinned += 1 } label: { Label("Home", systemImage: "house.fill") }
+            Button { PinTarget.work.apply(place); pinned += 1 } label: { Label("Work", systemImage: "briefcase.fill") }
+            Button { pinName = ""; namingPin = place } label: { Label("Name it…", systemImage: "pencil") }
+        } label: {
+            Label(title, systemImage: "mappin.and.ellipse")
         }
     }
 
