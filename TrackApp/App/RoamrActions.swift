@@ -36,15 +36,15 @@ enum RoamrPending {
 // MARK: - Intents
 
 enum RoamrKindOption: String, AppEnum {
-    case walk, run, hike, ride, drive
+    case drive, walk, ride, hike, run
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Activity"
     static var caseDisplayRepresentations: [RoamrKindOption: DisplayRepresentation] = [
-        .walk: DisplayRepresentation(title: "Walk", image: .init(systemName: "figure.walk")),
-        .run: DisplayRepresentation(title: "Run", image: .init(systemName: "figure.run")),
-        .hike: DisplayRepresentation(title: "Hike", image: .init(systemName: "figure.hiking")),
-        .ride: DisplayRepresentation(title: "Ride", image: .init(systemName: "bicycle"), synonyms: ["Bike", "Bike ride", "Bike Ride"]),
         .drive: DisplayRepresentation(title: "Drive", image: .init(systemName: "car.fill")),
+        .walk: DisplayRepresentation(title: "Walk", image: .init(systemName: "figure.walk")),
+        .ride: DisplayRepresentation(title: "Ride", image: .init(systemName: "bicycle"), synonyms: ["Bike", "Bike ride", "Bike Ride"]),
+        .hike: DisplayRepresentation(title: "Hike", image: .init(systemName: "figure.hiking")),
+        .run: DisplayRepresentation(title: "Run", image: .init(systemName: "figure.run")),
     ]
 
     var action: RoamrAction {
@@ -60,7 +60,7 @@ enum RoamrKindOption: String, AppEnum {
 
 struct StartRoamrTrackingIntent: AppIntent {
     static var title: LocalizedStringResource = "Start Tracking"
-    static var description = IntentDescription("Opens Roamr and starts recording a walk, run, hike, ride or drive.")
+    static var description = IntentDescription("Opens Roamr and starts recording a drive, walk, ride, hike or run.")
     static var openAppWhenRun = true
 
     @Parameter(title: "Activity", default: .walk)

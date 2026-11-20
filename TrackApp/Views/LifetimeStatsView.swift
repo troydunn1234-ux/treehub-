@@ -61,8 +61,7 @@ struct LifetimeStatsView: View {
             return KindTotal(kind: k, count: list.count,
                              distance: list.reduce(0) { $0 + $1.distanceM },
                              seconds: list.reduce(0) { $0 + Self.seconds($1) })
-        }
-        .sorted { $0.distance > $1.distance }
+        }  // Roamr's kind order: Drive, Walk, Bike, Hike, Run
     }
 
     private var fastest: Activity? { activities.filter { $0.maxSpeed > 0 && $0.maxSpeed < 95 }.max { $0.maxSpeed < $1.maxSpeed } }
@@ -237,7 +236,7 @@ struct LifetimeStatsView: View {
 
     private var kindsCard: some View {
         let list = kindTotals
-        let top = list.first?.distance ?? 1
+        let top = list.map(\.distance).max() ?? 1
         return GlassCard {
             VStack(alignment: .leading, spacing: 14) {
                 SectionHeader(title: "By type", symbol: "square.grid.2x2.fill")

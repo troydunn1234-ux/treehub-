@@ -97,7 +97,7 @@ struct StatsView: View {
             guard !items.isEmpty else { return nil }
             return KindTotal(kind: k, count: items.count, distance: items.reduce(0.0) { $0 + $1.distanceM })
         }
-        return all.sorted { $0.distance > $1.distance }
+        return all  // Roamr's kind order: Drive, Walk, Bike, Hike, Run
     }
 
     private static func userUnits(_ meters: Double) -> Double {

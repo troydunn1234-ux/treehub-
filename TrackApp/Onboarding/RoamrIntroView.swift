@@ -144,10 +144,10 @@ struct RoamrIntroView: View {
         }
     }
 
-    /// Drive · Ride · Hike · Run · Walk, as small glowing chips.
+    /// Drive · Walk · Ride · Hike · Run, as small glowing chips.
     private var kindStrip: some View {
-        let kinds: [(String, LocalizedStringKey)] = [("car.fill", "Drive"), ("bicycle", "Ride"), ("figure.hiking", "Hike"),
-                                                     ("figure.run", "Run"), ("figure.walk", "Walk")]
+        let kinds: [(String, LocalizedStringKey)] = [("car.fill", "Drive"), ("figure.walk", "Walk"), ("bicycle", "Ride"),
+                                                     ("figure.hiking", "Hike"), ("figure.run", "Run")]
         return ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { ForEach(kinds.indices, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
             VStack(spacing: 8) {
