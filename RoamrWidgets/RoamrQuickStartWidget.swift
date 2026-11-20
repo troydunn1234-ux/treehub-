@@ -2,7 +2,7 @@ import AppIntents
 import SwiftUI
 import WidgetKit
 
-// Home Screen / Lock Screen widget: start mapping a drive, ride, hike, run or walk in one tap, and log a fill-up.
+// Home Screen / Lock Screen widget: start mapping a drive, walk, ride, hike or run in one tap, and log a fill-up.
 // Data-free on purpose: the extension has no App Group, so it never reads trips. Each button runs an intent from
 // TrackApp/App/RoamrActions.swift, which opens Roamr and starts recording (same path as the Control Center controls).
 
@@ -47,7 +47,7 @@ struct RoamrQuickStartWidget: Widget {
                 .widgetURL(QS.trackURL)
         }
         .configurationDisplayName("Map a trip")
-        .description("Start mapping a drive, ride, hike, run or walk in one tap, or log a fill-up.")
+        .description("Start mapping a drive, walk, ride, hike or run in one tap, or log a fill-up.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryCircular, .accessoryRectangular])
     }
 }
@@ -92,9 +92,9 @@ struct QuickStartView: View {
             Spacer(minLength: 0)
             driveButton(height: 40)
             HStack(spacing: 6) {
+                iconButton(.walk, "figure.walk", String(localized: "Start a walk"))
                 iconButton(.ride, "bicycle", String(localized: "Start a ride"))
                 iconButton(.hike, "figure.hiking", String(localized: "Start a hike"))
-                iconButton(.walk, "figure.walk", String(localized: "Start a walk"))
             }
         }
     }
@@ -123,12 +123,12 @@ struct QuickStartView: View {
             VStack(spacing: 6) {
                 driveButton(height: 44)
                 HStack(spacing: 6) {
+                    iconButton(.walk, "figure.walk", String(localized: "Start a walk"))
                     iconButton(.ride, "bicycle", String(localized: "Start a ride"))
-                    iconButton(.hike, "figure.hiking", String(localized: "Start a hike"))
                 }
                 HStack(spacing: 6) {
+                    iconButton(.hike, "figure.hiking", String(localized: "Start a hike"))
                     iconButton(.run, "figure.run", String(localized: "Start a run"))
-                    iconButton(.walk, "figure.walk", String(localized: "Start a walk"))
                 }
             }
             .frame(width: 132)
