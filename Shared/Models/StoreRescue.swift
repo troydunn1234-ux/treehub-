@@ -64,7 +64,7 @@ extension Activity {
     /// left out of `copy(of:)` by accident.
     static let copiedProperties: Set<String> = [
         "id", "kindRaw", "title", "start", "end", "distanceM", "movingSec", "elevGainM", "maxSpeed",
-        "startPlace", "endPlace", "notes", "avgHR", "routeData", "laneChangesData", "trimmedSec", "autoFinished",
+        "startPlace", "endPlace", "notes", "avgHR", "routeData", "laneChangesData", "trimmedSec", "autoFinished", "rawMaxSpeed",
     ]
 
     /// A new Activity holding every stored value of `o` (same id).
@@ -87,6 +87,7 @@ extension Activity {
         a.laneChangesData = o.laneChangesData
         a.trimmedSec = o.trimmedSec
         a.autoFinished = o.autoFinished
+        a.rawMaxSpeed = o.rawMaxSpeed
         return a
     }
 }

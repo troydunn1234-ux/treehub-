@@ -3,7 +3,9 @@ import SwiftData
 import CoreLocation
 
 enum ActivityKind: String, CaseIterable, Identifiable, Codable {
-    case walk, run, hike, bike, drive
+    // Display order everywhere in Roamr: Drive, Walk, Bike, Hike, Run.
+    // Stored by raw value (the case name), never by position, so reordering is safe.
+    case drive, walk, bike, hike, run
 
     var id: String { rawValue }
 
@@ -72,6 +74,8 @@ final class Activity {
     var trimmedSec: Double = 0
     /// The app finished this one on its own after you stopped moving.
     var autoFinished: Bool = false
+    /// The top speed as first recorded, kept when the one-time GPS-spike repair lowered `maxSpeed` (nil otherwise).
+    var rawMaxSpeed: Double? = nil
 
     init() {}
 
@@ -92,13 +96,16 @@ final class Activity {
         let s = Self.stats(kept)
         distanceM = s.distance
         movingSec = s.moving
-        maxSpeed = s.maxSpeed
+        // Top speed of what's left, spike-filtered; never higher than the recording's own (filtered) top.
+        let top = TopSpeed.compute(route: kept, kind: kind)
+        maxSpeed = maxSpeed > 0 ? min(maxSpeed, top) : top
         if cutHead > 0 { start = Date(timeIntervalSince1970: kept.first!.t) }
         end = Date(timeIntervalSince1970: kept.last!.t)
         if end <= start { end = start.addingTimeInterval(1) }
     }
 
-    /// Distance, moving time and top speed from a run of points, the same way the tracker counts them.
+    /// Distance, moving time and raw top speed from a run of points, the same way the tracker counts them.
+    /// (The top speed Roamr shows comes from `TopSpeed`, which filters out GPS spikes.)
     static func stats(_ pts: [RoutePoint]) -> (distance: Double, moving: Double, maxSpeed: Double) {
         var d = 0.0, moving = 0.0, top = 0.0
         for i in 1..<max(1, pts.count) {

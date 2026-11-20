@@ -18,7 +18,7 @@ enum RoamrContext {
         let originalKind = tracker.kind
         guard let a = tracker.finish(auto: auto) else { return nil }
         if suggestion != originalKind && (suggestion == .drive || originalKind == .drive)
-            && ActivityKind.available.contains(suggestion) { a.kind = suggestion }
+            && ActivityKind.available.contains(suggestion) { a.applyKind(suggestion) }
         // Starts and ends at pinned places: name it ("Home → Work") unless it already has a name.
         if a.title.isEmpty, let t = CommuteStore.autoTitle(a.route) { a.title = t }
         let context = container.mainContext

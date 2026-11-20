@@ -203,6 +203,12 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     private(set) var resumedAt: Date?
     @ObservationIgnored private var elevRef: Double?
     @ObservationIgnored private var lastAccepted: CLLocation?
+    /// Every usable GPS reading of this recording, for the spike-free top speed worked out at Finish.
+    @ObservationIgnored private var speedSamples: [TopSpeed.Sample] = []
+    /// Running spike-free top speed (with the broadest cap, so a walk that's really a drive still looks like one).
+    @ObservationIgnored private var liveTop = TopSpeed.Accumulator(kind: .drive)
+    /// Top speed carried over from before the app was closed mid-recording (its readings weren't saved).
+    @ObservationIgnored private var restoredTop: Double = 0
     @ObservationIgnored private var unsavedCount = 0
     @ObservationIgnored private var slowSince: Date?
     @ObservationIgnored private var fastFixes = 0
@@ -416,7 +422,7 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         a.distanceM = distance
         a.movingSec = min(movingSec, accumulated)
         a.elevGainM = elevGain
-        a.maxSpeed = maxSpeed
+        a.maxSpeed = max(TopSpeed.compute(from: speedSamples, kind: kind), min(restoredTop, TopSpeed.cap(for: kind)))
         a.route = Self.simplify(points, maxCount: 4000)
         a.laneChanges = laneChanges
         a.autoFinished = auto
@@ -584,6 +590,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         distance = 0
         elevGain = 0
         maxSpeed = 0
+        speedSamples = []
+        liveTop = TopSpeed.Accumulator(kind: .drive)
+        restoredTop = 0
         movingSec = 0
         currentSpeed = 0
         accumulated = 0
@@ -680,6 +689,10 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         guard loc.horizontalAccuracy <= maxAcc else { return }
         guard handleAutoPause(loc) else { return }
         let previousDistance = distance
+        let reading = TopSpeed.Sample(loc)
+        speedSamples.append(reading)
+        liveTop.add(reading)
+        maxSpeed = liveTop.top
 
         if let last = lastAccepted {
             let d = loc.distance(from: last)
@@ -692,7 +705,6 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
             if v > 0.5 && dt < 300 { movingSec += dt }
             let s = loc.speed >= 0 ? loc.speed : v
             currentSpeed = s
-            if s < 95 { maxSpeed = max(maxSpeed, s) }
         } else {
             currentSpeed = max(0, loc.speed)
         }
@@ -815,6 +827,8 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
         distance = snap.distance
         elevGain = snap.elevGain
         maxSpeed = snap.maxSpeed
+        restoredTop = snap.maxSpeed
+        liveTop = TopSpeed.Accumulator(kind: .drive, top: snap.maxSpeed)
         movingSec = snap.movingSec
         accumulated = snap.accumulated
         // If the app was closed mid-recording, count time up to the last saved point, then wait paused.

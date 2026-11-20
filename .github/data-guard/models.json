@@ -12,6 +12,7 @@
     "maxSpeed": "Double",
     "movingSec": "Double",
     "notes": "String",
+    "rawMaxSpeed": "Double?",
     "routeData": "Data?",
     "start": "Date",
     "startPlace": "String",
