@@ -1,23 +1,18 @@
 import SwiftUI
 import SwiftData
 
-/// Everything you've ever recorded: totals per type, records, best month, streaks,
-/// this year against last year, and fun distance / climb milestones. Opened from Stats.
+/// Every drive you've ever recorded: totals, records, best month, streaks, this year against last year,
+/// and fun distance milestones. Opened from Stats. (Walks / rides from before Roamr went drive-only are
+/// left out of these totals and noted at the bottom; their data isn't touched.)
 @MainActor
 struct LifetimeStatsView: View {
-    @Query(sort: \Activity.start, order: .reverse) private var activities: [Activity]
+    @Query(sort: \Activity.start, order: .reverse) private var allTrips: [Activity]
+    private var activities: [Activity] { allTrips.filter { $0.kind == .drive } }
+    private var olderTrips: [Activity] { allTrips.filter { $0.kind != .drive } }
     /// Re-renders when the unit setting changes.
     @AppStorage("useMetric") private var useMetric = false
 
     // MARK: Data
-
-    private struct KindTotal: Identifiable {
-        let kind: ActivityKind
-        let count: Int
-        let distance: Double
-        let seconds: Double
-        var id: String { kind.rawValue }
-    }
 
     private struct Milestone: Identifiable {
         let name: String
@@ -29,7 +24,7 @@ struct LifetimeStatsView: View {
     /// Distance milestones (meters).
     private static let distanceMilestones: [Milestone] = [
         Milestone(name: "Across the Golden Gate Bridge", symbol: "road.lanes", meters: 2_737),
-        Milestone(name: "A marathon", symbol: "figure.run", meters: 42_195),
+        Milestone(name: "San Francisco to San Jose", symbol: "car.fill", meters: 77_000),
         Milestone(name: "Around Lake Tahoe", symbol: "water.waves", meters: 116_000),
         Milestone(name: "San Francisco to Los Angeles", symbol: "car.fill", meters: 615_000),
         Milestone(name: "The length of California", symbol: "map.fill", meters: 1_240_000),
@@ -39,30 +34,11 @@ struct LifetimeStatsView: View {
         Milestone(name: "To the Moon", symbol: "moon.stars.fill", meters: 384_400_000),
     ]
 
-    /// Climb milestones (meters of total elevation gain).
-    private static let climbMilestones: [Milestone] = [
-        Milestone(name: "The Empire State Building", symbol: "building.2.fill", meters: 443),
-        Milestone(name: "Half Dome from the valley", symbol: "mountain.2.fill", meters: 1_463),
-        Milestone(name: "Mount Whitney", symbol: "mountain.2.fill", meters: 4_421),
-        Milestone(name: "Mount Everest", symbol: "flag.checkered", meters: 8_849),
-        Milestone(name: "Cruising altitude", symbol: "airplane", meters: 10_668),
-    ]
-
     private static func seconds(_ a: Activity) -> Double { a.movingSec > 0 ? a.movingSec : a.elapsedSec }
 
     private var totalDistance: Double { activities.reduce(0) { $0 + $1.distanceM } }
     private var totalSeconds: Double { activities.reduce(0) { $0 + Self.seconds($1) } }
-    private var totalClimb: Double { activities.reduce(0) { $0 + max(0, $1.elevGainM) } }
-
-    private var kindTotals: [KindTotal] {
-        ActivityKind.allCases.compactMap { k in
-            let list = activities.filter { $0.kind == k }
-            guard !list.isEmpty else { return nil }
-            return KindTotal(kind: k, count: list.count,
-                             distance: list.reduce(0) { $0 + $1.distanceM },
-                             seconds: list.reduce(0) { $0 + Self.seconds($1) })
-        }  // Roamr's kind order: Drive, Walk, Bike, Hike, Run
-    }
+    private var avgSpeed: Double { totalSeconds > 0 ? totalDistance / totalSeconds : 0 }
 
     private var fastest: Activity? { activities.filter { $0.maxSpeed > 0 && $0.maxSpeed < 95 }.max { $0.maxSpeed < $1.maxSpeed } }
     private var longest: Activity? { activities.max { $0.distanceM < $1.distanceM } }
@@ -123,16 +99,6 @@ struct LifetimeStatsView: View {
 
     // MARK: Formatting
 
-    private static func color(for kind: ActivityKind) -> Color {
-        switch kind {
-        case .walk: return Theme.glow
-        case .run: return Theme.leaf
-        case .hike: return Theme.gold
-        case .bike: return Theme.sky
-        case .drive: return Color(white: 0.78)
-        }
-    }
-
     /// Whole numbers once distances get big ("1,284 mi"), two decimals below 10.
     private static func bigDistance(_ m: Double) -> String {
         let v = Units.metric ? m / 1000 : m / 1609.344
@@ -165,18 +131,20 @@ struct LifetimeStatsView: View {
                     emptyState
                 } else {
                     heroCard.cardAppear()
-                    kindsCard.cardAppear()
                     recordsCard.cardAppear()
                     streakCard.cardAppear()
                     yearCard.cardAppear()
                     milestonesCard(title: "Distance milestones", symbol: "map.fill",
                                    list: Self.distanceMilestones, total: totalDistance, format: Self.bigDistance)
                         .cardAppear()
-                    if totalClimb > 0 {
-                        milestonesCard(title: "Climb milestones", symbol: "mountain.2.fill",
-                                       list: Self.climbMilestones, total: totalClimb, format: Format.elevation)
-                            .cardAppear()
-                    }
+                }
+                if !olderTrips.isEmpty {
+                    Label("Not counted: \(olderTrips.count) older \(olderTrips.count == 1 ? "walk or ride" : "walks & rides") from before Roamr went drive-only. They're still in History.",
+                          systemImage: "archivebox")
+                        .font(Theme.rounded(12, .medium))
+                        .foregroundStyle(Theme.textDim)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .padding(.horizontal, 4)
                 }
             }
             .padding(.horizontal, Theme.pad)
@@ -195,8 +163,8 @@ struct LifetimeStatsView: View {
             Text("All time")
                 .font(Theme.title(30))
                 .foregroundStyle(.white)
-            Text(activities.isEmpty ? "Everything you've ever tracked"
-                 : "Since \(Format.day(activities.last?.start ?? Date())) · \(activities.count) \(activities.count == 1 ? "trip" : "trips")")
+            Text(activities.isEmpty ? "Every drive you've ever logged"
+                 : "Since \(Format.day(activities.last?.start ?? Date())) · \(activities.count) \(activities.count == 1 ? "drive" : "drives")")
                 .font(Theme.rounded(14, .semibold))
                 .foregroundStyle(Theme.textDim)
         }
@@ -222,52 +190,11 @@ struct LifetimeStatsView: View {
                         .foregroundStyle(Theme.glow)
                 }
                 .accessibilityElement(children: .combine)
-                .accessibilityLabel("\(Self.bigDistance(totalDistance)) in total")
+                .accessibilityLabel("\(Self.bigDistance(totalDistance)) driven in total")
                 HStack(spacing: 0) {
-                    miniStat(Self.hours(totalSeconds), "Time", "clock.fill", Theme.sky)
-                    miniStat("\(activities.count)", "Trips", "flag.checkered", Theme.leaf)
-                    miniStat(Format.elevation(totalClimb), "Climbed", "mountain.2.fill", Theme.gold)
-                }
-            }
-        }
-    }
-
-    // MARK: Per kind
-
-    private var kindsCard: some View {
-        let list = kindTotals
-        let top = list.map(\.distance).max() ?? 1
-        return GlassCard {
-            VStack(alignment: .leading, spacing: 14) {
-                SectionHeader(title: "By type", symbol: "square.grid.2x2.fill")
-                ForEach(list) { t in
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(spacing: 10) {
-                            Image(systemName: t.kind.symbol)
-                                .font(.system(size: 14, weight: .bold))
-                                .foregroundStyle(Theme.forestDeep)
-                                .frame(width: 32, height: 32)
-                                .background(Self.color(for: t.kind), in: Circle())
-                            VStack(alignment: .leading, spacing: 1) {
-                                Text(t.kind.title).font(Theme.rounded(15, .bold)).foregroundStyle(.white)
-                                Text("\(t.count) \(t.count == 1 ? "trip" : "trips") · \(Self.hours(t.seconds))")
-                                    .font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
-                            }
-                            Spacer()
-                            Text(Self.bigDistance(t.distance))
-                                .font(Theme.rounded(16, .heavy)).foregroundStyle(.white).monospacedDigit()
-                        }
-                        GeometryReader { g in
-                            ZStack(alignment: .leading) {
-                                Capsule().fill(Color.white.opacity(0.07))
-                                Capsule().fill(Self.color(for: t.kind))
-                                    .frame(width: max(6, g.size.width * CGFloat(top > 0 ? t.distance / top : 0)))
-                            }
-                        }
-                        .frame(height: 6)
-                    }
-                    .accessibilityElement(children: .ignore)
-                    .accessibilityLabel("\(t.kind.title): \(Self.bigDistance(t.distance)), \(t.count) \(t.count == 1 ? "trip" : "trips"), \(Self.hours(t.seconds))")
+                    miniStat(Self.hours(totalSeconds), "Drive time", "clock.fill", Theme.sky)
+                    miniStat("\(activities.count)", "Drives", "car.fill", Theme.leaf)
+                    miniStat(avgSpeed > 0 ? Format.speed(avgSpeed) : "—", "Avg speed", "speedometer", Theme.gold)
                 }
             }
         }
@@ -284,22 +211,22 @@ struct LifetimeStatsView: View {
                     recordRow("Top speed", Format.speed(a.maxSpeed), "gauge.with.dots.needle.67percent", Theme.leaf, a)
                 }
                 if let a = longest {
-                    recordRow("Longest trip", Self.bigDistance(a.distanceM), "point.topleft.down.to.point.bottomright.curvepath", Theme.gold, a)
+                    recordRow("Longest drive", Self.bigDistance(a.distanceM), "point.topleft.down.to.point.bottomright.curvepath", Theme.gold, a)
                 }
                 if let a = longestTime {
-                    recordRow("Longest time out", Format.duration(Self.seconds(a)), "clock.fill", Theme.sky, a)
+                    recordRow("Longest drive time", Format.duration(Self.seconds(a)), "clock.fill", Theme.sky, a)
                 }
                 if let m = bestMonth {
                     HStack(spacing: 12) {
                         recordIcon("calendar", Theme.glow)
                         VStack(alignment: .leading, spacing: 1) {
-                            Text("Most active month").font(Theme.rounded(12, .bold)).foregroundStyle(Theme.textDim)
+                            Text("Most driven month").font(Theme.rounded(12, .bold)).foregroundStyle(Theme.textDim)
                             Text(Self.monthFormatter.string(from: m.month)).font(Theme.rounded(16, .bold)).foregroundStyle(.white)
                         }
                         Spacer()
                         VStack(alignment: .trailing, spacing: 1) {
                             Text(Self.bigDistance(m.distance)).font(Theme.rounded(16, .heavy)).foregroundStyle(.white)
-                            Text("\(m.trips) \(m.trips == 1 ? "trip" : "trips")").font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
+                            Text("\(m.trips) \(m.trips == 1 ? "drive" : "drives")").font(Theme.rounded(12, .semibold)).foregroundStyle(Theme.textDim)
                         }
                     }
                     .padding(.vertical, 8)
@@ -350,9 +277,9 @@ struct LifetimeStatsView: View {
                 HStack(spacing: 0) {
                     miniStat("\(s.current) \(s.current == 1 ? "day" : "days")", "Current", "flame.fill", s.current > 0 ? Theme.leaf : Theme.textDim)
                     miniStat("\(s.longest) \(s.longest == 1 ? "day" : "days")", "Best", "crown.fill", Theme.gold)
-                    miniStat("\(s.days)", "Active days", "calendar", Theme.sky)
+                    miniStat("\(s.days)", "Driving days", "calendar", Theme.sky)
                 }
-                Text(s.current > 0 ? "Get out tomorrow to keep it going." : "Record something today to start a new streak.")
+                Text(s.current > 0 ? "Days in a row with at least one drive." : "Log a drive today to start a new streak.")
                     .font(Theme.rounded(12, .medium))
                     .foregroundStyle(Theme.textDim)
             }
@@ -383,7 +310,7 @@ struct LifetimeStatsView: View {
                 yearBar("Last year, same date", y.lastToDate, fraction: y.lastToDate.distance / maxD,
                         tint: LinearGradient(colors: [Color.white.opacity(0.5), Color.white.opacity(0.3)], startPoint: .leading, endPoint: .trailing))
                 if y.lastFull.trips > 0 {
-                    Text("All of \(String(y.thisYear - 1)): \(Self.bigDistance(y.lastFull.distance)) · \(y.lastFull.trips) \(y.lastFull.trips == 1 ? "trip" : "trips") · \(Self.hours(y.lastFull.seconds))")
+                    Text("All of \(String(y.thisYear - 1)): \(Self.bigDistance(y.lastFull.distance)) · \(y.lastFull.trips) \(y.lastFull.trips == 1 ? "drive" : "drives") · \(Self.hours(y.lastFull.seconds))")
                         .font(Theme.rounded(12, .semibold))
                         .foregroundStyle(Theme.textDim)
                 } else {
@@ -400,7 +327,7 @@ struct LifetimeStatsView: View {
             HStack {
                 Text(label).font(Theme.rounded(13, .bold)).foregroundStyle(.white)
                 Spacer()
-                Text("\(Self.bigDistance(t.distance)) · \(t.trips) \(t.trips == 1 ? "trip" : "trips")")
+                Text("\(Self.bigDistance(t.distance)) · \(t.trips) \(t.trips == 1 ? "drive" : "drives")")
                     .font(Theme.rounded(13, .heavy)).foregroundStyle(.white).monospacedDigit()
             }
             GeometryReader { g in
@@ -412,7 +339,7 @@ struct LifetimeStatsView: View {
             .frame(height: 10)
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("\(label): \(Self.bigDistance(t.distance)), \(t.trips) \(t.trips == 1 ? "trip" : "trips"), \(Self.hours(t.seconds))")
+        .accessibilityLabel("\(label): \(Self.bigDistance(t.distance)), \(t.trips) \(t.trips == 1 ? "drive" : "drives"), \(Self.hours(t.seconds))")
     }
 
     // MARK: Milestones
@@ -504,16 +431,16 @@ struct LifetimeStatsView: View {
                     .foregroundStyle(Theme.leafGradient)
                     .frame(width: 76, height: 76)
                     .background(Theme.glow.opacity(0.12), in: Circle())
-                Text("Your all-time stats start here")
+                Text("Your all-time driving starts here")
                     .font(Theme.rounded(18, .bold)).foregroundStyle(.white)
-                Text("Record a trip from the Track tab. Totals, records, streaks and milestones build up as you go.")
+                Text("Start a drive from the Track tab, or let drive detect catch it. Totals, records, streaks and milestones build up as you go.")
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
                     NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
                 } label: {
-                    Label("Start a trip", systemImage: "play.fill")
+                    Label("Start a drive", systemImage: "car.fill")
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.top, 6)

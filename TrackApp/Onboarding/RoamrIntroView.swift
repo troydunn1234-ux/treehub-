@@ -120,11 +120,11 @@ struct RoamrIntroView: View {
 
     // MARK: Pages
 
-    /// 1 · The signature: every mile mapped (drives noticed on their own, everything else one tap).
+    /// 1 · The signature: every drive mapped (noticed on its own, or one tap).
     private var recordPage: some View {
         IntroPage(symbol: "point.topleft.down.to.point.bottomright.curvepath.fill", tint: Theme.glow,
-                  title: "Every mile, mapped",
-                  text: "Drives, rides, hikes, runs and walks, each saved with its route, speed, time and distance. Roamr notices when a drive starts, records it with one tap and finishes it when you park.") {
+                  title: "Every drive, mapped",
+                  text: "Each drive is saved with its route, speed, time and distance. Roamr notices when a drive starts, records it with one tap and finishes it when you park.") {
             VStack(spacing: 14) {
                 kindStrip
                 if tracker.canTrack {
@@ -144,16 +144,13 @@ struct RoamrIntroView: View {
         }
     }
 
-    /// Drive · Walk · Ride · Hike · Run, as small glowing chips.
+    /// What every drive gets, as small glowing chips.
     private var kindStrip: some View {
-        let kinds: [(String, LocalizedStringKey)] = [("car.fill", "Drive"), ("figure.walk", "Walk"), ("bicycle", "Ride"),
-                                                     ("figure.hiking", "Hike"), ("figure.run", "Run")]
+        let kinds: [(String, LocalizedStringKey)] = [("car.fill", "Auto drive log"), ("gauge.with.dots.needle.67percent", "Top speed"),
+                                                     ("house.fill", "Home & Work")]
         return ViewThatFits(in: .horizontal) {
             HStack(spacing: 8) { ForEach(kinds.indices, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
-            VStack(spacing: 8) {
-                HStack(spacing: 8) { ForEach(0..<3, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
-                HStack(spacing: 8) { ForEach(3..<5, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
-            }
+            VStack(spacing: 8) { ForEach(kinds.indices, id: \.self) { i in kindChip(kinds[i].0, kinds[i].1) } }
         }
         .accessibilityElement(children: .combine)
     }
@@ -171,10 +168,10 @@ struct RoamrIntroView: View {
     /// 2 · What you get from those miles: the night-map history and the fuel log per vehicle.
     private var togetherPage: some View {
         IntroPage(symbol: "fuelpump.fill", tint: Theme.gold,
-                  title: "Your trips, your fuel",
-                  text: "Every trip lands in a night-map history, grouped by week with its route. Log a fill-up and Roamr works out MPG for each vehicle from the drives it mapped.") {
+                  title: "Your drives, your fuel",
+                  text: "Every drive lands in a night-map history, grouped by week with its route. Log a fill-up and Roamr works out MPG for each vehicle from the drives it mapped.") {
             VStack(alignment: .leading, spacing: 10) {
-                bullet("moon.stars.fill", "Night-map trip history with weekly totals")
+                bullet("moon.stars.fill", "Night-map drive history with weekly totals")
                 bullet("gauge.with.dots.needle.67percent", "MPG and monthly fuel spend per vehicle")
                 bullet("person.2.fill", "Go Together: friends live on one map")
             }
