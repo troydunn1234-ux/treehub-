@@ -49,8 +49,8 @@ final class GroupHistory: ObservableObject {
             trips = [
                 GroupTripLog(code: "DEMO01", kindRaw: ActivityKind.drive.rawValue, date: now.addingTimeInterval(-86400),
                              friends: ["Alex", "Sam"], distanceM: 48_000, hosted: true),
-                GroupTripLog(code: "DEMO02", kindRaw: ActivityKind.hike.rawValue, date: now.addingTimeInterval(-6 * 86400),
-                             friends: ["Jordan", "Riley", "Casey", "Morgan"], distanceM: 9300, hosted: false),
+                GroupTripLog(code: "DEMO02", kindRaw: ActivityKind.drive.rawValue, date: now.addingTimeInterval(-6 * 86400),
+                             friends: ["Jordan", "Riley", "Casey", "Morgan"], distanceM: 31_000, hosted: false),
             ]
         }
         // When the recording of a group trip is saved, keep its final distance.
