@@ -1,7 +1,7 @@
 import SwiftUI
 import WidgetKit
 
-// Roamr Watch complications: one tap from the watch face to Roamr's Start screen (Start drive, Walk, Ride, Run).
+// Roamr Watch complications: one tap from the watch face to Roamr's Start screen (one big Start drive).
 // Data-free on purpose: the Watch app keeps its live numbers in memory from the iPhone, so there is nothing
 // shared to read here and no App Group is needed.
 
@@ -34,8 +34,8 @@ struct RoamrLauncherComplication: Widget {
             RoamrLauncherView()
                 .containerBackground(for: .widget) { Color.clear }
         }
-        .configurationDisplayName("Map a trip")
-        .description("Opens Roamr to start a drive, walk, ride or run.")
+        .configurationDisplayName("Start drive")
+        .description("Opens Roamr to start a drive.")
         .supportedFamilies([.accessoryCircular, .accessoryCorner, .accessoryRectangular, .accessoryInline])
     }
 }
@@ -59,7 +59,7 @@ struct RoamrLauncherView: View {
                     VStack(alignment: .leading, spacing: 0) {
                         Text(verbatim: "Roamr").font(.system(size: 14, weight: .heavy, design: .rounded))
                             .foregroundStyle(RWC.orange).widgetAccentable()
-                        Text("Every mile, mapped").font(.system(size: 12, weight: .medium, design: .rounded)).lineLimit(1)
+                        Text("Every drive, mapped").font(.system(size: 12, weight: .medium, design: .rounded)).lineLimit(1)
                         Text("Tap to start a drive").font(.system(size: 11)).foregroundStyle(.secondary).lineLimit(1)
                     }
                     Spacer(minLength: 0)
@@ -69,7 +69,7 @@ struct RoamrLauncherView: View {
             default:
                 ZStack {
                     AccessoryWidgetBackground()
-                    Image(systemName: RWC.route)
+                    Image(systemName: "car.fill")
                         .font(.system(size: 20, weight: .bold))
                         .foregroundStyle(RWC.amber)
                         .widgetAccentable()
@@ -77,6 +77,6 @@ struct RoamrLauncherView: View {
             }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Text("Roamr: start mapping a trip"))
+        .accessibilityLabel(Text("Roamr: start a drive"))
     }
 }

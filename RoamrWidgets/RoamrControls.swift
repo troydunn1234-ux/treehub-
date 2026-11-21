@@ -8,16 +8,18 @@ import WidgetKit
 
 @available(iOS 18.0, *)
 struct StartTrackingControl: ControlWidget {
+    /// Same identifier as the old "Start a Walk" control so controls people already placed keep working.
+    /// Roamr is drive-only now, so it starts a drive.
     static let kind = "com.troydunn.roamr.control.walk"
 
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {
-            ControlWidgetButton(action: StartRoamrTrackingIntent(kind: .walk)) {
-                Label("Start Walk", systemImage: "figure.walk")
+            ControlWidgetButton(action: StartRoamrTrackingIntent(kind: .drive)) {
+                Label("Start Tracking", systemImage: "location.north.circle.fill")
             }
         }
-        .displayName("Start a Walk")
-        .description("Opens Roamr and starts recording a walk.")
+        .displayName("Start Tracking")
+        .description("Opens Roamr and starts logging a drive.")
     }
 }
 

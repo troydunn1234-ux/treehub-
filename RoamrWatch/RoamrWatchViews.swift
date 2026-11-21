@@ -139,7 +139,7 @@ struct LaneDots: View {
     }
 }
 
-/// Not recording: big Drive button plus Walk / Ride.
+/// Not recording: one big Start drive button (Roamr is drive-only).
 struct StartView: View {
     @Environment(PhoneLink.self) private var link
 
@@ -151,17 +151,13 @@ struct StartView: View {
                     Text("Start drive").font(RW.font(17, .heavy))
                 }
                 .foregroundStyle(RW.navy)
-                .frame(maxWidth: .infinity, minHeight: 54)
+                .frame(maxWidth: .infinity, minHeight: 72)
                 .background(RW.fire, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
                 .shadow(color: RW.orange.opacity(0.5), radius: 8)
             }
             .buttonStyle(.plain)
-            HStack(spacing: 8) {
-                small("walk", "Walk")
-                small("bike", "Ride")
-                small("run", "Run")
-            }
-            Text("Every mile, mapped")
+            .accessibilityLabel("Start a drive")
+            Text("Every drive, mapped")
                 .font(RW.font(11, .semibold)).foregroundStyle(.secondary)
             if link.sending { ProgressView().tint(RW.amber) }
             else if !link.reachable && !PhoneLink.demo {
@@ -175,21 +171,9 @@ struct StartView: View {
         }
     }
 
-    private func small(_ kind: String, _ title: String) -> some View {
-        Button { link.start(kind) } label: {
-            VStack(spacing: 3) {
-                Image(systemName: RW.symbol(kind)).font(.system(size: 16, weight: .bold))
-                Text(title).font(RW.font(11, .bold))
-            }
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, minHeight: 50)
-            .background(Color.white.opacity(0.1), in: RoundedRectangle(cornerRadius: 14, style: .continuous))
-        }
-        .buttonStyle(.plain)
-    }
 }
 
-/// Your last three trips.
+/// Your last three drives.
 struct TripsView: View {
     @Environment(PhoneLink.self) private var link
 
@@ -201,8 +185,8 @@ struct TripsView: View {
                     Image(systemName: "point.topleft.down.to.point.bottomright.curvepath.fill")
                         .font(.system(size: 22, weight: .bold)).foregroundStyle(RW.amber)
                         .accessibilityHidden(true)
-                    Text("No trips yet").font(RW.font(15, .heavy))
-                    Text("Every drive, ride and walk you finish shows up here.")
+                    Text("No drives yet").font(RW.font(15, .heavy))
+                    Text("Every drive you finish shows up here.")
                         .font(RW.font(12, .medium)).foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                 }

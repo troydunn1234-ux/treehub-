@@ -250,7 +250,7 @@ struct TrackRootView: View {
                 case "settings": tab = "settings"
                 default: if TrackDemo.open == nil || TrackDemo.open == "moreapps" { tab = "track" }
                 }
-                if ProcessInfo.processInfo.arguments.contains("-autostart") { tracker.start(kind: .run) }
+                if ProcessInfo.processInfo.arguments.contains("-autostart") { tracker.start(kind: .drive) }
                 if ProcessInfo.processInfo.arguments.contains("-autodrive") { tracker.start(kind: .drive) }
             }
         }
@@ -271,11 +271,8 @@ struct TrackRootView: View {
         case .stats: tab = "stats"; return
         case .stop: RoamrContext.finishAndSave(); return
         case .gas: gasAdding = true; showGas = true; return
-        case .walk: kind = .walk
-        case .run: kind = .run
-        case .hike: kind = .hike
-        case .ride: kind = .bike
-        case .drive: kind = .drive
+        // Roamr is drive-only: older shortcuts / widgets that ask for a walk, run, hike or ride start a drive.
+        case .walk, .run, .hike, .ride, .drive: kind = .drive
         }
         detector.showBanner = false
         tab = "track"

@@ -10,13 +10,13 @@ struct RoamrShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: StartRoamrTrackingIntent(),
             phrases: [
-                "Start a \(\.$kind) in \(.applicationName)",
-                "Track a \(\.$kind) with \(.applicationName)",
-                "Start tracking a \(\.$kind) in \(.applicationName)",
+                "Start a drive in \(.applicationName)",
+                "Start driving with \(.applicationName)",
+                "Track my drive with \(.applicationName)",
                 "Start tracking with \(.applicationName)",
             ],
-            shortTitle: "Start tracking",
-            systemImageName: "location.north.circle.fill"
+            shortTitle: "Start drive",
+            systemImageName: "car.fill"
         )
         AppShortcut(
             intent: StopRoamrTrackingIntent(),

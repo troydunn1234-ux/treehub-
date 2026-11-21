@@ -35,6 +35,8 @@ enum RoamrPending {
 
 // MARK: - Intents
 
+/// Roamr is drive-only now. The other values stay so Shortcuts people already made keep working
+/// (they start a drive), but Siri only suggests "Start a drive".
 enum RoamrKindOption: String, AppEnum {
     case drive, walk, ride, hike, run
 
@@ -47,26 +49,20 @@ enum RoamrKindOption: String, AppEnum {
         .run: DisplayRepresentation(title: "Run", image: .init(systemName: "figure.run")),
     ]
 
-    var action: RoamrAction {
-        switch self {
-        case .walk: return .walk
-        case .run: return .run
-        case .hike: return .hike
-        case .ride: return .ride
-        case .drive: return .drive
-        }
-    }
+    /// Every option records a drive.
+    var action: RoamrAction { .drive }
 }
 
 struct StartRoamrTrackingIntent: AppIntent {
-    static var title: LocalizedStringResource = "Start Tracking"
-    static var description = IntentDescription("Opens Roamr and starts recording a drive, walk, ride, hike or run.")
+    static var title: LocalizedStringResource = "Start Drive"
+    static var description = IntentDescription("Opens Roamr and starts recording a drive.")
     static var openAppWhenRun = true
 
-    @Parameter(title: "Activity", default: .walk)
+    /// Kept for Shortcuts made before Roamr went drive-only; whatever it says, Roamr records a drive.
+    @Parameter(title: "Activity", default: .drive)
     var kind: RoamrKindOption
 
-    static var parameterSummary: some ParameterSummary { Summary("Start tracking a \(\.$kind)") }
+    static var parameterSummary: some ParameterSummary { Summary("Start a drive") }
 
     init() {}
     init(kind: RoamrKindOption) { self.kind = kind }
@@ -110,7 +106,7 @@ struct OpenRoamrSectionIntent: AppIntent {
 
 struct StopRoamrTrackingIntent: AppIntent {
     static var title: LocalizedStringResource = "Stop Tracking"
-    static var description = IntentDescription("Finishes and saves the walk, run, hike, ride or drive Roamr is recording.")
+    static var description = IntentDescription("Finishes and saves the drive Roamr is recording.")
     static var openAppWhenRun = true
 
     init() {}

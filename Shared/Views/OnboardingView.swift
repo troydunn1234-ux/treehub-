@@ -180,12 +180,12 @@ struct OnboardingView: View {
     private var features: [OnboardingFeature] {
         #if TRACK_APP
         return [
-            OnboardingFeature(id: "track", symbol: "figure.run", title: "Track any move",
-                              detail: "Walk, run, hike, ride or drive, mapped live by GPS.", tint: Theme.leaf),
-            OnboardingFeature(id: "stats", symbol: "chart.bar.xaxis", title: "Stats & records",
-                              detail: "History, totals and personal records to chase.", tint: Theme.sky),
-            OnboardingFeature(id: "garmin", symbol: "applewatch", title: "Watch workouts",
-                              detail: "Pulled in automatically through Apple Health.", tint: Theme.gold),
+            OnboardingFeature(id: "track", symbol: "car.fill", title: "Every drive, logged",
+                              detail: "Drives mapped live by GPS, or caught by drive detect.", tint: Theme.leaf),
+            OnboardingFeature(id: "stats", symbol: "chart.bar.xaxis", title: "Driving stats",
+                              detail: "Miles driven, drive time, top speed and records.", tint: Theme.sky),
+            OnboardingFeature(id: "garmin", symbol: "fuelpump.fill", title: "Gas & MPG",
+                              detail: "Log fill-ups and see MPG per vehicle.", tint: Theme.gold),
         ]
         #else
         return [
@@ -349,9 +349,9 @@ struct OnboardingView: View {
 
 private enum Copy {
     #if TRACK_APP
-    static let welcomeHeadline: String = "Go anywhere.\nKeep every mile."
-    static let welcomeMessage: String = "Roamr records your walks, runs, hikes, rides and drives, with clean stats and records to chase."
-    static let featuresHeadline: String = "Built for every\nkind of move."
+    static let welcomeHeadline: String = "Drive anywhere.\nKeep every mile."
+    static let welcomeMessage: String = "Roamr logs your drives with their routes, speed, time and fuel."
+    static let featuresHeadline: String = "Built for\nthe road."
     static let featuresMessage: String = "One tap to start. The rest is automatic."
     static let permissionsHeadline: String = "Only when\nyou need it."
     static let permissionsMessage: String = "Nothing is asked now. Each permission comes up the first time a feature needs it, and you can change your mind anytime in Settings."

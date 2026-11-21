@@ -106,7 +106,10 @@ final class RoamrWatchBridge: NSObject {
         guard due else { return }
         tripsDirty = false
         tripsFetchedAt = Date()
-        var fd = FetchDescriptor<Activity>(sortBy: [SortDescriptor(\.start, order: .reverse)])
+        // Drive-only: the watch's Recent list shows the last three drives.
+        let driveRaw = ActivityKind.drive.rawValue
+        var fd = FetchDescriptor<Activity>(predicate: #Predicate { $0.kindRaw == driveRaw },
+                                           sortBy: [SortDescriptor(\.start, order: .reverse)])
         fd.fetchLimit = 3
         let list = (try? container.mainContext.fetch(fd)) ?? []
         trips = list.map { a in
