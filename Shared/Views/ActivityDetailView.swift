@@ -142,6 +142,8 @@ struct ActivityDetailView: View {
 
     /// Kind picker, notes, recap / GPX sharing, Done and Delete: the rest of the page, same in both layouts.
     @ViewBuilder private var lowerSections: some View {
+                #if !TRACK_APP
+                // Roamr is drive-only, so its trip page has no type picker (old walks keep their type as saved).
                 VStack(alignment: .leading, spacing: 8) {
                     Text("Type").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
                     HStack(spacing: 8) {
@@ -162,6 +164,7 @@ struct ActivityDetailView: View {
                     }
                     .sensoryFeedback(.selection, trigger: activity.kindRaw)
                 }
+                #endif
 
                 #if !TRACK_APP
                 if !strollHugs.isEmpty {
@@ -758,7 +761,7 @@ extension ActivityDetailView {
             railItem(Format.paceOrSpeed(distance: activity.distanceM, seconds: max(activity.movingSec, 1), kind: activity.kind),
                      onFoot ? "Pace" : "Avg", "speedometer")
             if !onFoot { railItem(Format.speed(activity.maxSpeed), "Top", "gauge.with.dots.needle.67percent") }
-            if onFoot || activity.elevGainM >= 1 { railItem(Format.elevation(activity.elevGainM), "Climb", "mountain.2.fill") }
+            if onFoot { railItem(Format.elevation(activity.elevGainM), "Climb", "mountain.2.fill") }
         }
         .padding(.horizontal, 10).padding(.vertical, 12)
         .frame(maxWidth: 104, alignment: .leading)

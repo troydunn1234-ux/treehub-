@@ -8,8 +8,8 @@ struct HistoryView: View {
     /// Re-renders the list when the unit setting changes.
     @AppStorage("useMetric") private var useMetric = false
 
-    /// nil means "All".
-    @State private var filter: ActivityKind? = nil
+    /// Roamr is drive-only now; walks / rides / hikes / runs recorded before stay here, folded away at the bottom.
+    @State private var showOlder = false
     @State private var path = NavigationPath()
     /// Go together trips you took part in (kept on this phone).
     @ObservedObject private var groupLog = GroupHistory.shared
@@ -82,14 +82,15 @@ struct HistoryView: View {
 
     private static let spring = Animation.spring(response: 0.38, dampingFraction: 0.82)
 
-    private var filtered: [Activity] {
-        guard let filter else { return activities }
-        return activities.filter { $0.kind == filter }
-    }
+    /// Every drive, newest first.
+    private var drives: [Activity] { activities.filter { $0.kind == .drive } }
+
+    /// Walks, rides, hikes and runs from before Roamr went drive-only: kept exactly as they were.
+    private var olderTrips: [Activity] { activities.filter { $0.kind != .drive } }
 
     private var groups: [WeekGroup] {
         let cal = Calendar.current
-        let byWeek: [Date: [Activity]] = Dictionary(grouping: filtered) { (a: Activity) -> Date in
+        let byWeek: [Date: [Activity]] = Dictionary(grouping: drives) { (a: Activity) -> Date in
             cal.dateInterval(of: .weekOfYear, for: a.start)?.start ?? cal.startOfDay(for: a.start)
         }
         return byWeek.keys.sorted(by: >).map { (week: Date) -> WeekGroup in
@@ -102,10 +103,10 @@ struct HistoryView: View {
     }
 
     private var subtitle: String {
-        let list = filtered
+        let list = drives
         let total: Double = list.reduce(0.0) { $0 + $1.distanceM }
-        let noun = list.count == 1 ? "trip" : "trips"
-        return "\(list.count) \(noun) · \(Format.distance(total)) mapped"
+        let noun = list.count == 1 ? "drive" : "drives"
+        return "\(list.count) \(noun) · \(Format.distance(total)) driven"
     }
 
     var body: some View {
@@ -116,20 +117,16 @@ struct HistoryView: View {
                     header
                         .padding(.horizontal, Theme.pad)
 
-                    filterRow
+                    // The fuel log for these drives, one tap away.
+                    fuelRow.padding(.horizontal, Theme.pad)
 
-                    // Drives: the fuel log for them is one tap away.
-                    if filter == .drive { fuelRow.padding(.horizontal, Theme.pad).transition(.opacity) }
+                    CommuteSection(activities: activities).padding(.horizontal, Theme.pad)
 
-                    if filter == nil || filter == .drive {
-                        CommuteSection(activities: activities).padding(.horizontal, Theme.pad)
-                    }
-
-                    if filter == nil, !groupLog.trips.isEmpty {
+                    if !groupLog.trips.isEmpty {
                         togetherSection
                     }
 
-                    if filter == nil { FromYourAppsCard(me: WellnessConnect.roamr, accent: Theme.glow, metric: Units.metric).padding(.horizontal, Theme.pad) }
+                    FromYourAppsCard(me: WellnessConnect.roamr, accent: Theme.glow, metric: Units.metric).padding(.horizontal, Theme.pad)
 
                     if groupList.isEmpty {
                         emptyState
@@ -143,10 +140,14 @@ struct HistoryView: View {
                         }
                         .padding(.horizontal, Theme.pad)
                     }
+
+                    if !olderTrips.isEmpty {
+                        olderSection.padding(.horizontal, Theme.pad)
+                    }
                 }
                 .padding(.top, 8)
                 .padding(.bottom, 130)
-                .animation(Self.spring, value: filter)
+                .animation(Self.spring, value: showOlder)
             }
             .scrollIndicators(.hidden)
             .forestScreen()
@@ -228,33 +229,6 @@ struct HistoryView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: Filter chips
-
-    private var filterRow: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: 8) {
-                Button {
-                    withAnimation(Self.spring) { filter = nil }
-                } label: {
-                    Chip(label: "All", symbol: "square.grid.2x2.fill", selected: filter == nil)
-                }
-                .pressable()
-
-                ForEach(ActivityKind.allCases) { (k: ActivityKind) in
-                    Button {
-                        withAnimation(Self.spring) { filter = (filter == k) ? nil : k }
-                    } label: {
-                        Chip(label: k.title, symbol: k.symbol, selected: filter == k)
-                    }
-                    .pressable()
-                }
-            }
-            .padding(.vertical, 4)
-        }
-        .contentMargins(.horizontal, Theme.pad, for: .scrollContent)
-        .sensoryFeedback(.selection, trigger: filter)
-    }
-
     private var fuelRow: some View {
         Button { GasLogRequest.open() } label: {
             HStack(spacing: 10) {
@@ -291,7 +265,7 @@ struct HistoryView: View {
                     .font(Theme.rounded(20, .heavy))
                     .foregroundStyle(.white)
                     .accessibilityAddTraits(.isHeader)
-                Text("\(group.items.count) \(group.items.count == 1 ? "trip" : "trips") · \(Format.distance(group.totalDistance)) · \(Self.hoursMinutes(group.totalSeconds))")
+                Text("\(group.items.count) \(group.items.count == 1 ? "drive" : "drives") · \(Format.distance(group.totalDistance)) · \(Self.hoursMinutes(group.totalSeconds))")
                     .font(Theme.rounded(13, .semibold))
                     .monospacedDigit()
                     .foregroundStyle(Theme.glow.opacity(0.9))
@@ -433,36 +407,83 @@ struct HistoryView: View {
         .accessibilityLabel("Group \(g.kind.title.lowercased()) on \(Format.day(g.date)), \(g.withLabel)\(distance > 0 ? ", " + Format.distance(distance) : "")\(activity == nil ? ", recording not saved" : "")")
     }
 
+    // MARK: Older walks & rides
+
+    /// Trips from before Roamr went drive-only, folded into one row at the bottom. Nothing about them changes.
+    private var olderSection: some View {
+        let list = olderTrips
+        return VStack(alignment: .leading, spacing: 10) {
+            Button {
+                withAnimation(Self.spring) { showOlder.toggle() }
+            } label: {
+                HStack(spacing: 10) {
+                    Image(systemName: "archivebox.fill")
+                        .font(.system(size: 13, weight: .bold))
+                        .foregroundStyle(Theme.textDim)
+                        .frame(width: 30, height: 30)
+                        .background(Color.white.opacity(0.08), in: Circle())
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 1) {
+                        Text("Older walks & rides (\(list.count))")
+                            .font(Theme.rounded(15, .bold)).foregroundStyle(.white)
+                        Text("Recorded before Roamr went drive-only · \(Format.distance(list.reduce(0.0) { $0 + $1.distanceM }))")
+                            .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: 6)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                        .rotationEffect(.degrees(showOlder ? 180 : 0))
+                        .accessibilityHidden(true)
+                }
+                .padding(.horizontal, 14).padding(.vertical, 10)
+                .frame(minHeight: 44)
+                .background(Color.white.opacity(0.05), in: RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous))
+                .overlay(RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+                .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .sensoryFeedback(.selection, trigger: showOlder)
+            .accessibilityValue(Text(showOlder ? "Shown" : "Hidden"))
+            .accessibilityHint(Text(showOlder ? "Hides them" : "Shows them"))
+
+            if showOlder {
+                LazyVStack(alignment: .leading, spacing: 10) {
+                    ForEach(list) { (a: Activity) in
+                        NavigationLink(value: a.id) { TripCard(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
+                            .pressable()
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
+        }
+        .padding(.top, 14)
+    }
+
     // MARK: Empty
 
     private var emptyState: some View {
         GlassCard(padding: 28) {
             VStack(spacing: 12) {
-                Image(systemName: filter?.symbol ?? "map.fill")
+                Image(systemName: "car.fill")
                     .font(.system(size: 38, weight: .semibold))
                     .foregroundStyle(Theme.leafGradient)
                     .frame(width: 80, height: 80)
                     .background(Theme.glow.opacity(0.12), in: Circle())
                     .accessibilityHidden(true)
-                Text(filter == nil ? "No trips yet" : "No \(filter?.title.lowercased() ?? "") trips yet")
+                Text("No drives yet")
                     .font(Theme.rounded(20, .bold))
                     .foregroundStyle(.white)
                     .multilineTextAlignment(.center)
-                Text(filter == nil ? "Every drive, ride, hike, run and walk lands here with its route on a night map. Turn on drive detect in Settings and Roamr catches drives as they start."
-                                   : "Pick \(filter?.title ?? "it") on the Track tab before you start, or change a trip's type from its page.")
+                Text("Every drive lands here with its route on a night map. Turn on drive detect in Settings and Roamr catches drives as they start.")
                     .font(Theme.rounded(14, .medium))
                     .foregroundStyle(Theme.textDim)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)
                 Button {
-                    if filter != nil {
-                        withAnimation(Self.spring) { filter = nil }
-                    } else {
-                        NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
-                    }
+                    NotificationCenter.default.post(name: RoamrTabs.openTrack, object: nil)
                 } label: {
-                    Label(filter != nil ? "Show all trips" : "Start a trip",
-                          systemImage: filter != nil ? "square.grid.2x2.fill" : "play.fill")
+                    Label("Start a drive", systemImage: "car.fill")
                 }
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.top, 6)

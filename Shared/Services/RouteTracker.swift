@@ -290,7 +290,12 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
     func start(kind: ActivityKind) {
         guard state == .idle else { return }
         reset()
+        #if TRACK_APP
+        // Roamr records drives only (old Siri shortcuts / Watch messages may still ask for a walk or run).
+        self.kind = .drive
+        #else
         self.kind = kind
+        #endif
         applyKindSettings()
         sessionID = UUID()
         startDate = Date()
@@ -496,6 +501,9 @@ final class RouteTracker: NSObject, CLLocationManagerDelegate {
 
     /// Change the activity type while recording (e.g. a walk that became a hike).
     func setKind(_ k: ActivityKind) {
+        #if TRACK_APP
+        guard ActivityKind.available.contains(k) else { return }   // drive only
+        #endif
         kind = k
         if k != .drive { speedLimit = nil; limits.reset(); stopLaneWatch() } else if state == .recording { startLaneWatch() }
         applyKindSettings()

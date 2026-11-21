@@ -65,7 +65,8 @@ struct GoTogetherSheet: View {
     var onClose: () -> Void
 
     init(initialKind: ActivityKind = .drive, onClose: @escaping () -> Void) {
-        _kind = State(initialValue: initialKind)
+        // Roamr is drive-only: every group trip is a group drive.
+        _kind = State(initialValue: ActivityKind.available.contains(initialKind) ? initialKind : .drive)
         let session = GroupSession.shared
         _name = State(initialValue: session.needsName ? "" : session.myName)
         self.onClose = onClose
@@ -135,31 +136,10 @@ struct GoTogetherSheet: View {
     private var startSection: some View {
         VStack(alignment: .leading, spacing: 10) {
             SectionHeader(title: "Start a group", symbol: "dot.radiowaves.left.and.right")
-            HStack(spacing: 6) {
-                ForEach(ActivityKind.available) { k in
-                    Button {
-                        withAnimation(.snappy) { kind = k }
-                    } label: {
-                        VStack(spacing: 6) {
-                            Image(systemName: k.symbol).font(.system(size: 20, weight: .semibold))
-                            Text(k.title).font(Theme.rounded(12, .bold))
-                        }
-                        .foregroundStyle(kind == k ? Theme.forestDeep : Color.white.opacity(0.75))
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 11)
-                        .background {
-                            if kind == k {
-                                RoundedRectangle(cornerRadius: 16, style: .continuous).fill(Theme.leafGradient)
-                            }
-                        }
-                        .contentShape(Rectangle())
-                    }
-                    .buttonStyle(.plain)
-                    .sensoryFeedback(.selection, trigger: kind == k)
-                }
-            }
-            .padding(6)
-            .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+            Text("Everyone in the group shows up live on one map while you drive.")
+                .font(Theme.rounded(13, .medium))
+                .foregroundStyle(Theme.textDim)
+                .fixedSize(horizontal: false, vertical: true)
 
             Button {
                 guard unlock.isPro else { showPlans = true; return }

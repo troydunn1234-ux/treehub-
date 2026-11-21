@@ -36,10 +36,11 @@ enum ActivityKind: String, CaseIterable, Identifiable, Codable {
 
     var isOnFoot: Bool { self == .walk || self == .run || self == .hike }
 
-    /// Which activity types this app offers.
+    /// Which activity types this app offers for new recordings. Roamr is a drive logbook: every new recording
+    /// is a drive (older walks / rides / hikes / runs stay in History as they were).
     static var available: [ActivityKind] {
         #if TRACK_APP
-        return allCases
+        return [.drive]
         #else
         return [.walk, .hike]
         #endif

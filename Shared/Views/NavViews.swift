@@ -132,7 +132,12 @@ struct DirectionsSheet: View {
             .background(Color.white.opacity(0.08), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(typing ? Theme.glow.opacity(0.7) : Color.white.opacity(0.1), lineWidth: 1.5))
 
+            #if TRACK_APP
+            // Roamr is drive-only: directions are always driving directions.
+            Color.clear.frame(height: 0).onAppear { if nav.mode != .drive { nav.mode = .drive } }
+            #else
             modePicker
+            #endif
 
             favoritesRow
 

@@ -84,15 +84,18 @@ struct TrackView: View {
                     PinnedChipsRow(origin: tracker.lastKnownCoordinate, onGo: goToPin, onManage: { showPins = true })
                     PinSuggestionCard(activities: Array(activities.prefix(150)))
                     #endif
+                    #if !TRACK_APP
                     kindPicker
+                    #endif
                     startButton
                     Label("Keeps recording with your phone locked", systemImage: "lock.fill")
                         .font(Theme.rounded(12, .semibold))
                         .foregroundStyle(Theme.textDim)
                         .frame(maxWidth: .infinity)
-                    if !activities.isEmpty { recentList }
                     #if TRACK_APP
-                    healthSection
+                    if activities.contains(where: { $0.kind == .drive }) { recentList }
+                    #else
+                    if !activities.isEmpty { recentList }
                     #endif
                 }
                 .padding(.horizontal, Theme.pad)
@@ -138,7 +141,10 @@ struct TrackView: View {
         let week = activities.filter { $0.start > weekAgo }
         let dist = week.reduce(0.0) { $0 + $1.distanceM }
         #if TRACK_APP
-        return week.isEmpty ? "Where to today?" : "This week: \(Format.distance(dist)) · \(week.count) trip\(week.count == 1 ? "" : "s")"
+        let drives = week.filter { $0.kind == .drive }
+        let driven = drives.reduce(0.0) { $0 + $1.distanceM }
+        return drives.isEmpty ? "Where to today?"
+            : "This week: \(Format.distance(driven)) driven · \(drives.count) drive\(drives.count == 1 ? "" : "s")"
         #else
         return week.isEmpty ? "Wander to your trees. Hugs along the way get pinned on your route."
             : "This week: \(Format.distance(dist)) · \(week.count) stroll\(week.count == 1 ? "" : "s")"
@@ -198,7 +204,7 @@ struct TrackView: View {
     private func startNavigation() {
         if !tracker.isActive {
             chosenKind = nav.mode.activity
-            tracker.start(kind: nav.mode.activity)
+            tracker.start(kind: nav.mode.activity)   // Roamr: always a drive (RouteTracker.start)
             camera = .userLocation(followsHeading: false, fallback: .automatic)
         } else if tracker.state == .paused {
             tracker.resume()   // directions need live location; a paused recording stops GPS
@@ -276,12 +282,34 @@ struct TrackView: View {
         .sensoryFeedback(.selection, trigger: active)
     }
 
+    /// What Start records: Roamr is a drive logbook (always a drive); Rootbound uses the picker.
+    private var startKind: ActivityKind {
+        #if TRACK_APP
+        return .drive
+        #else
+        return chosenKind
+        #endif
+    }
+
     private var startButton: some View {
         Button {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
-            tracker.start(kind: chosenKind)
+            tracker.start(kind: startKind)
             camera = .userLocation(followsHeading: false, fallback: .automatic)
         } label: {
+            #if TRACK_APP
+            HStack(spacing: 14) {
+                Image(systemName: "car.fill")
+                    .font(.system(size: 20, weight: .black))
+                    .frame(width: 44, height: 44)
+                    .background(Theme.forestDeep.opacity(0.18), in: Circle())
+                    .accessibilityHidden(true)
+                Text("Start drive")
+                    .font(Theme.rounded(20, .heavy))
+            }
+            .frame(minHeight: 44)
+            .padding(.vertical, 6)
+            #else
             HStack(spacing: 12) {
                 Image(systemName: "play.fill")
                     .font(.system(size: 16, weight: .black))
@@ -289,16 +317,20 @@ struct TrackView: View {
                     .background(Theme.forestDeep.opacity(0.18), in: Circle())
                 Text("Start \(chosenKind.title)")
             }
+            #endif
         }
         .buttonStyle(PrimaryButtonStyle())
         .disabled(tracker.denied)
+        #if TRACK_APP
+        .accessibilityHint("Records this drive with its route, speed and time")
+        #endif
     }
 
     private var recentList: some View {
         VStack(alignment: .leading, spacing: 10) {
             #if TRACK_APP
-            SectionHeader(title: "Recent", symbol: "clock.arrow.circlepath")
-            ForEach(activities.prefix(3)) { a in
+            SectionHeader(title: "Recent drives", symbol: "clock.arrow.circlepath")
+            ForEach(activities.filter { $0.kind == .drive }.prefix(3)) { a in
                 NavigationLink(value: a.id) { TripCard(activity: a, mapHeight: 104) }.pressable().cardAppear()
             }
             #else
@@ -588,6 +620,13 @@ struct TrackView: View {
                         .background(Theme.gold.opacity(0.25), in: RoundedRectangle(cornerRadius: 12))
                 }
                 HStack {
+                    #if TRACK_APP
+                    // Drive-only: just say what's recording (no type menu).
+                    Label(tracker.kind.title, systemImage: tracker.kind.symbol)
+                        .font(Theme.rounded(15, .bold))
+                        .padding(.horizontal, 12).padding(.vertical, 6)
+                        .background(Color.white.opacity(0.1), in: Capsule())
+                    #else
                     Menu {
                         ForEach(ActivityKind.available) { k in
                             Button { tracker.setKind(k) } label: { Label(k.title, systemImage: k.symbol) }
@@ -598,6 +637,7 @@ struct TrackView: View {
                             .padding(.horizontal, 12).padding(.vertical, 6)
                             .background(Color.white.opacity(0.1), in: Capsule())
                     }
+                    #endif
                     Spacer()
                     if tracker.autoPaused {
                         Label("Auto-paused", systemImage: "figure.stand")
@@ -638,7 +678,16 @@ struct TrackView: View {
                 HStack(spacing: 10) {
                     LiveSmallStat(text: livePaceOrSpeed, label: tracker.kind.isOnFoot ? "Avg pace" : "Speed",
                                   symbol: tracker.kind.isOnFoot ? "stopwatch.fill" : "speedometer")
+                    #if TRACK_APP
+                    if tracker.kind.isOnFoot {
+                        LiveSmallStat(text: Format.elevation(tracker.elevGain), label: "Climb", symbol: "mountain.2.fill")
+                    } else {
+                        LiveSmallStat(text: tracker.maxSpeed > 0 ? Format.speed(tracker.maxSpeed) : "—", label: "Top speed",
+                                      symbol: "gauge.with.dots.needle.67percent")
+                    }
+                    #else
                     LiveSmallStat(text: Format.elevation(tracker.elevGain), label: "Climb", symbol: "mountain.2.fill")
+                    #endif
                 }
                 if tracker.state == .paused && !tracker.autoPaused && !tracker.recoveredFromCrash {
                     // A paused recording really is off: no GPS, no location arrow, until Resume.
