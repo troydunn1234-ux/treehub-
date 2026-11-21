@@ -430,7 +430,7 @@ struct TrackSettingsView: View {
         GlassCard(padding: 0) {
             VStack(spacing: 0) {
                 // The family About block: app icon, name and version on top, then Pro, More apps, Privacy, Terms, Help.
-                FamilyAboutHeader(name: AppInfo.name, tagline: String(localized: "Every walk, run, ride and drive, on a map."),
+                FamilyAboutHeader(name: AppInfo.name, tagline: String(localized: "Every drive, on a map."),
                                   tint: Theme.glow)
                     .foregroundStyle(.white)
                     .padding(.horizontal, 16)

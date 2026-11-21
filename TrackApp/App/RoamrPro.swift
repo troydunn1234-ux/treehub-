@@ -6,11 +6,11 @@ enum RoamrPro {
     static let spec = PaywallSpec(
         appName: "Roamr",
         headline: "Go further together.",
-        tagline: "Start group trips with friends and get your month-by-month recap.",
+        tagline: "Start group drives with friends and get your month-by-month recap.",
         tint: Theme.glow, tint2: Theme.leaf,
         features: [
-            .init(icon: "person.2.fill", title: "Start group trips",
-                  detail: "Drive, walk, run, hike or ride with friends and see everyone live on one map."),
+            .init(icon: "person.2.fill", title: "Start group drives",
+                  detail: "Drive with friends and see everyone live on one map."),
             .init(icon: "calendar", title: "Monthly recap",
                   detail: "Miles, hours, average speed and your longest drive, month by month."),
             .init(icon: "heart.fill", title: "Support an indie app",

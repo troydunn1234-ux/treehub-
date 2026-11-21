@@ -133,8 +133,8 @@ final class PhoneLink: NSObject {
         let now = Date().timeIntervalSince1970
         s.trips = [
             .init(kind: "drive", title: "Morning drive", dist: 24_100, dur: 1_980, date: now - 86_400, maxSpeed: 33),
-            .init(kind: "walk", title: "Evening walk", dist: 3_200, dur: 2_400, date: now - 120_000, maxSpeed: 2),
-            .init(kind: "bike", title: "E-bike ride", dist: 11_800, dur: 2_700, date: now - 200_000, maxSpeed: 11),
+            .init(kind: "drive", title: "Home → Work", dist: 19_400, dur: 1_560, date: now - 120_000, maxSpeed: 29),
+            .init(kind: "drive", title: "Coast drive", dist: 46_000, dur: 2_880, date: now - 200_000, maxSpeed: 31),
         ]
         return s
     }()
