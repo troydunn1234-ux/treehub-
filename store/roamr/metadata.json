@@ -2,18 +2,18 @@
   "copyright": "2026 Troy Dunn",
   "bundle": "com.troydunn.roamr",
   "scheme": "Roamr",
-  "name": "Roamr: Every Mile Mapped",
-  "subtitle": "Auto drive log, MPG, trip maps",
-  "promotionalText": "Roamr spots your drives and maps them, records every ride, hike and run, and works out MPG for each vehicle from your fill-ups. Every mile on a night map.",
-  "keywords": "mileage,gas,fuel,vehicle,car,hiking,cycling,bike,route,gps,tracker,odometer,road trip,speedometer",
-  "description": "Roamr maps every mile you travel. Drives, bike rides, hikes, runs and walks are each saved with their route on a night map, and your fill-ups turn those drives into MPG for every vehicle you own.\n\nEVERY MILE, MAPPED\nTurn on drive detect and Roamr notices when a drive starts: one tap on the banner or notification records it, and it finishes on its own when you park. For rides, hikes, runs and walks, tap Start, lock your phone and go. Roamr keeps recording in the background and recovers the trip if the app gets closed.\n\nFUEL AND VEHICLES\nLog each fill-up with gallons and price. Roamr works out MPG from your odometer or from the drives it mapped between full tanks, for each vehicle, and shows what you spend on fuel each month. Stats shows every vehicle's average MPG and this month's spend at a glance.\n\nNIGHT-MODE TRIP HISTORY\nEvery trip gets a card with its route, grouped by week and day with totals. Open one and the route fills the screen on a night map, with the key numbers on top and splits, speed and details in a sheet you pull up. Switch to day, satellite or hybrid any time. Filter by drive, ride, hike, run or walk.\n\nON THE ROAD\nA big speedometer with the posted speed limit (from OpenStreetMap), and every drive saved with its start and end streets. Need directions? Search a place and Roamr guides you there turn by turn.\n\nLIVE ON YOUR LOCK SCREEN\nDistance, time, pace or speed and climb, live on screen and in a Live Activity. Voice splits call out each mile or kilometer.\n\nGO TOGETHER\nStart a group trip, send the invite link or join code, and everyone shows up live on one map. Each person's trip still lands in their own history.\n\nSTATS AND RECAPS\nWeekly totals, personal records and all-time numbers, plus a monthly recap of miles, hours and your longest trip.\n\nYOUR WORKOUTS AND HEART RATE\nRoamr reads the workouts and heart rate your watch saves to Apple Health, so a run recorded on your wrist shows up with its heart rate. Your walks and hikes also show up under your tree hugs in Rootbound.\n\nEXPORT\nShare any route as a GPX file to the mapping or training app you already use.\n\nAPPLE WATCH, WIDGETS AND SIRI\nStart a drive from your wrist and see it live, start mapping from a Home Screen widget or Control Center, log gas from a widget, or ask Siri to start tracking.\n\nFREE AND PRO\nRecording every trip, drive detect, History, Stats, the gas log, directions, the Watch app and joining a friend's group are free. Roamr Pro adds starting group trips and the monthly recap. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your trips live on your iPhone and in your own private iCloud. Drive detect uses low-power motion signals and only a few seconds of GPS when you seem to be driving. Your position is shared only with the people in a group trip you start or join, and only while it's on.\n\nWatch the road, not your phone: keep your eyes on driving and follow local traffic laws and posted speed limits.",
-  "primaryCategory": "HEALTH_AND_FITNESS",
-  "secondaryCategory": "NAVIGATION",
+  "name": "Roamr: Drive Log & MPG",
+  "subtitle": "Auto mileage, commutes, maps",
+  "promotionalText": "Roamr notices your drives and logs them on a night map, works out MPG from your fill-ups, and tracks your Home and Work commute. Every drive, kept.",
+  "keywords": "car,gas,fuel,vehicle,trip,tracker,odometer,road trip,speedometer,top speed,gps,route,logbook,driving",
+  "description": "Roamr is a logbook for your drives. It notices when a drive starts, maps it on a night map, keeps your trip history and top speeds, and turns your fill-ups into MPG for every vehicle you own.\n\nAUTOMATIC DRIVE LOG\nTurn on drive detect and Roamr notices when a drive starts: one tap on the banner or notification records it, and it finishes on its own when you park. Or open the Track tab and tap the big Start drive button. Roamr keeps recording with your phone locked and recovers the drive if the app gets closed.\n\nFUEL AND MPG\nLog each fill-up with gallons and price. Roamr works out MPG from your odometer or from the drives it mapped between full tanks, for each vehicle, and shows what you spend on fuel each month.\n\nHOME, WORK AND YOUR COMMUTE\nPin Home, Work and any other place. Pinned chips on the Track tab plan the drive and start recording in one tap, drives between pins are named for you (\"Home → Work\"), and History shows each commute's typical and fastest time and what it costs in gas.\n\nNIGHT-MAP TRIP HISTORY\nEvery drive gets a card with its route, grouped by week and day with totals. Open one and the route fills the screen on a night map, colored by speed, with distance, time, average and top speed on top. Switch to day, satellite or hybrid any time.\n\nTOP SPEED AND DRIVING STATS\nMiles driven, drive time, average and top speed for the week, month, year or all time, plus records, streaks and distance milestones. GPS spikes are filtered out, so a top speed is one you really drove.\n\nON THE ROAD\nA big speedometer with the posted speed limit (from OpenStreetMap), and every drive saved with its start and end streets. Need directions? Search a place and Roamr guides you there turn by turn.\n\nLIVE ON YOUR LOCK SCREEN\nDistance, time and speed live on screen and in a Live Activity while you drive.\n\nGO TOGETHER\nStart a group drive, send the invite link or join code, and everyone shows up live on one map. Each person's drive still lands in their own history.\n\nWATCH, WIDGETS AND SIRI\nStart a drive from your wrist and see it live, start one from a Home Screen or Lock Screen widget or Control Center, log gas from a widget, or ask Siri to start a drive.\n\nEXPORT\nShare any route as a GPX file to the mapping app you already use.\n\nFREE AND PRO\nRecording drives, drive detect, History, Stats, the gas log, pinned places, directions, the Watch app and joining a friend's group are free. Roamr Pro adds starting group drives and the monthly recap. Choose monthly or yearly (with a free first week for new subscribers) or a one-time lifetime unlock. Subscriptions renew automatically until cancelled; cancel anytime in Settings › your name › Subscriptions at least 24 hours before the period ends.\nTerms of Use: https://www.apple.com/legal/internet-services/itunes/dev/stdeula/\n\nPRIVATE BY DESIGN\nNo account, no ads, no analytics. Your drives live on your iPhone and in your own private iCloud. Drive detect uses low-power motion signals and only a few seconds of GPS when you seem to be driving. Your position is shared only with the people in a group drive you start or join, and only while it's on.\n\nWatch the road, not your phone: keep your eyes on driving and follow local traffic laws and posted speed limits.",
+  "primaryCategory": "NAVIGATION",
+  "secondaryCategory": "TRAVEL",
   "price": "0.0",
   "ageRating": {
     "healthOrWellnessTopics": true
   },
-  "reviewNotes": "No account or sign-in.\n\nWhat makes Roamr different: it maps every mile you travel in one place. Drive detect notices a drive starting and offers to record it (it never records without a tap), rides, hikes, runs and walks are one tap, every trip is kept in a night-map history, and fill-ups turn the mapped drives into MPG per vehicle (Stats › Fuel & vehicles).\n\nTo try it: on the Track tab pick Walk, Run, Hike, Ride or Drive and tap Start. In the Simulator, Features › Location › City Run makes a trip. History and Stats fill in as trips are saved.\n\nLocation: When In Use records the trip you start; Always keeps recording while the phone is locked and lets Roamr notice a drive starting so it can offer to record it (it never records without asking). Motion: tells walking, running, biking and driving apart. HealthKit: read-only, workouts and heart rate.\n\nGo together (group trips): start one with the people button on the Track tab (Pro) or join with a code (free). Members' chosen name and live position are exchanged through the app's CloudKit public database only while the group is on.\n\nSpeed limits: road data is downloaded from OpenStreetMap in map tiles of about 4 km; no personal data is sent.\n\nDirections: the Directions button on the Track map searches a place and routes with Apple Maps. Gas & MPG (Settings › Gas & MPG): fill-ups are stored like trips; \"Use where I am\" takes one location fix to find the nearest station with Apple Maps.\n\nPro: auto-renewable monthly (com.troydunn.roamr.pro.monthly) and yearly (com.troydunn.roamr.pro.yearly), each with a 1-week free trial as Apple's introductory offer, plus the one-time lifetime unlock (com.troydunn.roamr.pro). Settings › Roamr Pro shows the plans with Restore and Manage Subscription.",
+  "reviewNotes": "No account or sign-in.\n\nWhat makes Roamr different: it is a drive logbook that fills itself in. Drive detect notices a drive starting and offers to record it (it never records without a tap), every drive is kept in a night-map history with its top speed, drives between pinned Home and Work places become commute stats, and fill-ups turn the mapped drives into MPG per vehicle (Stats › Fuel & vehicles). Walks or rides recorded by earlier versions stay in History under \"Older walks & rides\".\n\nTo try it: on the Track tab tap Start drive. In the Simulator, Features › Location › Freeway Drive makes a drive. History and Stats fill in as drives are saved.\n\nLocation: When In Use records the drive you start; Always keeps recording while the phone is locked and lets Roamr notice a drive starting so it can offer to record it (it never records without asking). Motion: tells driving apart from walking so drive detect only asks when you are in a vehicle.\n\nGo together (group drives): start one with the people button on the Track tab (Pro) or join with a code (free). Members' chosen name and live position are exchanged through the app's CloudKit public database only while the group is on.\n\nSpeed limits: road data is downloaded from OpenStreetMap in map tiles of about 4 km; no personal data is sent.\n\nDirections: the Directions button on the Track map searches a place and routes with Apple Maps. Gas & MPG (Settings › Gas & MPG): fill-ups are stored like trips; \"Use where I am\" takes one location fix to find the nearest station with Apple Maps.\n\nPro: auto-renewable monthly (com.troydunn.roamr.pro.monthly) and yearly (com.troydunn.roamr.pro.yearly), each with a 1-week free trial as Apple's introductory offer, plus the one-time lifetime unlock (com.troydunn.roamr.pro). Settings › Roamr Pro shows the plans with Restore and Manage Subscription.",
   "location": "37.7772,-122.4500",
   "grant": [
     "location",
@@ -23,7 +23,7 @@
   "capture": [
     {
       "file": "rm-1-live.png",
-      "args": "-demo -autostart",
+      "args": "-demo -autodrive",
       "wait": 30,
       "route": [
         "37.7772,-122.4500",
@@ -88,9 +88,9 @@
     {
       "file": "rm-6-trip.png",
       "eyebrow": "Roamr",
-      "line1": "Every mile,",
+      "line1": "Every drive,",
       "line2": "mapped.",
-      "sub": "Every trip opens full screen on a night map.",
+      "sub": "Every drive opens full screen on a night map.",
       "chips": [
         "Drive detect",
         "Night map"
@@ -99,12 +99,12 @@
     {
       "file": "rm-3-history.png",
       "eyebrow": "History",
-      "line1": "Every trip,",
+      "line1": "Every drive,",
       "line2": "kept.",
-      "sub": "A night-map route card for every trip.",
+      "sub": "A night-map route card for every drive.",
       "chips": [
         "Weekly totals",
-        "GPX export"
+        "Commute stats"
       ]
     },
     {
@@ -123,32 +123,32 @@
       "eyebrow": "Stats",
       "line1": "Watch the",
       "line2": "miles stack.",
-      "sub": "Weekly totals, records and fuel per vehicle.",
+      "sub": "Miles driven, top speed and MPG per vehicle.",
       "chips": [
         "MPG per vehicle",
-        "Monthly recap"
+        "Top speed"
       ]
     },
     {
       "file": "rm-1-live.png",
-      "eyebrow": "Rides",
+      "eyebrow": "Live",
       "line1": "Start it,",
       "line2": "pocket it.",
-      "sub": "Ride, hike, run or walk with your phone locked.",
+      "sub": "Keeps logging with your phone locked.",
       "chips": [
         "Live Activity",
-        "Voice splits"
+        "Top speed"
       ]
     },
     {
       "file": "rm-5-track.png",
-      "eyebrow": "Go Together",
-      "line1": "Bring",
-      "line2": "your crew.",
-      "sub": "Start a group trip and see everyone live.",
+      "eyebrow": "Track",
+      "line1": "One tap,",
+      "line2": "you're off.",
+      "sub": "Home and Work pins start the drive.",
       "chips": [
-        "Invite link",
-        "One shared map"
+        "Pinned places",
+        "Drive detect"
       ]
     }
   ],

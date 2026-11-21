@@ -2,7 +2,7 @@
 
 _Last updated: November 15, 2026_
 
-Roamr records your walks, runs, hikes, rides and drives and maps them. It has no accounts, no ads and no analytics.
+Roamr records your drives and maps them (walks or rides saved by earlier versions are kept as they were). It has no accounts, no ads and no analytics.
 
 **What stays with you**
 - Your trips (routes, times, distances, notes) are stored on your iPhone and in your own private iCloud, so they follow you to a new phone. Nobody else can read them, including us.

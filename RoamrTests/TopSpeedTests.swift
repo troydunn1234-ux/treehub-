@@ -215,11 +215,26 @@ final class TopSpeedTests: XCTestCase {
 
     func testKindOrderAndRawValues() {
         XCTAssertEqual(ActivityKind.allCases, [.drive, .walk, .bike, .hike, .run])
-        XCTAssertEqual(ActivityKind.available, [.drive, .walk, .bike, .hike, .run])
+        // Roamr is drive-only for new recordings; every stored kind still decodes.
+        XCTAssertEqual(ActivityKind.available, [.drive])
         // Stored by name: these must never change.
         XCTAssertEqual(ActivityKind.allCases.map(\.rawValue), ["drive", "walk", "bike", "hike", "run"])
         XCTAssertEqual(ActivityKind(rawValue: "bike"), .bike)
         XCTAssertEqual(RoamrKindOption.allCases, [.drive, .walk, .ride, .hike, .run])
         XCTAssertEqual(RoamrKindOption.allCases.map(\.rawValue), ["drive", "walk", "ride", "hike", "run"])
+    }
+
+    // MARK: Drive-only
+
+    func testEveryShortcutOptionStartsADrive() {
+        for option in RoamrKindOption.allCases { XCTAssertEqual(option.action, .drive) }
+    }
+
+    func testOlderNonDriveTripsKeepTheirKind() {
+        // Going drive-only never rewrites stored trips: a saved walk still reads back as a walk.
+        let a = Activity()
+        a.kindRaw = "walk"
+        XCTAssertEqual(a.kind, .walk)
+        XCTAssertEqual(a.kindRaw, "walk")
     }
 }

@@ -53,9 +53,7 @@ struct TrackSettingsView: View {
                     HardStopSettingsCard().cardAppear()
                     footnote(String(localized: "While you record a drive, Roamr watches for a sudden jolt with a stop from over 25 mph. It then asks \"Are you OK?\" for 30 seconds and, if you don't answer, opens a text to your emergency contact with your location. iOS doesn't let apps send texts on their own, so someone has to tap Send. This is not a replacement for your iPhone's built-in Crash Detection or for calling 911."))
 
-                    sectionLabel("Garmin · Whoop")
-                    healthCard.cardAppear()
-                    footnote("In Garmin Connect: More → Settings → Connected Apps → Apple Health. \(AppInfo.name) then lists those workouts so you can add them with one tap.")
+                    // (The Garmin · Whoop workout import was for walks and runs; Roamr is drive-only now.)
 
                     sectionLabel("Your data")
                     dataCard.cardAppear()
