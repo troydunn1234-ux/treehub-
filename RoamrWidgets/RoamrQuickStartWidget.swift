@@ -14,6 +14,8 @@ private enum QS {
     static let dim = Color.white.opacity(0.65)
     static let tile = Color.white.opacity(0.09)
     static let gradient = LinearGradient(colors: [amber, orange], startPoint: .topLeading, endPoint: .bottomTrailing)
+    /// The app's night-cruise violet (TrackApp/Views/NightDrive.swift).
+    static let violet = Color(red: 0.36, green: 0.20, blue: 0.70)
     static let trackURL = URL(string: "roamr://track")
 }
 
@@ -42,6 +44,9 @@ struct RoamrQuickStartWidget: Widget {
                     ZStack {
                         QS.background
                         RadialGradient(colors: [QS.orange.opacity(0.28), .clear], center: .topTrailing, startRadius: 0, endRadius: 180)
+                        // Night-drive look: a violet glow low on the left and a soft headlight beam across.
+                        RadialGradient(colors: [QS.violet.opacity(0.22), .clear], center: .bottomLeading, startRadius: 0, endRadius: 200)
+                        LinearGradient(colors: [.clear, .white.opacity(0.05), .clear], startPoint: .bottomLeading, endPoint: .topTrailing)
                     }
                 }
                 .widgetURL(QS.trackURL)
@@ -133,6 +138,9 @@ struct QuickStartView: View {
             .frame(maxWidth: .infinity, minHeight: height)
             .background(QS.gradient, in: RoundedRectangle(cornerRadius: 12, style: .continuous))
             .widgetAccentable()
+            // A lit top edge, like a dashboard button.
+            .overlay(RoundedRectangle(cornerRadius: 12, style: .continuous)
+                .strokeBorder(LinearGradient(colors: [.white.opacity(0.45), .clear], startPoint: .top, endPoint: .center), lineWidth: 1))
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Text("Start a drive"))

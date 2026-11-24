@@ -279,6 +279,7 @@ struct TrackRootView: View {
         guard !tracker.isActive else { return }
         if !tracker.canTrack { tracker.requestPermission(); return }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        Ignition.arm()
         tracker.start(kind: kind)
     }
 
@@ -288,6 +289,7 @@ struct TrackRootView: View {
         guard !tracker.isActive else { return }
         if !tracker.canTrack { tracker.requestPermission(); return }
         UINotificationFeedbackGenerator().notificationOccurred(.success)
+        Ignition.arm()
         tracker.start(kind: .drive)
     }
 }

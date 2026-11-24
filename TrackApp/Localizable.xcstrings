@@ -683,6 +683,28 @@
         }
       }
     },
+    "Drive saved": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viaje guardado"
+          }
+        }
+      }
+    },
+    "Drive saved, %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viaje guardado, %@"
+          }
+        }
+      }
+    },
     "Drives, rides, hikes, runs and walks, each saved with its route, speed, time and distance. Roamr notices when a drive starts, records it with one tap and finishes it when you park.": {
       "extractionState": "manual",
       "localizations": {
@@ -1130,6 +1152,39 @@
           "stringUnit": {
             "state": "translated",
             "value": "Los puntos dorados usan tu odómetro. Los azules usan los viajes que Roamr grabó entre cargas."
+          }
+        }
+      }
+    },
+    "Good afternoon": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenas tardes"
+          }
+        }
+      }
+    },
+    "Good evening": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenas noches"
+          }
+        }
+      }
+    },
+    "Good morning": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenos días"
           }
         }
       }
@@ -1805,6 +1860,17 @@
         }
       }
     },
+    "Night cruise": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Paseo nocturno"
+          }
+        }
+      }
+    },
     "Night-map trip history with weekly totals": {
       "extractionState": "manual",
       "localizations": {
@@ -2329,6 +2395,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Política de privacidad"
+          }
+        }
+      }
+    },
+    "Quick drives": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Viajes rápidos"
           }
         }
       }
@@ -2934,6 +3011,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Almacenamiento"
+          }
+        }
+      }
+    },
+    "Tap one to start the drive with directions.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Toca uno para empezar el viaje con indicaciones."
           }
         }
       }

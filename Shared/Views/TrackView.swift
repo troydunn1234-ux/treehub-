@@ -81,20 +81,19 @@ struct TrackView: View {
                 VStack(alignment: .leading, spacing: Theme.gap + 4) {
                     if tracker.denied { deniedCard }
                     #if TRACK_APP
+                    // One obvious thing to do first: Start drive (with its one-line promise under it). Then one-tap
+                    // drives to your pinned places, then your recent drives.
+                    VStack(spacing: 10) {
+                        startButton
+                        lockedNote
+                    }
                     PinnedChipsRow(origin: tracker.lastKnownCoordinate, onGo: goToPin, onManage: { showPins = true })
                     PinSuggestionCard(activities: Array(activities.prefix(150)))
-                    #endif
-                    #if !TRACK_APP
-                    kindPicker
-                    #endif
-                    startButton
-                    Label("Keeps recording with your phone locked", systemImage: "lock.fill")
-                        .font(Theme.rounded(12, .semibold))
-                        .foregroundStyle(Theme.textDim)
-                        .frame(maxWidth: .infinity)
-                    #if TRACK_APP
                     if activities.contains(where: { $0.kind == .drive }) { recentList }
                     #else
+                    kindPicker
+                    startButton
+                    lockedNote
                     if !activities.isEmpty { recentList }
                     #endif
                 }
@@ -161,7 +160,8 @@ struct TrackView: View {
         #endif
     }
 
-    /// Full-bleed live map that fades into the page, with the title on top (Roamr: just the week line).
+    /// Full-bleed live map that fades into the page, with the title on top (Roamr: a hello for the time of day and
+    /// the week line; after sunset the map takes a violet night-cruise tint).
     private var mapHero: some View {
         ZStack(alignment: .bottomLeading) {
             Map(position: $camera)
@@ -177,8 +177,13 @@ struct TrackView: View {
                         .init(color: Theme.forestDeep, location: 1),
                     ], startPoint: .top, endPoint: .bottom)
                 }
+                #if TRACK_APP
+                .overlay { nightTint }
+                #endif
             VStack(alignment: .leading, spacing: 4) {
-                #if !TRACK_APP
+                #if TRACK_APP
+                heroGreeting
+                #else
                 Text(screenTitle)
                     .font(Theme.title(44))
                     .foregroundStyle(.white)
@@ -200,9 +205,41 @@ struct TrackView: View {
         #endif
     }
 
+    #if TRACK_APP
+    /// "Good evening" / "Night cruise" over the map, with the hour's symbol (NightDrive.swift).
+    private var heroGreeting: some View {
+        let hello = NightCruise.greeting()
+        return Label(hello.text, systemImage: hello.symbol)
+            .font(Theme.rounded(14, .heavy))
+            .foregroundStyle(Theme.glow)
+            .shadow(color: Theme.glow.opacity(0.45), radius: 6)
+            .accessibilityAddTraits(.isHeader)
+    }
+
+    /// After sunset the map takes a violet night-cruise tint from the top.
+    @ViewBuilder private var nightTint: some View {
+        if NightCruise.isOn() {
+            LinearGradient(colors: [NightCruise.violet.opacity(0.32), NightCruise.violet.opacity(0.08), .clear],
+                           startPoint: .top, endPoint: .bottom)
+                .allowsHitTesting(false)
+        }
+    }
+    #endif
+
+    /// The one-line promise under Start.
+    private var lockedNote: some View {
+        Label("Keeps recording with your phone locked", systemImage: "lock.fill")
+            .font(Theme.rounded(12, .semibold))
+            .foregroundStyle(Theme.textDim)
+            .frame(maxWidth: .infinity)
+    }
+
     /// Go from the directions sheet: start recording if needed, then follow the route.
     private func startNavigation() {
         if !tracker.isActive {
+            #if TRACK_APP
+            Ignition.arm()
+            #endif
             chosenKind = nav.mode.activity
             tracker.start(kind: nav.mode.activity)   // Roamr: always a drive (RouteTracker.start)
             camera = .userLocation(followsHeading: false, fallback: .automatic)
@@ -294,6 +331,10 @@ struct TrackView: View {
     private var startButton: some View {
         Button {
             UINotificationFeedbackGenerator().notificationOccurred(.success)
+            #if TRACK_APP
+            // The live screen opens with a quick headlight sweep and speed lines (NightDrive.swift).
+            Ignition.arm()
+            #endif
             tracker.start(kind: startKind)
             camera = .userLocation(followsHeading: false, fallback: .automatic)
         } label: {
@@ -320,6 +361,11 @@ struct TrackView: View {
             #endif
         }
         .buttonStyle(PrimaryButtonStyle())
+        #if TRACK_APP
+        // Night-drive look: a headlight beam sweeps across every few seconds, inside a softly lit bezel.
+        .headlightSweep()
+        .dashGlowRing()
+        #endif
         .disabled(tracker.denied)
         #if TRACK_APP
         .accessibilityHint("Records this drive with its route, speed and time")
@@ -731,6 +777,10 @@ struct TrackView: View {
             .padding(.horizontal, 12)
             .padding(.bottom, 96)
         }
+        #if TRACK_APP
+        // Just after Start: a quick headlight sweep and speed lines (NightDrive.swift; once per start).
+        .overlay { IgnitionFX().ignoresSafeArea() }
+        #endif
         .confirmationDialog("Finish this \(tracker.kind.title.lowercased())?", isPresented: $confirmFinish, titleVisibility: .visible) {
             Button("Save it") { finish() }
             Button("Discard recording", role: .destructive) { confirmDiscard = true }

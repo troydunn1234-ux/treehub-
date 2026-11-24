@@ -16,6 +16,8 @@ struct PinnedChipsRow: View {
     @State private var nav = Navigator.shared
     @State private var etas: [String: TimeInterval] = [:]
     @State private var tapped = 0
+    /// The chip tapped last (its icon bounces).
+    @State private var tappedID: String?
 
     private var pins: [CommutePin] { CommuteStore.pins(nav) }
 
@@ -31,7 +33,7 @@ struct PinnedChipsRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack(alignment: .firstTextBaseline) {
-                SectionHeader(title: here.map { String(localized: "From \($0.label)") } ?? String(localized: "Pinned"),
+                SectionHeader(title: here.map { String(localized: "From \($0.label)") } ?? String(localized: "Quick drives"),
                               symbol: "pin.fill")
                 Button(action: onManage) {
                     Text(pins.isEmpty ? "" : String(localized: "Edit"))
@@ -49,11 +51,15 @@ struct PinnedChipsRow: View {
                     .font(Theme.rounded(13, .medium)).foregroundStyle(Theme.textDim)
                     .fixedSize(horizontal: false, vertical: true)
             } else {
+                Text("Tap one to start the drive with directions.")
+                    .font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, -6)
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 10) {
                         ForEach(targets) { p in chip(p) }
                     }
-                    .padding(.vertical, 2)
+                    .padding(.vertical, 4)
                 }
                 .scrollClipDisabled()
             }
@@ -87,10 +93,15 @@ struct PinnedChipsRow: View {
         .buttonStyle(.plain)
     }
 
+    /// A dashboard-style chip: dark glass, an edge that catches the light at the top, a glowing icon and a thin
+    /// dash light along the bottom; the drive time sits in a small lit pill.
     private func chip(_ p: CommutePin) -> some View {
         let eta = etas[p.id]
+        let tint = p.role == .custom ? Theme.gold : Theme.glow
+        let shape = RoundedRectangle(cornerRadius: Theme.radius, style: .continuous)
         return Button {
             tapped += 1
+            tappedID = p.id
             onGo(p.place)
         } label: {
             HStack(spacing: 12) {
@@ -99,17 +110,28 @@ struct PinnedChipsRow: View {
                     .foregroundStyle(Theme.forestDeep)
                     .frame(width: 42, height: 42)
                     .background(p.role == .custom ? AnyShapeStyle(Theme.goldGradient) : AnyShapeStyle(Theme.leafGradient), in: Circle())
+                    .shadow(color: tint.opacity(0.5), radius: 6)
+                    .symbolEffect(.bounce, value: tappedID == p.id ? tapped : 0)
                     .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 1) {
+                VStack(alignment: .leading, spacing: 4) {
                     Text("→ \(p.label)")
                         .font(Theme.rounded(18, .heavy)).foregroundStyle(.white)
                         .lineLimit(1)
                     Group {
-                        if let eta { Text(NavFormat.duration(eta)).contentTransition(.numericText()) }
-                        else { Text("Drive with directions") }
+                        if let eta {
+                            Label {
+                                Text(NavFormat.duration(eta)).contentTransition(.numericText())
+                            } icon: {
+                                Image(systemName: "clock.fill").imageScale(.small)
+                            }
+                            .padding(.horizontal, 7).padding(.vertical, 2)
+                            .background(tint.opacity(0.16), in: Capsule())
+                        } else {
+                            Text("Drive with directions")
+                        }
                     }
                     .font(Theme.rounded(12, .bold)).monospacedDigit()
-                    .foregroundStyle(eta == nil ? Theme.textDim : Theme.glow)
+                    .foregroundStyle(eta == nil ? Theme.textDim : tint)
                     .lineLimit(1)
                 }
                 .fixedSize(horizontal: true, vertical: false)
@@ -117,10 +139,23 @@ struct PinnedChipsRow: View {
             .padding(.leading, 10).padding(.trailing, 18)
             .frame(minHeight: 66)
             .background {
-                RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(.ultraThinMaterial).opacity(0.6)
-                RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(Theme.glow.opacity(0.08))
+                shape.fill(.ultraThinMaterial).opacity(0.6)
+                shape.fill(LinearGradient(colors: [tint.opacity(0.12), Theme.forestDeep.opacity(0.35)],
+                                          startPoint: .top, endPoint: .bottom))
             }
-            .overlay(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).strokeBorder(Theme.glow.opacity(0.3)))
+            .overlay {
+                shape.strokeBorder(LinearGradient(colors: [tint.opacity(0.55), tint.opacity(0.10)],
+                                                  startPoint: .top, endPoint: .bottom), lineWidth: 1)
+            }
+            .overlay(alignment: .bottom) {
+                Capsule()
+                    .fill(LinearGradient(colors: [tint.opacity(0), tint, tint.opacity(0)], startPoint: .leading, endPoint: .trailing))
+                    .frame(height: 2)
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 1)
+                    .shadow(color: tint.opacity(0.8), radius: 4)
+                    .accessibilityHidden(true)
+            }
             .contentShape(Rectangle())
         }
         .pressable()
