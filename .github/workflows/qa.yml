@@ -9,7 +9,8 @@ name: Simulator QA
 # every time) is captured in short shards, one runner each (.github/scripts/qa_shards.py: a few screens per shard,
 # live-map screens in shards of their own, the Watch in one more), each with its own short timeout; every shard
 # pushes to qa-<app>-<shard> as it goes and the merge job then puts them together on qa-<app> (one flat folder,
-# summary.txt per shard, MISSING lines for screens a lost shard never took) and deletes the shard branches.
+# summary.txt per shard, MISSING lines for screens a lost shard never took). Shard branches stay until the next run,
+# so "Re-run failed jobs" re-takes only the lost shards and the merge then combines them with the ones kept.
 on:
   workflow_dispatch:
     inputs:
@@ -46,6 +47,14 @@ jobs:
           echo "apps=$(echo "$J" | python3 -c "import json,sys;print(json.dumps(json.load(sys.stdin)['apps']))")" >> $GITHUB_OUTPUT
           echo "shards=$(echo "$J" | python3 -c "import json,sys;print(json.dumps(json.load(sys.stdin)['shards']))")" >> $GITHUB_OUTPUT
           echo "sharded=$(echo "$J" | python3 -c "import json,sys;print('yes' if any(s['sharded']=='1' for s in json.load(sys.stdin)['shards']) else 'no')")" >> $GITHUB_OUTPUT
+          # Shard branches left by an earlier run would be merged as if they were this run's: remove them now.
+          # (They are kept after the merge, so "Re-run failed jobs" re-takes only the lost shards and merges again.)
+          URL="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          for a in $(echo "$J" | python3 -c "import json,sys;print(' '.join(sorted({s['app'] for s in json.load(sys.stdin)['shards'] if s['sharded']=='1'})))"); do
+            for b in $(git ls-remote --heads "$URL" "qa-$a-*" | sed 's#.*refs/heads/##'); do
+              echo "removing old shard branch $b"; git push -q "$URL" --delete "$b" || true
+            done
+          done
 
   build:
     needs: pick
@@ -264,5 +273,3 @@ jobs:
               git("-c", "user.name=TreeHub CI", "-c", "user.email=ci@users.noreply.github.com",
                   "commit", "-q", "-m", f"QA for {os.environ['SHA'][:7]} (merged shards)", cwd=out)
               git("push", "-q", "-f", url, f"qa-{app}", cwd=out)
-              for br in found:
-                  git("push", "-q", url, "--delete", br, cwd=out, check=False)
