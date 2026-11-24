@@ -451,28 +451,31 @@ private struct RepeatKey: View {
     }
 }
 
-/// A 3D keycap: a darker base with a lit face that sinks when pressed.
+/// A 3D keycap: a darker base with a lit face that sinks when pressed. The base is drawn behind the label, so a key
+/// is exactly as tall as its label: as a bare shape in a stack it took all the height on offer, and the PC keys row
+/// stood in tall dark columns that also squeezed the trackpad.
 struct KeycapStyle: ButtonStyle {
     var lit = false
     func makeBody(configuration: Configuration) -> some View {
         let shape = RoundedRectangle(cornerRadius: 14, style: .continuous)
         let down = configuration.isPressed
-        return ZStack {
-            shape.fill(lit ? AnyShapeStyle(Color(red: 0.35, green: 0.12, blue: 0.45)) : AnyShapeStyle(Color.black.opacity(0.55)))
-                .offset(y: 4)
-            configuration.label
-                .background {
-                    ZStack {
-                        shape.fill(lit ? AnyShapeStyle(Look.accent)
-                                       : AnyShapeStyle(LinearGradient(colors: [Color(white: 0.24), Color(white: 0.12)], startPoint: .top, endPoint: .bottom)))
-                        shape.strokeBorder(LinearGradient(colors: [.white.opacity(0.35), .white.opacity(0.04)], startPoint: .top, endPoint: .bottom), lineWidth: 1)
-                    }
+        return configuration.label
+            .background {
+                ZStack {
+                    shape.fill(lit ? AnyShapeStyle(Look.accent)
+                                   : AnyShapeStyle(LinearGradient(colors: [Color(white: 0.24), Color(white: 0.12)], startPoint: .top, endPoint: .bottom)))
+                    shape.strokeBorder(LinearGradient(colors: [.white.opacity(0.35), .white.opacity(0.04)], startPoint: .top, endPoint: .bottom), lineWidth: 1)
                 }
-                .offset(y: down ? 3 : 0)
-        }
-        .padding(.bottom, 4)
-        .shadow(color: lit ? Look.magenta.opacity(0.5) : .black.opacity(0.35), radius: lit ? 10 : 6, y: 4)
-        .animation(.spring(response: 0.18, dampingFraction: 0.6), value: down)
+            }
+            .offset(y: down ? 3 : 0)
+            // The base stays put (offset doesn't move the frame this background is sized to) while the face sinks.
+            .background {
+                shape.fill(lit ? AnyShapeStyle(Color(red: 0.35, green: 0.12, blue: 0.45)) : AnyShapeStyle(Color.black.opacity(0.55)))
+                    .offset(y: 4)
+            }
+            .padding(.bottom, 4)
+            .shadow(color: lit ? Look.magenta.opacity(0.5) : .black.opacity(0.35), radius: lit ? 10 : 6, y: 4)
+            .animation(.spring(response: 0.18, dampingFraction: 0.6), value: down)
     }
 }
 
