@@ -618,6 +618,19 @@ extension ActivityDetailView {
         return out
     }
 
+    /// "Drive, 12.4 mi, from Mission St to Main St" for VoiceOver on the route map (places only when known).
+    private var routeSummary: String {
+        var parts = [activity.kind.title, Format.distance(activity.distanceM)]
+        let from = activity.startPlace, to = activity.endPlace
+        switch (from.isEmpty, to.isEmpty) {
+        case (false, false): parts.append(String(localized: "from \(from) to \(to)"))
+        case (false, true): parts.append(String(localized: "from \(from)"))
+        case (true, false): parts.append(String(localized: "to \(to)"))
+        default: break
+        }
+        return parts.joined(separator: ", ")
+    }
+
     /// Turn / lane-change icons only once you've zoomed in (or when there are just a few).
     private var showLaneMarkers: Bool {
         let n = route.laneChanges.count
@@ -697,6 +710,9 @@ extension ActivityDetailView {
                 MapScaleView()
             }
             .environment(\.colorScheme, night ? .dark : .light)
+            // VoiceOver: what the map shows (the route), not only the map's own street labels.
+            .accessibilityLabel(Text("Route map"))
+            .accessibilityValue(Text(routeSummary))
             .onMapCameraChange(frequency: .onEnd) { ctx in
                 visibleSpan = ctx.region.span.latitudeDelta
             }

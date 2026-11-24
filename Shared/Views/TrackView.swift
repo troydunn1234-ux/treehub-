@@ -168,6 +168,8 @@ struct TrackView: View {
                 .mapStyle(.standard(elevation: .realistic, emphasis: .muted))
                 .environment(\.colorScheme, .dark)
                 .allowsHitTesting(false)
+                // A still backdrop (it can't be moved or tapped): VoiceOver goes straight to the greeting and Start.
+                .accessibilityHidden(true)
                 .frame(height: heroHeight)
                 .overlay {
                     LinearGradient(stops: [

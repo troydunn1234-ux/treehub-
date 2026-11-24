@@ -131,6 +131,11 @@ struct TreesView: View {
                             TreePin(photo: t.coverPhoto, size: selectedTree == t.id ? 58 : 44)
                         }
                         .buttonStyle(.plain)
+                        // VoiceOver: the tree's name and hugs, not "triangle".
+                        .accessibilityLabel(Text(t.name))
+                        .accessibilityValue(Text(t.hugCount == 1 ? "1 hug" : "\(t.hugCount) hugs"))
+                        .accessibilityHint(Text("Shows this tree's card"))
+                        .accessibilityAddTraits(selectedTree == t.id ? .isSelected : [])
                     }
                 }
                 if showFriendTrees {
