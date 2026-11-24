@@ -306,9 +306,17 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, URLSe
         case .ccToggle: code = "KEY_CAPTION"
         case .powerOn: return
         }
-        try await send(tv, ["method": "ms.remote.control",
-                            "params": ["Cmd": "Click", "DataOfCmd": code, "Option": "false",
-                                       "TypeOfRemote": "SendRemoteKey"]])
+        let payload: [String: Any] = ["method": "ms.remote.control",
+                                      "params": ["Cmd": "Click", "DataOfCmd": code, "Option": "false",
+                                                 "TypeOfRemote": "SendRemoteKey"]]
+        if key == .powerToggle {
+            // A TV that's fully off doesn't answer its socket: wake it over the network instead (as LG does).
+            do { try await send(tv, payload) } catch TVControlError.unreachable {
+                do { try await wake(tv) } catch { throw TVControlError.unreachable }
+            }
+            return
+        }
+        try await send(tv, payload)
     }
 
     /// Wake-on-LAN: magic packet to the subnet broadcast and straight to the TV's address.
