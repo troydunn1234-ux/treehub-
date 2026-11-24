@@ -365,7 +365,11 @@ enum SuggestionEngine {
         out.stressNote = stressNote
         out.sources = s?.sources ?? []
         out.computedAt = now
-        out.timeOnly = !(s?.hasBodyData ?? false) && s?.lastHeatEnd == nil && s?.lastWorkoutEnd == nil
+        // Time of day only: no body numbers, and neither the sauna nor the training rule fired. (The last sauna or
+        // steam session is in every snapshot, even from days ago, so its mere presence said nothing about now: with
+        // any heat in the log the card never said its pick came from the clock, and the Watch kept its own pick
+        // over the iPhone's fuller one.)
+        out.timeOnly = !(s?.hasBodyData ?? false) && r.id != "heat" && r.id != "post-workout"
         out.why = whyLines(s, stress: stress, stressNote: stressNote, rule: r, now: now, worksBest: out.worksBest)
         return out
     }

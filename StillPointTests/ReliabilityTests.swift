@@ -78,6 +78,24 @@ final class ReliabilityTests: XCTestCase {
         XCTAssertEqual(week.reduce(0) { $0 + $1.minutes }, 10)
     }
 
+    // MARK: Right now
+
+    /// A sauna session from days ago doesn't make a clock pick look body-based; one just finished does pick.
+    func testOldSaunaSessionLeavesATimeOfDayPick() throws {
+        let now = try XCTUnwrap(Calendar.current.date(bySettingHour: 15, minute: 0, second: 0, of: Date()))
+        var s = BodySnapshot()
+        s.lastHeatKind = "sauna"
+        s.lastHeatMinutes = 15
+        s.lastHeatEnd = now.addingTimeInterval(-3 * 86_400)
+        let old = SuggestionEngine.suggest(s, stress: nil, stressNote: nil, now: now, lastDone: nil, worksBest: [], isLocked: { _ in false })
+        XCTAssertEqual(old.rule, "afternoon")
+        XCTAssertTrue(old.timeOnly, "an old sauna session hid that the pick came from the time of day")
+        s.lastHeatEnd = now.addingTimeInterval(-10 * 60)
+        let fresh = SuggestionEngine.suggest(s, stress: nil, stressNote: nil, now: now, lastDone: nil, worksBest: [], isLocked: { _ in false })
+        XCTAssertEqual(fresh.rule, "heat")
+        XCTAssertFalse(fresh.timeOnly)
+    }
+
     // MARK: Cached answers follow the log
 
     /// Active days and "Works best for you" are kept between reads; sessions added after a read still count at once.
