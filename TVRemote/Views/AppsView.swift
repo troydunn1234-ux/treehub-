@@ -352,7 +352,11 @@ struct AppTile: View {
     @State private var pressed = false
     @State private var flash = false
     @State private var aura = false
-    @State private var frame: CGRect = .zero
+    /// Where the tile is on screen (for the beam and the tilt). Kept in a box, not in state: scrolling moves it
+    /// every frame, and a state change would redraw every tile on every scroll frame. It's only read on touch.
+    @State private var frame = FrameBox()
+
+    final class FrameBox { var rect: CGRect = .zero }
 
     var body: some View {
         Button(action: tap) { tileFace }
@@ -362,7 +366,7 @@ struct AppTile: View {
                     .onChanged { v in
                         guard !reduceMotion else { return }
                         // Tilt toward the finger: -1...1 from the tile's center.
-                        let w = max(frame.width, 1), h = max(frame.height, 1)
+                        let w = max(frame.rect.width, 1), h = max(frame.rect.height, 1)
                         tilt = CGSize(width: max(-1, min(1, (v.location.x - w / 2) / (w / 2))),
                                       height: max(-1, min(1, (v.location.y - h / 2) / (h / 2))))
                     }
@@ -440,8 +444,8 @@ struct AppTile: View {
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: tilt)
         .animation(.spring(response: 0.3, dampingFraction: 0.6), value: pressed)
         .background(GeometryReader { g in
-            Color.clear.onAppear { frame = g.frame(in: .named("apps")) }
-                .onChange(of: g.frame(in: .named("apps"))) { _, f in frame = f }
+            Color.clear.onAppear { frame.rect = g.frame(in: .named("apps")) }
+                .onChange(of: g.frame(in: .named("apps"))) { _, f in frame.rect = f }
         })
         .contentShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
     }
@@ -449,7 +453,7 @@ struct AppTile: View {
     private func tap() {
         withAnimation(.easeOut(duration: 0.08)) { flash = true }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.12) { withAnimation(.easeOut(duration: 0.35)) { flash = false } }
-        action(frame)
+        action(frame.rect)
     }
 
     private func startAura(_ on: Bool) {
