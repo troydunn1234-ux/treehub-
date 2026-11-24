@@ -147,11 +147,25 @@ jobs:
         run: |
           git config user.name "TreeHub CI"
           git config user.email "ci@users.noreply.github.com"
-          git add TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements TrackApp/Info.plist TrackApp/TrackHub.entitlements RootboundWidgets/Info.plist RoamrWidgets/Info.plist WebApps/*/Info.plist TVRemote/Info.plist RoamrWatch/Info.plist FoodBookWatch/Info.plist ClankerrWatch/Info.plist PulseLab/Info.plist PulseLab/PulseLab.entitlements StillPoint/Info.plist StillPoint/StillPoint.entitlements StillPointWatch/Info.plist StillPointWatch/StillPointWatch.entitlements
-          if git diff --cached --quiet; then
-            echo "Project unchanged"
-          else
-            git commit -m "Update generated Xcode project [skip ci]"
-            git pull --rebase origin main
-            git push
-          fi
+          # The project plus the Info.plists / entitlements xcodegen writes that are kept in git (Natal Orbit is
+          # paused: its files stay as they are; Food Book was dropped). Only files that exist are added.
+          FILES="TreeHub.xcodeproj TreeHub/Info.plist TreeHub/TreeHub.entitlements TrackApp/Info.plist TrackApp/TrackHub.entitlements
+            RootboundWidgets/Info.plist RootboundWatch/Info.plist RootboundWatch/RootboundWatch.entitlements RootboundWatchWidgets/Info.plist
+            RoamrWidgets/Info.plist RoamrWatch/Info.plist WebApps/QuestApp/Info.plist
+            TVRemote/Info.plist ClankerrWatch/Info.plist PulseLab/Info.plist PulseLab/PulseLab.entitlements
+            StillPoint/Info.plist StillPoint/StillPoint.entitlements StillPointWatch/Info.plist StillPointWatch/StillPointWatch.entitlements"
+          git add -- $(for f in $FILES; do [ -e "$f" ] && echo "$f"; done)
+          if git diff --cached --quiet; then echo "Project unchanged"; exit 0; fi
+          git commit -q -m "Update generated Xcode project [skip ci]"
+          git show --stat --format="Committing: %s" HEAD | head -30
+          # Other helpers push to main all the time: rebase onto the newest main (setting aside any other file the
+          # build touched) and retry; if main keeps moving, the next green build commits the project instead.
+          for i in 1 2 3; do
+            if git pull -q --rebase --autostash origin main; then
+              git push -q origin HEAD:main && { echo "Pushed the regenerated project"; exit 0; }
+            else
+              git rebase --abort 2>/dev/null || true
+            fi
+            echo "main moved on meanwhile (attempt $i); trying again"; sleep $((i * 10))
+          done
+          echo "::warning title=Generated Xcode project not committed::main kept moving; the next green build will commit it."
