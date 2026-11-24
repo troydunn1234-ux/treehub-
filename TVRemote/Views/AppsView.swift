@@ -9,6 +9,8 @@ struct AppsView: View {
     @State private var launching: String?
     @State private var appeared = false
     @State private var beam: Beam?
+    /// Taps per quick action, for its symbol's bounce.
+    @State private var bounces: [String: Int] = [:]
 
     struct Beam: Identifiable, Equatable {
         let id = UUID()
@@ -40,15 +42,14 @@ struct AppsView: View {
                     VStack(alignment: .leading, spacing: Look.S.m) {
                         SectionHeader(title: "Quick actions") { SearchChip() }
                         HStack(spacing: Look.S.s) {
-                            action("Power", "power", tint: Look.red) { store.press(.powerToggle) }
+                            action("Power", "power", tint: Look.red, feel: .impact(weight: .heavy)) { store.press(.powerToggle) }
                             action("Input", "rectangle.on.rectangle", tint: Look.cyan) { store.press(.inputNext) }
                             action("Home", "house.fill", tint: Look.violet) { store.press(.home) }
                             action("Mute", "speaker.slash.fill", tint: Look.magenta) { store.press(.muteToggle) }
                         }
                     }
 
-                    ScenesRow()
-
+                    // Your apps before Scenes: the app tiles are the main thing on this screen.
                     VStack(alignment: .leading, spacing: Look.S.m) {
                         SectionHeader(title: "Your apps") {
                             ChipButton(title: "Edit") { editing = true }
@@ -94,6 +95,8 @@ struct AppsView: View {
                             }
                         }
                     }
+
+                    ScenesRow()
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, Look.S.xs)
@@ -159,7 +162,7 @@ struct AppsView: View {
                     LiveDot(color: store.reachable ? Look.live : .orange, size: 7, pulsing: store.reachable)
                         .frame(width: 16, height: 16)
                 }
-                Text(store.reconnecting ? "Searching…" : store.reachable ? "Live" : "Offline · Retry")
+                Text(store.reconnecting ? "Searching…" : store.reachable ? "Connected" : "Offline · Retry")
                     .font(Look.font(12, .heavy)).foregroundStyle(Color.white.opacity(store.reachable ? 0.85 : 1))
             }
             .padding(.leading, Look.S.s).padding(.trailing, Look.S.m).frame(minHeight: 36)
@@ -173,13 +176,17 @@ struct AppsView: View {
         .accessibilityLabel(store.reachable ? "Connected" : "TV offline. Tap to search for it again.")
     }
 
-    private func action(_ title: String, _ symbol: String, tint: Color, run: @escaping () -> Void) -> some View {
+    /// A quick action key: clicks on touch-down like the remote's keys, and its symbol bounces when it fires.
+    private func action(_ title: String, _ symbol: String, tint: Color,
+                        feel: SensoryFeedback = .impact(flexibility: .rigid, intensity: 0.7),
+                        run: @escaping () -> Void) -> some View {
         Button {
-            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            if !reduceMotion { bounces[title, default: 0] += 1 }
             run()
         } label: {
             VStack(spacing: Look.S.s) {
                 Image(systemName: symbol).font(.system(size: 17, weight: .bold)).foregroundStyle(tint)
+                    .symbolEffect(.bounce, value: bounces[title, default: 0])
                     .frame(width: 40, height: 40)
                     .background(tint.opacity(0.16), in: Circle())
                     .overlay(Circle().strokeBorder(tint.opacity(0.35), lineWidth: 1))
@@ -189,7 +196,7 @@ struct AppsView: View {
             .frame(maxWidth: .infinity).frame(height: 84)
             .glass(Look.R.card)
         }
-        .buttonStyle(SquishStyle())
+        .buttonStyle(RemoteKeyStyle(scale: 0.93, feel: feel))
         .accessibilityLabel(title)
     }
 }
