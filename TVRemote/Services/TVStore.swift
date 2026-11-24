@@ -485,11 +485,19 @@ final class TVStore {
         }
     }
 
+    /// When the last error buzz played (see handle).
+    @ObservationIgnored private var lastErrorBuzz = Date.distantPast
+
     private func handle(_ error: Error?) {
         guard let error else { return }
         if case TVControlError.unreachable = error { noteUnreachable() }
         if case TVControlError.notPaired = error, let t = tv { controller(for: t.brand).forget(t); updatePaired() }
-        UINotificationFeedbackGenerator().notificationOccurred(.error)
+        // Keys sent to a TV that isn't answering all fail together a few seconds later (a held volume key sends five
+        // a second): one error buzz for the burst, not one per key.
+        if Date().timeIntervalSince(lastErrorBuzz) > 2 {
+            lastErrorBuzz = Date()
+            UINotificationFeedbackGenerator().notificationOccurred(.error)
+        }
         show(error.localizedDescription)
     }
 
