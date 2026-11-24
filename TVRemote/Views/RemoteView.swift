@@ -138,10 +138,30 @@ struct RemoteView: View {
     }
 
     /// One tap to open a favorite app (Netflix, YouTube, Hulu, Prime Video, Disney+ by default) on the TV.
-    /// Calm glass chips with each app's color dot; the app that's on the TV lights up in its color.
+    /// Calm glass chips with each app's color dot; the app that's on the TV lights up in its color and is
+    /// scrolled into view.
     private var quickLaunch: some View {
         let apps = Array(store.favoriteApps.prefix(6))
-        return ScrollView(.horizontal, showsIndicators: false) {
+        return ScrollViewReader { proxy in
+            quickLaunchRow(apps)
+                .onAppear { DispatchQueue.main.async { reveal(proxy, in: apps, animated: false) } }
+                .onChange(of: store.nowPlaying) { _, _ in reveal(proxy, in: apps, animated: true) }
+        }
+        .frame(height: 44)
+    }
+
+    /// Bring the app that's on the TV into view (it may be the 5th or 6th chip, past the screen's edge).
+    private func reveal(_ proxy: ScrollViewProxy, in apps: [StreamingApp], animated: Bool) {
+        guard let now = store.nowPlaying, apps.contains(where: { $0.name == now }) else { return }
+        if animated && !reduceMotion {
+            withAnimation(.easeInOut(duration: 0.35)) { proxy.scrollTo(now, anchor: .center) }
+        } else {
+            proxy.scrollTo(now, anchor: .center)
+        }
+    }
+
+    private func quickLaunchRow(_ apps: [StreamingApp]) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
             HStack(spacing: 6) {
                 ForEach(apps) { app in
                     let on = store.nowPlaying == app.name
@@ -167,6 +187,7 @@ struct RemoteView: View {
                     }
                     .buttonStyle(RemoteKeyStyle(scale: 0.93, feel: .selection))
                     .accessibilityLabel(on ? "\(app.name), on the TV now" : "Open \(app.name) on the TV")
+                    .id(app.name)
                 }
             }
             .padding(.horizontal, 2)
