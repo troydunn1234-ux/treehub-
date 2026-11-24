@@ -1,6 +1,28 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ differ": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difieren"
+          }
+        }
+      }
+    },
+    "%@ differs": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difiere"
+          }
+        }
+      }
+    },
     "%@: Watch %@, WHOOP %@ %@": {
       "localizations": {
         "es": {
@@ -17,6 +39,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@: aún sin puntuación"
+          }
+        }
+      }
+    },
+    "%lld of %lld agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden %1$lld de %2$lld"
           }
         }
       }
@@ -47,6 +80,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Ambos dicen descansa"
+          }
+        }
+      }
+    },
+    "How closely your Apple Watch and WHOOP agree today on resting HR, HRV, sleep and strain.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánto coinciden hoy tu Apple Watch y WHOOP en FC en reposo, VFC, sueño y esfuerzo."
           }
         }
       }
@@ -121,12 +165,34 @@
         }
       }
     },
+    "Resting HR · HRV · Sleep · Strain": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "FC en reposo · VFC · Sueño · Esfuerzo"
+          }
+        }
+      }
+    },
     "Resting heart rate": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Frecuencia cardiaca en reposo"
+          }
+        }
+      }
+    },
+    "Same story today": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy cuentan lo mismo"
           }
         }
       }
@@ -201,6 +267,17 @@
         }
       }
     },
+    "Waiting for both trackers": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a los dos"
+          }
+        }
+      }
+    },
     "Watch is more upbeat": {
       "localizations": {
         "es": {
@@ -217,6 +294,50 @@
           "stringUnit": {
             "state": "translated",
             "value": "Preparación del Watch"
+          }
+        }
+      }
+    },
+    "Watch versus WHOOP agree %lld percent today, %@. %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch y WHOOP coinciden un %1$lld por ciento hoy, %2$@. %3$@"
+          }
+        }
+      }
+    },
+    "Watch versus WHOOP: no agreement score yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch frente a WHOOP: aún sin puntuación de coincidencia"
+          }
+        }
+      }
+    },
+    "Watch vs WHOOP": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch vs WHOOP"
+          }
+        }
+      }
+    },
+    "agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "coinciden"
           }
         }
       }

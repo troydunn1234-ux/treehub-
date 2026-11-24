@@ -1,6 +1,39 @@
 {
   "sourceLanguage": "en",
   "strings": {
+    "%@ differ": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difieren"
+          }
+        }
+      }
+    },
+    "%@ differs": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difiere"
+          }
+        }
+      }
+    },
+    "%lld of %lld agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden %1$lld de %2$lld"
+          }
+        }
+      }
+    },
     "HRV %lld milliseconds": {
       "localizations": {
         "es": {
@@ -11,12 +44,34 @@
         }
       }
     },
+    "How closely your Watch and WHOOP agree today.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cuánto coinciden hoy tu Watch y WHOOP."
+          }
+        }
+      }
+    },
     "No recovery score yet": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Aún sin puntuación de recuperación"
+          }
+        }
+      }
+    },
+    "Open Pulse Lab to sync": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Pulse Lab para sincronizar"
           }
         }
       }
@@ -37,6 +92,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recuperación, sueño, VFC y esfuerzo."
+          }
+        }
+      }
+    },
+    "Same story today": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy cuentan lo mismo"
           }
         }
       }
@@ -101,12 +167,56 @@
         }
       }
     },
+    "Waiting for both": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Esperando a los dos"
+          }
+        }
+      }
+    },
     "Watch readiness": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
             "value": "Preparación del Watch"
+          }
+        }
+      }
+    },
+    "Watch versus WHOOP agree %lld percent, %@": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch y WHOOP coinciden un %1$lld por ciento, %2$@"
+          }
+        }
+      }
+    },
+    "Watch versus WHOOP: no agreement score yet": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch frente a WHOOP: aún sin puntuación de coincidencia"
+          }
+        }
+      }
+    },
+    "Watch vs WHOOP": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Watch vs WHOOP"
           }
         }
       }
