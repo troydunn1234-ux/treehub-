@@ -174,6 +174,14 @@ enum TopSpeedRepair {
         return clean
     }
 
+    /// The same from a trip's stored route bytes (`Activity.routeData`), so the decoding and checking can run off
+    /// the main thread. Nil (leave the trip alone) when there's no route or it can't be read.
+    static func corrected(maxSpeed: Double, routeData: Data?, kind: ActivityKind) -> Double? {
+        guard maxSpeed.isFinite, maxSpeed > 0, let routeData,
+              let route = try? JSONDecoder().decode([RoutePoint].self, from: routeData) else { return nil }
+        return corrected(maxSpeed: maxSpeed, route: route, kind: kind)
+    }
+
     /// Fixes the given trips in place. Returns how many changed. Safe to run more than once.
     @discardableResult
     static func repair(_ trips: [Activity]) -> Int {

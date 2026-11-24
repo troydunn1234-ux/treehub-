@@ -1,5 +1,6 @@
 import XCTest
 import CoreLocation
+import SwiftData
 @testable import Roamr
 
 /// Spike-free top speed (TopSpeed), the one-time repair of past trips, and Roamr's kind order.
@@ -209,6 +210,63 @@ final class TopSpeedTests: XCTestCase {
         let a = trip(.drive, Array(repeating: 30.0, count: 50), recordedTop: 30)
         a.rawMaxSpeed = 70
         XCTAssertEqual(Activity.copy(of: a).rawMaxSpeed, 70)
+    }
+
+    /// The launch repair works from the stored route bytes in the background: same answer as from the route.
+    func testCorrectedFromStoredBytesMatchesTheRoute() throws {
+        var spiky = Array(repeating: 30.0, count: 300); spiky[150] = 75
+        let r = route(spiky)
+        let data = try JSONEncoder().encode(r)
+        let fromBytes = try XCTUnwrap(TopSpeedRepair.corrected(maxSpeed: 75, routeData: data, kind: .drive))
+        XCTAssertEqual(fromBytes, try XCTUnwrap(TopSpeedRepair.corrected(maxSpeed: 75, route: r, kind: .drive)))
+        XCTAssertEqual(fromBytes, 30, accuracy: 0.01)
+        XCTAssertNil(TopSpeedRepair.corrected(maxSpeed: 75, routeData: nil, kind: .drive))
+        XCTAssertNil(TopSpeedRepair.corrected(maxSpeed: 75, routeData: Data("not a route".utf8), kind: .drive))
+        XCTAssertNil(TopSpeedRepair.corrected(maxSpeed: 30, routeData: data, kind: .drive), "never raised")
+    }
+
+    /// The once-per-install repair on a real (in-memory) store: lowers only the spiky trip, keeps the original,
+    /// sets its flag after saving, and does nothing the second time.
+    @MainActor
+    func testRunOnceRepairsAStoreOnce() async throws {
+        let container = try ModelContainer(for: Activity.self, GasVehicle.self, FillUp.self,
+                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        let context = container.mainContext
+        var spiky = Array(repeating: 30.0, count: 300); spiky[150] = 75
+        let bad = trip(.drive, spiky, recordedTop: 75)
+        let good = trip(.drive, Array(repeating: 30.0, count: 300), recordedTop: 30)
+        let noRoute = Activity(); noRoute.kind = .drive; noRoute.maxSpeed = 75
+        [bad, good, noRoute].forEach { context.insert($0) }
+        try context.save()
+
+        let defaults = UserDefaults.standard
+        let saved = defaults.object(forKey: TopSpeedRepair.doneKey)
+        defer {
+            if let saved { defaults.set(saved, forKey: TopSpeedRepair.doneKey) } else { defaults.removeObject(forKey: TopSpeedRepair.doneKey) }
+        }
+        defaults.removeObject(forKey: TopSpeedRepair.doneKey)
+
+        let changed = await TopSpeedRepair.runOnce(in: context)
+        XCTAssertEqual(changed, 1)
+        XCTAssertEqual(bad.maxSpeed, 30, accuracy: 0.01)
+        XCTAssertEqual(bad.rawMaxSpeed, 75)
+        XCTAssertEqual(bad.notes, "keep me")
+        XCTAssertEqual(good.maxSpeed, 30); XCTAssertNil(good.rawMaxSpeed)
+        XCTAssertEqual(noRoute.maxSpeed, 75); XCTAssertNil(noRoute.rawMaxSpeed)
+        XCTAssertTrue(defaults.bool(forKey: TopSpeedRepair.doneKey))
+        XCTAssertFalse(context.hasChanges, "saved")
+        let again = await TopSpeedRepair.runOnce(in: context)
+        XCTAssertEqual(again, 0)
+    }
+
+    /// Trimming down to a piece too short to filter used to leave the trip with no top speed at all (0).
+    func testTrimToAShortPieceKeepsATopSpeed() {
+        let a = trip(.drive, [20, 22, 25, 24, 23, 21], recordedTop: 25)
+        a.trim(startT: t0 + 4)   // keeps the last two readings: 23 and 21 m/s
+        XCTAssertEqual(a.route.count, 2)
+        XCTAssertGreaterThan(a.maxSpeed, 0)
+        XCTAssertLessThanOrEqual(a.maxSpeed, 25)
+        XCTAssertEqual(a.maxSpeed, 21, accuracy: 0.01)
     }
 
     // MARK: Kind order

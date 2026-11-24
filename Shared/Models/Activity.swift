@@ -97,8 +97,11 @@ final class Activity {
         let s = Self.stats(kept)
         distanceM = s.distance
         movingSec = s.moving
-        // Top speed of what's left, spike-filtered; never higher than the recording's own (filtered) top.
-        let top = TopSpeed.compute(route: kept, kind: kind)
+        // Top speed of what's left, spike-filtered; never higher than the recording's own (filtered) top. When too
+        // few readings are left to filter (a short piece kept), the fastest plain reading left is used, so a trip
+        // that moved never ends up with no top speed at all.
+        let filtered = TopSpeed.compute(route: kept, kind: kind)
+        let top = filtered > 0 ? filtered : min(s.maxSpeed, TopSpeed.cap(for: kind))
         maxSpeed = maxSpeed > 0 ? min(maxSpeed, top) : top
         if cutHead > 0 { start = Date(timeIntervalSince1970: kept.first!.t) }
         end = Date(timeIntervalSince1970: kept.last!.t)
