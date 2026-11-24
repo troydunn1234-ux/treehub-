@@ -144,7 +144,7 @@ if probed:
 else:
     print(f"WARN  {name}: no web/index.html in the app; checking the app process only")
 
-# 2. Fresh install and a demo launch.
+# 2. Fresh install of the probed copy.
 sh("xcrun", "simctl", "terminate", udid, bundle, timeout=60)
 sh("xcrun", "simctl", "uninstall", udid, bundle, timeout=120)
 r = sh("xcrun", "simctl", "install", udid, copy, timeout=300)
@@ -152,30 +152,45 @@ if r.returncode:
     print(f"FAIL  {name}: could not install it in the simulator: {(r.stderr or r.stdout).strip()[:400]}")
     print(f"::error title=Web app {name}::could not install it in the simulator")
     sys.exit(1)
-t0 = time.time()
-r = sh("xcrun", "simctl", "launch", udid, bundle, "-demo", timeout=180)
-m = re.search(r":\s*(\d+)\s*$", r.stdout.strip())
-pid = int(m.group(1)) if m else None
-if r.returncode or not pid:
-    print(f"  ! launch: {(r.stderr or r.stdout).strip()[:300]}")
-time.sleep(0.6)
-screenshot(os.path.join(shots, f"web-{name}-0-splash.png"))
 
-# 3. Wait for the page's report (written about 3 s after load and again 12 s after the page starts).
-store, rep = "", None
-while probed and time.time() - t0 < 75:
-    if not store:
-        container = sh("xcrun", "simctl", "get_app_container", udid, bundle, "data", timeout=60).stdout.strip()
-        store = os.path.join(container, "Documents", "store.json") if container else ""
-    rep = (read_report(store, t0) if store else None) or rep
-    if (rep and rep.get("tag") == "final") or not running(pid):
-        break
-    time.sleep(2)
-if not probed:
-    time.sleep(10)
-waited = int(time.time() - t0)
-screenshot(os.path.join(shots, f"web-{name}-1-loaded.png"))
-up = running(pid)
+
+def attempt(first):
+    """Launch in demo mode and wait for the page's report (written about 3 s after load and again 12 s after the
+    page starts). Returns (report or None, still running, seconds waited, launch time, store path)."""
+    sh("xcrun", "simctl", "terminate", udid, bundle, timeout=60)
+    t0 = time.time()
+    r = sh("xcrun", "simctl", "launch", udid, bundle, "-demo", timeout=180)
+    m = re.search(r":\s*(\d+)\s*$", r.stdout.strip())
+    pid = int(m.group(1)) if m else None
+    if r.returncode or not pid:
+        print(f"  ! launch: {(r.stderr or r.stdout).strip()[:300]}")
+    if first:
+        time.sleep(0.6)
+        screenshot(os.path.join(shots, f"web-{name}-0-splash.png"))
+    store, rep = "", None
+    while probed and time.time() - t0 < 90:
+        if not store:
+            container = sh("xcrun", "simctl", "get_app_container", udid, bundle, "data", timeout=60).stdout.strip()
+            store = os.path.join(container, "Documents", "store.json") if container else ""
+        rep = (read_report(store, t0) if store else None) or rep
+        if (rep and rep.get("tag") == "final") or not running(pid):
+            break
+        time.sleep(2)
+    if not probed:
+        time.sleep(10)
+    waited = int(time.time() - t0)
+    screenshot(os.path.join(shots, f"web-{name}-1-loaded.png"))
+    return rep, running(pid), waited, t0, store
+
+
+rep, up, waited, t0, store = attempt(True)
+retried = False
+if probed and up and not rep:
+    # A freshly booted simulator on these runners can take minutes to start its first web content process. A page
+    # that really doesn't load (or a broken bridge) stays silent on a second, warm launch too.
+    print(f"WARN  {name}: no report {waited}s after the first launch (slow first start?); launching it once more")
+    retried = True
+    rep, up, waited, t0, store = attempt(False)
 sh("xcrun", "simctl", "terminate", udid, bundle, timeout=60)
 if rep:
     json.dump(rep, open(os.path.join(shots, f"web-{name}-report.json"), "w"), indent=1)
@@ -185,8 +200,13 @@ problems, warnings = [], []
 if not up:
     problems.append("the app quit while the page was loading (crashed)")
 if probed and not rep:
-    problems.append(f"the page never reported back in {waited}s (it didn't load, its scripts didn't run, "
-                    "or the shell's storage bridge is broken)")
+    try:
+        keys = sorted(json.load(open(store)).keys()) if store and os.path.isfile(store) else None
+    except Exception:
+        keys = None
+    seen = ("store.json holds " + (", ".join(keys[:12]) if keys else "nothing yet")) if keys is not None else "no store.json"
+    problems.append(f"the page never reported back, {waited}s after {'two launches' if retried else 'launch'} "
+                    f"(it didn't load, its scripts didn't run, or the shell's storage bridge is broken; {seen})")
 if rep:
     if rep.get("nav") == "reload":
         problems.append("the shell had to reload the page: its web content process crashed or was killed")
@@ -196,6 +216,8 @@ if rep:
     warnings += ["failed to load: " + e for e in rep.get("resources", [])]
     if rep.get("tag") != "final":
         warnings.append(f"only the early report arrived within {waited}s (slow runner?)")
+    if retried:
+        warnings.append("the first launch never reported (slow first start on this runner); the second launch did")
 for w in warnings:
     print(f"WARN  {name}: {w}")
     print(f"::warning title=Web app {name}::{w.splitlines()[0][:300]}")
