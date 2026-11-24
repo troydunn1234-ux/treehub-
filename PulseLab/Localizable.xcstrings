@@ -1063,6 +1063,17 @@
         }
       }
     },
+    "Connect WHOOP for the full duel": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Conecta WHOOP para el duelo completo"
+          }
+        }
+      }
+    },
     "Connect WHOOP in Settings, or log recovery by hand, to compare the two scores.": {
       "localizations": {
         "es": {
@@ -1297,17 +1308,6 @@
         }
       }
     },
-    "Each check needs a recent reading from both trackers.": {
-      "extractionState": "manual",
-      "localizations": {
-        "es": {
-          "stringUnit": {
-            "state": "translated",
-            "value": "Cada comprobación necesita una lectura reciente de los dos."
-          }
-        }
-      }
-    },
     "Each dot is one day. Above the line, the Watch read higher (cyan); below it, WHOOP did (amber). The shaded band is where 95% of days fall.": {
       "localizations": {
         "es": {
@@ -1334,6 +1334,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "La puntuación de cada mañana aparece aquí cuando tu Watch tiene VFC o frecuencia cardiaca en reposo."
+          }
+        }
+      }
+    },
+    "Each number needs a recent reading from both trackers.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Cada número necesita una lectura reciente de los dos."
           }
         }
       }
@@ -2768,6 +2779,17 @@
         }
       }
     },
+    "Opens Settings": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Abre Ajustes"
+          }
+        }
+      }
+    },
     "Opens VS: how often the two trackers agree, day by day": {
       "extractionState": "manual",
       "localizations": {
@@ -3244,6 +3266,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "Recuperación, esfuerzo y sueño de la app WHOOP, para que Pulse Lab pueda comparar."
+          }
+        }
+      }
+    },
+    "Recovery, strain and sleep stages straight from WHOOP. Settings → WHOOP.": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Recuperación, esfuerzo y fases del sueño directamente de WHOOP. Ajustes → WHOOP."
           }
         }
       }
@@ -4528,13 +4561,13 @@
         }
       }
     },
-    "WHOOP is in. Wear your Watch a few hours (or to bed) and the checks fill in.": {
+    "WHOOP is in. Wear your Watch a few hours (or to bed) to compare.": {
       "extractionState": "manual",
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "WHOOP ya está. Lleva el Watch unas horas (o al dormir) y se completan las comprobaciones."
+            "value": "WHOOP ya está. Lleva el Watch unas horas (o al dormir) para comparar."
           }
         }
       }
@@ -5014,13 +5047,13 @@
         }
       }
     },
-    "Your Watch is in. Add today's WHOOP and the checks fill in.": {
+    "Your Watch is in. Add today's WHOOP to compare.": {
       "extractionState": "manual",
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "Tu Watch ya está. Añade el WHOOP de hoy y se completan las comprobaciones."
+            "value": "Tu Watch ya está. Añade el WHOOP de hoy para comparar."
           }
         }
       }

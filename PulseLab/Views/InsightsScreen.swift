@@ -212,21 +212,22 @@ struct InsightsButton: View {
             UIImpactFeedbackGenerator(style: .light).impactOccurred()
             show = true
         } label: {
+            // Same row card as Log WHOOP on Today: tinted symbol, title, one line, chevron.
             HStack(spacing: Lab.S.s) {
-                Image(systemName: "chart.dots.scatter").font(.system(size: 14, weight: .bold)).foregroundStyle(Lab.good)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 1) {
-                    Text(String(localized: "Insights")).font(Lab.display(15, .heavy)).foregroundStyle(Lab.text)
+                SymbolTile(symbol: "chart.dots.scatter", tint: Lab.good, size: 34)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(String(localized: "Insights")).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
                     Text(String(localized: "Supplements, sauna, workouts and more vs your next morning"))
-                        .font(Lab.mono(10)).foregroundStyle(Lab.faint).fixedSize(horizontal: false, vertical: true)
+                        .font(.caption).foregroundStyle(Lab.dim).fixedSize(horizontal: false, vertical: true)
                 }
-                Spacer()
-                Image(systemName: "chevron.right").font(.system(size: 12, weight: .semibold)).foregroundStyle(Lab.faint)
+                Spacer(minLength: Lab.S.s)
+                Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
                     .accessibilityHidden(true)
             }
             .padding(.horizontal, Lab.S.m).padding(.vertical, 12)
-            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(Lab.panel.opacity(0.85)))
-            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).strokeBorder(Lab.good.opacity(0.35)))
+            .background(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).fill(Lab.panel))
+            .overlay(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous).strokeBorder(Lab.line))
+            .contentShape(RoundedRectangle(cornerRadius: Lab.radius, style: .continuous))
         }
         .buttonStyle(PressScale())
         .accessibilityHint(String(localized: "Opens trends and correlations"))

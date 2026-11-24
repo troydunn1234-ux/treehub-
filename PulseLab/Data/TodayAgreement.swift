@@ -94,7 +94,7 @@ struct TodayAgreement: Equatable {
 
     /// The plain-words line under the headline: by how much they split ("Sleep is off by 42 min."), or that they don't.
     var reason: String {
-        guard compared > 0 else { return String(localized: "Each check needs a recent reading from both trackers.") }
+        guard compared > 0 else { return String(localized: "Each number needs a recent reading from both trackers.") }
         let whys = rows.compactMap(\.why)
         if whys.isEmpty {
             return compared == rows.count ? String(localized: "Same story on every number today.")

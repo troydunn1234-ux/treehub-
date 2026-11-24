@@ -159,8 +159,8 @@ struct AgreementCard: View {
         if whoopMissing && watchMissing {
             return String(localized: "Nothing from either tracker since yesterday. Pull to sync, or type today's WHOOP in.")
         }
-        if whoopMissing { return String(localized: "Your Watch is in. Add today's WHOOP and the checks fill in.") }
-        return String(localized: "WHOOP is in. Wear your Watch a few hours (or to bed) and the checks fill in.")
+        if whoopMissing { return String(localized: "Your Watch is in. Add today's WHOOP to compare.") }
+        return String(localized: "WHOOP is in. Wear your Watch a few hours (or to bed) to compare.")
     }
 
     private func celebrateIfDue() {

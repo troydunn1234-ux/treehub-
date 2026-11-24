@@ -401,17 +401,29 @@ struct TodayScreen: View {
         return "Resting heart rate, last 14 days. Apple Watch average \(f(w)), WHOOP average \(f(h))."
     }
 
+    /// Tappable: opens Settings, where WHOOP connects.
     private var whoopNudge: some View {
-        LabPanel(tint: Lab.whoop) {
-            HStack(spacing: 12) {
-                Image(systemName: "bolt.heart.fill").font(.title2).foregroundStyle(Lab.whoop)
-                    .accessibilityHidden(true)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text("Connect WHOOP for the full duel").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
-                    Text("Recovery, strain and sleep stages straight from WHOOP. Settings → WHOOP.").font(.footnote).foregroundStyle(Lab.dim)
+        Button {
+            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+            store.go(.settings)
+        } label: {
+            LabPanel(tint: Lab.whoop) {
+                HStack(spacing: 12) {
+                    Image(systemName: "bolt.heart.fill").font(.title2).foregroundStyle(Lab.whoop)
+                        .accessibilityHidden(true)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Connect WHOOP for the full duel").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.text)
+                        Text("Recovery, strain and sleep stages straight from WHOOP. Settings → WHOOP.").font(.footnote).foregroundStyle(Lab.dim)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    Spacer(minLength: Lab.S.s)
+                    Image(systemName: "chevron.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.faint)
+                        .accessibilityHidden(true)
                 }
             }
         }
+        .buttonStyle(PressScale())
+        .accessibilityHint("Opens Settings")
     }
 }
 
