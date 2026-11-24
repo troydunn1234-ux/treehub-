@@ -39,10 +39,14 @@ enum WidgetBridge {
         func put(_ v: Double?, _ key: String) { if let v { d.set(v, forKey: key) } else { d.removeObject(forKey: key) } }
         put(store.recoveryToday, Key.recovery)
         put(store.readinessToday, Key.readiness)
-        d.set(store.today(.watch)?.rhr ?? -1, forKey: Key.rhrWatch)
-        d.set(store.today(.whoop)?.rhr ?? -1, forKey: Key.rhrWhoop)
-        d.set(store.lastNight(.watch).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWatch)
-        d.set(store.lastNight(.whoop).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWhoop)
+        // The same recent readings Today shows (last night / today / yesterday): `today(_:)` and `lastNight(_:)` fall
+        // back to any older day, so a Watch left off for a week put week-old numbers on the widget as current.
+        let since = Date().dayStart.adding(days: -1)
+        func recentNight(_ s: Source) -> SleepNight? { store.lastNight(s).flatMap { $0.night >= since && $0.asleepMin > 0 ? $0 : nil } }
+        d.set(store.reading(.watch, \.rhr, recent: "rhr")?.value ?? -1, forKey: Key.rhrWatch)
+        d.set(store.reading(.whoop, \.rhr, manual: .rhr)?.value ?? -1, forKey: Key.rhrWhoop)
+        d.set(recentNight(.watch).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWatch)
+        d.set(recentNight(.whoop).map { $0.asleepMin / 60 } ?? -1, forKey: Key.sleepWhoop)
         d.set(Date().timeIntervalSince1970, forKey: Key.updatedAt)
         let b = store.briefing
         d.set(b.spoken, forKey: Key.briefingSpoken)
