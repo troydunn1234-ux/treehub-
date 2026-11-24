@@ -8,9 +8,9 @@
   {"name": "05-collection", "args": "-demo -pro -tab collection", "wait": 9},
   {"name": "06-home-free", "args": "-demo -free -tab home", "wait": 9},
   {"name": "07-grove-free", "args": "-demo -free -tab trees", "wait": 9},
-  {"name": "08-paywall", "args": "-demo -paywall -demoPrice 4.99", "wait": 9},
+  {"name": "08-paywall", "args": "-demo -paywall -demoPrice 4.99", "wait": 12},
   {"name": "09-home-largetype", "args": "-demo -pro -tab home", "wait": 9, "size": "accessibility-large"},
-  {"name": "10-hug-log-largetype", "args": "-demo -pro -hugLog", "wait": 9, "size": "accessibility-large"},
+  {"name": "10-hug-log-largetype", "args": "-demo -pro -hugLog", "wait": 12, "size": "accessibility-large"},
   {"name": "11-grove-largetype", "args": "-demo -pro -tab trees", "wait": 9, "size": "accessibility-large"}
  ],
  "watch": {"product": "RootboundWatch", "bundle": "com.troydunn.rootbound.watchkitapp",

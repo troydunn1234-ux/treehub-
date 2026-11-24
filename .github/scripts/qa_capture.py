@@ -20,6 +20,9 @@ reason in QA_SKIP_ARGS_WHY) leave screens out: qa.yml uses QA_SKIP_ARGS for scre
 have taken the Intel runner down every time (GitHub "lost communication" with it and kept no log).
 With QA_PUSH_URL and QA_BRANCH set, <out> is pushed to that branch after every screen (and while something is
 slow), with progress.txt (every line printed here), so even a runner that dies leaves what it captured.
+Shards (qa.yml splits a long pass, e.g. Roamr's, over several runners): with QA_SHARD set, only the iPhone screens
+named in QA_SHOTS (comma-separated; empty = no iPhone pass, the simulator isn't even booted) are taken, and the Watch
+screens only when QA_WATCH is 1.
 Exit code 1 only when not a single screen could be captured (no simulator, it didn't boot, app missing).
 """
 import functools, glob, json, os, plistlib, re, shutil, subprocess, sys, tempfile, threading, time
@@ -49,6 +52,12 @@ def regex(var):
 SKIP, SKIP_ARGS = regex("QA_SKIP"), regex("QA_SKIP_ARGS")
 SKIP_ARGS_WHY = os.environ.get("QA_SKIP_ARGS_WHY") or "QA_SKIP_ARGS"
 PUSH_URL, BRANCH = os.environ.get("QA_PUSH_URL", ""), os.environ.get("QA_BRANCH", "")
+SHARD = os.environ.get("QA_SHARD", "").strip()
+if SHARD:
+    want = {n.strip() for n in os.environ.get("QA_SHOTS", "").split(",") if n.strip()}
+    cfg["shots"] = [s for s in cfg.get("shots", []) if s["name"] in want]
+    if os.environ.get("QA_WATCH", "0") != "1":
+        cfg.pop("watch", None)
 pub = {"git": None, "last": 0.0}
 pub_lock = threading.Lock()
 APP_NAME = cfg["scheme"]
@@ -370,32 +379,38 @@ def collect_logs(udid, exe):
 
 # ---- iPhone
 app = os.path.join(products, "Debug-iphonesimulator", cfg["scheme"] + ".app")
-if not os.path.isdir(app):
+if SHARD:
+    say(f"shard {SHARD}: iPhone screens {', '.join(x['name'] for x in cfg['shots']) or 'none'}; "
+        f"Watch screens {'yes' if cfg.get('watch') else 'no'}")
+if not cfg["shots"]:
+    pass
+elif not os.path.isdir(app):
     note(f"FAILED {app} was not built", "error")
     sys.exit(1)
-best = pick("iOS", lambda n: (n.startswith("iPhone"), "Pro Max" in n, "Pro" in n))
-if not best:
-    note("FAILED no iOS simulator is available on this runner", "error")
-    sys.exit(1)
-udid = best[1]
-say(f"iPhone simulator: {best[2]} {best[3]}; budget {BUDGET / 60:.0f} min; {machine()}")
-try:
-    gpu = subprocess.run(["system_profiler", "SPDisplaysDataType"], capture_output=True, text=True, timeout=60).stdout
-    say("  graphics: " + "; ".join(l.strip() for l in gpu.splitlines() if re.search(r"Chipset|Metal|VRAM|Vendor", l))[:300])
-except Exception:
-    pass
-if not boot(udid, "iPhone"):
-    sys.exit(1)
-sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100")
-sh("xcrun", "simctl", "install", udid, app, timeout=300)
-for svc in cfg.get("grant", []):
-    sh("xcrun", "simctl", "privacy", udid, "grant", svc, cfg["bundle"])
-if cfg.get("location"):
-    sh("xcrun", "simctl", "location", udid, "set", cfg["location"])
-run(udid, cfg["bundle"], executable(app), cfg["shots"])
-collect_logs(udid, executable(app))
-sh("xcrun", "simctl", "ui", udid, "content_size", "large")
-sh("xcrun", "simctl", "shutdown", udid, timeout=180)
+else:
+    best = pick("iOS", lambda n: (n.startswith("iPhone"), "Pro Max" in n, "Pro" in n))
+    if not best:
+        note("FAILED no iOS simulator is available on this runner", "error")
+        sys.exit(1)
+    udid = best[1]
+    say(f"iPhone simulator: {best[2]} {best[3]}; budget {BUDGET / 60:.0f} min; {machine()}")
+    try:
+        gpu = subprocess.run(["system_profiler", "SPDisplaysDataType"], capture_output=True, text=True, timeout=60).stdout
+        say("  graphics: " + "; ".join(l.strip() for l in gpu.splitlines() if re.search(r"Chipset|Metal|VRAM|Vendor", l))[:300])
+    except Exception:
+        pass
+    if not boot(udid, "iPhone"):
+        sys.exit(1)
+    sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100")
+    sh("xcrun", "simctl", "install", udid, app, timeout=300)
+    for svc in cfg.get("grant", []):
+        sh("xcrun", "simctl", "privacy", udid, "grant", svc, cfg["bundle"])
+    if cfg.get("location"):
+        sh("xcrun", "simctl", "location", udid, "set", cfg["location"])
+    run(udid, cfg["bundle"], executable(app), cfg["shots"])
+    collect_logs(udid, executable(app))
+    sh("xcrun", "simctl", "ui", udid, "content_size", "large")
+    sh("xcrun", "simctl", "shutdown", udid, timeout=180)
 
 # ---- Watch (alone: the phone app is not running on a paired phone)
 w = cfg.get("watch")

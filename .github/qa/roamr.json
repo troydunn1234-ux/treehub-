@@ -1,5 +1,6 @@
 {"scheme": "Roamr", "bundle": "com.troydunn.roamr", "location": "37.7772,-122.4500",
  "grant": ["location", "location-always", "motion", "photos"],
+ "shard_size": 5, "map_shard_size": 2,
  "shots": [
   {"name": "01-stats", "args": "-demo -pro -tab stats", "wait": 8},
   {"name": "02-lifetime", "args": "-demo -pro -open lifetime", "wait": 10},

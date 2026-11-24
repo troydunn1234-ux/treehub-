@@ -5,6 +5,11 @@ name: Simulator QA
 # screenshots, per-launch app logs and crash reports as the qa-<app> artifact (and the qa-<app> branch).
 # Nothing is sent to App Store Connect. The screenshot pass has a 50-minute budget per app (screens left after
 # that are listed as SKIPPED in summary.txt) and every step has a timeout, so a slow runner can't stall a run.
+# Each app is built once (build job). An app whose QA config has "shard_size" (Roamr: its long pass lost the runner
+# every time) is captured in short shards, one runner each (.github/scripts/qa_shards.py: a few screens per shard,
+# live-map screens in shards of their own, the Watch in one more), each with its own short timeout; every shard
+# pushes to qa-<app>-<shard> as it goes and the merge job then puts them together on qa-<app> (one flat folder,
+# summary.txt per shard, MISSING lines for screens a lost shard never took) and deletes the shard branches.
 on:
   workflow_dispatch:
     inputs:
@@ -27,14 +32,25 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       apps: ${{ steps.p.outputs.apps }}
+      shards: ${{ steps.p.outputs.shards }}
+      sharded: ${{ steps.p.outputs.sharded }}
     steps:
+      - uses: actions/checkout@v4
       - id: p
-        run: echo "apps=$(python3 -c "import json,sys;print(json.dumps(sys.argv[1].split()))" "${{ inputs.apps }}")" >> $GITHUB_OUTPUT
+        env:
+          APPS: ${{ inputs.apps }}
+          MAPS: ${{ inputs.maps && 'run' || 'skip' }}
+        run: |
+          J=$(python3 .github/scripts/qa_shards.py "$APPS" '-openDrive|-autodrive|-autostart|-tab track' "$MAPS")
+          echo "$J" | python3 -c "import json,sys;[print(s['app'],s['shard'],s['shots'] or '(none)','watch' if s['watch']=='1' else '') for s in json.load(sys.stdin)['shards']]"
+          echo "apps=$(echo "$J" | python3 -c "import json,sys;print(json.dumps(json.load(sys.stdin)['apps']))")" >> $GITHUB_OUTPUT
+          echo "shards=$(echo "$J" | python3 -c "import json,sys;print(json.dumps(json.load(sys.stdin)['shards']))")" >> $GITHUB_OUTPUT
+          echo "sharded=$(echo "$J" | python3 -c "import json,sys;print('yes' if any(s['sharded']=='1' for s in json.load(sys.stdin)['shards']) else 'no')")" >> $GITHUB_OUTPUT
 
-  qa:
+  build:
     needs: pick
     runs-on: macos-15-intel
-    timeout-minutes: 105
+    timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
@@ -46,7 +62,6 @@ jobs:
         run: |
           CFG=.github/qa/${{ matrix.app }}.json
           [ -f "$CFG" ] || { echo "::error::No QA config $CFG (apps: $(ls .github/qa | sed 's/.json//' | tr '\n' ' '))"; exit 1; }
-          echo "CFG=$CFG" >> $GITHUB_ENV
           echo "SCHEME=$(python3 -c "import json;print(json.load(open('$CFG'))['scheme'])")" >> $GITHUB_ENV
           echo "WATCH=$(python3 -c "import json;print((json.load(open('$CFG')).get('watch') or {}).get('product',''))")" >> $GITHUB_ENV
 
@@ -85,18 +100,85 @@ jobs:
           fi
           ls -d build/Build/Products/Debug-watchsimulator/*.app || true
 
-      - name: Launch every screen and capture
-        timeout-minutes: 60
+      - name: Pack the built apps for the capture jobs
+        timeout-minutes: 10
+        run: |
+          cd build/Build/Products
+          tar -czf "$GITHUB_WORKSPACE/qa-products.tgz" $(ls -d Debug-iphonesimulator/*.app Debug-watchsimulator/*.app 2>/dev/null)
+          ls -lh "$GITHUB_WORKSPACE/qa-products.tgz"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: qa-build-${{ matrix.app }}
+          path: qa-products.tgz
+          retention-days: 1
+
+      - name: Publish the build errors to the qa-<app> branch
+        if: failure()
+        timeout-minutes: 5
+        run: |
+          TMP=$(mktemp -d); grep -E "error:" build.log 2>/dev/null | head -40 > "$TMP/build-errors.txt" || true
+          echo "FAILED the build (see build-errors.txt)" > "$TMP/summary.txt"; cd "$TMP"
+          git init -q -b qa-${{ matrix.app }}
+          git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
+          git add -A; git commit -q -m "QA build failed for ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" qa-${{ matrix.app }}
+
+  qa:
+    needs: [pick, build]
+    # A failed build of one app doesn't stop the others' shards (that app's shards stop at the download).
+    if: ${{ !cancelled() && needs.pick.result == 'success' }}
+    name: qa (${{ matrix.app }} ${{ matrix.shard }})
+    runs-on: macos-15-intel
+    timeout-minutes: ${{ matrix.timeout }}
+    strategy:
+      fail-fast: false
+      max-parallel: 4
+      matrix:
+        include: ${{ fromJson(needs.pick.outputs.shards) }}
+    env:
+      BR: ${{ matrix.sharded == '1' && format('qa-{0}-{1}', matrix.app, matrix.shard) || format('qa-{0}', matrix.app) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick app settings
+        run: |
+          CFG=.github/qa/${{ matrix.app }}.json
+          [ -f "$CFG" ] || { echo "::error::No QA config $CFG"; exit 1; }
+          echo "CFG=$CFG" >> $GITHUB_ENV
+          echo "WATCH=$(python3 -c "import json;print((json.load(open('$CFG')).get('watch') or {}).get('product',''))")" >> $GITHUB_ENV
+
+      - name: Pick newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+
+      - name: Make sure the watchOS simulator is installed
+        if: env.WATCH != '' && matrix.watch == '1'
+        timeout-minutes: 20
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: qa-build-${{ matrix.app }}
+
+      - name: Unpack the built apps
+        run: mkdir -p build/Build/Products && tar -xzf qa-products.tgz -C build/Build/Products && ls build/Build/Products/*
+
+      - name: Launch the screens and capture
+        timeout-minutes: ${{ matrix.capture_timeout }}
         env:
           PYTHONUNBUFFERED: "1"
-          QA_BUDGET_MIN: "50"
+          QA_BUDGET_MIN: ${{ matrix.budget }}
           QA_SKIP: ${{ inputs.skip }}
+          QA_SHARD: ${{ matrix.sharded == '1' && matrix.shard || '' }}
+          QA_SHOTS: ${{ matrix.shots }}
+          QA_WATCH: ${{ matrix.watch }}
           # Live 3D maps (MapKit, realistic elevation) on the Intel simulators: every Roamr pass that showed one since
-          # Nov 15 ended with GitHub losing contact with the runner and keeping no log. Skipped unless maps=true.
+          # Nov 15 ended with GitHub losing contact with the runner and keeping no log. Skipped unless maps=true
+          # (sharded apps then get those screens in shards of their own, so a lost runner loses only them).
           QA_SKIP_ARGS: ${{ !inputs.maps && '-openDrive|-autodrive|-autostart|-tab track' || '' }}
           QA_SKIP_ARGS_WHY: live 3D map, which takes the Intel runner down; run with maps=true to try it
-          # Results go to the qa-<app> branch after every screen, so a runner that dies still leaves them.
-          QA_BRANCH: qa-${{ matrix.app }}
+          # Results go to the branch after every screen, so a runner that dies still leaves them.
+          QA_BRANCH: ${{ env.BR }}
           QA_PUSH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
           pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
@@ -106,22 +188,81 @@ jobs:
           ps -o pid=,ni=,comm= -p "$(pgrep -d, -f 'Runner\.(Listener|Worker)')" 2>/dev/null | sed 's/^/runner process (pid, nice, name): /' || true
           python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
 
-      - name: Publish to the qa-<app> branch (artifacts can't always be downloaded)
+      - name: Publish to the results branch (artifacts can't always be downloaded)
         if: always()
         timeout-minutes: 5
         run: |
           [ -d qa-out ] || exit 0
-          grep -E "error:" build.log | head -40 > qa-out/build-errors.txt 2>/dev/null || true
           [ -n "$(find qa-out -type f | head -1)" ] || exit 0
           TMP=$(mktemp -d); cp -R qa-out/. "$TMP"/; cd "$TMP"
-          git init -q -b qa-${{ matrix.app }}
+          git init -q -b "$BR"
           git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
           git add -A; git commit -q -m "QA for ${GITHUB_SHA::7}"
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" qa-${{ matrix.app }}
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$BR"
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: qa-${{ matrix.app }}
+          name: ${{ env.BR }}
           path: qa-out/
           if-no-files-found: ignore
+
+  merge:
+    # Puts a sharded app's qa-<app>-<shard> branches together on qa-<app>, also when a shard's runner was lost.
+    needs: [pick, qa]
+    if: ${{ always() && needs.pick.result == 'success' && needs.pick.outputs.sharded == 'yes' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Merge the shards
+        env:
+          SHARDS: ${{ needs.pick.outputs.shards }}
+          URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          SHA: ${{ github.sha }}
+        shell: python3 {0}
+        run: |
+          import json, os, shutil, subprocess, tempfile
+          url = os.environ["URL"]
+          shards = [s for s in json.loads(os.environ["SHARDS"]) if s["sharded"] == "1"]
+          def git(*a, cwd=None, check=True):
+              r = subprocess.run(["git", *a], cwd=cwd, capture_output=True, text=True)
+              if check and r.returncode:
+                  raise SystemExit(f"git {a[0]} failed: {r.stderr[-400:]}")
+              return r
+          for app in dict.fromkeys(s["app"] for s in shards):
+              out = tempfile.mkdtemp(prefix=f"qa-{app}-")
+              git("init", "-q", "-b", f"qa-{app}", cwd=out)
+              summary, found = [], []
+              for s in (x for x in shards if x["app"] == app):
+                  br = f"qa-{app}-{s['shard']}"
+                  names = [n for n in s["shots"].split(",") if n]
+                  what = " + ".join(x for x in (", ".join(names), "Watch" if s["watch"] == "1" else "") if x)
+                  src = tempfile.mkdtemp()
+                  r = git("clone", "-q", "--depth", "1", "-b", br, url, src, check=False)
+                  if r.returncode:
+                      summary += [f"== shard {s['shard']} ({what}): no results (the runner was lost before it pushed)"]
+                      summary += [f"MISSING {n}" for n in names]
+                      continue
+                  found.append(br)
+                  shutil.rmtree(os.path.join(src, ".git"))
+                  part = open(os.path.join(src, "summary.txt")).read().strip() if os.path.exists(os.path.join(src, "summary.txt")) else "(no summary.txt)"
+                  summary += [f"== shard {s['shard']} ({what})", part]
+                  summary += [f"MISSING {n}  (not taken: the shard stopped early)" for n in names
+                              if not os.path.exists(os.path.join(src, n + ".png"))]
+                  for name in ("summary.txt", "progress.txt"):
+                      p = os.path.join(src, name)
+                      if os.path.exists(p):
+                          if name == "progress.txt":
+                              os.makedirs(os.path.join(out, "progress"), exist_ok=True)
+                              shutil.move(p, os.path.join(out, "progress", s["shard"] + ".txt"))
+                          else:
+                              os.remove(p)
+                  shutil.copytree(src, out, dirs_exist_ok=True)
+              open(os.path.join(out, "summary.txt"), "w").write("\n".join(summary) + "\n")
+              print(f"--- qa-{app}\n" + "\n".join(summary))
+              git("add", "-A", cwd=out)
+              git("-c", "user.name=TreeHub CI", "-c", "user.email=ci@users.noreply.github.com",
+                  "commit", "-q", "-m", f"QA for {os.environ['SHA'][:7]} (merged shards)", cwd=out)
+              git("push", "-q", "-f", url, f"qa-{app}", cwd=out)
+              for br in found:
+                  git("push", "-q", url, "--delete", br, cwd=out, check=False)
