@@ -138,7 +138,9 @@ final class SceneStore {
         guard let store else { return }
         switch step {
         case .tvPower(let on):
-            store.press(on ? .powerOn : .powerOff)
+            // Wait for the TV's answer, not just queue the key: Siri runs scenes with the app in the background,
+            // where iOS can suspend it as soon as the scene returns.
+            await store.pressAndWait(on ? .powerOn : .powerOff)
             // Give the set time to come up before the next step talks to it.
             if on { try? await Task.sleep(nanoseconds: 2_500_000_000) }
         case .launchApp(let name):
@@ -147,7 +149,8 @@ final class SceneStore {
         case .volume(let n):
             let key: RemoteKey = n >= 0 ? .volumeUp : .volumeDown
             for _ in 0..<min(abs(n), 30) {
-                store.press(key)
+                // Stop at the first key the TV didn't take (each one can take a few seconds to time out).
+                guard await store.pressAndWait(key) else { break }
                 try? await Task.sleep(nanoseconds: 180_000_000)
             }
         case .pcWake:

@@ -87,7 +87,8 @@ final class ClankerrWatchBridge: NSObject {
                 playing.toggle()
             default: key = RemoteKey(rawValue: k)
             }
-            if let key { store.press(key) }
+            // Wait for the TV's answer: the watch may have woken this app in the background (see runAwake).
+            if let key { await store.pressAndWait(key) }
         } else if let minutes = msg["sleep"] as? Int {
             // From the watch's Sleep page: a length in minutes, or 0 to cancel.
             if minutes > 0 { SleepTimer.shared.start(minutes: minutes) } else if SleepTimer.shared.isRunning { SleepTimer.shared.cancel() }
@@ -98,6 +99,31 @@ final class ClankerrWatchBridge: NSObject {
         lastKey = ""
         return snapshot()
     }
+
+    /// A watch message can wake this app in the background, and iOS may suspend it again as soon as the delegate
+    /// returns, before the key or app launch has reached the TV. Ask for background time until it has (like the
+    /// Control Center keys, which wait for the TV the same way).
+    fileprivate func runAwake(_ work: @escaping @MainActor () async -> Void) {
+        let token = AwakeToken()
+        token.id = UIApplication.shared.beginBackgroundTask(withName: "Watch command") {
+            Task { @MainActor in ClankerrWatchBridge.endAwake(token) }
+        }
+        Task { @MainActor in
+            await work()
+            Self.endAwake(token)
+        }
+    }
+
+    fileprivate static func endAwake(_ token: AwakeToken) {
+        guard token.id != .invalid else { return }
+        UIApplication.shared.endBackgroundTask(token.id)
+        token.id = .invalid
+    }
+}
+
+/// The background-time id for one watch command (see runAwake). Only touched on the main thread.
+private final class AwakeToken: @unchecked Sendable {
+    var id: UIBackgroundTaskIdentifier = .invalid
 }
 
 extension ClankerrWatchBridge: WCSessionDelegate {
@@ -108,13 +134,14 @@ extension ClankerrWatchBridge: WCSessionDelegate {
     nonisolated func sessionDidDeactivate(_ session: WCSession) { WCSession.default.activate() }
 
     nonisolated func session(_ session: WCSession, didReceiveMessage message: [String: Any]) {
-        Task { @MainActor in _ = await self.handle(message) }
+        Task { @MainActor in self.runAwake { _ = await self.handle(message) } }
     }
 
     nonisolated func session(_ session: WCSession, didReceiveMessage message: [String: Any],
                              replyHandler: @escaping ([String: Any]) -> Void) {
         Task { @MainActor in
-            if message.isEmpty { replyHandler(self.snapshot()) } else { replyHandler(await self.handle(message)) }
+            if message.isEmpty { replyHandler(self.snapshot()); return }
+            self.runAwake { replyHandler(await self.handle(message)) }
         }
     }
 }

@@ -3,6 +3,8 @@ import Foundation
 
 // Siri and Shortcuts for Couch Remote. These run inside the app's process (the app is launched in
 // the background if needed), so they go straight through the shared TVStore / SceneStore.
+// Keys use pressAndWait: iOS can suspend a background-launched app as soon as perform() returns, so a key that
+// was only queued (press) might never reach the TV. Waiting also lets Siri say when the TV couldn't be reached.
 
 // MARK: - TV power
 
@@ -13,9 +15,9 @@ struct TurnTVOnIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = TVStore.shared
-        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
-        store.press(.powerOn)
-        return .result(dialog: "Turning on \(store.tv?.name ?? "the TV").")
+        guard let tv = store.tv else { throw CouchRemoteIntentError.noTV }
+        let ok = await store.pressAndWait(.powerOn)
+        return .result(dialog: ok ? "Turning on \(tv.name)." : "Couldn't reach \(tv.name). Is it on the same Wi-Fi as your phone?")
     }
 }
 
@@ -26,9 +28,9 @@ struct TurnTVOffIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = TVStore.shared
-        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
-        store.press(.powerOff)
-        return .result(dialog: "Turning off \(store.tv?.name ?? "the TV").")
+        guard let tv = store.tv else { throw CouchRemoteIntentError.noTV }
+        let ok = await store.pressAndWait(.powerOff)
+        return .result(dialog: ok ? "Turning off \(tv.name)." : "Couldn't reach \(tv.name). Is it on the same Wi-Fi as your phone?")
     }
 }
 
@@ -60,17 +62,21 @@ struct SetVolumeIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = TVStore.shared
-        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
+        guard let tv = store.tv else { throw CouchRemoteIntentError.noTV }
         switch action {
         case .mute:
-            store.press(.muteToggle)
-            return .result(dialog: "Muted.")
+            let ok = await store.pressAndWait(.muteToggle)
+            return .result(dialog: ok ? "Muted." : "Couldn't reach \(tv.name).")
         case .up, .down:
             let key: RemoteKey = action == .up ? .volumeUp : .volumeDown
+            var sent = 0
             for i in 0..<max(1, min(presses, 20)) {
                 if i > 0 { try? await Task.sleep(nanoseconds: 180_000_000) }
-                store.press(key)
+                // Stop at the first key the TV didn't take (each one can take a few seconds to time out).
+                guard await store.pressAndWait(key) else { break }
+                sent += 1
             }
+            if sent == 0 { return .result(dialog: "Couldn't reach \(tv.name).") }
             return .result(dialog: action == .up ? "Volume up." : "Volume down.")
         }
     }
@@ -84,10 +90,9 @@ struct MuteTVIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let store = TVStore.shared
-        guard store.tv != nil else { throw CouchRemoteIntentError.noTV }
-        store.press(.muteToggle)
-        try? await Task.sleep(nanoseconds: 400_000_000)
-        return .result(dialog: "Toggled mute on \(store.tv?.name ?? "the TV").")
+        guard let tv = store.tv else { throw CouchRemoteIntentError.noTV }
+        let ok = await store.pressAndWait(.muteToggle)
+        return .result(dialog: ok ? "Toggled mute on \(tv.name)." : "Couldn't reach \(tv.name).")
     }
 }
 
