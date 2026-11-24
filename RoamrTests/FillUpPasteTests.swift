@@ -145,4 +145,32 @@ final class FillUpPasteTests: XCTestCase {
         XCTAssertEqual(points[0].mpg, 30, accuracy: 0.0001)
         XCTAssertFalse(points[0].fromTrip)
     }
+
+    /// A fill-up whose vehicle isn't on this iPhone (not synced yet, or from an older build) used to show under no
+    /// vehicle at all: the Gas & MPG screen, the Stats fuel card and commute costs all lost it.
+    @MainActor
+    func testFillUpsOfAMissingVehicleStillShow() {
+        let truck = GasVehicle(name: "Truck"), van = GasVehicle(name: "Van")
+        let vehicles = [truck, van]
+        let missing = UUID()
+        let base = Date(timeIntervalSince1970: 1_790_000_000)
+        func fill(_ vehicle: UUID?, day: Double) -> FillUp {
+            FillUp(vehicleID: vehicle, date: base.addingTimeInterval(day * 86_400), gallons: 10, pricePerGallon: 4,
+                   total: 0, odometer: nil, station: "")
+        }
+        let truckFill = fill(truck.id, day: 0), noVehicle = fill(nil, day: 1), orphan = fill(missing, day: 2)
+        let vanFill = fill(van.id, day: 3)
+        let all = [truckFill, noVehicle, orphan, vanFill]
+
+        let first = Set(GasMath.fills(for: truck.id, all: all, vehicles: vehicles).map(\.id))
+        XCTAssertEqual(first, [truckFill.id, noVehicle.id, orphan.id], "without a known vehicle: the first vehicle's")
+        XCTAssertEqual(GasMath.fills(for: van.id, all: all, vehicles: vehicles).map(\.id), [vanFill.id])
+        // Every fill-up shows under exactly one vehicle.
+        XCTAssertEqual(first.count + 1, all.count)
+        // A picked vehicle that isn't there any more means the first, like the screen's picker.
+        XCTAssertEqual(Set(GasMath.fills(for: missing, all: all, vehicles: vehicles).map(\.id)), first)
+        XCTAssertEqual(Set(GasMath.fills(for: nil, all: all, vehicles: vehicles).map(\.id)), first)
+        // No vehicles at all: every fill-up shows.
+        XCTAssertEqual(GasMath.fills(for: nil, all: all, vehicles: []).count, all.count)
+    }
 }

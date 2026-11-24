@@ -26,11 +26,8 @@ struct GasLogView: View {
         vehicles.first { $0.id.uuidString == vehicleRaw } ?? vehicles.first
     }
 
-    private var fills: [FillUp] {
-        guard let v = vehicle else { return allFills.filter { $0.vehicleID == nil } }
-        let isFirst = v.id == vehicles.first?.id
-        return allFills.filter { $0.vehicleID == v.id || (isFirst && $0.vehicleID == nil) }
-    }
+    /// This vehicle's fill-ups; ones without a (known) vehicle show under the first (GasMath.fills), never hidden.
+    private var fills: [FillUp] { GasMath.fills(for: vehicle?.id, all: allFills, vehicles: vehicles) }
 
     private var mpgPoints: [GasMath.MPGPoint] { GasMath.mpg(fills: fills, drives: activities) }
     private var months: [GasMath.MonthSpend] { Array(GasMath.monthly(fills).suffix(12)) }

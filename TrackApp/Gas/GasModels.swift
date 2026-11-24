@@ -153,10 +153,15 @@ enum GasMath {
         return (avg, price)
     }
 
-    /// The fill-ups of one vehicle, same split as the Gas & MPG screen: fill-ups without a vehicle belong to the first.
+    /// The fill-ups of one vehicle (the Gas & MPG screen, the Stats fuel card and commute costs all split them this
+    /// way). Fill-ups without a vehicle, or whose vehicle isn't in the list (not synced to this iPhone yet, or saved
+    /// by an older build), belong to the first vehicle, so a fill-up is never hidden; with no vehicles at all, every
+    /// fill-up shows. An unknown `vehicleID` means the first vehicle, like the screen's picker.
     static func fills(for vehicleID: UUID?, all: [FillUp], vehicles: [GasVehicle]) -> [FillUp] {
-        guard let id = vehicleID ?? vehicles.first?.id else { return all.filter { $0.vehicleID == nil } }
-        let isFirst = id == vehicles.first?.id
-        return all.filter { $0.vehicleID == id || (isFirst && $0.vehicleID == nil) }
+        guard let first = vehicles.first?.id else { return all }
+        let known = Set(vehicles.map(\.id))
+        let id = vehicleID.flatMap { known.contains($0) ? $0 : nil } ?? first
+        guard id == first else { return all.filter { $0.vehicleID == id } }
+        return all.filter { f in f.vehicleID.map { $0 == first || !known.contains($0) } ?? true }
     }
 }

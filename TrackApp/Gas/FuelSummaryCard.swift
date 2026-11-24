@@ -17,15 +17,17 @@ struct FuelSummaryCard: View {
         let fillCount: Int
     }
 
-    /// Same split as GasLogView: fill-ups without a vehicle belong to the first one.
+    /// The row for fill-ups when no vehicle has been added (a stable id, so the row isn't rebuilt on every render).
+    private static let noVehicleID = UUID()
+
+    /// Same split as GasLogView (GasMath.fills): fill-ups without a known vehicle belong to the first one.
     private var rows: [Row] {
         if vehicles.isEmpty {
             guard !fills.isEmpty else { return [] }
-            return [row(id: UUID(), name: String(localized: "My car"), fills)]
+            return [row(id: Self.noVehicleID, name: String(localized: "My car"), fills)]
         }
-        let firstID = vehicles.first?.id
         return vehicles.map { v in
-            row(id: v.id, name: v.name, fills.filter { $0.vehicleID == v.id || (v.id == firstID && $0.vehicleID == nil) })
+            row(id: v.id, name: v.name, GasMath.fills(for: v.id, all: fills, vehicles: vehicles))
         }
     }
 
