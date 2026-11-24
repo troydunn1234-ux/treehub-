@@ -317,7 +317,14 @@ final class LGController: NSObject, TVController, URLSessionDelegate, @unchecked
         } catch {
             // Pointer sockets expire when the TV changes apps; get a fresh one and retry once.
             conn.dropPointer()
-            try await pointer(tv, conn).send(name)
+            do {
+                try await pointer(tv, conn).send(name)
+            } catch {
+                // The main socket went stale too (the TV slept, the Wi-Fi changed, the app sat in the background):
+                // reconnect once, like request() does, instead of failing the key.
+                await closeConnection(tv)
+                try await pointer(tv, try await connection(tv)).send(name)
+            }
         }
     }
 
@@ -483,6 +490,9 @@ final class LGController: NSObject, TVController, URLSessionDelegate, @unchecked
         AsyncStream { cont in
             let job = Task { [weak self] in
                 guard let self, let conn = try? await self.connection(tv) else { cont.finish(); return }
+                // The socket dropping ends the stream, so TVStore subscribes again on the next connection
+                // (otherwise the phone keyboard stops following the TV's until the app is reopened).
+                conn.whenClosed { cont.finish() }
                 do {
                     try await conn.subscribe("ssap://com.webos.service.ime/registerRemoteKeyboard") { payload in
                         if let w = payload["currentWidget"] as? [String: Any], let focus = w["focus"] as? Bool {
@@ -536,6 +546,7 @@ private final class LGConnection: @unchecked Sendable {
     private let lock = NSLock()
     private var pending: [String: CheckedContinuation<LGReply, Error>] = [:]
     private var subscribers: [String: ([String: Any]) -> Void] = [:]
+    private var closeHandlers: [() -> Void] = []
     private var counter = 0
     private var alive = true
     private var _pointer: LGPointer?
@@ -615,12 +626,24 @@ private final class LGConnection: @unchecked Sendable {
     }
 
     private func failAll(_ error: Error) {
-        let all: [CheckedContinuation<LGReply, Error>] = lock.withLock {
+        let (all, closers): ([CheckedContinuation<LGReply, Error>], [() -> Void]) = lock.withLock {
             alive = false
             subscribers.removeAll()
-            let a = Array(pending.values); pending.removeAll(); return a
+            let a = Array(pending.values); pending.removeAll()
+            let c = closeHandlers; closeHandlers.removeAll()
+            return (a, c)
         }
         all.forEach { $0.resume(throwing: error) }
+        closers.forEach { $0() }
+    }
+
+    /// Runs `f` once when this socket closes or fails (right away if it already has).
+    func whenClosed(_ f: @escaping () -> Void) {
+        let closed: Bool = lock.withLock {
+            if alive { closeHandlers.append(f) }
+            return !alive
+        }
+        if closed { f() }
     }
 
     private func nextID(_ prefix: String) -> String {

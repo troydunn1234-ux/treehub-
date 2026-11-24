@@ -329,7 +329,9 @@ final class GoogleTVController: TVController, @unchecked Sendable {
         AsyncStream { cont in
             let job = Task { [weak self] in
                 guard let self, let s = try? await self.session(tv) else { cont.finish(); return }
-                let token = s.addKeyboardListener { open in cont.yield(open) }
+                // The connection closing ends the stream, so TVStore listens again on the next one (otherwise the
+                // phone keyboard stops following the TV's until the app is reopened).
+                let token = s.addKeyboardListener({ open in cont.yield(open) }, onEnd: { cont.finish() })
                 cont.onTermination = { _ in s.removeKeyboardListener(token) }
             }
             _ = job
@@ -392,14 +394,24 @@ final class GTVRemoteSession: @unchecked Sendable {
     private var _currentPackage: String?
     private var _isOn: Bool?
     private var keyboardListeners: [UUID: (Bool) -> Void] = [:]
+    private var keyboardEnds: [UUID: () -> Void] = [:]
+    /// The link closed (set on the link queue).
+    private var linkClosed = false
 
-    /// Called (on the link queue) with true when the TV opens a text field's keyboard.
-    func addKeyboardListener(_ f: @escaping (Bool) -> Void) -> UUID {
+    /// `f` is called (on the link queue) with true when the TV opens a text field's keyboard; `onEnd` once when
+    /// the connection closes (right away if it already has).
+    func addKeyboardListener(_ f: @escaping (Bool) -> Void, onEnd: @escaping () -> Void) -> UUID {
         let id = UUID()
-        link.queue.async { [self] in keyboardListeners[id] = f }
+        link.queue.async { [self] in
+            if linkClosed { onEnd(); return }
+            keyboardListeners[id] = f
+            keyboardEnds[id] = onEnd
+        }
         return id
     }
-    func removeKeyboardListener(_ id: UUID) { link.queue.async { [self] in keyboardListeners[id] = nil } }
+    func removeKeyboardListener(_ id: UUID) {
+        link.queue.async { [self] in keyboardListeners[id] = nil; keyboardEnds[id] = nil }
+    }
 
     var currentPackage: String? { link.queue.sync { _currentPackage } }
     var isOn: Bool? { link.queue.sync { _isOn } }
@@ -409,6 +421,15 @@ final class GTVRemoteSession: @unchecked Sendable {
         link = GTVLink(host: host, port: GoogleTVController.remotePort, identity: identity,
                        pinnedFingerprint: pinnedFingerprint, label: "remote")
         link.onMessage = { [weak self] msg in self?.handle(msg) }
+        // Runs on the link queue, once.
+        link.onClose = { [weak self] in
+            guard let self else { return }
+            self.linkClosed = true
+            let ends = Array(self.keyboardEnds.values)
+            self.keyboardEnds.removeAll()
+            self.keyboardListeners.removeAll()
+            ends.forEach { $0() }
+        }
     }
 
     func connect() async throws {
