@@ -13,10 +13,10 @@ struct LogTreeHugControl: ControlWidget {
     var body: some ControlWidgetConfiguration {
         StaticControlConfiguration(kind: Self.kind) {
             ControlWidgetButton(action: LogTreeHugIntent()) {
-                Label("Log Tree Hug", systemImage: "heart.fill")
+                Label("Log a Hug", systemImage: "heart.fill")
             }
         }
-        .displayName("Log a Tree Hug")
+        .displayName("Log a Hug")
         .description("Opens Rootbound straight to the tree hug logger.")
     }
 }

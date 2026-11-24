@@ -152,10 +152,10 @@ struct OpenInRoamrButton: View {
     }
 }
 
-/// "Sync Roamr": the button style used on Home and in the hug logger.
+/// "Sync walks": the button style used in the hug logger.
 struct SyncRoamrLabel: View {
     var busy = false
-    var title = "Sync Roamr"
+    var title = "Sync walks"
 
     var body: some View {
         HStack(spacing: 8) {

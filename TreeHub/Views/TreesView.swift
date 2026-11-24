@@ -33,7 +33,7 @@ struct TreesView: View {
                     Spacer()
                     RBEmptyState(symbol: "tree", title: "Your grove is empty",
                                  hint: "Hug a tree and it shows up here, with every visit you share.",
-                                 actionTitle: "Hug a tree") { RootboundPending.queue(.logHug) }
+                                 actionTitle: "Log a hug") { RootboundPending.queue(.logHug) }
                         .padding(.horizontal, RB.screen)
                     Spacer()
                     Spacer()

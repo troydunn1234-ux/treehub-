@@ -78,7 +78,7 @@ final class TourTests: XCTestCase {
         scrollUp(3)
 
         // Log a hug
-        tap("Log a tree hug")
+        tap("Log a hug")
         pause(3)
         scrollDown(1)
         pause(1)
@@ -114,7 +114,7 @@ final class TourTests: XCTestCase {
 
         // Walks come from Roamr: sync them under the hugs from Home
         tab("Home")
-        tap("Sync Roamr")
+        tap("Sync walks")
         pause(3)
 
         // Back home with everything

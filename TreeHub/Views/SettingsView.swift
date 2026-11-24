@@ -88,7 +88,7 @@ struct SettingsView: View {
                 } header: {
                     Text("Walks")
                 } footer: {
-                    Text("Record walks and hikes in Roamr (walks other apps save to Apple Health count too). Tap Sync Roamr on Home or in the hug logger and each walk shows up under the hugs it passed. Strolls Rootbound recorded before stay under Past strolls.")
+                    Text("Record walks and hikes in Roamr (walks other apps save to Apple Health count too). Tap Sync walks on Home or in the hug logger and each walk shows up under the hugs it passed. Strolls Rootbound recorded before stay under Past strolls.")
                 }
                 Section {
                     Button {

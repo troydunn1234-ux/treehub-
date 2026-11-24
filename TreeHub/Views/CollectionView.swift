@@ -89,7 +89,7 @@ struct CollectionView: View {
         RBCard {
             RBEmptyState(symbol: "leaf.fill", title: "Start your collection",
                          hint: "Every hug drops a leaf and moves you toward badges. Barefoot and longer hugs find rarer leaves.",
-                         actionTitle: "Hug a tree") { RootboundPending.queue(.logHug) }
+                         actionTitle: "Log a hug") { RootboundPending.queue(.logHug) }
         }
     }
 
