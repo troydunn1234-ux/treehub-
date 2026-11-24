@@ -307,8 +307,9 @@ private struct PickerTile: View {
                     .font(.system(size: 104, weight: .black, design: .rounded))
                     .foregroundStyle(LinearGradient(colors: [.white.opacity(0.24), .white.opacity(0.02)], startPoint: .top, endPoint: .bottom))
                     .fixedSize()
-                    .offset(x: 18, y: -14)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                    // minWidth/minHeight 0 keep the tile 118 pt tall so the name keeps its padding (the letter overflows, clipped).
+                    .offset(x: 18, y: -17)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topTrailing)
                 RadialGradient(colors: [.white.opacity(0.28), .clear], center: .topLeading, startRadius: 0, endRadius: 110)
                 LinearGradient(colors: [.clear, .black.opacity(0.5)], startPoint: .center, endPoint: .bottom)
                 Text(app.name)

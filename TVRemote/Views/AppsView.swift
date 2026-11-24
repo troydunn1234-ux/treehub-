@@ -279,13 +279,14 @@ private struct NowPlayingHero: View {
                     LinearGradient(colors: [c0, c1, c0.opacity(0.8)],
                                    startPoint: UnitPoint(x: -0.3 + shift * 0.3, y: 0), endPoint: UnitPoint(x: 1.3 + shift * 0.3, y: 1))
                 }
-                // Giant watermark of the app name.
+                // Giant watermark of the app name. minWidth/minHeight 0: the frame stays card-sized and the long name
+                // runs off the edge (clipped), instead of stretching the card's background edge to edge.
                 Text(name.uppercased())
                     .font(.system(size: 120, weight: .black, design: .rounded)).tracking(-4)
                     .foregroundStyle(.white.opacity(0.08))
                     .lineLimit(1).fixedSize()
                     .offset(x: 40, y: -10)
-                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                    .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topLeading)
                 RadialGradient(colors: [.white.opacity(0.30), .clear], center: .topTrailing, startRadius: 0, endRadius: 240)
                 LinearGradient(colors: [.clear, .black.opacity(0.35)], startPoint: .center, endPoint: .bottom)
             }
@@ -382,13 +383,14 @@ struct AppTile: View {
         let c1 = app.colors.count > 1 ? app.colors[1] : Look.bg
         return ZStack(alignment: .bottomLeading) {
             LinearGradient(colors: [c0, c1], startPoint: .topLeading, endPoint: .bottomTrailing)
-            // Poster watermark: a giant initial bleeding off the top-right corner.
+            // Poster watermark: a giant initial bleeding off the top-right corner. minWidth/minHeight 0 keep the
+            // tile 150 pt tall (the letter's line is taller and used to push the title down onto the bottom edge).
             Text(initial)
                 .font(.system(size: 150, weight: .black, design: .rounded))
                 .foregroundStyle(LinearGradient(colors: [.white.opacity(0.22), .white.opacity(0.02)], startPoint: .top, endPoint: .bottom))
                 .fixedSize()
-                .offset(x: 24, y: -18)
-                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topTrailing)
+                .offset(x: 24, y: -32)
+                .frame(minWidth: 0, maxWidth: .infinity, minHeight: 0, maxHeight: .infinity, alignment: .topTrailing)
             // Light from the top-left, a diagonal sheen, and a dark floor for the title.
             RadialGradient(colors: [.white.opacity(0.30), .clear], center: .topLeading, startRadius: 0, endRadius: 150)
             LinearGradient(stops: [.init(color: .clear, location: 0.30), .init(color: .white.opacity(0.13), location: 0.42),
