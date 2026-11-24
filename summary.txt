@@ -1,0 +1,13 @@
+OK    01-home  -demo -pro -tab home  [4 error/fault log lines]  (102s, 342 MB)
+OK    02-hug-log  -demo -pro -hugLog  (98s, 349 MB)
+OK    03-celebrate  -demo -pro -celebrate  [14 error/fault log lines]  (65s, 356 MB)
+OK    04-grove  -demo -pro -tab trees  [9 error/fault log lines]  (56s, 352 MB)
+OK    05-collection  -demo -pro -tab collection  [10 error/fault log lines]  (29s, 356 MB)
+OK    06-home-free  -demo -free -tab home  [10 error/fault log lines]  (20s, 337 MB)
+OK    07-grove-free  -demo -free -tab trees  [10 error/fault log lines]  (19s, 354 MB)
+OK    08-paywall  -demo -paywall -demoPrice 4.99  [10 error/fault log lines]  (16s, 317 MB)
+OK    09-home-largetype  -demo -pro -tab home  [10 error/fault log lines]  (21s, 337 MB)
+OK    10-hug-log-largetype  -demo -pro -hugLog  [12 error/fault log lines]  (17s, 354 MB)
+OK    11-grove-largetype  -demo -pro -tab trees  [10 error/fault log lines]  (24s, 336 MB)
+OK    watch-w1-home  -demo  [1 error/fault log lines]  (21s, 110 MB)
+12 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 21 min

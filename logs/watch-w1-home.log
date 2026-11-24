@@ -1,0 +1,210 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-24 06:52:19.755 Df RootboundWatch[40573:1c8ce] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-24 06:52:19.756 Df RootboundWatch[40573:1c8ce] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: NO
+2026-11-24 06:52:19.756 A  RootboundWatch[40573:1c8ce] (WatchConnectivity) activateSession
+2026-11-24 06:52:19.756 Df RootboundWatch[40573:1c8ce] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-24 06:52:19.756 Df RootboundWatch[40573:1c8ce] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-24 06:52:19.756 Df RootboundWatch[40573:1c8ce] [com.apple.xpc:connection] [0x10ac58dc0] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-24 06:52:19.778 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] WKApplicationExtensionMain:127: applicationDelegateClassName=SwiftUI.ExtensionDelegate
+2026-11-24 06:52:19.784 Df RootboundWatch[40573:1c8ce] [com.apple.xpc:connection] [0x10ac59400] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-24 06:52:19.792 Df RootboundWatch[40573:1c8ce] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=40573 task=RootboundWatch[40573]/0#-1 LF=22
+2026-11-24 06:52:19.793 Df RootboundWatch[40573:1c8fa] [com.apple.xpc:connection] [0x10ac597c0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-24 06:52:19.794 Df RootboundWatch[40573:1c8fc] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-24 06:52:19.795 Df RootboundWatch[40573:1c8fc] [com.apple.xpc:connection] [0x10ac5a1c0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 06:52:19.796 A  RootboundWatch[40573:1c8fa] (CoreFoundation) Loading Preferences From System CFPrefsD
+2026-11-24 06:52:19.800 Df RootboundWatch[40573:1c900] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-24 06:52:19.801 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:SaltUICore] SaltUICore was linked successfully!
+2026-11-24 06:52:19.807 Df RootboundWatch[40573:1c8fb] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-24 06:52:19.807 Df RootboundWatch[40573:1c8fb] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-24 06:52:19.807 Df RootboundWatch[40573:1c8fb] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x10ad065d0>
+2026-11-24 06:52:19.807 Df RootboundWatch[40573:1c8fb] [com.apple.runningboard:connection] Initializing connection
+2026-11-24 06:52:19.808 Df RootboundWatch[40573:1c8fb] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-24 06:52:19.808 Df RootboundWatch[40573:1c8fc] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-24 06:52:19.808 Df RootboundWatch[40573:1c8fc] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-24 06:52:19.808 Df RootboundWatch[40573:1c8fc] [com.apple.xpc:connection] [0x10ac59a40] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-24 06:52:19.809 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-24 06:52:19.810 A  RootboundWatch[40573:1c8fd] (RunningBoardServices) didChangeInheritances
+2026-11-24 06:52:19.810 Df RootboundWatch[40573:1c8ce] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-24 06:52:19.811 Df RootboundWatch[40573:1c8fc] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-24 06:52:19.811 Df RootboundWatch[40573:1c8fc] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.rootbound.watchkitapp((null))>
+2026-11-24 06:52:19.812 Df RootboundWatch[40573:1c8fb] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x10ad065d0>
+2026-11-24 06:52:19.812 Df RootboundWatch[40573:1c8fb] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x10ad03180>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2260 (elapsed = 0).
+2026-11-24 06:52:19.813 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-24 06:52:19.814 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplication init]:58: Inited
+2026-11-24 06:52:19.815 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-24 06:52:19.815 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-24 06:52:19.816 Df RootboundWatch[40573:1c8ce] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-24 06:52:19.816 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 06:52:19.816 Df RootboundWatch[40573:1c8ce] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-24 06:52:19.817 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-24 06:52:19.817 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-24 06:52:19.818 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-24 06:52:19.818 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-24 06:52:19.819 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-24 06:52:19.819 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-24 06:52:19.819 Df RootboundWatch[40573:1c8ce] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x10ad832e0; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-24 06:52:19.819 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-24 06:52:19.820 Df RootboundWatch[40573:1c8ce] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x10ac15e00 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-24 06:52:19.820 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-24 06:52:19.820 Df RootboundWatch[40573:1c8ce] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x10ac15e00 com.apple.frontboard.systemappservices> sent handshake
+2026-11-24 06:52:19.821 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-24 06:52:19.821 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-24 06:52:19.822 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-24 06:52:19.822 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-24 06:52:19.823 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-24 06:52:19.823 Df RootboundWatch[40573:1c8ce] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x10adaf820>
+2026-11-24 06:52:19.823 Df RootboundWatch[40573:1c8fb] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-24 06:52:19.824 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <CUISWatchKitApplicationSceneTransitionContext> on FBSSceneTransitionContext
+2026-11-24 06:52:19.824 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneSettings setting counterpart class: PUICMutableApplicationSceneSettings
+2026-11-24 06:52:19.825 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneSettingsExtension on FBSSceneSettings
+2026-11-24 06:52:19.826 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-24 06:52:19.827 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneClientSettings setting counterpart class: PUICMutableApplicationSceneClientSettings
+2026-11-24 06:52:19.828 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 06:52:19.829 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-24 06:52:19.830 Df RootboundWatch[40573:1c8ce] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-24 06:52:19.831 Df RootboundWatch[40573:1c8ce] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 06:52:19.831 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <PUICApplicationSceneTransitionContextInterface> on FBSSceneTransitionContext
+2026-11-24 06:52:19.832 Df RootboundWatch[40573:1c8ce] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 06:52:19.832 Df RootboundWatch[40573:1c8fd] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-24 06:52:19.832 Df RootboundWatch[40573:1c8ce] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 06:52:19.836 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-24 06:52:19.838 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10ac59540> for initial
+2026-11-24 06:52:19.839 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10ac59540> for CADisplay KVO
+2026-11-24 06:52:19.841 Df RootboundWatch[40573:1c8ce] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = (null)
+2026-11-24 06:52:19.874 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:didFinishLaunchingSuspendedWithOptions:]:780: launched suspended
+2026-11-24 06:52:19.875 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:353: com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:19.875 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] setMainExtensionAndApplicationBundles:24: extensionBundle: /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/31A037C7-F7ED-43D0-B8B9-BF34A61A8797/RootboundWatch.app, appBundle /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/31A037C7-F7ED-43D0-B8B9-BF34A61A8797/RootboundWatch.app
+2026-11-24 06:52:19.876 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] +[SPRemoteInterface startRemoteInterfaceWithBundle:]:308: startRemoteInterfaceWithBundle:NSBundle </Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/31A037C7-F7ED-43D0-B8B9-BF34A61A8797/RootboundWatch.app> (loaded)
+2026-11-24 06:52:19.876 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3862: SwiftUI.ExtensionDelegate
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3876: Created WKExtensionDelegate of class SwiftUI.ExtensionDelegate
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _extensionDelegateDidChange]:3883: delegate <SwiftUI.ExtensionDelegate: 0x10adfd020> _handlesBGTasks=1
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] +[SPRemoteInterface _remoteIdentifier]_block_invoke:344: ComF:->ComD Gizmo app identifier com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPRemoteInterface setApplicationConnection:]:4091: connection=<SPExtensionConnection: 0x10ac5b340>
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3951: did begin using
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3970: no complication implemented so not instantiating complication server.
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:378: Set up native app for com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:19.877 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke:873: Got applicationRootInterfaceControllerClass SwiftUI.InterfaceController from extensionDelegate
+2026-11-24 06:52:19.878 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:933: self.hasReceivedNonClockKitEvent == NO
+2026-11-24 06:52:19.879 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-24 06:52:19.880 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-24 06:52:19.881 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-24 06:52:19.881 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-24 06:52:19.882 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate didReceiveNonClockKitEvent]:3358: firstNonClockKitEvent=1
+2026-11-24 06:52:19.884 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:282: connecting to gizmoappd for serverIdentifier=com.troydunn.rootbound.watchkitapp clientIdentifier=9E7D0001
+2026-11-24 06:52:19.884 Df RootboundWatch[40573:1c8ce] [com.apple.xpc:connection] [0x10ac5a800] activating connection: mach=true listener=false peer=false name=com.apple.gizmoappd
+2026-11-24 06:52:19.884 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:291: Began suspended launch
+2026-11-24 06:52:19.885 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:945: root view controller hasn't loaded yet
+2026-11-24 06:52:19.885 A  RootboundWatch[40573:1c8ce] (PepperUICore) Scene didInitializeWithEvent
+2026-11-24 06:52:19.887 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:configurationForConnectingSceneSession:options:]:1511: connectingSceneSession.role=UIWindowSceneSessionRoleApplication, connectingSceneSession.persistentIdentifier=com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:19.887 E  RootboundWatch[40573:1c8ce] [com.apple.UIKit:SceneConfiguration] Info.plist contained no UIScene configuration dictionary (looking for configuration named "Default Configuration")
+2026-11-24 06:52:19.887 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:configurationForConnectingSceneSession:options:]:1516: Returning configuration.delegateClass=SPApplicationSceneDelegate
+2026-11-24 06:52:19.888 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Will add backgroundTask with taskName: Persistent SceneSession Map Update, expirationHandler: <__NSGlobalBlock__: 0x7ff9424182b0>
+2026-11-24 06:52:19.888 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Reusing background assertion <BKSProcessAssertion: 0x10ad065d0>
+2026-11-24 06:52:19.889 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x10ad065d0>
+2026-11-24 06:52:19.889 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x10ac06dc0>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 2260 (elapsed = 0).
+2026-11-24 06:52:19.889 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x10ac22a00> (com.troydunn.rootbound.watchkitapp)
+2026-11-24 06:52:19.890 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomWatch to LastOneWins
+2026-11-24 06:52:19.891 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:EventDeferring] [0x10add2450] Initialized with scene: <UIWindowScene: 0x10ac22a00>; behavior: <_UIEventDeferringBehavior_Default: 0x10af9bd60>; availableForProcess: 1, systemShellManagesKeyboardFocus: 0
+2026-11-24 06:52:19.891 Df RootboundWatch[40573:1c8ce] [com.apple.BacklightServices:scenes] 0x10adb9cb0 setDelegate:<0x10adb9c20 _UIBacklightEnvironment> hasDelegate:YES for environment:com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:19.892 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10ac5bc00; >
+2026-11-24 06:52:19.892 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10ac5bc00; >
+2026-11-24 06:52:19.893 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10ac44000; >
+2026-11-24 06:52:19.895 Df RootboundWatch[40573:1c8fd] [com.apple.watchkit:default] -[SPExtensionConnection setExtensionIsDebugging:]:1014: for com.troydunn.rootbound.watchkitapp, extensionIsDebugging=0
+2026-11-24 06:52:19.898 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:19.898 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:19.908 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10ac5bc00; >
+2026-11-24 06:52:19.934 Df RootboundWatch[40573:1c8ce] [com.apple.xpc:connection] [0x10ac44280] activating connection: mach=true listener=false peer=false name=com.apple.Carousel.CSLSDetentService
+2026-11-24 06:52:19.935 Df RootboundWatch[40573:1c8fd] [com.apple.Carousel:detents] received preferences
+2026-11-24 06:52:19.935 Df RootboundWatch[40573:1c8fd] [com.apple.Carousel:detents] CSLSDetentServiceConnection: service com.apple.Carousel.CSLSDetentService connected
+2026-11-24 06:52:19.935 Df RootboundWatch[40573:1c8fd] [com.apple.Carousel:detents] received detents, mapped by type {
+}
+2026-11-24 06:52:19.937 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke_2:973: Calling applicationDidFinishLaunching on <SwiftUI.ExtensionDelegate: 0x10adfd020>
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewController:createCompanionControllerClass:properties:initializationContextID:info:gestureDescriptions:interfaceControllerCreationCompletion:]:1753: GizF:<-GizApp controllerClass=SwiftUI.InterfaceController
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface createViewController:className:properties:contextID:info:gestureDescriptions:clientIdentifier:interfaceControllerCreationCompletion:]_block_invoke_3:3149: !!! Create controller - clientIdentifier:9E7D0001, viewControllerIdentifier:9E7D0002, className:SwiftUI.InterfaceController
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2439: registering controller <SwiftUI.InterfaceController: 0x10af864c0> with id 9E7D0002 and clientIdentifier 9E7D0001
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2452: _interfaceControllers={
+    9E7D0002 = "<SwiftUI.InterfaceController: 0x10af864c0>";
+}
+2026-11-24 06:52:19.948 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2462: Found 0 pending blocks for view controller with ID 9E7D0002. Executing them now.
+2026-11-24 06:52:19.949 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 06:52:19.992 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.001 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.001 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-24 06:52:20.002 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x10ac22a00: Window became key in scene: UIWindow: 0x10afa2800; contextId: 0x601D580E: reason: UIWindowScene: 0x10ac22a00: Window requested to become key in scene: 0x10afa2800
+2026-11-24 06:52:20.002 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10ac22a00; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10afa2800; reason: UIWindowScene: 0x10ac22a00: Window requested to become key in scene: 0x10afa2800
+2026-11-24 06:52:20.002 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10afa2800; contextId: 0x601D580E; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:20.002 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:EventDeferring] [0x10add2450] Begin local event deferring requested for token: 0x10ac26ee0; environments: 1; reason: UIWindowScene: 0x10ac22a00: Begin event deferring in keyboardFocus for window: 0x10afa2800
+2026-11-24 06:52:20.003 Df RootboundWatch[40573:1c8ce] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-24 06:52:20.003 Df RootboundWatch[40573:1c8ce] [com.apple.xpc:connection] [0x10ac457c0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 06:52:20.005 Df RootboundWatch[40573:1c8fe] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-24 06:52:20.006 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureNegativeInteraction: 0x10ad65c20>) installed: NO -> YES
+2026-11-24 06:52:20.007 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUICrownPressDismissGestureInteraction: 0x10e80c840>) installed: NO -> YES
+2026-11-24 06:52:20.008 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureNegativeInteraction: 0x10ad65c20> -> <UIWindow: 0x10afa2800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x10ac0fba0>; backgroundColor = <UIDynamicSystemColor: 0x10afbc600; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10afbc740>>
+2026-11-24 06:52:20.010 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] didMoveToView: <WAGUICrownPressDismissGestureInteraction: 0x10e80c840> -> <UIWindow: 0x10afa2800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x10aff6b20>; backgroundColor = <UIDynamicSystemColor: 0x10afbc600; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10afbc740>>
+2026-11-24 06:52:20.011 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:WatchGesturesApplication] Enabled default watch gesture pinch interactions for key window: <UIWindow: 0x10afa2800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x10aff6b20>; backgroundColor = <UIDynamicSystemColor: 0x10afbc600; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x10afbc740>>
+2026-11-24 06:52:20.016 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:677: isSuspended=1, isSuspendedUnderLock=0, isSuspendedEventsOnly=0
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface forwardDidEnterForegroundToScenesInViewController:]:3567: viewControllerID=9E7D0002
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:705: Updating appState
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 1 to 0
+2026-11-24 06:52:20.021 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 1 to 0
+2026-11-24 06:52:20.022 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]:1023: Updating appState
+2026-11-24 06:52:20.036 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-24 06:52:20.036 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-24 06:52:20.036 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 0 to 0
+2026-11-24 06:52:20.036 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 0 to 0
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1041: creating os_transaction appActive-70111C19-6135-4815-9C51-649624E05127
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1047: Calling applicationDidBecomeActive on <SwiftUI.ExtensionDelegate: 0x10adfd020>
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewControllerActivate:]:1771: GizF:<-GizApp vcID=9E7D0002
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _createActiveViewControllerTransaction:]:4729: created os_transaction activeVC-9E7D0002-EAAFAFF8-28DF-4557-84A7-52112950DCD8, _activeViewControllerTransactions={
+    9E7D0002 = "<OS_os_transaction: activeVC-9E7D0002-EAAFAFF8-28DF-4557-84A7-52112950DCD8>";
+}
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] +[SPRemoteInterface setControllerActive:]:1140: after setting 9E7D0002 active, __controllerActive={
+    9E7D0002 = 1;
+}
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface _activateViewController:clientIdentifier:]:3273: Calling willActivate for 9E7D0002
+2026-11-24 06:52:20.037 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 06:52:20.038 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.rootbound.watchkitapp  persistentID: com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:20.039 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2048 -> 6144; animating application lifecycle event: 0
+2026-11-24 06:52:20.039 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6144 -> 4096; animating application lifecycle event: 0
+2026-11-24 06:52:20.039 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4096 -> 0; animating application lifecycle event: 0
+2026-11-24 06:52:20.039 Df RootboundWatch[40573:1c8ce] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-24 06:52:20.040 Df RootboundWatch[40573:1c8fe] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-24 06:52:20.040 Df RootboundWatch[40573:1c8fe] [com.apple.xpc:session] [0x10ad65860] Session created.
+2026-11-24 06:52:20.041 Df RootboundWatch[40573:1c8fe] [com.apple.xpc:session] [0x10ad65860] Session created from connection [0x10ac45f40]
+2026-11-24 06:52:20.041 Df RootboundWatch[40573:1c8fe] [com.apple.xpc:connection] [0x10ac45f40] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-24 06:52:20.041 Df RootboundWatch[40573:1c8fe] [com.apple.xpc:session] [0x10ad65860] Session activated
+2026-11-24 06:52:20.289 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureViewInteraction: 0x10ac5cf00>) installed: NO -> YES
+2026-11-24 06:52:20.316 Df RootboundWatch[40573:1c8ce] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureViewInteraction: 0x10ac5cf00> -> <SwiftUI.HostingScrollView: 0x10e9a8000; baseClass = UIScrollView; frame = (0 0; 0 0); clipsToBounds = YES; gestureRecognizers = <NSArray: 0x10e9a47b0>; layer = <CALayer: 0x10e9a4420>; contentOffset: {0, 0}; contentSize: {0, 0}; adjustedContentInset: {0, 0, 0, 0}>
+2026-11-24 06:52:20.393 Df RootboundWatch[40573:1c8fe] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 2
+2026-11-24 06:52:20.394 Df RootboundWatch[40573:1c8fe] [com.apple.UIKit:BackgroundTask] Ending task with identifier 2 and description: <_UIBackgroundTaskInfo: 0x10ac06dc0>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 2260 (elapsed = 1), _expireHandler: <__NSGlobalBlock__: 0x7ff9424182b0>
+2026-11-24 06:52:20.394 Df RootboundWatch[40573:1c8fe] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x10ad065d0> (used by background task with identifier 2: <_UIBackgroundTaskInfo: 0x10ac06dc0>: taskID = 2, taskName = Persistent SceneSession Map Update, creationTime = 2260 (elapsed = 1))
+2026-11-24 06:52:20.440 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.441 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 06:52:20.477 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.479 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 06:52:20.544 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.545 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 06:52:20.562 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface finishActivatingVCWithID:completion:]:3396: interfaceViewControllerId is active, calling block immediately = 9E7D0002
+2026-11-24 06:52:20.562 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 06:52:20.562 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] -[SPRemoteInterface didAppearViewController:clientIdentifier:]_block_invoke_4:3340: Calling didAppear for 9E7D0002
+2026-11-24 06:52:20.562 Df RootboundWatch[40573:1c8ce] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 06:52:20.562 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.564 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 06:52:20.564 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] [com.troydunn.rootbound.watchkitapp] updating status bar hidden = NO
+2026-11-24 06:52:20.565 Df RootboundWatch[40573:1c8ce] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 06:52:20.567 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:ExternalGestureCollector] Active external gesture recognizers did change: <_UIExternalGestureCollection: 0x10eba4980; active gestures: "doubleTap, flick">
+2026-11-24 06:52:20.569 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-24 06:52:20.569 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x10ad03180>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2260 (elapsed = 1), _expireHandler: (null)
+2026-11-24 06:52:20.569 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x10ad065d0> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x10ad03180>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2260 (elapsed = 1))
+2026-11-24 06:52:20.570 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x10ad065d0> for task identifier: 1
+2026-11-24 06:52:20.570 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-24 06:52:20.573 A  RootboundWatch[40573:1c8ce] (PepperUICore) Scene handleEvent
+2026-11-24 06:52:20.573 Df RootboundWatch[40573:1c8ce] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.rootbound.watchkitapp  persistentID: com.troydunn.rootbound.watchkitapp
+2026-11-24 06:52:20.634 Df RootboundWatch[40573:1c8ce] [com.apple.network:activity] Unsetting the global parent activity (null)
+2026-11-24 06:52:20.634 Df RootboundWatch[40573:1c8ce] [com.apple.network:activity] Unset the global parent activity
+2026-11-24 06:52:20.940 A  RootboundWatch[40573:1c8fe] (RunningBoardServices) didChangeInheritances
+2026-11-24 06:52:20.972 A  RootboundWatch[40573:1c8fd] (RunningBoardServices) didChangeInheritances

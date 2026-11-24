@@ -1,0 +1,133 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-24 06:44:03.056 Df Rootbound[26704:130bb] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-24 06:44:03.073 Df Rootbound[26704:130bb] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-24 06:44:03.172 Df Rootbound[26704:134cf] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-24 06:44:03.172 Df Rootbound[26704:134cf] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-24 06:44:03.174 Df Rootbound[26704:134cf] [com.apple.network:path] nw_path_evaluator_start [41565C8A-4385-4F94-936F-A3BA5B5D5788 Hostname#755afc4c:443 generic, url: https://configuration.ls.apple.com/config/defaults, attribution: developer]
+	path: satisfied (Path is satisfied), interface: en0
+2026-11-24 06:44:03.179 Df Rootbound[26704:130bb] (libMobileGestalt.dylib) Failed to copyDeviceTreeProperty(IODeviceTree:/arm-io soc-generation)
+2026-11-24 06:44:03.182 Df Rootbound[26704:130bb] (libMobileGestalt.dylib) Failed to get current SOC Generation string
+2026-11-24 06:44:03.222 A  Rootbound[26704:136b5] (Metal) Metal Compiling Shader
+2026-11-24 06:44:03.234 A  Rootbound[26704:134e9] (Metal) Metal Compiling Shader
+2026-11-24 06:44:03.240 A  Rootbound[26704:136b5] (Metal) Metal Compiling Shader
+2026-11-24 06:44:03.255 A  Rootbound[26704:134e9] (Metal) Metal Compiling Shader
+2026-11-24 06:44:03.263 A  Rootbound[26704:136b5] (Metal) Metal Compiling Shader
+2026-11-24 06:44:04.599 Sd Rootbound[26704:0] (4DAE65DB-8343-3CFD-BE64-A755882ACBB6) TCC Authorization Cache
+{
+    kTCCServicePhotos =     {
+        "<Credential (0x600002913090) | Requestor>" = "<Authorization Record (0x60000350c790) | Service: kTCCServicePhotos, AuthRight: Unknown, Reason: Service Policy, Version: 2, >";
+    };
+}
+2026-11-24 06:44:04.607 Sd Rootbound[26704:0] (A299881B-E111-3F0F-9D55-34CFBD73EF69) CLLocationManagerStateTracker
+
+2026-11-24 06:44:04.657 Df Rootbound[26704:130bb] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 06:44:11.041 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x124670510
+2026-11-24 06:44:11.042 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:15.849 A  Rootbound[26704:13808] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-24 06:44:18.589 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:18.589 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:19.354 A  Rootbound[26704:1380b] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.370 A  Rootbound[26704:1380a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.377 A  Rootbound[26704:1380a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.429 A  Rootbound[26704:1317a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.437 A  Rootbound[26704:1380a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.441 A  Rootbound[26704:1380a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:19.445 A  Rootbound[26704:1317a] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.602 A  Rootbound[26704:13807] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.612 A  Rootbound[26704:134cf] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.618 A  Rootbound[26704:134cf] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.632 A  Rootbound[26704:13807] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.639 A  Rootbound[26704:13807] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.644 A  Rootbound[26704:13807] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.651 A  Rootbound[26704:13807] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.658 A  Rootbound[26704:1380b] (Metal) Metal Compiling Shader
+2026-11-24 06:44:21.667 A  Rootbound[26704:1380b] (Metal) Metal Compiling Shader
+2026-11-24 06:44:22.066 A  Rootbound[26704:1380b] (Metal) Metal Compiling Shader
+2026-11-24 06:44:22.073 A  Rootbound[26704:1380b] (Metal) Metal Compiling Shader
+2026-11-24 06:44:22.078 A  Rootbound[26704:134cf] (Metal) Metal Compiling Shader
+2026-11-24 06:44:24.717 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x124670510
+2026-11-24 06:44:24.717 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:24.823 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1103d55f0
+2026-11-24 06:44:24.824 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:24.825 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:24.825 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:24.826 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:24.827 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:24.827 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:24.828 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:24.850 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:24.850 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1103d55f0
+2026-11-24 06:44:24.851 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:24.851 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:24.851 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:26.522 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:26.522 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:26.523 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:26.523 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:26.532 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:26.533 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:26.533 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1103d55f0
+2026-11-24 06:44:26.534 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:26.534 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:26.535 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:26.645 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:26.646 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:26.774 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x124670510
+2026-11-24 06:44:27.401 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:27.402 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:31.902 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:31.903 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:32.018 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x1103d55f0
+2026-11-24 06:44:32.018 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:32.965 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x1103d55f0
+2026-11-24 06:44:32.965 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:33.098 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x1105d66e0
+2026-11-24 06:44:33.098 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:33.107 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:33.107 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:33.734 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x124670510
+2026-11-24 06:44:33.734 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:34.040 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:34.040 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:34.051 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:34.052 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1103d55f0
+2026-11-24 06:44:34.052 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:34.053 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:34.053 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:34.053 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:34.053 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:34.054 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:34.063 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:34.064 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:34.082 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:34.082 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1103d55f0
+2026-11-24 06:44:34.083 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:34.097 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:34.101 Df Rootbound[26704:130bb] [com.apple.network:activity] <nw_activity 50:1 [CAC4A82B-08A5-46F8-96BA-959E7B97B19C] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 56943ms
+2026-11-24 06:44:34.101 Df Rootbound[26704:130bb] [com.apple.network:activity] <nw_activity 50:2 [A339038C-A3B7-4ADF-ACB6-2781009FA1FB] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 56943ms
+2026-11-24 06:44:34.101 Df Rootbound[26704:130bb] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [CAC4A82B-08A5-46F8-96BA-959E7B97B19C] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-24 06:44:34.102 Df Rootbound[26704:130bb] [com.apple.network:activity] Unset the global parent activity
+2026-11-24 06:44:34.114 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x124670510
+2026-11-24 06:44:34.114 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x110156af0
+2026-11-24 06:44:35.020 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: full image queue, 0x1103d55f0
+2026-11-24 06:44:35.020 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:35.075 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105d66e0
+2026-11-24 06:44:35.075 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:35.113 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBLayer: stale image queue, 0x1105dc110
+2026-11-24 06:44:35.113 Df Rootbound[26704:130bb] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-24 06:44:35.896 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000355dd90 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.896 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.896 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000354b440 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.897 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.897 Df Rootbound[26704:136ca] (CoreVideo) pool 0x600003548210 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.897 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.897 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000353eaa0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.898 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.898 Df Rootbound[26704:136ca] (CoreVideo) pool 0x600003548000 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.898 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.898 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000353c9a0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.899 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.899 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000355ae10 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.899 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.900 Df Rootbound[26704:136ca] (CoreVideo) pool 0x60000355dc30 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
+2026-11-24 06:44:35.900 Df Rootbound[26704:136ca] (CoreVideo) pool 0x0 being deallocated [0 in use, 0 free] _targetBufferCountsBitfield 0x0
