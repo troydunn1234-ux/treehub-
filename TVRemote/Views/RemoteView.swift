@@ -181,7 +181,9 @@ struct RemoteView: View {
                         .frame(height: 34)
                         .background(Capsule().fill(c.opacity(on ? 0.45 : 0.14)))
                         .overlay(Capsule().strokeBorder(Color.white.opacity(on ? 0.85 : 0.14), lineWidth: on ? 1.5 : 1))
-                        .shadow(color: on ? c.opacity(0.6) : .clear, radius: 10)
+                        // A tight glow that fits the row: the scroll view clips at 44 pt, and the old 10 pt glow showed
+                        // as a hard-edged box around the lit chip (most of all at the row's end, where it's scrolled to).
+                        .shadow(color: on ? c.opacity(0.7) : .clear, radius: 4)
                         .frame(height: 44)
                         .contentShape(Rectangle())
                     }
@@ -190,7 +192,7 @@ struct RemoteView: View {
                     .id(app.name)
                 }
             }
-            .padding(.horizontal, 2)
+            .padding(.horizontal, 6)
             .animation(.easeInOut(duration: 0.35), value: store.nowPlaying)
         }
         .frame(height: 44)
