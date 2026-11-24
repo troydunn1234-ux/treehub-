@@ -59,6 +59,8 @@
 		<string>com.troydunn.stillpoint.pro.yearly</string>
 		<string>com.troydunn.stillpoint.pro.monthly</string>
 	</array>
+	<key>TrialProductID</key>
+	<string>com.troydunn.stillpoint.none</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>audio</string>

@@ -358,6 +358,7 @@
 		BCF2B082D37801A00193E2D1 /* RoamrWatchWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 5A2EAAC68B21EE2EB54A468A /* RoamrWatchWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		BD59A643CB6024EFFE41B8BC /* DataGuardSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = FEB37EBBA074A08F26FDF957 /* DataGuardSupport.swift */; };
 		BDFEE9365C64C4A18E6FBE88 /* Polish.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BD2C44AF205D8D728DC7D92 /* Polish.swift */; };
+		BEC385B558D73EC9BF116838 /* EveningReminderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 414839CBB6C31DDAE9DA55F1 /* EveningReminderTests.swift */; };
 		BFE323D7F23A3410F6AB0F11 /* RemoteControlIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B930226155D1AEC7AE35FDE /* RemoteControlIntents.swift */; };
 		C10772832426DF6A070FDC6A /* TopSpeed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 573142BA958F29589B80C4E7 /* TopSpeed.swift */; };
 		C12FD41254D869B93266AAD1 /* RunView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 109B2A40F21EEFAE69317B5D /* RunView.swift */; };
@@ -964,6 +965,7 @@
 		3FC8FA044D7503651EA2DC32 /* VizioClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VizioClient.swift; sourceTree = "<group>"; };
 		406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Collectibles.swift; sourceTree = "<group>"; };
 		40ECC54940AA2F6838B4759D /* LaunchSplash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchSplash.swift; sourceTree = "<group>"; };
+		414839CBB6C31DDAE9DA55F1 /* EveningReminderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EveningReminderTests.swift; sourceTree = "<group>"; };
 		429D35136AAD84A17099192A /* KeyboardBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardBar.swift; sourceTree = "<group>"; };
 		4307BE1856AAD8B00961B3DF /* TreeFacts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TreeFacts.swift; sourceTree = "<group>"; };
 		43430ED8B694EA456DF6C1DC /* RBDesign.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBDesign.swift; sourceTree = "<group>"; };
@@ -2038,6 +2040,7 @@
 			children = (
 				7BFDFE3B05E3EC233DC2B2E1 /* ConnectionTests.swift */,
 				9AD9F80F09160A04928B366A /* DataSafetyTests.swift */,
+				414839CBB6C31DDAE9DA55F1 /* EveningReminderTests.swift */,
 				04422A1D6302179FF0235582 /* FamilyFeedTests.swift */,
 				17266B32310450A470A0E72D /* ReliabilityTests.swift */,
 			);
@@ -3823,6 +3826,7 @@
 				DDC266CB2A131B58BB34A1FC /* ConnectionTests.swift in Sources */,
 				5319399ED7532EA4FC5408E5 /* DataGuardSupport.swift in Sources */,
 				D2C30D1B9B43375EED7DBB8F /* DataSafetyTests.swift in Sources */,
+				BEC385B558D73EC9BF116838 /* EveningReminderTests.swift in Sources */,
 				E226584AD1F4EB4C5729EEEF /* FamilyFeedTests.swift in Sources */,
 				490775F8E957D5C2450947E3 /* ReliabilityTests.swift in Sources */,
 			);
