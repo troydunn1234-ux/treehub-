@@ -93,16 +93,18 @@ a { color: var(--red-text); }
 
 /* ---------- Garage hero: the coupe in a tachometer, on carbon ---------- */
 .hero { padding: 14px 14px 16px; overflow: hidden; background: #0a0a0c; border-color: rgba(255,255,255,.09); }
+/* the weave fades out toward the edges under a plain gradient in the hero's own color (no mask or filter anywhere in the
+   hero: they are slow to redraw while the needle sweeps, and the phone has to redraw what lies under it) */
 .hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
   background:
-    linear-gradient(27deg, #0d0d0f 5px, transparent 5px) 0 5px,
-    linear-gradient(207deg, #0d0d0f 5px, transparent 5px) 10px 0,
-    linear-gradient(27deg, #141416 5px, transparent 5px) 0 10px,
-    linear-gradient(207deg, #141416 5px, transparent 5px) 10px 5px,
-    linear-gradient(90deg, #101012 10px, transparent 10px),
-    linear-gradient(#111113 25%, #0e0e10 25%, #0e0e10 50%, transparent 50%, transparent 75%, #151517 75%, #151517);
-  background-color: #0b0b0d; background-size: 20px 20px;
-  -webkit-mask-image: radial-gradient(130% 85% at 50% 28%, #000 25%, transparent 82%); mask-image: radial-gradient(130% 85% at 50% 28%, #000 25%, transparent 82%); }
+    radial-gradient(130% 85% at 50% 28%, rgba(10,10,12,0) 25%, #0a0a0c 82%) 0 0 / 100% 100% no-repeat,
+    linear-gradient(27deg, #0d0d0f 5px, transparent 5px) 0 5px / 20px 20px,
+    linear-gradient(207deg, #0d0d0f 5px, transparent 5px) 10px 0 / 20px 20px,
+    linear-gradient(27deg, #141416 5px, transparent 5px) 0 10px / 20px 20px,
+    linear-gradient(207deg, #141416 5px, transparent 5px) 10px 5px / 20px 20px,
+    linear-gradient(90deg, #101012 10px, transparent 10px) 0 0 / 20px 20px,
+    linear-gradient(#111113 25%, #0e0e10 25%, #0e0e10 50%, transparent 50%, transparent 75%, #151517 75%, #151517) 0 0 / 20px 20px;
+  background-color: #0b0b0d; }
 .hero::after { content: ""; position: absolute; left: -20%; right: -20%; bottom: -30%; height: 60%; pointer-events: none;
   background: radial-gradient(50% 50% at 18% 50%, rgba(255,42,42,.14), transparent 70%); }
 .hero > * { position: relative; z-index: 1; }
@@ -265,7 +267,8 @@ button.row { cursor: pointer; }
 .ring .tr { fill: none; stroke: var(--card3); stroke-width: 9; }
 .ring .fl { fill: none; stroke: url(#ringLit); stroke-width: 9; stroke-linecap: round; }
 .ring.warn .fl { stroke: var(--amber); }
-.ring.over .fl { stroke: var(--red); filter: drop-shadow(0 0 6px var(--red-glow)); }
+.ring.over .fl { stroke: var(--red); }
+.ring.over::before { content: ""; position: absolute; inset: 8%; border-radius: 50%; box-shadow: 0 0 18px 1px rgba(255,42,42,.3); pointer-events: none; }
 @media (prefers-reduced-motion: no-preference) { .ring .fl { transition: stroke-dasharray .9s cubic-bezier(.22,.9,.28,1); } }
 .ring > div { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; }
 .ring > div b { font-family: var(--font-d); font-size: 1.05rem; font-weight: 800; }
@@ -274,7 +277,8 @@ button.row { cursor: pointer; }
 .subtot .big { font-family: var(--font-d); font-size: min(2rem, 8.4vw); font-weight: 800; letter-spacing: -.015em; line-height: 1.05; }
 .subtot .big span { font-size: .48em; font-weight: 700; color: var(--silver); letter-spacing: 0; margin-left: 2px; }
 .subtot .of { font-size: .86rem; color: var(--silver); }
-.subtot .lk { margin: -10px -6px -10px; font-size: .86rem; gap: 6px; white-space: normal; text-align: left; }
+.subtot .lk { margin: -10px -6px -10px; font-size: .86rem; gap: 6px; white-space: normal; text-align: left; color: var(--silver); }
+.subtot .lk svg { stroke: var(--red-text); }
 .subtot .lk svg { width: 14px; height: 14px; }
 .subtot .left { font-size: .86rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; }
 .subtot .left.over { color: var(--red-text); } .subtot .left.warn { color: var(--amber); }
@@ -310,7 +314,7 @@ button.row { cursor: pointer; }
 .mnav button svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .mnav button:disabled { opacity: .3; }
 .seg { display: grid; grid-auto-flow: column; grid-auto-columns: 1fr; gap: 4px; padding: 3px; border-radius: 13px; background: var(--card); border: 1px solid var(--line); }
-.seg button { min-height: 40px; border: 0; border-radius: 10px; background: none; color: var(--silver); font-weight: 650; font-size: .9rem; padding: 6px; }
+.seg button { min-height: 44px; border: 0; border-radius: 10px; background: none; color: var(--silver); font-weight: 650; font-size: .9rem; padding: 6px; }
 .seg button[aria-pressed="true"], .seg button.on { background: var(--card3); color: var(--ink); box-shadow: inset 0 1px 0 rgba(255,255,255,.07); }
 .search { position: relative; }
 .search svg { position: absolute; left: 13px; top: 50%; width: 18px; height: 18px; margin-top: -9px; stroke: var(--silver2); fill: none; stroke-width: 2; stroke-linecap: round; pointer-events: none; }
@@ -319,7 +323,7 @@ button.row { cursor: pointer; }
 .search input::placeholder { color: var(--silver2); }
 .fchips { display: flex; gap: 8px; overflow-x: auto; margin: 0 -16px; padding: 0 16px 2px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
 .fchips::-webkit-scrollbar { display: none; }
-.fc { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: 40px; padding: 0 14px; border-radius: 99px; border: 1px solid var(--line2); background: var(--card); color: var(--silver); font-size: .86rem; font-weight: 650; white-space: nowrap; }
+.fc { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 14px; border-radius: 99px; border: 1px solid var(--line2); background: var(--card); color: var(--silver); font-size: .86rem; font-weight: 650; white-space: nowrap; }
 .fc small { font-size: .76rem; color: var(--silver2); font-weight: 600; }
 .fc[aria-pressed="true"] { color: #fff; background: var(--red-soft); border-color: var(--red); box-shadow: 0 0 12px rgba(255,42,42,.2); }
 .fc[aria-pressed="true"] small { color: var(--silver); }
@@ -341,6 +345,8 @@ input[type=date]::-webkit-date-and-time-value, input[type=month]::-webkit-date-a
 .two { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(9rem, 100%), 1fr)); gap: 12px; }
 .btns { display: flex; gap: 10px; flex-wrap: wrap; }
 .btns > .btn { flex: 1 1 8rem; }
+.btns.col { flex-direction: column; }
+.btns.col > .btn { flex: 0 0 auto; justify-content: space-between; }
 .btn { appearance: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 50px; max-width: 100%; padding: .62rem 1.1rem; border: 1px solid rgba(255,90,90,.5); border-radius: 14px; overflow-wrap: anywhere;
   background: linear-gradient(180deg, #e31c22, #c80f15); color: #fff; font-weight: 700; text-align: center; text-decoration: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.22), 0 6px 18px rgba(255,42,42,.18); }
 .btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
@@ -356,6 +362,7 @@ input[type=date]::-webkit-date-and-time-value, input[type=month]::-webkit-date-a
 .set > div { min-width: 0; }
 .set .t, .set .s { white-space: normal; }
 .sw { flex: 0 0 auto; position: relative; width: 51px; height: 31px; border-radius: 99px; border: 0; background: var(--card3); padding: 0; }
+.sw::before { content: ""; position: absolute; inset: -7px -5px; }
 .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 27px; height: 27px; border-radius: 50%; background: #f5f6f8; box-shadow: 0 2px 6px rgba(0,0,0,.4); transition: transform .2s ease; }
 .sw[aria-checked="true"] { background: var(--red-deep); box-shadow: 0 0 12px rgba(255,42,42,.3); }
 .sw[aria-checked="true"]::after { transform: translateX(20px); }
@@ -453,9 +460,9 @@ details.det[open] > summary { margin-bottom: 8px; }
 </defs></svg>
 
 <header class="hd" id="hd">
-  <span class="hd-mark" aria-hidden="true"><svg viewBox="0 0 34 34"><defs><filter id="mkg" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="1.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <span class="hd-mark" aria-hidden="true"><svg viewBox="0 0 34 34">
     <circle cx="17" cy="17" r="16" fill="#0d0d10" stroke="rgba(255,255,255,.14)"/><path d="M8.5 23.5 A10 10 0 1 1 25.5 23.5" fill="none" stroke="#3a3d43" stroke-width="2.4" stroke-linecap="round"/>
-    <path d="M22.9 10.6 A10 10 0 0 1 25.5 23.5" fill="none" stroke="#ff2a2a" stroke-width="2.4" stroke-linecap="round" filter="url(#mkg)"/><path d="M17 17 L23.2 11.4" stroke="#f5f6f8" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="2.2" fill="#f5f6f8"/></svg></span>
+    <path d="M22.9 10.6 A10 10 0 0 1 25.5 23.5" fill="none" stroke="#ff2a2a" stroke-opacity=".3" stroke-width="5" stroke-linecap="round"/><path d="M22.9 10.6 A10 10 0 0 1 25.5 23.5" fill="none" stroke="#ff2a2a" stroke-width="2.4" stroke-linecap="round"/><path d="M17 17 L23.2 11.4" stroke="#f5f6f8" stroke-width="2" stroke-linecap="round"/><circle cx="17" cy="17" r="2.2" fill="#f5f6f8"/></svg></span>
   <div class="hd-t"><h1 id="scrTitle">Garage</h1><span id="status" data-s="load" role="status">Loading</span></div>
   <button class="ib acc" type="button" data-act="qa" aria-label="Add a purchase, income or transfer"><svg viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg></button>
 </header>
@@ -542,8 +549,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     <div class="card"><div class="ch"><h2>Auto-categorize</h2></div>
       <p class="note">Bank imports are sorted by store. Change a purchase's category once and Ride Quest files that store there from then on.</p><div id="ruleList" style="margin-top:8px"></div></div>
     <div class="card"><div class="ch"><h2>Import and export</h2></div><p class="note">Everything saves on its own, on this iPhone. Exports open in Numbers or Excel; the backup holds everything.</p>
-      <div class="btns" style="margin-top:12px"><button class="btn ghost" id="dlTx" type="button">Purchases (CSV)</button><button class="btn ghost" id="dlMv" type="button">Transfers (CSV)</button><button class="btn ghost" id="dlAll" type="button">Full backup (JSON)</button></div>
-      <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" data-act="goimport">Import subscriptions</button></div>
+      <div class="btns col" style="margin-top:12px"><button class="btn ghost" id="dlTx" type="button">Export purchases<span class="mut2">CSV</span></button><button class="btn ghost" id="dlMv" type="button">Export transfers<span class="mut2">CSV</span></button><button class="btn ghost" id="dlAll" type="button">Save a full backup<span class="mut2">JSON</span></button>
+        <button class="btn ghost" type="button" data-act="goimport">Import subscriptions<span class="mut2">List or code</span></button></div>
       <p class="msg" id="dlMsg" role="status"></p></div>
     <div class="card"><div class="ch"><h2>Check the math</h2></div><p class="note">Runs Ride Quest's money checks on made-up numbers. Nothing of yours is read, changed or saved.</p>
       <div class="btns" style="margin-top:12px"><button class="btn ghost" type="button" data-act="selftest">Run checks</button></div><p class="msg" id="stMsg" role="status"></p></div>
@@ -2527,7 +2534,7 @@ details.det[open] > summary { margin-bottom: 8px; }
       '<linearGradient id="' + u("bm") + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eef2ff" stop-opacity=".5"/><stop offset="1" stop-color="#eef2ff" stop-opacity="0"/></linearGradient>' +
       '<radialGradient id="' + u("tl") + '"><stop offset="0" stop-color="#ff2a2a" stop-opacity=".8"/><stop offset="1" stop-color="#ff2a2a" stop-opacity="0"/></radialGradient>' +
       '<radialGradient id="' + u("gd") + '"><stop offset="0" stop-color="#000" stop-opacity=".95"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>' +
-      '<filter id="' + u("b") + '" x="-60%" y="-300%" width="220%" height="700%"><feGaussianBlur stdDeviation="2.6"/></filter>' +
+      '<radialGradient id="' + u("hl") + '"><stop offset="0" stop-color="#eef2ff" stop-opacity=".9"/><stop offset="1" stop-color="#eef2ff" stop-opacity="0"/></radialGradient>' +
       '<linearGradient id="' + u("sw") + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
       '<clipPath id="' + u("c") + '"><path d="' + body + '"/></clipPath></defs>' +
       '<ellipse cx="190" cy="124" rx="182" ry="8" fill="url(#' + u("gd") + ')"/>' +
@@ -2545,9 +2552,9 @@ details.det[open] > summary { margin-bottom: 8px; }
       '<path d="M58 61 C86 50 112 38 152 36 C172 35.5 185 38 197 44" fill="none" stroke="url(#' + u("sh") + ')" stroke-width="1.6" stroke-linecap="round"/>' +
       '<path d="M236 60 C272 62 308 65 334 70" fill="none" stroke="url(#' + u("sh") + ')" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>' +
       '<g clip-path="url(#' + u("c") + ')"><rect class="sweep" x="-140" y="20" width="120" height="100" fill="url(#' + u("sw") + ')"/></g>' +
-      '<g class="tail"><rect x="20" y="71" width="20" height="3.4" rx="1.7" fill="#ff2a2a" filter="url(#' + u("b") + ')"/>' +
+      '<g class="tail"><ellipse cx="29" cy="72.7" rx="19" ry="6.5" fill="url(#' + u("tl") + ')"/>' +
       '<rect x="20" y="71" width="20" height="3.4" rx="1.7" fill="#ff4b4b"/><circle cx="25" cy="72.6" r="17" fill="url(#' + u("tl") + ')" opacity=".75"/></g>' +
-      '<path d="M334 69.5 L352 74.5 L351 77.5 L333 72.5 Z" fill="#eef2ff" filter="url(#' + u("b") + ')" opacity=".85"/>' +
+      '<ellipse cx="343" cy="73.6" rx="15" ry="6" fill="url(#' + u("hl") + ')" opacity=".8"/>' +
       '<path d="M334 69.5 L352 74.5 L351 77.5 L333 72.5 Z" fill="#f7f9ff"/>' +
       wheel(90, 99) + wheel(282, 99) + "</svg>";
   }
@@ -2567,7 +2574,6 @@ details.det[open] > summary { margin-bottom: 8px; }
   }
   function gaugeSVG(goalC) {
     var R = GZ.R, s = '<svg viewBox="0 0 360 300" aria-hidden="true" focusable="false"><defs>' +
-      '<filter id="gGlow" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="3.2" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>' +
       '<linearGradient id="gLit" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7d838b"/><stop offset="1" stop-color="#ffffff"/></linearGradient>' +
       '<radialGradient id="gFace" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1b1f"/><stop offset="1" stop-color="#0b0b0d" stop-opacity="0"/></radialGradient></defs>';
     s += '<circle cx="' + GZ.cx + '" cy="' + GZ.cy + '" r="' + (R - 6) + '" fill="url(#gFace)"/>';
@@ -2589,16 +2595,21 @@ details.det[open] > summary { margin-bottom: 8px; }
       s += '<text x="' + (qg[0] + 4).toFixed(1) + '" y="' + (qg[1] + 4).toFixed(1) + '" text-anchor="middle" fill="#ff5c5c" font-size="11" font-weight="700">' + kShort(goalC) + "</text>";
     }
     var L1 = arcLen(0, GZ.red, R), L2 = arcLen(GZ.red, 1, R), n1 = gpt(0, R - 28), n2 = gpt(0, R + 10);
-    s += '<path class="lit" id="gLitP" d="' + garc(0, GZ.red, R) + '" fill="none" stroke="url(#gLit)" stroke-width="8" stroke-linecap="round" filter="url(#gGlow)" style="stroke-dasharray:0 ' + (L1 * 2).toFixed(1) + ';opacity:0" data-l="' + L1.toFixed(2) + '"/>';
-    s += '<path class="hot" id="gHotP" d="' + garc(GZ.red, 1, R) + '" fill="none" stroke="#ff2a2a" stroke-width="8" stroke-linecap="round" filter="url(#gGlow)" style="stroke-dasharray:0 ' + (L2 * 2).toFixed(1) + ';opacity:0" data-l="' + L2.toFixed(2) + '"/>';
-    s += '<g class="ndl" id="gNdl" style="transform-origin:' + GZ.cx + "px " + GZ.cy + 'px;transform:rotate(0deg)"><line x1="' + n1[0].toFixed(1) + '" y1="' + n1[1].toFixed(1) + '" x2="' + n2[0].toFixed(1) + '" y2="' + n2[1].toFixed(1) + '" stroke="#ff2a2a" stroke-width="4" stroke-linecap="round" filter="url(#gGlow)"/></g>';
+    /* glows are plain wide, faint strokes (no SVG filters: they are slow to redraw while the needle sweeps) */
+    var d1 = garc(0, GZ.red, R), d2 = garc(GZ.red, 1, R), z1 = "stroke-dasharray:0 " + (L1 * 2).toFixed(1) + ";opacity:0", z2 = "stroke-dasharray:0 " + (L2 * 2).toFixed(1) + ";opacity:0";
+    s += '<path class="lit" id="gLitH" d="' + d1 + '" fill="none" stroke="url(#gLit)" stroke-opacity=".16" stroke-width="18" stroke-linecap="round" style="' + z1 + '"/>';
+    s += '<path class="hot" id="gHotH" d="' + d2 + '" fill="none" stroke="#ff2a2a" stroke-opacity=".22" stroke-width="18" stroke-linecap="round" style="' + z2 + '"/>';
+    s += '<path class="lit" id="gLitP" d="' + d1 + '" fill="none" stroke="url(#gLit)" stroke-width="8" stroke-linecap="round" style="' + z1 + '" data-l="' + L1.toFixed(2) + '"/>';
+    s += '<path class="hot" id="gHotP" d="' + d2 + '" fill="none" stroke="#ff2a2a" stroke-width="8" stroke-linecap="round" style="' + z2 + '" data-l="' + L2.toFixed(2) + '"/>';
+    var nl = 'x1="' + n1[0].toFixed(1) + '" y1="' + n1[1].toFixed(1) + '" x2="' + n2[0].toFixed(1) + '" y2="' + n2[1].toFixed(1) + '"';
+    s += '<g class="ndl" id="gNdl" style="transform-origin:' + GZ.cx + "px " + GZ.cy + 'px;transform:rotate(0deg)"><line ' + nl + ' stroke="#ff2a2a" stroke-opacity=".25" stroke-width="10" stroke-linecap="round"/><line ' + nl + ' stroke="#ff2a2a" stroke-width="4" stroke-linecap="round"/></g>';
     return s + "</svg>";
   }
   function setGauge(p) {
     var lit = $("gLitP"), hot = $("gHotP"), nd = $("gNdl"); if (!lit) return;
     var L1 = +lit.dataset.l, L2 = +hot.dataset.l, a = Math.min(p, GZ.red) / GZ.red, b = p > GZ.red ? (p - GZ.red) / (1 - GZ.red) : 0;
-    lit.style.strokeDasharray = (L1 * a).toFixed(2) + " " + (L1 * 2).toFixed(1); lit.style.opacity = p > 0.002 ? "1" : "0";
-    hot.style.strokeDasharray = (L2 * b).toFixed(2) + " " + (L2 * 2).toFixed(1); hot.style.opacity = b > 0.002 ? "1" : "0";
+    [lit, $("gLitH")].forEach(function (el) { if (!el) return; el.style.strokeDasharray = (L1 * a).toFixed(2) + " " + (L1 * 2).toFixed(1); el.style.opacity = p > 0.002 ? "1" : "0"; });
+    [hot, $("gHotH")].forEach(function (el) { if (!el) return; el.style.strokeDasharray = (L2 * b).toFixed(2) + " " + (L2 * 2).toFixed(1); el.style.opacity = b > 0.002 ? "1" : "0"; });
     nd.style.transform = "rotate(" + (p * 240).toFixed(2) + "deg)";
   }
   /* numbers roll to their new value (exact cents at the end); instant with Reduce Motion */
@@ -2714,7 +2725,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     if (it) { var v = viaOf(it); chips = statusChips(it).filter(function (c) { return c.t !== "Active"; }).map(function (c) { return chip(c.t, c.c); }).join("") + (v ? chip(v.t) : ""); }
     else chips = chip("Car loan");
     var attrs = it ? 'data-act="' + (it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(it.id) + '"' : 'data-tab="car"';
-    return '<button class="nx' + (soon ? " soon" : "") + '" type="button" ' + attrs + ">" + dateBadge(u.d, u.late) +
+    return '<button class="nx' + (soon ? " soon" : "") + '" type="button" ' + attrs + ">" + dateBadge(u.d, u.late) + '<span class="sr">' + esc(dayLbl(u.d)) + ", </span>" +
       '<span class="mid"><span class="t">' + esc(u.n) + '</span><span class="s' + (soon ? " red" : u.late ? " amber" : "") + '"' + (soon ? ' style="font-weight:700"' : "") + ">" + esc(whenWord(u.d, u.late)) + "</span>" + (chips ? '<span class="chips">' + chips + "</span>" : "") + "</span>" +
       '<span class="amt n">' + (u.varies ? "Varies" : fmtC(u.c)) + "</span></button>";
   }
@@ -2799,7 +2810,8 @@ details.det[open] > summary { margin-bottom: 8px; }
   }
   function entryText(e) {
     var o = e.o;
-    return [prettyName(o.what || ""), o.what, o.note, o.cat, e.k === "tx" ? acctLbl(o) : wName(o.from) + " " + wName(o.to), fmtC(Math.abs(toC(o.amt))), moneyIn(Math.abs(toC(o.amt))), (o.bank && o.bank.desc) || ""].join(" ").toLowerCase();
+    var c = Math.abs(toC(o.amt));
+    return [shopName(o.what || ""), o.what, o.note, o.cat, e.k === "tx" ? acctLbl(o) : wName(o.from) + " " + wName(o.to), fmtC(c), fromC(c).toFixed(2), (o.bank && o.bank.desc) || ""].join(" ").toLowerCase();
   }
   function renderActivity() {
     renderUncBox();
@@ -3092,7 +3104,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     }).join("") || '<p class="note">Every wallet is synced with your bank.</p>';
     $("selfSet").innerHTML = '<label class="f"><span>Your name, for transfers to yourself</span><input class="in" type="text" data-set="selfName" autocomplete="name" autocapitalize="words" placeholder="As your bank shows it" value="' + esc(S.selfName || "") + '"></label>';
     renderRules();
-    $("about").innerHTML = '<div class="row" style="border-top:0;padding-top:0"><span class="hd-mark" aria-hidden="true">' + document.querySelector(".hd-mark").innerHTML.replace(/<defs>[\s\S]*?<\/defs>/, "").replace(/ filter="url\(#mkg\)"/g, "") + '</span><span class="mid"><span class="t">Ride Quest</span><span class="s wrap">Version 2, a private build for saving toward your car</span></span></div>' +
+    $("about").innerHTML = '<div class="row" style="border-top:0;padding-top:0"><span class="hd-mark" aria-hidden="true">' + document.querySelector(".hd-mark").innerHTML + '</span><span class="mid"><span class="t">Ride Quest</span><span class="s wrap">Version 2, a private build for saving toward your car</span></span></div>' +
       '<p class="note" style="margin-top:8px">Your money data stays on this iPhone. Bank sync goes from this phone to SimpleFIN Bridge and back, nowhere else. Car art in the app is an original drawing, not any real model.</p>';
   }
 
