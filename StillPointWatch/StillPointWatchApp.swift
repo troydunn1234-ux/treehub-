@@ -53,8 +53,10 @@ struct WatchRoot: View {
                     Button { start(beginPractice, minutes: preferredMinutes(beginPractice)) } label: {
                         VStack(spacing: 4) {
                             ZStack {
+                                // Swells and settles at a calm breathing pace (still with Reduce Motion).
                                 BreathOrb(scale: 0.8, phase: .still)
                                     .frame(width: 78, height: 78)
+                                    .slowBreathe(period: 5.5, low: 0.8, grow: 0.1)
                                 Text("Begin").font(SP.serif(20)).foregroundStyle(SP.ink)
                             }
                             Text("\(beginPractice.title) · \(preferredMinutes(beginPractice)) min")
@@ -102,7 +104,8 @@ struct WatchRoot: View {
                 }
                 .padding(.horizontal, 4)
             }
-            .background(DuskBackground().opacity(0.9))
+            // The same time-of-day sky as Today on the iPhone (dawn, day, dusk, night).
+            .background(SkyBackground().opacity(0.9))
             .navigationTitle("Still Point")
             .navigationDestination(for: Intention.self) { i in
                 PracticeList(title: i.name, practices: lib.practices(for: i), onStart: start)

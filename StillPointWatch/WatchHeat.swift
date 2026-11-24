@@ -98,8 +98,10 @@ struct WatchHeatButtons: View {
                 }
                 .padding(.horizontal, 12)
                 .frame(minHeight: 44)
+                // Warm and alive while you're in: the glow swells slowly (still with Reduce Motion).
                 .background(Capsule().fill(LinearGradient(colors: [a.kind.tint.opacity(0.28), a.kind.tint.opacity(0.10)],
-                                                          startPoint: .leading, endPoint: .trailing)))
+                                                          startPoint: .leading, endPoint: .trailing))
+                    .slowBreathe(period: 3.5, low: 0.65, grow: 0))
                 .overlay(Capsule().stroke(a.kind.tint.opacity(0.35), lineWidth: 1))
             }
             .buttonStyle(.plain)
@@ -187,6 +189,8 @@ struct WatchHeatView: View {
                 .fixedSize(horizontal: false, vertical: true)
         }
         .padding(.horizontal, 4)
+        // Low embers (sauna) or lit mist (steam) under the clock.
+        .background(EmberGlow(kind: kind).opacity(0.7))
     }
 
     private var movesPage: some View {

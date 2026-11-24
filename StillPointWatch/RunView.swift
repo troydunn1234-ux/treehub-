@@ -197,6 +197,12 @@ struct BreathRunView: View {
                             .contentTransition(.numericText(countsDown: true))
                     }
                 }
+                // A soft glow that swells and settles with the orb (off in Always-On).
+                .background {
+                    if !luminanceReduced {
+                        BreathAura(level: st.orb, tint: accent ?? SP.teal).scaleEffect(1.3)
+                    }
+                }
                 .frame(maxHeight: .infinity)
                 // The cue stays readable when dimmed or in Always-On, so you can follow along.
                 Text(session.pattern == nil ? (session.cue ?? "Be still") : st.label)
@@ -373,9 +379,15 @@ struct SummaryView: View {
                         .opacity(bloom ? 1 : 0)
                     VStack(spacing: 2) {
                         Image(systemName: "checkmark.circle.fill").font(.system(size: 18)).foregroundStyle(SP.accent)
+                            .symbolEffect(.bounce, value: bloom)
                             .accessibilityHidden(true)
                         Text("Well done.").font(SP.serif(22, .light)).foregroundStyle(SP.ink)
                     }
+                }
+                // Rings spread out once, like a stone dropped into still water (none with Reduce Motion).
+                .background {
+                    CalmRipple(tint: SP.accent, rings: 2, duration: 2.6, lineWidth: 1.2)
+                        .frame(width: 150, height: 150)
                 }
                 let cols = [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)]
                 LazyVGrid(columns: cols, spacing: 6) {

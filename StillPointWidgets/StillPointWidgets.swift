@@ -76,6 +76,73 @@ private enum Palette {
     }
 }
 
+#if !os(watchOS)
+/// The app's time-of-day sky (StillPoint/Shared/Vibes.swift, SkyPart), copied here and kept a little softer:
+/// deep at the bottom, the hour's light in the top corner. iPhone widgets only (complications stay clear).
+private enum WidgetSky {
+    case dawn, day, dusk, night
+
+    /// Hours the sky changes (dawn 5, day 8, dusk 17, night 20), for timeline entries.
+    static let hours = [5, 8, 17, 20]
+
+    static func at(_ date: Date) -> WidgetSky {
+        switch Calendar.current.component(.hour, from: date) {
+        case 5..<8: return .dawn
+        case 8..<17: return .day
+        case 17..<20: return .dusk
+        default: return .night
+        }
+    }
+
+    /// The next `count` sky changes after `date`.
+    static func changes(after date: Date, count: Int) -> [Date] {
+        let cal = Calendar.current
+        let start = cal.startOfDay(for: date)
+        var out: [Date] = []
+        for dayOffset in 0..<2 {
+            guard let day = cal.date(byAdding: .day, value: dayOffset, to: start) else { continue }
+            for h in hours {
+                if let d = cal.date(byAdding: .hour, value: h, to: day), d > date.addingTimeInterval(60) { out.append(d) }
+            }
+        }
+        return Array(out.sorted().prefix(count))
+    }
+
+    private static func rgb(_ r: Double, _ g: Double, _ b: Double) -> Color { Color(red: r / 255, green: g / 255, blue: b / 255) }
+
+    var colors: [Color] {
+        switch self {
+        case .dawn: return [Self.rgb(0x26, 0x25, 0x55), Self.rgb(0x1A, 0x1E, 0x4B), Palette.nightBottom]
+        case .day: return [Self.rgb(0x1A, 0x28, 0x5E), Self.rgb(0x14, 0x1F, 0x50), Palette.nightBottom]
+        case .dusk: return [Self.rgb(0x2D, 0x23, 0x57), Self.rgb(0x1C, 0x1B, 0x49), Palette.nightBottom]
+        case .night: return [Palette.nightTop, Palette.night, Palette.nightBottom]
+        }
+    }
+
+    var glow: Color {
+        switch self {
+        case .dawn: return Self.rgb(0xF4, 0xB1, 0x83).opacity(0.13)
+        case .day: return Palette.teal.opacity(0.10)
+        case .dusk: return Self.rgb(0xEB, 0xA2, 0x7C).opacity(0.12)
+        case .night: return Self.rgb(0xCF, 0xC6, 0xFF).opacity(0.08)
+        }
+    }
+}
+
+/// Widget background: the sky of the entry's hour, with the app's soft indigo glow low down.
+private struct WidgetSkyBackground: View {
+    let date: Date
+    var body: some View {
+        let sky = WidgetSky.at(date)
+        ZStack {
+            LinearGradient(colors: sky.colors, startPoint: .top, endPoint: .bottom)
+            RadialGradient(colors: [sky.glow, .clear], center: UnitPoint(x: 0.9, y: -0.05), startRadius: 4, endRadius: 200)
+            WidgetGlow()
+        }
+    }
+}
+#endif
+
 // MARK: - Timeline
 
 struct StillEntry: TimelineEntry {
@@ -143,11 +210,11 @@ struct StillProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<StillEntry>) -> Void) {
         // The app reloads timelines after every session. Otherwise refresh at the next part of the day (the routine
-        // changes at 5, 11, 17 and 21 h) and at midnight, when "done today" resets.
+        // changes at 5, 11, 17 and 21 h, the sky behind it at 5, 8, 17 and 20 h) and at midnight, when "done today" resets.
         let now = Date()
         let cal = Calendar.current
         let start = cal.startOfDay(for: now)
-        let marks = [5, 11, 17, 21, 24].compactMap { cal.date(byAdding: .hour, value: $0, to: start) }
+        let marks = [5, 8, 11, 17, 20, 21, 24].compactMap { cal.date(byAdding: .hour, value: $0, to: start) }
         let next = marks.first { $0 > now.addingTimeInterval(60) } ?? now.addingTimeInterval(3600)
         completion(Timeline(entries: [StillEntry.current(date: now)], policy: .after(next)))
     }
@@ -160,11 +227,11 @@ struct StillPointWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: Bridge.kind, provider: StillProvider()) { entry in
             StillHomeView(entry: entry)
-                .containerBackground(for: .widget) { ZStack { Palette.background; WidgetGlow() } }
+                .containerBackground(for: .widget) { WidgetSkyBackground(date: entry.date) }
                 .widgetURL(entry.url)
         }
         .configurationDisplayName("Today's routine")
-        .description("Your next suggested session and your streak. Tap to begin.")
+        .description("Your next suggested session and your streak. Tap to start.")
         .supportedFamilies([.systemSmall, .systemMedium])
         .contentMarginsDisabled()
     }
@@ -216,7 +283,7 @@ struct StillHomeView: View {
                     .font(Palette.serif(15)).foregroundStyle(Palette.ink)
                     .lineLimit(2).minimumScaleFactor(0.75)
             }
-            Text(entry.suggestedDetail.isEmpty ? "Tap to begin" : "\(entry.suggestedDetail) · tap to begin")
+            Text(entry.suggestedDetail.isEmpty ? "Tap to start" : "\(entry.suggestedDetail) · tap to start")
                 .font(Palette.rounded(10)).foregroundStyle(Palette.faint).lineLimit(1).minimumScaleFactor(0.8)
         }
         .padding(14)
@@ -276,7 +343,7 @@ struct StillHomeView: View {
                 Text(entry.suggestedDetail).font(Palette.rounded(10)).foregroundStyle(Palette.dim).lineLimit(1)
             }
             Spacer(minLength: 2)
-            Label("Begin", systemImage: "play.fill")
+            Label("Start", systemImage: "play.fill")
                 .font(Palette.rounded(12, .semibold)).foregroundStyle(.white)
                 .padding(.horizontal, 12).padding(.vertical, 5)
                 .background(Capsule().fill(accented ? AnyShapeStyle(Color.white.opacity(0.18)) : AnyShapeStyle(Palette.accentFill)))
@@ -324,7 +391,7 @@ struct StillPointComplication: Widget {
                 .widgetURL(entry.url)
         }
         .configurationDisplayName("Streak")
-        .description("Your streak and this week's minutes. Tap to begin today's routine.")
+        .description("Your streak and this week's minutes. Tap to start today's routine.")
         .supportedFamilies(Self.families)
     }
 
@@ -692,13 +759,16 @@ struct RightNowProvider: TimelineProvider {
         completion(context.isPreview && !e.hasPick ? .placeholder : e)
     }
     func getTimeline(in context: Context, completion: @escaping (Timeline<RightNowEntry>) -> Void) {
-        // The app reloads this kind whenever its pick changes; an extra entry marks it stale after 3 hours.
+        // The app reloads this kind whenever its pick changes; an extra entry marks it stale after 3 hours, and
+        // two more repaint the sky when the hour turns to dawn, day, dusk or night.
         let now = Date()
         let e = RightNowEntry.current(date: now)
+        var marks = WidgetSky.changes(after: now, count: 2)
+        if let at = e.computedAt, !e.stale { marks.append(at.addingTimeInterval(3 * 3600 + 60)) }
         var entries = [e]
-        if let at = e.computedAt, !e.stale {
+        for m in marks.sorted() where m > now {
             var later = e
-            later.date = at.addingTimeInterval(3 * 3600 + 60)
+            later.date = m
             entries.append(later)
         }
         completion(Timeline(entries: entries, policy: .atEnd))
@@ -712,7 +782,7 @@ struct RightNowWidget: Widget {
                 .widgetURL(entry.hasPick ? entry.url : URL(string: "stillpoint://practice/"))
         }
         .configurationDisplayName("Right now")
-        .description("The one practice picked for this moment from your heart rate, HRV and sleep. Tap to begin.")
+        .description("The one practice picked for this moment from your heart rate, HRV and sleep. Tap to start.")
         .supportedFamilies([.systemSmall, .systemMedium, .accessoryRectangular, .accessoryInline])
         .contentMarginsDisabled()
     }
@@ -720,7 +790,11 @@ struct RightNowWidget: Widget {
 
 struct RightNowWidgetView: View {
     @Environment(\.widgetFamily) private var family
+    @Environment(\.widgetRenderingMode) private var renderingMode
     let entry: RightNowEntry
+
+    /// Tinted Home Screen: solid fills become soft outlines (as the routine widget's Start pill).
+    private var accented: Bool { renderingMode == .accented }
 
     var body: some View {
         Group {
@@ -733,7 +807,7 @@ struct RightNowWidgetView: View {
         }
         .containerBackground(for: .widget) {
             if family == .systemSmall || family == .systemMedium {
-                ZStack { Palette.background; WidgetGlow() }
+                WidgetSkyBackground(date: entry.date)
             } else {
                 Color.clear
             }
@@ -775,7 +849,13 @@ struct RightNowWidgetView: View {
                 .font(Palette.serif(medium ? 20 : 17)).foregroundStyle(Palette.ink)
                 .lineLimit(2).minimumScaleFactor(0.75)
             if entry.hasPick {
-                Text("\(entry.minutes) min").font(Palette.rounded(11, .medium)).foregroundStyle(Palette.dim).monospacedDigit()
+                // One clear action, named as in the app ("Start · 5 min").
+                Label("Start · \(entry.minutes) min", systemImage: "play.fill")
+                    .font(Palette.rounded(10, .semibold)).foregroundStyle(.white).monospacedDigit()
+                    .lineLimit(1).minimumScaleFactor(0.8)
+                    .padding(.horizontal, 9).padding(.vertical, 3)
+                    .background(Capsule().fill(accented ? AnyShapeStyle(Color.white.opacity(0.18)) : AnyShapeStyle(Palette.accentFill)))
+                    .widgetAccentable()
             }
             Spacer(minLength: 2)
             Text(footnote)
