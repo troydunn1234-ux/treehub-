@@ -229,6 +229,9 @@ struct RootView: View {
         .buttonStyle(SquishStyle())
         .accessibilityLabel(title)
         .accessibilityAddTraits(on ? .isSelected : [])
+        // The bar keeps fixed sizes at large text; at accessibility text sizes a long press shows the item big,
+        // as a system tab bar does.
+        .accessibilityShowsLargeContentViewer { Label(title, systemImage: symbol) }
     }
 }
 

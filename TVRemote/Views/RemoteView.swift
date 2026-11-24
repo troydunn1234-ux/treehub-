@@ -240,6 +240,8 @@ struct RemoteView: View {
         .accessibilityLabel(spoken ?? label)
         // Voice Control: the printed word works too ("Tap Keyboard"), not only the spoken label.
         .accessibilityInputLabels(spoken.map { [$0, label] } ?? [label])
+        // The remote keeps fixed sizes; at accessibility text sizes a long press shows the key's small label big.
+        .accessibilityShowsLargeContentViewer { Label(label, systemImage: symbol) }
     }
 
     /// Volume rocker · play keys with Info / Exit / Sleep · Mute and CC.
