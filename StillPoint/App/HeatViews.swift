@@ -337,7 +337,8 @@ struct HeatLogView: View {
                 }
 
                 if !heat.history.isEmpty {
-                    VStack(alignment: .leading, spacing: SP.s3) {
+                    // Lazy: every card draws a heart-rate chart, and the log keeps every session ever timed.
+                    LazyVStack(alignment: .leading, spacing: SP.s3) {
                         SectionHeader("Sessions", detail: "\(heat.history.count)")
                         ForEach(heat.history) { s in
                             HeatSessionCard(session: s)
@@ -479,7 +480,7 @@ struct HeatSessionCard: View {
                 .lineStyle(StrokeStyle(lineWidth: 2, lineCap: .round))
                 .interpolationMethod(.catmullRom)
         }
-        .chartYScale(domain: max(40, h.min - 8)...(h.max + 8))
+        .chartYScale(domain: HeartWindow.chartDomain(min: h.min, max: h.max))
         .chartXAxis {
             AxisMarks(values: .automatic(desiredCount: 4)) { _ in
                 AxisGridLine(stroke: StrokeStyle(lineWidth: 0.5)).foregroundStyle(Color.white.opacity(0.06))
@@ -495,6 +496,17 @@ struct HeatSessionCard: View {
         .frame(height: 110)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text("Heart rate during the session, \(Int(h.min.rounded())) to \(Int(h.max.rounded())) bpm"))
+    }
+}
+
+extension HeartWindow {
+    /// The heat chart's bpm range: 8 bpm of room on each side, never below 40, and never upside down. With every
+    /// reading under 32 bpm (a glitchy strap or a bad import) the old range had its bottom above its top, which
+    /// stops the app; NaN (no usable reading) falls back to the floor too.
+    static func chartDomain(min lowest: Double, max highest: Double) -> ClosedRange<Double> {
+        let bottom = Swift.max(40, lowest - 8)
+        let top = Swift.max(bottom + 10, highest + 8)
+        return bottom...top
     }
 }
 
