@@ -125,12 +125,14 @@ final class Bridge: NSObject, WKURLSchemeHandler, WKScriptMessageHandlerWithRepl
                                                name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
-    /// Hands a waiting Siri section to the page, once it has loaded.
+    /// Hands a waiting Siri section (and a link's query, when it has one) to the page, once it has loaded.
     @objc private func openPendingSection() {
-        guard readySent, let web, let section = ShellLink.take() else { return }
-        guard let data = try? JSONSerialization.data(withJSONObject: [section]),
+        guard readySent, let web, let link = ShellLink.takeLink() else { return }
+        let args: [String] = link.query.map { [link.section, $0] } ?? [link.section]
+        guard let data = try? JSONSerialization.data(withJSONObject: args),
               let arg = String(data: data, encoding: .utf8) else { return }
-        web.evaluateJavaScript("(function(a){if(window.__shellOpen)window.__shellOpen(a[0]);})(\(arg))")
+        let call = link.query == nil ? "window.__shellOpen(a[0])" : "window.__shellOpen(a[0],a[1])"
+        web.evaluateJavaScript("(function(a){if(window.__shellOpen)\(call);})(\(arg))")
     }
 
     // Files: bundle "web" folder, plus saved photos under /_blob/.

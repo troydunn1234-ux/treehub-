@@ -20,8 +20,12 @@ struct WebShellApp: App {
             ShellRoot()
                 .preferredColorScheme(.dark)
                 // <app>://<section> (Home Screen widget) opens that section of the page.
+                // <app>://import?d=… also hands the page the link's query (Ride Quest's one-tap import, reviewed
+                // in the page before anything changes); every other link stays section-only, exactly as before.
                 .onOpenURL { url in
-                    if let section = url.host, !section.isEmpty { ShellLink.queue(section: section) }
+                    guard let section = url.host, !section.isEmpty else { return }
+                    let query = section == "import" ? URLComponents(url: url, resolvingAgainstBaseURL: false)?.percentEncodedQuery : nil
+                    ShellLink.queue(section: section, query: query)
                 }
         }
     }

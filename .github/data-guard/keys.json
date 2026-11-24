@@ -205,6 +205,7 @@
   "WebShell": [
     "reviews.lastAsked",
     "reviews.wins",
+    "shell.pendingQuery",
     "shell.pendingSection",
     "shell.pendingSectionAt",
     "shell.widget",
