@@ -217,6 +217,14 @@ struct AgreementComplicationView: View {
     private var headline: String {
         entry.agreeOf > 0 ? String(localized: "\(entry.agreeOn) of \(entry.agreeOf) agree") : String(localized: "Waiting for both")
     }
+    /// Plain words: "HRV differs" / "HRV and Sleep differ" / "Same story today".
+    private var detail: String {
+        guard entry.agreeOf > 0 else { return String(localized: "Open Pulse Lab to sync") }
+        let names = entry.agreeSplit.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        if names.isEmpty { return String(localized: "Same story today") }
+        let list = names.formatted(.list(type: .and))
+        return names.count == 1 ? String(localized: "\(list) differs") : String(localized: "\(list) differ")
+    }
     private var spoken: String {
         guard let a = entry.agreeScore else { return String(localized: "Watch versus WHOOP: no agreement score yet") }
         return String(localized: "Watch versus WHOOP agree \(Int(a)) percent, \(headline)")
@@ -247,9 +255,12 @@ struct AgreementComplicationView: View {
                             .font(.system(size: 22, weight: .semibold, design: .rounded)).monospacedDigit()
                             .foregroundStyle(entry.agreeScore.map(band) ?? .secondary)
                         Text(headline).font(.system(size: 12, weight: .medium)).lineLimit(1).minimumScaleFactor(0.8)
+                        if entry.agreeOf >= 2 && entry.agreeOn == entry.agreeOf {
+                            Image(systemName: "checkmark.seal.fill").font(.system(size: 11, weight: .semibold))
+                                .foregroundStyle(Shared.good)
+                        }
                     }
-                    Text(entry.agreeOf == 0 ? String(localized: "Open Pulse Lab to sync")
-                         : entry.agreeSplit.isEmpty ? String(localized: "Same story today") : String(localized: "Split: \(entry.agreeSplit)"))
+                    Text(detail)
                         .font(.system(size: 12)).foregroundStyle(.secondary).lineLimit(1).minimumScaleFactor(0.8)
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)

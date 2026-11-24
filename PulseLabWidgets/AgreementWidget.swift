@@ -49,9 +49,21 @@ extension Bridge.Snapshot {
         return String(localized: "\(agreeOn) of \(agreeOf) agree")
     }
 
+    /// Every compared number agrees (two or more): the widget shows a small seal.
+    var agreesFully: Bool { agreeOf >= 2 && agreeOn == agreeOf }
+
+    /// The metrics they split on, from the comma-joined names the app hands over ("HRV, Sleep").
+    var splitNames: [String] {
+        agreeSplit.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+    }
+
+    /// Plain words: "HRV differs" / "HRV and Sleep differ" / "Same story today".
     var agreeDetail: String {
         guard agreeOf > 0 else { return String(localized: "Open Pulse Lab to sync") }
-        return agreeSplit.isEmpty ? String(localized: "Same story today") : String(localized: "Split: \(agreeSplit)")
+        let names = splitNames
+        if names.isEmpty { return String(localized: "Same story today") }
+        let list = names.formatted(.list(type: .and))
+        return names.count == 1 ? String(localized: "\(list) differs") : String(localized: "\(list) differ")
     }
 
     var agreeSpoken: String {
@@ -66,7 +78,11 @@ struct AgreementView: View {
 
     private var shown: Bridge.Snapshot { snap }
     private var scoreText: String { shown.agreeScore.map { "\(Int($0))" } ?? "–" }
-    private var tint: Color { shown.agreeScore.map(Palette.band) ?? Palette.faint }
+    /// The detail line: green when they tell the same story, yellow when they split.
+    private var tint: Color {
+        guard shown.agreeOf > 0 else { return Palette.faint }
+        return shown.splitNames.isEmpty ? Palette.good : Palette.warn
+    }
 
     var body: some View {
         Group {
@@ -84,31 +100,61 @@ struct AgreementView: View {
 
     // MARK: Home Screen
 
+    /// "Watch vs WHOOP" in the two data colours (white in tinted / accented Home Screen modes).
     private var header: some View {
         HStack(spacing: 5) {
             Image(systemName: "bolt.horizontal.fill").font(.system(size: 10, weight: .semibold))
                 .foregroundStyle(Palette.accent).widgetAccentable()
-            Text("Watch vs WHOOP").font(Palette.label(11)).foregroundStyle(Palette.dim).lineLimit(1)
+            (Text(verbatim: "Watch").foregroundStyle(Palette.watch)
+                + Text(verbatim: " vs ").foregroundStyle(Palette.faint)
+                + Text(verbatim: "WHOOP").foregroundStyle(Palette.whoop))
+                .font(Palette.label(11)).lineLimit(1)
             Spacer(minLength: 0)
         }
     }
 
+    /// Same ring as Today in the app: Watch cyan up the left, WHOOP amber up the right, from a heart at the bottom;
+    /// the two meet at the top only when they fully agree.
     private func ring(size: CGFloat, line: CGFloat, font: CGFloat) -> some View {
-        ZStack {
+        let p = min(1, max(0, (shown.agreeScore ?? 0) / 100))
+        return ZStack {
             Circle().stroke(Color.white.opacity(0.08), lineWidth: line)
-            Circle()
-                .trim(from: 0, to: CGFloat((shown.agreeScore ?? 0) / 100))
-                .stroke(LinearGradient(colors: [Palette.watch, Palette.whoop], startPoint: .leading, endPoint: .trailing),
-                        style: StrokeStyle(lineWidth: line, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .widgetAccentable()
+            ZStack {
+                Circle().trim(from: 0, to: 0.5 * p)
+                    .stroke(Palette.watch, style: StrokeStyle(lineWidth: line, lineCap: .round))
+                Circle().trim(from: 1 - 0.5 * p, to: 1)
+                    .stroke(Palette.whoop, style: StrokeStyle(lineWidth: line, lineCap: .round))
+            }
+            .rotationEffect(.degrees(90))
+            .widgetAccentable()
             VStack(spacing: 0) {
                 Text(scoreText).font(Palette.number(font)).foregroundStyle(shown.agreeScore == nil ? Palette.faint : Palette.text)
                     .minimumScaleFactor(0.6)
                 Text("agree").font(Palette.label(10)).foregroundStyle(Palette.faint)
             }
+            Image(systemName: "heart.fill")
+                .font(.system(size: max(6, line * 0.9), weight: .bold))
+                .foregroundStyle(Palette.accent)
+                .frame(width: line * 2, height: line * 2)
+                .background(Circle().fill(Palette.panel))
+                .offset(y: size / 2)
+                .widgetAccentable()
+                .accessibilityHidden(true)
         }
         .frame(width: size, height: size)
+    }
+
+    /// The headline, with a small seal when every number agrees.
+    private func headline(_ font: Font) -> some View {
+        HStack(spacing: 4) {
+            Text(shown.agreeHeadline).font(font).foregroundStyle(Palette.text)
+                .lineLimit(1).minimumScaleFactor(0.8)
+            if shown.agreesFully {
+                Image(systemName: "checkmark.seal.fill").font(font).foregroundStyle(Palette.good)
+                    .widgetAccentable()
+                    .accessibilityHidden(true)
+            }
+        }
     }
 
     private var small: some View {
@@ -120,8 +166,7 @@ struct AgreementView: View {
                 Spacer(minLength: 0)
             }
             Spacer(minLength: 0)
-            Text(shown.agreeHeadline).font(.system(size: 12, weight: .semibold)).foregroundStyle(Palette.text)
-                .lineLimit(1).minimumScaleFactor(0.8)
+            headline(.system(size: 12, weight: .semibold))
             Text(shown.agreeDetail).font(.system(size: 11, weight: .medium)).foregroundStyle(tint)
                 .lineLimit(1).minimumScaleFactor(0.8)
         }
@@ -133,8 +178,7 @@ struct AgreementView: View {
             ring(size: 92, line: 8, font: 30)
             VStack(alignment: .leading, spacing: 6) {
                 header
-                Text(shown.agreeHeadline).font(.system(size: 17, weight: .bold, design: .rounded)).foregroundStyle(Palette.text)
-                    .lineLimit(1).minimumScaleFactor(0.8)
+                headline(.system(size: 17, weight: .bold, design: .rounded))
                 Text(shown.agreeDetail).font(.system(size: 12, weight: .semibold)).foregroundStyle(tint)
                     .lineLimit(2)
                 Text("Resting HR · HRV · Sleep · Strain").font(Palette.label(10)).foregroundStyle(Palette.faint)
@@ -165,8 +209,16 @@ struct AgreementView: View {
     private var rectangular: some View {
         VStack(alignment: .leading, spacing: 1) {
             Text(verbatim: "Watch vs WHOOP").font(.system(size: 13, weight: .bold)).widgetAccentable()
-            Text(shown.agreeScore.map { String(localized: "\(Int($0))% agree · \(shown.agreeHeadline)") } ?? shown.agreeHeadline)
-                .font(.system(size: 13, weight: .semibold)).lineLimit(1)
+            HStack(spacing: 4) {
+                if let s = shown.agreeScore {
+                    Text(verbatim: "\(Int(s))%").font(.system(size: 13, weight: .bold, design: .rounded)).monospacedDigit()
+                }
+                Text(shown.agreeHeadline).font(.system(size: 13, weight: .semibold)).lineLimit(1).minimumScaleFactor(0.8)
+                if shown.agreesFully {
+                    Image(systemName: "checkmark.seal.fill").font(.system(size: 12, weight: .semibold))
+                        .accessibilityHidden(true)
+                }
+            }
             Text(shown.agreeDetail).font(.system(size: 12)).foregroundStyle(.secondary).lineLimit(1)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
