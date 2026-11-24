@@ -11,6 +11,28 @@
         }
       }
     },
+    "%@ differ": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difieren"
+          }
+        }
+      }
+    },
+    "%@ differs": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%@ difiere"
+          }
+        }
+      }
+    },
     "%@: %@, %@ versus your usual": {
       "localizations": {
         "es": {
@@ -27,6 +49,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "%@: aún no disponible"
+          }
+        }
+      }
+    },
+    "%lld of %lld agree": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Coinciden %1$lld de %2$lld"
           }
         }
       }
@@ -107,6 +140,17 @@
           "stringUnit": {
             "state": "translated",
             "value": "FC en reposo"
+          }
+        }
+      }
+    },
+    "Same story today": {
+      "extractionState": "manual",
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Hoy cuentan lo mismo"
           }
         }
       }
