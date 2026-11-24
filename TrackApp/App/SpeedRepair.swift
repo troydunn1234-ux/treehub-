@@ -11,7 +11,15 @@ extension TopSpeedRepair {
     /// actor); decoding and checking run in the background. A trip deleted or edited in the meantime is left alone.
     @MainActor
     static func runOnce(in context: ModelContext, defaults: UserDefaults = .standard) async -> Int {
-        guard !TrackDemo.isOn, !defaults.bool(forKey: doneKey) else { return 0 }
+        guard !TrackDemo.isOn else { return 0 }
+        return await repairOnce(in: context, defaults: defaults)
+    }
+
+    /// The repair itself, once per `defaults` (runOnce skips it in -demo; the unit tests, which run in -demo,
+    /// call this directly on their own store).
+    @MainActor
+    static func repairOnce(in context: ModelContext, defaults: UserDefaults) async -> Int {
+        guard !defaults.bool(forKey: doneKey) else { return 0 }
         guard let all = try? context.fetch(FetchDescriptor<Activity>()) else { return 0 }
         let trips = all.filter { $0.rawMaxSpeed == nil && $0.maxSpeed.isFinite && $0.maxSpeed > 0 }
         var changed = 0

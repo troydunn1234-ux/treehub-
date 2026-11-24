@@ -252,7 +252,7 @@ final class TopSpeedTests: XCTestCase {
         defer { defaults.removePersistentDomain(forName: suite) }
         XCTAssertNotNil(bad.routeData)
 
-        let changed = await TopSpeedRepair.runOnce(in: context, defaults: defaults)
+        let changed = await TopSpeedRepair.repairOnce(in: context, defaults: defaults)
         XCTAssertEqual(changed, 1)
         XCTAssertEqual(bad.maxSpeed, 30, accuracy: 0.01)
         XCTAssertEqual(bad.rawMaxSpeed, 75)
@@ -261,7 +261,7 @@ final class TopSpeedTests: XCTestCase {
         XCTAssertEqual(noRoute.maxSpeed, 75); XCTAssertNil(noRoute.rawMaxSpeed)
         XCTAssertTrue(defaults.bool(forKey: TopSpeedRepair.doneKey))
         XCTAssertFalse(context.hasChanges, "saved")
-        let again = await TopSpeedRepair.runOnce(in: context, defaults: defaults)
+        let again = await TopSpeedRepair.repairOnce(in: context, defaults: defaults)
         XCTAssertEqual(again, 0)
     }
 
