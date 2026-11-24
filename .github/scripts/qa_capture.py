@@ -13,12 +13,15 @@ It never hangs silently: every simctl call has a timeout, the whole pass has a t
 40; screens still to do when it runs out are listed as SKIPPED), a line with the runner's load, free memory and
 busiest processes is printed at least once a minute while anything is slow, and summary.txt is rewritten after
 every screen, so a run that is cut short still shows how far it got. The app is stopped as soon as its screenshot
-is taken (before its log is read), and stopped early if it grows past QA_APP_MAX_MB (default 3072) of memory:
-Roamr's map screens on the Intel runners used to keep the machine so busy for so long that GitHub lost contact
-with it. QA_SKIP (a regex matched against screen names) leaves screens out.
+is taken (before its log is read), and stopped early if it grows past QA_APP_MAX_MB (default 3072) of memory.
+QA_SKIP (a regex matched against screen names) and QA_SKIP_ARGS (matched against a screen's launch arguments,
+reason in QA_SKIP_ARGS_WHY) leave screens out: qa.yml uses QA_SKIP_ARGS for screens with a live 3D map, which
+have taken the Intel runner down every time (GitHub "lost communication" with it and kept no log).
+With QA_PUSH_URL and QA_BRANCH set, <out> is pushed to that branch after every screen (and while something is
+slow), with progress.txt (every line printed here), so even a runner that dies leaves what it captured.
 Exit code 1 only when not a single screen could be captured (no simulator, it didn't boot, app missing).
 """
-import functools, glob, json, os, plistlib, re, shutil, subprocess, sys, threading, time
+import functools, glob, json, os, plistlib, re, shutil, subprocess, sys, tempfile, threading, time
 print = functools.partial(print, flush=True)
 
 cfg = json.load(open(sys.argv[1]))
@@ -31,11 +34,22 @@ started = time.time()
 BUDGET = float(os.environ.get("QA_BUDGET_MIN") or 40) * 60
 DEADLINE = started + BUDGET
 MAX_MB = float(os.environ.get("QA_APP_MAX_MB") or 3072)
-try:
-    SKIP = re.compile(os.environ["QA_SKIP"]) if os.environ.get("QA_SKIP", "").strip() else None
-except re.error as e:
-    print(f"::warning title=QA {cfg['scheme']}::QA_SKIP is not a valid regex ({e}); no screens are skipped")
-    SKIP = None
+
+
+def regex(var):
+    v = os.environ.get(var, "").strip()
+    try:
+        return re.compile(v) if v else None
+    except re.error as e:
+        print(f"::warning title=QA {cfg['scheme']}::{var} is not a valid regex ({e}); ignored")
+        return None
+
+
+SKIP, SKIP_ARGS = regex("QA_SKIP"), regex("QA_SKIP_ARGS")
+SKIP_ARGS_WHY = os.environ.get("QA_SKIP_ARGS_WHY") or "QA_SKIP_ARGS"
+PUSH_URL, BRANCH = os.environ.get("QA_PUSH_URL", ""), os.environ.get("QA_BRANCH", "")
+pub = {"git": None, "last": 0.0}
+pub_lock = threading.Lock()
 APP_NAME = cfg["scheme"]
 counts = {"OK": 0, "CRASH": 0, "KILLED": 0, "SKIPPED": 0}
 busy = {"what": "starting", "since": time.time()}    # what we are waiting on, for the heartbeat
@@ -51,13 +65,47 @@ def left():
     return DEADLINE - time.time()
 
 
+def say(line):
+    """Print a progress line and keep it in progress.txt (pushed with the results)."""
+    line = f"{clock()} {line}"
+    print(line)
+    try:
+        with open(os.path.join(out, "progress.txt"), "a") as f:
+            f.write(line + "\n")
+    except OSError:
+        pass
+
+
+def publish(why, min_gap=0):
+    """Push <out> as it is now to the results branch, so a run whose runner dies still leaves what it captured."""
+    if not (PUSH_URL and BRANCH) or time.time() - pub["last"] < min_gap or not pub_lock.acquire(blocking=False):
+        return
+    try:
+        if pub["git"] is None:
+            pub["git"] = os.path.join(tempfile.mkdtemp(prefix="qa-git-"), ".git")
+            subprocess.run(["git", "init", "-q", os.path.dirname(pub["git"])], capture_output=True, timeout=30)
+        g = ["git", "--git-dir", pub["git"], "--work-tree", out,
+             "-c", "user.name=TreeHub CI", "-c", "user.email=ci@users.noreply.github.com"]
+        subprocess.run(g + ["add", "-A"], capture_output=True, timeout=60)
+        subprocess.run(g + ["commit", "-q", "-m", f"QA in progress: {why}"], capture_output=True, timeout=60)
+        r = subprocess.run(g + ["push", "-q", "-f", PUSH_URL, f"HEAD:refs/heads/{BRANCH}"],
+                           capture_output=True, text=True, timeout=120)
+        pub["last"] = time.time()
+        if r.returncode:
+            print(f"  (progress not pushed: {r.stderr.strip()[-200:]})")
+    except Exception as e:
+        print(f"  (progress not pushed: {e})")
+    finally:
+        pub_lock.release()
+
+
 def save_summary():
     open(os.path.join(out, "summary.txt"), "w").write("\n".join(summary) + "\n")
 
 
 def note(line, level=None):
     """A result line: printed, added to summary.txt right away, and (level) shown on the run's page."""
-    print(f"{clock()} {line}")
+    say(line)
     summary.append(line)
     save_summary()
     if level:
@@ -99,7 +147,8 @@ def heartbeat():
         time.sleep(60)
         waited = time.time() - busy["since"]
         if waited >= 50:
-            print(f"{clock()}   ... still on {busy['what']} ({int(waited)}s); {machine()}")
+            say(f"  ... still on {busy['what']} ({int(waited)}s); {machine()}")
+            publish("waiting on " + busy["what"], min_gap=90)
 
 
 threading.Thread(target=heartbeat, daemon=True).start()
@@ -137,7 +186,8 @@ def boot(udid, label):
     if udid not in r.stdout:
         note(f"FAILED {label} simulator did not boot in {int(time.time() - started)}s", "error")
         return False
-    print(f"{clock()} {label} simulator booted; {machine()}")
+    say(f"{label} simulator booted; {machine()}")
+    publish(f"{label} simulator booted")
     return True
 
 
@@ -209,6 +259,10 @@ def run(udid, bundle, exe, shots, prefix=""):
             counts["SKIPPED"] += 1
             note(f"SKIPPED {name}  {args}  (QA_SKIP)")
             continue
+        if SKIP_ARGS and SKIP_ARGS.search(args):
+            counts["SKIPPED"] += 1
+            note(f"SKIPPED {name}  {args}  ({SKIP_ARGS_WHY})")
+            continue
         if left() < 60:
             counts["SKIPPED"] += 1
             note(f"SKIPPED {name}  {args}  (the {BUDGET / 60:.0f}-minute budget for this pass is used up)", "warning")
@@ -259,7 +313,8 @@ def run(udid, bundle, exe, shots, prefix=""):
             extra += f"  (stopped: the app passed {MAX_MB:.0f} MB of memory)"
         took = f"  ({int(time.time() - t0)}s" + (f", {peak} MB" if peak else "") + ")"
         note(f"{status + ' ':<6}{name}  {args}{extra}{took}", None if status == "OK" else "warning")
-        print(f"{clock()}   {machine()}")
+        say(f"  {machine()}")
+        publish(name)
 
 
 # ---- iPhone
@@ -272,7 +327,12 @@ if not best:
     note("FAILED no iOS simulator is available on this runner", "error")
     sys.exit(1)
 udid = best[1]
-print(f"{clock()} iPhone simulator: {best[2]} {best[3]}; budget {BUDGET / 60:.0f} min; {machine()}")
+say(f"iPhone simulator: {best[2]} {best[3]}; budget {BUDGET / 60:.0f} min; {machine()}")
+try:
+    gpu = subprocess.run(["system_profiler", "SPDisplaysDataType"], capture_output=True, text=True, timeout=60).stdout
+    say("  graphics: " + "; ".join(l.strip() for l in gpu.splitlines() if re.search(r"Chipset|Metal|VRAM|Vendor", l))[:300])
+except Exception:
+    pass
 if not boot(udid, "iPhone"):
     sys.exit(1)
 sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100")
@@ -298,7 +358,7 @@ if w:
         best = pick("watchOS", lambda n: ("Ultra" in n, "Series" in n, n))
         if best:
             wid = best[1]
-            print(f"{clock()} Watch simulator: {best[2]} {best[3]}")
+            say(f"Watch simulator: {best[2]} {best[3]}")
             if boot(wid, "Watch"):
                 sh("xcrun", "simctl", "install", wid, wapp, timeout=300)
                 run(wid, w["bundle"], executable(wapp), w["shots"], prefix="watch-")
@@ -320,6 +380,7 @@ for f in glob.glob(os.path.join(CRASH_DIR, "**", "*"), recursive=True):
 summary.append(f"{counts['OK']} OK, {counts['CRASH']} crashed, {counts['KILLED']} stopped for memory, "
                f"{counts['SKIPPED']} skipped, in {(time.time() - started) / 60:.0f} min")
 save_summary()
+publish("done")
 print("\n".join(summary))
 if not (counts["OK"] or counts["CRASH"] or counts["KILLED"]):
     print(f"::error title=QA {APP_NAME}::no screen was captured")

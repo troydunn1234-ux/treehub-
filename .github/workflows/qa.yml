@@ -14,6 +14,10 @@ on:
       skip:
         description: Leave out screens whose name matches this regex (e.g. 16-drive|17-live), blank = none
         default: ''
+      maps:
+        description: Also run screens with a live 3D map (Roamr -openDrive, -autodrive, -autostart, -tab track). On these Intel runners they have taken the runner down every time.
+        type: boolean
+        default: false
 
 permissions:
   contents: write
@@ -83,7 +87,17 @@ jobs:
 
       - name: Launch every screen and capture
         timeout-minutes: 50
-        env: { PYTHONUNBUFFERED: "1", QA_BUDGET_MIN: "40", QA_SKIP: "${{ inputs.skip }}" }
+        env:
+          PYTHONUNBUFFERED: "1"
+          QA_BUDGET_MIN: "40"
+          QA_SKIP: ${{ inputs.skip }}
+          # Live 3D maps (MapKit, realistic elevation) on the Intel simulators: every Roamr pass that showed one since
+          # Nov 15 ended with GitHub losing contact with the runner and keeping no log. Skipped unless maps=true.
+          QA_SKIP_ARGS: ${{ !inputs.maps && '-openDrive|-autodrive|-autostart|-tab track' || '' }}
+          QA_SKIP_ARGS_WHY: live 3D map, which takes the Intel runner down; run with maps=true to try it
+          # Results go to the qa-<app> branch after every screen, so a runner that dies still leaves them.
+          QA_BRANCH: qa-${{ matrix.app }}
+          QA_PUSH_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: |
           pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
           # Keep GitHub's runner processes ahead of the simulator: a busy simulator (Roamr's map screens on these
