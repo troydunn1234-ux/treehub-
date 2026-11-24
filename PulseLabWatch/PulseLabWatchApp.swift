@@ -27,6 +27,32 @@ enum WPalette {
     static func band(_ v: Double) -> Color { v >= 67 ? good : v >= 34 ? warn : bad }
 }
 
+/// Today's agreement score as two arcs from the bottom, Watch cyan up the left and WHOOP amber up the right, that
+/// meet at the top only when the two fully agree (the iPhone's Today ring, small and still).
+struct VersusMiniRing: View {
+    let score: Double?
+    var size: CGFloat = 38
+
+    var body: some View {
+        let p = min(1, max(0, (score ?? 0) / 100))
+        ZStack {
+            Circle().stroke(Color.white.opacity(0.12), lineWidth: 4)
+            ZStack {
+                Circle().trim(from: 0, to: 0.5 * p)
+                    .stroke(WPalette.watch, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+                Circle().trim(from: 1 - 0.5 * p, to: 1)
+                    .stroke(WPalette.whoop, style: StrokeStyle(lineWidth: 4, lineCap: .round))
+            }
+            .rotationEffect(.degrees(90))
+            Text(score.map { "\(Int($0))" } ?? "–")
+                .font(.system(size: 13, weight: .bold, design: .rounded)).monospacedDigit()
+                .minimumScaleFactor(0.6)
+        }
+        .frame(width: size, height: size)
+        .accessibilityHidden(true)
+    }
+}
+
 func watchHM(_ minutes: Double?) -> String {
     guard let m = minutes, m > 0 else { return "—" }
     let h = Int(m) / 60, mm = Int(m) % 60
@@ -140,25 +166,38 @@ struct WatchHome: View {
                             ?? String(localized: "No recovery score yet"))
     }
 
-    /// Pulse Lab's signature: how closely Watch and WHOOP agree today (resting HR, HRV, sleep, strain).
+    /// Pulse Lab's signature: how closely Watch and WHOOP agree today (resting HR, HRV, sleep, strain), with the
+    /// same two-arc ring as the iPhone (Watch cyan up the left, WHOOP amber up the right, meeting when they agree).
     private func agreementRow(_ s: WatchStore.Snapshot) -> some View {
-        HStack(spacing: 8) {
-            Image(systemName: "bolt.horizontal.fill").font(.footnote.weight(.semibold))
-                .foregroundStyle(LinearGradient(colors: [WPalette.watch, WPalette.whoop], startPoint: .leading, endPoint: .trailing))
-                .frame(width: 20).accessibilityHidden(true)
+        let splits = s.agreeSplit.split(separator: ",").map { $0.trimmingCharacters(in: .whitespaces) }.filter { !$0.isEmpty }
+        let full = s.agreeOf >= 2 && s.agreeOn == s.agreeOf
+        return HStack(spacing: 8) {
+            VersusMiniRing(score: s.agreeScore)
             VStack(alignment: .leading, spacing: 0) {
-                Text("Watch vs WHOOP").font(.caption2).foregroundStyle(.secondary)
-                Text(String(localized: "\(s.agreeOn) of \(s.agreeOf) agree"))
-                    .font(.system(.headline, design: .rounded)).lineLimit(1).minimumScaleFactor(0.7)
-                if !s.agreeSplit.isEmpty {
-                    Text(String(localized: "Split: \(s.agreeSplit)")).font(.caption2).foregroundStyle(WPalette.warn).lineLimit(1)
+                (Text(verbatim: "Watch").foregroundStyle(WPalette.watch)
+                    + Text(verbatim: " vs ").foregroundStyle(.secondary)
+                    + Text(verbatim: "WHOOP").foregroundStyle(WPalette.whoop))
+                    .font(.caption2).lineLimit(1).minimumScaleFactor(0.8)
+                HStack(spacing: 3) {
+                    Text(String(localized: "\(s.agreeOn) of \(s.agreeOf) agree"))
+                        .font(.system(.headline, design: .rounded)).lineLimit(1).minimumScaleFactor(0.7)
+                    if full {
+                        Image(systemName: "checkmark.seal.fill").font(.footnote).foregroundStyle(WPalette.good)
+                            .accessibilityHidden(true)
+                    }
                 }
+                Group {
+                    if splits.isEmpty {
+                        Text("Same story today").foregroundStyle(WPalette.good)
+                    } else {
+                        let list = splits.formatted(.list(type: .and))
+                        Text(splits.count == 1 ? String(localized: "\(list) differs") : String(localized: "\(list) differ"))
+                            .foregroundStyle(WPalette.warn)
+                    }
+                }
+                .font(.caption2).lineLimit(2).minimumScaleFactor(0.8)
             }
-            Spacer(minLength: 4)
-            if let a = s.agreeScore {
-                Text("\(Int(a))%").font(.system(.title3, design: .rounded).weight(.semibold)).monospacedDigit()
-                    .foregroundStyle(WPalette.band(a))
-            }
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, 10).padding(.vertical, 6)
         .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(Color.white.opacity(0.08)))
