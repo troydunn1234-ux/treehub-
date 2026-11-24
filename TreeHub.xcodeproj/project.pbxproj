@@ -140,6 +140,7 @@
 		485B0E71DC6DAE61FD52E610 /* GoogleTVController.swift in Sources */ = {isa = PBXBuildFile; fileRef = E109EE88B005C2649C4B0918 /* GoogleTVController.swift */; };
 		4865F90E7B4D7BEABE5A2B2B /* LocalStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 039054688AE358B1B68445AE /* LocalStore.swift */; };
 		486B7FE066F26D50FEBE20AA /* WidgetBridge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9C7D33700D4FBB929C1B551 /* WidgetBridge.swift */; };
+		490775F8E957D5C2450947E3 /* ReliabilityTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17266B32310450A470A0E72D /* ReliabilityTests.swift */; };
 		4AC862D52836E07642D6835D /* PhoneLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03D83E689391AF8586E322F4 /* PhoneLink.swift */; };
 		4AF47E81EF98DD9FB0B913C4 /* AgreementCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 11FFA11898CF66DABE2C8150 /* AgreementCard.swift */; };
 		4BD79C061DD68D412F611B20 /* OrbView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9A837FD17A5F7706AAADB8F /* OrbView.swift */; };
@@ -895,6 +896,7 @@
 		14EA827DC7590876A4C29524 /* RootboundWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RootboundWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		16365FE0AEF50C97229EE817 /* CloudSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CloudSync.swift; sourceTree = "<group>"; };
 		16A1F5E193CF2BA2A99DAAB9 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		17266B32310450A470A0E72D /* ReliabilityTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReliabilityTests.swift; sourceTree = "<group>"; };
 		17A85904C3DA96179CC73DF7 /* RoamrWatchViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoamrWatchViews.swift; sourceTree = "<group>"; };
 		17C64D37B318F75453FE1CCF /* RemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteView.swift; sourceTree = "<group>"; };
 		185D05098ED06850321AA104 /* RideQuestWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = RideQuestWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -2037,6 +2039,7 @@
 				7BFDFE3B05E3EC233DC2B2E1 /* ConnectionTests.swift */,
 				9AD9F80F09160A04928B366A /* DataSafetyTests.swift */,
 				04422A1D6302179FF0235582 /* FamilyFeedTests.swift */,
+				17266B32310450A470A0E72D /* ReliabilityTests.swift */,
 			);
 			path = StillPointTests;
 			sourceTree = "<group>";
@@ -3821,6 +3824,7 @@
 				5319399ED7532EA4FC5408E5 /* DataGuardSupport.swift in Sources */,
 				D2C30D1B9B43375EED7DBB8F /* DataSafetyTests.swift in Sources */,
 				E226584AD1F4EB4C5729EEEF /* FamilyFeedTests.swift in Sources */,
+				490775F8E957D5C2450947E3 /* ReliabilityTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
