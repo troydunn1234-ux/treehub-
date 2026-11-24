@@ -536,19 +536,33 @@ struct ReadyDuelCard: View {
         return line + " Watch readiness is using yesterday's HRV; wear the Watch to bed for a fresh one each morning."
     }
 
-    private var readLine: String {
+    private var readLine: String { Self.verdictLine(readiness: readiness, recovery: recovery, sleepHours: sleepHours) }
+
+    /// The verdict under the two rings. "Same zone" only when both rings are the same colour: two scores a few
+    /// points apart can still sit either side of a zone line (70 is green, 62 yellow).
+    static func verdictLine(readiness: Double?, recovery: Double?, sleepHours: Double?) -> String {
         switch (readiness, recovery) {
         case (nil, nil): return "Connect Apple Health and WHOOP to see both scores here."
         case (nil, .some(let r)): return "Only WHOOP has a score today: \(Int(r.rounded()))% recovered. Your Watch has no HRV or resting HR from the last day. Wear it a few hours (or to bed) and readiness fills in."
         case (.some(let a), nil): return "Only your Watch has a score today: \(Int(a.rounded()))% ready. WHOOP recovery lands after your next cycle."
         case (.some(let a), .some(let r)):
-            let aGo = a >= 67, rGo = r >= 67, aRest = a < 34, rRest = r < 34
-            if aGo && rGo { return "Both say you're ready. Go." }
-            if aRest && rRest { return "Both say rest. Keep today easy." }
-            if abs(a - r) <= 10 { return "Both land in the same zone today — a middle day: train, but don't chase a record." }
-            let whoopSays = rGo ? "go" : rRest ? "rest" : "take it easy"
-            let watchSays = aGo ? "go" : aRest ? "rest" : "take it easy"
-            let base = "WHOOP says \(whoopSays), Watch says \(watchSays)"
+            // Zones as the rings colour them (Lab.band): rest under 34, go from 67.
+            func zone(_ v: Double) -> Int { v >= 67 ? 2 : v >= 34 ? 1 : 0 }
+            let za = zone(a), zr = zone(r)
+            if za == zr {
+                switch za {
+                case 2: return "Both say you're ready. Go."
+                case 0: return "Both say rest. Keep today easy."
+                default: return "Both land in the same zone today — a middle day: train, but don't chase a record."
+                }
+            }
+            if abs(a - r) <= 10 {
+                return max(za, zr) == 2
+                    ? "Only a few points apart, either side of the green line — a middle day: train, but don't chase a record."
+                    : "Only a few points apart, either side of the red line — keep today on the easy side."
+            }
+            let says = ["rest", "take it easy", "go"]
+            let base = "WHOOP says \(says[zr]), Watch says \(says[za])"
             guard let h = sleepHours else { return base + " — they split today. No sleep logged to break the tie." }
             let hm = fmtHM(h * 60)
             if h >= 7 { return base + " — trust sleep: \(hm) last night, lean toward go." }

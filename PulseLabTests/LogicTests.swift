@@ -175,6 +175,24 @@ final class LogicTests: XCTestCase {
         XCTAssertFalse(LogWhoopSheet.isUnchanged(61, from: nil, decimals: 0))
     }
 
+    // MARK: Recovery vs readiness says "same zone" only when it is
+
+    @MainActor
+    func testReadinessVerdictOnlyClaimsTheSameZoneWhenTheRingsMatch() {
+        func verdict(_ readiness: Double, _ recovery: Double) -> String {
+            ReadyDuelCard.verdictLine(readiness: readiness, recovery: recovery, sleepHours: 7.5)
+        }
+        XCTAssertEqual(verdict(80, 72), "Both say you're ready. Go.")
+        XCTAssertEqual(verdict(20, 30), "Both say rest. Keep today easy.")
+        XCTAssertTrue(verdict(50, 58).hasPrefix("Both land in the same zone"))
+        // 70 is green and 62 yellow: close, but not the same zone.
+        XCTAssertFalse(verdict(70, 62).contains("same zone"))
+        XCTAssertTrue(verdict(70, 62).contains("green line"))
+        XCTAssertTrue(verdict(36, 30).contains("red line"))
+        // Far apart: a split, with last night's sleep as the tie-break.
+        XCTAssertEqual(verdict(80, 40), "WHOOP says take it easy, Watch says go — trust sleep: 7h 30m last night, lean toward go.")
+    }
+
     // MARK: Background refresh keeps what was shared
 
     func testABackgroundPassKeepsEarlierNumbersForTheSameDay() {
