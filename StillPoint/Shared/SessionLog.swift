@@ -483,11 +483,13 @@ final class SessionLog: ObservableObject {
     }
 
     /// A short, warm line for the streak card.
+    /// In the person's language (shown with Text(String), which doesn't look anything up itself).
     var streakLine: String {
-        switch streak {
-        case 0: return practicedToday ? "A fresh start." : "Begin a streak today."
-        case 1: return practicedToday ? "One day. Come back tomorrow." : "Practice today to keep it going."
-        default: return practicedToday ? "\(streak) days in a row." : "\(streak) days. Keep it alive today."
+        let n = streak
+        switch n {
+        case 0: return practicedToday ? String(localized: "A fresh start.") : String(localized: "Begin a streak today.")
+        case 1: return practicedToday ? String(localized: "One day. Come back tomorrow.") : String(localized: "Practice today to keep it going.")
+        default: return practicedToday ? String(localized: "\(n) days in a row.") : String(localized: "\(n) days. Keep it alive today.")
         }
     }
 

@@ -9,13 +9,14 @@ struct HomeView: View {
     @State private var appeared = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    /// In the person's language (Text shows a String as it is, so it has to be looked up here).
     private var greeting: String {
         let h = Calendar.current.component(.hour, from: Date())
         switch h {
-        case 4..<12: return "Good morning"
-        case 12..<17: return "Good afternoon"
-        case 17..<22: return "Good evening"
-        default: return "Rest well"
+        case 4..<12: return String(localized: "Good morning")
+        case 12..<17: return String(localized: "Good afternoon")
+        case 17..<22: return String(localized: "Good evening")
+        default: return String(localized: "Rest well")
         }
     }
 

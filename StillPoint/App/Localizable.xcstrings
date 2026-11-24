@@ -5522,6 +5522,116 @@
           }
         }
       }
+    },
+    "Good morning": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenos días"
+          }
+        }
+      }
+    },
+    "Good afternoon": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenas tardes"
+          }
+        }
+      }
+    },
+    "Good evening": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Buenas noches"
+          }
+        }
+      }
+    },
+    "Rest well": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Descansa bien"
+          }
+        }
+      }
+    },
+    "Before bed": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Antes de dormir"
+          }
+        }
+      }
+    },
+    "A fresh start.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un nuevo comienzo."
+          }
+        }
+      }
+    },
+    "Begin a streak today.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza una racha hoy."
+          }
+        }
+      }
+    },
+    "One day. Come back tomorrow.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un día. Vuelve mañana."
+          }
+        }
+      }
+    },
+    "Practice today to keep it going.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Practica hoy para no perderla."
+          }
+        }
+      }
+    },
+    "%lld days in a row.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días seguidos."
+          }
+        }
+      }
+    },
+    "%lld days. Keep it alive today.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "%lld días. Mantenla viva hoy."
+          }
+        }
+      }
     }
   },
   "version": "1.0"
