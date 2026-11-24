@@ -422,6 +422,9 @@ struct StreakGoalCard: View {
     @EnvironmentObject var log: SessionLog
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var appeared = false
+    /// The weekly ring grows a little with the text size (84 pt at the default size, at most 116 pt).
+    @ScaledMetric(relativeTo: .body) private var ringScaled: CGFloat = 84
+    private var ring: CGFloat { min(116, max(84, ringScaled)) }
 
     private var progress: Double { appeared ? log.weekProgress : 0 }
     private var alive: Bool { log.streak > 0 && log.practicedToday }
@@ -463,10 +466,14 @@ struct StreakGoalCard: View {
                         .animation(reduceMotion ? nil : .easeOut(duration: 1.1), value: progress)
                     VStack(spacing: 1) {
                         Text("\(Int(log.calendarWeekMinutes.rounded()))").font(SP.numbers(22)).foregroundStyle(SP.ink)
+                            .lineLimit(1).minimumScaleFactor(0.5)
                         Text("of \(Int(log.weeklyGoal)) min").font(SP.rounded(9, .semibold)).tracking(0.6).foregroundStyle(SP.faint)
+                            .lineLimit(1).minimumScaleFactor(0.5)
                     }
+                    // Kept inside the stroke at every text size (at large text "of 30 min" ran over the ring).
+                    .frame(maxWidth: ring - 22)
                 }
-                .frame(width: 84, height: 84)
+                .frame(width: ring, height: ring)
                 .accessibilityElement(children: .ignore)
                 .accessibilityLabel("Weekly goal: \(Int(log.calendarWeekMinutes.rounded())) of \(Int(log.weeklyGoal)) minutes this week")
                 if log.goalReached {

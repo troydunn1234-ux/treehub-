@@ -182,6 +182,9 @@ struct PhoneBreathView: View {
                 .opacity(dimmed ? 0 : 1)
                 .padding(.top, SP.s6)
                 .padding(.horizontal, SP.screenPadding)
+                // Big text: the practice's name gets its two lines before the spacers take the room (at AX3 the
+                // fixed-size orb left it one line, cut short to "Resonance Breathi…").
+                .layoutPriority(1)
 
                 Spacer(minLength: SP.s2)
                 ZStack {

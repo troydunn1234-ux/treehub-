@@ -176,7 +176,9 @@ struct CategoryWeekCard: View {
                     }
             }
             .chartXAxis {
-                AxisMarks { _ in AxisValueLabel().font(SP.rounded(10)).foregroundStyle(SP.faint) }
+                // A text style, so the size cap below holds (SP.rounded sizes itself from the system setting and
+                // ignored it: at large text "Stretch", "Breathe" and "Sauna" ran into one another).
+                AxisMarks { _ in AxisValueLabel().font(.system(.caption2, design: .rounded)).foregroundStyle(SP.faint) }
             }
             .chartYAxis {
                 AxisMarks(position: .leading) { _ in
