@@ -323,12 +323,16 @@ struct AutoFinishBanner: View {
             Spacer(minLength: 6)
             Button(action: onFinish) {
                 Text("Finish").font(Theme.rounded(14, .heavy)).foregroundStyle(Theme.forestDeep)
-                    .padding(.horizontal, 14).padding(.vertical, 10).background(Theme.goldGradient, in: Capsule())
+                    .padding(.horizontal, 14).padding(.vertical, 10)
+                    .frame(minHeight: 44)
+                    .background(Theme.goldGradient, in: Capsule())
             }
             .buttonStyle(.plain)
             Button(action: onKeep) {
                 Text("Keep going").font(Theme.rounded(13, .bold)).foregroundStyle(.white)
-                    .padding(.horizontal, 10).padding(.vertical, 10).background(Color.white.opacity(0.1), in: Capsule())
+                    .padding(.horizontal, 10).padding(.vertical, 10)
+                    .frame(minHeight: 44)
+                    .background(Color.white.opacity(0.1), in: Capsule())
             }
             .buttonStyle(.plain)
         }
@@ -365,12 +369,16 @@ struct DriveBanner: View {
                     .font(Theme.rounded(14, .heavy))
                     .foregroundStyle(Theme.forestDeep)
                     .padding(.horizontal, 14).padding(.vertical, 10)
+                    .frame(minHeight: 44)
                     .background(Theme.leafGradient, in: Capsule())
             }
             .buttonStyle(.plain)
             Button(action: onDismiss) {
+                // A small circle to look at, a full 44 pt to tap.
                 Image(systemName: "xmark").font(.system(size: 12, weight: .heavy)).foregroundStyle(Theme.textDim)
                     .frame(width: 30, height: 30).background(Color.white.opacity(0.08), in: Circle())
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Not now")
@@ -402,8 +410,11 @@ struct AlwaysLocationCard: View {
                 Text("Catch every drive").font(Theme.rounded(17, .heavy)).foregroundStyle(.white)
                 Spacer()
                 Button(action: onDismiss) {
+                    // A small circle to look at, a full 44 pt to tap.
                     Image(systemName: "xmark").font(.system(size: 12, weight: .heavy)).foregroundStyle(Theme.textDim)
                         .frame(width: 30, height: 30).background(Color.white.opacity(0.08), in: Circle())
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel("Close")

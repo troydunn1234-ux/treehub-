@@ -365,18 +365,26 @@ extension View {
 // MARK: - Motion
 
 extension View {
-    /// Cards ease in as they scroll into view and settle back as they leave.
-    func cardAppear() -> some View {
-        scrollTransition(.interactive, axis: .vertical) { content, phase in
-            content
-                .opacity(phase.isIdentity ? 1 : 0.55)
-                .scaleEffect(phase.isIdentity ? 1 : 0.95)
-                .blur(radius: phase.isIdentity ? 0 : 1.5)
-        }
-    }
+    /// Cards ease in as they scroll into view and settle back as they leave. With Reduce Motion they only fade
+    /// (no scaling or blur while scrolling).
+    func cardAppear() -> some View { modifier(CardAppear()) }
 
     /// Springy press feedback for tappable cards.
     func pressable() -> some View { buttonStyle(PressableStyle()) }
+}
+
+private struct CardAppear: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        let still = reduceMotion
+        return content.scrollTransition(.interactive, axis: .vertical) { view, phase in
+            view
+                .opacity(phase.isIdentity ? 1 : 0.55)
+                .scaleEffect(phase.isIdentity || still ? 1 : 0.95)
+                .blur(radius: phase.isIdentity || still ? 0 : 1.5)
+        }
+    }
 }
 
 struct PressableStyle: ButtonStyle {

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 // Rootbound's light (looks only): the forest follows the time of day (dawn, day, golden hour, moonlight) and the
 // season (the running seasonal event's color). Reads nothing but the clock; stores nothing.
@@ -78,12 +79,18 @@ struct ForestShimmer: View {
         Ray(angle: 2.55, spread: 0.030, alpha: 0.12, speed: 0.19),
     ]
 
+    @Environment(\.scenePhase) private var scenePhase
+    /// Low Power Mode: the light holds still until it's off again.
+    @State private var lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
+
     var body: some View {
         Group {
             if reduceMotion {
                 scene(at: 0)
             } else {
-                TimelineView(.animation(minimumInterval: 1.0 / 20.0)) { ctx in
+                // Redrawn 20 times a second only while Rootbound is in front and Low Power Mode is off; otherwise
+                // the last frame stays (no drawing in the background, easy on the battery).
+                TimelineView(.animation(minimumInterval: 1.0 / 20.0, paused: scenePhase != .active || lowPower)) { ctx in
                     scene(at: ctx.date.timeIntervalSinceReferenceDate)
                 }
             }
@@ -91,6 +98,9 @@ struct ForestShimmer: View {
         .blendMode(.screen)
         .allowsHitTesting(false)
         .accessibilityHidden(true)
+        .onReceive(NotificationCenter.default.publisher(for: .NSProcessInfoPowerStateDidChange).receive(on: DispatchQueue.main)) { _ in
+            lowPower = ProcessInfo.processInfo.isLowPowerModeEnabled
+        }
     }
 
     private func scene(at t: Double) -> some View {

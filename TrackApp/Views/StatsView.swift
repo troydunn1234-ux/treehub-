@@ -209,9 +209,11 @@ struct StatsView: View {
                     .padding(.horizontal, 12)
                     .padding(.vertical, 8)
                     .background(Theme.glow.opacity(0.14), in: Capsule())
+                    // The pill stays small; the tap area is a full 44 pt.
+                    .frame(minHeight: 44)
+                    .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
-                .padding(.top, 8)
                 .accessibilityLabel("Lifetime stats")
                 .accessibilityHint("Totals, records, streaks and milestones")
             }
