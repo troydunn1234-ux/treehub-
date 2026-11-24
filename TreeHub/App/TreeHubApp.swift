@@ -113,7 +113,7 @@ struct RootView: View {
                 ],
                 selection: Binding(get: { tab.rawValue }, set: { tab = AppTab(rawValue: $0) ?? .home }),
                 centerSymbol: "heart.fill",
-                centerLabel: "Log a tree hug",
+                centerLabel: "Log a hug",
                 centerAction: { showHugLog = true }
             )
         }
@@ -238,7 +238,7 @@ struct RootView: View {
         guard let action = RootboundPending.take() else { return }
         switch action {
         case .logHug:
-            // Never on top of the Watch prompt / logger (iOS would drop it); Home's "Hug a tree" is right there.
+            // Never on top of the Watch prompt / logger (iOS would drop it); Home's "Log a hug" is right there.
             tab = .home
             if !sheetUp { showHugLog = true }
         case .home:
@@ -278,7 +278,7 @@ struct RootView: View {
             let badges = GameEngine.badges(hugs: [], activities: []).filter { ["barefoot", "dawn", "twelve"].contains($0.id) }
             demoCelebration = CelebrationData(breakdown: b, leaf: LeafType.find("moonlit"), newBadges: badges,
                                               levelBefore: GameEngine.level(for: 400), levelAfter: GameEngine.level(for: 575),
-                                              treeName: "Grandpa Oak")
+                                              treeName: "Grandpa Oak", treeVisits: 5)
         }
     }
 }

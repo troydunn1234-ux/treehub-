@@ -15,6 +15,10 @@ struct CelebrationView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var leveledUp: Bool { data.levelAfter.level > data.levelBefore.level }
+    /// A round-number hug or a return visit to this tree (nothing for an ordinary hug).
+    private var milestone: HugMilestone.Moment? {
+        HugMilestone.moment(hugNumber: data.hugNumber, visits: data.treeVisits, treeName: data.treeName)
+    }
     private var levelUpShown: Bool { leveledUp && step >= 1 }
 
     var body: some View {
@@ -24,6 +28,10 @@ struct CelebrationView: View {
             ScrollView {
                 VStack(spacing: RB.l) {
                     header
+                    if let m = milestone, step >= 1 {
+                        MilestoneCard(moment: m)
+                            .transition(.scale(scale: 0.92).combined(with: .opacity))
+                    }
                     if let r = data.rareFind {
                         RareFindCard(rarity: r, species: data.species)
                             .transition(.scale.combined(with: .opacity))
@@ -63,13 +71,9 @@ struct CelebrationView: View {
 
     private var header: some View {
         VStack(spacing: RB.s) {
-            Image(systemName: "heart.fill")
-                .font(.system(size: 40, weight: .bold))
-                .foregroundStyle(Color(red: 1, green: 0.45, blue: 0.55))
-                .frame(width: 84, height: 84)
-                .background(Color(red: 1, green: 0.45, blue: 0.55).opacity(0.15), in: Circle())
-                .symbolEffect(.bounce, value: step)
-                .accessibilityHidden(true)
+            // A sprout grows, unfurls two leaves and blooms a heart (RBAtmosphere.swift); the heart bounces again
+            // when the XP tally lands.
+            GrowingSprout(size: 96, bounce: step)
             Text("Hug logged").font(Theme.title(32)).foregroundStyle(.white)
                 .accessibilityAddTraits(.isHeader)
             Text("\(data.treeName) felt that.").font(RB.text(.body, .medium)).foregroundStyle(Theme.textDim)

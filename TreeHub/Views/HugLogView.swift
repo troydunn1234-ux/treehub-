@@ -114,6 +114,10 @@ struct CelebrationData: Identifiable {
     var treeID: UUID? = nil
     /// Breath sessions linked to the hug just logged (shown with all their data).
     var sessions: [LinkedSession] = []
+    /// How many hugs there are now, this one included, and how many with this tree (warm milestone moments;
+    /// 0 = don't show one).
+    var hugNumber: Int = 0
+    var treeVisits: Int = 0
 }
 
 @MainActor
@@ -250,7 +254,7 @@ struct HugLogView: View {
                 }
             }
             .forestScreen()
-            .navigationTitle(editing == nil ? "Hug a Tree" : "Edit Hug")
+            .navigationTitle(editing == nil ? "Log a Hug" : "Edit Hug")
             .sheet(item: $picker) { req in
                 SessionPickerSheet(around: req.around, candidates: req.candidates, selected: req.selected) { chosen in
                     Task { await applyLinked(chosen) }
@@ -603,7 +607,7 @@ struct HugLogView: View {
         section("Walks", symbol: "figure.walk", hint: "Walks from Roamr or Apple Health within 2 hours of the hug.") {
             ForEach(d.walks) { w in LinkedWalkCard(walk: w, compact: true) }
             Button { Task { await openWalkPicker() } } label: {
-                SyncRoamrLabel(busy: walkBusy, title: d.walks.isEmpty ? "Sync Roamr" : "Change walks")
+                SyncRoamrLabel(busy: walkBusy, title: d.walks.isEmpty ? "Sync walks" : "Change walks")
             }
             .buttonStyle(.plain)
             .disabled(walkBusy)
@@ -1119,7 +1123,8 @@ struct HugLogView: View {
                                           levelBefore: levelBefore, levelAfter: levelAfter, treeName: hug.treeName,
                                           rareFind: firstOfSpecies && r > .common ? r : nil, species: hug.species,
                                           event: SeasonalEvent.active(on: hug.date), treeID: hug.treeID,
-                                          sessions: hug.linkedSessions)
+                                          sessions: hug.linkedSessions, hugNumber: after.count,
+                                          treeVisits: after.filter { $0.treeID == hug.treeID }.count)
         } else {
             dismiss()
         }

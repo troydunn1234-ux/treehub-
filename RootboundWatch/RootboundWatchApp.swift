@@ -28,10 +28,45 @@ private enum Palette {
     static let heart = Color(red: 1, green: 0.45, blue: 0.55)
 }
 
+/// A slow in-and-out ring (4 s each way, like a calm breath) behind the hug timer; still with Reduce Motion.
+private struct BreathRing: View {
+    @State private var inhale = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Capsule()
+            .stroke(Palette.glow.opacity(inhale ? 0.45 : 0.15), lineWidth: 2)
+            .scaleEffect(inhale ? 1.06 : 0.94)
+            .accessibilityHidden(true)
+            .onAppear {
+                guard !reduceMotion else { return }
+                withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) { inhale = true }
+            }
+    }
+}
+
+/// Soft sunlight around the Start hug button, slowly brightening and fading; a still glow with Reduce Motion.
+private struct SunGlow: ViewModifier {
+    @State private var lit = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    func body(content: Content) -> some View {
+        content
+            .shadow(color: Palette.glow.opacity(lit ? 0.55 : 0.25), radius: lit ? 10 : 5)
+            .onAppear {
+                guard !reduceMotion else { return }
+                withAnimation(.easeInOut(duration: 4).repeatForever(autoreverses: true)) { lit = true }
+            }
+    }
+}
+
 /// One screen: Start hug -> live timer + heart rate -> End. The iPhone asks which tree it was.
 struct HugHomeView: View {
     @EnvironmentObject var workout: HugWorkout
     @State private var confirmDiscard = false
+    /// Start / End taps (a tap feel on the wrist).
+    @State private var starts = 0
+    @State private var ends = 0
 
     var body: some View {
         NavigationStack {
@@ -48,11 +83,13 @@ struct HugHomeView: View {
         ScrollView {
             VStack(spacing: 10) {
                 Button {
+                    starts += 1
                     Task { await workout.start() }
                 } label: {
                     VStack(spacing: 4) {
                         Image(systemName: "tree.fill")
                             .font(.system(size: 30, weight: .bold))
+                            .symbolEffect(.bounce, value: starts)
                             .accessibilityHidden(true)
                         Text("Start hug").font(.system(.headline, design: .rounded))
                     }
@@ -60,8 +97,11 @@ struct HugHomeView: View {
                     .frame(maxWidth: .infinity, minHeight: 84)
                     .background(LinearGradient(colors: [Palette.glow, Palette.leaf], startPoint: .topLeading, endPoint: .bottomTrailing),
                                 in: RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    // Sunlight around the button, slowly brightening and fading.
+                    .modifier(SunGlow())
                 }
                 .buttonStyle(.plain)
+                .sensoryFeedback(.start, trigger: starts)
                 .accessibilityHint("Measures your heart rate while you hug a tree")
 
                 if !workout.errorText.isEmpty {
@@ -121,17 +161,22 @@ struct HugHomeView: View {
                     .monospacedDigit()
                     .minimumScaleFactor(0.6)
                     .contentTransition(.numericText())
+                    .padding(.horizontal, 10)
+                    // A soft ring that breathes in and out behind the time: breathe with the tree.
+                    .background { BreathRing() }
                     .accessibilityLabel("Hug time")
                     .accessibilityValue(Self.clock(ctx.date.timeIntervalSince(workout.startDate ?? ctx.date)))
                 heartRow
                 Spacer(minLength: 4)
                 Button {
+                    ends += 1
                     Task { await workout.finish() }
                 } label: {
                     Label("End hug", systemImage: "checkmark")
                         .frame(maxWidth: .infinity)
                 }
                 .tint(Palette.leaf)
+                .sensoryFeedback(.success, trigger: ends)
                 Button("Discard", role: .destructive) { confirmDiscard = true }
                     .font(.footnote)
                     .buttonStyle(.plain)

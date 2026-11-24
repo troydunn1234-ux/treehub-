@@ -14,10 +14,12 @@ struct HomeView: View {
     @State private var showSettings = false
     @Environment(\.modelContext) private var context
     @Environment(\.dynamicTypeSize) private var typeSize
-    /// "Sync Roamr": walks from Roamr / Apple Health onto the hugs they passed.
+    /// "Sync walks": walks from Roamr / Apple Health onto the hugs they passed.
     @State private var syncing = false
     @State private var syncNote = ""
     @State private var syncDone = 0
+    /// Taps on "Log a hug" (a firm tap feel).
+    @State private var logTaps = 0
 
     private var level: LevelInfo { GameEngine.level(for: GameEngine.totalXP(hugs: hugs, activities: activities)) }
     private var streak: Int { GameEngine.currentStreak(hugs) }
@@ -28,32 +30,36 @@ struct HomeView: View {
                 VStack(alignment: .leading, spacing: RB.xl) {
                     hero
                     Group {
-                        // 1. You: level + streak, then the two things to do.
+                        // 1. You, and the one thing to do: level + streak, then Log a hug, then your week.
                         VStack(spacing: RB.m) {
                             // New users meet the hug itself first (Watch heart rate, tree map, tree identity);
                             // level and streak come once there's a hug to count.
                             if !hugs.isEmpty { levelCard }
                             if !watchInbox.pending.isEmpty { watchHugCard }
+                            if !hugs.isEmpty { logHugButton }
                             HugSignatureCard(hugs: hugs, logHug: { showHugLog = true }, openMap: openTreeMap)
-                            if !hugs.isEmpty { quickActions }
-                            if !syncNote.isEmpty { syncResult }
                         }
                         .padding(.top, -RB.xxl - RB.s)
-                        // 2. Your numbers, always recomputed from the hugs + linked sessions.
                         if !hugs.isEmpty {
+                            // 2. Your numbers, always recomputed from the hugs + linked sessions; walks sync in here.
                             VStack(alignment: .leading, spacing: RB.m) {
-                                RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill")
+                                numbersTitle
                                 statsGrid
-                                // Today across the family apps (ConnectionViews.swift), then Still Pointz minutes.
-                                TodayConnectionsCard(hugs: hugs)
-                                FromYourAppsCard(me: WellnessConnect.rootbound, accent: Theme.glow, metric: Units.metric)
-                                CalmMinutesCard(hugs: hugs)
+                                if !syncNote.isEmpty { syncResult }
                             }
                             // 3. Memories and goals.
                             recentHugs
                         }
                         if let ev = SeasonalEvent.active() { SeasonalEventBanner(event: ev, hugs: hugs) }
                         nextBadges
+                        if !hugs.isEmpty {
+                            // 4. The rest of your day from the other apps (ConnectionViews.swift), then Still Pointz minutes.
+                            VStack(alignment: .leading, spacing: RB.m) {
+                                TodayConnectionsCard(hugs: hugs)
+                                FromYourAppsCard(me: WellnessConnect.rootbound, accent: Theme.glow, metric: Units.metric)
+                                CalmMinutesCard(hugs: hugs)
+                            }
+                        }
                         NatureRollEntryCard()
                     }
                     .padding(.horizontal, RB.screen)
@@ -72,9 +78,11 @@ struct HomeView: View {
         }
     }
 
-    /// Clean hero: your latest hug's photo, softly faded, with the greeting and app name.
+    /// Clean hero: your latest hug's photo, softly faded, with the light of the hour over it (sun rays and dappled
+    /// light by day, fireflies at night, the season's color; RBAtmosphere.swift), the greeting and app name.
     private var hero: some View {
         let photo = hugs.first.flatMap { $0.selfiePhoto ?? $0.treePhoto }
+        let phase = ForestLight.phase()
         return ZStack(alignment: .bottomLeading) {
             GeometryReader { geo in
                 let pull = max(0, geo.frame(in: .scrollView).minY)
@@ -91,11 +99,15 @@ struct HomeView: View {
                         ], startPoint: .top, endPoint: .bottom)
                         .offset(y: -pull)
                     }
+                    .overlay {
+                        ForestShimmer(phase: phase)
+                            .offset(y: -pull)
+                    }
             }
             .frame(height: 340)
 
             VStack(alignment: .leading, spacing: RB.xs) {
-                Text(greeting)
+                Label(greeting, systemImage: ForestLight.symbol(phase))
                     .font(RB.text(.subheadline, .semibold))
                     .foregroundStyle(Theme.glow)
                 Text("Rootbound")
@@ -122,32 +134,56 @@ struct HomeView: View {
         }
     }
 
-    private var quickActions: some View {
-        ViewThatFits(in: .horizontal) {
-            HStack(spacing: RB.m) { hugButton; syncButton }
-            VStack(spacing: RB.m) { hugButton; syncButton }
+    /// Home's one main action (the heart in the tab bar does the same from every tab).
+    private var logHugButton: some View {
+        Button {
+            logTaps += 1
+            showHugLog = true
+        } label: {
+            Label("Log a hug", systemImage: "heart.fill")
         }
+        .buttonStyle(RBPrimaryButtonStyle())
+        .sensoryFeedback(.impact(weight: .medium), trigger: logTaps)
+        .accessibilityHint("Snap the tree, name it and save the hug")
     }
 
-    private var hugButton: some View {
-        Button { showHugLog = true } label: { Label("Hug a tree", systemImage: "heart.fill") }
-            .buttonStyle(RBPrimaryButtonStyle())
-    }
-
-    private var syncButton: some View {
-        Button { Task { await syncRoamr() } } label: {
-            HStack(spacing: RB.s) {
-                if syncing { ProgressView().controlSize(.small).tint(Theme.glow) }
-                else { Image(systemName: "arrow.triangle.2.circlepath") }
-                Text(syncing ? "Syncing…" : "Sync Roamr")
+    /// "Your numbers", with Sync walks beside it (under it when the text is large).
+    private var numbersTitle: some View {
+        ViewThatFits(in: .horizontal) {
+            RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill") { syncButton }
+            VStack(alignment: .leading, spacing: RB.s) {
+                RBSectionTitle(title: "Your numbers", symbol: "chart.bar.fill")
+                syncButton
             }
         }
-        .buttonStyle(RBSecondaryButtonStyle())
+    }
+
+    /// Walks from Roamr and Apple Health onto the hugs they passed (a small tinted capsule: secondary).
+    private var syncButton: some View {
+        Button { Task { await syncRoamr() } } label: {
+            HStack(spacing: 6) {
+                if syncing {
+                    ProgressView().controlSize(.mini).tint(Theme.glow)
+                } else {
+                    Image(systemName: "arrow.triangle.2.circlepath")
+                        .symbolEffect(.bounce, value: syncDone)
+                }
+                Text(syncing ? "Syncing…" : "Sync walks")
+            }
+            .font(RB.text(.subheadline, .semibold))
+            .foregroundStyle(Theme.glow)
+            .padding(.horizontal, RB.m)
+            .frame(minHeight: 44)
+            .background(Theme.glow.opacity(0.14), in: Capsule())
+            .contentShape(Capsule())
+        }
+        .buttonStyle(.plain)
         .disabled(syncing)
+        .accessibilityLabel(syncing ? "Syncing walks from Roamr" : "Sync walks from Roamr")
         .accessibilityHint("Adds walks from Roamr and Apple Health to the hugs they passed")
     }
 
-    /// What the last "Sync Roamr" did, and where to get Roamr when it isn't there.
+    /// What the last "Sync walks" did, and where to get Roamr when it isn't there.
     private var syncResult: some View {
         VStack(alignment: .leading, spacing: RB.s) {
             Label(syncNote, systemImage: "figure.walk")
