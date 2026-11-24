@@ -1,9 +1,11 @@
 {"scheme": "RideQuest", "bundle": "com.troydunn.ridequest",
  "shots": [
   {"name": "00-warmup", "args": "-demo", "wait": 15},
-  {"name": "01-budgets", "args": "-demo -section budgets", "wait": 12},
-  {"name": "02-setup-alerts", "args": "-demo -section setup", "wait": 12},
-  {"name": "03-review", "args": "-demo -section review", "wait": 12},
+  {"name": "01-garage", "args": "-demo -section garage", "wait": 12},
+  {"name": "02-money", "args": "-demo -section money", "wait": 12},
+  {"name": "03-budgets", "args": "-demo -section budgets", "wait": 12},
   {"name": "04-subs", "args": "-demo -section subs", "wait": 12},
-  {"name": "05-budgets-largetype", "args": "-demo -section budgets", "wait": 12, "size": "accessibility-large"}
+  {"name": "05-car", "args": "-demo -section car", "wait": 12},
+  {"name": "06-more", "args": "-demo -section more", "wait": 12},
+  {"name": "07-subs-largetype", "args": "-demo -section subs", "wait": 12, "size": "accessibility-large"}
  ]}

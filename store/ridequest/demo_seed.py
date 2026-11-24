@@ -34,15 +34,16 @@ for back in range(0, 150):
         moves.append({"id": uid(), "d": d, "from": "outside", "to": "checking", "amt": 1680.0, "note": "Paycheck"})
         moves.append({"id": uid(), "d": d, "from": "checking", "to": "savings", "amt": rnd.choice([350.0, 400.0, 450.0]), "note": "Payday stash"})
 subs = [
-    {"id": uid(), "n": "Music streaming", "amt": 10.99, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active"},
-    {"id": uid(), "n": "Video streaming", "amt": 15.49, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active"},
-    {"id": uid(), "n": "Cloud storage", "amt": 2.99, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active"},
-    {"id": uid(), "n": "Gym", "amt": 39.99, "cyc": "monthly", "next": (today.replace(day=3) + dt.timedelta(days=31)).replace(day=3).isoformat(), "st": "active"},
-    {"id": uid(), "n": "Language app", "amt": 59.99, "cyc": "yearly", "next": (today + dt.timedelta(days=40)).isoformat(), "st": "cancel", "note": "Haven't opened it in months"},
+    {"id": uid(), "n": "Music streaming", "amt": 10.99, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active", "cat": "streaming", "via": "apple"},
+    {"id": uid(), "n": "Video streaming", "amt": 15.49, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active", "cat": "streaming", "via": "paypal"},
+    {"id": uid(), "n": "Cloud storage", "amt": 2.99, "cyc": "monthly", "next": (today.replace(day=9) + dt.timedelta(days=31)).replace(day=9).isoformat(), "st": "active", "cat": "cloud", "via": "apple"},
+    {"id": uid(), "n": "Gym", "amt": 39.99, "cyc": "monthly", "next": (today.replace(day=3) + dt.timedelta(days=31)).replace(day=3).isoformat(), "st": "active", "cat": "fitness", "via": "card"},
+    {"id": uid(), "n": "Photo app", "amt": 4.99, "cyc": "monthly", "next": (today + dt.timedelta(days=6)).isoformat(), "st": "active", "cat": "ai", "trialEnds": (today + dt.timedelta(days=6)).isoformat()},
+    {"id": uid(), "n": "Language app", "amt": 59.99, "cyc": "yearly", "next": (today + dt.timedelta(days=40)).isoformat(), "st": "cancel", "note": "Haven't opened it in months", "cat": "other"},
 ]
 state = {
-    "start": {"savings": 3200, "checking": 900, "cash": 600},
-    "goal": {"name": "Dream car", "amount": 15000, "by": f"{today.year + 1}-08"},
+    "start": {"savings": 9800, "checking": 900, "cash": 600},
+    "goal": {"name": "Dream car", "amount": 59495, "by": f"{today.year + 2}-08", "monthly": 900},
     "weekGoal": 200, "weekStart": 5, "rev": 1, "boot": 0, "theme": "neon", "sound": 0,
     "budgets": [{"n": n_, "l": l} for n_, l in budgets],
     "bills": [{"id": uid(), "n": "Car insurance", "amt": 142.0, "day": 3}, {"id": uid(), "n": "Phone", "amt": 45.0, "day": 18},

@@ -5,22 +5,24 @@ import Foundation
 // (ShellLink -> window.__shellOpen -> setTab in web/index.html).
 
 enum QuestTabOption: String, AppEnum {
-    case budgets, review, subs, arcade, log, transfers = "moves"
+    // Raw values stay as they were so saved shortcuts keep working; "arcade" now opens the Garage (the arcade is retired).
+    case budgets, review, subs, arcade, log, transfers = "moves", car
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Tab"
     static var caseDisplayRepresentations: [QuestTabOption: DisplayRepresentation] = [
         .budgets: DisplayRepresentation(title: "Budgets", image: .init(systemName: "chart.pie.fill")),
         .review: DisplayRepresentation(title: "Review", image: .init(systemName: "checklist")),
         .subs: DisplayRepresentation(title: "Subscriptions", image: .init(systemName: "repeat")),
-        .arcade: DisplayRepresentation(title: "Arcade", image: .init(systemName: "gamecontroller.fill")),
+        .arcade: DisplayRepresentation(title: "Garage", image: .init(systemName: "gauge.open.with.lines.needle.67percent.and.arrowtriangle")),
         .log: DisplayRepresentation(title: "Money log", image: .init(systemName: "list.bullet.rectangle")),
         .transfers: DisplayRepresentation(title: "Transfers", image: .init(systemName: "arrow.left.arrow.right")),
+        .car: DisplayRepresentation(title: "Car", image: .init(systemName: "car.fill")),
     ]
 }
 
 struct OpenQuestTabIntent: AppIntent {
     static var title: LocalizedStringResource = "Open Ride Quest Tab"
-    static var description = IntentDescription("Opens Ride Quest to your budgets, review, subscriptions, arcade, money log or transfers.")
+    static var description = IntentDescription("Opens Ride Quest to your garage, money log, budgets, subscriptions, transfers or car.")
     static var openAppWhenRun = true
 
     @Parameter(title: "Tab", default: .budgets)
@@ -63,7 +65,7 @@ struct CheckSubscriptionsIntent: AppIntent {
 }
 
 struct RideQuestShortcuts: AppShortcutsProvider {
-    static var shortcutTileColor: ShortcutTileColor = .lime
+    static var shortcutTileColor: ShortcutTileColor = .red
 
     static var appShortcuts: [AppShortcut] {
         AppShortcut(
@@ -94,7 +96,7 @@ struct RideQuestShortcuts: AppShortcutsProvider {
                 "Check my budgets in \(.applicationName)",
             ],
             shortTitle: "Open a tab",
-            systemImageName: "flag.checkered"
+            systemImageName: "car.fill"
         )
     }
 }
