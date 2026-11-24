@@ -17,9 +17,12 @@ struct SyncButton: View {
                 .foregroundStyle(store.loading ? Lab.watch : Lab.text)
                 .rotationEffect(.degrees(store.loading ? 360 : 0))
                 .animation(store.loading && !Lab.reduceMotion ? .linear(duration: 1).repeatForever(autoreverses: false) : .default, value: store.loading)
-                .frame(width: 38, height: 38)
+                .frame(width: 40, height: 40)
                 .background(Circle().fill(.ultraThinMaterial))
                 .overlay(Circle().strokeBorder(Color.white.opacity(0.12)))
+                // Same size as the gear beside it: a 44 pt hit target around a 40 pt circle.
+                .frame(width: 44, height: 44)
+                .contentShape(Circle())
         }
         .buttonStyle(.plain)
         .disabled(store.loading)

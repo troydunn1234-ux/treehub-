@@ -103,6 +103,9 @@ struct VersusRing: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var shown: Double = 0
+    /// False while the ring is scrolled out of sight (iOS 18+): the beat stops there instead of redrawing every
+    /// frame for nobody.
+    @State private var onScreen = true
 
     private struct Beat { var pump: Double = 0 }
 
@@ -119,7 +122,7 @@ struct VersusRing: View {
             DialTicks().stroke(Color.white.opacity(0.10), lineWidth: 1)
             DialTicks(major: true).stroke(Color.white.opacity(0.24), style: StrokeStyle(lineWidth: 1.5, lineCap: .round))
             Group {
-                if reduceMotion || score == nil {
+                if reduceMotion || score == nil || !onScreen {
                     face(pump: 0)
                 } else {
                     KeyframeAnimator(initialValue: Beat(), repeating: true) { beat in
@@ -143,6 +146,7 @@ struct VersusRing: View {
             }
         }
         .frame(width: size, height: size)
+        .modifier(ScrollVisibility(visible: $onScreen))
         .onAppear { sweep(fromZero: true) }
         .onChange(of: score) { _, _ in sweep(fromZero: false) }
         .accessibilityElement(children: .ignore)
@@ -234,6 +238,19 @@ struct VersusRing: View {
         }
         DispatchQueue.main.async {
             withAnimation(.spring(response: 1.0, dampingFraction: 0.82)) { shown = t }
+        }
+    }
+}
+
+/// Tracks whether a view is on screen inside a scroll view (iOS 18+; always "visible" on iOS 17).
+private struct ScrollVisibility: ViewModifier {
+    @Binding var visible: Bool
+
+    func body(content: Content) -> some View {
+        if #available(iOS 18.0, *) {
+            content.onScrollVisibilityChange(threshold: 0.01) { visible = $0 }
+        } else {
+            content
         }
     }
 }
