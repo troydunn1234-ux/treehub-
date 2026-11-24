@@ -12,40 +12,40 @@ struct TodayScreen: View {
         let notes = Insights.build(store)
         let streak = Insights.streak(store)
         let agreement = TodayAgreement.build(store)
+        let watchBPM = store.reading(.watch, \.rhr, recent: "rhr")?.value
+        let whoopBPM = store.reading(.whoop, \.rhr, manual: .rhr)?.value
         LabScroll(kicker: Date().formatted(.dateTime.weekday(.wide).month().day()), title: "Today") {
-            // Pulse Lab's signature first: where Watch and WHOOP agree and split today.
-            AgreementCard(agreement: agreement, onOpen: { openDetail($0) }, onFaceOff: {
-                UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
-            })
+            // 1 · The hero: where Watch and WHOOP agree and split today, in plain words.
+            AgreementCard(agreement: agreement, restingBPM: Stats.mean([watchBPM, whoopBPM].compactMap { $0 }),
+                          scanning: store.loading && agreement.compared == 0,
+                          onOpen: { openDetail($0) },
+                          onLogWhoop: { store.logWhoop = LogWhoopRequest() },
+                          onFaceOff: openVS)
+            // 2 · How ready you are: both scores, then the morning read.
             ReadyDuelCard(readiness: store.readinessToday, recovery: store.recoveryToday,
                           sleepHours: lastNightHours, fromYesterday: store.readinessUsesYesterday,
                           onReadiness: { openDetail(.readiness) },
                           onRecovery: { openDetail(.recovery) },
-                          action: {
-                              UIImpactFeedbackGenerator(style: .light).impactOccurred()
-                              if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
-                          })
-            // Calm minutes, tree hugs and walks today from Still Pointz, Rootbound and Roamr (hidden without them).
-            CalmMovementCard()
-            FromYourAppsCard(me: WellnessConnect.pulseLab, accent: Lab.accent, metric: !Units.imperial)
-            RecoveryAcrossAppsCard()
+                          action: openVS)
             BriefingCard()
             LogWhoopCard()
+            // 3 · Every number, side by side.
             numbersHeader
             headToHead
             quickTiles
-            if streak >= 2 { StreakChip(days: streak) }
             sleepDuel
+            if streak >= 2 { StreakChip(days: streak) }
             RivalryHero(rounds: Rivalry.rounds(store),
-                        watchBPM: store.reading(.watch, \.rhr, recent: "rhr")?.value,
-                        whoopBPM: store.reading(.whoop, \.rhr, manual: .rhr)?.value,
+                        watchBPM: watchBPM, whoopBPM: whoopBPM,
                         readiness: store.readinessToday, recovery: store.recoveryToday,
                         note: gaugeNote, showGauges: false)
-            InsightsButton()
-            LabNotesCard(insights: notes)
             sparkCard
+            // 4 · What the lab noticed.
+            LabNotesCard(insights: notes)
+            InsightsButton()
             ShareVSButton()
+            // 5 · Calmer, last: calm minutes, walks and recovery from the other apps (hidden without them).
+            acrossApps
             if !store.whoopConnected { whoopNudge }
         }
         .sheet(isPresented: $showAllData) {
@@ -59,6 +59,39 @@ struct TodayScreen: View {
     private func openDetail(_ m: MetricKey) {
         UIImpactFeedbackGenerator(style: .light).impactOccurred()
         store.detail = m
+    }
+
+    /// The VS tab (Pro; the unlock otherwise).
+    private func openVS() {
+        UIImpactFeedbackGenerator(style: .light).impactOccurred()
+        if Unlock.shared.gate("The VS lab") { store.go(.compare, metric: .hrv) }
+    }
+
+    /// A top-level group on Today (like "Your numbers"): bold title and an optional one-line subtitle.
+    private func sectionHeader(_ title: String, subtitle: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(L(title)).font(.title3.weight(.bold)).foregroundStyle(Lab.text)
+                .accessibilityAddTraits(.isHeader)
+            if let subtitle {
+                Text(L(subtitle)).font(.footnote).foregroundStyle(Lab.faint)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.top, Lab.S.s)
+    }
+
+    /// Still Pointz, Rootbound and Roamr's cards, grouped at the bottom under one quiet header. Each card still
+    /// hides itself when its apps aren't installed or shared nothing; the header only shows when one is installed.
+    @ViewBuilder
+    private var acrossApps: some View {
+        let feed = WellnessFeed.shared
+        if feed.has(WellnessConnect.stillPoint) || feed.has(WellnessConnect.rootbound) || feed.has(WellnessConnect.roamr) {
+            sectionHeader("Across your apps", subtitle: "What your other apps saw, next to your numbers.")
+            CalmMovementCard()
+            FromYourAppsCard(me: WellnessConnect.pulseLab, accent: Lab.accent, metric: !Units.imperial)
+            RecoveryAcrossAppsCard()
+        }
     }
 
     /// "Your numbers" with the way into All data, plus why a side is blank when it is.
@@ -155,6 +188,8 @@ struct TodayScreen: View {
                 Text(L(title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.dim)
                 Spacer()
                 if let note { Text(note).font(.caption2).foregroundStyle(Lab.faint) }
+                Image(systemName: "chevron.right").font(.caption2.weight(.bold)).foregroundStyle(Lab.faint)
+                    .accessibilityHidden(true)
             }
             HStack(alignment: .top, spacing: Lab.S.s) {
                 h2hSide(w, .watch, unit, f, hint: watchHint)
@@ -277,6 +312,7 @@ struct TodayScreen: View {
             Text(f ?? "—")
                 .font(Lab.number(20)).foregroundStyle(v == nil ? Lab.faint : Lab.color(s).opacity(v?.1 == false ? 0.6 : 1))
                 .lineLimit(1).minimumScaleFactor(0.6)
+                .contentTransition(.numericText())
             if v == nil { Text("No reading").font(.caption2).foregroundStyle(Lab.faint) }
             if let v, !v.1 { Text("Earlier").font(.caption2).foregroundStyle(Lab.faint) }
         }
@@ -304,9 +340,8 @@ struct TodayScreen: View {
                 HStack {
                     SectionTag("Last night")
                     Spacer()
-                    Button { store.detail = .sleep } label: {
-                        Text("Details").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.accent).frame(minHeight: 44)
-                    }
+                    CardLink("Details") { store.detail = .sleep }
+                        .accessibilityHint("Opens sleep details")
                 }
                 HStack(alignment: .top) {
                     sleepColumn(w, .watch)
@@ -321,6 +356,7 @@ struct TodayScreen: View {
         VStack(alignment: s == .watch ? .leading : .trailing, spacing: 4) {
             SourceChip(source: s)
             Text(fmtHM(n?.asleepMin)).font(Lab.number(26)).foregroundStyle(n == nil ? Lab.faint : Lab.color(s))
+                .contentTransition(.numericText())
             Text(n == nil ? "No night recorded" : "Asleep").font(.caption).foregroundStyle(Lab.faint)
             HStack(spacing: 8) {
                 stat("DEEP", n?.deepMin)
@@ -344,11 +380,8 @@ struct TodayScreen: View {
                 HStack {
                     SectionTag("Resting HR · 14 days")
                     Spacer()
-                    Button { store.detail = .rhr } label: {
-                        Image(systemName: "arrow.up.left.and.arrow.down.right").font(.footnote.weight(.semibold)).foregroundStyle(Lab.accent)
-                            .frame(width: 44, height: 44)
-                    }
-                    .accessibilityLabel("Open resting heart rate details")
+                    CardLink("Details") { store.detail = .rhr }
+                        .accessibilityHint("Opens resting heart rate details")
                 }
                 DuelChart(watch: spark(.watch), whoop: spark(.whoop), unit: "bpm", height: 150, showAverages: false)
                     .accessibilityElement(children: .ignore)
@@ -410,7 +443,7 @@ struct ReadyDuelCard: View {
                     Button(action: action) {
                         HStack(spacing: 4) {
                             if !unlock.isPro { Image(systemName: "lock.fill").font(.caption2.weight(.bold)) }
-                            Text("Compare").font(.subheadline.weight(.semibold))
+                            Text(verbatim: "VS").font(.subheadline.weight(.semibold))
                             Image(systemName: "chevron.right").font(.caption.weight(.bold))
                         }
                         .foregroundStyle(Lab.accent)
@@ -419,7 +452,7 @@ struct ReadyDuelCard: View {
                         .contentShape(Rectangle())
                     }
                     .buttonStyle(PressScale())
-                    .accessibilityLabel("Compare tab")
+                    .accessibilityLabel(Text(verbatim: "VS"))
                     .accessibilityHint(unlock.isPro ? "Opens the VS tab" : "Opens the Pro unlock")
                 }
                 HStack(alignment: .top, spacing: 0) {
@@ -433,6 +466,7 @@ struct ReadyDuelCard: View {
                     .accessibilityAddTraits(.isButton)
                     VStack(spacing: 4) {
                         Text(gapText).font(Lab.mono(13, .semibold)).foregroundStyle(Lab.text)
+                            .contentTransition(.numericText())
                             .padding(.horizontal, 8).padding(.vertical, 4)
                             .background(Capsule().fill(Lab.inset))
                         Text("gap").font(.caption2).foregroundStyle(Lab.faint)

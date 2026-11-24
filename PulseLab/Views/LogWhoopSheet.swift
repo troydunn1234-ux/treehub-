@@ -409,6 +409,7 @@ struct LogWhoopCard: View {
             HStack(spacing: Lab.S.s) {
                 Image(systemName: rec == nil ? "square.and.pencil" : "checkmark.circle.fill")
                     .font(.system(size: 18, weight: .semibold)).foregroundStyle(rec == nil ? Lab.whoop : Lab.good)
+                    .contentTransition(.symbolEffect(.replace))
                     .frame(width: 34, height: 34)
                     .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill((rec == nil ? Lab.whoop : Lab.good).opacity(0.15)))
                     .accessibilityHidden(true)

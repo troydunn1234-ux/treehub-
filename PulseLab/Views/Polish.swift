@@ -44,7 +44,8 @@ struct SyncPill: View {
 struct SkeletonStack: View {
     var body: some View {
         VStack(spacing: 16) {
-            SkeletonCard(height: 190)
+            // Shaped like the Today hero: lines on the left, the score ring on the right.
+            SkeletonCard(height: 210, ring: true)
             SkeletonCard(height: 230)
             SkeletonCard(height: 140)
         }
@@ -55,6 +56,8 @@ struct SkeletonStack: View {
 
 struct SkeletonCard: View {
     let height: CGFloat
+    /// A ring placeholder top-right (the Today hero's score ring).
+    var ring = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = -1
 
@@ -68,6 +71,13 @@ struct SkeletonCard: View {
                 }
                 .padding(18), alignment: .topLeading
             )
+            .overlay(alignment: .topTrailing) {
+                if ring {
+                    Circle().stroke(Color.white.opacity(0.07), lineWidth: 8)
+                        .frame(width: 80, height: 80)
+                        .padding(22)
+                }
+            }
             .overlay(
                 GeometryReader { geo in
                     LinearGradient(colors: [.clear, Color.white.opacity(0.07), .clear], startPoint: .leading, endPoint: .trailing)
