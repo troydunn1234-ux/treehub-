@@ -215,6 +215,21 @@ struct SPSecondaryButtonStyle: ButtonStyle {
     }
 }
 
+/// Quiet action: just the words and an icon, no fill. For small links beside a primary button ("Why this?"),
+/// so the one filled button stays the obvious thing to tap. 44pt tall.
+struct SPQuietButtonStyle: ButtonStyle {
+    var tint: Color = SP.ink.opacity(0.85)
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .font(.subheadline.weight(.medium))
+            .foregroundStyle(tint)
+            .frame(minHeight: 44)
+            .contentShape(Rectangle())
+            .opacity(configuration.isPressed ? 0.55 : 1)
+            .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
+    }
+}
+
 /// A round icon control (pause / end / voice) with a 56pt hit area and a caption under it.
 /// `spoken` / `value` let VoiceOver say e.g. "Voice guide, on" instead of the short caption.
 struct SPRoundControl: View {
@@ -259,6 +274,15 @@ struct SPEmptyState: View {
                 .foregroundStyle(SP.accent)
                 .frame(width: 64, height: 64)
                 .background(Circle().fill(SP.accent.opacity(0.12)))
+                // A soft halo that swells and settles, like a candle in a dark room (still with Reduce Motion).
+                .background {
+                    Circle()
+                        .fill(RadialGradient(colors: [SP.accent.opacity(0.24), SP.accent.opacity(0)],
+                                             center: .center, startRadius: 8, endRadius: 60))
+                        .frame(width: 120, height: 120)
+                        .slowBreathe(period: 4.5, low: 0.45, grow: 0.10)
+                }
+                .padding(.vertical, SP.s1)
                 .accessibilityHidden(true)
             Text(title).font(.headline).foregroundStyle(SP.ink).multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
