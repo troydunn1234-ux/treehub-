@@ -1,0 +1,5 @@
+2026-11-24 13:47:57.031 E  PulseLab[33298:17924] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:47:57.041 E  PulseLab[33298:17924] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:47:58.196 E  PulseLab[33298:17927] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-24 13:48:01.769 F  PulseLab[33298:178d2] [com.apple.renderbox:error] building pipeline stroke_lines-oia6pa8feba4 took 0.916581 seconds
+2026-11-24 13:48:04.207 E  PulseLab[33298:17926] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics

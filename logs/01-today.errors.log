@@ -1,0 +1,205 @@
+2026-11-24 13:41:05.131 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Failed to stat path '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library/Application Support/default.store', errno 2 / No such file or directory.
+2026-11-24 13:41:05.133 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Executing as effective user 501
+2026-11-24 13:41:05.133 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Failed to statfs file; errno 2 / No such file or directory.
+2026-11-24 13:41:05.134 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Logging status information for directory path: /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library/Application Support
+2026-11-24 13:41:05.146 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Executing as effective user 501
+2026-11-24 13:41:05.238 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /
+2026-11-24 13:41:05.238 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.238 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.238 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		704 bytes
+2026-11-24 13:41:05.238 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		2
+2026-11-24 13:41:05.239 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		0
+2026-11-24 13:41:05.239 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		0
+2026-11-24 13:41:05.239 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.239 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.240 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.240 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.241 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.241 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not writeable with errno 30
+2026-11-24 13:41:05.241 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users
+2026-11-24 13:41:05.242 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.242 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.242 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		160 bytes
+2026-11-24 13:41:05.243 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12884919373
+2026-11-24 13:41:05.243 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		0
+2026-11-24 13:41:05.243 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		80
+2026-11-24 13:41:05.244 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.244 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.244 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.245 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.245 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.245 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not writeable with errno 13
+2026-11-24 13:41:05.246 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner
+2026-11-24 13:41:05.246 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.246 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.247 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		1216 bytes
+2026-11-24 13:41:05.247 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12884922560
+2026-11-24 13:41:05.247 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.248 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.248 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.248 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.249 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.249 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.249 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.249 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.250 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library
+2026-11-24 13:41:05.250 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.250 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.250 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		2112 bytes
+2026-11-24 13:41:05.251 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12884922562
+2026-11-24 13:41:05.251 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.251 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.251 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.252 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.252 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.252 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.253 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.253 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.253 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer
+2026-11-24 13:41:05.253 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.253 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.254 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		160 bytes
+2026-11-24 13:41:05.254 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12887571426
+2026-11-24 13:41:05.254 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.254 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.255 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.255 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.256 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.256 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.256 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.257 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.257 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator
+2026-11-24 13:41:05.257 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.257 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.257 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		160 bytes
+2026-11-24 13:41:05.258 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12887571438
+2026-11-24 13:41:05.258 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.258 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.259 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.259 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.259 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.259 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.260 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.260 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.260 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices
+2026-11-24 13:41:05.261 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.261 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.261 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		4160 bytes
+2026-11-24 13:41:05.262 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12887571461
+2026-11-24 13:41:05.262 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.262 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.263 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.263 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.263 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.264 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.264 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.264 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.264 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514
+2026-11-24 13:41:05.265 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.265 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.265 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		160 bytes
+2026-11-24 13:41:05.265 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12887592173
+2026-11-24 13:41:05.266 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.266 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.266 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.266 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.267 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.267 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.267 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.267 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.268 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data
+2026-11-24 13:41:05.268 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.268 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.268 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		416 bytes
+2026-11-24 13:41:05.269 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12887592174
+2026-11-24 13:41:05.269 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.269 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.270 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.270 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.270 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   775
+2026-11-24 13:41:05.271 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.271 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.272 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.272 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers
+2026-11-24 13:41:05.272 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.273 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.273 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		224 bytes
+2026-11-24 13:41:05.273 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12888352256
+2026-11-24 13:41:05.273 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.274 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.274 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.274 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.275 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.275 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.275 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.275 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.276 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data
+2026-11-24 13:41:05.276 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.277 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.277 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		192 bytes
+2026-11-24 13:41:05.277 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12888352340
+2026-11-24 13:41:05.278 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.278 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.279 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.279 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.279 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.280 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		4640 bytes
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12888353795
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.281 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		224 bytes
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12888375382
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.282 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Information for /Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Device ID: 	0
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Device ID: 		16777220
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Size: 		160 bytes
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File inode: 		12888375384
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File user ID: 		501
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File group ID: 		20
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   File Permissions:
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: d
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   755
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is not a symbolic link
+2026-11-24 13:41:05.283 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is readable
+2026-11-24 13:41:05.284 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   component is writeable
+2026-11-24 13:41:05.284 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Failed to stat path '/Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library/Application Support', errno 2 / No such file or directory.
+2026-11-24 13:41:05.284 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error:   Sandbox access to file-write-create denied
+2026-11-24 13:41:05.285 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: addPersistentStoreWithType:configuration:URL:options:error: returned error NSCocoaErrorDomain (512)
+2026-11-24 13:41:05.285 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: userInfo:
+2026-11-24 13:41:05.285 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: 	reason : Failed to create file; code = 2
+2026-11-24 13:41:05.286 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: storeType: SQLite
+2026-11-24 13:41:05.286 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: configuration: default
+2026-11-24 13:41:05.286 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: URL: file:///Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library/Application%20Support/default.store
+2026-11-24 13:41:05.308 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: <NSPersistentStoreCoordinator: 0x600002c08e00>: Attempting recovery from error encountered during addPersistentStore: 0x600000c08d80 Error Domain=NSCocoaErrorDomain Code=512 "The file couldn’t be saved." UserInfo={reason=Failed to create file; code = 2}
+2026-11-24 13:41:05.309 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: During recovery, parent directory path reported as missing
+2026-11-24 13:41:05.342 E  PulseLab[20543:f5ba] [com.apple.coredata:error] CoreData: error: Recovery attempt while adding <NSPersistentStoreDescription: 0x600000c08d80> (type: SQLite, url: file:///Users/runner/Library/Developer/CoreSimulator/Devices/8F28AB82-E741-43D2-8CA2-7E1A1C0FD514/data/Containers/Data/Application/F09F1AFD-C2E2-4554-B4F4-EA7C493552EC/Library/Application%20Support/default.store) was successful!
+2026-11-24 13:41:06.256 E  PulseLab[20543:f638] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:41:07.547 E  PulseLab[20543:f638] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:41:13.778 E  PulseLab[20543:f5ba] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-24 13:41:13.778 E  PulseLab[20543:f5ba] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-24 13:41:14.791 E  PulseLab[20543:f5ba] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-24 13:41:14.791 E  PulseLab[20543:f5ba] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-24 13:41:14.849 F  PulseLab[20543:f5ba] [com.apple.renderbox:error] building pipeline primitive_coverage-emba5dba7feba4 took 1.071598 seconds

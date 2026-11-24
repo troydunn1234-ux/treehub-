@@ -1,0 +1,9 @@
+2026-11-24 13:42:44.374 E  PulseLab[22812:112fd] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:42:46.647 E  PulseLab[22812:112fd] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:43:18.724 E  PulseLab[22812:10c5b] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-24 13:43:18.727 F  PulseLab[22812:10c5b] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-24 13:43:21.465 E  PulseLab[22812:112fe] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-24 13:43:21.465 E  PulseLab[22812:112fe] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:43:21.787 E  PulseLab[22812:112fe] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-24 13:43:21.948 E  PulseLab[22812:11f7f] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-24 13:43:28.179 F  PulseLab[22812:10c5b] [com.apple.renderbox:error] building pipeline plane_color-ca16feba4 took 0.770203 seconds

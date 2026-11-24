@@ -1,0 +1,65 @@
+[00:03] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 40 min; load 8.9 on 4 cpus; ~7885 MB free; swap 0 MB; busiest: mds_stores 86.8% 454 MB, storagekitd 10.3% 10 MB, diskarbitrationd 7.9% 5 MB
+[00:04]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[01:25]   ... still on simctl bootstatus -b (50s); load 118.2 on 4 cpus; ~6626 MB free; swap 0 MB; busiest: diagnosticd 91.9% 86 MB, lsd 34.6% 41 MB, remindd 32.5% 72 MB
+[02:35]   ... still on simctl bootstatus -b (139s); load 209.5 on 4 cpus; ~5992 MB free; swap 0 MB; busiest: diagnosticd 74.5% 117 MB, intelligenceplatformd 57.9% 84 MB, lsd 45.5% 44 MB
+[04:34]   ... still on simctl bootstatus -b (205s); load 148.3 on 4 cpus; ~5935 MB free; swap 0 MB
+[07:17]   ... still on simctl list devices booted (77s); load 666.6 on 4 cpus; ~5742 MB free; swap 0 MB; busiest: STExtractionService 79.3% 35 MB, diagnosticd 47.1% 126 MB, CalendarWidgetExtension 43.8% 92 MB
+[07:17] iPhone simulator booted; load 666.6 on 4 cpus; ~5748 MB free; swap 0 MB; busiest: STExtractionService 63.6% 38 MB, diagnosticd 46.3% 126 MB, CalendarWidgetExtension 44.8% 92 MB
+[09:16]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/PulseLab.app (57s); load 609.1 on 4 cpus; ~5626 MB free; swap 0 MB
+[10:30]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/PulseLab.app (181s); load 155.3 on 4 cpus; ~5500 MB free; swap 0 MB; busiest: diagnosticd 64.8% 97 MB, assetsubscriptiond 56.6% 48 MB, diskimagesiod 41.9% 52 MB
+[12:48] OK    01-today  -demo -pro -tab today  [205 error/fault log lines]  (96s, 164 MB)
+[12:50]   load 433.7 on 4 cpus; ~5404 MB free; swap 0 MB; busiest: diagnosticd 65.0% 115 MB, amsengagementd 55.8% 123 MB, BackgroundShortcutRunner 41.0% 122 MB
+[14:45] OK    02-alldata  -demo -pro -open alldata  [9 error/fault log lines]  (110s, 193 MB)
+[14:45]   load 225.0 on 4 cpus; ~5342 MB free; swap 0 MB; busiest: diagnosticd 62.4% 114 MB, intents_helper 50.8% 34 MB, diagnosticd 33.3% 7 MB
+[16:08] OK    03-sources  -demo -pro -open sources  [4 error/fault log lines]  (79s, 188 MB)
+[16:08]   load 150.3 on 4 cpus; ~5285 MB free; swap 0 MB; busiest: diagnosticd 45.6% 7 MB, BackgroundShortcutRunner 42.2% 193 MB, diagnosticd 41.2% 116 MB
+[17:11] OK    04-logwhoop  -demo -pro -open logwhoop  [2 error/fault log lines]  (60s, 208 MB)
+[17:12]   load 165.8 on 4 cpus; ~5319 MB free; swap 0 MB; busiest: diagnosticd 76.8% 117 MB, BackgroundShortcutRunner 52.8% 212 MB, diagnosticd 36.7% 7 MB
+[17:52] OK    05-logwhoop-morning  -demo -pro -open logwhoopauto  [2 error/fault log lines]  (37s, 215 MB)
+[17:53]   load 226.1 on 4 cpus; ~5322 MB free; swap 0 MB; busiest: diagnosticd 96.8% 117 MB, diagnosticd 61.7% 7 MB, apsd 47.4% 52 MB
+[18:30] OK    06-settings  -demo -pro -tab settings  [5 error/fault log lines]  (34s, 174 MB)
+[18:31]   load 172.3 on 4 cpus; ~5289 MB free; swap 0 MB; busiest: BackgroundShortcutRunner 77.7% 226 MB, diagnosticd 73.1% 117 MB, apsd 42.0% 52 MB
+[19:02] OK    07-vs-free-teaser  -demo -free -tab vs  [5 error/fault log lines]  (28s, 191 MB)
+[19:03]   load 144.9 on 4 cpus; ~5293 MB free; swap 0 MB; busiest: diagnosticd 77.9% 117 MB, diagnosticd 47.1% 7 MB, apsd 45.1% 52 MB
+[19:44] OK    08-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  [2 error/fault log lines]  (36s, 189 MB)
+[19:44]   load 184.3 on 4 cpus; ~5305 MB free; swap 0 MB; busiest: diagnosticd 82.8% 117 MB, apsd 51.6% 52 MB, diagnosticd 48.0% 7 MB
+[20:22] OK    09-moreapps  -demo -pro -tab today -open moreapps  [2 error/fault log lines]  (33s, 208 MB)
+[20:22]   load 161.2 on 4 cpus; ~5270 MB free; swap 0 MB; busiest: diagnosticd 78.8% 117 MB, apsd 47.2% 52 MB, diagnosticd 45.0% 7 MB
+[21:30] OK    10-today-largetype  -demo -pro -tab today  [2 error/fault log lines]  (65s, 201 MB)
+[21:31]   load 207.8 on 4 cpus; ~5246 MB free; swap 0 MB; busiest: diagnosticd 100.2% 123 MB, apsd 43.2% 52 MB, diagnosticd 37.1% 7 MB
+[22:16] OK    11-logwhoop-largetype  -demo -pro -open logwhoop  [2 error/fault log lines]  (42s, 244 MB)
+[22:17]   load 162.8 on 4 cpus; ~5238 MB free; swap 0 MB; busiest: diagnosticd 71.7% 115 MB, diagnosticd 66.1% 7 MB, ReportCrash 63.4% 129 MB
+[22:59] OK    12-alldata-largetype  -demo -pro -open alldata  [4 error/fault log lines]  (39s, 197 MB)
+[23:00]   load 190.9 on 4 cpus; ~5246 MB free; swap 0 MB; busiest: diagnosticd 55.2% 115 MB, mlhostd 51.4% 6 MB, diagnosticd 45.6% 7 MB
+[23:37] OK    13-today-light  -demo -pro -tab today  [2 error/fault log lines]  (34s, 188 MB)
+[23:37]   load 221.7 on 4 cpus; ~5281 MB free; swap 0 MB; busiest: diagnosticd 101.8% 124 MB, diagnosticd 42.0% 7 MB, iconservicesagent 21.6% 53 MB
+[23:59] OK    14-vs  -demo -pro -tab vs  [2 error/fault log lines]  (18s, 163 MB)
+[24:00]   load 163.2 on 4 cpus; ~5137 MB free; swap 0 MB; busiest: diagnosticd 59.3% 123 MB, diagnosticd 58.6% 7 MB, apsd 14.9% 52 MB
+[24:22] OK    15-sleep  -demo -pro -tab sleep  [3 error/fault log lines]  (19s, 174 MB)
+[24:22]   load 145.0 on 4 cpus; ~5276 MB free; swap 0 MB; busiest: diagnosticd 50.1% 115 MB, diagnosticd 40.6% 7 MB, provjobd2739068731 26.3% 30 MB
+[24:43] OK    16-heart  -demo -pro -tab heart  [2 error/fault log lines]  (17s, 177 MB)
+[24:43]   load 114.5 on 4 cpus; ~5266 MB free; swap 0 MB; busiest: diagnosticd 66.0% 92 MB, diagnosticd 58.5% 7 MB, provjobd2739068731 28.4% 30 MB
+[25:04] OK    17-stack  -demo -pro -tab stack  [2 error/fault log lines]  (18s, 179 MB)
+[25:05]   load 96.7 on 4 cpus; ~5235 MB free; swap 0 MB; busiest: diagnosticd 75.1% 83 MB, diagnosticd 50.4% 7 MB, apsd 26.7% 52 MB
+[25:26] OK    18-moves  -demo -pro -tab moves  [3 error/fault log lines]  (19s, 176 MB)
+[25:27]   load 81.0 on 4 cpus; ~5243 MB free; swap 0 MB; busiest: diagnosticd 60.4% 83 MB, diagnosticd 41.1% 7 MB, apsd 20.7% 52 MB
+[26:01] OK    19-readiness  -demo -pro -open readiness  [2 error/fault log lines]  (31s, 207 MB)
+[26:02]   load 90.1 on 4 cpus; ~5269 MB free; swap 0 MB; busiest: diagnosticd 61.6% 83 MB, diagnosticd 44.1% 7 MB, provjobd2739068731 32.4% 30 MB
+[26:30] OK    20-hrv  -demo -pro -open hrv  [2 error/fault log lines]  (24s, 198 MB)
+[26:30]   load 78.7 on 4 cpus; ~5247 MB free; swap 0 MB; busiest: diagnosticd 61.3% 75 MB, provjobd2739068731 35.4% 30 MB, diagnosticd 34.3% 7 MB
+[26:51] OK    21-moves-largetype  -demo -pro -tab moves  [2 error/fault log lines]  (17s, 191 MB)
+[26:51]   load 81.2 on 4 cpus; ~5246 MB free; swap 0 MB; busiest: diagnosticd 59.2% 76 MB, diagnosticd 41.4% 7 MB, provjobd2739068731 35.5% 30 MB
+[27:14] OK    22-vs-largetype  -demo -pro -tab vs  [2 error/fault log lines]  (19s, 184 MB)
+[27:14]   load 74.2 on 4 cpus; ~5245 MB free; swap 0 MB; busiest: diagnosticd 73.3% 75 MB, diagnosticd 47.7% 7 MB, apsd 34.2% 52 MB
+[27:48] OK    23-readiness-largetype  -demo -pro -open readiness  [2 error/fault log lines]  (29s, 210 MB)
+[27:49]   load 70.9 on 4 cpus; ~5316 MB free; swap 0 MB; busiest: diagnosticd 45.0% 75 MB, provjobd2739068731 38.9% 30 MB, PasswordBreachAgent 34.1% 19 MB
+[28:14] OK    24-hrv-largetype  -demo -pro -open hrv  [2 error/fault log lines]  (22s, 218 MB)
+[28:14]   load 57.9 on 4 cpus; ~5297 MB free; swap 0 MB; busiest: diagnosticd 58.7% 75 MB, diagnosticd 36.4% 7 MB, provjobd2739068731 21.6% 30 MB
+[28:54] Watch simulator: Apple Watch Ultra 3 (49mm) com.apple.CoreSimulator.SimRuntime.watchOS-26-2
+[29:57]   ... still on simctl bootstatus -b (50s); load 211.5 on 4 cpus; ~7154 MB free; swap 0 MB; busiest: lsd 45.9% 40 MB, accountsd 44.6% 43 MB, diagnosticd 42.7% 7 MB
+[31:01]   ... still on simctl bootstatus -b (119s); load 281.2 on 4 cpus; ~5970 MB free; swap 0 MB; busiest: diagnosticd 64.9% 155 MB, diagnosticd 53.8% 7 MB, MTLCompilerService 39.1% 29 MB
+[31:37] Watch simulator booted; load 353.8 on 4 cpus; ~5853 MB free; swap 0 MB; busiest: STExtractionService 74.6% 28 MB, diagnosticd 61.9% 169 MB, diagnosticd 33.4% 7 MB
+[32:28] OK    watch-w1-home  -demo  [1 error/fault log lines]  (30s, 116 MB)
+[32:30]   load 256.1 on 4 cpus; ~6401 MB free; swap 0 MB; busiest: assetsubscriptiond 57.8% 44 MB, diagnosticd 56.6% 183 MB, linkd 55.6% 55 MB
+[33:08] OK    watch-w2-empty    (28s, 112 MB)
+[33:09]   load 205.3 on 4 cpus; ~6781 MB free; swap 0 MB; busiest: diagnosticd 71.5% 185 MB, diagnosticd 45.6% 7 MB, apsd 41.1% 37 MB

@@ -1,0 +1,199 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-24 14:02:01.974 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x105058dc0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-24 14:02:01.981 Df PulseLabWatch[58629:28626] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-24 14:02:01.981 Df PulseLabWatch[58629:28626] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: NO
+2026-11-24 14:02:01.981 A  PulseLabWatch[58629:28626] (WatchConnectivity) activateSession
+2026-11-24 14:02:01.981 Df PulseLabWatch[58629:28626] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-24 14:02:01.981 Df PulseLabWatch[58629:28626] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-24 14:02:01.981 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x105058f00] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-24 14:02:02.009 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] WKApplicationExtensionMain:127: applicationDelegateClassName=SwiftUI.ExtensionDelegate
+2026-11-24 14:02:02.015 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x105059540] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-24 14:02:02.024 Df PulseLabWatch[58629:28626] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=58629 task=PulseLabWatch[58629]/0#-1 LF=22
+2026-11-24 14:02:02.026 A  PulseLabWatch[58629:2864d] (CoreFoundation) Loading Preferences From System CFPrefsD
+2026-11-24 14:02:02.027 Df PulseLabWatch[58629:2864f] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-24 14:02:02.029 Df PulseLabWatch[58629:2864f] [com.apple.xpc:connection] [0x1050597c0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 14:02:02.033 Df PulseLabWatch[58629:2864e] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-24 14:02:02.034 Df PulseLabWatch[58629:28652] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-24 14:02:02.034 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:SaltUICore] SaltUICore was linked successfully!
+2026-11-24 14:02:02.041 Df PulseLabWatch[58629:2864e] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-24 14:02:02.041 Df PulseLabWatch[58629:2864e] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x105174f50>
+2026-11-24 14:02:02.042 Df PulseLabWatch[58629:2864e] [com.apple.runningboard:connection] Initializing connection
+2026-11-24 14:02:02.042 Df PulseLabWatch[58629:2864e] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-24 14:02:02.042 Df PulseLabWatch[58629:28651] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-24 14:02:02.042 Df PulseLabWatch[58629:28651] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-24 14:02:02.042 Df PulseLabWatch[58629:28651] [com.apple.xpc:connection] [0x10505a080] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-24 14:02:02.045 A  PulseLabWatch[58629:28653] (RunningBoardServices) didChangeInheritances
+2026-11-24 14:02:02.046 Df PulseLabWatch[58629:28651] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-24 14:02:02.046 Df PulseLabWatch[58629:28651] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.pulselab.watchkitapp((null))>
+2026-11-24 14:02:02.047 Df PulseLabWatch[58629:2864e] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x105174f50>
+2026-11-24 14:02:02.048 Df PulseLabWatch[58629:2864e] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x10516f2c0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2651 (elapsed = 0).
+2026-11-24 14:02:02.049 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-24 14:02:02.052 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-24 14:02:02.053 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-24 14:02:02.055 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 14:02:02.056 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-24 14:02:02.057 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-24 14:02:02.058 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-24 14:02:02.058 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-24 14:02:02.059 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-24 14:02:02.060 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-24 14:02:02.061 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-24 14:02:02.061 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-24 14:02:02.063 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-24 14:02:02.064 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-24 14:02:02.064 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-24 14:02:02.066 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-24 14:02:02.067 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-24 14:02:02.068 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-24 14:02:02.155 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-24 14:02:02.164 Df PulseLabWatch[58629:28626] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-24 14:02:02.168 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplication init]:58: Inited
+2026-11-24 14:02:02.169 Df PulseLabWatch[58629:28626] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-24 14:02:02.169 Df PulseLabWatch[58629:28626] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-24 14:02:02.173 Df PulseLabWatch[58629:28626] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x1051ae840; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-24 14:02:02.173 Df PulseLabWatch[58629:28626] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x105079220 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-24 14:02:02.173 Df PulseLabWatch[58629:28626] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x105079220 com.apple.frontboard.systemappservices> sent handshake
+2026-11-24 14:02:02.174 Df PulseLabWatch[58629:28626] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x1051afc60>
+2026-11-24 14:02:02.177 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <CUISWatchKitApplicationSceneTransitionContext> on FBSSceneTransitionContext
+2026-11-24 14:02:02.179 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneSettings setting counterpart class: PUICMutableApplicationSceneSettings
+2026-11-24 14:02:02.179 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneSettingsExtension on FBSSceneSettings
+2026-11-24 14:02:02.181 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-24 14:02:02.185 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] PUICApplicationSceneClientSettings setting counterpart class: PUICMutableApplicationSceneClientSettings
+2026-11-24 14:02:02.186 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension PUICApplicationSceneClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 14:02:02.190 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-24 14:02:02.195 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <PUICApplicationSceneTransitionContextInterface> on FBSSceneTransitionContext
+2026-11-24 14:02:02.195 Df PulseLabWatch[58629:2864e] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-24 14:02:02.198 Df PulseLabWatch[58629:28626] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-24 14:02:02.204 Df PulseLabWatch[58629:28626] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 14:02:02.204 Df PulseLabWatch[58629:28626] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 14:02:02.205 Df PulseLabWatch[58629:28626] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 14:02:02.208 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-24 14:02:02.214 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10505a440> for initial
+2026-11-24 14:02:02.214 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10505a440> for CADisplay KVO
+2026-11-24 14:02:02.219 Df PulseLabWatch[58629:28626] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = (null)
+2026-11-24 14:02:02.262 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate application:didFinishLaunchingSuspendedWithOptions:]:780: launched suspended
+2026-11-24 14:02:02.263 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:353: com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.264 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] setMainExtensionAndApplicationBundles:24: extensionBundle: /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/BC6C6C15-2E4E-4180-A437-E78B6E6BEB0A/PulseLabWatch.app, appBundle /Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/BC6C6C15-2E4E-4180-A437-E78B6E6BEB0A/PulseLabWatch.app
+2026-11-24 14:02:02.264 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] +[SPRemoteInterface startRemoteInterfaceWithBundle:]:308: startRemoteInterfaceWithBundle:NSBundle </Users/runner/Library/Developer/CoreSimulator/Devices/6D07DD7B-1060-4DAD-A81C-FCD3AB822D9A/data/Containers/Bundle/Application/BC6C6C15-2E4E-4180-A437-E78B6E6BEB0A/PulseLabWatch.app> (loaded)
+2026-11-24 14:02:02.265 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3862: SwiftUI.ExtensionDelegate
+2026-11-24 14:02:02.267 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface createExtensionDelegateWithClassName:]:3876: Created WKExtensionDelegate of class SwiftUI.ExtensionDelegate
+2026-11-24 14:02:02.268 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _extensionDelegateDidChange]:3883: delegate <SwiftUI.ExtensionDelegate: 0x105027660> _handlesBGTasks=1
+2026-11-24 14:02:02.268 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] +[SPRemoteInterface _remoteIdentifier]_block_invoke:344: ComF:->ComD Gizmo app identifier com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.269 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPRemoteInterface setApplicationConnection:]:4091: connection=<SPExtensionConnection: 0x10505b340>
+2026-11-24 14:02:02.269 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3951: did begin using
+2026-11-24 14:02:02.269 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPRemoteInterface extensionDidBeginUsingWithLaunchEnv:launchArgs:launchedSuspendedNotInDock:]:3970: no complication implemented so not instantiating complication server.
+2026-11-24 14:02:02.270 Df PulseLabWatch[58629:28626] [com.apple.watchkit:extension_loading] -[SPExtensionConnection _setupApp]:378: Set up native app for com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.271 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke:873: Got applicationRootInterfaceControllerClass SwiftUI.InterfaceController from extensionDelegate
+2026-11-24 14:02:02.271 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:933: self.hasReceivedNonClockKitEvent == NO
+2026-11-24 14:02:02.272 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-24 14:02:02.274 Df PulseLabWatch[58629:28626] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-24 14:02:02.274 Df PulseLabWatch[58629:28626] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-24 14:02:02.275 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-24 14:02:02.279 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate didReceiveNonClockKitEvent]:3358: firstNonClockKitEvent=1
+2026-11-24 14:02:02.280 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:282: connecting to gizmoappd for serverIdentifier=com.troydunn.pulselab.watchkitapp clientIdentifier=E5050001
+2026-11-24 14:02:02.280 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x10505a940] activating connection: mach=true listener=false peer=false name=com.apple.gizmoappd
+2026-11-24 14:02:02.281 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPExtensionConnection connectWithIdentifier:completion:]_block_invoke:291: Began suspended launch
+2026-11-24 14:02:02.282 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]:945: root view controller hasn't loaded yet
+2026-11-24 14:02:02.283 A  PulseLabWatch[58629:28626] (PepperUICore) Scene didInitializeWithEvent
+2026-11-24 14:02:02.283 Df PulseLabWatch[58629:28653] [com.apple.watchkit:default] -[SPExtensionConnection setExtensionIsDebugging:]:1014: for com.troydunn.pulselab.watchkitapp, extensionIsDebugging=0
+2026-11-24 14:02:02.296 Df PulseLabWatch[58629:28626] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x105393400> (com.troydunn.pulselab.watchkitapp)
+2026-11-24 14:02:02.297 Df PulseLabWatch[58629:28626] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomWatch to LastOneWins
+2026-11-24 14:02:02.298 Df PulseLabWatch[58629:28626] [com.apple.UIKit:EventDeferring] [0x1051fbaa0] Initialized with scene: <UIWindowScene: 0x105393400>; behavior: <_UIEventDeferringBehavior_Default: 0x10538bc20>; availableForProcess: 1, systemShellManagesKeyboardFocus: 0
+2026-11-24 14:02:02.299 Df PulseLabWatch[58629:28626] [com.apple.BacklightServices:scenes] 0x1051a47b0 setDelegate:<0x1051a4930 _UIBacklightEnvironment> hasDelegate:YES for environment:com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.300 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10505b840; >
+2026-11-24 14:02:02.300 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10505bac0; >
+2026-11-24 14:02:02.300 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10505bc00; >
+2026-11-24 14:02:02.310 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:02.310 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:02.315 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UIBacklightEnvironment] Updated traitOverrides: <UITraitCollection: 0x10505b840; >
+2026-11-24 14:02:02.335 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x105044000] activating connection: mach=true listener=false peer=false name=com.apple.Carousel.CSLSDetentService
+2026-11-24 14:02:02.341 Df PulseLabWatch[58629:28653] [com.apple.Carousel:detents] received preferences
+2026-11-24 14:02:02.341 Df PulseLabWatch[58629:28653] [com.apple.Carousel:detents] CSLSDetentServiceConnection: service com.apple.Carousel.CSLSDetentService connected
+2026-11-24 14:02:02.341 Df PulseLabWatch[58629:28653] [com.apple.Carousel:detents] received detents, mapped by type {
+}
+2026-11-24 14:02:02.385 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate application:_didFinishLaunchingWithOptions:]_block_invoke_2:973: Calling applicationDidFinishLaunching on <SwiftUI.ExtensionDelegate: 0x105027660>
+2026-11-24 14:02:02.396 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewController:createCompanionControllerClass:properties:initializationContextID:info:gestureDescriptions:interfaceControllerCreationCompletion:]:1753: GizF:<-GizApp controllerClass=SwiftUI.InterfaceController
+2026-11-24 14:02:02.396 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface createViewController:className:properties:contextID:info:gestureDescriptions:clientIdentifier:interfaceControllerCreationCompletion:]_block_invoke_3:3149: !!! Create controller - clientIdentifier:E5050001, viewControllerIdentifier:E5050002, className:SwiftUI.InterfaceController
+2026-11-24 14:02:02.397 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 14:02:02.397 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2439: registering controller <SwiftUI.InterfaceController: 0x105372ae0> with id E5050002 and clientIdentifier E5050001
+2026-11-24 14:02:02.400 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2452: _interfaceControllers={
+    E5050002 = "<SwiftUI.InterfaceController: 0x105372ae0>";
+}
+2026-11-24 14:02:02.400 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _registerInterfaceController:interfaceControllerID:interfaceControllerClientID:applicationRootController:]:2462: Found 0 pending blocks for view controller with ID E5050002. Executing them now.
+2026-11-24 14:02:02.401 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 14:02:02.422 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:02.434 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:02.439 Df PulseLabWatch[58629:28626] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-24 14:02:02.440 Df PulseLabWatch[58629:28626] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x105393400: Window became key in scene: UIWindow: 0x105396800; contextId: 0x30027916: reason: UIWindowScene: 0x105393400: Window requested to become key in scene: 0x105396800
+2026-11-24 14:02:02.440 Df PulseLabWatch[58629:28626] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x105393400; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x105396800; reason: UIWindowScene: 0x105393400: Window requested to become key in scene: 0x105396800
+2026-11-24 14:02:02.440 Df PulseLabWatch[58629:28626] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x105396800; contextId: 0x30027916; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.440 Df PulseLabWatch[58629:28626] [com.apple.UIKit:EventDeferring] [0x1051fbaa0] Begin local event deferring requested for token: 0x105026ca0; environments: 1; reason: UIWindowScene: 0x105393400: Begin event deferring in keyboardFocus for window: 0x105396800
+2026-11-24 14:02:02.444 Df PulseLabWatch[58629:28626] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-24 14:02:02.444 Df PulseLabWatch[58629:28626] [com.apple.xpc:connection] [0x105045540] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 14:02:02.448 Df PulseLabWatch[58629:28653] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-24 14:02:02.453 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureNegativeInteraction: 0x105120a00>) installed: NO -> YES
+2026-11-24 14:02:02.454 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUICrownPressDismissGestureInteraction: 0x10516d540>) installed: NO -> YES
+2026-11-24 14:02:02.457 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureNegativeInteraction: 0x105120a00> -> <UIWindow: 0x105396800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x10500fa80>; backgroundColor = <UIDynamicSystemColor: 0x1053b4500; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x1053b4640>>
+2026-11-24 14:02:02.458 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] didMoveToView: <WAGUICrownPressDismissGestureInteraction: 0x10516d540> -> <UIWindow: 0x105396800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x1053ee380>; backgroundColor = <UIDynamicSystemColor: 0x1053b4500; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x1053b4640>>
+2026-11-24 14:02:02.459 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:WatchGesturesApplication] Enabled default watch gesture pinch interactions for key window: <UIWindow: 0x105396800; frame = (0 0; 211 257); gestureRecognizers = <NSArray: 0x1053ee380>; backgroundColor = <UIDynamicSystemColor: 0x1053b4500; name = _windowBackgroundColor>; layer = <UIWindowLayer: 0x1053b4640>>
+2026-11-24 14:02:02.471 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:677: isSuspended=1, isSuspendedUnderLock=0, isSuspendedEventsOnly=0
+2026-11-24 14:02:02.477 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface forwardDidEnterForegroundToScenesInViewController:]:3567: viewControllerID=E5050002
+2026-11-24 14:02:02.477 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate applicationWillEnterForeground:]:705: Updating appState
+2026-11-24 14:02:02.477 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-24 14:02:02.478 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-24 14:02:02.478 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 1 to 0
+2026-11-24 14:02:02.478 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 1 to 0
+2026-11-24 14:02:02.479 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]:1023: Updating appState
+2026-11-24 14:02:02.479 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]:3505: Updating appState to 0, suspendedUnderLock=0
+2026-11-24 14:02:02.479 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate _updateAppState:]_block_invoke:3509: GizF:<-GizApp state=0, suspendedUnderLock=0
+2026-11-24 14:02:02.479 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[WKApplication setApplicationState:]:74: Updating appState from 0 to 0
+2026-11-24 14:02:02.480 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[WKExtension setApplicationState:]:109: Updating appState from 0 to 0
+2026-11-24 14:02:02.480 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1041: creating os_transaction appActive-89C560B8-BE9C-430A-A7CB-BA9A1475FD4E
+2026-11-24 14:02:02.481 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPApplicationDelegate applicationDidBecomeActive:]_block_invoke:1047: Calling applicationDidBecomeActive on <SwiftUI.ExtensionDelegate: 0x105027660>
+2026-11-24 14:02:02.481 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPExtensionConnection interfaceViewControllerActivate:]:1771: GizF:<-GizApp vcID=E5050002
+2026-11-24 14:02:02.481 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _createActiveViewControllerTransaction:]:4729: created os_transaction activeVC-E5050002-9D98FD90-9993-4F62-8DB3-79A11531BA08, _activeViewControllerTransactions={
+    E5050002 = "<OS_os_transaction: activeVC-E5050002-9D98FD90-9993-4F62-8DB3-79A11531BA08>";
+}
+2026-11-24 14:02:02.482 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] +[SPRemoteInterface setControllerActive:]:1140: after setting E5050002 active, __controllerActive={
+    E5050002 = 1;
+}
+2026-11-24 14:02:02.482 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 14:02:02.482 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface _activateViewController:clientIdentifier:]:3273: Calling willActivate for E5050002
+2026-11-24 14:02:02.482 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 14:02:02.486 Df PulseLabWatch[58629:28626] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.pulselab.watchkitapp  persistentID: com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:02.487 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2048 -> 6144; animating application lifecycle event: 0
+2026-11-24 14:02:02.487 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6144 -> 4096; animating application lifecycle event: 0
+2026-11-24 14:02:02.487 Df PulseLabWatch[58629:28626] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4096 -> 0; animating application lifecycle event: 0
+2026-11-24 14:02:02.488 Df PulseLabWatch[58629:28626] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-24 14:02:02.489 Df PulseLabWatch[58629:28653] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-24 14:02:02.489 Df PulseLabWatch[58629:28653] [com.apple.xpc:session] [0x105121bd0] Session created.
+2026-11-24 14:02:02.489 Df PulseLabWatch[58629:28653] [com.apple.xpc:session] [0x105121bd0] Session created from connection [0x105045cc0]
+2026-11-24 14:02:02.490 Df PulseLabWatch[58629:28653] [com.apple.xpc:connection] [0x105045cc0] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-24 14:02:02.490 Df PulseLabWatch[58629:28653] [com.apple.xpc:session] [0x105121bd0] Session activated
+2026-11-24 14:02:03.064 Df PulseLabWatch[58629:28653] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-24 14:02:03.065 Df PulseLabWatch[58629:28653] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x10516f2c0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2651 (elapsed = 1), _expireHandler: (null)
+2026-11-24 14:02:03.065 Df PulseLabWatch[58629:28653] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x105174f50> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x10516f2c0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2651 (elapsed = 1))
+2026-11-24 14:02:03.065 Df PulseLabWatch[58629:28653] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x105174f50> for task identifier: 1
+2026-11-24 14:02:03.176 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] WAGUIGestureRecognizerInstaller(<WAGUIPrimaryGestureViewInteraction: 0x105068640>) installed: NO -> YES
+2026-11-24 14:02:03.178 Df PulseLabWatch[58629:28626] [com.apple.WatchGestures:ui] didMoveToView: <WAGUIPrimaryGestureViewInteraction: 0x105068640> -> <SwiftUI.HostingScrollView: 0x108a2d800; baseClass = UIScrollView; frame = (0 0; 0 0); clipsToBounds = YES; gestureRecognizers = <NSArray: 0x108b370c0>; layer = <CALayer: 0x108b36d30>; contentOffset: {0, 0}; contentSize: {0, 0}; adjustedContentInset: {0, 0, 0, 0}>
+2026-11-24 14:02:03.288 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:03.289 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 14:02:03.305 A  PulseLabWatch[58629:2864e] (RunningBoardServices) didChangeInheritances
+2026-11-24 14:02:03.371 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:03.372 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 14:02:03.416 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:03.416 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 14:02:03.544 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface finishActivatingVCWithID:completion:]:3396: interfaceViewControllerId is active, calling block immediately = E5050002
+2026-11-24 14:02:03.545 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_enterAPICallbackCriticalSection:624: __isInAPICallbackCriticalSectionRefCount=1
+2026-11-24 14:02:03.545 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] -[SPRemoteInterface didAppearViewController:clientIdentifier:]_block_invoke_4:3340: Calling didAppear for E5050002
+2026-11-24 14:02:03.545 Df PulseLabWatch[58629:28626] [com.apple.watchkit:default] spUtils_exitAPICallbackCriticalSection:631: __isInAPICallbackCriticalSectionRefCount=0
+2026-11-24 14:02:03.545 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:03.551 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 14:02:03.552 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] [com.troydunn.pulselab.watchkitapp] updating status bar hidden = NO
+2026-11-24 14:02:03.554 Df PulseLabWatch[58629:28626] [com.apple.PepperUICore:Navigation] status bar hidden updated to 0
+2026-11-24 14:02:03.555 Df PulseLabWatch[58629:28626] [com.apple.UIKit:ExternalGestureCollector] Active external gesture recognizers did change: <_UIExternalGestureCollection: 0x10e018610; active gestures: "doubleTap, flick">
+2026-11-24 14:02:03.557 Df PulseLabWatch[58629:28626] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-24 14:02:03.561 Df PulseLabWatch[58629:28626] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: com.troydunn.pulselab.watchkitapp  persistentID: com.troydunn.pulselab.watchkitapp
+2026-11-24 14:02:03.601 Df PulseLabWatch[58629:28626] [com.apple.network:activity] Unsetting the global parent activity (null)
+2026-11-24 14:02:03.602 Df PulseLabWatch[58629:28626] [com.apple.network:activity] Unset the global parent activity
+2026-11-24 14:02:03.939 A  PulseLabWatch[58629:2864e] (RunningBoardServices) didChangeInheritances

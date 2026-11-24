@@ -1,0 +1,238 @@
+Timestamp               Ty Process[PID:TID]
+2026-11-24 13:54:51.353 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108304d00] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-24 13:54:51.634 A  PulseLab[49128:21a0f] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-24 13:54:51.640 Df PulseLab[49128:21957] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=49128 task=PulseLab[49128]/0#-1 LF=22
+2026-11-24 13:54:51.645 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-24 13:54:51.645 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-24 13:54:51.646 Df PulseLab[49128:21a0f] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.frontboard.systemappservices
+2026-11-24 13:54:51.646 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x60000210db30>
+2026-11-24 13:54:51.646 Df PulseLab[49128:219de] [com.apple.runningboard:connection] Initializing connection
+2026-11-24 13:54:51.646 Df PulseLab[49128:219de] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-24 13:54:51.646 Df PulseLab[49128:21a13] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-24 13:54:51.646 Df PulseLab[49128:21a13] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-24 13:54:51.646 Df PulseLab[49128:21a13] [com.apple.xpc:connection] [0x108707170] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-24 13:54:51.647 Df PulseLab[49128:21a0f] [com.apple.xpc:connection] [0x108407880] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 13:54:51.649 A  PulseLab[49128:21a14] (RunningBoardServices) didChangeInheritances
+2026-11-24 13:54:51.652 Df PulseLab[49128:21a13] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-24 13:54:51.652 Df PulseLab[49128:21a13] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.pulselab((null))>
+2026-11-24 13:54:51.654 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x60000210db30>
+2026-11-24 13:54:51.655 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x60000170ebc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2221 (elapsed = 0).
+2026-11-24 13:54:51.655 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-24 13:54:51.658 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-24 13:54:51.659 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-24 13:54:51.660 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-24 13:54:51.661 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-24 13:54:51.663 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 13:54:51.665 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-24 13:54:51.665 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-24 13:54:51.666 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-24 13:54:51.667 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-24 13:54:51.667 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-24 13:54:51.668 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-24 13:54:51.669 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-24 13:54:51.669 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-24 13:54:51.670 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-24 13:54:51.671 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-24 13:54:51.674 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-24 13:54:51.675 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-24 13:54:51.676 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-24 13:54:51.677 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-24 13:54:51.679 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-24 13:54:51.680 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-24 13:54:51.680 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-24 13:54:51.681 Df PulseLab[49128:219de] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-24 13:54:51.753 Df PulseLab[49128:21957] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-24 13:54:51.775 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-24 13:54:51.776 Df PulseLab[49128:21957] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-24 13:54:51.777 Df PulseLab[49128:21957] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-24 13:54:51.778 Df PulseLab[49128:21957] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-24 13:54:51.782 Df PulseLab[49128:21957] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000021c220; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-24 13:54:51.783 Df PulseLab[49128:21957] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x60000300c360 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-24 13:54:51.788 Df PulseLab[49128:21957] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x60000300c360 com.apple.frontboard.systemappservices> sent handshake
+2026-11-24 13:54:51.791 Df PulseLab[49128:21a16] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-24 13:54:51.793 Df PulseLab[49128:21a16] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-24 13:54:51.794 Df PulseLab[49128:21957] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x600000212d40>
+2026-11-24 13:54:51.807 Df PulseLab[49128:21957] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10840ae80> for initial
+2026-11-24 13:54:51.807 Df PulseLab[49128:21957] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x10840ae80> for CADisplay KVO
+2026-11-24 13:54:51.809 Df PulseLab[49128:21a16] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-24 13:54:51.810 Df PulseLab[49128:21a16] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-24 13:54:51.811 Df PulseLab[49128:21957] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-24 13:54:51.811 Df PulseLab[49128:21a16] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-24 13:54:51.813 Df PulseLab[49128:21957] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryL
+2026-11-24 13:54:51.829 Df PulseLab[49128:21957] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-24 13:54:51.829 Df PulseLab[49128:21957] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 13:54:51.830 Df PulseLab[49128:21957] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 13:54:51.831 Df PulseLab[49128:21957] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-24 13:54:51.833 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-24 13:54:51.840 Df PulseLab[49128:21957] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Creating a user notification center
+2026-11-24 13:54:51.841 Df PulseLab[49128:21957] [com.apple.wcd:WC] -[WCSession _init] WCSession initialized
+2026-11-24 13:54:51.841 Df PulseLab[49128:21957] [com.apple.wcd:WC] -[WCSession setDelegate:] delegateSupportsAsyncActivate: YES, delegateSupportsActiveDeviceSwitch: YES
+2026-11-24 13:54:51.841 A  PulseLab[49128:21957] (WatchConnectivity) activateSession
+2026-11-24 13:54:51.841 Df PulseLab[49128:21957] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke
+2026-11-24 13:54:51.841 Df PulseLab[49128:21957] [com.apple.wcd:WC] -[WCSession activateSession]_block_invoke informing daemon ready for session state
+2026-11-24 13:54:51.842 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108609ac0] activating connection: mach=true listener=false peer=false name=com.apple.wcd
+2026-11-24 13:54:51.849 Df PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c07720, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-24 13:54:51.849 Df PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:] <WCActiveDeviceSwitchTask: 0x60000021d1e0, clientReadyForSessionState: YES, taskState: ActivationRequested>
+2026-11-24 13:54:51.849 Df PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession onDelegateQueueIfTriggeringKVO_updateSessionState:triggerKVO:] <WCSessionState: 0x600000c07720, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>, triggerKVO: NO
+2026-11-24 13:54:51.850 Df PulseLab[49128:219de] [com.apple.wcd:WC] -[WCSession handleSessionStateChanged:]_block_invoke <WCSessionState: 0x600000c19a10, reachable: NO, paired: NO, appInstalled: NO, complicationEnabled: NO(50), pairingID: (null), pairedDevicesPairingIDs: (null), appInstallationID: (null)>
+2026-11-24 13:54:51.851 Df PulseLab[49128:21957] [com.apple.BackgroundTasks:Framework] submitTaskRequest: <BGAppRefreshTaskRequest: com.troydunn.pulselab.refresh, earliestBeginDate: 2026-11-24 14:24:51 +0000>
+2026-11-24 13:54:51.851 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-24 13:54:51.853 Df PulseLab[49128:21957] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-24 13:54:51.853 Df PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession onqueue_completeSwitchTask:withSessionState:]_block_invoke_2 hasContentPending: NO
+2026-11-24 13:54:51.853 Df PulseLab[49128:21957] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-24 13:54:51.853 E  PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:54:51.853 Df PulseLab[49128:21a16] [com.apple.wcd:WC] -[WCSession onqueue_startNextDeviceSwitch] no tasks queued after <WCActiveDeviceSwitchTask: 0x60000021d1e0, clientReadyForSessionState: YES, taskState: ActivationCompleted>
+2026-11-24 13:54:51.853 Df PulseLab[49128:21957] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-24 13:54:51.858 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-24 13:54:51.858 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:51.860 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:51.861 Df PulseLab[49128:21957] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x6000029117a0>; with scene: <UIWindowScene: 0x10830e540>
+2026-11-24 13:54:51.862 Df PulseLab[49128:21957] [com.apple.BacklightServices:scenes] 0x600000c14ea0 setDelegate:<0x600000c15bc0 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.pulselab-default
+2026-11-24 13:54:51.863 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:51.863 Df PulseLab[49128:21957] [com.apple.UIKit:EventDeferring] [0x600002911880] Initialized with scene: <UIWindowScene: 0x10830e540>; behavior: <_UIEventDeferringBehavior_iOS: 0x60000021b400>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-24 13:54:51.864 Df PulseLab[49128:21957] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.backboard.hid-services.xpc
+2026-11-24 13:54:51.864 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108605860] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-24 13:54:51.867 E  PulseLab[49128:21a17] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:54:51.868 Df PulseLab[49128:21a17] [com.apple.wcd:WC] -[WCSession didSessionStateChange:withChangeHandler:] no change
+2026-11-24 13:54:51.868 Df PulseLab[49128:219de] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-24 13:54:51.868 Df PulseLab[49128:21957] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002607300; process scope; status: target> was:none
+2026-11-24 13:54:51.868 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-24 13:54:51.868 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x10830e540; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.pulselab-default
+2026-11-24 13:54:51.869 Df PulseLab[49128:21957] [com.apple.UIKit:EventDeferring] [0x600002911880] Scene target of event deferring environments did update: scene: 0x10830e540; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-24 13:54:51.869 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10830e540; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.pulselab-default
+2026-11-24 13:54:51.869 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c1de60: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-24 13:54:51.869 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-24 13:54:51.869 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10830e540; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x10830e540: Window scene became target of keyboard environment
+2026-11-24 13:54:51.870 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:51.871 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:51.874 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:52.049 Df PulseLab[49128:21957] [com.apple.UIKit:Orientation] <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174) Scene updated orientation preferences: none -> ( Pu )
+2026-11-24 13:54:52.068 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-24 13:54:52.069 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x10830e540: Window became key in scene: UIWindow: 0x108312330; contextId: 0xB2B22FE7: reason: UIWindowScene: 0x10830e540: Window requested to become key in scene: 0x108312330
+2026-11-24 13:54:52.069 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x10830e540; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x108312330; reason: UIWindowScene: 0x10830e540: Window requested to become key in scene: 0x108312330
+2026-11-24 13:54:52.069 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x108312330; contextId: 0xB2B22FE7; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.pulselab-default
+2026-11-24 13:54:52.069 Df PulseLab[49128:21957] [com.apple.UIKit:EventDeferring] [0x600002911880] Begin local event deferring requested for token: 0x60000260eca0; environments: 1; reason: UIWindowScene: 0x10830e540: Begin event deferring in keyboardFocus for window: 0x108312330
+2026-11-24 13:54:52.072 Df PulseLab[49128:219de] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-24 13:54:52.077 Df PulseLab[49128:21a16] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002607300; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.pulselab-default; status: ancestor> was:target
+2026-11-24 13:54:52.081 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:52.083 Df PulseLab[49128:21957] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.pulselab-default  persistentID: 527B1A69-9B84-43BD-89A5-E73494C0D174
+2026-11-24 13:54:52.084 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-24 13:54:52.084 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-24 13:54:52.085 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-24 13:54:52.086 Df PulseLab[49128:21957] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-24 13:54:52.089 Df PulseLab[49128:21a17] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-24 13:54:52.089 Df PulseLab[49128:21a17] [com.apple.xpc:session] [0x6000021038e0] Session created.
+2026-11-24 13:54:52.089 Df PulseLab[49128:21a17] [com.apple.xpc:session] [0x6000021038e0] Session created from connection [0x10870d340]
+2026-11-24 13:54:52.090 Df PulseLab[49128:21a17] [com.apple.xpc:connection] [0x10870d340] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-24 13:54:52.090 Df PulseLab[49128:21a17] [com.apple.xpc:session] [0x6000021038e0] Session activated
+2026-11-24 13:54:52.094 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:52.181 A  PulseLab[49128:21957] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-24 13:54:52.430 A  PulseLab[49128:21957] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-24 13:54:52.638 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x10860ac90] activating connection: mach=true listener=false peer=false name=com.apple.lsd.open
+2026-11-24 13:54:52.647 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:52.649 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "stillpoint://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:52.651 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:52.657 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-24 13:54:52.657 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x60000170ebc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2221 (elapsed = 1), _expireHandler: (null)
+2026-11-24 13:54:52.657 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x60000210db30> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x60000170ebc0>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2221 (elapsed = 1))
+2026-11-24 13:54:52.657 Df PulseLab[49128:219de] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x60000210db30> for task identifier: 1
+2026-11-24 13:54:52.734 Df PulseLab[49128:21a16] [com.apple.xpc:connection] [0x108712680] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-24 13:54:52.736 Df PulseLab[49128:219de] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=49128 task=PulseLab[49128]/0#-1 LF=22
+2026-11-24 13:54:52.942 A  PulseLab[49128:219de] (RunningBoardServices) didChangeInheritances
+2026-11-24 13:54:53.132 Df PulseLab[49128:21957] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.pulselab-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-24 13:54:53.133 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:53.213 A  PulseLab[49128:21a16] (RunningBoardServices) didChangeInheritances
+2026-11-24 13:54:53.233 A  PulseLab[49128:219de] (RunningBoardServices) didChangeInheritances
+2026-11-24 13:54:53.316 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x1084220a0] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-24 13:54:53.335 A  PulseLab[49128:219de] (RunningBoardServices) didChangeInheritances
+2026-11-24 13:54:53.542 Df PulseLab[49128:21957] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [B52EAC3D-9013-4575-82A6-1D9E4CA2CE20] (reporting strategy default)>
+2026-11-24 13:54:53.542 Df PulseLab[49128:21957] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [30E3C606-A940-42F8-AE22-87708C7C72D0] (reporting strategy default)>
+2026-11-24 13:54:53.542 Df PulseLab[49128:21957] [com.apple.network:activity] Set activity <nw_activity 50:1 [B52EAC3D-9013-4575-82A6-1D9E4CA2CE20] (reporting strategy default)> as the global parent
+2026-11-24 13:54:53.557 Df PulseLab[49128:21957] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-24 13:54:53.570 Df PulseLab[49128:21957] [com.apple.runningboard:connection] Creating side-channel connection to com.apple.runningboard
+2026-11-24 13:54:53.571 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x10871af30] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-24 13:54:53.575 Df PulseLab[49128:21957] [com.apple.runningboard:process] Hit the server for a process handle 171148dd0000bfe8 that resolved to: [app<com.troydunn.pulselab((null))>:49128]
+2026-11-24 13:54:53.577 Df PulseLab[49128:21957] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.pulselab-default  persistentID: 527B1A69-9B84-43BD-89A5-E73494C0D174
+2026-11-24 13:54:53.578 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:53.580 Df PulseLab[49128:21957] [com.apple.BackgroundTasks:Framework] Handling app launch
+2026-11-24 13:54:53.583 Df PulseLab[49128:21957] [com.apple.UIKit:EventDeferring] [0x600002911880] Scene target of event deferring environments did update: scene: 0x10830e540; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-24 13:54:53.584 Df PulseLab[49128:21957] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x10830e540; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.pulselab-default
+2026-11-24 13:54:53.613 Df PulseLab[49128:21957] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-24 13:54:53.623 A  PulseLab[49128:21957] (Security) SecItemCopyMatching_ios
+2026-11-24 13:54:53.623 Df PulseLab[49128:21957] [com.apple.securityd:secitemratelimit] Not internal release, disabling SIRL
+2026-11-24 13:54:53.624 Df PulseLab[49128:21957] [com.apple.securityd:thread-local-client-debug] SecSecurityClientGet new thread!
+2026-11-24 13:54:53.627 Df PulseLab[49128:21957] [com.apple.securityd:keychain] System Keychain Always Supported set via feature flag to disabled
+2026-11-24 13:54:53.627 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108665110] activating connection: mach=true listener=false peer=false name=com.apple.securityd
+2026-11-24 13:54:53.634 A  PulseLab[49128:21957] (Security) SecItemCopyMatching_ios
+2026-11-24 13:54:53.983 Df PulseLab[49128:21957] [com.apple.chrono:widget] Creating WidgetCenter connection.
+2026-11-24 13:54:53.989 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108315d70] activating connection: mach=true listener=false peer=false name=com.apple.chrono.widgetcenterconnection
+2026-11-24 13:54:53.993 Df PulseLab[49128:21957] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Removing 1 pending notification requests with identifiers (
+    "1633-A6E5"
+)
+2026-11-24 13:54:53.995 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x1084264b0] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-24 13:54:54.002 Df PulseLab[49128:21957] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-24 13:54:54.003 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:54.004 Df PulseLab[49128:21957] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x10830e540> (527B1A69-9B84-43BD-89A5-E73494C0D174)
+2026-11-24 13:54:54.007 Df PulseLab[49128:21957] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.pulselab-default  persistentID: 527B1A69-9B84-43BD-89A5-E73494C0D174
+2026-11-24 13:54:54.008 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-24 13:54:54.008 Df PulseLab[49128:21957] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-24 13:54:54.009 Df PulseLab[49128:21957] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-24 13:54:54.012 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "rootbound://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:54.013 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "stillpoint://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:54.014 Df PulseLab[49128:219de] [com.apple.chrono:widget] reloadAllTimelines() - reloaded all timelines
+2026-11-24 13:54:54.015 Df PulseLab[49128:21957] (UIKitCore) -canOpenURL: failed for URL: "roamr://" - error: "The operation couldn’t be completed. (OSStatus error -10814.)"
+2026-11-24 13:54:56.353 Df PulseLab[49128:21957] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.pulselab-default] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-24 13:54:57.159 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x10f1651d0] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-24 13:54:57.160 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108794310] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-24 13:54:57.161 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x11af151c0] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-24 13:54:57.213 Df PulseLab[49128:21957] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-24 13:54:57.214 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x1083be300] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-24 13:54:58.374 Df PulseLab[49128:219de] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Removing 14 pending notification requests with identifiers (
+    "39A1-A626",
+    "EA47-F596",
+    "BF0F-CE9A",
+    "0A16-BF54",
+    "FC0B-B472",
+    "F83C-E59D",
+    "3FF5-D8C4",
+    "DBD0-7622",
+    "14D6-F3A7",
+    "BA21-49A0",
+    "36B8-BAB6",
+    "1411-B9EF",
+    "A817-0482",
+    "BCAF-592C"
+)
+2026-11-24 13:54:58.378 Df PulseLab[49128:219de] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Getting notification settings (async)
+2026-11-24 13:54:58.384 Df PulseLab[49128:219de] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-24 13:54:58.973 Df PulseLab[49128:21957] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Removing 1 pending notification requests with identifiers (
+    "1633-A6E5"
+)
+2026-11-24 13:55:00.508 Df PulseLab[49128:21957] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-24 13:55:00.510 Df PulseLab[49128:21957] [com.apple.xpc:connection] [0x108770190] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-24 13:55:00.512 Df PulseLab[49128:219de] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Removing 14 pending notification requests with identifiers (
+    "39A1-A626",
+    "EA47-F596",
+    "BF0F-CE9A",
+    "0A16-BF54",
+    "FC0B-B472",
+    "F83C-E59D",
+    "3FF5-D8C4",
+    "DBD0-7622",
+    "14D6-F3A7",
+    "BA21-49A0",
+    "36B8-BAB6",
+    "1411-B9EF",
+    "A817-0482",
+    "BCAF-592C"
+)
+2026-11-24 13:55:00.516 Df PulseLab[49128:219de] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Getting notification settings (async)
+2026-11-24 13:55:00.536 Df PulseLab[49128:21a0f] [com.apple.UserNotifications:Connections] [com.troydunn.pulselab] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-24 13:55:00.777 Df PulseLab[49128:21957] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-24 13:55:00.784 Df PulseLab[49128:21957] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-24 13:55:11.017 Df PulseLab[49128:21957] [com.apple.app_launch_measurement:General] Bailing responsive launch check as reached maximum count
+2026-11-24 13:55:11.017 Df PulseLab[49128:21957] [com.apple.network:activity] <nw_activity 50:1 [B52EAC3D-9013-4575-82A6-1D9E4CA2CE20] (global parent) (reporting strategy default) complete (reason failure)> complete with reason 3 (failure), duration 23366ms
+2026-11-24 13:55:11.018 Df PulseLab[49128:21957] [com.apple.network:activity] <nw_activity 50:2 [30E3C606-A940-42F8-AE22-87708C7C72D0] (reporting strategy default) complete (reason failure)> complete with reason 3 (failure), duration 23366ms
+2026-11-24 13:55:11.018 Df PulseLab[49128:21957] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [B52EAC3D-9013-4575-82A6-1D9E4CA2CE20] (global parent) (reporting strategy default) complete (reason failure)>
+2026-11-24 13:55:11.018 Df PulseLab[49128:21957] [com.apple.network:activity] Unset the global parent activity
+2026-11-24 13:55:11.018 Df PulseLab[49128:21957] [com.apple.app_launch_measurement:General] Bailing responsive launch check as reached maximum count
