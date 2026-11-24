@@ -4,9 +4,10 @@ import Charts
 
 @MainActor
 struct StatsView: View {
-    @Query(sort: \Activity.start, order: .reverse) private var allTrips: [Activity]
-    /// Roamr is a drive logbook: stats are about drives (older walks / rides stay in History, untouched).
-    private var activities: [Activity] { allTrips.filter { $0.kind == .drive } }
+    /// Roamr is a drive logbook: stats are about drives (older walks / rides stay in History, untouched). Picked out
+    /// by the store, not re-filtered from every trip each of the dozen times a redraw asks for them.
+    @Query(filter: #Predicate<Activity> { $0.kindRaw == "drive" }, sort: \Activity.start, order: .reverse)
+    private var activities: [Activity]
     /// Re-renders the screen when the unit setting changes.
     @AppStorage("useMetric") private var useMetric = false
     @State private var period: Period = .month
