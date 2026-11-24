@@ -199,8 +199,12 @@ struct PracticeDrop: Identifiable {
 /// Local history of sessions from this device (and, on iPhone, the ones the Watch sends over).
 final class SessionLog: ObservableObject {
     static let shared = SessionLog()
-    @Published private(set) var records: [SessionRecord] = []
+    @Published private(set) var records: [SessionRecord] = [] { didSet { changes &+= 1 } }
     private let key = "sp.sessions"
+
+    /// Bumped whenever sessions, heat or tree hugs change: the cached answers below are only reused while it holds.
+    /// (Memory only; nothing here is saved.)
+    private var changes = 0
 
     private init() {
         if let d = UserDefaults.standard.data(forKey: key),
@@ -224,7 +228,7 @@ final class SessionLog: ObservableObject {
     // MARK: - Sauna / steam days (for the streak and Progress)
 
     /// Finished heat sessions (≥ 1 min). The iPhone mirrors its heat log here; the Watch adds the ones it times.
-    @Published private(set) var heatEntries: [HeatEntry] = []
+    @Published private(set) var heatEntries: [HeatEntry] = [] { didSet { changes &+= 1 } }
     private let heatKey = "sp.heatEntries"
 
     /// Replace with the iPhone's heat log (HeatStore is the source of truth there).
@@ -253,7 +257,7 @@ final class SessionLog: ObservableObject {
 
     /// Tree hugs of a minute or more logged in Rootbound: they count as mindful moments here (Progress "Trees"
     /// and the streak). Never written to Apple Health from Still Pointz; Rootbound owns that data.
-    @Published private(set) var treeEntries: [TreeEntry] = []
+    @Published private(set) var treeEntries: [TreeEntry] = [] { didSet { changes &+= 1 } }
     private let treeKey = "sp.treeEntries"
 
     /// Merge what Rootbound published (kept by id, so older hugs stay counted after the feed trims them).
@@ -435,11 +439,27 @@ final class SessionLog: ObservableObject {
     }
 
     /// Days (start of day) with at least one finished session of a minute or more, sauna, steam and Rootbound tree hugs included.
+    /// Screens read it many times per redraw (streak, "practiced today", best streak, the widget and Watch sync), and
+    /// each read used to ask the calendar about every session again; it is now worked out once and kept until the log
+    /// or the time zone changes (main thread only; other threads just work it out).
     var activeDays: Set<Date> {
         let cal = Calendar.current
+        guard Thread.isMainThread else {
+            return Self.activeDays(records: records, heat: heatEntries, trees: treeEntries, calendar: cal)
+        }
+        if let c = daysCache, c.changes == changes, c.zone == cal.timeZone, c.calendar == cal.identifier { return c.days }
+        let days = Self.activeDays(records: records, heat: heatEntries, trees: treeEntries, calendar: cal)
+        daysCache = (changes, cal.timeZone, cal.identifier, days)
+        return days
+    }
+
+    private var daysCache: (changes: Int, zone: TimeZone, calendar: Calendar.Identifier, days: Set<Date>)?
+
+    /// The active days for a log (pure, so it's testable).
+    static func activeDays(records: [SessionRecord], heat: [HeatEntry], trees: [TreeEntry], calendar cal: Calendar) -> Set<Date> {
         var days = Set(records.filter { $0.seconds >= 60 }.map { cal.startOfDay(for: $0.start) })
-        for h in heatEntries where h.minutes >= 1 { days.insert(cal.startOfDay(for: h.start)) }
-        for t in treeEntries where t.minutes >= 1 { days.insert(cal.startOfDay(for: t.start)) }
+        for h in heat where h.minutes >= 1 { days.insert(cal.startOfDay(for: h.start)) }
+        for t in trees where t.minutes >= 1 { days.insert(cal.startOfDay(for: t.start)) }
         return days
     }
 
@@ -492,14 +512,24 @@ final class SessionLog: ObservableObject {
     var totalMinutes: Double { records.reduce(0) { $0 + $1.minutes } }
 
     /// Minutes per day for the last 7 days, oldest first.
-    func lastWeek() -> [DayMinutes] {
-        let cal = Calendar.current
-        let today = cal.startOfDay(for: Date())
-        return (0..<7).reversed().compactMap { back -> DayMinutes? in
-            guard let d = cal.date(byAdding: .day, value: -back, to: today) else { return nil }
-            let m = records.filter { cal.isDate($0.start, inSameDayAs: d) }.reduce(0.0) { $0 + $1.minutes }
-            return DayMinutes(day: d, minutes: m)
+    func lastWeek() -> [DayMinutes] { Self.minutesPerDay(records, days: 7, now: Date()) }
+
+    /// Minutes per day for the `days` days ending today, oldest first. One pass over the log with plain date
+    /// comparisons: Today, Journey and the widget read this several times per redraw, and asking the calendar about
+    /// every session for each of the seven days made those redraws slow with a long history (pure, so it's testable).
+    static func minutesPerDay(_ records: [SessionRecord], days: Int, now: Date, calendar cal: Calendar = .current) -> [DayMinutes] {
+        let today = cal.startOfDay(for: now)
+        // Where each day starts, oldest first, and where tomorrow starts (the end of the last day).
+        let starts: [Date] = (0..<max(0, days)).reversed().compactMap { back in
+            cal.date(byAdding: .day, value: -back, to: today).map { cal.startOfDay(for: $0) }
         }
+        guard let first = starts.first, let next = cal.date(byAdding: .day, value: 1, to: today) else { return [] }
+        let end = cal.startOfDay(for: next)
+        var minutes = [Double](repeating: 0, count: starts.count)
+        for r in records where r.start >= first && r.start < end {
+            if let i = starts.lastIndex(where: { $0 <= r.start }) { minutes[i] += r.minutes }
+        }
+        return starts.indices.map { DayMinutes(day: starts[$0], minutes: minutes[$0]) }
     }
 
     var weekMinutes: Double { lastWeek().reduce(0) { $0 + $1.minutes } }
@@ -535,9 +565,17 @@ final class SessionLog: ObservableObject {
     }
 
     /// The practices that settle this person's heart the most (3+ sessions, average drop of at least 2 bpm), best first.
+    /// Every practice row in Today and the Library asks for it, so it is kept until the log changes (main thread only).
     func worksBest(limit: Int = 3) -> [String] {
-        Array(dropByPractice().filter { $0.value >= 2 }.sorted { $0.value > $1.value }.prefix(limit).map(\.key))
+        if Thread.isMainThread, let c = bestCache, c.changes == changes, c.limit == limit { return c.ids }
+        let ids = Array(dropByPractice().filter { $0.value >= 2 }
+            .sorted { $0.value != $1.value ? $0.value > $1.value : $0.key < $1.key }
+            .prefix(limit).map(\.key))
+        if Thread.isMainThread { bestCache = (changes, limit, ids) }
+        return ids
     }
+
+    private var bestCache: (changes: Int, limit: Int, ids: [String])?
 
     func bestPractices(limit: Int = 3) -> [PracticeDrop] {
         let since = Date().addingTimeInterval(-30 * 86400)
