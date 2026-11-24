@@ -110,6 +110,9 @@ final class PCClient {
 
     func connect() {
         guard !Self.demo, let pc else { return }
+        // A fresh try (Try again, the PC tab opening, Siri) gets the full set of retries again; dropped() calls this
+        // while .connecting, so its own retries keep counting.
+        if state == .disconnected { retry = 0 }
         wantConnected = true
         reconnectTask?.cancel()
         task?.cancel(with: .goingAway, reason: nil)
