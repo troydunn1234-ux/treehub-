@@ -64,7 +64,11 @@ enum CommuteStore {
 
     /// Whether the ends of the recent drives have been read (`warm(in:)`). The Track screen's "Pin this?" card waits
     /// for it instead of reading up to 150 route files while Roamr opens.
-    @Observable final class Readiness { var warm = false }
+    @Observable final class Readiness {
+        var warm = false
+        /// Bumped when a drive is put on (or taken off) a commute by hand, so the Commutes cards redraw.
+        var assignments = 0
+    }
     static let readiness = Readiness()
 
     /// A moment after launch: reads the ends of the last 60 days of drives (the ones "Pin this?" looks at), a few at
@@ -90,6 +94,73 @@ enum CommuteStore {
     /// Drives, as commute trips (routes between pins are about the car: they carry a fuel estimate).
     static func driveTrips(_ activities: [Activity]) -> [CommuteMath.Trip] {
         activities.filter { $0.kind == .drive }.compactMap(trip)
+    }
+
+    /// Routes between pins from these drives, hand-picked assignments included (History's Commutes card and page).
+    static func routes(_ activities: [Activity], pins: [CommutePin]) -> [CommuteMath.Route] {
+        _ = readiness.assignments   // redraw after "Count as commute…"
+        guard pins.count >= 2 else { return [] }
+        return CommuteMath.routes(driveTrips(activities), pins: pins, assignments: assignments())
+    }
+
+    // MARK: "Count as commute…" (a drive put on a commute by hand)
+
+    /// Trip id -> [from pin id, to pin id]. On this iPhone only; nothing in the trip itself changes except, when
+    /// it had no name of its own, its title ("Home → Work").
+    static let assignmentsKey = "roamr.commuteAssignments"
+
+    static func assignments() -> [UUID: CommuteMath.Assignment] {
+        let raw = UserDefaults.standard.dictionary(forKey: assignmentsKey) as? [String: [String]] ?? [:]
+        var out: [UUID: CommuteMath.Assignment] = [:]
+        for (k, v) in raw {
+            guard let id = UUID(uuidString: k), v.count == 2 else { continue }
+            out[id] = CommuteMath.Assignment(from: v[0], to: v[1])
+        }
+        return out
+    }
+
+    static func assignment(for id: UUID) -> CommuteMath.Assignment? { assignments()[id] }
+
+    /// The pins a drive runs between: its hand-picked commute, else what its ends say (nil when neither).
+    static func commuteEnds(_ a: Activity, pins: [CommutePin]) -> (from: CommutePin, to: CommutePin)? {
+        if let x = assignment(for: a.id), let f = pins.first(where: { $0.id == x.from }),
+           let t = pins.first(where: { $0.id == x.to }), f.id != t.id {
+            return (f, t)
+        }
+        guard let t = trip(a) else { return nil }
+        return CommuteMath.autoEnds(from: t.from, to: t.to, pins: pins)
+    }
+
+    /// A title Roamr gave the drive itself ("Home → Work", "To Work", "From Home"), as opposed to one you typed.
+    static func isAutoTitle(_ title: String, pins: [CommutePin]) -> Bool {
+        if title.isEmpty { return true }
+        for a in pins {
+            if title == String(localized: "To \(a.label)") || title == String(localized: "From \(a.label)") { return true }
+            for b in pins where b.id != a.id && title == "\(a.label) → \(b.label)" { return true }
+        }
+        return false
+    }
+
+    /// Puts the drive on the commute from `from` to `to`, and names it so unless you named it yourself.
+    static func assign(_ a: Activity, from: CommutePin, to: CommutePin, pins: [CommutePin]) {
+        var raw = UserDefaults.standard.dictionary(forKey: assignmentsKey) as? [String: [String]] ?? [:]
+        raw[a.id.uuidString] = [from.id, to.id]
+        UserDefaults.standard.set(raw, forKey: assignmentsKey)
+        if isAutoTitle(a.title, pins: pins) { a.title = "\(from.label) → \(to.label)" }
+        try? a.modelContext?.save()
+        readiness.assignments += 1
+    }
+
+    /// Takes the drive off its hand-picked commute; a title Roamr gave it goes back to what its ends say.
+    static func unassign(_ a: Activity, pins: [CommutePin]) {
+        var raw = UserDefaults.standard.dictionary(forKey: assignmentsKey) as? [String: [String]] ?? [:]
+        guard raw.removeValue(forKey: a.id.uuidString) != nil else { return }
+        UserDefaults.standard.set(raw, forKey: assignmentsKey)
+        if isAutoTitle(a.title, pins: pins) {
+            a.title = trip(a).flatMap { CommuteMath.title(from: $0.from, to: $0.to, pins: pins) } ?? ""
+        }
+        try? a.modelContext?.save()
+        readiness.assignments += 1
     }
 
     /// The auto title for a trip that just finished ("Home → Work"), or nil.

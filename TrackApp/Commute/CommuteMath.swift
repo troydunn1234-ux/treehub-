@@ -52,16 +52,45 @@ enum CommuteMath {
         CLLocation(latitude: a.latitude, longitude: a.longitude).distance(from: CLLocation(latitude: b.latitude, longitude: b.longitude))
     }
 
-    /// The closest pin within `pinRadius`.
-    static func pin(near c: CLLocationCoordinate2D, in pins: [CommutePin]) -> CommutePin? {
+    /// A drive that ends at a pin counts as coming from another pin when it started within this of it (~0.5 mi):
+    /// you pulled away a few houses down the street, or started the drive late.
+    static let startRadius: Double = 800
+
+    /// The closest pin within `radius` (`pinRadius` unless given).
+    static func pin(near c: CLLocationCoordinate2D, in pins: [CommutePin], radius: Double = pinRadius) -> CommutePin? {
         pins.map { ($0, meters($0.coordinate, c)) }
-            .filter { $0.1 <= pinRadius }
+            .filter { $0.1 <= radius }
             .min { $0.1 < $1.1 }?.0
     }
 
-    /// "Home → Work" when both ends are pins, "To Work" / "From Home" when one is, nil otherwise
-    /// (and nil for a loop that starts and ends at the same pin, like a walk around the block).
+    /// A drive put on a commute by hand ("Count as commute…"): the pins it ran from and to, by pin id.
+    struct Assignment: Hashable {
+        var from: String
+        var to: String
+    }
+
+    /// The two pins a trip ran between, or nil. A hand-picked assignment wins (when both of its pins still exist);
+    /// otherwise the end must be at a pin and the start at another pin, or within `startRadius` of one.
+    static func ends(of t: Trip, pins: [CommutePin], assignments: [UUID: Assignment] = [:]) -> (from: CommutePin, to: CommutePin)? {
+        if let a = assignments[t.id], let f = pins.first(where: { $0.id == a.from }), let to = pins.first(where: { $0.id == a.to }),
+           f.id != to.id {
+            return (f, to)
+        }
+        return autoEnds(from: t.from, to: t.to, pins: pins)
+    }
+
+    /// Ends worked out from where the drive started and stopped (no hand-picked assignment).
+    static func autoEnds(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D, pins: [CommutePin]) -> (from: CommutePin, to: CommutePin)? {
+        guard let b = pin(near: to, in: pins) else { return nil }
+        let a = pin(near: from, in: pins) ?? pin(near: from, in: pins.filter { $0.id != b.id }, radius: startRadius)
+        guard let a, a.id != b.id else { return nil }
+        return (a, b)
+    }
+
+    /// "Home → Work" when both ends are pins (the start may be up to `startRadius` from its pin), "To Work" /
+    /// "From Home" when one is, nil otherwise (and nil for a loop that starts and ends at the same pin).
     static func title(from: CLLocationCoordinate2D, to: CLLocationCoordinate2D, pins: [CommutePin]) -> String? {
+        if let e = autoEnds(from: from, to: to, pins: pins) { return "\(e.from.label) → \(e.to.label)" }
         let a = pin(near: from, in: pins), b = pin(near: to, in: pins)
         switch (a, b) {
         case let (a?, b?) where a.id != b.id: return "\(a.label) → \(b.label)"
@@ -120,10 +149,11 @@ enum CommuteMath {
     }
 
     /// Trips grouped by the pair of pins they ran between, busiest route first.
-    static func routes(_ trips: [Trip], pins: [CommutePin]) -> [Route] {
+    static func routes(_ trips: [Trip], pins: [CommutePin], assignments: [UUID: Assignment] = [:]) -> [Route] {
         var byKey: [String: Route] = [:]
         for t in trips {
-            guard let a = pin(near: t.from, in: pins), let b = pin(near: t.to, in: pins), a.id != b.id else { continue }
+            guard let e = ends(of: t, pins: pins, assignments: assignments) else { continue }
+            let a = e.from, b = e.to
             let key = routeKey(a, b)
             let leg = Leg(trip: t, from: a, to: b)
             if byKey[key] == nil {

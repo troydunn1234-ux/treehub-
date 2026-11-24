@@ -217,9 +217,9 @@ struct CommuteSection: View {
     @AppStorage("gas.vehicleID") private var vehicleRaw = ""
 
     var body: some View {
-        // A route needs two pins: with fewer, no drive's ends are read at all.
-        let pins = CommuteStore.pins(nav)
-        let routes: [CommuteMath.Route] = pins.count < 2 ? [] : CommuteMath.routes(CommuteStore.driveTrips(activities), pins: pins)
+        // A route needs two pins: with fewer, no drive's ends are read at all. Drives put on a commute by hand
+        // ("Count as commute…") count too.
+        let routes = CommuteStore.routes(activities, pins: CommuteStore.pins(nav))
         if !routes.isEmpty {
             let economy = CommuteEconomy.current(vehicleRaw: vehicleRaw, vehicles: vehicles, fills: fills, drives: activities)
             VStack(alignment: .leading, spacing: 10) {
@@ -323,7 +323,7 @@ struct CommuteDetailView: View {
     @State private var nav = Navigator.shared
 
     var body: some View {
-        let routes = CommuteMath.routes(CommuteStore.driveTrips(activities), pins: CommuteStore.pins(nav))
+        let routes = CommuteStore.routes(activities, pins: CommuteStore.pins(nav))
         ScrollView {
             VStack(alignment: .leading, spacing: Theme.gap) {
                 if let r = routes.first(where: { $0.id == routeID }) {
@@ -337,7 +337,7 @@ struct CommuteDetailView: View {
                     SectionHeader(title: String(localized: "Trips"), symbol: "clock.arrow.circlepath")
                     ForEach(r.legs) { leg in
                         if let a = activities.first(where: { $0.id == leg.id }) {
-                            NavigationLink(value: a.id) { TripCard(activity: a) }.pressable()
+                            NavigationLink(value: a.id) { HistoryTripRow(activity: a, showsDay: true) }.pressable()
                         }
                     }
                 } else {
@@ -376,5 +376,100 @@ struct CommuteDetailView: View {
         .padding(14)
         .background(Color.white.opacity(0.055), in: RoundedRectangle(cornerRadius: 18, style: .continuous))
         .accessibilityElement(children: .combine)
+    }
+}
+
+// MARK: - "Count as commute…"
+
+/// Puts a drive on a commute between two pinned places by hand (it started down the street, or ended a block past
+/// the pin, so it wasn't matched), or takes it off again. The trip page's Commute row and History's long-press
+/// menu. Hand-picked commutes count in History's Commutes and their stats, and name the drive ("Home → Work")
+/// unless you named it yourself.
+@MainActor
+struct CountAsCommuteMenu: View {
+    let activity: Activity
+    /// The trip page's full-width row (else a plain menu item for a context menu).
+    var rowStyle = false
+
+    private struct Pair: Identifiable {
+        let from: CommutePin
+        let to: CommutePin
+        var id: String { from.id + "\n" + to.id }
+        var title: String { "\(from.label) → \(to.label)" }
+    }
+
+    /// Every ordered pair of pins, Home and Work first.
+    private static func pairs(_ pins: [CommutePin]) -> [Pair] {
+        pins.flatMap { a in pins.filter { $0.id != a.id }.map { Pair(from: a, to: $0) } }
+    }
+
+    var body: some View {
+        let _ = CommuteStore.readiness.assignments
+        let pins = CommuteStore.pins()
+        let current = CommuteStore.assignment(for: activity.id)
+        Menu {
+            if pins.count < 2 {
+                Text("Pin two places first (Home, Work or your own) under Quick drives on Track.")
+            } else {
+                Section(String(localized: "Count this drive as")) {
+                    ForEach(Self.pairs(pins)) { p in
+                        Button {
+                            CommuteStore.assign(activity, from: p.from, to: p.to, pins: pins)
+                        } label: {
+                            if current == CommuteMath.Assignment(from: p.from.id, to: p.to.id) {
+                                Label(p.title, systemImage: "checkmark")
+                            } else {
+                                Text(p.title)
+                            }
+                        }
+                    }
+                }
+                if current != nil {
+                    Button(role: .destructive) {
+                        CommuteStore.unassign(activity, pins: pins)
+                    } label: {
+                        Label("Not a commute", systemImage: "xmark.circle")
+                    }
+                }
+            }
+        } label: {
+            if rowStyle { row(pins: pins, manual: current != nil) } else {
+                Label("Count as commute…", systemImage: "arrow.left.arrow.right")
+            }
+        }
+    }
+
+    /// "Commute · Home → Work (set by you)" with a Change button look; "Not a commute · Count as commute…".
+    private func row(pins: [CommutePin], manual: Bool) -> some View {
+        let ends = CommuteStore.commuteEnds(activity, pins: pins)
+        return HStack(spacing: 12) {
+            Image(systemName: "arrow.left.arrow.right")
+                .font(.system(size: 14, weight: .bold))
+                .foregroundStyle(Theme.forestDeep)
+                .frame(width: 32, height: 32)
+                .background(Theme.leafGradient, in: Circle())
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Commute").font(Theme.rounded(13, .bold)).foregroundStyle(Theme.textDim)
+                Text(ends.map { "\($0.from.label) → \($0.to.label)" } ?? String(localized: "Not a commute"))
+                    .font(Theme.rounded(16, .heavy)).foregroundStyle(.white)
+                    .fixedSize(horizontal: false, vertical: true)
+                if manual {
+                    Text("Set by you").font(Theme.rounded(11, .semibold)).foregroundStyle(Theme.glow)
+                }
+            }
+            Spacer(minLength: 8)
+            Text(ends == nil ? String(localized: "Count as commute…") : String(localized: "Change"))
+                .font(Theme.rounded(13, .bold)).foregroundStyle(Theme.glow)
+                .padding(.horizontal, 12).padding(.vertical, 8)
+                .background(Theme.glow.opacity(0.14), in: Capsule())
+        }
+        .padding(12)
+        .frame(minHeight: 44)
+        .background(Color.white.opacity(0.06), in: RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous))
+        .contentShape(Rectangle())
+        .accessibilityElement(children: .combine)
+        .accessibilityHint(Text("Puts this drive on a commute between your pinned places, or takes it off"))
+        .sensoryFeedback(.success, trigger: CommuteStore.readiness.assignments)
     }
 }

@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import CoreLocation
 
 @MainActor
 struct HistoryView: View {
@@ -294,7 +295,8 @@ struct HistoryView: View {
                 .padding(.top, 2)
 
                 ForEach(day.items) { (a: Activity) in
-                    NavigationLink(value: a.id) { TripCard(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
+                    // A compact row (no map picture): the full map is on the trip page.
+                    NavigationLink(value: a.id) { HistoryTripRow(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
                         .pressable()
                         .contextMenu { pinMenu(a) }
                         .cardAppear()
@@ -307,6 +309,8 @@ struct HistoryView: View {
     // MARK: Pin a trip's start or end
 
     @ViewBuilder private func pinMenu(_ a: Activity) -> some View {
+        // Put it on a commute by hand (it started down the street, so it wasn't matched), or take it off.
+        if a.kind == .drive { CountAsCommuteMenu(activity: a) }
         if let t = CommuteStore.trip(a) {
             pinSubmenu(String(localized: "Pin where it started"), NavPlace(name: t.fromName, subtitle: "", coordinate: t.from))
             pinSubmenu(String(localized: "Pin where it ended"), NavPlace(name: t.toName, subtitle: "", coordinate: t.to))
@@ -452,8 +456,10 @@ struct HistoryView: View {
             if showOlder {
                 LazyVStack(alignment: .leading, spacing: 10) {
                     ForEach(list) { (a: Activity) in
-                        NavigationLink(value: a.id) { TripCard(activity: a, together: groupLog.log(for: a.id)?.withLabel) }
-                            .pressable()
+                        NavigationLink(value: a.id) {
+                            HistoryTripRow(activity: a, together: groupLog.log(for: a.id)?.withLabel, showsDay: true)
+                        }
+                        .pressable()
                     }
                 }
                 .transition(.opacity.combined(with: .move(edge: .top)))
@@ -499,4 +505,93 @@ struct HistoryView: View {
 /// Lets a screen send you to another tab (e.g. History's empty state -> Track).
 enum RoamrTabs {
     static let openTrack = Notification.Name("roamr.openTrackTab")
+}
+
+// MARK: - Compact row
+
+/// One trip in History: a small route outline, the title ("Home → Work"), the time, then miles, time and top
+/// speed. No map picture in the list (the trip page has the full map), so a long history stays light and quick.
+struct HistoryTripRow: View {
+    let activity: Activity
+    /// "with Alex, Sam" for a Go together trip.
+    var together: String? = nil
+    /// Older walks and rides have no day header above them: show the day too.
+    var showsDay = false
+    /// The route outline, decoded in the background (RouteThumbCache.load), never while the row is drawn.
+    @State private var outline: [CLLocationCoordinate2D]?
+
+    private var timeText: String {
+        let when = showsDay ? Format.dayTime(activity.start) : activity.start.formatted(date: .omitted, time: .shortened)
+        return activity.kind == .drive ? when : "\(activity.kind.title) · \(when)"
+    }
+
+    private var showsTop: Bool { !activity.kind.isOnFoot && activity.maxSpeed > 0 && activity.maxSpeed.isFinite }
+
+    var body: some View {
+        HStack(spacing: 12) {
+            RouteThumbnail(points: RouteThumbCache.cached(for: activity) ?? outline ?? [])
+                .frame(width: 56, height: 56)
+                .background(LinearGradient(colors: [Theme.moss.opacity(0.9), Theme.forest], startPoint: .topLeading, endPoint: .bottomTrailing),
+                            in: RoundedRectangle(cornerRadius: Theme.innerRadius, style: .continuous))
+                .overlay {
+                    // No route (an imported workout or a GPS-less recording): the kind's symbol instead.
+                    if outline?.isEmpty == true {
+                        Image(systemName: activity.kind.symbol).font(.system(size: 18, weight: .semibold)).foregroundStyle(Theme.leafGradient)
+                    }
+                }
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 3) {
+                Text(activity.displayTitle)
+                    .font(Theme.rounded(16, .bold)).foregroundStyle(.white)
+                    .lineLimit(2).multilineTextAlignment(.leading)
+                Text(timeText).font(Theme.rounded(12, .medium)).foregroundStyle(Theme.textDim)
+                ViewThatFits(in: .horizontal) {
+                    HStack(spacing: 10) { metrics }
+                    VStack(alignment: .leading, spacing: 2) { metrics }
+                }
+                .labelStyle(CompactLabelStyle())
+                .font(Theme.rounded(12, .bold)).monospacedDigit()
+                .foregroundStyle(Theme.glow)
+                if let together {
+                    Label(together, systemImage: "person.2.fill")
+                        .labelStyle(CompactLabelStyle())
+                        .font(Theme.rounded(12, .bold)).foregroundStyle(Theme.sky)
+                        .lineLimit(1)
+                }
+            }
+            Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(Theme.textDim)
+                .accessibilityHidden(true)
+        }
+        .padding(12)
+        .frame(minHeight: 44)
+        .background {
+            RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
+            RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).fill(Color.white.opacity(0.05))
+        }
+        .overlay(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
+        .contentShape(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(accessibilityText)
+        .task(id: "\(activity.id.uuidString)|\(RouteThumbCache.key(for: activity))") {
+            outline = await RouteThumbCache.load(for: activity)
+        }
+    }
+
+    @ViewBuilder private var metrics: some View {
+        Label(Format.distance(activity.distanceM), systemImage: "point.topleft.down.to.point.bottomright.curvepath")
+        Label(Format.duration(activity.elapsedSec), systemImage: "clock")
+        if showsTop { Label(Format.speed(activity.maxSpeed), systemImage: "gauge.with.dots.needle.67percent") }
+        if activity.trimmedSec >= 60 || activity.autoFinished {
+            Label(activity.autoFinished ? "Auto" : "Trimmed", systemImage: "scissors").foregroundStyle(Theme.gold)
+        }
+    }
+
+    private var accessibilityText: String {
+        var parts = [activity.displayTitle, Format.dayTime(activity.start), Format.distance(activity.distanceM),
+                     Format.duration(activity.elapsedSec)]
+        if showsTop { parts.append(String(localized: "top speed \(Format.speed(activity.maxSpeed))")) }
+        if let together { parts.append(together) }
+        return parts.joined(separator: ", ")
+    }
 }

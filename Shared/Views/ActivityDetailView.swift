@@ -142,6 +142,10 @@ struct ActivityDetailView: View {
 
     /// Kind picker, notes, recap / GPX sharing, Done and Delete: the rest of the page, same in both layouts.
     @ViewBuilder private var lowerSections: some View {
+                #if TRACK_APP
+                // A drive that started down the street (or stopped past the pin) can be put on a commute by hand.
+                if activity.kind == .drive { CountAsCommuteMenu(activity: activity, rowStyle: true) }
+                #endif
                 #if !TRACK_APP
                 // Roamr is drive-only, so its trip page has no type picker (old walks keep their type as saved).
                 VStack(alignment: .leading, spacing: 8) {

@@ -110,6 +110,7 @@
     "rescue.groupStore.trips.v1",
     "reviews.lastAsked",
     "reviews.wins",
+    "roamr.commuteAssignments",
     "roamr.intro.pending",
     "roamr.pendingAction",
     "roamr.pendingActionAt",

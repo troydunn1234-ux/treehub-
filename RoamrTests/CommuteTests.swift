@@ -111,4 +111,54 @@ final class CommuteTests: XCTestCase {
         noRoute.kind = .drive
         XCTAssertNil(CommuteStore.trip(noRoute))
     }
+    /// "I started it down the street": a start within ~0.5 mi of a pin still counts, and a drive put on a commute by
+    /// hand counts whatever its ends say (an assignment whose pin is gone falls back to the ends).
+    func testHandPickedCommuteWinsAndAStartDownTheStreetCounts() {
+        let start = Date(timeIntervalSince1970: 1_790_000_000)
+        // ~550 m from Home: outside the 300 m pin radius, inside the ~800 m start radius.
+        let downTheStreet = CLLocationCoordinate2D(latitude: home.coordinate.latitude + 0.005, longitude: home.coordinate.longitude)
+        let t1 = trip(downTheStreet, work.coordinate, start: start, minutes: 20, miles: 9)
+        XCTAssertEqual(CommuteMath.title(from: downTheStreet, to: work.coordinate, pins: pins), "Home → Work")
+        XCTAssertEqual(CommuteMath.routes([t1], pins: pins).first?.title, "Home ⇄ Work")
+        let farther = CLLocationCoordinate2D(latitude: home.coordinate.latitude + 0.012, longitude: home.coordinate.longitude)
+        XCTAssertEqual(CommuteMath.title(from: farther, to: work.coordinate, pins: pins), "To Work", "over ~0.5 mi away")
+
+        let far = CLLocationCoordinate2D(latitude: 37.60, longitude: -122.20)
+        let t2 = trip(far, .init(latitude: 37.61, longitude: -122.21), start: start, minutes: 30, miles: 12)
+        XCTAssertTrue(CommuteMath.routes([t2], pins: pins).isEmpty)
+        let picked = [t2.id: CommuteMath.Assignment(from: home.id, to: work.id)]
+        let r = CommuteMath.routes([t1, t2], pins: pins, assignments: picked)
+        XCTAssertEqual(r.count, 1)
+        XCTAssertEqual(r.first?.legs.count, 2)
+        XCTAssertEqual(r.first?.legs(from: home).count, 2)
+
+        let gymTrip = trip(home.coordinate, gym.coordinate, start: start, minutes: 10, miles: 3)
+        let overridden = CommuteMath.routes([gymTrip], pins: pins, assignments: [gymTrip.id: .init(from: work.id, to: home.id)])
+        XCTAssertEqual(overridden.first?.title, "Home ⇄ Work")
+        XCTAssertEqual(overridden.first?.legs(from: work).count, 1)
+        let stale = CommuteMath.routes([gymTrip], pins: pins, assignments: [gymTrip.id: .init(from: "custom:gone", to: home.id)])
+        XCTAssertEqual(stale.first?.title, "Home ⇄ Gym")
+    }
+
+    /// "Count as commute…" is remembered by trip id, names an unnamed drive, keeps a name you typed, and can be undone.
+    @MainActor
+    func testCountAsCommuteIsSavedNamedAndRemoved() {
+        let a = Activity()
+        a.kind = .drive
+        let named = Activity()
+        named.kind = .drive
+        named.title = "Drive to the coast"
+        defer { CommuteStore.unassign(a, pins: pins); CommuteStore.unassign(named, pins: pins) }
+
+        CommuteStore.assign(a, from: home, to: work, pins: pins)
+        XCTAssertEqual(CommuteStore.assignment(for: a.id), CommuteMath.Assignment(from: home.id, to: work.id))
+        XCTAssertEqual(a.title, "Home → Work")
+        CommuteStore.unassign(a, pins: pins)
+        XCTAssertNil(CommuteStore.assignment(for: a.id))
+        XCTAssertEqual(a.title, "", "the name Roamr gave it goes with it")
+
+        CommuteStore.assign(named, from: work, to: home, pins: pins)
+        XCTAssertEqual(named.title, "Drive to the coast", "a name you typed stays")
+        XCTAssertEqual(CommuteStore.assignment(for: named.id)?.from, work.id)
+    }
 }
