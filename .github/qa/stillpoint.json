@@ -13,7 +13,10 @@
   {"name": "11-journey-light", "args": "-demo -pro -tab journey", "wait": 8, "appearance": "light"},
   {"name": "12-library", "args": "-demo -pro -tab library", "wait": 8},
   {"name": "13-breathe", "args": "-demo -pro -session resonance", "wait": 9},
-  {"name": "14-move", "args": "-demo -pro -session baduanjin", "wait": 9}
+  {"name": "14-move", "args": "-demo -pro -session baduanjin", "wait": 9},
+  {"name": "15-today-ax3", "args": "-demo -pro -tab today", "wait": 8, "size": "accessibility-extra-large"},
+  {"name": "16-breathe-ax3", "args": "-demo -pro -session resonance", "wait": 9, "size": "accessibility-extra-large"},
+  {"name": "17-settings-ax3", "args": "-demo -pro -open settings", "wait": 8, "size": "accessibility-extra-large"}
  ],
  "watch": {"product": "StillPointWatch", "bundle": "com.troydunn.stillpoint.watchkitapp",
    "shots": [{"name": "w1-home", "args": "-demo -pro", "wait": 8}, {"name": "w2-free", "args": "-free", "wait": 8}]}}
