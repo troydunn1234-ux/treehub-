@@ -1,0 +1,47 @@
+[00:01] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 40 min; load 6.9 on 4 cpus; ~8098 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 3.4% 20 MB, launchd 3.0% 20 MB, provjobd1271868964 1.8% 29 MB
+[00:01]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[01:00]   ... still on simctl bootstatus -b (54s); load 161.9 on 4 cpus; ~6031 MB free; swap 0 MB; busiest: assetsd 53.9% 75 MB, lsd 52.0% 45 MB, biomed 49.5% 84 MB
+[02:28]   ... still on simctl bootstatus -b (126s); load 309.7 on 4 cpus; ~5754 MB free; swap 0 MB; busiest: mobileassetd 47.7% 96 MB, diagnosticd 42.5% 124 MB, NewsToday2 38.4% 5 MB
+[02:44] iPhone simulator booted; load 435.2 on 4 cpus; ~5546 MB free; swap 0 MB; busiest: mobileassetd 53.1% 102 MB, diagnosticd 50.1% 123 MB, mediaanalysisd 27.4% 390 MB
+[04:08] OK    01-journey  -demo -pro -tab journey  [15 error/fault log lines]  (53s, 183 MB)
+[04:09]   load 653.4 on 4 cpus; ~5346 MB free; swap 0 MB; busiest: nsurlsessiond 70.4% 88 MB, STExtractionService 70.0% 26 MB, diagnosticd 65.5% 95 MB
+[06:38]   ... still on simctl io screenshot qa-out/02-progress.png (79s); load 360.5 on 4 cpus; ~5297 MB free; swap 0 MB; busiest: diagnosticd 62.7% 113 MB, NewsTag 45.8% 207 MB, PeopleWidget_iOSExtension 39.0% 121 MB
+[07:15] OK    02-progress  -demo -pro -open progress  [13 error/fault log lines]  (183s, 184 MB)
+[07:17]   load 382.5 on 4 cpus; ~5550 MB free; swap 0 MB; busiest: diagnosticd 52.2% 113 MB, apsd 41.4% 50 MB, CalendarWidgetExtension 24.3% 107 MB
+[08:12] OK    03-progress-free  -demo -free -open progress  [10 error/fault log lines]  (47s, 195 MB)
+[08:13]   load 428.1 on 4 cpus; ~5517 MB free; swap 0 MB; busiest: mobileassetd 44.5% 117 MB, diagnosticd 39.0% 113 MB, diagnosticd 36.3% 7 MB
+[08:58] OK    04-settings  -demo -pro -open settings  [16 error/fault log lines]  (42s, 184 MB)
+[09:00]   load 369.2 on 4 cpus; ~5442 MB free; swap 0 MB; busiest: backboardd 95.9% 96 MB, diagnosticd 48.5% 7 MB, launchd 42.4% 20 MB
+[09:33] OK    05-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  [11 error/fault log lines]  (29s, 175 MB)
+[09:33]   load 286.3 on 4 cpus; ~5445 MB free; swap 0 MB; busiest: diagnosticd 110.4% 96 MB, diagnosticd 59.5% 7 MB, apsd 46.9% 53 MB
+[10:04] OK    06-moreapps  -demo -pro -open moreapps  [11 error/fault log lines]  (27s, 176 MB)
+[10:05]   load 230.6 on 4 cpus; ~5404 MB free; swap 0 MB; busiest: diagnosticd 58.6% 105 MB, diagnosticd 58.0% 7 MB, assistant_service 40.6% 78 MB
+[10:37] OK    07-today  -demo -pro -tab today  [13 error/fault log lines]  (29s, 174 MB)
+[10:38]   load 186.1 on 4 cpus; ~5357 MB free; swap 0 MB; busiest: diagnosticd 102.1% 116 MB, diagnosticd 61.3% 7 MB, apsd 51.3% 53 MB
+[11:04] OK    08-progress-largetype  -demo -pro -open progress  [10 error/fault log lines]  (21s, 189 MB)
+[11:04]   load 176.3 on 4 cpus; ~5383 MB free; swap 0 MB; busiest: diagnosticd 96.1% 122 MB, apsd 47.3% 53 MB, diagnosticd 42.3% 7 MB
+[11:27] OK    09-journey-largetype  -demo -pro -tab journey  [12 error/fault log lines]  (20s, 184 MB)
+[11:27]   load 162.2 on 4 cpus; ~5361 MB free; swap 0 MB; busiest: diagnosticd 87.0% 124 MB, diagnosticd 54.7% 7 MB, apsd 48.2% 53 MB
+[11:55] OK    10-progress-light  -demo -pro -open progress  [10 error/fault log lines]  (24s, 193 MB)
+[11:55]   load 180.2 on 4 cpus; ~5134 MB free; swap 0 MB; busiest: diagnosticd 59.4% 7 MB, diagnosticd 55.3% 126 MB, diskimagesiod 26.1% 44 MB
+[12:15] OK    11-journey-light  -demo -pro -tab journey  [10 error/fault log lines]  (16s, 181 MB)
+[12:15]   load 162.3 on 4 cpus; ~5154 MB free; swap 0 MB; busiest: diagnosticd 58.0% 103 MB, diagnosticd 52.0% 7 MB, storagekitd 20.4% 9 MB
+[12:35] OK    12-library  -demo -pro -tab library  [10 error/fault log lines]  (16s, 174 MB)
+[12:35]   load 148.9 on 4 cpus; ~5055 MB free; swap 0 MB; busiest: diagnosticd 71.1% 87 MB, diagnosticd 37.0% 7 MB, apsd 26.2% 53 MB
+[13:01] OK    13-breathe  -demo -pro -session resonance  [12 error/fault log lines]  (23s, 181 MB)
+[13:02]   load 141.0 on 4 cpus; ~5269 MB free; swap 0 MB; busiest: diagnosticd 55.5% 7 MB, diagnosticd 53.8% 88 MB, searchd 14.4% 95 MB
+[13:26] OK    14-move  -demo -pro -session baduanjin  [12 error/fault log lines]  (20s, 184 MB)
+[13:26]   load 115.8 on 4 cpus; ~5240 MB free; swap 0 MB; busiest: diagnosticd 65.4% 88 MB, diagnosticd 47.7% 7 MB, managedappdistributiond 34.0% 3 MB
+[14:07] OK    15-today-ax3  -demo -pro -tab today  [12 error/fault log lines]  (37s, 191 MB)
+[14:08]   load 193.3 on 4 cpus; ~5262 MB free; swap 0 MB; busiest: backboardd 95.1% 114 MB, diagnosticd 53.7% 88 MB, managedappdistributiond 37.7% 5 MB
+[14:32] OK    16-breathe-ax3  -demo -pro -session resonance  [12 error/fault log lines]  (20s, 190 MB)
+[14:32]   load 162.0 on 4 cpus; ~5256 MB free; swap 0 MB; busiest: diagnosticd 63.2% 89 MB, diagnosticd 44.2% 7 MB, cloudd 21.4% 62 MB
+[14:53] OK    17-settings-ax3  -demo -pro -open settings  [11 error/fault log lines]  (17s, 202 MB)
+[14:53]   load 123.3 on 4 cpus; ~5234 MB free; swap 0 MB; busiest: diagnosticd 55.6% 88 MB, diagnosticd 36.7% 7 MB, provjobd1271868964 29.4% 28 MB
+[15:22] Watch simulator: Apple Watch Ultra 3 (49mm) com.apple.CoreSimulator.SimRuntime.watchOS-26-2
+[16:57]   ... still on simctl bootstatus -b (85s); load 269.6 on 4 cpus; ~6016 MB free; swap 0 MB; busiest: ClockFace 59.2% 153 MB, STExtractionService 57.1% 29 MB, diagnosticd 42.5% 163 MB
+[17:03] Watch simulator booted; load 286.1 on 4 cpus; ~5872 MB free; swap 0 MB; busiest: STExtractionService 69.5% 28 MB, diagnosticd 42.0% 7 MB, diskimagesiod 30.9% 43 MB
+[17:28] OK    watch-w1-home  -demo -pro  [8 error/fault log lines]  (16s, 105 MB)
+[17:29]   load 282.0 on 4 cpus; ~5750 MB free; swap 0 MB; busiest: diagnosticd 68.0% 189 MB, apsd 45.0% 37 MB, diagnosticd 40.1% 7 MB
+[17:58] OK    watch-w2-free  -free  [5 error/fault log lines]  (26s, 107 MB)
+[17:58]   load 235.2 on 4 cpus; ~5758 MB free; swap 0 MB; busiest: diagnosticd 71.1% 190 MB, apsd 45.5% 38 MB, diagnosticd 35.5% 7 MB

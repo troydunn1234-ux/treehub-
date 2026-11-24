@@ -1,0 +1,13 @@
+2026-11-24 13:39:07.187 E  StillPoint[15372:c0f0] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:39:07.378 E  StillPoint[15372:c0f0] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:39:27.581 F  StillPoint[15372:bf26] [com.apple.renderbox:error] building pipeline primitive_color-feba5ca8feba4 took 0.989359 seconds
+2026-11-24 13:39:28.150 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:28.162 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:28.440 E  StillPoint[15372:cc93] [com.apple.HealthKit:default] connection error: Error Domain=com.apple.healthkit Code=4 "Missing com.apple.developer.healthkit entitlement." UserInfo={NSLocalizedDescription=Missing com.apple.developer.healthkit entitlement.}
+2026-11-24 13:39:29.400 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:29.409 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:29.411 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:29.420 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:29.451 E  StillPoint[15372:bf26] [com.apple.containermanager:unspecified] container_create_or_lookup_app_group_path_by_app_group_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-24 13:39:37.203 E  StillPoint[15372:bf26] [com.apple.coreanimation:API] long update sync wait 1 : 10689:a93ea4eb
+2026-11-24 13:40:13.446 E  StillPoint[15372:bf26] [com.apple.coreanimation:API] long update sync wait 1 : 10689:a93ea4eb
