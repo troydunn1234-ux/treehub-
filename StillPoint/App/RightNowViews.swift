@@ -333,13 +333,20 @@ final class DailyMoments: ObservableObject {
 
     var allowed: Bool { status == .authorized || status == .provisional }
 
+    /// False until the first answer about notification permission. Before it, `status` is only the placeholder
+    /// .notDetermined, and a reschedule would take it as "not allowed" and clear every pending reminder (a Health
+    /// update that wakes the app in the background could then leave the next days with none).
+    private var statusKnown = false
+
     func refreshStatus() {
         UNUserNotificationCenter.current().getNotificationSettings { s in
             let st = s.authorizationStatus
             Task { @MainActor in
                 let was = self.status
+                let first = !self.statusKnown
+                self.statusKnown = true
                 self.status = st
-                if st != was { self.reschedule(RightNow.shared) }
+                if st != was || first { self.reschedule(RightNow.shared) }
             }
         }
     }
@@ -414,6 +421,8 @@ final class DailyMoments: ObservableObject {
 
     /// Replace the scheduled reminders for the next 7 days.
     func reschedule(_ model: RightNow) {
+        // Permission isn't known yet: refreshStatus() reschedules as soon as it is.
+        guard statusKnown else { return }
         let center = UNUserNotificationCenter.current()
         let morningOn = morningOn, bedtimeOn = bedtimeOn, allowed = allowed
         var requests: [UNNotificationRequest] = []
