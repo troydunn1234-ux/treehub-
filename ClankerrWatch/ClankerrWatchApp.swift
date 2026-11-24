@@ -131,8 +131,9 @@ final class RemoteLink: NSObject {
         WCSession.default.activate()
     }
 
-    func press(_ key: String, haptic: WKHapticType = .click) {
-        WKInterfaceDevice.current().play(haptic)
+    /// Sends a key; `haptic` nil sends it without a tap (for the extra steps of one crown turn).
+    func press(_ key: String, haptic: WKHapticType? = .click) {
+        if let haptic { WKInterfaceDevice.current().play(haptic) }
         send(["key": key], wantReply: false)
     }
 
@@ -293,8 +294,13 @@ struct PadPage: View {
             let steps = Int((v - crownAnchor) / 3)
             guard steps != 0 else { return }
             crownAnchor += Double(steps) * 3
-            for _ in 0..<min(abs(steps), 4) { link.press(steps > 0 ? "volUp" : "volDown", haptic: .directionUp) }
-            show(steps > 0 ? "VOL +" : "VOL −")
+            // One tap per turn, however many volume steps it covers (the crown's detents already tick).
+            let up = steps > 0
+            for i in 0..<min(abs(steps), 4) {
+                let tap: WKHapticType? = i == 0 ? (up ? WKHapticType.directionUp : WKHapticType.directionDown) : nil
+                link.press(up ? "volUp" : "volDown", haptic: tap)
+            }
+            show(up ? "VOL +" : "VOL −")
         }
         .navigationTitle {
             HStack(spacing: 4) {

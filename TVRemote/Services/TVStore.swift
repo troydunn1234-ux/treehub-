@@ -292,7 +292,8 @@ final class TVStore {
     func launch(_ app: StreamingApp) async {
         if Self.demo { show("Opening \(app.name) on your TV"); nowPlaying = app.name; return }
         guard let t = tv else { return }
-        UIImpactFeedbackGenerator(style: .medium).impactOccurred()
+        // No tap here: the app tiles and the remote's app chips give their own on touch, and a launch from the
+        // Watch, Siri or a scene shouldn't buzz the phone.
         do {
             try await controller(for: t.brand).launch(t, appName: app.name)
             show("Opening \(app.name) on your TV")
