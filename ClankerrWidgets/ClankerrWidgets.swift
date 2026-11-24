@@ -98,9 +98,12 @@ struct CRComplicationView: View {
                 .widgetLabel { Text(title).font(.system(size: 13, weight: .bold, design: .rounded)) }
         #endif
         default:
-            // accessoryCircular
+            // accessoryCircular: in full color, the remote's gradient ring around the TV.
             ZStack {
                 AccessoryWidgetBackground()
+                if mode == .fullColor {
+                    Circle().strokeBorder(CRPalette.accent, lineWidth: 2).opacity(0.9)
+                }
                 icon(size: 24)
             }
             .widgetLabel { Text(title) }

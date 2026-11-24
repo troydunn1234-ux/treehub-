@@ -49,6 +49,32 @@ enum CW {
     static func color(_ hex: Int) -> Color {
         Color(red: Double((hex >> 16) & 0xff) / 255, green: Double((hex >> 8) & 0xff) / 255, blue: Double(hex & 0xff) / 255)
     }
+    /// Page background: a soft glow at the top in the color of the app on the TV (brand violet when nothing is on),
+    /// like the iPhone remote.
+    static func backdrop(_ tint: Color?) -> LinearGradient {
+        LinearGradient(colors: [(tint ?? violet).opacity(tint == nil ? 0.26 : 0.40), bg, bg], startPoint: .top, endPoint: .bottom)
+    }
+}
+
+/// Watch keys go down a little when pressed and spring back (Reduce Motion: they just brighten).
+/// The haptic comes from the press itself (RemoteLink.press plays it).
+struct WatchKeyStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        WatchKeyFace(label: configuration.label, pressed: configuration.isPressed)
+    }
+}
+
+private struct WatchKeyFace<Content: View>: View {
+    let label: Content
+    let pressed: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        label
+            .scaleEffect(pressed && !reduceMotion ? 0.92 : 1)
+            .brightness(pressed ? 0.12 : 0)
+            .animation(reduceMotion ? .easeOut(duration: 0.1) : .spring(response: 0.22, dampingFraction: 0.6), value: pressed)
+    }
 }
 
 struct RemoteState: Equatable {
@@ -72,6 +98,12 @@ struct RemoteState: Equatable {
         apps = (d["apps"] as? [[String: Any]] ?? []).map {
             TVApp(name: $0["name"] as? String ?? "", c1: $0["c1"] as? Int ?? 0x8A3BFF, c2: $0["c2"] as? Int ?? 0x1E0B4A)
         }
+    }
+
+    /// The color of the app that's on the TV, from the phone's app list (nil when nothing is on).
+    var nowTint: Color? {
+        guard !now.isEmpty, let app = apps.first(where: { $0.name == now }) else { return nil }
+        return CW.color(app.c1)
     }
 }
 
@@ -170,11 +202,13 @@ struct ClankerrWatchRoot: View {
     var body: some View {
         NavigationStack {
             if link.state.paired || RemoteLink.demo {
+                // Every page glows softly in the color of what's on the TV.
+                let glow = CW.backdrop(link.state.nowTint)
                 TabView {
-                    PadPage().containerBackground(CW.bg.gradient, for: .tabView)
-                    PowerPage().containerBackground(CW.bg.gradient, for: .tabView)
-                    AppsPage().containerBackground(CW.bg.gradient, for: .tabView)
-                    SleepPage().containerBackground(CW.bg.gradient, for: .tabView)
+                    PadPage().containerBackground(glow, for: .tabView)
+                    PowerPage().containerBackground(glow, for: .tabView)
+                    AppsPage().containerBackground(glow, for: .tabView)
+                    SleepPage().containerBackground(glow, for: .tabView)
                 }
                 .tabViewStyle(.verticalPage)
             } else {
@@ -340,7 +374,7 @@ struct PadPage: View {
                 .background(Color.white.opacity(0.1), in: Capsule())
                 .contentShape(Capsule())
         }
-        .buttonStyle(.plain)
+        .buttonStyle(WatchKeyStyle())
         .accessibilityLabel(label)
     }
 }
@@ -359,8 +393,9 @@ struct PowerPage: View {
                         .background(RadialGradient(colors: [Color(red: 1, green: 0.3, blue: 0.38), Color(red: 0.55, green: 0.05, blue: 0.15)],
                                                    center: .topLeading, startRadius: 2, endRadius: 70),
                                     in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                        .shadow(color: Color(red: 1, green: 0.3, blue: 0.38).opacity(0.45), radius: 6)
                 }
-                .buttonStyle(.plain)
+                .buttonStyle(WatchKeyStyle())
                 .accessibilityLabel("Power")
                 VStack(spacing: 6) {
                     big("plus", "volUp", "Volume up", haptic: .directionUp, h: 23)
@@ -385,7 +420,7 @@ struct PowerPage: View {
                 .background(Color.white.opacity(0.1), in: Capsule())
                 .overlay(Capsule().stroke(CW.accent, lineWidth: 1).opacity(0.5))
         }
-        .buttonStyle(.plain)
+        .buttonStyle(WatchKeyStyle())
         .accessibilityLabel(label)
     }
 }
@@ -424,7 +459,7 @@ struct SleepPage: View {
                                 .background(Color.white.opacity(0.1), in: Capsule())
                                 .overlay(Capsule().stroke(CW.accent, lineWidth: 1).opacity(0.5))
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(WatchKeyStyle())
                         .accessibilityLabel("Sleep timer \(m) minutes")
                     }
                 }
@@ -458,6 +493,7 @@ struct AppsPage: View {
             }
             LazyVGrid(columns: [GridItem(.flexible(), spacing: 6), GridItem(.flexible(), spacing: 6)], spacing: 6) {
                 ForEach(link.state.apps) { app in
+                    let on = link.state.now == app.name
                     Button { link.launch(app) } label: {
                         ZStack(alignment: .bottomLeading) {
                             LinearGradient(colors: [CW.color(app.c1), CW.color(app.c2)], startPoint: .topLeading, endPoint: .bottomTrailing)
@@ -470,13 +506,15 @@ struct AppsPage: View {
                         .frame(height: 58)
                         .clipShape(RoundedRectangle(cornerRadius: 14, style: .continuous))
                         .overlay {
-                            if link.state.now == app.name {
+                            if on {
                                 RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(CW.accent, lineWidth: 2.5)
                             }
                         }
+                        // The app that's on the TV glows in its own color, like on the iPhone.
+                        .shadow(color: on ? CW.color(app.c1).opacity(0.6) : .clear, radius: 6)
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("Open \(app.name) on the TV")
+                    .buttonStyle(WatchKeyStyle())
+                    .accessibilityLabel(on ? "\(app.name), on the TV now" : "Open \(app.name) on the TV")
                 }
             }
         }
