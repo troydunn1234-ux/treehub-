@@ -77,6 +77,13 @@ struct ForestBackground: View {
                 RadialGradient(colors: [Theme.leaf.opacity(0.25), .clear], center: .topTrailing, startRadius: 10, endRadius: 460)
                 RadialGradient(colors: [Theme.gold.opacity(0.08), .clear], center: .bottomLeading, startRadius: 10, endRadius: 380)
             }
+            // The light of the hour: Rootbound's sky follows the time of day and season (RBAtmosphere.swift);
+            // Roamr turns a little more violet after sunset, a night cruise (NightDrive.swift).
+            #if TRACK_APP
+            NightCruiseWash()
+            #else
+            ForestSkyWash()
+            #endif
             // Soft vignette keeps edges calm and text readable.
             RadialGradient(colors: [.clear, .black.opacity(0.45)], center: .center, startRadius: 220, endRadius: 700)
             #if !TRACK_APP
@@ -390,6 +397,45 @@ struct TabBarItem: Identifiable {
     var alert: Bool = false
 }
 
+/// The tab bar's center action (Rootbound's "Log a hug"): a glowing disc with a slow, soft ripple around it
+/// (no ripple with Reduce Motion). A tap bounces the symbol and gives a firm tap feel.
+private struct CenterActionButton: View {
+    let symbol: String
+    let label: String
+    let action: () -> Void
+    @State private var taps = 0
+    @State private var ripple = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        Button {
+            taps += 1
+            action()
+        } label: {
+            ZStack {
+                Circle().fill(Theme.glow.opacity(0.35))
+                    .frame(width: 58, height: 58)
+                    .scaleEffect(ripple ? 1.25 : 1)
+                    .opacity(ripple ? 0 : 0.6)
+                Circle().fill(Theme.leafGradient)
+                    .frame(width: 58, height: 58)
+                    .shadow(color: Theme.glow.opacity(0.55), radius: 14, y: 4)
+                Image(systemName: symbol)
+                    .font(.system(size: 24, weight: .bold))
+                    .foregroundStyle(Theme.forestDeep)
+                    .symbolEffect(.bounce, value: taps)
+            }
+        }
+        .pressable()
+        .accessibilityLabel(label)
+        .sensoryFeedback(.impact(weight: .medium), trigger: taps)
+        .onAppear {
+            guard !reduceMotion else { return }
+            withAnimation(.easeOut(duration: 3.2).repeatForever(autoreverses: false)) { ripple = true }
+        }
+    }
+}
+
 /// Glass tab bar with a sliding highlight pill and an optional center action button.
 struct FloatingTabBar: View {
     let items: [TabBarItem]
@@ -404,21 +450,9 @@ struct FloatingTabBar: View {
             let half = centerAction == nil ? items.count : items.count / 2
             ForEach(items.prefix(half)) { tabButton($0) }
             if let centerAction, let centerSymbol {
-                Button(action: centerAction) {
-                    ZStack {
-                        Circle().fill(Theme.leafGradient)
-                            .frame(width: 58, height: 58)
-                            .shadow(color: Theme.glow.opacity(0.55), radius: 14, y: 4)
-                        Image(systemName: centerSymbol)
-                            .font(.system(size: 24, weight: .bold))
-                            .foregroundStyle(Theme.forestDeep)
-                    }
-                }
-                .pressable()
-                .offset(y: -14)
-                .frame(maxWidth: .infinity)
-                .accessibilityLabel(centerLabel)
-                .sensoryFeedback(.impact(weight: .medium), trigger: selection)
+                CenterActionButton(symbol: centerSymbol, label: centerLabel, action: centerAction)
+                    .offset(y: -14)
+                    .frame(maxWidth: .infinity)
             }
             ForEach(items.dropFirst(half)) { tabButton($0) }
         }
