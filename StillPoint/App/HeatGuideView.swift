@@ -54,9 +54,10 @@ struct HeatGuideView: View {
 
     var body: some View {
         ZStack {
-            // The app's night sky with a warm (sauna) or misty (steam) glow and a slow heat haze.
+            // The app's night sky with a warm (sauna) or misty (steam) glow, low embers and a slow heat haze.
             DuskBackground(glow: kind.tint)
-            HeatShimmer(color: kind.tint).ignoresSafeArea()
+            EmberGlow(kind: kind).ignoresSafeArea()
+            HeatShimmer(color: kind.tint, second: kind.tint2).ignoresSafeArea()
             VStack(spacing: SP.s4) {
                 topBar
                 Picker("Mode", selection: $mode) {
@@ -247,6 +248,8 @@ struct HeatGuideView: View {
                         .font(.system(size: 28, weight: .light)).foregroundStyle(kind.tint)
                         .frame(width: 72, height: 72)
                         .background(Circle().fill(kind.tint.opacity(0.14)))
+                        // A soft ripple as the round ends (nothing with Reduce Motion).
+                        .background { CalmRipple(tint: kind.tint, rings: 3, duration: 2.8).frame(width: 150, height: 150) }
                         .accessibilityHidden(true)
                     Text("Round done").font(SP.serif(28, .light)).foregroundStyle(SP.ink)
                         .accessibilityAddTraits(.isHeader)

@@ -204,6 +204,11 @@ struct PhoneBreathView: View {
                             .accessibilityHidden(true)
                     }
                 }
+                // A wide, soft glow that swells and settles with the orb, at this practice's own pace.
+                .background {
+                    BreathAura(level: st.orb, tint: accent ?? SP.teal, quiet: dimmed)
+                        .frame(width: 470, height: 470)
+                }
                 .frame(maxWidth: .infinity)
                 Spacer(minLength: SP.s2)
 
@@ -402,6 +407,11 @@ struct PhoneSummaryView: View {
                                 Text("Well done.").font(SP.serif(40, .light)).foregroundStyle(SP.ink)
                                     .accessibilityAddTraits(.isHeader)
                             }
+                        }
+                        // The finish: rings spread out like a stone dropped into still water (none with Reduce Motion).
+                        .background {
+                            CalmRipple(tint: tint, rings: 3, duration: 3.0)
+                                .frame(width: 340, height: 340)
                         }
                         if let title {
                             Text(title).font(.subheadline).foregroundStyle(SP.ink.opacity(0.8)).multilineTextAlignment(.center)

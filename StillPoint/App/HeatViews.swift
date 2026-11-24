@@ -15,13 +15,15 @@ extension HeatKind {
 struct HeatCard: View {
     @EnvironmentObject var heat: HeatStore
     @State private var taps = 0
+    @State private var finishes = 0
     @State private var showGuide = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         Group {
             if let s = heat.active {
-                ActiveHeatCard(session: s, openGuide: { showGuide = true })
+                ActiveHeatCard(session: s, openGuide: { showGuide = true }, onFinish: { finishes += 1 })
+                    .transition(reduceMotion ? AnyTransition.opacity : AnyTransition.scale(scale: 0.97).combined(with: .opacity))
             } else {
                 VStack(alignment: .leading, spacing: SP.s3) {
                     header
@@ -30,11 +32,12 @@ struct HeatCard: View {
                         withAnimation(reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.85)) { heat.start(k) }
                         showGuide = true
                     }
-                    Text("Tap as you walk in: a timer starts and a guide opens with breathing and gentle moves for the heat. Heart rate from WHOOP fills in after.")
+                    Text("Tap as you walk in: the timer and a heat-safe guide start together. Heart rate fills in after.")
                         .font(.footnote).foregroundStyle(SP.faint)
                         .fixedSize(horizontal: false, vertical: true)
-                    // Just finished a round: suggest cooling down outside with a tree (Rootbound).
+                    // Just finished a round: a soft "round done", then cooling down outside with a tree (Rootbound).
                     if let last = heat.history.first, let end = last.end, Date().timeIntervalSince(end) < 45 * 60 {
+                        HeatJustDoneRow(session: last)
                         RootboundLinkCard(title: "Cool down outside",
                                           subtitle: "Step out, breathe the fresh air and hug a tree. Rootbound logs it.")
                     }
@@ -42,20 +45,26 @@ struct HeatCard: View {
             }
         }
         .sensoryFeedback(.impact(weight: .medium), trigger: taps)
+        // "I'm out" on the live card: the card itself is gone by then, so the success tap is played from here.
+        .sensoryFeedback(.success, trigger: finishes)
         .fullScreenCover(isPresented: $showGuide) {
             HeatGuideView().environmentObject(heat)
         }
     }
 
-    /// "Heat" with the log link on the right, like the other Today sections.
+    /// "Sauna & steam" with the log link on the right, like the other Today sections.
     private var header: some View {
         HStack(alignment: .firstTextBaseline) {
-            Text("Heat").font(.headline).foregroundStyle(SP.ink)
+            Text("Sauna & steam").font(.headline).foregroundStyle(SP.ink)
                 .accessibilityAddTraits(.isHeader)
             Spacer(minLength: SP.s2)
             NavigationLink(value: HeatRoute.log) {
                 HStack(spacing: SP.s1) {
-                    if heat.history.isEmpty { Text("Log") } else { Text("Log · \(heat.history.count)") }
+                    if heat.history.isEmpty {
+                        Text("Log")
+                    } else {
+                        Text("Log · \(heat.history.count)").contentTransition(.numericText())
+                    }
                     Image(systemName: "chevron.right").font(.caption2.weight(.semibold)).accessibilityHidden(true)
                 }
                 .font(.footnote.weight(.medium)).monospacedDigit().foregroundStyle(SP.accent)
@@ -112,11 +121,51 @@ struct HeatStartTile: View {
     }
 }
 
+/// Just out of the heat: "Round done" with a soft ripple (only in the first moments after I'm out).
+struct HeatJustDoneRow: View {
+    let session: HeatSession
+    @State private var shown = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// I'm out was tapped moments ago (not a revisit of Today later on).
+    private var fresh: Bool { session.end.map { Date().timeIntervalSince($0) < 30 } ?? false }
+
+    var body: some View {
+        let k = session.kind
+        HStack(spacing: SP.s3) {
+            Image(systemName: "drop.fill")
+                .font(.system(size: 16, weight: .medium))
+                .foregroundStyle(k.tint)
+                .frame(width: 40, height: 40)
+                .background(Circle().fill(k.tint.opacity(0.16)))
+                .background {
+                    if fresh { CalmRipple(tint: k.tint, rings: 2, duration: 2.4).frame(width: 76, height: 76) }
+                }
+                .symbolEffect(.bounce, value: shown)
+                .accessibilityHidden(true)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Round done · \(k.localizedShort) \(Int(session.minutes.rounded())) min")
+                    .font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
+                    .monospacedDigit()
+                Text("Cool down slowly and drink some water.")
+                    .font(.footnote).foregroundStyle(SP.dim)
+            }
+            .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .spCard(padding: SP.s3, tint: k.tint)
+        .accessibilityElement(children: .combine)
+        .onAppear { if fresh && !reduceMotion { shown = true } }
+    }
+}
+
 /// The running session: big live clock, a gentle tip, I'm out.
 struct ActiveHeatCard: View {
     let session: HeatSession
     /// Opens the breathing & movement guide; nil when already inside it.
     var openGuide: (() -> Void)? = nil
+    /// Told when I'm out is tapped (the Today card plays the success tap, as this card disappears with it).
+    var onFinish: (() -> Void)? = nil
     @EnvironmentObject var heat: HeatStore
     @State private var confirmCancel = false
     @State private var doneTaps = 0
@@ -173,16 +222,20 @@ struct ActiveHeatCard: View {
         .padding(SP.s4 + SP.s1)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background {
+            // Warm and alive: the heat's colour, a low ember (sauna) or lit-mist (steam) glow that swells slowly,
+            // and the rising haze. All of it holds still with Reduce Motion.
             ZStack {
                 RoundedRectangle(cornerRadius: SP.radius, style: .continuous)
                     .fill(LinearGradient(colors: [k.tint.opacity(0.22), k.tint2.opacity(0.10), SP.card],
                                          startPoint: .topLeading, endPoint: .bottomTrailing))
-                HeatShimmer(color: k.tint)
-                    .clipShape(RoundedRectangle(cornerRadius: SP.radius, style: .continuous))
+                EmberGlow(kind: k)
+                HeatShimmer(color: k.tint, second: k.tint2)
             }
+            .clipShape(RoundedRectangle(cornerRadius: SP.radius, style: .continuous))
         }
         .overlay(RoundedRectangle(cornerRadius: SP.radius, style: .continuous).stroke(k.tint.opacity(0.30), lineWidth: 1))
-        .sensoryFeedback(.success, trigger: doneTaps)
+        // On Today the parent plays it (onFinish); in the heat log this card does.
+        .sensoryFeedback(.success, trigger: onFinish == nil ? doneTaps : 0)
         .confirmationDialog("Discard this session?", isPresented: $confirmCancel, titleVisibility: .visible) {
             Button("Discard", role: .destructive) { withAnimation { heat.cancel() } }
         }
@@ -191,6 +244,7 @@ struct ActiveHeatCard: View {
     private func outButton(fullWidth: Bool) -> some View {
         Button {
             doneTaps += 1
+            onFinish?()
             withAnimation(reduceMotion ? nil : .spring(response: 0.45, dampingFraction: 0.85)) { heat.finish() }
         } label: {
             Label("I'm out", systemImage: "checkmark")
@@ -226,22 +280,27 @@ struct ActiveHeatCard: View {
     }
 }
 
-/// Slow rising heat haze.
+/// Slow rising heat haze, with a gentle side-to-side waver; every other wisp in the second colour.
 struct HeatShimmer: View {
     var color: Color
+    /// The deeper heat colour for every other wisp (nil: all in `color`).
+    var second: Color? = nil
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var body: some View {
         TimelineView(.animation(minimumInterval: 1.0 / 20, paused: reduceMotion)) { tl in
             Canvas { ctx, size in
                 let t = reduceMotion ? 0 : tl.date.timeIntervalSinceReferenceDate
-                for i in 0..<14 {
+                for i in 0..<16 {
                     let a = Double(i) * 1.37
-                    let x = (0.5 + 0.45 * sin(a * 3.1 + t * 0.15)) * size.width
+                    let waver: Double = 0.04 * sin(t * 0.9 + a * 2.3)
+                    let fx: Double = 0.5 + 0.45 * sin(a * 3.1 + t * 0.15) + waver
+                    let x = fx * size.width
                     var y = (1 - (t * (0.03 + 0.01 * Double(i % 3)) + a).truncatingRemainder(dividingBy: 1)) * size.height
                     if y < 0 { y += size.height }
                     let r = 30 + 20 * abs(sin(a))
+                    let c = (i % 2 == 1 ? second : nil) ?? color
                     ctx.fill(Path(ellipseIn: CGRect(x: x - r, y: y - r, width: r * 2, height: r * 2)),
-                             with: .color(color.opacity(0.05)))
+                             with: .color(c.opacity(i % 2 == 1 ? 0.06 : 0.05)))
                 }
             }
         }
