@@ -332,6 +332,7 @@
 		AF5D4436E4BAE070350D06F5 /* TopDownTruck.swift in Sources */ = {isa = PBXBuildFile; fileRef = F25EE417FFD8D7F63EC1531A /* TopDownTruck.swift */; };
 		AFAC42A70CCB7C2587A2F129 /* MindfulHealth.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9402C3386278DF81C3762F63 /* MindfulHealth.swift */; };
 		B02ECC79564F4F5E2BA67CE1 /* TourTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FFCEABC9A0E997904C8A2AA /* TourTests.swift */; };
+		B10DB8D8D160F0462F24CD0B /* NightDrive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DBED043296F9CD676FA602F /* NightDrive.swift */; };
 		B132D0E127049E1788D0EC86 /* GroupMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAE9A30931BAF595EEFE3D34 /* GroupMapView.swift */; };
 		B1656DB65A73970070738A94 /* Correlations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FD6B0D6B0418CDA5121FD13 /* Correlations.swift */; };
 		B1ABEC6BC7FE34701DFA0597 /* DataSafetyTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D318AB43C54BA346A983888 /* DataSafetyTests.swift */; };
@@ -422,6 +423,7 @@
 		DAF31E6E973FCA23657571DB /* ActivityScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2961FC930B94333CCFB933A5 /* ActivityScreen.swift */; };
 		DBDCDE921A3D91BCAECE28A4 /* FriendsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE9B94834D46B2C46664A3F2 /* FriendsView.swift */; };
 		DCA71B65D88D30C82B40F9D6 /* GroupHistory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B2E97335293105A0788961D /* GroupHistory.swift */; };
+		DCABE941D99C574FD2265056 /* RBAtmosphere.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9866463CC24EB9DED87BB0 /* RBAtmosphere.swift */; };
 		DDA092F19E9FC1D0BAF76CF4 /* HugLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B410839CD36818929B918A1C /* HugLogView.swift */; };
 		DDC266CB2A131B58BB34A1FC /* ConnectionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFDFE3B05E3EC233DC2B2E1 /* ConnectionTests.swift */; };
 		DE0C5E7879F16D524C61493F /* Shapes.swift in Sources */ = {isa = PBXBuildFile; fileRef = EC3E99CBA77ECD2C6AA3BC03 /* Shapes.swift */; };
@@ -1074,6 +1076,7 @@
 		89A2682809CA69DD3E7F45B3 /* PhoneLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneLink.swift; sourceTree = "<group>"; };
 		89F0902E32B38E7D2981479A /* ClickerWidgets.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = ClickerWidgets.plist; sourceTree = "<group>"; };
 		8A715A4F363D800A07441A11 /* SourcesScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SourcesScreen.swift; sourceTree = "<group>"; };
+		8B9866463CC24EB9DED87BB0 /* RBAtmosphere.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBAtmosphere.swift; sourceTree = "<group>"; };
 		8C2390C73A9DFFF806872CA1 /* RideQuestWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = RideQuestWidgets.entitlements; sourceTree = "<group>"; };
 		8C2ED436B5E7D8399D9BAFE8 /* RBPhotoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RBPhotoCache.swift; sourceTree = "<group>"; };
 		8CE2676C7F70BD4BD5CDA9DF /* StillPoint.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = StillPoint.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1105,6 +1108,7 @@
 		9AF1DFC84C2511B806BD91B1 /* StillPointApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StillPointApp.swift; sourceTree = "<group>"; };
 		9C81DE7AC551DA84C7C325DB /* Supplement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Supplement.swift; sourceTree = "<group>"; };
 		9D0D589C74C9CE75E934A8FD /* CalmMovementCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalmMovementCard.swift; sourceTree = "<group>"; };
+		9DBED043296F9CD676FA602F /* NightDrive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightDrive.swift; sourceTree = "<group>"; };
 		9E2CB923CA750A2CC82DB3E8 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9E90755689D61A309CD36ECD /* Intents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intents.swift; sourceTree = "<group>"; };
 		9EB7F378A457CD9FC84B8059 /* RightNow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RightNow.swift; sourceTree = "<group>"; };
@@ -1325,6 +1329,7 @@
 			isa = PBXGroup;
 			children = (
 				406DB66F6FEAFB95BDFDFF40 /* Collectibles.swift */,
+				8B9866463CC24EB9DED87BB0 /* RBAtmosphere.swift */,
 				43430ED8B694EA456DF6C1DC /* RBDesign.swift */,
 				8C2ED436B5E7D8399D9BAFE8 /* RBPhotoCache.swift */,
 			);
@@ -1930,6 +1935,7 @@
 				44F1C399DA9139A1BAC30305 /* LifetimeStatsView.swift */,
 				5711DCAB3E8CF2B30183EC69 /* MilesMappedChip.swift */,
 				5CE341C7C2DA12FACC4D5803 /* MonthlyStatsView.swift */,
+				9DBED043296F9CD676FA602F /* NightDrive.swift */,
 				DB8730F3FC3E19638AF3480B /* RecapCard.swift */,
 				3A949FB8533987999EAF3557 /* StatsView.swift */,
 				4C0C99EF421B566304865CB8 /* TrackSettingsView.swift */,
@@ -3266,6 +3272,7 @@
 				65F82413DB6CC35BFA686FDB /* OnboardingView.swift in Sources */,
 				5686EA2C1A9C68B51067B7FE /* PaywallView.swift in Sources */,
 				6ECD15A51A56A3B8E16C8DE4 /* PlansView.swift in Sources */,
+				DCABE941D99C574FD2265056 /* RBAtmosphere.swift in Sources */,
 				2DE09938B945E38A876F6BAF /* RBDesign.swift in Sources */,
 				B86A9ABF59E19CBCFE27A4BE /* RBPhotoCache.swift in Sources */,
 				D8047862EB375A268C432A11 /* RoamrTreeLinks.swift in Sources */,
@@ -3746,6 +3753,7 @@
 				73D6AC9549CDF017168E3E78 /* MoreApps.swift in Sources */,
 				3D4F7768A084056DE6C96320 /* NavViews.swift in Sources */,
 				E504781A95012E8E83F8C6F1 /* Navigator.swift in Sources */,
+				B10DB8D8D160F0462F24CD0B /* NightDrive.swift in Sources */,
 				229B6185B25A3751D61232FF /* Onboarding.swift in Sources */,
 				8EBEA7B9E8D6FD5C5381D9A2 /* OnboardingView.swift in Sources */,
 				4CF9EDEEA00637B772E37401 /* PaywallView.swift in Sources */,
