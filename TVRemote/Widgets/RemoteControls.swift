@@ -22,6 +22,12 @@ struct ClickerWidgets: WidgetBundle {
 
 // MARK: - Controls
 
+/// The remote's colors for its controls: the red power key, the brand violet for the rest.
+private enum CRControlTint {
+    static let power = Color(red: 1.0, green: 0.30, blue: 0.38)
+    static let brand = Color(red: 0.55, green: 0.33, blue: 1.0)
+}
+
 @available(iOS 18.0, *)
 struct TVPowerControl: ControlWidget {
     static let kind = "com.troydunn.clicker.control.power"
@@ -30,6 +36,7 @@ struct TVPowerControl: ControlWidget {
             ControlWidgetButton(action: TVControlKeyIntent(key: .power)) {
                 Label("TV Power", systemImage: "power")
             }
+            .tint(CRControlTint.power)
         }
         .displayName("TV Power")
         .description("Turns your TV on or off.")
@@ -44,6 +51,7 @@ struct TVVolumeUpControl: ControlWidget {
             ControlWidgetButton(action: TVControlKeyIntent(key: .volumeUp)) {
                 Label("TV Volume Up", systemImage: "speaker.plus.fill")
             }
+            .tint(CRControlTint.brand)
         }
         .displayName("TV Volume Up")
         .description("Turns the TV volume up one step.")
@@ -58,6 +66,7 @@ struct TVVolumeDownControl: ControlWidget {
             ControlWidgetButton(action: TVControlKeyIntent(key: .volumeDown)) {
                 Label("TV Volume Down", systemImage: "speaker.minus.fill")
             }
+            .tint(CRControlTint.brand)
         }
         .displayName("TV Volume Down")
         .description("Turns the TV volume down one step.")
@@ -72,6 +81,7 @@ struct TVMuteControl: ControlWidget {
             ControlWidgetButton(action: TVControlKeyIntent(key: .mute)) {
                 Label("Mute TV", systemImage: "speaker.slash.fill")
             }
+            .tint(CRControlTint.brand)
         }
         .displayName("Mute TV")
         .description("Mutes or unmutes the TV.")

@@ -42,6 +42,9 @@ private enum CRHomeLook {
     static let magenta = Color(red: 1.0, green: 0.24, blue: 0.62)
     static let violet = Color(red: 0.55, green: 0.33, blue: 1.0)
     static let cyan = Color(red: 0.25, green: 0.88, blue: 1.0)
+    /// The remote's red power key, deep enough that white text on it stays readable (AA).
+    static let powerTop = Color(red: 0.85, green: 0.16, blue: 0.26)
+    static let powerBottom = Color(red: 0.45, green: 0.03, blue: 0.12)
 }
 
 private struct CRHomeBackground: View {
@@ -101,18 +104,47 @@ struct CRHomeView: View {
         key(.power); key(.volumeDown); key(.volumeUp); key(.mute)
     }
 
+    /// A key like the app's: symbol over a plain printed label; Power is the red key in full color.
     private func key(_ k: TVControlKey) -> some View {
-        Button(intent: TVControlKeyIntent(key: k)) {
-            Image(systemName: Self.symbol(k))
-                .font(.system(size: 18, weight: .bold))
-                .foregroundStyle(k == .power && renderingMode == .fullColor ? AnyShapeStyle(CRHomeLook.magenta) : AnyShapeStyle(.primary))
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .frame(minHeight: 44)
-                .background(Color.white.opacity(renderingMode == .fullColor ? 0.10 : 0.16), in: RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .widgetAccentable(k == .power)
+        let full = renderingMode == .fullColor
+        return Button(intent: TVControlKeyIntent(key: k)) {
+            VStack(spacing: 3) {
+                Image(systemName: Self.symbol(k))
+                    .font(.system(size: 17, weight: .bold))
+                Text(Self.caption(k))
+                    .font(.system(size: 10, weight: .heavy, design: .rounded))
+                    .lineLimit(1).minimumScaleFactor(0.7)
+                    .opacity(0.85)
+            }
+            .foregroundStyle(k == .power && full ? AnyShapeStyle(Color.white) : AnyShapeStyle(.primary))
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            .frame(minHeight: 44)
+            .background { keyFace(k, full: full) }
+            .widgetAccentable(k == .power)
         }
         .buttonStyle(.plain)
         .accessibilityLabel(Self.label(k))
+    }
+
+    @ViewBuilder private func keyFace(_ k: TVControlKey, full: Bool) -> some View {
+        let shape = RoundedRectangle(cornerRadius: 12, style: .continuous)
+        if k == .power && full {
+            shape.fill(LinearGradient(colors: [CRHomeLook.powerTop, CRHomeLook.powerBottom], startPoint: .top, endPoint: .bottom))
+                .overlay(shape.strokeBorder(Color.white.opacity(0.25), lineWidth: 1))
+        } else {
+            shape.fill(Color.white.opacity(full ? 0.10 : 0.16))
+                .overlay(shape.strokeBorder(Color.white.opacity(full ? 0.12 : 0), lineWidth: 1))
+        }
+    }
+
+    /// The printed label under each key.
+    static func caption(_ k: TVControlKey) -> String {
+        switch k {
+        case .power: return "Power"
+        case .volumeUp: return "Vol +"
+        case .volumeDown: return "Vol \u{2212}"
+        case .mute: return "Mute"
+        }
     }
 
     static func symbol(_ k: TVControlKey) -> String {
