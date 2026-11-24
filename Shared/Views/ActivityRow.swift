@@ -5,10 +5,12 @@ struct ActivityRow: View {
     let activity: Activity
     /// "with Alex, Sam" for a Go together trip.
     var together: String? = nil
+    /// The route outline, decoded in the background (RouteThumbCache.load) instead of while the row is drawn.
+    @State private var outline: [CLLocationCoordinate2D]?
 
     var body: some View {
         HStack(spacing: 14) {
-            RouteThumbnail(points: RouteThumbCache.coords(for: activity))
+            RouteThumbnail(points: RouteThumbCache.cached(for: activity) ?? outline ?? [])
                 .frame(width: 64, height: 64)
                 .background(
                     LinearGradient(colors: [Theme.moss.opacity(0.9), Theme.forest], startPoint: .topLeading, endPoint: .bottomTrailing),
@@ -58,6 +60,9 @@ struct ActivityRow: View {
         .overlay(RoundedRectangle(cornerRadius: Theme.radius, style: .continuous).strokeBorder(Color.white.opacity(0.1)))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(accessibilityText)
+        .task(id: "\(activity.id.uuidString)|\(RouteThumbCache.key(for: activity))") {
+            outline = await RouteThumbCache.load(for: activity)
+        }
     }
 
     private var accessibilityText: String {
@@ -113,13 +118,40 @@ struct RouteThumbnail: View {
 enum RouteThumbCache {
     private static var store: [UUID: (key: String, coords: [CLLocationCoordinate2D])] = [:]
 
+    /// Changes when a trim or edit changes the route (its end time and distance change with it).
+    static func key(for a: Activity) -> String { "\(a.end.timeIntervalSince1970)|\(a.distanceM)" }
+
+    /// The outline when it was worked out already: drawn on a row's first frame without reading anything.
+    static func cached(for a: Activity) -> [CLLocationCoordinate2D]? {
+        guard let hit = store[a.id], hit.key == key(for: a) else { return nil }
+        return hit.coords
+    }
+
+    /// Decodes on the calling thread when it isn't cached. Views use `load(for:)`.
     static func coords(for a: Activity) -> [CLLocationCoordinate2D] {
-        let key = "\(a.end.timeIntervalSince1970)|\(a.distanceM)"
-        if let hit = store[a.id], hit.key == key { return hit.coords }
+        if let hit = cached(for: a) { return hit }
         let thin = thinned(a.route.map(\.coordinate))
-        if store.count >= 600 { store.removeAll(keepingCapacity: true) }
-        store[a.id] = (key, thin)
+        remember(thin, id: a.id, key: key(for: a))
         return thin
+    }
+
+    /// The outline for a list row. Only the stored bytes are taken here (main actor, SwiftData object); decoding and
+    /// thinning run in the background, so a long list, or the first screen on a big history, never waits on it.
+    static func load(for a: Activity) async -> [CLLocationCoordinate2D] {
+        if let hit = cached(for: a) { return hit }
+        let id = a.id, k = key(for: a)
+        guard let data = a.routeData else { return [] }
+        let thin = await Task.detached(priority: .userInitiated) { () -> [CLLocationCoordinate2D] in
+            guard let pts = try? JSONDecoder().decode([RoutePoint].self, from: data) else { return [] }
+            return RouteThumbCache.thinned(pts.map(\.coordinate))
+        }.value
+        remember(thin, id: id, key: k)
+        return thin
+    }
+
+    private static func remember(_ coords: [CLLocationCoordinate2D], id: UUID, key: String) {
+        if store.count >= 600 { store.removeAll(keepingCapacity: true) }
+        store[id] = (key, coords)
     }
 
     /// At most ~300 points, always keeping the first and last (what RouteThumbnail draws anyway).

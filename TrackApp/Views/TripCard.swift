@@ -40,13 +40,15 @@ final class TripMapCache {
         if let img = memory.object(forKey: key as NSString) { return img }
         if let running = inflight[key] { return await running.value }
         let file = dir?.appendingPathComponent(key + ".jpg")
-        // Only the stored bytes are taken here (main actor, SwiftData object). They're decoded off the main thread,
-        // and only when there's no saved picture yet.
-        let routeData = a.routeData
         let task = Task<UIImage?, Never> { @MainActor in
             if let file, let data = await Self.read(file), let img = UIImage(data: data, scale: 3) {
                 return img
             }
+            // No saved picture yet: only now are the stored route bytes taken (main actor, SwiftData object; a card
+            // with a saved picture never reads its route file), and they're decoded off the main thread. A trip
+            // deleted in the meantime is skipped.
+            guard a.modelContext != nil, !a.isDeleted else { return nil }
+            let routeData = a.routeData
             let coords = await Self.decodeThin(routeData)
             guard coords.count > 1, let img = await Self.snapshot(coords) else { return nil }
             if let file, let jpg = img.jpegData(compressionQuality: 0.82) {
@@ -271,8 +273,9 @@ struct TripCard: View {
                         .foregroundStyle(Theme.textDim)
                 }
             } else {
-                // Placeholder while the snapshot renders: the plain route drawing.
-                RouteThumbnail(points: RouteThumbCache.coords(for: activity))
+                // Placeholder while the snapshot renders: the plain route drawing when it's already known. Never
+                // decoded here: that read and decoded the whole route on the main thread for every card.
+                RouteThumbnail(points: RouteThumbCache.cached(for: activity) ?? [])
                     .opacity(0.5)
                     .redacted(reason: .placeholder)
             }

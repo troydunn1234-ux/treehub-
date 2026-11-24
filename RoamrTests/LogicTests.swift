@@ -103,6 +103,32 @@ final class LogicTests: XCTestCase {
         XCTAssertEqual(RouteThumbCache.thinned(Array(all.prefix(20))).count, 20)
     }
 
+    /// List rows no longer decode a route while they're drawn: the outline is loaded in the background, then cached
+    /// until a trim changes the route.
+    @MainActor
+    func testRouteOutlineLoadsInTheBackgroundAndFollowsATrim() async {
+        let pts = walk(1000)
+        let a = Activity()
+        a.kind = .walk
+        a.route = pts
+        a.end = Date(timeIntervalSince1970: pts[999].t)
+        a.distanceM = 1234
+        XCTAssertNil(RouteThumbCache.cached(for: a), "nothing is decoded just to draw a row")
+        let outline = await RouteThumbCache.load(for: a)
+        XCTAssertEqual(outline.first?.latitude, pts[0].lat)
+        XCTAssertEqual(outline.last?.latitude, pts[999].lat)
+        XCTAssertLessThanOrEqual(outline.count, 302)
+        XCTAssertEqual(RouteThumbCache.cached(for: a)?.count, outline.count)
+
+        a.trim(endT: pts[499].t)
+        XCTAssertNil(RouteThumbCache.cached(for: a), "a trim needs a new outline")
+        let trimmed = await RouteThumbCache.load(for: a)
+        XCTAssertEqual(trimmed.last?.latitude, pts[499].lat)
+
+        let none = await RouteThumbCache.load(for: Activity())
+        XCTAssertTrue(none.isEmpty, "no route: no outline")
+    }
+
     // MARK: Map geometry caches
 
     @MainActor
