@@ -67,6 +67,7 @@ struct BriefingCard: View {
                 Text(b.recovery.map { "\(Int($0.rounded()))" } ?? "—")
                     .font(Lab.number(22)).foregroundStyle(Lab.text)
                     .minimumScaleFactor(0.6)
+                    .contentTransition(.numericText())
             }
             .frame(width: 62, height: 62)
             .accessibilityHidden(true)
@@ -94,6 +95,7 @@ struct BriefingCard: View {
             Text(title).font(.caption.weight(.semibold)).foregroundStyle(Lab.dim)
             Text(value ?? "—").font(Lab.number(19)).foregroundStyle(value == nil ? Lab.faint : Lab.text)
                 .lineLimit(1).minimumScaleFactor(0.7)
+                .contentTransition(.numericText())
             Text(delta ?? (value == nil ? String(localized: "No reading") : " ")).font(Lab.mono(11, .medium))
                 .foregroundStyle(good == false ? Lab.warn : Lab.faint)
                 .fixedSize(horizontal: false, vertical: true)

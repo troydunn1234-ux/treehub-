@@ -205,7 +205,7 @@ struct ArcGauge: View {
         let v = min(100, max(0, value ?? 0))
         if Lab.reduceMotion { drawn = v; return }
         drawn = 0
-        DispatchQueue.main.async { withAnimation(.easeOut(duration: 0.9)) { drawn = v } }
+        DispatchQueue.main.async { withAnimation(.spring(response: 0.9, dampingFraction: 0.85)) { drawn = v } }
     }
 }
 
