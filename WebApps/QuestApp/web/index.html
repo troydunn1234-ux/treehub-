@@ -113,7 +113,7 @@ a { color: var(--red-text); }
 .hero-name h2 { font-family: var(--font-d); font-size: min(1.5rem, 7.6vw); font-weight: 800; letter-spacing: -.02em; line-height: 1.12; overflow-wrap: anywhere; }
 .streak { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px 0 8px; border-radius: 99px; font-size: .76rem; font-weight: 700; color: var(--ink);
   background: rgba(255,255,255,.06); border: 1px solid var(--line2); }
-.streak svg { width: 14px; height: 14px; fill: var(--red); filter: drop-shadow(0 0 4px var(--red-glow)); }
+.streak svg { width: 14px; height: 14px; fill: var(--red); }
 .gauge { position: relative; margin: 2px -6px 0; }
 .gauge > svg { display: block; width: 100%; height: auto; overflow: visible; }
 .gauge text { font-family: var(--font); }
@@ -424,7 +424,7 @@ details.det[open] > summary { margin-bottom: 8px; }
 .tab { position: relative; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; min-height: 50px; padding: 5px 0 2px; border: 0; background: none; color: var(--silver2); font-size: 10.5px; font-weight: 650; letter-spacing: .01em; }
 .tab svg { width: 25px; height: 25px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
 .tab[aria-selected="true"] { color: var(--ink); }
-.tab[aria-selected="true"] svg { stroke: var(--red); filter: drop-shadow(0 0 5px rgba(255,42,42,.55)); }
+.tab[aria-selected="true"] svg { stroke: var(--red); }
 .tab[aria-selected="true"]::before { content: ""; position: absolute; top: -5px; left: 32%; right: 32%; height: 3px; border-radius: 0 0 3px 3px; background: var(--red); box-shadow: 0 0 10px var(--red-glow); }
 
 /* ---------- bottom sheet (smoked glass) ---------- */
