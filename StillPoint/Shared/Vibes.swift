@@ -154,7 +154,7 @@ private struct SkyFill: View {
 // MARK: - Slow swell
 
 /// A very slow swell and settle (about 5½ s each way, the pace of resonance breathing) for glows and halos.
-/// Still, at an in-between brightness, with Reduce Motion.
+/// Still, at an in-between brightness, with Reduce Motion and in the Watch's Always-On (wrist down) state.
 struct SlowBreathe: ViewModifier {
     var period: Double = 5.5
     /// Opacity at the bottom of the breath (1 at the top).
@@ -162,10 +162,13 @@ struct SlowBreathe: ViewModifier {
     /// How much it grows from the bottom to the top of the breath (0 = brightness only).
     var grow: CGFloat = 0.06
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// Always-On: the screen barely updates, so a running swell would only spend battery (a sauna timer stays
+    /// up for 15–20 minutes with the wrist down).
+    @Environment(\.isLuminanceReduced) private var luminanceReduced
 
     @ViewBuilder
     func body(content: Content) -> some View {
-        if reduceMotion {
+        if reduceMotion || luminanceReduced {
             content.opacity((1 + low) / 2)
         } else {
             let low = self.low, grow = self.grow, period = self.period

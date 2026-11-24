@@ -165,6 +165,10 @@ struct WatchRoot: View {
     private func consumePending() {
         guard let s = link.pendingStart, let p = lib.practice(s.practiceId) else { return }
         link.pendingStart = nil
+        // As on the iPhone, a start from the phone never cuts short what's on the wrist: a session that's running
+        // (a second "On Watch" tap used to end it early and restart, and its ending could stop the new one's heart
+        // rate) or the sauna / steam timer.
+        guard running == nil, !showHeat else { return }
         let w = s.warmUpId.flatMap { lib.practice($0) }
         startPlan(SessionPlan(warmUp: w, warmUpMinutes: w?.minutes.first ?? 2, practice: p, minutes: s.minutes))
     }

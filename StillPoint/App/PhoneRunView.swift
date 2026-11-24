@@ -402,7 +402,7 @@ struct PhoneSummaryView: View {
                                 .accessibilityHidden(true)
                             VStack(spacing: SP.s1) {
                                 Image(systemName: "checkmark.circle.fill").font(.system(size: 30)).foregroundStyle(.white)
-                                    .symbolEffect(.bounce, value: bloom)
+                                    .symbolEffect(.bounce, value: reduceMotion ? false : bloom)
                                     .accessibilityHidden(true)
                                 Text("Well done.").font(SP.serif(40, .light)).foregroundStyle(SP.ink)
                                     .accessibilityAddTraits(.isHeader)

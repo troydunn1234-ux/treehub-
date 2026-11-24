@@ -379,7 +379,7 @@ struct SummaryView: View {
                         .opacity(bloom ? 1 : 0)
                     VStack(spacing: 2) {
                         Image(systemName: "checkmark.circle.fill").font(.system(size: 18)).foregroundStyle(SP.accent)
-                            .symbolEffect(.bounce, value: bloom)
+                            .symbolEffect(.bounce, value: reduceMotion ? false : bloom)
                             .accessibilityHidden(true)
                         Text("Well done.").font(SP.serif(22, .light)).foregroundStyle(SP.ink)
                     }
