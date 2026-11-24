@@ -380,6 +380,65 @@ struct SquishStyle: ButtonStyle {
     }
 }
 
+/// A remote key: it travels down when pressed (a little smaller, a 1.5 pt dip, a touch brighter) and springs back
+/// on release, with a crisp haptic on touch-down like a real button. Reduce Motion: no dip or bounce, just a quick dim.
+struct RemoteKeyStyle: ButtonStyle {
+    var scale: CGFloat = 0.9
+    /// The click felt as the key goes down (nil when the action plays its own).
+    var feel: SensoryFeedback? = .impact(flexibility: .rigid, intensity: 0.7)
+
+    func makeBody(configuration: Configuration) -> some View {
+        RemoteKeyFace(label: configuration.label, pressed: configuration.isPressed, scale: scale, feel: feel)
+    }
+}
+
+private struct RemoteKeyFace<Content: View>: View {
+    let label: Content
+    let pressed: Bool
+    let scale: CGFloat
+    let feel: SensoryFeedback?
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    var body: some View {
+        label
+            .scaleEffect(pressed ? (reduceMotion ? max(scale, 0.97) : scale) : 1)
+            .offset(y: pressed && !reduceMotion ? 1.5 : 0)
+            .brightness(pressed ? 0.1 : 0)
+            .animation(reduceMotion ? .easeOut(duration: 0.1)
+                       : (pressed ? .spring(response: 0.14, dampingFraction: 0.9) : .spring(response: 0.32, dampingFraction: 0.52)),
+                       value: pressed)
+            .sensoryFeedback(trigger: pressed) { old, new in (!old && new) ? feel : nil }
+    }
+}
+
+/// The room's light: a wide, soft glow in the color of the app that's on the TV. It cross-fades when the app
+/// changes and never moves, so it stays calm (nothing for Reduce Motion to stop).
+struct AmbientGlow: View {
+    /// The app on the TV (nil = no glow).
+    var app: String?
+
+    var body: some View {
+        GeometryReader { g in
+            ZStack {
+                if let app {
+                    let c = StreamingApp(name: app).colors.first ?? Look.violet
+                    Circle()
+                        .fill(RadialGradient(colors: [c.opacity(0.30), c.opacity(0.10), .clear],
+                                             center: .center, startRadius: 0, endRadius: g.size.width * 0.8))
+                        .frame(width: g.size.width * 1.6, height: g.size.width * 1.6)
+                        .position(x: g.size.width / 2, y: g.size.height * 0.34)
+                        .id(app)
+                        .transition(.opacity)
+                }
+            }
+            .animation(.easeInOut(duration: 0.9), value: app)
+        }
+        .ignoresSafeArea()
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+}
+
 /// Primary call-to-action capsule.
 struct PrimaryButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {

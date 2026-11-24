@@ -62,6 +62,8 @@ struct RootView: View {
     var body: some View {
         ZStack(alignment: .bottom) {
             AuroraBackground()
+            // The room glows softly in the color of the app that's on the TV (Apps and Remote tabs).
+            AmbientGlow(app: store.isPaired && tab != 2 ? store.nowPlaying : nil)
             Group {
                 if tab == 2 {
                     PCView().transition(tabTransition)

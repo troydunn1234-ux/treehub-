@@ -11,6 +11,19 @@ struct TVSwitcherPill: View {
     @Environment(TVStore.self) private var store
     let action: () -> Void
     var subtitle: String? = nil
+    /// The Remote tab shows the connection under the TV name: a status light and a plain word, plus what's on.
+    var showsStatus = false
+    /// Goes up with every key the remote sends: the status light blinks like a remote's LED.
+    var blink = 0
+
+    private var connected: Bool { store.reachable && !store.reconnecting }
+
+    private var status: String {
+        if store.reconnecting { return "Searching…" }
+        if !store.reachable { return "Offline" }
+        if let now = store.nowPlaying { return "Connected · \(now)" }
+        return "Connected"
+    }
 
     var body: some View {
         Button {
@@ -22,10 +35,20 @@ struct TVSwitcherPill: View {
                     .frame(width: 30, height: 30)
                     .background(Look.accent, in: Circle())
                     .shadow(color: Look.violet.opacity(0.6), radius: 6)
-                VStack(alignment: .leading, spacing: 0) {
+                VStack(alignment: .leading, spacing: showsStatus ? 2 : 0) {
                     Text(store.tv?.name ?? "Your TV").font(Look.font(15, .heavy)).foregroundStyle(.white).lineLimit(1)
                         .contentTransition(.opacity)
-                    if let subtitle {
+                    if showsStatus {
+                        HStack(spacing: 4) {
+                            StatusLight(color: connected ? Look.live : .orange, searching: store.reconnecting, blink: blink)
+                            Text(status)
+                                .font(Look.font(11, .bold))
+                                .foregroundStyle(connected ? Look.dim : Color.orange)
+                                .lineLimit(1)
+                                .contentTransition(.opacity)
+                        }
+                        .animation(.easeInOut(duration: 0.25), value: status)
+                    } else if let subtitle {
                         Text(subtitle).font(Look.font(11, .semibold)).foregroundStyle(Look.dim).lineLimit(1)
                     }
                 }
@@ -38,7 +61,44 @@ struct TVSwitcherPill: View {
             .animation(.spring(response: 0.4, dampingFraction: 0.85), value: store.tv?.id)
         }
         .buttonStyle(SquishStyle(scale: 0.95))
-        .accessibilityLabel("TV: \(store.tv?.name ?? "none"). Switch TVs")
+        .accessibilityLabel(showsStatus ? "TV: \(store.tv?.name ?? "none"), \(status). Switch TVs" : "TV: \(store.tv?.name ?? "none"). Switch TVs")
+    }
+}
+
+/// The small light under the TV name: green when connected, orange when not (pulsing while it searches).
+/// It blinks each time a key is sent, like the LED on a real remote. Reduce Motion: it brightens without growing.
+private struct StatusLight: View {
+    let color: Color
+    var searching = false
+    var blink = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private struct Blink {
+        var scale: CGFloat = 1
+        var glow: Double = 0
+    }
+
+    var body: some View {
+        let still = reduceMotion
+        // A new dot when searching starts or stops: LiveDot starts its pulse when it appears.
+        LiveDot(color: color, size: 6, pulsing: searching)
+            .id(searching)
+            .frame(width: 10, height: 10)
+            .keyframeAnimator(initialValue: Blink(), trigger: blink) { dot, b in
+                dot.scaleEffect(still ? 1 : b.scale).brightness(b.glow)
+            } keyframes: { _ in
+                KeyframeTrack(\.scale) {
+                    MoveKeyframe(1)
+                    LinearKeyframe(1.7, duration: 0.05)
+                    CubicKeyframe(1, duration: 0.25)
+                }
+                KeyframeTrack(\.glow) {
+                    MoveKeyframe(0)
+                    LinearKeyframe(0.5, duration: 0.05)
+                    CubicKeyframe(0, duration: 0.3)
+                }
+            }
+            .accessibilityHidden(true)
     }
 }
 

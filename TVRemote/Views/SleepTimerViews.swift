@@ -1,7 +1,8 @@
 import SwiftUI
 import UIKit
 
-/// The Sleep key on the remote: a moon, or the countdown while a timer runs. Tap to pick a length or cancel.
+/// The Sleep key on the remote: SLEEP (a plain label like Info and Exit), or the countdown while a timer runs.
+/// Tap to pick a length or cancel.
 struct SleepTimerKey: View {
     var width: CGFloat = 58
     @State private var showPicker = false
@@ -9,7 +10,6 @@ struct SleepTimerKey: View {
 
     var body: some View {
         Button {
-            UISelectionFeedbackGenerator().selectionChanged()
             showPicker = true
         } label: {
             Group {
@@ -18,11 +18,13 @@ struct SleepTimerKey: View {
                         Text(SleepTimerKey.clock(end.timeIntervalSince(ctx.date)))
                             .font(Look.font(12, .black)).monospacedDigit()
                             .foregroundStyle(Look.accentH)
+                            .lineLimit(1).minimumScaleFactor(0.7)
                     }
                 } else {
-                    Image(systemName: "moon.zzz.fill")
-                        .font(.system(size: 14, weight: .bold))
+                    Text("SLEEP")
+                        .font(Look.font(11, .black)).tracking(1.4)
                         .foregroundStyle(.white.opacity(0.85))
+                        .lineLimit(1).minimumScaleFactor(0.8)
                 }
             }
             .frame(width: width, height: 36)
@@ -30,7 +32,7 @@ struct SleepTimerKey: View {
             .frame(height: 44)
             .contentShape(Rectangle())
         }
-        .buttonStyle(SquishStyle(scale: 0.9))
+        .buttonStyle(RemoteKeyStyle(scale: 0.9, feel: .selection))
         .accessibilityLabel(accessibilityText)
         .sleepTimerPicker(isPresented: $showPicker)
     }
