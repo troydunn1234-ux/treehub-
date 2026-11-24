@@ -57,6 +57,13 @@ struct JourneyView: View {
                             HStack(spacing: SP.s3) {
                                 Image(systemName: "arrow.down.heart").font(.system(size: 18, weight: .light)).foregroundStyle(SP.rose)
                                     .frame(width: 40, height: 40).background(Circle().fill(SP.rose.opacity(0.12)))
+                                    // The slow candle-glow of the other empty states.
+                                    .background {
+                                        Circle()
+                                            .fill(RadialGradient(colors: [SP.rose.opacity(0.22), SP.rose.opacity(0)], center: .center, startRadius: 4, endRadius: 36))
+                                            .frame(width: 72, height: 72)
+                                            .slowBreathe(period: 4.5, low: 0.45, grow: 0.10)
+                                    }
                                     .accessibilityHidden(true)
                                 Text("Practice with your Watch on. After 3 sessions of a practice, the ones that settle you most show here.")
                                     .font(.footnote).foregroundStyle(SP.dim).fixedSize(horizontal: false, vertical: true)

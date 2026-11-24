@@ -212,6 +212,13 @@ struct WatchEmptyRow: View {
                 .font(.system(size: 18, weight: .light)).foregroundStyle(SP.accent)
                 .frame(width: 36, height: 36)
                 .background(Circle().fill(SP.accent.opacity(0.12)))
+                // A soft halo that swells and settles, as on the iPhone (still with Reduce Motion).
+                .background {
+                    Circle()
+                        .fill(RadialGradient(colors: [SP.accent.opacity(0.24), SP.accent.opacity(0)], center: .center, startRadius: 4, endRadius: 32))
+                        .frame(width: 64, height: 64)
+                        .slowBreathe(period: 4.5, low: 0.45, grow: 0.10)
+                }
                 .accessibilityHidden(true)
             Text(title).font(SP.rounded(14, .semibold)).foregroundStyle(SP.ink).multilineTextAlignment(.center)
             Text(hint).font(SP.rounded(11)).foregroundStyle(SP.dim).multilineTextAlignment(.center)

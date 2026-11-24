@@ -321,7 +321,7 @@ extension Suggestion {
         case "focus": return String(localized: "focus")
         case "night": return String(localized: "wind down")
         case "evening": return String(localized: "let the day settle")
-        case "morning": return String(localized: "start steady")
+        case "morning": return String(localized: "start the day steady")
         case "afternoon": return String(localized: "reset and refocus")
         default:
             switch goal {

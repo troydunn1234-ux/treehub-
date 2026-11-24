@@ -5393,12 +5393,12 @@
         }
       }
     },
-    "start steady": {
+    "start the day steady": {
       "localizations": {
         "es": {
           "stringUnit": {
             "state": "translated",
-            "value": "empezar con calma"
+            "value": "empezar el día con calma"
           }
         }
       }
