@@ -10,8 +10,8 @@ extension TopSpeedRepair {
     /// Now a few trips at a time: only their stored route bytes are read here (SwiftData objects stay on the main
     /// actor); decoding and checking run in the background. A trip deleted or edited in the meantime is left alone.
     @MainActor
-    static func runOnce(in context: ModelContext) async -> Int {
-        guard !TrackDemo.isOn, !UserDefaults.standard.bool(forKey: doneKey) else { return 0 }
+    static func runOnce(in context: ModelContext, defaults: UserDefaults = .standard) async -> Int {
+        guard !TrackDemo.isOn, !defaults.bool(forKey: doneKey) else { return 0 }
         guard let all = try? context.fetch(FetchDescriptor<Activity>()) else { return 0 }
         let trips = all.filter { $0.rawMaxSpeed == nil && $0.maxSpeed.isFinite && $0.maxSpeed > 0 }
         var changed = 0
@@ -35,7 +35,7 @@ extension TopSpeedRepair {
         }
         do {
             if changed > 0 { try context.save() }
-            UserDefaults.standard.set(true, forKey: doneKey)
+            defaults.set(true, forKey: doneKey)
         } catch {
             context.rollback()
         }

@@ -225,12 +225,17 @@ final class TopSpeedTests: XCTestCase {
         XCTAssertNil(TopSpeedRepair.corrected(maxSpeed: 30, routeData: data, kind: .drive), "never raised")
     }
 
-    /// The once-per-install repair on a real (in-memory) store: lowers only the spiky trip, keeps the original,
+    /// The once-per-install repair on a real (on-disk) store: lowers only the spiky trip, keeps the original,
     /// sets its flag after saving, and does nothing the second time.
     @MainActor
     func testRunOnceRepairsAStoreOnce() async throws {
-        let container = try ModelContainer(for: Activity.self, GasVehicle.self, FillUp.self,
-                                           configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        // On disk like the app's store (routes are kept as external files), in a temporary folder.
+        let dir = FileManager.default.temporaryDirectory.appending(path: "repair-\(UUID().uuidString)")
+        try FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+        defer { try? FileManager.default.removeItem(at: dir) }
+        let schema = Schema([Activity.self, GasVehicle.self, FillUp.self])
+        let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema,
+                                           url: dir.appending(path: "test.store"), cloudKitDatabase: .none))
         let context = container.mainContext
         var spiky = Array(repeating: 30.0, count: 300); spiky[150] = 75
         let bad = trip(.drive, spiky, recordedTop: 75)
@@ -239,14 +244,13 @@ final class TopSpeedTests: XCTestCase {
         [bad, good, noRoute].forEach { context.insert($0) }
         try context.save()
 
-        let defaults = UserDefaults.standard
-        let saved = defaults.object(forKey: TopSpeedRepair.doneKey)
-        defer {
-            if let saved { defaults.set(saved, forKey: TopSpeedRepair.doneKey) } else { defaults.removeObject(forKey: TopSpeedRepair.doneKey) }
-        }
-        defaults.removeObject(forKey: TopSpeedRepair.doneKey)
+        // Its own defaults, so the app hosting the tests (which runs the same repair at launch) can't race it.
+        let suite = "repair-test-\(UUID().uuidString)"
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: suite))
+        defer { defaults.removePersistentDomain(forName: suite) }
+        XCTAssertNotNil(bad.routeData)
 
-        let changed = await TopSpeedRepair.runOnce(in: context)
+        let changed = await TopSpeedRepair.runOnce(in: context, defaults: defaults)
         XCTAssertEqual(changed, 1)
         XCTAssertEqual(bad.maxSpeed, 30, accuracy: 0.01)
         XCTAssertEqual(bad.rawMaxSpeed, 75)
@@ -255,7 +259,7 @@ final class TopSpeedTests: XCTestCase {
         XCTAssertEqual(noRoute.maxSpeed, 75); XCTAssertNil(noRoute.rawMaxSpeed)
         XCTAssertTrue(defaults.bool(forKey: TopSpeedRepair.doneKey))
         XCTAssertFalse(context.hasChanges, "saved")
-        let again = await TopSpeedRepair.runOnce(in: context)
+        let again = await TopSpeedRepair.runOnce(in: context, defaults: defaults)
         XCTAssertEqual(again, 0)
     }
 
