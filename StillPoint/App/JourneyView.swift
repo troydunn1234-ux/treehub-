@@ -333,7 +333,9 @@ struct SettingsView: View {
                     if reminders.enabled && reminders.denied {
                         Text("Notifications are off for Still Pointz. Turn them on in the Settings app to get the reminder.")
                     } else {
-                        Text("A quiet nudge once a day, at a time you choose. Nothing else, ever.")
+                        // No "Nothing else, ever." any more: the morning / bedtime picks below and the sauna check-in
+                        // are notifications too.
+                        Text("A quiet nudge once a day, at a time you choose.")
                     }
                 }
                 DailyMomentsSettings()

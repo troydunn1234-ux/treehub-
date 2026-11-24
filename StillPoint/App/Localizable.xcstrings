@@ -5632,6 +5632,16 @@
           }
         }
       }
+    },
+    "A quiet nudge once a day, at a time you choose.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Un aviso discreto una vez al día, a la hora que elijas."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

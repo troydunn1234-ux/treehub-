@@ -106,7 +106,7 @@ struct WatchRoot: View {
             }
             // The same time-of-day sky as Today on the iPhone (dawn, day, dusk, night).
             .background(SkyBackground().opacity(0.9))
-            .navigationTitle("Still Point")
+            .navigationTitle("Still Pointz")
             .navigationDestination(for: Intention.self) { i in
                 PracticeList(title: i.name, practices: lib.practices(for: i), onStart: start)
             }
