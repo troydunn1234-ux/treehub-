@@ -393,7 +393,8 @@ private struct ArrowPad: View {
     }
 }
 
-/// An arrow key that fires once on touch, then repeats while held.
+/// An arrow key that fires once on touch, then repeats while held. A cancelled touch never reaches onEnded, so the
+/// repeat also stops when `touching` (a gesture state, which resets on cancel too) goes false.
 private struct RepeatKey: View {
     let symbol: String
     let label: String
@@ -401,6 +402,7 @@ private struct RepeatKey: View {
     let fire: () -> Void
     @State private var held = false
     @State private var timer: Timer?
+    @GestureState private var touching = false
 
     var body: some View {
         Image(systemName: symbol)
@@ -412,9 +414,11 @@ private struct RepeatKey: View {
             .contentShape(Rectangle())
             .gesture(
                 DragGesture(minimumDistance: 0)
+                    .updating($touching) { _, down, _ in down = true }
                     .onChanged { _ in if !held { begin() } }
                     .onEnded { _ in end() }
             )
+            .onChange(of: touching) { _, down in if !down { end() } }
             .onDisappear { end() }
             .accessibilityElement()
             .accessibilityLabel(label)

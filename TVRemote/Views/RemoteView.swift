@@ -445,6 +445,8 @@ private struct TouchPad: View {
     @State private var taps = 0
     /// The OK disc rocks a few points toward each move, like a real d-pad.
     @State private var rock: CGSize = .zero
+    /// True while a finger is on the pad; unlike onEnded this also resets when the touch is cancelled.
+    @GestureState private var padDown = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// The OK disc and the edge arrows scale with the pad so they never crowd each other.
@@ -486,6 +488,25 @@ private struct TouchPad: View {
         .frame(width: size, height: size)
         .sensoryFeedback(.impact(flexibility: .rigid, intensity: 0.55), trigger: steps)
         .sensoryFeedback(.impact(flexibility: .solid, intensity: 0.9), trigger: taps)
+        .onChange(of: padDown) { _, down in if !down { touchCancelled() } }
+    }
+
+    /// A cancelled touch (a system swipe, a call, a sheet coming up) never reaches onEnded. Drop its swipe so the next
+    /// touch starts fresh instead of firing a move measured from the old finger position, unlight the rim, and let
+    /// the trail fade so the pad's timeline can pause. After a normal lift onEnded has already cleared `anchor`.
+    private func touchCancelled() {
+        guard anchor != nil else { return }
+        anchor = nil
+        touching = false
+        clearTrail()
+    }
+
+    private func clearTrail() {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+            let cut = Date().addingTimeInterval(-0.7)
+            trail.removeAll { $0.t < cut }
+            ripples.removeAll { $0.t < cut }
+        }
     }
 
     private var surface: some View {
@@ -565,6 +586,7 @@ private struct TouchPad: View {
 
     private var padGesture: some Gesture {
         DragGesture(minimumDistance: 0, coordinateSpace: .local)
+            .updating($padDown) { _, down, _ in down = true }
             .onChanged { v in
                 if anchor == nil {
                     anchor = v.startLocation
@@ -593,11 +615,7 @@ private struct TouchPad: View {
                 anchor = nil
                 presses = 0
                 touching = false
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
-                    let cut = Date().addingTimeInterval(-0.7)
-                    trail.removeAll { $0.t < cut }
-                    ripples.removeAll { $0.t < cut }
-                }
+                clearTrail()
             }
     }
 
@@ -730,6 +748,9 @@ private struct SmallKey: View {
 }
 
 /// Fires once on touch-down, then repeats every 0.18 s while held; each step clicks.
+/// A cancelled touch (a system swipe, a call, a sheet, the app leaving the screen) never reaches onEnded, so the
+/// repeat also stops when `touching` (a gesture state, which resets on cancel too) goes false, when the key goes
+/// away, and after a long hold at most: a stuck repeat would run the TV's volume all the way up or down.
 private struct HoldButton: View {
     let symbol: String
     let label: String
@@ -738,11 +759,21 @@ private struct HoldButton: View {
     @State private var holding = false
     @State private var loop: Task<Void, Never>?
     @State private var clicks = 0
+    @GestureState private var touching = false
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    /// About 20 s of repeats: more than the whole volume range on any TV.
+    private static let maxRepeats = 110
 
     private func step() {
         clicks += 1
         action()
+    }
+
+    private func stop() {
+        holding = false
+        loop?.cancel()
+        loop = nil
     }
 
     var body: some View {
@@ -760,6 +791,7 @@ private struct HoldButton: View {
             .sensoryFeedback(.impact(flexibility: .rigid, intensity: 0.65), trigger: clicks)
             .gesture(
                 DragGesture(minimumDistance: 0)
+                    .updating($touching) { _, down, _ in down = true }
                     .onChanged { _ in
                         guard !holding else { return }
                         holding = true
@@ -767,18 +799,18 @@ private struct HoldButton: View {
                         loop?.cancel()
                         loop = Task { @MainActor in
                             try? await Task.sleep(nanoseconds: 450_000_000)
-                            while !Task.isCancelled && holding {
+                            var repeats = 0
+                            while !Task.isCancelled && holding && repeats < Self.maxRepeats {
                                 step()
+                                repeats += 1
                                 try? await Task.sleep(nanoseconds: 180_000_000)
                             }
                         }
                     }
-                    .onEnded { _ in
-                        holding = false
-                        loop?.cancel()
-                        loop = nil
-                    }
+                    .onEnded { _ in stop() }
             )
+            .onChange(of: touching) { _, down in if !down { stop() } }
+            .onDisappear { stop() }
             .accessibilityElement()
             .accessibilityLabel(label)
             .accessibilityAddTraits(.isButton)
