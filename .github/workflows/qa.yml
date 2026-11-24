@@ -3,7 +3,7 @@ name: Simulator QA
 # Run by hand: builds each chosen app (Debug) for the simulator, launches it in demo mode on every screen
 # listed in .github/qa/<app>.json (including large Dynamic Type and light mode passes), and uploads the
 # screenshots, per-launch app logs and crash reports as the qa-<app> artifact (and the qa-<app> branch).
-# Nothing is sent to App Store Connect. The screenshot pass has a 40-minute budget per app (screens left after
+# Nothing is sent to App Store Connect. The screenshot pass has a 50-minute budget per app (screens left after
 # that are listed as SKIPPED in summary.txt) and every step has a timeout, so a slow runner can't stall a run.
 on:
   workflow_dispatch:
@@ -34,7 +34,7 @@ jobs:
   qa:
     needs: pick
     runs-on: macos-15-intel
-    timeout-minutes: 90
+    timeout-minutes: 105
     strategy:
       fail-fast: false
       matrix:
@@ -86,10 +86,10 @@ jobs:
           ls -d build/Build/Products/Debug-watchsimulator/*.app || true
 
       - name: Launch every screen and capture
-        timeout-minutes: 50
+        timeout-minutes: 60
         env:
           PYTHONUNBUFFERED: "1"
-          QA_BUDGET_MIN: "40"
+          QA_BUDGET_MIN: "50"
           QA_SKIP: ${{ inputs.skip }}
           # Live 3D maps (MapKit, realistic elevation) on the Intel simulators: every Roamr pass that showed one since
           # Nov 15 ended with GitHub losing contact with the runner and keeping no log. Skipped unless maps=true.

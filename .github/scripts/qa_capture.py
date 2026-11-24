@@ -10,10 +10,11 @@ qa.json: {"scheme", "bundle", "location"?, "grant"?: [...],
 Writes <out>/<name>.png, <out>/logs/<name>.log, <out>/crashes/*, <out>/summary.txt. Demo data only.
 
 It never hangs silently: every simctl call has a timeout, the whole pass has a time budget (QA_BUDGET_MIN, default
-40; screens still to do when it runs out are listed as SKIPPED), a line with the runner's load, free memory and
+50; screens still to do when it runs out are listed as SKIPPED), a line with the runner's load, free memory and
 busiest processes is printed at least once a minute while anything is slow, and summary.txt is rewritten after
 every screen, so a run that is cut short still shows how far it got. The app is stopped as soon as its screenshot
-is taken (before its log is read), and stopped early if it grows past QA_APP_MAX_MB (default 3072) of memory.
+is taken, and stopped early if it grows past QA_APP_MAX_MB (default 3072) of memory. Its log is read once per pass
+and split by time into each screen's log (a log show per screen took a minute or two on these runners).
 QA_SKIP (a regex matched against screen names) and QA_SKIP_ARGS (matched against a screen's launch arguments,
 reason in QA_SKIP_ARGS_WHY) leave screens out: qa.yml uses QA_SKIP_ARGS for screens with a live 3D map, which
 have taken the Intel runner down every time (GitHub "lost communication" with it and kept no log).
@@ -31,7 +32,7 @@ for d in ("", "logs", "crashes"):
 summary = []
 CRASH_DIR = os.path.expanduser("~/Library/Logs/DiagnosticReports")
 started = time.time()
-BUDGET = float(os.environ.get("QA_BUDGET_MIN") or 40) * 60
+BUDGET = float(os.environ.get("QA_BUDGET_MIN") or 50) * 60
 DEADLINE = started + BUDGET
 MAX_MB = float(os.environ.get("QA_APP_MAX_MB") or 3072)
 
@@ -53,7 +54,8 @@ pub_lock = threading.Lock()
 APP_NAME = cfg["scheme"]
 counts = {"OK": 0, "CRASH": 0, "KILLED": 0, "SKIPPED": 0}
 busy = {"what": "starting", "since": time.time()}    # what we are waiting on, for the heartbeat
-logs = {"on": True, "slow": 0}
+windows = []                                       # (screen name, start, end) of this pass, for its app log
+line_of = {}                                       # screen name -> its line in summary
 
 
 def clock():
@@ -103,9 +105,11 @@ def save_summary():
     open(os.path.join(out, "summary.txt"), "w").write("\n".join(summary) + "\n")
 
 
-def note(line, level=None):
+def note(line, level=None, screen=None):
     """A result line: printed, added to summary.txt right away, and (level) shown on the run's page."""
     say(line)
+    if screen:
+        line_of[screen] = len(summary)
     summary.append(line)
     save_summary()
     if level:
@@ -314,31 +318,54 @@ def run(udid, bundle, exe, shots, prefix=""):
             more, killed = watch(pid, 8, name + " launch screen")
             peak = max(peak, more)
             sh("xcrun", "simctl", "io", udid, "screenshot", shot, timeout=120)
-        # Stop the app before reading its log, so a busy (map) screen isn't still drawing meanwhile.
+        # Stop the app right after its screenshot, so a busy screen isn't still drawing meanwhile. Its log is read
+        # once for the whole pass (collect_logs): a log show per screen took a minute or two on these runners.
         sh("xcrun", "simctl", "terminate", udid, bundle, timeout=90)
-        faults = []
-        if logs["on"]:
-            secs = int(time.time() - t0) + 5
-            log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--last", f"{secs}s", "--style", "compact",
-                     "--predicate", f'process == "{exe}"', timeout=120)
-            if log.stderr == "timeout":
-                logs["slow"] += 1
-                if logs["slow"] >= 2:
-                    logs["on"] = False
-                    print("  (app logs are off for the rest of this pass: log show keeps timing out on this runner)")
-            open(os.path.join(out, "logs", name + ".log"), "w").write(log.stdout)
-            # Compact style: "<date> <time> <type> <process>[pid:tid] ..."; E = error, F = fault.
-            faults = [l for l in log.stdout.splitlines() if re.match(r"^\S+ \S+ (E|F)\s", l)]
-            open(os.path.join(out, "logs", name + ".errors.log"), "w").write("\n".join(faults))
+        windows.append((name, t0, time.time()))
         status = "KILLED" if killed else ("OK" if ok else "CRASH")
         counts[status] += 1
-        extra = f"  [{len(faults)} error/fault log lines]" if faults else ""
+        extra = ""
         if killed:
             extra += f"  (stopped: the app passed {MAX_MB:.0f} MB of memory)"
         took = f"  ({int(time.time() - t0)}s" + (f", {peak} MB" if peak else "") + ")"
-        note(f"{status + ' ':<6}{name}  {args}{extra}{took}", None if status == "OK" else "warning")
+        note(f"{status + ' ':<6}{name}  {args}{extra}{took}", None if status == "OK" else "warning", screen=name)
         say(f"  {machine()}")
         publish(name)
+
+
+def collect_logs(udid, exe):
+    """One log show for the pass just done, split by time into logs/<screen>.log and .errors.log; screens with
+    error/fault lines get the count added to their summary line."""
+    if not windows:
+        return
+    stamp = lambda t: time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(t))
+    log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--start", stamp(windows[0][1] - 2), "--end",
+             stamp(windows[-1][2] + 2), "--style", "compact", "--predicate", f'process == "{exe}"',
+             timeout=int(min(600, max(180, left() + 300))))
+    if log.stderr == "timeout":
+        say("  (no app logs for this pass: log show timed out)")
+        windows.clear()
+        return
+    per = {n: [] for n, _, _ in windows}
+    for line in log.stdout.splitlines():
+        m = re.match(r"^(\d{4}-\d\d-\d\d \d\d:\d\d:\d\d)(\.\d+)?\s", line)
+        if not m:
+            continue
+        t = time.mktime(time.strptime(m.group(1), "%Y-%m-%d %H:%M:%S")) + float(m.group(2) or 0)
+        for n, a, b in windows:
+            if a - 1 <= t <= b + 1:
+                per[n].append(line)
+                break
+    for n, lines in per.items():
+        open(os.path.join(out, "logs", n + ".log"), "w").write("\n".join(lines) + "\n")
+        # Compact style: "<date> <time> <type> <process>[pid:tid] ..."; E = error, F = fault.
+        faults = [l for l in lines if re.match(r"^\S+ \S+ (E|F)\s", l)]
+        open(os.path.join(out, "logs", n + ".errors.log"), "w").write("\n".join(faults))
+        if faults and n in line_of:
+            summary[line_of[n]] += f"  [{len(faults)} error/fault log lines]"
+    save_summary()
+    say(f"  app logs: {sum(len(v) for v in per.values())} lines for {len(per)} screens")
+    windows.clear()
 
 
 # ---- iPhone
@@ -366,6 +393,7 @@ for svc in cfg.get("grant", []):
 if cfg.get("location"):
     sh("xcrun", "simctl", "location", udid, "set", cfg["location"])
 run(udid, cfg["bundle"], executable(app), cfg["shots"])
+collect_logs(udid, executable(app))
 sh("xcrun", "simctl", "ui", udid, "content_size", "large")
 sh("xcrun", "simctl", "shutdown", udid, timeout=180)
 
@@ -386,6 +414,7 @@ if w:
             if boot(wid, "Watch"):
                 sh("xcrun", "simctl", "install", wid, wapp, timeout=300)
                 run(wid, w["bundle"], executable(wapp), w["shots"], prefix="watch-")
+                collect_logs(wid, executable(wapp))
             sh("xcrun", "simctl", "shutdown", wid, timeout=180)
         else:
             note("NO WATCH SIMULATOR")
