@@ -77,6 +77,20 @@ def blank(path):
         return False
 
 
+last_shot = {"path": None, "args": None}
+
+
+def same_as(path, other):
+    """True when two captures look the same (the screen asked for hadn't opened yet: a sheet or session that a
+    slow cold start presents late, so the shot still showed the previous screen)."""
+    try:
+        from PIL import Image, ImageChops, ImageStat
+        a, b = (Image.open(p).convert("L").resize((120, 260)) for p in (path, other))
+        return ImageStat.Stat(ImageChops.difference(a, b)).mean[0] < 2.0
+    except Exception:
+        return False
+
+
 def is_running(udid, bundle):
     r = sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", quiet=True, timeout=60)
     return r.stderr == "timeout" or bundle in r.stdout   # a hung launchctl says nothing about the app
@@ -100,6 +114,15 @@ def shoot(udid, bundle, args, wait, path, route=None, section=None):
         print("  (still loading, waiting)")
         time.sleep(10)
         sh("xcrun", "simctl", "io", udid, "screenshot", path)
+    # Same picture as the previous shot with other arguments? Its screen hadn't opened yet: give it longer.
+    prev = last_shot["path"]
+    for _ in range(3):
+        if not (prev and prev != path and last_shot["args"] != args and os.path.exists(prev) and same_as(path, prev)):
+            break
+        print("  (looks like the previous screen, waiting)")
+        time.sleep(10)
+        sh("xcrun", "simctl", "io", udid, "screenshot", path)
+    last_shot.update(path=path, args=args)
     if route:
         sh("xcrun", "simctl", "location", udid, "clear", quiet=True)
     print(("OK    " if ok else "CRASH ") + os.path.basename(path), args)

@@ -28,12 +28,12 @@
     {
       "file": "rb-2-log.png",
       "args": "-demo -pro -hugLog",
-      "wait": 9
+      "wait": 16
     },
     {
       "file": "rb-3-celebrate.png",
       "args": "-demo -pro -celebrate",
-      "wait": 10
+      "wait": 18
     },
     {
       "file": "rb-4-grove.png",

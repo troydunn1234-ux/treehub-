@@ -33,7 +33,7 @@
     {
       "file": "sp-4-move.png",
       "args": "-demo -pro -session baduanjin",
-      "wait": 9
+      "wait": 15
     },
     {
       "file": "sp-5-journey.png",

@@ -110,7 +110,7 @@
     {
       "file": "clicker-4-switcher.png",
       "args": "-demo -pro -switcher",
-      "wait": 8
+      "wait": 14
     },
     {
       "file": "clicker-0-setup.png",
