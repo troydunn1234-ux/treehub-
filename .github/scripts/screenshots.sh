@@ -7,23 +7,13 @@ mkdir -p shots
 # Only when Rootbound was built this run.
 [ -d "$APP" ] || { echo "Rootbound not built; skipping"; exit 0; }
 
-UDID=$(xcrun simctl list devices available -j | python3 -c '
-import json,sys,re
-d=json.load(sys.stdin)["devices"]
-best=None
-for rt,devs in d.items():
-    if "iOS" not in rt: continue
-    ver=tuple(int(x) for x in re.findall(r"\d+",rt.split("iOS")[-1]))
-    for dv in devs:
-        n=dv["name"]
-        if not n.startswith("iPhone"): continue
-        score=(ver, "Pro Max" in n, "Pro" in n)
-        if best is None or score>best[0]: best=(score,dv["udid"],n,rt)
-print(best[1]); sys.stderr.write("Simulator: %s %s\n"%(best[2],best[3]))
-')
+# Newest iOS runtime's iPhone Pro Max (or the closest there is), booted; skip with a warning when none is usable.
+UDID=$(python3 .github/scripts/sim_pick.py --boot)
+if [ -z "$UDID" ]; then
+  echo "::warning title=Rootbound screenshots skipped::No usable iPhone simulator on this runner."
+  exit 0
+fi
 echo "UDID=$UDID"
-xcrun simctl boot "$UDID" || true
-xcrun simctl bootstatus "$UDID" -b
 xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
 xcrun simctl install "$UDID" "$APP"
 for svc in location location-always motion photos; do xcrun simctl privacy "$UDID" grant $svc $BUNDLE || true; done

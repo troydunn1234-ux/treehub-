@@ -8,8 +8,17 @@ qa.json: {"scheme", "bundle", "location"?, "grant"?: [...],
                      "appearance"? ("light"/"dark"), "url"? (opened after launch)}],
           "watch"?: {"product", "bundle", "shots": [...]}}
 Writes <out>/<name>.png, <out>/logs/<name>.log, <out>/crashes/*, <out>/summary.txt. Demo data only.
+
+It never hangs silently: every simctl call has a timeout, the whole pass has a time budget (QA_BUDGET_MIN, default
+40; screens still to do when it runs out are listed as SKIPPED), a line with the runner's load, free memory and
+busiest processes is printed at least once a minute while anything is slow, and summary.txt is rewritten after
+every screen, so a run that is cut short still shows how far it got. The app is stopped as soon as its screenshot
+is taken (before its log is read), and stopped early if it grows past QA_APP_MAX_MB (default 3072) of memory:
+Roamr's map screens on the Intel runners used to keep the machine so busy for so long that GitHub lost contact
+with it. QA_SKIP (a regex matched against screen names) leaves screens out.
+Exit code 1 only when not a single screen could be captured (no simulator, it didn't boot, app missing).
 """
-import functools, glob, json, os, plistlib, re, shutil, subprocess, sys, time
+import functools, glob, json, os, plistlib, re, shutil, subprocess, sys, threading, time
 print = functools.partial(print, flush=True)
 
 cfg = json.load(open(sys.argv[1]))
@@ -19,25 +28,117 @@ for d in ("", "logs", "crashes"):
 summary = []
 CRASH_DIR = os.path.expanduser("~/Library/Logs/DiagnosticReports")
 started = time.time()
+BUDGET = float(os.environ.get("QA_BUDGET_MIN") or 40) * 60
+DEADLINE = started + BUDGET
+MAX_MB = float(os.environ.get("QA_APP_MAX_MB") or 3072)
+try:
+    SKIP = re.compile(os.environ["QA_SKIP"]) if os.environ.get("QA_SKIP", "").strip() else None
+except re.error as e:
+    print(f"::warning title=QA {cfg['scheme']}::QA_SKIP is not a valid regex ({e}); no screens are skipped")
+    SKIP = None
+APP_NAME = cfg["scheme"]
+counts = {"OK": 0, "CRASH": 0, "KILLED": 0, "SKIPPED": 0}
+busy = {"what": "starting", "since": time.time()}    # what we are waiting on, for the heartbeat
+logs = {"on": True, "slow": 0}
+
+
+def clock():
+    m, s = divmod(int(time.time() - started), 60)
+    return f"[{m:02d}:{s:02d}]"
+
+
+def left():
+    return DEADLINE - time.time()
+
+
+def save_summary():
+    open(os.path.join(out, "summary.txt"), "w").write("\n".join(summary) + "\n")
+
+
+def note(line, level=None):
+    """A result line: printed, added to summary.txt right away, and (level) shown on the run's page."""
+    print(f"{clock()} {line}")
+    summary.append(line)
+    save_summary()
+    if level:
+        print(f"::{level} title=QA {APP_NAME}::{line}")
+
+
+def machine():
+    """Load, free memory, swap and the busiest processes, in one line."""
+    parts = []
+    try:
+        parts.append(f"load {os.getloadavg()[0]:.1f} on {os.cpu_count()} cpus")
+    except OSError:
+        pass
+    try:
+        vm = subprocess.run(["vm_stat"], capture_output=True, text=True, timeout=10).stdout
+        page = int(re.search(r"page size of (\d+)", vm).group(1))
+        free = sum(int(re.search(rf"{k}:\s+(\d+)", vm).group(1)) for k in ("Pages free", "Pages inactive", "Pages speculative"))
+        parts.append(f"~{free * page >> 20} MB free")
+        sw = subprocess.run(["sysctl", "-n", "vm.swapusage"], capture_output=True, text=True, timeout=10).stdout
+        m = re.search(r"used = ([\d.]+)M", sw)
+        if m:
+            parts.append(f"swap {float(m.group(1)):.0f} MB")
+    except Exception:
+        pass
+    try:
+        rows = subprocess.run(["ps", "-Ao", "pcpu=,rss=,comm=", "-r"], capture_output=True, text=True, timeout=10).stdout
+        top = []
+        for row in rows.splitlines()[:3]:
+            cpu, rss, comm = row.split(None, 2)
+            top.append(f"{os.path.basename(comm)} {cpu}% {int(rss) >> 10} MB")
+        parts.append("busiest: " + ", ".join(top))
+    except Exception:
+        pass
+    return "; ".join(parts)
+
+
+def heartbeat():
+    while True:
+        time.sleep(60)
+        waited = time.time() - busy["since"]
+        if waited >= 50:
+            print(f"{clock()}   ... still on {busy['what']} ({int(waited)}s); {machine()}")
+
+
+threading.Thread(target=heartbeat, daemon=True).start()
 
 
 def sh(*cmd, timeout=240):
+    t = max(10, min(timeout, left() + 120))    # nothing runs far past the budget
+    busy.update(what=" ".join(c for c in cmd[1:6] if not re.fullmatch(r"[0-9A-F-]{36}", c))[:70], since=time.time())
     try:
-        return subprocess.run(list(cmd), capture_output=True, text=True, timeout=timeout)
+        return subprocess.run(list(cmd), capture_output=True, text=True, timeout=t)
     except subprocess.TimeoutExpired:
-        print("  ! timed out:", " ".join(cmd[:6]))
+        print(f"{clock()}   ! timed out after {int(t)}s: {' '.join(cmd[:6])}")
         return subprocess.CompletedProcess(cmd, 1, "", "timeout")
 
 
 def pick(platform, prefer):
     best = None
-    for rt, devs in json.loads(sh("xcrun", "simctl", "list", "devices", "available", "-j").stdout)["devices"].items():
+    try:
+        devs_by_rt = json.loads(sh("xcrun", "simctl", "list", "devices", "available", "-j", timeout=120).stdout)["devices"]
+    except Exception:
+        return None
+    for rt, devs in devs_by_rt.items():
         if platform not in rt: continue
         ver = tuple(int(x) for x in re.findall(r"\d+", rt.split(platform)[-1]))
         for dv in devs:
             score = (ver, prefer(dv["name"]))
             if best is None or score > best[0]: best = (score, dv["udid"], dv["name"], rt)
     return best
+
+
+def boot(udid, label):
+    sh("xcrun", "simctl", "boot", udid, timeout=300)
+    sh("xcrun", "simctl", "bootstatus", udid, "-b", timeout=min(900, max(60, left())))
+    r = sh("xcrun", "simctl", "list", "devices", "booted", timeout=60)
+    if udid not in r.stdout:
+        note(f"FAILED {label} simulator did not boot in {int(time.time() - started)}s", "error")
+        return False
+    print(f"{clock()} {label} simulator booted; {machine()}")
+    return True
 
 
 def executable(app):
@@ -58,7 +159,44 @@ def flat(path):
         return False
 
 
-def running(udid, bundle):
+def rss_mb(pid):
+    """The app's memory in MB (simulator apps are ordinary processes on the runner), or None once it's gone."""
+    try:
+        r = subprocess.run(["ps", "-o", "rss=", "-p", str(pid)], capture_output=True, text=True, timeout=10)
+        return int(r.stdout.split()[0]) >> 10 if r.stdout.strip() else None
+    except Exception:
+        return 0
+
+
+def watch(pid, secs, what):
+    """Wait `secs` while the app is on screen; stop it if it passes MAX_MB. Returns (peak MB, killed)."""
+    busy.update(what=what, since=time.time())
+    end, peak = time.time() + secs, 0
+    while True:
+        mb = rss_mb(pid) if pid else 0
+        if mb is None:
+            return peak, False          # it quit; the running check reports that
+        peak = max(peak, mb)
+        if mb > MAX_MB:
+            try:
+                os.kill(pid, 9)
+            except OSError:
+                pass
+            return peak, True
+        if time.time() >= end:
+            return peak, False
+        time.sleep(min(2, max(0.1, end - time.time())))
+
+
+def running(udid, bundle, pid):
+    if pid:
+        try:
+            os.kill(pid, 0)
+            return True
+        except ProcessLookupError:
+            return False
+        except PermissionError:
+            return True
     r = sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", timeout=60)
     return r.stderr == "timeout" or bundle in r.stdout
 
@@ -66,75 +204,107 @@ def running(udid, bundle):
 def run(udid, bundle, exe, shots, prefix=""):
     for s in shots:
         name = prefix + s["name"]
-        sh("xcrun", "simctl", "terminate", udid, bundle)
-        sh("xcrun", "simctl", "ui", udid, "content_size", s.get("size", "large"))
-        sh("xcrun", "simctl", "ui", udid, "appearance", s.get("appearance", "dark"))
+        args = s.get("args", "")
+        if SKIP and SKIP.search(name):
+            counts["SKIPPED"] += 1
+            note(f"SKIPPED {name}  {args}  (QA_SKIP)")
+            continue
+        if left() < 60:
+            counts["SKIPPED"] += 1
+            note(f"SKIPPED {name}  {args}  (the {BUDGET / 60:.0f}-minute budget for this pass is used up)", "warning")
+            continue
         t0 = time.time()
-        r = sh("xcrun", "simctl", "launch", udid, bundle, *s.get("args", "").split())
+        sh("xcrun", "simctl", "terminate", udid, bundle, timeout=90)
+        sh("xcrun", "simctl", "ui", udid, "content_size", s.get("size", "large"), timeout=90)
+        sh("xcrun", "simctl", "ui", udid, "appearance", s.get("appearance", "dark"), timeout=90)
+        r = sh("xcrun", "simctl", "launch", udid, bundle, *args.split(), timeout=180)
         if r.returncode:
             print("  ! launch:", (r.stderr or r.stdout).strip()[:300])
+        m = re.search(r":\s*(\d+)\s*$", r.stdout.strip())
+        pid = int(m.group(1)) if m else None
         if s.get("url"):
             time.sleep(4)
-            sh("xcrun", "simctl", "openurl", udid, s["url"])
-        time.sleep(float(s.get("wait", 8)))
-        ok = running(udid, bundle)
+            sh("xcrun", "simctl", "openurl", udid, s["url"], timeout=90)
+        peak, killed = watch(pid, float(s.get("wait", 8)), name + " on screen")
+        ok = not killed and running(udid, bundle, pid)
         shot = os.path.join(out, name + ".png")
-        sh("xcrun", "simctl", "io", udid, "screenshot", shot)
+        sh("xcrun", "simctl", "io", udid, "screenshot", shot, timeout=120)
         # Still on the plain launch screen (slow cold start on the CI Mac)? Wait and take it again.
         for _ in range(4):
-            if not flat(shot): break
+            if killed or left() < 30 or not flat(shot): break
             print("  (still on the launch screen, waiting)")
-            time.sleep(8)
-            sh("xcrun", "simctl", "io", udid, "screenshot", shot)
-        secs = int(time.time() - t0) + 5
-        log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--last", f"{secs}s", "--style", "compact",
-                 "--predicate", f'process == "{exe}"', timeout=180)
-        open(os.path.join(out, "logs", name + ".log"), "w").write(log.stdout)
-        # Compact style: "<date> <time> <type> <process>[pid:tid] ..."; E = error, F = fault.
-        faults = [l for l in log.stdout.splitlines() if re.match(r"^\S+ \S+ (E|F)\s", l)]
-        open(os.path.join(out, "logs", name + ".errors.log"), "w").write("\n".join(faults))
-        line = ("OK    " if ok else "CRASH ") + name + "  " + s.get("args", "") + (f"  [{len(faults)} error/fault log lines]" if faults else "")
-        print(line)
-        summary.append(line)
+            more, killed = watch(pid, 8, name + " launch screen")
+            peak = max(peak, more)
+            sh("xcrun", "simctl", "io", udid, "screenshot", shot, timeout=120)
+        # Stop the app before reading its log, so a busy (map) screen isn't still drawing meanwhile.
+        sh("xcrun", "simctl", "terminate", udid, bundle, timeout=90)
+        faults = []
+        if logs["on"]:
+            secs = int(time.time() - t0) + 5
+            log = sh("xcrun", "simctl", "spawn", udid, "log", "show", "--last", f"{secs}s", "--style", "compact",
+                     "--predicate", f'process == "{exe}"', timeout=120)
+            if log.stderr == "timeout":
+                logs["slow"] += 1
+                if logs["slow"] >= 2:
+                    logs["on"] = False
+                    print("  (app logs are off for the rest of this pass: log show keeps timing out on this runner)")
+            open(os.path.join(out, "logs", name + ".log"), "w").write(log.stdout)
+            # Compact style: "<date> <time> <type> <process>[pid:tid] ..."; E = error, F = fault.
+            faults = [l for l in log.stdout.splitlines() if re.match(r"^\S+ \S+ (E|F)\s", l)]
+            open(os.path.join(out, "logs", name + ".errors.log"), "w").write("\n".join(faults))
+        status = "KILLED" if killed else ("OK" if ok else "CRASH")
+        counts[status] += 1
+        extra = f"  [{len(faults)} error/fault log lines]" if faults else ""
+        if killed:
+            extra += f"  (stopped: the app passed {MAX_MB:.0f} MB of memory)"
+        took = f"  ({int(time.time() - t0)}s" + (f", {peak} MB" if peak else "") + ")"
+        note(f"{status + ' ':<6}{name}  {args}{extra}{took}", None if status == "OK" else "warning")
+        print(f"{clock()}   {machine()}")
 
 
 # ---- iPhone
 app = os.path.join(products, "Debug-iphonesimulator", cfg["scheme"] + ".app")
 if not os.path.isdir(app):
-    sys.exit(f"missing {app}")
+    note(f"FAILED {app} was not built", "error")
+    sys.exit(1)
 best = pick("iOS", lambda n: (n.startswith("iPhone"), "Pro Max" in n, "Pro" in n))
+if not best:
+    note("FAILED no iOS simulator is available on this runner", "error")
+    sys.exit(1)
 udid = best[1]
-print("iPhone simulator:", best[2], best[3])
-sh("xcrun", "simctl", "boot", udid)
-sh("xcrun", "simctl", "bootstatus", udid, "-b", timeout=900)
+print(f"{clock()} iPhone simulator: {best[2]} {best[3]}; budget {BUDGET / 60:.0f} min; {machine()}")
+if not boot(udid, "iPhone"):
+    sys.exit(1)
 sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100")
-sh("xcrun", "simctl", "install", udid, app)
+sh("xcrun", "simctl", "install", udid, app, timeout=300)
 for svc in cfg.get("grant", []):
     sh("xcrun", "simctl", "privacy", udid, "grant", svc, cfg["bundle"])
 if cfg.get("location"):
     sh("xcrun", "simctl", "location", udid, "set", cfg["location"])
 run(udid, cfg["bundle"], executable(app), cfg["shots"])
 sh("xcrun", "simctl", "ui", udid, "content_size", "large")
-sh("xcrun", "simctl", "shutdown", udid)
+sh("xcrun", "simctl", "shutdown", udid, timeout=180)
 
 # ---- Watch (alone: the phone app is not running on a paired phone)
 w = cfg.get("watch")
 if w:
     wapp = os.path.join(products, "Debug-watchsimulator", w["product"] + ".app")
     if not os.path.isdir(wapp):
-        summary.append("WATCH NOT BUILT " + wapp)
+        note("WATCH NOT BUILT " + wapp)
+    elif left() < 240:
+        counts["SKIPPED"] += len(w["shots"])
+        note(f"SKIPPED the Watch screens (the {BUDGET / 60:.0f}-minute budget for this pass is used up)", "warning")
     else:
         best = pick("watchOS", lambda n: ("Ultra" in n, "Series" in n, n))
         if best:
             wid = best[1]
-            print("Watch simulator:", best[2], best[3])
-            sh("xcrun", "simctl", "boot", wid)
-            sh("xcrun", "simctl", "bootstatus", wid, "-b", timeout=900)
-            sh("xcrun", "simctl", "install", wid, wapp)
-            run(wid, w["bundle"], executable(wapp), w["shots"], prefix="watch-")
-            sh("xcrun", "simctl", "shutdown", wid)
+            print(f"{clock()} Watch simulator: {best[2]} {best[3]}")
+            if boot(wid, "Watch"):
+                sh("xcrun", "simctl", "install", wid, wapp, timeout=300)
+                run(wid, w["bundle"], executable(wapp), w["shots"], prefix="watch-")
+            sh("xcrun", "simctl", "shutdown", wid, timeout=180)
         else:
-            summary.append("NO WATCH SIMULATOR")
+            note("NO WATCH SIMULATOR")
 
 # ---- Crash reports from this run (simulator apps write to the host's DiagnosticReports)
 for f in glob.glob(os.path.join(CRASH_DIR, "**", "*"), recursive=True):
@@ -147,5 +317,10 @@ for f in glob.glob(os.path.join(CRASH_DIR, "**", "*"), recursive=True):
         if exe in body or (w and w["product"] in body):
             shutil.copy(f, os.path.join(out, "crashes"))
             summary.append("CRASH REPORT " + os.path.basename(f))
-open(os.path.join(out, "summary.txt"), "w").write("\n".join(summary) + "\n")
+summary.append(f"{counts['OK']} OK, {counts['CRASH']} crashed, {counts['KILLED']} stopped for memory, "
+               f"{counts['SKIPPED']} skipped, in {(time.time() - started) / 60:.0f} min")
+save_summary()
 print("\n".join(summary))
+if not (counts["OK"] or counts["CRASH"] or counts["KILLED"]):
+    print(f"::error title=QA {APP_NAME}::no screen was captured")
+    sys.exit(1)

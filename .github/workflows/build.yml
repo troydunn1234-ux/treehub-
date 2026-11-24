@@ -106,10 +106,17 @@ jobs:
         timeout-minutes: 15
         run: bash .github/scripts/screenshots.sh
 
+      # Ride Quest only (Food Book was dropped, Natal Orbit is paused): fails on an app crash, a web process crash or
+      # an uncaught JavaScript error / unhandled rejection; skipped when it wasn't built or no simulator is usable.
       - name: Run the web apps and screenshot
-        if: always() && github.event_name == 'workflow_dispatch'
-        timeout-minutes: 25
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' }}
+        timeout-minutes: 20
         run: bash .github/scripts/webshots.sh
+
+      - name: Run the other apps in the simulator and screenshot (Roamr drive, Clicker, Pulse Lab, Still Point)
+        if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' }}
+        timeout-minutes: 25
+        run: bash .github/scripts/appshots.sh
 
       - name: Upload screenshots
         if: always() && github.event_name == 'workflow_dispatch'
@@ -122,7 +129,8 @@ jobs:
       - name: Publish screenshots to the ci-screenshots branch
         if: always() && github.event_name == 'workflow_dispatch'
         run: |
-          [ -d shots ] || exit 0
+          # Runs that build nothing with a screen (or skip the simulator) leave shots/ empty: nothing to publish.
+          if [ -z "$(find shots -type f 2>/dev/null | head -1)" ]; then echo "No screenshots this run; nothing to publish."; exit 0; fi
           TMP=$(mktemp -d)
           cp -R shots/. "$TMP"/
           cd "$TMP"
@@ -131,7 +139,8 @@ jobs:
           git config user.email "ci@users.noreply.github.com"
           git add -A
           git commit -q -m "Screenshots for ${GITHUB_SHA::7}"
-          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" ci-screenshots
+          URL="https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git"
+          git push -f "$URL" ci-screenshots || { sleep 20; git push -f "$URL" ci-screenshots; }
 
       - name: Commit generated Xcode project
         if: success()

@@ -2,13 +2,18 @@ name: Simulator QA
 
 # Run by hand: builds each chosen app (Debug) for the simulator, launches it in demo mode on every screen
 # listed in .github/qa/<app>.json (including large Dynamic Type and light mode passes), and uploads the
-# screenshots, per-launch app logs and crash reports as the qa-<app> artifact. Nothing is published.
+# screenshots, per-launch app logs and crash reports as the qa-<app> artifact (and the qa-<app> branch).
+# Nothing is sent to App Store Connect. The screenshot pass has a 40-minute budget per app (screens left after
+# that are listed as SKIPPED in summary.txt) and every step has a timeout, so a slow runner can't stall a run.
 on:
   workflow_dispatch:
     inputs:
       apps:
-        description: Space-separated (rootbound pulselab stillpoint roamr clicker natalorbit ridequest)
-        default: rootbound pulselab stillpoint roamr clicker natalorbit ridequest
+        description: Space-separated (rootbound pulselab stillpoint roamr clicker ridequest; natalorbit is paused)
+        default: rootbound pulselab stillpoint roamr clicker ridequest
+      skip:
+        description: Leave out screens whose name matches this regex (e.g. 16-drive|17-live), blank = none
+        default: ''
 
 permissions:
   contents: write
@@ -25,7 +30,7 @@ jobs:
   qa:
     needs: pick
     runs-on: macos-15-intel
-    timeout-minutes: 75
+    timeout-minutes: 90
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +41,7 @@ jobs:
       - name: Pick app settings
         run: |
           CFG=.github/qa/${{ matrix.app }}.json
+          [ -f "$CFG" ] || { echo "::error::No QA config $CFG (apps: $(ls .github/qa | sed 's/.json//' | tr '\n' ' '))"; exit 1; }
           echo "CFG=$CFG" >> $GITHUB_ENV
           echo "SCHEME=$(python3 -c "import json;print(json.load(open('$CFG'))['scheme'])")" >> $GITHUB_ENV
           echo "WATCH=$(python3 -c "import json;print((json.load(open('$CFG')).get('watch') or {}).get('product',''))")" >> $GITHUB_ENV
@@ -45,9 +51,11 @@ jobs:
 
       - name: Make sure the watchOS SDK is installed
         if: env.WATCH != ''
+        timeout-minutes: 20
         run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
 
       - name: Generate Xcode project
+        timeout-minutes: 10
         run: |
           brew install xcodegen
           for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
@@ -55,6 +63,7 @@ jobs:
           xcodegen generate
 
       - name: Build for the simulator (Debug)
+        timeout-minutes: 30
         run: |
           set -o pipefail
           xcodebuild build -project TreeHub.xcodeproj -scheme $SCHEME -destination 'generic/platform=iOS Simulator' \
@@ -64,6 +73,7 @@ jobs:
 
       - name: Build the Watch app for its simulator
         if: env.WATCH != ''
+        timeout-minutes: 15
         run: |
           if [ ! -d build/Build/Products/Debug-watchsimulator/$WATCH.app ]; then
             xcodebuild build -project TreeHub.xcodeproj -target $WATCH -sdk watchsimulator -configuration Debug \
@@ -72,16 +82,22 @@ jobs:
           ls -d build/Build/Products/Debug-watchsimulator/*.app || true
 
       - name: Launch every screen and capture
-        env: { PYTHONUNBUFFERED: "1" }
+        timeout-minutes: 50
+        env: { PYTHONUNBUFFERED: "1", QA_BUDGET_MIN: "40", QA_SKIP: "${{ inputs.skip }}" }
         run: |
           pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
+          # Keep GitHub's runner processes ahead of the simulator: a busy simulator (Roamr's map screens on these
+          # Intel runners) used to starve them until GitHub "lost communication" with the runner.
+          for p in $(pgrep -f 'Runner\.(Listener|Worker)'); do sudo renice -n -10 -p "$p" > /dev/null || true; done
           python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
 
       - name: Publish to the qa-<app> branch (artifacts can't always be downloaded)
         if: always()
+        timeout-minutes: 5
         run: |
           [ -d qa-out ] || exit 0
           grep -E "error:" build.log | head -40 > qa-out/build-errors.txt 2>/dev/null || true
+          [ -n "$(find qa-out -type f | head -1)" ] || exit 0
           TMP=$(mktemp -d); cp -R qa-out/. "$TMP"/; cd "$TMP"
           git init -q -b qa-${{ matrix.app }}
           git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
