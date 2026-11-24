@@ -196,6 +196,8 @@ struct TrackRootView: View {
             if let report = await TripRescue.runOnce(in: context) { tripRescue = report }
             // Once: past top speeds that were GPS spikes get the cleaned-up value from their route.
             if await TopSpeedRepair.runOnce(in: context) > 0 { RoamrWellness.publish(context, force: true) }
+            // The Track screen's "Pin this?" card: recent drives' ends, read a few at a time after launch.
+            await CommuteStore.warm(in: context)
         }
         .alert("Trips are back", isPresented: Binding(get: { tripRescue != nil }, set: { if !$0 { tripRescue = nil } }),
                presenting: tripRescue) { _ in

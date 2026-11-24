@@ -195,7 +195,9 @@ struct PinSuggestionCard: View {
 
     var body: some View {
         let _ = refresh
-        if let spot = CommuteStore.suggestion(activities) {
+        // Only once the recent drives' ends were read in the background after launch (CommuteStore.warm): working
+        // it out here first would read up to 150 route files before the Track screen's first frame.
+        if CommuteStore.readiness.warm, let spot = CommuteStore.suggestion(activities) {
             PinSuggestionRow(spot: spot, compact: true) { withAnimation(.snappy) { refresh += 1 } }
                 .transition(.opacity.combined(with: .scale(scale: 0.97)))
         }
@@ -215,7 +217,9 @@ struct CommuteSection: View {
     @AppStorage("gas.vehicleID") private var vehicleRaw = ""
 
     var body: some View {
-        let routes = CommuteMath.routes(CommuteStore.driveTrips(activities), pins: CommuteStore.pins(nav))
+        // A route needs two pins: with fewer, no drive's ends are read at all.
+        let pins = CommuteStore.pins(nav)
+        let routes: [CommuteMath.Route] = pins.count < 2 ? [] : CommuteMath.routes(CommuteStore.driveTrips(activities), pins: pins)
         if !routes.isEmpty {
             let economy = CommuteEconomy.current(vehicleRaw: vehicleRaw, vehicles: vehicles, fills: fills, drives: activities)
             VStack(alignment: .leading, spacing: 10) {

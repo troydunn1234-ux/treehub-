@@ -81,4 +81,34 @@ final class CommuteTests: XCTestCase {
         let pinned = CommutePin(role: .custom, place: NavPlace(name: "Her place", subtitle: "", coordinate: spot))
         XCTAssertTrue(CommuteMath.frequentSpots(trips, pins: pins + [pinned]).isEmpty)
     }
+
+    /// A trip's ends are remembered by end time and distance (no route read on a repeat call), and a trim, which
+    /// changes both, gives the new end.
+    @MainActor
+    func testTripEndsFollowATrim() throws {
+        let t0 = 1_790_000_000.0
+        let pts: [RoutePoint] = (0..<40).map { (i: Int) -> RoutePoint in
+            RoutePoint(CLLocation(coordinate: .init(latitude: 37.70 + Double(i) * 0.001, longitude: -122.40), altitude: 10,
+                                  horizontalAccuracy: 5, verticalAccuracy: 5, course: 0, speed: 10,
+                                  timestamp: Date(timeIntervalSince1970: t0 + Double(i) * 10)))
+        }
+        let a = Activity()
+        a.kind = .drive
+        a.route = pts
+        a.start = Date(timeIntervalSince1970: t0)
+        a.end = Date(timeIntervalSince1970: t0 + 390)
+        a.distanceM = 4300
+        let first = try XCTUnwrap(CommuteStore.trip(a))
+        XCTAssertEqual(first.to.latitude, pts[39].lat, accuracy: 1e-9)
+        XCTAssertEqual(try XCTUnwrap(CommuteStore.trip(a)).to.latitude, pts[39].lat, accuracy: 1e-9)
+
+        a.trim(endT: pts[19].t)
+        let trimmed = try XCTUnwrap(CommuteStore.trip(a))
+        XCTAssertEqual(trimmed.to.latitude, pts[19].lat, accuracy: 1e-9, "a trim moves the end")
+        XCTAssertEqual(trimmed.from.latitude, pts[0].lat, accuracy: 1e-9)
+
+        let noRoute = Activity()
+        noRoute.kind = .drive
+        XCTAssertNil(CommuteStore.trip(noRoute))
+    }
 }
