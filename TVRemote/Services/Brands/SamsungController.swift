@@ -5,7 +5,7 @@ import Security
 /// Samsung Tizen TVs (2016+). Info over HTTP on 8001, remote keys over a WebSocket on
 /// 8002 (TLS, self-signed, pinned on first use) with a token the TV hands out after the
 /// user picks "Allow". Older sets without token auth fall back to plain ws:// on 8001.
-final class SamsungController: NSObject, TVController, URLSessionDelegate, @unchecked Sendable {
+final class SamsungController: NSObject, TVController, URLSessionDelegate, URLSessionWebSocketDelegate, @unchecked Sendable {
     let brand: TVBrand = .samsung
 
     private static let remoteName = Data("Couch Remote".utf8).base64EncodedString()
@@ -28,8 +28,14 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
     private var installed: [String: [String: String]] = [:]   // tv.id → name → appId
     private var pairingTasks: [String: URLSessionWebSocketTask] = [:]
     private var keyboardWatchers: [String: [UUID: AsyncStream<Bool>.Continuation]] = [:]   // tv.id → listeners
+    /// WebSocket tasks (taskIdentifier) whose handshake finished: the TV is on and answered, whatever it says next.
+    private var answered = Set<Int>()
 
     private func locked<T>(_ body: () -> T) -> T { lock.lock(); defer { lock.unlock() }; return body() }
+
+    func urlSession(_ session: URLSession, webSocketTask: URLSessionWebSocketTask, didOpenWithProtocol _: String?) {
+        _ = locked { answered.insert(webSocketTask.taskIdentifier) }
+    }
 
     private lazy var session: URLSession = {
         let cfg = URLSessionConfiguration.ephemeral
@@ -172,13 +178,18 @@ final class SamsungController: NSObject, TVController, URLSessionDelegate, @unch
             do {
                 let tok = try await Self.withTimeout(timeout) { try await Self.awaitConnect(task) }
                 if pairing { _ = locked { pairingTasks.removeValue(forKey: tv.id) } }
+                _ = locked { answered.remove(task.taskIdentifier) }
                 return (task, tok)
             } catch {
                 task.cancel(with: .goingAway, reason: nil)
+                let tvAnswered = locked { answered.remove(task.taskIdentifier) != nil }
                 if pairing { _ = locked { pairingTasks.removeValue(forKey: tv.id) } }
                 switch error as? TVControlError {
                 case .pairingRejected?: throw TVControlError.pairingRejected
                 case .pairingTimedOut? where pairing: throw TVControlError.pairingTimedOut
+                // Timed out before the TV even took the connection (off, asleep, other Wi-Fi): that's unreachable.
+                // Only a TV that answered and then sat on an Allow prompt means its token is gone (see channel()).
+                case .pairingTimedOut? where !tvAnswered: lastError = TVControlError.unreachable
                 default: lastError = error
                 }
             }
