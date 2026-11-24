@@ -142,20 +142,31 @@ struct LaneDots: View {
 /// Not recording: one big Start drive button (Roamr is drive-only).
 struct StartView: View {
     @Environment(PhoneLink.self) private var link
+    /// Taps on Start drive (the car bounces, a start tap on the wrist).
+    @State private var taps = 0
 
     var body: some View {
         VStack(spacing: 8) {
-            Button { link.start("drive") } label: {
+            Button {
+                taps += 1
+                link.start("drive")
+            } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "car.fill").font(.system(size: 20, weight: .black))
+                        .symbolEffect(.bounce, value: taps)
                     Text("Start drive").font(RW.font(17, .heavy))
+                        .lineLimit(1).minimumScaleFactor(0.8)
                 }
                 .foregroundStyle(RW.navy)
                 .frame(maxWidth: .infinity, minHeight: 72)
                 .background(RW.fire, in: RoundedRectangle(cornerRadius: 18, style: .continuous))
+                // A lit top edge, like a dashboard button (matches the iPhone's Start drive).
+                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(LinearGradient(colors: [.white.opacity(0.5), .clear], startPoint: .top, endPoint: .center), lineWidth: 1))
                 .shadow(color: RW.orange.opacity(0.5), radius: 8)
             }
             .buttonStyle(.plain)
+            .sensoryFeedback(.start, trigger: taps)
             .accessibilityLabel("Start a drive")
             Text("Every drive, mapped")
                 .font(RW.font(11, .semibold)).foregroundStyle(.secondary)

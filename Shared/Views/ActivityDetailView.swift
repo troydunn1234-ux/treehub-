@@ -910,7 +910,8 @@ extension ActivityDetailView {
             if isNew || trimmed || together != nil {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack(spacing: 6) {
-                        if isNew { savedBadge }
+                        // "Drive saved · 12.4 mi": the seal pops and the distance rolls up (NightDrive.swift).
+                        if isNew { DriveSavedBadge(distanceM: activity.distanceM) }
                         if let g = together {
                             Label(g.withLabel, systemImage: "person.2.fill")
                                 .font(Theme.rounded(13, .bold))
@@ -921,7 +922,9 @@ extension ActivityDetailView {
                         }
                         if trimmed { trimBadge }
                     }
+                    .padding(.vertical, 2)
                 }
+                .scrollClipDisabled()
             }
         }
         .padding(.horizontal, Theme.pad)
