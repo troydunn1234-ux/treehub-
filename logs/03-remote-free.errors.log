@@ -1,0 +1,4 @@
+2026-11-24 13:20:04.707 E  Clicker[19569:eb39] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-24 13:20:04.708 E  Clicker[19569:eb68] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:20:04.718 E  Clicker[19569:eb68] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:20:04.755 E  Clicker[19569:eb39] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.

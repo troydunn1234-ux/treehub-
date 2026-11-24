@@ -1,0 +1,10 @@
+2026-11-24 13:16:21.696 E  Clicker[13500:b6c3] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-24 13:16:21.696 E  Clicker[13500:b6f8] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-24 13:16:21.697 E  Clicker[13500:b702] [com.apple.appintents:General] Failed to connect to linkd to request update AppShortcut parameters, error: Couldn’t communicate with a helper application.
+2026-11-24 13:16:25.061 E  Clicker[13500:b6fa] [com.apple.wcd:WC] -[WCSession onqueue_handleUpdateSessionState:]_block_invoke dropping as pairingIDs no longer match. pairingID (null), client pairingID: (null)
+2026-11-24 13:16:29.710 E  Clicker[13500:b6fa] [com.apple.wcd:WC] WCSession is not paired
+2026-11-24 13:16:31.838 E  Clicker[13500:abda] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-24 13:16:31.839 E  Clicker[13500:abda] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-24 13:16:33.760 E  Clicker[13500:abda] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-24 13:16:33.760 E  Clicker[13500:abda] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-24 13:16:33.850 F  Clicker[13500:abda] [com.apple.renderbox:error] building pipeline primitive_gradient-gea15feba4 took 2.012494 seconds

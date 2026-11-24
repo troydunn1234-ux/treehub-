@@ -1,0 +1,4 @@
+2026-11-24 13:28:39.712 E  ClankerrWatch[35121:18d3b] [com.apple.UIKit:SceneConfiguration] Info.plist contained no UIScene configuration dictionary (looking for configuration named "Default Configuration")
+2026-11-24 13:28:41.661 E  ClankerrWatch[35121:18d3b] [com.apple.PepperUICore:CrownIndicator] Crown Sequencer was set up without a view property. This will inevitably lead to incorrect crown indicator states
+2026-11-24 13:28:41.771 E  ClankerrWatch[35121:18d3b] [com.apple.PepperUICore:CrownIndicator] Crown Sequencer was set up without a view property. This will inevitably lead to incorrect crown indicator states
+2026-11-24 13:28:42.043 E  ClankerrWatch[35121:18d3b] [com.apple.PepperUICore:CrownIndicator] Crown Sequencer was set up without a view property. This will inevitably lead to incorrect crown indicator states
