@@ -53,6 +53,19 @@ final class WatchStore: NSObject, ObservableObject, WCSessionDelegate {
             agreeSplit = d["agreeSplit"] as? String ?? ""
         }
         var isEmpty: Bool { recovery == nil && sleepMin == nil && hrv == nil && strain == nil }
+
+        /// What is still true at `now`. Recovery, the agreement and the morning's takeaway are per day: numbers the
+        /// iPhone sent yesterday show as not in yet after midnight (the complications do the same), and the strain
+        /// that was today's is yesterday's.
+        func current(at now: Date = Date()) -> Snapshot {
+            guard let u = updatedAt, !Calendar.current.isDate(u, inSameDayAs: now) else { return self }
+            var s = self
+            s.recovery = nil
+            s.takeaway = nil
+            s.agreeScore = nil; s.agreeOn = 0; s.agreeOf = 0; s.agreeSplit = ""
+            s.strainIsToday = false
+            return s
+        }
     }
 
     static func load() -> Snapshot {

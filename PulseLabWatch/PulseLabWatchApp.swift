@@ -78,9 +78,12 @@ enum WatchDemo {
 
 struct WatchHome: View {
     @EnvironmentObject private var store: WatchStore
+    /// Declared so the screen is rebuilt when the app comes back to the front: after midnight, yesterday's
+    /// recovery and agreement drop out (`Snapshot.current`).
+    @Environment(\.scenePhase) private var phase
 
     var body: some View {
-        let s = WatchDemo.isOn ? WatchDemo.snap : store.snap
+        let s = WatchDemo.isOn ? WatchDemo.snap : store.snap.current()
         NavigationStack {
             ScrollView {
                 VStack(spacing: 8) {
