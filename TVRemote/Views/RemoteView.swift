@@ -236,6 +236,8 @@ struct RemoteView: View {
         }
         .buttonStyle(RemoteKeyStyle(scale: 0.88, feel: feel))
         .accessibilityLabel(spoken ?? label)
+        // Voice Control: the printed word works too ("Tap Keyboard"), not only the spoken label.
+        .accessibilityInputLabels(spoken.map { [$0, label] } ?? [label])
     }
 
     /// Volume rocker · play keys with Info / Exit / Sleep · Mute and CC.
@@ -719,6 +721,8 @@ private struct KeyButton: View {
         }
         .buttonStyle(RemoteKeyStyle(scale: 0.88))
         .accessibilityLabel(label)
+        // Voice Control: the printed text works too ("Tap CC"), not only the spoken label ("Closed captions").
+        .accessibilityInputLabels(text.map { [label, $0] } ?? [label])
     }
 }
 

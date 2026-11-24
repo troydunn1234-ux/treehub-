@@ -351,6 +351,12 @@ struct PadPage: View {
             .accessibilityElement()
             .accessibilityLabel("Touch pad. Swipe to move, tap for OK.")
             .accessibilityAddTraits(.allowsDirectInteraction)
+            // VoiceOver: double-tap is OK, and the four moves are actions (the pad has no arrow keys of its own).
+            .accessibilityAction { link.press("ok") }
+            .accessibilityAction(named: "Up") { link.press("up") }
+            .accessibilityAction(named: "Down") { link.press("down") }
+            .accessibilityAction(named: "Left") { link.press("left") }
+            .accessibilityAction(named: "Right") { link.press("right") }
         }
     }
 

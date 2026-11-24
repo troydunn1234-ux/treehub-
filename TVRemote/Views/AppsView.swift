@@ -375,7 +375,7 @@ struct AppTile: View {
             .onChange(of: pressed) { _, p in if !p { tilt = .zero } }
             .onChange(of: isPlaying) { _, on in startAura(on) }
             .onAppear { startAura(isPlaying) }
-            .accessibilityLabel("Open \(app.name) on the TV")
+            .accessibilityLabel(isPlaying ? "\(app.name), on the TV now" : "Open \(app.name) on the TV")
     }
 
     static let height: CGFloat = 150
