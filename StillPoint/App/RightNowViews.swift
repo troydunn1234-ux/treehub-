@@ -329,7 +329,11 @@ final class DailyMoments: ObservableObject {
         d.set(c.minute ?? 0, forKey: key + ".m")
     }
 
-    private func changed() { reschedule(RightNow.shared) }
+    private func changed() {
+        reschedule(RightNow.shared)
+        // The daily reminder drops (or brings back) its own evening notification with the bedtime pick.
+        Reminders.shared.refreshSchedule()
+    }
 
     var allowed: Bool { status == .authorized || status == .provisional }
 
@@ -425,6 +429,10 @@ final class DailyMoments: ObservableObject {
         guard statusKnown else { return }
         let center = UNUserNotificationCenter.current()
         let morningOn = morningOn, bedtimeOn = bedtimeOn, allowed = allowed
+        // The daily reminder folded into the bedtime pick: one evening notification, not two.
+        let reminder = Reminders.shared
+        let reminderOn = reminder.enabled, reminderHour = reminder.hour
+        let folded = EveningReminder.folded(reminderOn: reminderOn, reminderHour: reminderHour, bedtimeOn: bedtimeOn)
         var requests: [UNNotificationRequest] = []
         if allowed {
             let cal = Calendar.current
@@ -438,7 +446,10 @@ final class DailyMoments: ObservableObject {
                     let sug = suggestion(m, at: fire, model: model)
                     let c = UNMutableNotificationContent()
                     c.title = m == .morning ? String(localized: "Good morning") : String(localized: "Before bed")
-                    c.body = String(localized: "\(sug.because). \(sug.title) · \(sug.minutes) min")
+                    let nudge = m == .bedtime && EveningReminder.bedtimeNudge(
+                        reminderOn: reminderOn, reminderHour: reminderHour, bedtimeOn: bedtimeOn,
+                        practicedThatDay: !SessionLog.shared.sessions(on: fire).isEmpty)
+                    c.body = EveningReminder.bedtimeBody(because: sug.because, title: sug.title, minutes: sug.minutes, nudge: nudge)
                     c.sound = sound ? .default : nil
                     c.interruptionLevel = .active
                     c.categoryIdentifier = Reminders.category
@@ -452,7 +463,9 @@ final class DailyMoments: ObservableObject {
         }
         let toAdd = requests, prefix = Self.prefix
         center.getPendingNotificationRequests { pending in
-            let old = pending.map(\.identifier).filter { $0.hasPrefix(prefix) }
+            var old = pending.map(\.identifier).filter { $0.hasPrefix(prefix) }
+            // A separate daily reminder still pending from an earlier build goes too when the bedtime pick carries it.
+            if folded && allowed { old.append(Reminders.requestId) }
             center.removePendingNotificationRequests(withIdentifiers: old)
             for r in toAdd { center.add(r) }
         }
@@ -480,7 +493,7 @@ struct DailyMomentsSettings: View {
             if moments.status == .denied {
                 Text("Notifications are off for Still Pointz. Turn them on in the Settings app to get these.")
             } else {
-                Text("Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it.")
+                Text("Two quiet notifications a day with that moment's suggested practice: the morning one from last night's sleep, recovery and HRV, the bedtime one a wind-down shaped by the day's strain and stress estimate. Tap to start it. An evening daily reminder rides along in the bedtime one, so nights get just one notification.")
             }
         }
         .onAppear { moments.refreshStatus() }

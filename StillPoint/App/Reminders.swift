@@ -17,6 +17,7 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
             guard enabled != oldValue else { return }
             UserDefaults.standard.set(enabled, forKey: Self.enabledKey)
             if enabled { requestAndSchedule() } else { cancel() }
+            Self.bedtimeTextChanged()
         }
     }
 
@@ -27,6 +28,7 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
             UserDefaults.standard.set(c.hour ?? 21, forKey: Self.hourKey)
             UserDefaults.standard.set(c.minute ?? 0, forKey: Self.minuteKey)
             if enabled { schedule() }
+            Self.bedtimeTextChanged()
         }
     }
 
@@ -70,9 +72,30 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
         }
     }
 
+    /// Called when the bedtime pick is turned on/off or moved: drops or restores this reminder's own notification.
+    func refreshSchedule() {
+        if enabled { refreshAuthorization() } else { cancel() }
+    }
+
+    /// The reminder's hour (0–23).
+    var hour: Int { Calendar.current.component(.hour, from: time) }
+
+    /// True when the bedtime pick carries this reminder tonight instead of a separate notification.
+    var folded: Bool {
+        EveningReminder.folded(reminderOn: enabled, reminderHour: hour, bedtimeOn: EveningReminder.bedtimeOnSaved())
+    }
+
+    /// The bedtime pick's text includes "Haven't practiced yet today?" when this reminder is folded into it.
+    private static func bedtimeTextChanged() {
+        Task { @MainActor in DailyMoments.shared.reschedule(RightNow.shared) }
+    }
+
     private func schedule() {
         let center = UNUserNotificationCenter.current()
         center.removePendingNotificationRequests(withIdentifiers: [Self.requestId])
+        // One evening notification, not two: the bedtime pick already carries this nudge. Removing the pending
+        // request above also clears a separate one left by an earlier build.
+        if folded { return }
         let content = UNMutableNotificationContent()
         content.title = "Still Pointz"
         content.body = Self.copy()
@@ -121,4 +144,42 @@ final class Reminders: NSObject, ObservableObject, UNUserNotificationCenterDeleg
 
     /// Set by the app to route the tap (e.g. switch to Today).
     static var onOpen: (() -> Void)?
+}
+
+/// Keeps the evenings to one notification. The old daily reminder (default 9 PM) and the bedtime "Right now" pick
+/// (default 9:30 PM) used to both fire. When the bedtime pick is on and the reminder is set for the evening, the
+/// reminder schedules nothing of its own and the bedtime pick says "Haven't practiced yet today?" instead.
+/// With the bedtime pick off (or a morning/daytime reminder) the reminder works exactly as before.
+enum EveningReminder {
+    /// From 5 PM on counts as the evening.
+    static let eveningStartHour = 17
+
+    static func isEvening(hour: Int) -> Bool { hour >= eveningStartHour }
+
+    /// Whether the daily reminder skips its own notification because the bedtime pick carries it.
+    static func folded(reminderOn: Bool, reminderHour: Int, bedtimeOn: Bool) -> Bool {
+        reminderOn && bedtimeOn && isEvening(hour: reminderHour)
+    }
+
+    /// Whether the daily reminder schedules its own notification.
+    static func reminderSchedulesOwn(reminderOn: Bool, reminderHour: Int, bedtimeOn: Bool) -> Bool {
+        reminderOn && !folded(reminderOn: reminderOn, reminderHour: reminderHour, bedtimeOn: bedtimeOn)
+    }
+
+    /// Whether one bedtime pick should add the "Haven't practiced yet today?" nudge: only when the reminder is folded
+    /// into it, and not on a day that already has a session.
+    static func bedtimeNudge(reminderOn: Bool, reminderHour: Int, bedtimeOn: Bool, practicedThatDay: Bool) -> Bool {
+        folded(reminderOn: reminderOn, reminderHour: reminderHour, bedtimeOn: bedtimeOn) && !practicedThatDay
+    }
+
+    /// The bedtime pick's text, with or without the folded-in nudge.
+    static func bedtimeBody(because: String, title: String, minutes: Int, nudge: Bool) -> String {
+        nudge ? String(localized: "Haven't practiced yet today? \(title) · \(minutes) min wind-down. \(because).")
+              : String(localized: "\(because). \(title) · \(minutes) min")
+    }
+
+    /// The saved bedtime-pick switch, read the same way DailyMoments does (default on). Read only, never written.
+    static func bedtimeOnSaved(_ d: UserDefaults = .standard) -> Bool {
+        d.object(forKey: "sp.moment.bedOn") as? Bool ?? true
+    }
 }

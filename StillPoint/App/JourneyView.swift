@@ -300,6 +300,7 @@ struct SettingsView: View {
     @EnvironmentObject var link: PhoneLink
     @EnvironmentObject var log: SessionLog
     @StateObject private var reminders = Reminders.shared
+    @ObservedObject private var moments = DailyMoments.shared
     @ObservedObject private var unlock = Unlock.shared
     @State private var showPlans = false
     @Environment(\.dismiss) private var dismiss
@@ -335,7 +336,12 @@ struct SettingsView: View {
                     } else {
                         // No "Nothing else, ever." any more: the morning / bedtime picks below and the sauna check-in
                         // are notifications too.
-                        Text("A quiet nudge once a day, at a time you choose.")
+                        if reminders.enabled && EveningReminder.folded(reminderOn: true, reminderHour: reminders.hour,
+                                                                       bedtimeOn: moments.bedtimeOn) {
+                            Text("At night you get one notification, not two: this reminder is folded into the Bedtime pick below (\"Haven't practiced yet today?\"). Turn the Bedtime pick off to get this reminder on its own.")
+                        } else {
+                            Text("A quiet nudge once a day, at a time you choose.")
+                        }
                     }
                 }
                 DailyMomentsSettings()
