@@ -123,39 +123,54 @@ struct IgnitionFX: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private static let duration: Double = 1.1
-    private static let lines: [(angle: Double, length: Double, delay: Double)] = {
+
+    private struct Streak {
+        let angle: Double
+        let length: Double
+        let delay: Double
+    }
+
+    /// 30 streaks around the circle, a little jittered (same every time).
+    private static let lines: [Streak] = {
         var rng = SeededRNG(seed: "ignition")
-        return (0..<30).map { i in
-            (Double(i) / 30 * 2 * Double.pi + rng.next() * 0.18, 0.08 + rng.next() * 0.1, rng.next() * 0.18)
+        var out: [Streak] = []
+        for i in 0..<30 {
+            let base: Double = Double(i) / 30.0 * 2.0 * Double.pi
+            let jitter: Double = rng.next() * 0.18
+            let length: Double = 0.08 + rng.next() * 0.1
+            let delay: Double = rng.next() * 0.18
+            out.append(Streak(angle: base + jitter, length: length, delay: delay))
         }
+        return out
     }()
 
     var body: some View {
         ZStack {
             if let start {
                 TimelineView(.animation) { ctx in
-                    let t = ctx.date.timeIntervalSince(start)
+                    let t: Double = ctx.date.timeIntervalSince(start)
                     Canvas { gc, size in
-                        let w = size.width
-                        let h = size.height
-                        let p = min(1, max(0, t / Self.duration))
-                        let fade = 1 - p
-                        let rise = 1 - pow(1 - p, 3)
+                        let w: CGFloat = size.width
+                        let h: CGFloat = size.height
+                        let p: Double = min(1, max(0, t / Self.duration))
+                        let fade: Double = 1 - p
+                        let rise: Double = 1 - pow(1 - p, 3)
                         // Headlight band rising from the bottom.
-                        let bandY = h * CGFloat(1.05 - 1.3 * rise)
+                        let bandY: CGFloat = h * CGFloat(1.05 - 1.3 * rise)
                         let band = CGRect(x: 0, y: bandY - h * 0.2, width: w, height: h * 0.4)
                         gc.fill(Path(band), with: .linearGradient(
                             Gradient(colors: [.clear, Theme.glow.opacity(0.32 * fade), .clear]),
                             startPoint: CGPoint(x: w / 2, y: band.minY), endPoint: CGPoint(x: w / 2, y: band.maxY)))
                         // Speed lines streaking out from the middle.
                         let center = CGPoint(x: w / 2, y: h * 0.45)
-                        let reach = max(w, h)
+                        let reach: CGFloat = max(w, h)
                         for l in Self.lines {
-                            let q = min(1, max(0, (t - l.delay) / Self.duration))
+                            let q: Double = min(1, max(0, (t - l.delay) / Self.duration))
                             guard q > 0 else { continue }
-                            let r0 = reach * CGFloat(0.12 + 0.75 * q)
-                            let r1 = r0 + reach * CGFloat(l.length)
-                            let dx = CGFloat(cos(l.angle)), dy = CGFloat(sin(l.angle))
+                            let r0: CGFloat = reach * CGFloat(0.12 + 0.75 * q)
+                            let r1: CGFloat = r0 + reach * CGFloat(l.length)
+                            let dx = CGFloat(cos(l.angle))
+                            let dy = CGFloat(sin(l.angle))
                             var line = Path()
                             line.move(to: CGPoint(x: center.x + dx * r0, y: center.y + dy * r0))
                             line.addLine(to: CGPoint(x: center.x + dx * r1, y: center.y + dy * r1))

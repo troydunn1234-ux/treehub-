@@ -162,12 +162,13 @@ struct HomeView: View {
     private var syncButton: some View {
         Button { Task { await syncRoamr() } } label: {
             HStack(spacing: 6) {
-                if syncing {
-                    ProgressView().controlSize(.mini).tint(Theme.glow)
-                } else {
-                    Image(systemName: "arrow.triangle.2.circlepath")
-                        .symbolEffect(.bounce, value: syncDone)
-                }
+                // The icon stays put under the spinner, so it can bounce when walks were added.
+                Image(systemName: "arrow.triangle.2.circlepath")
+                    .symbolEffect(.bounce, value: syncDone)
+                    .opacity(syncing ? 0 : 1)
+                    .overlay {
+                        if syncing { ProgressView().controlSize(.mini).tint(Theme.glow) }
+                    }
                 Text(syncing ? "Syncing…" : "Sync walks")
             }
             .font(RB.text(.subheadline, .semibold))
