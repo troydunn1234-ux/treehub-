@@ -78,6 +78,87 @@ final class LogicTests: XCTestCase {
         XCTAssertFalse(none.fullAgreement)
     }
 
+    // MARK: Today's agreement compares like with like
+
+    func testSleepIsComparedOnTheSameNightOnly() {
+        let today = Date().dayStart
+        func night(_ s: Source, _ daysAgo: Int, _ minutes: Double) -> SleepNight {
+            var n = SleepNight(night: today.adding(days: -daysAgo), source: s)
+            n.coreMin = minutes
+            return n
+        }
+        // WHOOP hasn't logged last night yet: the night before is compared from both (10 min apart, agree), never
+        // Watch's last night against WHOOP's night before (72 min apart, a split that isn't there).
+        let lagging = TodayAgreement.sleep(nights: [night(.watch, 0, 432), night(.watch, 1, 370), night(.whoop, 1, 360)], today: today)
+        XCTAssertEqual(lagging.agree, true)
+        XCTAssertEqual(lagging.watch, "6h 10m")
+        XCTAssertEqual(lagging.whoop, "6h 0m")
+        XCTAssertTrue(lagging.detail.hasPrefix("Night before last"), lagging.detail)
+
+        // No night in common: both shown, not compared (so not a split either).
+        let apart = TodayAgreement.sleep(nights: [night(.watch, 0, 432), night(.whoop, 1, 360)], today: today)
+        XCTAssertNil(apart.agree)
+        XCTAssertEqual(apart.watch, "7h 12m")
+        XCTAssertEqual(apart.whoop, "6h 0m")
+        XCTAssertNil(apart.why)
+
+        // Both have last night: that's the one compared.
+        let both = TodayAgreement.sleep(nights: [night(.watch, 0, 432), night(.whoop, 0, 390), night(.watch, 1, 300), night(.whoop, 1, 300)], today: today)
+        XCTAssertEqual(both.agree, false)
+        XCTAssertEqual(both.why, "sleep is off by 42 min")
+
+        // Nights older than the night before last don't count.
+        let old = TodayAgreement.sleep(nights: [night(.watch, 2, 400), night(.whoop, 2, 400)], today: today)
+        XCTAssertNil(old.watch)
+        XCTAssertNil(old.agree)
+    }
+
+    func testHRVIsComparedOnTheSameDayOnly() {
+        let today = Date().dayStart
+        func days(_ hrv: [Int: Double]) -> [DayStat] {
+            hrv.map { ago, v in var d = DayStat(day: today.adding(days: -ago)); d.hrv = v; return d }.sorted { $0.day < $1.day }
+        }
+        let week = Dictionary(uniqueKeysWithValues: (1...8).map { ($0, 50.0) })
+        var watch = week
+        watch[0] = 60   // today's Watch HRV is in (20% over its week); WHOOP's newest is yesterday's
+        // Compared on yesterday, when both sat at their usual, not Watch's today against WHOOP's yesterday.
+        let lagging = TodayAgreement.hrv(watch: days(watch), whoop: days(week), today: today)
+        XCTAssertEqual(lagging.agree, true)
+        XCTAssertEqual(lagging.watch, "Usual")
+        XCTAssertTrue(lagging.detail.hasPrefix("Yesterday"), lagging.detail)
+
+        // Both have today: today it is (Watch up 20%, WHOOP usual: they split).
+        var whoopToday = week
+        whoopToday[0] = 50
+        let fresh = TodayAgreement.hrv(watch: days(watch), whoop: days(whoopToday), today: today)
+        XCTAssertEqual(fresh.agree, false)
+        XCTAssertEqual(fresh.watch, "Up 20%")
+
+        // No day in common (Watch skipped yesterday, WHOOP has no today): shown, not compared.
+        var gappy = watch
+        gappy[1] = nil
+        let apart = TodayAgreement.hrv(watch: days(gappy), whoop: days(week), today: today)
+        XCTAssertNil(apart.agree)
+        XCTAssertNotNil(apart.watch)
+        XCTAssertNotNil(apart.whoop)
+    }
+
+    // MARK: WHOOP cycles land on the right day
+
+    func testAWhoopCycleBelongsToTheDayYouWakeUpInto() throws {
+        let cal = Calendar.current
+        let day = try XCTUnwrap(cal.date(from: DateComponents(year: 2026, month: 11, day: 20)))
+        let next = try XCTUnwrap(cal.date(byAdding: .day, value: 1, to: day))
+        let lateNight = try XCTUnwrap(cal.date(bySettingHour: 22, minute: 45, second: 0, of: day))
+        let afterMidnight = try XCTUnwrap(cal.date(bySettingHour: 0, minute: 40, second: 0, of: day))
+        let morning = try XCTUnwrap(cal.date(bySettingHour: 7, minute: 0, second: 0, of: day))
+        // Asleep at 10:45 pm on the 20th: that cycle (and its strain) is the 21st's.
+        XCTAssertEqual(WhoopAdapter.cycleDay(lateNight), next)
+        // Asleep after midnight: the same day.
+        XCTAssertEqual(WhoopAdapter.cycleDay(afterMidnight), day)
+        XCTAssertEqual(WhoopAdapter.cycleDay(morning), day)
+    }
+
     // MARK: Background refresh keeps what was shared
 
     func testABackgroundPassKeepsEarlierNumbersForTheSameDay() {

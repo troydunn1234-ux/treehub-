@@ -15,8 +15,7 @@ enum WhoopAdapter {
     static func days() -> [DayStat] {
         var out: [Date: DayStat] = [:]
         for c in client.cycles {
-            // A WHOOP cycle runs wake-to-wake; label it with the day it started.
-            let d = c.start.dayStart
+            let d = cycleDay(c.start)
             var s = out[d] ?? DayStat(day: d)
             s.strain = c.score?.strain
             if let kcal = c.kcal { s.activeKcal = nil; s.basalKcal = nil; s.totalKcalWhoop = kcal }
@@ -28,8 +27,7 @@ enum WhoopAdapter {
         let byCycle = Dictionary(client.cycles.map { ($0.id, $0) }, uniquingKeysWith: { a, _ in a })
         for r in client.recoveries {
             guard let sc = r.score else { continue }
-            let when = r.createdAt ?? byCycle[r.cycleId]?.start ?? Date()
-            let d = when.dayStart
+            let d = r.createdAt?.dayStart ?? byCycle[r.cycleId].map { cycleDay($0.start) } ?? Date().dayStart
             var s = out[d] ?? DayStat(day: d)
             s.recovery = sc.recoveryScore
             s.rhr = sc.restingHeartRate
@@ -52,6 +50,13 @@ enum WhoopAdapter {
         }
         return out.values.sorted { $0.day < $1.day }
     }
+
+    /// The day a WHOOP cycle belongs to. A cycle starts when you fall asleep and runs until you next fall asleep, so
+    /// it is the day you wake up into (WHOOP's own app shows it that way), labelled like a night (`HealthPull.nightKey`):
+    /// a cycle that starts at 11 pm is tomorrow's, one that starts at 1 am is today's. Labelling it with the calendar
+    /// day it started filed every strain a day early for anyone asleep before midnight, so "yesterday's strain" was
+    /// really today's unfinished cycle.
+    nonisolated static func cycleDay(_ start: Date) -> Date { HealthPull.nightKey(start) }
 
     static func sleeps() -> [SleepNight] {
         client.sleeps.filter { $0.nap != true }.compactMap { sl in

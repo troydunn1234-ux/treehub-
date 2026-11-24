@@ -6,7 +6,8 @@ import Foundation
 ///
 /// Fair comparisons only: resting HR and sleep compare the readings themselves; HRV (SDNN vs RMSSD) and strain
 /// (WHOOP strain vs Watch active calories) aren't on the same scale, so they compare which way each tracker
-/// moved against its own last 7 days. A metric only counts when both trackers have a recent reading.
+/// moved against its own last 7 days. A metric only counts when both trackers have a recent reading, and sleep and
+/// HRV only when the two readings are from the same night / day (else they're shown side by side, not compared).
 struct TodayAgreement: Equatable {
     struct Row: Identifiable, Equatable {
         enum Metric: String, CaseIterable { case rhr, hrv, sleep, strain }
@@ -14,13 +15,18 @@ struct TodayAgreement: Equatable {
         /// What each side read, ready to show ("52 bpm", "7h 12m", "Up 8%"). Nil = nothing recent.
         let watch: String?
         let whoop: String?
-        /// Nil when only one side (or neither) has a reading.
+        /// Nil when only one side (or neither) has a reading, or the two are from different nights / days.
         let agree: Bool?
         /// One line on why ("3 bpm apart", "Both below their week").
         let detail: String
         /// How far apart the two readings are, in the row's own unit (bpm, minutes). Nil for the trend rows.
         var gap: Double? = nil
         var id: String { metric.rawValue }
+
+        /// The same row with a short note before its detail ("Yesterday · Both above their week").
+        func noting(_ note: String) -> Row {
+            Row(metric: metric, watch: watch, whoop: whoop, agree: agree, detail: note + " · " + detail, gap: gap)
+        }
 
         var title: String {
             switch metric {
@@ -140,17 +146,53 @@ struct TodayAgreement: Equatable {
     // MARK: Building it
 
     @MainActor
-    static func build(_ store: LabStore) -> TodayAgreement {
-        let since = Date().dayStart.adding(days: -1)
-        let ws = store.lastNight(.watch).flatMap { $0.night >= since && $0.asleepMin > 0 ? $0 : nil }
-        let hs = store.lastNight(.whoop).flatMap { $0.night >= since && $0.asleepMin > 0 ? $0 : nil }
-        let yesterday = Date().dayStart.adding(days: -1)
+    static func build(_ store: LabStore, now: Date = Date()) -> TodayAgreement {
+        let today = now.dayStart
+        let yesterday = today.adding(days: -1)
         return TodayAgreement(rows: [
             rhr(store.reading(.watch, \.rhr, recent: "rhr")?.value, store.reading(.whoop, \.rhr, manual: .rhr)?.value),
-            trend(.hrv, ratio(store.days(.watch), \.hrv, latestWithin: since), ratio(store.days(.whoop), \.hrv, latestWithin: since)),
-            sleep(ws?.asleepMin, hs?.asleepMin),
+            hrv(watch: store.days(.watch), whoop: store.days(.whoop), today: today),
+            sleep(nights: store.sleeps, today: today),
             trend(.strain, ratio(store.days(.watch), \.activeKcal, on: yesterday), ratio(store.days(.whoop), \.strain, on: yesterday)),
         ])
+    }
+
+    /// Sleep on the same night from both: last night when both have it, else the night before (one side hasn't
+    /// logged last night yet). Two different nights are shown, never compared: Watch's last night against WHOOP's
+    /// night before would read as a split that isn't there.
+    static func sleep(nights: [SleepNight], today: Date) -> Row {
+        let before = today.adding(days: -1)
+        /// That night (nil = the newest since the night before last) from one tracker.
+        func night(_ s: Source, on day: Date?) -> SleepNight? {
+            nights.filter { n in n.source == s && n.asleepMin > 0 && (day.map { n.night == $0 } ?? (n.night >= before)) }
+                .max { $0.night < $1.night }
+        }
+        for day in [today, before] {
+            if let w = night(.watch, on: day), let h = night(.whoop, on: day) {
+                let row = sleep(w.asleepMin, h.asleepMin)
+                return day == today ? row : row.noting(String(localized: "Night before last"))
+            }
+        }
+        let w = night(.watch, on: nil), h = night(.whoop, on: nil)
+        if let w, let h {
+            return Row(metric: .sleep, watch: fmtHM(w.asleepMin), whoop: fmtHM(h.asleepMin), agree: nil,
+                       detail: String(localized: "Different nights so far; compares once both have the same night"))
+        }
+        return sleep(w?.asleepMin, h?.asleepMin)
+    }
+
+    /// HRV on the same day from both, each against its own week: today when both have today's, else yesterday.
+    /// Two different days are shown, never compared.
+    static func hrv(watch: [DayStat], whoop: [DayStat], today: Date) -> Row {
+        let before = today.adding(days: -1)
+        for day in [today, before] {
+            if let w = ratio(watch, \.hrv, on: day), let h = ratio(whoop, \.hrv, on: day) {
+                let row = trend(.hrv, w, h)
+                return day == today ? row : row.noting(String(localized: "Yesterday"))
+            }
+        }
+        let w = ratio(watch, \.hrv, latestWithin: before), h = ratio(whoop, \.hrv, latestWithin: before)
+        return trend(.hrv, w, h, sameDay: w == nil || h == nil)
     }
 
     static func rhr(_ w: Double?, _ h: Double?) -> Row {
@@ -176,8 +218,9 @@ struct TodayAgreement: Equatable {
         return Row(metric: .sleep, watch: fmtHM(w), whoop: fmtHM(h), agree: gap <= sleepTolerance, detail: detail, gap: gap)
     }
 
-    /// HRV and strain: each tracker against its own last 7 days.
-    static func trend(_ metric: Row.Metric, _ w: Double?, _ h: Double?) -> Row {
+    /// HRV and strain: each tracker against its own last 7 days. `sameDay: false` = the two ratios are from different
+    /// days, so they're shown but not compared.
+    static func trend(_ metric: Row.Metric, _ w: Double?, _ h: Double?, sameDay: Bool = true) -> Row {
         func show(_ r: Double) -> String {
             let pct = Int(((r - 1) * 100).rounded())
             if pct == 0 { return String(localized: "Usual") }
@@ -185,6 +228,10 @@ struct TodayAgreement: Equatable {
         }
         let base = metric == .strain ? String(localized: "Compares yesterday with each tracker's own week")
             : String(localized: "Compares each tracker with its own week")
+        if !sameDay, let w, let h {
+            return Row(metric: metric, watch: show(w), whoop: show(h), agree: nil,
+                       detail: String(localized: "Different days so far; compares once both have the same day"))
+        }
         guard let w, let h else { return Row(metric: metric, watch: w.map(show), whoop: h.map(show), agree: nil, detail: base) }
         let mw = Move(ratio: w), mh = Move(ratio: h)
         let detail = mw == mh ? String(localized: "Both \(mw.word) their week")
