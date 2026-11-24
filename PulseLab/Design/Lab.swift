@@ -371,6 +371,13 @@ struct DeltaPill: View {
     }
 }
 
+/// A hit-test shape `extra` points taller than the view above and below (same width), for small controls that must
+/// still be 44 pt targets.
+struct TallerHitArea: Shape {
+    var extra: CGFloat
+    func path(in rect: CGRect) -> Path { Path(rect.insetBy(dx: 0, dy: -extra)) }
+}
+
 /// Segmented 7D / 30D / 90D / 1Y control (90D and 1Y are Pro).
 struct RangePicker: View {
     @Binding var days: Int
@@ -392,7 +399,9 @@ struct RangePicker: View {
                     .frame(minWidth: 44, minHeight: 32)
                     .padding(.horizontal, 4)
                     .background(Capsule().fill(days == d ? Lab.accent : Color.clear))
-                    .contentShape(Capsule())
+                    // The pill stays 32 pt tall; the touch area reaches 44 pt (6 pt above and below, not sideways
+                    // into the next segment).
+                    .contentShape(TallerHitArea(extra: 6))
                 }
                 .buttonStyle(.plain)
                 .accessibilityLabel(d == 365 ? "1 year" : "\(d) days")

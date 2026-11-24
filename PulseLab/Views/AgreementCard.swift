@@ -63,11 +63,19 @@ struct AgreementCard: View {
 
     // MARK: Header
 
+    /// "Watch vs WHOOP · Today" on one line; at the largest text sizes "Today" goes under it instead of the
+    /// wordmark being cut off.
     private var kicker: some View {
-        HStack(spacing: 6) {
-            VersusWordmark(font: .subheadline.weight(.bold))
-            Text("· Today").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.faint)
-            Spacer(minLength: 0)
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 6) {
+                VersusWordmark(font: .subheadline.weight(.bold))
+                Text("· Today").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.faint)
+                Spacer(minLength: 0)
+            }
+            VStack(alignment: .leading, spacing: 2) {
+                VersusWordmark(font: .subheadline.weight(.bold)).minimumScaleFactor(0.6)
+                Text("Today").font(.subheadline.weight(.semibold)).foregroundStyle(Lab.faint)
+            }
         }
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
@@ -229,8 +237,12 @@ struct AgreementCard: View {
     /// Accessibility text sizes: one line per tracker instead of the connector.
     private func stackedSide(_ s: Source, _ value: String?, missing: String) -> some View {
         HStack(alignment: .firstTextBaseline, spacing: 6) {
-            Circle().fill(Lab.color(s)).frame(width: 7, height: 7).accessibilityHidden(true)
+            // The dot is centred on its label (an overlay), not stood on the baseline where it read as a full stop.
             Text(verbatim: s.label).font(.footnote.weight(.semibold)).foregroundStyle(Lab.color(s))
+                .padding(.leading, 13)
+                .overlay(alignment: .leading) {
+                    Circle().fill(Lab.color(s)).frame(width: 7, height: 7).accessibilityHidden(true)
+                }
             Text(value ?? missing)
                 .font(value == nil ? .footnote.weight(.medium) : Lab.number(17))
                 .foregroundStyle(value == nil ? Lab.faint : Lab.text)

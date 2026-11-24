@@ -106,6 +106,8 @@ struct VersusRing: View {
     /// False while the ring is scrolled out of sight (iOS 18+): the beat stops there instead of redrawing every
     /// frame for nobody.
     @State private var onScreen = true
+    /// The first sweep (in from zero) has run for this view.
+    @State private var swept = false
 
     private struct Beat { var pump: Double = 0 }
 
@@ -147,8 +149,9 @@ struct VersusRing: View {
         }
         .frame(width: size, height: size)
         .modifier(ScrollVisibility(visible: $onScreen))
-        .onAppear { sweep(fromZero: true) }
-        .onChange(of: score) { _, _ in sweep(fromZero: false) }
+        // A task belongs to the view on screen: the sweep can't be lost the way a main-queue hop after onAppear was
+        // when the view was rebuilt during launch (QA caught the ring stuck at "0%" under "They agree on 3 of 4").
+        .task(id: score) { await sweep() }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(score.map { String(localized: "Agreement \(Int($0)) percent") } ?? String(localized: "No agreement score yet"))
     }
@@ -228,17 +231,18 @@ struct VersusRing: View {
             .accessibilityHidden(true)
     }
 
-    private func sweep(fromZero: Bool) {
+    /// First run for this view: sweep in from zero. Later runs (the score changed): move from where it is.
+    private func sweep() async {
         let t = target
         if reduceMotion { shown = t; return }
-        if fromZero {
+        if !swept {
+            swept = true
             var reset = Transaction()
             reset.disablesAnimations = true
             withTransaction(reset) { shown = 0 }
+            await Task.yield()
         }
-        DispatchQueue.main.async {
-            withAnimation(.spring(response: 1.0, dampingFraction: 0.82)) { shown = t }
-        }
+        withAnimation(.spring(response: 1.0, dampingFraction: 0.82)) { shown = t }
     }
 }
 
