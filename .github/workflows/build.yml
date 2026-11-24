@@ -143,8 +143,10 @@ jobs:
           git push -f "$URL" ci-screenshots || { sleep 20; git push -f "$URL" ci-screenshots; }
 
       - name: Commit generated Xcode project
-        if: success()
+        # Builds of main only. A build dispatched on any other branch (or tag) never commits or pushes anything here.
+        if: success() && github.ref == 'refs/heads/main'
         run: |
+          [ "$GITHUB_REF" = refs/heads/main ] || { echo "Not a build of main ($GITHUB_REF): nothing is committed."; exit 0; }
           git config user.name "TreeHub CI"
           git config user.email "ci@users.noreply.github.com"
           # The project plus the Info.plists / entitlements xcodegen writes that are kept in git (Natal Orbit is
@@ -158,11 +160,20 @@ jobs:
           if git diff --cached --quiet; then echo "Project unchanged"; exit 0; fi
           git commit -q -m "Update generated Xcode project [skip ci]"
           git show --stat --format="Committing: %s" HEAD | head -30
-          # Other helpers push to main all the time: rebase onto the newest main (setting aside any other file the
-          # build touched) and retry; if main keeps moving, the next green build commits the project instead.
+          # Exactly this one commit goes on top of the newest main, and only when the built commit is on main.
+          # Other helpers push to main all the time; if it keeps moving (or conflicts), the next green build commits
+          # the project instead.
           for i in 1 2 3; do
-            if git pull -q --rebase --autostash origin main; then
-              git push -q origin HEAD:main && { echo "Pushed the regenerated project"; exit 0; }
+            git fetch -q origin main
+            if ! git merge-base --is-ancestor "$GITHUB_SHA" FETCH_HEAD; then
+              echo "::warning title=Generated Xcode project not committed::$GITHUB_SHA is not on main."; exit 0
+            fi
+            if git rebase -q --autostash --onto FETCH_HEAD HEAD~1; then
+              OTHER=$(git diff --name-only FETCH_HEAD HEAD | grep -vE '^TreeHub\.xcodeproj/|(Info\.plist|\.entitlements)$' || true)
+              if [ "$(git rev-list --count FETCH_HEAD..HEAD)" != 1 ] || [ -n "$OTHER" ]; then
+                echo "::error title=Generated Xcode project not committed::refusing to push anything but one generated-project commit ($OTHER)"; exit 1
+              fi
+              git push -q origin HEAD:refs/heads/main && { echo "Pushed the regenerated project"; exit 0; }
             else
               git rebase --abort 2>/dev/null || true
             fi
