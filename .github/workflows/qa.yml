@@ -103,6 +103,7 @@ jobs:
           # Keep GitHub's runner processes ahead of the simulator: a busy simulator (Roamr's map screens on these
           # Intel runners) used to starve them until GitHub "lost communication" with the runner.
           for p in $(pgrep -f 'Runner\.(Listener|Worker)'); do sudo renice -n -10 -p "$p" > /dev/null || true; done
+          ps -o pid=,ni=,comm= -p "$(pgrep -d, -f 'Runner\.(Listener|Worker)')" 2>/dev/null | sed 's/^/runner process (pid, nice, name): /' || true
           python3 .github/scripts/qa_capture.py $CFG build/Build/Products qa-out
 
       - name: Publish to the qa-<app> branch (artifacts can't always be downloaded)

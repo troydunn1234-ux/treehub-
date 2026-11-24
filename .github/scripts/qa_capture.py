@@ -179,16 +179,40 @@ def pick(platform, prefer):
     return best
 
 
+def state(udid):
+    try:
+        devs = json.loads(sh("xcrun", "simctl", "list", "devices", "-j", timeout=120).stdout)["devices"]
+        return next((d.get("state", "?") for ds in devs.values() for d in ds if d["udid"] == udid), "missing")
+    except Exception:
+        return "unknown"
+
+
 def boot(udid, label):
-    sh("xcrun", "simctl", "boot", udid, timeout=300)
-    sh("xcrun", "simctl", "bootstatus", udid, "-b", timeout=min(900, max(60, left())))
-    r = sh("xcrun", "simctl", "list", "devices", "booted", timeout=60)
-    if udid not in r.stdout:
-        note(f"FAILED {label} simulator did not boot in {int(time.time() - started)}s", "error")
-        return False
-    say(f"{label} simulator booted; {machine()}")
-    publish(f"{label} simulator booted")
-    return True
+    """Boot and wait. These runners are slow to boot (load in the hundreds while iOS starts its daemons) and
+    bootstatus can give up before the device is up, so keep waiting while it is still Booting, and boot once more
+    if it went back to Shutdown. Up to 15 minutes (less if the budget is short)."""
+    t0 = time.time()
+    end = t0 + min(900, max(120, left()))
+    for attempt in (1, 2):
+        r = sh("xcrun", "simctl", "boot", udid, timeout=300)
+        if r.returncode and "current state: Booted" not in r.stderr:
+            say(f"  simctl boot: {(r.stderr or r.stdout).strip()[-300:]}")
+        r = sh("xcrun", "simctl", "bootstatus", udid, "-b", timeout=max(60, int(end - time.time())))
+        st = state(udid)
+        if st != "Booted":
+            say(f"  bootstatus ended (exit {r.returncode}) with the device {st}: {(r.stdout + r.stderr).strip()[-300:]}")
+        while st == "Booting" and time.time() < end:
+            busy.update(what=f"{label} simulator booting", since=busy["since"])
+            time.sleep(15)
+            st = state(udid)
+        if st == "Booted":
+            say(f"{label} simulator booted in {int(time.time() - t0)}s; {machine()}")
+            publish(f"{label} simulator booted")
+            return True
+        if time.time() >= end:
+            break
+    note(f"FAILED {label} simulator did not boot in {int(time.time() - t0)}s (state: {st})", "error")
+    return False
 
 
 def executable(app):
