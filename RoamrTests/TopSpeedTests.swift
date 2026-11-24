@@ -236,6 +236,8 @@ final class TopSpeedTests: XCTestCase {
         let schema = Schema([Activity.self, GasVehicle.self, FillUp.self])
         let container = try ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema,
                                            url: dir.appending(path: "test.store"), cloudKitDatabase: .none))
+        // The context doesn't keep its container alive: without this the store can close mid-test.
+        defer { withExtendedLifetime(container) {} }
         let context = container.mainContext
         var spiky = Array(repeating: 30.0, count: 300); spiky[150] = 75
         let bad = trip(.drive, spiky, recordedTop: 75)
