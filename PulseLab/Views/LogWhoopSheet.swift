@@ -144,6 +144,17 @@ struct LogWhoopSheet: View {
         .recovery: 50, .strain: 10, .sleepPerformance: 80, .hrv: 50, .rhr: 55, .resp: 15, .steps: 8000, .kcal: 2500,
     ]
 
+    /// Decimals each field is shown with (sleep: whole minutes).
+    static func decimals(_ f: ManualField) -> Int { f == .strain || f == .resp ? 1 : 0 }
+
+    /// True when `value` is what the field showed for `known` (a Health / API number, rounded for the field): left as
+    /// it was. Health's numbers carry more decimals than the fields (WHOOP's HRV of 61.4 shows as 61), so an exact
+    /// match would store every untouched prefilled field as a hand-typed WHOOP number on Save.
+    static func isUnchanged(_ value: Double, from known: Double?, decimals: Int) -> Bool {
+        guard let known else { return false }
+        return abs(known - value) < 0.5 * pow(10, -Double(decimals))
+    }
+
     private var band: Color { value(.recovery).map(Lab.band) ?? Lab.whoop }
 
     /// Full-width tile: big number field plus a slider (recovery, strain, sleep performance).
@@ -211,7 +222,7 @@ struct LogWhoopSheet: View {
             HStack(spacing: 6) {
                 Text(L(title)).font(.subheadline.weight(.semibold)).foregroundStyle(Lab.dim).lineLimit(1).minimumScaleFactor(0.7)
                 Spacer(minLength: 0)
-                if let k = known[f], isFilled(f), abs((value(f) ?? -1) - k) < 0.001 {
+                if let v = value(f), Self.isUnchanged(v, from: known[f], decimals: Self.decimals(f)) {
                     Text("From Health").font(.caption2.weight(.medium)).foregroundStyle(Lab.faint)
                         .padding(.horizontal, 6).padding(.vertical, 2)
                         .background(Capsule().fill(Lab.inset))
@@ -364,7 +375,7 @@ struct LogWhoopSheet: View {
         func keep(_ f: ManualField, _ was: Double?, _ range: ClosedRange<Double>) -> Double? {
             guard let v = value(f) else { return nil }
             let c = min(range.upperBound, max(range.lowerBound, v))
-            if was == nil, let k = known[f], abs(k - c) < 0.001 { return nil }
+            if was == nil, Self.isUnchanged(c, from: known[f], decimals: Self.decimals(f)) { return nil }
             return c
         }
         e.recovery = keep(.recovery, old?.recovery, 0...100)

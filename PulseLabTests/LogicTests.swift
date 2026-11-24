@@ -159,6 +159,22 @@ final class LogicTests: XCTestCase {
         XCTAssertEqual(WhoopAdapter.cycleDay(morning), day)
     }
 
+    // MARK: Log WHOOP stores only what was typed
+
+    @MainActor
+    func testUntouchedPrefilledWhoopFieldsAreNotSavedAsManual() {
+        // WHOOP's HRV in Health is 61.4 ms and the field shows "61": saving without touching it stores nothing
+        // (it used to store 61 as a hand-typed number, which then beat Health's own value and was badged MANUAL).
+        XCTAssertTrue(LogWhoopSheet.isUnchanged(61, from: 61.4, decimals: 0))
+        XCTAssertTrue(LogWhoopSheet.isUnchanged(15.2, from: 15.234, decimals: 1))
+        XCTAssertTrue(LogWhoopSheet.isUnchanged(432, from: 431.7, decimals: 0))
+        // A number typed over it is kept.
+        XCTAssertFalse(LogWhoopSheet.isUnchanged(62, from: 61.4, decimals: 0))
+        XCTAssertFalse(LogWhoopSheet.isUnchanged(15.3, from: 15.234, decimals: 1))
+        // Nothing known for the field: whatever is in it was typed.
+        XCTAssertFalse(LogWhoopSheet.isUnchanged(61, from: nil, decimals: 0))
+    }
+
     // MARK: Background refresh keeps what was shared
 
     func testABackgroundPassKeepsEarlierNumbersForTheSameDay() {
