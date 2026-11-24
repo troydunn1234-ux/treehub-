@@ -165,6 +165,8 @@ struct AgreementView: View {
                 ring(size: 70, line: 7, font: 24)
                 Spacer(minLength: 0)
             }
+            // Room for the heart badge that sits on the ring's bottom edge.
+            .padding(.bottom, 4)
             Spacer(minLength: 0)
             headline(.system(size: 12, weight: .semibold))
             Text(shown.agreeDetail).font(.system(size: 11, weight: .medium)).foregroundStyle(tint)
