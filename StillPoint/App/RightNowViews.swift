@@ -56,112 +56,146 @@ struct RightNowCard: View {
     @EnvironmentObject var link: PhoneLink
     @State private var showWhy = false
     @State private var taps = 0
+    @State private var whyTaps = 0
+    @State private var watchTaps = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let s = model.current
         let p = PracticeLibrary.shared.practice(s.practiceId)
         let tint = PracticeLibrary.shared.category(s.goal).map { Color(spHex: $0.color) } ?? SP.teal
-        let goalName = PracticeLibrary.shared.category(s.goal)?.localizedName
         VStack(alignment: .leading, spacing: SP.s3) {
-            HStack(spacing: SP.s2) {
-                Label("Right now", systemImage: "sparkles")
-                    .font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.2)
-                    .foregroundStyle(SP.ink.opacity(0.75))
-                Spacer(minLength: 0)
-                if let lvl = s.stressLevel.flatMap(StressEstimate.Level.init(rawValue:)) {
-                    Label {
-                        Text("Stress: \(lvl.label)")
-                    } icon: {
-                        Circle().fill(lvl.tint).frame(width: 7, height: 7)
-                    }
-                    .font(.caption.weight(.medium)).foregroundStyle(lvl.tint)
-                    .padding(.horizontal, 8).padding(.vertical, 4)
-                    .background(Capsule().fill(lvl.tint.opacity(0.14)))
-                    .accessibilityLabel("Stress estimate: \(lvl.label)")
-                }
-            }
-            Text(s.title).font(SP.serif(30, .light)).foregroundStyle(SP.ink)
+            topRow(s)
+            // The plain answer first ("Your body says: slow down"), then the practice that does it.
+            Text(s.plainHeadline)
+                .font(SP.serif(28, .light)).foregroundStyle(SP.ink)
                 .fixedSize(horizontal: false, vertical: true)
                 .contentTransition(.opacity)
-            HStack(spacing: SP.s2) {
-                Label("\(s.minutes) min", systemImage: "clock")
-                    .font(.subheadline.weight(.medium)).monospacedDigit().foregroundStyle(SP.ink.opacity(0.9))
-                if let goalName {
-                    Text("·").foregroundStyle(SP.faint)
-                    Text(goalName).font(.subheadline).foregroundStyle(SP.ink.opacity(0.8))
-                }
+                .accessibilityAddTraits(.isHeader)
+            practiceLine(s)
+            if s.becauseAddsSomething {
+                Text(s.because).font(.subheadline).foregroundStyle(SP.ink.opacity(0.8))
+                    .fixedSize(horizontal: false, vertical: true)
             }
-            Text(s.because).font(.body).foregroundStyle(SP.ink.opacity(0.82))
-                .fixedSize(horizontal: false, vertical: true)
-            if s.worksBest || !s.sources.isEmpty {
-                SPFlow(spacing: 6) {
-                    if s.worksBest {
-                        Label("Works best for you", systemImage: "arrow.down.heart.fill")
-                            .font(.caption.weight(.semibold)).foregroundStyle(SP.rose)
-                            .padding(.horizontal, 7).padding(.vertical, 3)
-                            .background(Capsule().fill(SP.rose.opacity(0.12)))
-                    }
-                    ForEach(s.sources.prefix(4), id: \.self) { SourceBadge(name: $0) }
-                }
-            }
+            if s.worksBest || !s.sources.isEmpty { badges(s) }
             Button {
                 taps += 1
                 if let p { start(p, minutes: s.minutes) }
             } label: {
                 Label("Start · \(s.minutes) min", systemImage: "play.fill")
+                    .contentTransition(.numericText())
             }
             .buttonStyle(SPPrimaryButtonStyle())
             .sensoryFeedback(.impact(weight: .light), trigger: taps)
             .disabled(p == nil)
             .padding(.top, SP.s1)
-            SPFlow(spacing: SP.s2) {
-                Button { showWhy = true } label: {
-                    Label("Why this?", systemImage: "info.circle")
-                }
-                .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink.opacity(0.9)))
-                if link.canUseWatch, let p {
-                    Button {
-                        link.startOnWatch(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: s.minutes)) { _ in }
-                    } label: {
-                        Label("On Watch", systemImage: "applewatch")
-                    }
-                    .buttonStyle(SPSecondaryButtonStyle(tint: SP.ink.opacity(0.9)))
-                    .accessibilityLabel("Start on Watch")
-                }
-            }
-            if model.needsHealthAccess {
-                Button {
-                    Task { await model.requestAccess() }
-                } label: {
-                    Label("Use heart rate, HRV and sleep from Health for a better pick", systemImage: "heart.text.square")
-                        .font(.footnote).foregroundStyle(SP.accent)
-                        .multilineTextAlignment(.leading)
-                        .frame(minHeight: 44, alignment: .leading)
-                }
-                .buttonStyle(.plain)
-            } else if s.timeOnly {
-                Text("No recent heart data, so this is picked by time of day.")
-                    .font(.footnote).foregroundStyle(SP.faint)
-            }
+            .accessibilityHint(Text("Starts \(s.title)"))
+            quietLinks(s, p)
+            healthNote(s)
         }
         .padding(SP.s6 - 4)
         .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            ZStack {
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .fill(LinearGradient(colors: [Color(spHex: "#2C3580"), Color(spHex: "#1A1F4E"), SP.nightBottom.opacity(0.9)],
-                                         startPoint: .topLeading, endPoint: .bottomTrailing))
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .fill(RadialGradient(colors: [tint.opacity(0.35), .clear], center: UnitPoint(x: 0.9, y: 0.05), startRadius: 4, endRadius: 260))
-                RoundedRectangle(cornerRadius: 26, style: .continuous)
-                    .fill(RadialGradient(colors: [SP.indigo.opacity(0.30), .clear], center: UnitPoint(x: 0.05, y: 1.0), startRadius: 4, endRadius: 240))
-            }
-        )
+        .background(RightNowSky(tint: tint))
         .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Color.white.opacity(0.12), lineWidth: 1))
-        .animation(.spring(response: 0.5, dampingFraction: 0.85), value: s.practiceId)
+        .animation(reduceMotion ? nil : .spring(response: 0.5, dampingFraction: 0.85), value: s.practiceId)
         .sheet(isPresented: $showWhy) { WhyThisSheet(suggestion: s, stress: model.stress) }
         .task { await model.refresh() }
         .accessibilityElement(children: .contain)
+    }
+
+    /// "RIGHT NOW" and, when there's heart data, the stress estimate.
+    private func topRow(_ s: Suggestion) -> some View {
+        HStack(spacing: SP.s2) {
+            Label("Right now", systemImage: "sparkles")
+                .font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.2)
+                .foregroundStyle(SP.ink.opacity(0.75))
+            Spacer(minLength: 0)
+            if let lvl = s.stressLevel.flatMap(StressEstimate.Level.init(rawValue:)) {
+                Label {
+                    Text("Stress: \(lvl.label)")
+                } icon: {
+                    Circle().fill(lvl.tint).frame(width: 7, height: 7)
+                }
+                .font(.caption.weight(.medium)).foregroundStyle(lvl.tint)
+                .padding(.horizontal, 8).padding(.vertical, 4)
+                .background(Capsule().fill(lvl.tint.opacity(0.14)))
+                .accessibilityLabel("Stress estimate: \(lvl.label)")
+            }
+        }
+    }
+
+    /// The practice itself: its name, then length and goal.
+    private func practiceLine(_ s: Suggestion) -> some View {
+        let cat = PracticeLibrary.shared.category(s.goal)
+        return VStack(alignment: .leading, spacing: SP.s1) {
+            Text(s.title).font(.headline).foregroundStyle(SP.ink)
+                .fixedSize(horizontal: false, vertical: true)
+                .contentTransition(.opacity)
+            SPFlow(spacing: SP.s3) {
+                Label("\(s.minutes) min", systemImage: "clock")
+                    .monospacedDigit()
+                    .contentTransition(.numericText())
+                if let cat {
+                    Label(cat.localizedName, systemImage: cat.symbol)
+                }
+            }
+            .font(.subheadline).foregroundStyle(SP.ink.opacity(0.8))
+            .labelStyle(SPCompactLabel())
+        }
+    }
+
+    private func badges(_ s: Suggestion) -> some View {
+        SPFlow(spacing: 6) {
+            if s.worksBest {
+                Label("Works best for you", systemImage: "arrow.down.heart.fill")
+                    .font(.caption.weight(.semibold)).foregroundStyle(SP.rose)
+                    .padding(.horizontal, 7).padding(.vertical, 3)
+                    .background(Capsule().fill(SP.rose.opacity(0.12)))
+            }
+            ForEach(s.sources.prefix(4), id: \.self) { SourceBadge(name: $0) }
+        }
+    }
+
+    /// "Why this?" and "On Watch" as quiet links, so the filled Start stays the one obvious tap.
+    private func quietLinks(_ s: Suggestion, _ p: Practice?) -> some View {
+        SPFlow(spacing: SP.s4) {
+            Button {
+                whyTaps += 1
+                showWhy = true
+            } label: {
+                Label("Why this?", systemImage: "info.circle")
+            }
+            .sensoryFeedback(.selection, trigger: whyTaps)
+            if link.canUseWatch, let p {
+                Button {
+                    watchTaps += 1
+                    link.startOnWatch(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: s.minutes)) { _ in }
+                } label: {
+                    Label("On Watch", systemImage: "applewatch")
+                }
+                .sensoryFeedback(.success, trigger: watchTaps)
+                .accessibilityLabel("Start on Watch")
+            }
+        }
+        .buttonStyle(SPQuietButtonStyle())
+    }
+
+    @ViewBuilder private func healthNote(_ s: Suggestion) -> some View {
+        if model.needsHealthAccess {
+            Button {
+                Task { await model.requestAccess() }
+            } label: {
+                Label("Use heart rate, HRV and sleep from Health for a better pick", systemImage: "heart.text.square")
+                    .font(.footnote).foregroundStyle(SP.accent)
+                    .multilineTextAlignment(.leading)
+                    .frame(minHeight: 44, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+        } else if s.timeOnly {
+            Text("No recent heart data, so this is picked by time of day.")
+                .font(.footnote).foregroundStyle(SP.faint)
+                .fixedSize(horizontal: false, vertical: true)
+        }
     }
 
     private func start(_ p: Practice, minutes: Int) {
@@ -169,6 +203,23 @@ struct RightNowCard: View {
         DailyMoments.shared.askOnce()
         if PracticeLibrary.shared.isLocked(p) { router.show(p); return }
         router.run(SessionPlan(warmUp: nil, warmUpMinutes: 0, practice: p, minutes: minutes))
+    }
+}
+
+/// The hero card's own small night sky: deep indigo, with the goal's colour glowing in the top corner,
+/// swelling and settling at a calm breathing pace (still with Reduce Motion).
+private struct RightNowSky: View {
+    let tint: Color
+
+    var body: some View {
+        let shape = RoundedRectangle(cornerRadius: 26, style: .continuous)
+        ZStack {
+            shape.fill(LinearGradient(colors: [Color(spHex: "#2C3580"), Color(spHex: "#1A1F4E"), SP.nightBottom.opacity(0.9)],
+                                      startPoint: .topLeading, endPoint: .bottomTrailing))
+            shape.fill(RadialGradient(colors: [tint.opacity(0.36), .clear], center: UnitPoint(x: 0.9, y: 0.05), startRadius: 4, endRadius: 260))
+                .slowBreathe(period: 5.5, low: 0.55, grow: 0)
+            shape.fill(RadialGradient(colors: [SP.indigo.opacity(0.30), .clear], center: UnitPoint(x: 0.05, y: 1.0), startRadius: 4, endRadius: 240))
+        }
     }
 }
 

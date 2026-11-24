@@ -320,6 +320,7 @@ struct PracticeDetailView: View {
     @State private var warmUpId = ""
     @State private var sentToWatch = false
     @State private var showPaywall = false
+    @State private var startTaps = 0
     private let lib = PracticeLibrary.shared
     private var locked: Bool { lib.isLocked(practice) }
 
@@ -420,10 +421,14 @@ struct PracticeDetailView: View {
                     }
 
                     VStack(spacing: 10) {
-                        Button { if locked { showPaywall = true } else { router.run(plan) } } label: {
-                            Label(locked ? "Unlock to practice" : "Begin · \(minutes) min", systemImage: locked ? "lock.fill" : "play.fill")
+                        Button {
+                            startTaps += 1
+                            if locked { showPaywall = true } else { router.run(plan) }
+                        } label: {
+                            Label(locked ? "Unlock to practice" : "Start · \(minutes) min", systemImage: locked ? "lock.fill" : "play.fill")
                         }
                         .buttonStyle(SPPrimaryButtonStyle())
+                        .sensoryFeedback(.impact(weight: .light), trigger: startTaps)
                         Button {
                             if locked { showPaywall = true } else { link.startOnWatch(plan) { ok in sentToWatch = ok } }
                         } label: {

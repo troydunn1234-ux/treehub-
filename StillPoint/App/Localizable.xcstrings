@@ -5302,6 +5302,226 @@
           }
         }
       }
+    },
+    "cool down": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "enfriarte"
+          }
+        }
+      }
+    },
+    "recover": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "recuperarte"
+          }
+        }
+      }
+    },
+    "slow down": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "bajar el ritmo"
+          }
+        }
+      }
+    },
+    "take it easy": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "tomártelo con calma"
+          }
+        }
+      }
+    },
+    "rest": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "descansar"
+          }
+        }
+      }
+    },
+    "wake up and go": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "despertar y arrancar"
+          }
+        }
+      }
+    },
+    "focus": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "concentrarte"
+          }
+        }
+      }
+    },
+    "wind down": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "relajarte"
+          }
+        }
+      }
+    },
+    "let the day settle": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "dejar que el día se asiente"
+          }
+        }
+      }
+    },
+    "start steady": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "empezar con calma"
+          }
+        }
+      }
+    },
+    "reset and refocus": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "reiniciar y enfocarte"
+          }
+        }
+      }
+    },
+    "wake up": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "despertarte"
+          }
+        }
+      }
+    },
+    "be gentle": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "ir con suavidad"
+          }
+        }
+      }
+    },
+    "breathe": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "respirar"
+          }
+        }
+      }
+    },
+    "Your body says: %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tu cuerpo te pide: %@"
+          }
+        }
+      }
+    },
+    "Time to %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Es momento de %@"
+          }
+        }
+      }
+    },
+    "Pick up again": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Retomar"
+          }
+        }
+      }
+    },
+    "Starts %@": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Empieza %@"
+          }
+        }
+      }
+    },
+    "Sauna & steam": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Sauna y vapor"
+          }
+        }
+      }
+    },
+    "Tap as you walk in: the timer and a heat-safe guide start together. Heart rate fills in after.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Tócalo al entrar: el temporizador y una guía segura para el calor empiezan a la vez. La frecuencia cardiaca se añade después."
+          }
+        }
+      }
+    },
+    "Round done · %@ %lld min": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Ronda lista · %1$@ %2$lld min"
+          }
+        }
+      }
+    },
+    "Cool down slowly and drink some water.": {
+      "localizations": {
+        "es": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Enfríate poco a poco y bebe agua."
+          }
+        }
+      }
     }
   },
   "version": "1.0"

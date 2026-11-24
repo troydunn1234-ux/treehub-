@@ -33,6 +33,13 @@ struct HomeView: View {
         HStack(spacing: SP.s3) {
             Image(systemName: "heart").font(.system(size: 18, weight: .light)).foregroundStyle(SP.accent)
                 .frame(width: 40, height: 40).background(Circle().fill(SP.accent.opacity(0.12)))
+                // The same slow candle-glow as the other empty states.
+                .background {
+                    Circle()
+                        .fill(RadialGradient(colors: [SP.rose.opacity(0.22), SP.rose.opacity(0)], center: .center, startRadius: 4, endRadius: 36))
+                        .frame(width: 72, height: 72)
+                        .slowBreathe(period: 4.5, low: 0.45, grow: 0.10)
+                }
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 2) {
                 Text("No favorites yet").font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
@@ -47,32 +54,50 @@ struct HomeView: View {
             .buttonStyle(SPSecondaryButtonStyle())
     }
 
+    /// The greeting, with the hour's own symbol (sunrise, sun, sunset, moon) in the sky's colour.
+    private var header: some View {
+        let part = SkyPart.now
+        return VStack(alignment: .leading, spacing: SP.s1) {
+            HStack(alignment: .firstTextBaseline, spacing: SP.s2) {
+                Image(systemName: part.symbol)
+                    .font(.title2.weight(.light))
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(part.accent)
+                    .symbolEffect(.bounce, value: appeared && !reduceMotion)
+                    .accessibilityHidden(true)
+                Text(greeting).font(SP.serif(34, .light)).foregroundStyle(SP.ink)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .accessibilityAddTraits(.isHeader)
+            }
+            Text(DailyThought.today)
+                .font(SP.serif(15).italic()).foregroundStyle(SP.dim)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(.top, SP.s2)
+        .opacity(appeared ? 1 : 0)
+        .offset(y: appeared || reduceMotion ? 0 : 8)
+    }
+
     var body: some View {
         NavigationStack(path: $router.homePath) {
             ScrollView {
                 VStack(alignment: .leading, spacing: SP.s6) {
-                    VStack(alignment: .leading, spacing: SP.s1) {
-                        Text(greeting).font(SP.serif(34, .light)).foregroundStyle(SP.ink)
-                            .accessibilityAddTraits(.isHeader)
-                        Text(DailyThought.today)
-                            .font(SP.serif(15).italic()).foregroundStyle(SP.dim)
-                            .fixedSize(horizontal: false, vertical: true)
-                    }
-                    .padding(.top, SP.s2)
-                    .opacity(appeared ? 1 : 0)
-                    .offset(y: appeared || reduceMotion ? 0 : 8)
+                    header
 
                     // Hero: one practice for this moment, from WHOOP / Watch numbers in Health and Pulse Lab.
+                    // The only filled Start button on the screen; everything under it is calmer.
                     RightNowCard()
-                    // The two gentle reminders (6 AM and bedtime picks), visible from Today.
-                    MomentsStrip()
 
                     // Sauna / steam stays right under the hero: one tap as you walk in (live timer while one runs).
                     HeatCard()
 
-                    TodaySummaryCard()
+                    // The day at a glance, with the two gentle reminders (6 AM and bedtime picks) just under it.
+                    VStack(spacing: SP.s3) {
+                        TodaySummaryCard()
+                        MomentsStrip()
+                    }
 
-                    // The most recent practice: begin it again (or send it to the Watch) in one tap.
+                    // The most recent practice: start it again (or send it to the Watch) in one tap.
                     if let last = lastPractice { LastPracticeCard(practice: last) }
 
                     VStack(alignment: .leading, spacing: SP.s3) {
@@ -139,7 +164,16 @@ struct HomeView: View {
                 .padding(.horizontal, SP.screenPadding)
                 .padding(.bottom, SP.s8)
             }
-            .background(ZStack { DuskBackground(); Fireflies() })
+            // The sky follows the hour (dawn, day, dusk, night); the drifting specks take its colour, starlight at night.
+            .background {
+                TimelineView(.everyMinute) { tl in
+                    let part = SkyPart.at(tl.date)
+                    ZStack {
+                        SkyBackground(part: part)
+                        Fireflies(tint: part.mote)
+                    }
+                }
+            }
             .onAppear {
                 if reduceMotion { appeared = true } else { withAnimation(.easeOut(duration: 0.9)) { appeared = true } }
             }
@@ -162,6 +196,7 @@ struct HomeView: View {
 struct TodaySummaryCard: View {
     @EnvironmentObject var log: SessionLog
     @EnvironmentObject var router: Router
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let week = log.lastWeek()
@@ -189,6 +224,7 @@ struct TodaySummaryCard: View {
             Image(systemName: log.streak > 0 ? "flame.fill" : "flame")
                 .font(.system(size: 20))
                 .foregroundStyle(log.streak > 0 ? AnyShapeStyle(SP.goldGlow) : AnyShapeStyle(SP.faint))
+                .symbolEffect(.bounce, value: reduceMotion ? 0 : log.streak)
                 .accessibilityHidden(true)
             VStack(alignment: .leading, spacing: 0) {
                 Text("\(log.streak)").font(.system(.title2, design: .rounded).weight(.semibold)).monospacedDigit()
@@ -219,6 +255,7 @@ struct QuickStartTile: View {
     let practice: Practice
     @EnvironmentObject var router: Router
     @State private var taps = 0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         let lib = PracticeLibrary.shared
@@ -235,7 +272,10 @@ struct QuickStartTile: View {
                         .frame(width: 34, height: 34).background(Circle().fill(tint.opacity(0.16)))
                     Spacer(minLength: 0)
                     if lib.isLocked(practice) { ProLockBadge(tint: SP.gold) }
-                    else { Image(systemName: "play.fill").font(.caption).foregroundStyle(SP.accent) }
+                    else {
+                        Image(systemName: "play.fill").font(.caption).foregroundStyle(SP.accent)
+                            .symbolEffect(.bounce, value: reduceMotion ? 0 : taps)
+                    }
                 }
                 Text(practice.title).font(.subheadline.weight(.semibold)).foregroundStyle(SP.ink)
                     .lineLimit(4).multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
@@ -294,7 +334,7 @@ struct LastPracticeCard: View {
                         .frame(width: 46, height: 46).background(Circle().fill(tint.opacity(0.16)))
                         .accessibilityHidden(true)
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("Last practice").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.0)
+                        Text("Pick up again").font(.caption.weight(.semibold)).textCase(.uppercase).tracking(1.0)
                             .foregroundStyle(SP.faint)
                         Text(practice.title).font(.body.weight(.semibold)).foregroundStyle(SP.ink)
                             .multilineTextAlignment(.leading).fixedSize(horizontal: false, vertical: true)
@@ -312,14 +352,17 @@ struct LastPracticeCard: View {
             .buttonStyle(.plain)
             .accessibilityHint("Opens the practice")
             HStack(spacing: SP.s2) {
+                // Tinted, not filled: the Right now card above keeps the one filled Start button on Today.
                 Button {
                     beginTaps += 1
                     router.handle(practiceId: practice.id)
                 } label: {
-                    Label("Begin · \(mins) min", systemImage: "play.fill")
+                    Label("Start · \(mins) min", systemImage: "play.fill")
+                        .frame(minHeight: 50)
                 }
-                .buttonStyle(SPPrimaryButtonStyle())
+                .buttonStyle(SPSecondaryButtonStyle(fullWidth: true))
                 .sensoryFeedback(.impact(weight: .light), trigger: beginTaps)
+                .accessibilityLabel(Text("Start \(practice.title), \(mins) minutes"))
                 if link.canUseWatch && !lib.isLocked(practice) {
                     Button {
                         watchTaps += 1
