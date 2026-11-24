@@ -181,26 +181,30 @@ struct VersusRing: View {
         .rotationEffect(.degrees(90))
     }
 
+    /// Sized from the ring, not the text size: the ring is a fixed graphic (the card draws it bigger at
+    /// accessibility sizes, and VoiceOver reads the score).
     private var center: some View {
-        VStack(spacing: 0) {
+        let number = Font.system(size: size * 0.25, weight: .bold, design: .rounded).monospacedDigit()
+        let caption = Font.system(size: max(11, size * 0.1), weight: .semibold)
+        return VStack(spacing: 0) {
             if score != nil {
                 HStack(alignment: .firstTextBaseline, spacing: 1) {
                     Text(verbatim: "\(Int(shown.rounded()))")
-                        .font(Lab.number(size * 0.25))
+                        .font(number)
                         .foregroundStyle(Lab.text)
                         .contentTransition(.numericText(value: shown))
                     Text(verbatim: "%")
-                        .font(Lab.number(size * 0.12, .semibold))
+                        .font(.system(size: size * 0.12, weight: .semibold, design: .rounded))
                         .foregroundStyle(Lab.dim)
                 }
                 .lineLimit(1).minimumScaleFactor(0.6)
-                Text("agree").font(Lab.label(10)).foregroundStyle(Lab.faint)
+                Text("agree").font(caption).foregroundStyle(Lab.faint)
             } else {
-                Text(verbatim: "–").font(Lab.number(size * 0.25)).foregroundStyle(Lab.faint)
+                Text(verbatim: "–").font(number).foregroundStyle(Lab.faint)
                 Group {
                     if scanning { Text("checking") } else { Text("no score") }
                 }
-                .font(Lab.label(10)).foregroundStyle(Lab.faint)
+                .font(caption).foregroundStyle(Lab.faint)
                 .lineLimit(1).minimumScaleFactor(0.7)
             }
         }

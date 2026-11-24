@@ -77,7 +77,7 @@ struct AgreementCard: View {
     private var header: some View {
         if typeSize.isAccessibilitySize {
             VStack(alignment: .leading, spacing: Lab.S.sm) {
-                ring(size: 120).frame(maxWidth: .infinity)
+                ring(size: 150).frame(maxWidth: .infinity)
                 words
             }
         } else {
@@ -241,7 +241,7 @@ struct AgreementCard: View {
     private func verdict(_ agree: Bool?) -> some View {
         let (text, symbol, color): (String, String, Color) = switch agree {
         case true?: (String(localized: "Agree"), "checkmark.circle.fill", Lab.good)
-        case false?: (String(localized: "Split"), "arrow.left.arrow.right.circle.fill", Lab.warn)
+        case false?: (String(localized: "Split"), "notequal.circle.fill", Lab.warn)
         case nil: (String(localized: "Not compared"), "circle.dashed", Lab.faint)
         }
         return HStack(spacing: 4) {
