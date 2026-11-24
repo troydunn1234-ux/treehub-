@@ -18,31 +18,49 @@
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.troydunn.rootbound</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>rootbound</string>
+			</array>
+		</dict>
+	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>stillpoint</string>
+		<string>roamr</string>
+		<string>pulselab</string>
+	</array>
 	<key>NSCameraUsageDescription</key>
 	<string>Rootbound uses the camera to snap your tree and your tree selfie.</string>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Rootbound reads the heart rate, HRV, breathing rate and mindful minutes your Apple Watch saves to Apple Health, to show how each tree hug calms you.</string>
+	<string>Rootbound reads the heart rate, HRV, breathing rate and mindful minutes your Apple Watch saves to Apple Health, to show how each tree hug calms you, and your walking and hiking workouts, to show the walk that brought you to a tree.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Rootbound on iPhone does not write to Apple Health; the Rootbound Watch app saves each timed hug as a Mind &amp; Body workout.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Rootbound keeps recording your stroll while your phone is locked.</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Rootbound uses your location to record your strolls and hikes and to pin the trees you hug.</string>
+	<string>Rootbound uses your location while you log a hug to pin the tree you hugged.</string>
 	<key>NSMotionUsageDescription</key>
-	<string>Rootbound uses motion data to tell a stroll from a hike.</string>
+	<string>Rootbound does not read motion data. Your walks are recorded in Roamr.</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Rootbound adds your nature photos to albums in Photos, only when you ask it to.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>Rootbound lets you pick tree photos from your library, and sorts your nature photos on your iPhone. Nothing is uploaded.</string>
-	<key>NSSupportsLiveActivities</key>
-	<true/>
+	<key>PaidUntilBuild</key>
+	<integer>0</integer>
+	<key>ProProductID</key>
+	<string>com.troydunn.rootbound.pro</string>
+	<key>TrialProductID</key>
+	<string>com.troydunn.rootbound.none</string>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>location</string>
 		<string>remote-notification</string>
 	</array>
 	<key>UILaunchScreen</key>

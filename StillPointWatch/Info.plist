@@ -34,9 +34,9 @@
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Still Point reads your heart rate and HRV during sessions to show how you settle.</string>
+	<string>Still Point reads your heart rate, HRV, breathing rate, sleep, steps and workouts to show how you settle and to suggest one practice that fits right now.</string>
 	<key>NSHealthUpdateUsageDescription</key>
-	<string>Still Point saves your sessions to Apple Health as Mindful Minutes, and movement routines and sauna/steam sessions as workouts.</string>
+	<string>Still Point saves your sessions to Apple Health as Mindful Minutes.</string>
 	<key>PaidUntilBuild</key>
 	<integer>0</integer>
 	<key>ProProductID</key>

@@ -31,10 +31,23 @@
 	</array>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>INAlternativeAppNames</key>
+	<array>
+		<dict>
+			<key>INAlternativeAppName</key>
+			<string>Still Pointz</string>
+		</dict>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>rootbound</string>
+		<string>roamr</string>
+		<string>pulselab</string>
+	</array>
 	<key>NSHealthShareUsageDescription</key>
-	<string>Still Point reads your mindful minutes, heart rate, HRV and resting heart rate to show how your practice and sauna sessions affect your recovery.</string>
+	<string>Still Point reads your mindful minutes, heart rate, HRV, resting heart rate, breathing rate, sleep, steps and workouts (including what WHOOP saves to Health) to show how your practice and sauna sessions affect your recovery, and to suggest one practice that fits right now. Nothing leaves your devices.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Still Point saves your sessions to Apple Health as Mindful Minutes, and movement routines and sauna/steam sessions as workouts.</string>
 	<key>PaidUntilBuild</key>
@@ -45,15 +58,6 @@
 	<array>
 		<string>com.troydunn.stillpoint.pro.yearly</string>
 		<string>com.troydunn.stillpoint.pro.monthly</string>
-	</array>
-	<key>TrialProductID</key>
-	<string>com.troydunn.stillpoint.none</string>
-	<key>INAlternativeAppNames</key>
-	<array>
-		<dict>
-			<key>INAlternativeAppName</key>
-			<string>Still Pointz</string>
-		</dict>
 	</array>
 	<key>UIBackgroundModes</key>
 	<array>

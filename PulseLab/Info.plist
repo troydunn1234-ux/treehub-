@@ -16,6 +16,11 @@
 	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>en</string>
+		<string>es</string>
+	</array>
 	<key>CFBundleName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundlePackageType</key>
@@ -40,11 +45,16 @@
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>whoop</string>
+		<string>stillpoint</string>
+		<string>rootbound</string>
+		<string>roamr</string>
 	</array>
 	<key>NSHealthShareUsageDescription</key>
 	<string>Pulse Lab reads your heart, sleep, activity and workout data from Apple Health (including what WHOOP saves there) to compare your Apple Watch and WHOOP side by side.</string>
 	<key>NSHealthUpdateUsageDescription</key>
 	<string>Pulse Lab saves the supplements you check off in your Stack to Apple Health as nutrients (like vitamin D or magnesium). It never changes your heart, sleep or workout data.</string>
+	<key>PLCloudSync</key>
+	<false/>
 	<key>PaidUntilBuild</key>
 	<integer>0</integer>
 	<key>ProProductID</key>
