@@ -42,6 +42,42 @@ final class LogicTests: XCTestCase {
         XCTAssertEqual(again.sleeps.map(\.night), merged.sleeps.map(\.night))
     }
 
+    // MARK: Today's Watch vs WHOOP card speaks plainly
+
+    func testAgreementHeadlineAndReasonInPlainWords() {
+        // Resting HR 1 bpm apart, HRV and strain both near their week, sleep 42 min apart.
+        let mostly = TodayAgreement(rows: [
+            TodayAgreement.rhr(52, 51),
+            TodayAgreement.trend(.hrv, 1.0, 1.02),
+            TodayAgreement.sleep(432, 390),
+            TodayAgreement.trend(.strain, 1.01, 0.97),
+        ])
+        XCTAssertEqual(mostly.compared, 4)
+        XCTAssertEqual(mostly.agreeing, 3)
+        XCTAssertEqual(mostly.score, 75)
+        XCTAssertEqual(mostly.headline, "They agree on 3 of 4")
+        XCTAssertEqual(mostly.reason, "Sleep is off by 42 min.")
+        XCTAssertFalse(mostly.fullAgreement)
+
+        // Two splits are both named; over an hour reads as hours and minutes.
+        let two = TodayAgreement(rows: [TodayAgreement.rhr(60, 52), TodayAgreement.sleep(480, 408), TodayAgreement.trend(.hrv, 1.0, 1.0)])
+        XCTAssertEqual(two.headline, "They agree on 1 of 3")
+        XCTAssertEqual(two.reason, "Resting HR is off by 8 bpm and sleep is off by 1h 12m.")
+
+        // Everything compared agrees: the small celebration is due.
+        let all = TodayAgreement(rows: [TodayAgreement.rhr(52, 51), TodayAgreement.sleep(430, 420)])
+        XCTAssertEqual(all.headline, "They agree on both")
+        XCTAssertEqual(all.reason, "Same story on every number today.")
+        XCTAssertTrue(all.fullAgreement)
+
+        // One comparison names the metric; nothing compared waits.
+        XCTAssertEqual(TodayAgreement(rows: [TodayAgreement.rhr(60, 52), TodayAgreement.sleep(nil, 400)]).headline, "They split on resting HR")
+        let none = TodayAgreement(rows: [TodayAgreement.rhr(nil, 51), TodayAgreement.sleep(nil, nil)])
+        XCTAssertEqual(none.headline, "Waiting for both trackers")
+        XCTAssertNil(none.score)
+        XCTAssertFalse(none.fullAgreement)
+    }
+
     // MARK: Background refresh keeps what was shared
 
     func testABackgroundPassKeepsEarlierNumbersForTheSameDay() {

@@ -18,6 +18,8 @@ struct TodayAgreement: Equatable {
         let agree: Bool?
         /// One line on why ("3 bpm apart", "Both below their week").
         let detail: String
+        /// How far apart the two readings are, in the row's own unit (bpm, minutes). Nil for the trend rows.
+        var gap: Double? = nil
         var id: String { metric.rawValue }
 
         var title: String {
@@ -28,6 +30,32 @@ struct TodayAgreement: Equatable {
             case .strain: String(localized: "Strain")
             }
         }
+
+        /// The name inside a sentence ("They agree on resting HR"). Its own keys, so Spanish can add the article.
+        var noun: String {
+            switch metric {
+            case .rhr: String(localized: "rhr.inSentence", defaultValue: "resting HR")
+            case .hrv: String(localized: "hrv.inSentence", defaultValue: "HRV")
+            case .sleep: String(localized: "sleep.inSentence", defaultValue: "sleep")
+            case .strain: String(localized: "strain.inSentence", defaultValue: "strain")
+            }
+        }
+
+        /// Plain words for a split ("sleep is off by 42 min"); nil when they agree or weren't compared.
+        var why: String? {
+            guard agree == false else { return nil }
+            switch metric {
+            case .rhr:
+                guard let gap else { return String(localized: "resting HR is off") }
+                return String(localized: "resting HR is off by \(Int(gap.rounded())) bpm")
+            case .sleep:
+                guard let gap else { return String(localized: "sleep is off") }
+                return String(localized: "sleep is off by \(TodayAgreement.span(gap))")
+            case .hrv: return String(localized: "HRV is moving different ways")
+            case .strain: return String(localized: "strain is moving different ways")
+            }
+        }
+
         /// What a side with nothing shows instead of a bare dash.
         var missing: String {
             switch metric {
@@ -47,11 +75,47 @@ struct TodayAgreement: Equatable {
     /// Short names of the metrics they split on ("HRV, Sleep").
     var splits: [String] { rows.filter { $0.agree == false }.map(\.title) }
 
+    /// True when every compared metric agrees and at least two were compared (the hero's small celebration).
+    var fullAgreement: Bool { compared >= 2 && agreeing == compared }
+
     var headline: String {
         guard compared > 0 else { return String(localized: "Waiting for both trackers") }
-        if agreeing == compared { return String(localized: "They agree on all \(compared)") }
-        if agreeing == 0 { return String(localized: "They split on all \(compared)") }
+        if compared == 1, let only = rows.first(where: { $0.agree != nil }) {
+            return only.agree == true ? String(localized: "They agree on \(only.noun)") : String(localized: "They split on \(only.noun)")
+        }
+        if agreeing == compared {
+            return compared == 2 ? String(localized: "They agree on both") : String(localized: "They agree on all \(compared)")
+        }
+        if agreeing == 0 {
+            return compared == 2 ? String(localized: "They split on both") : String(localized: "They split on all \(compared)")
+        }
         return String(localized: "They agree on \(agreeing) of \(compared)")
+    }
+
+    /// The plain-words line under the headline: by how much they split ("Sleep is off by 42 min."), or that they don't.
+    var reason: String {
+        guard compared > 0 else { return String(localized: "Each check needs a recent reading from both trackers.") }
+        let whys = rows.compactMap(\.why)
+        if whys.isEmpty {
+            return compared == rows.count ? String(localized: "Same story on every number today.")
+                : String(localized: "Same story on everything both measured.")
+        }
+        if whys.count <= 2 { return Self.sentence(whys.formatted(.list(type: .and))) }
+        if agreeing == 0 { return String(localized: "Nothing lines up today. Tap a row to see by how much.") }
+        let names = rows.filter { $0.agree == false }.map(\.noun)
+        return String(localized: "They differ on \(names.formatted(.list(type: .and))).")
+    }
+
+    /// "42 min" under an hour, "1h 12m" from there.
+    static func span(_ minutes: Double) -> String {
+        let m = Int(minutes.rounded())
+        return m < 60 ? String(localized: "\(m) min") : fmtHM(Double(m))
+    }
+
+    /// Capital first letter and a full stop.
+    private static func sentence(_ s: String) -> String {
+        guard let first = s.first else { return s }
+        return String(first).uppercased() + String(s.dropFirst()) + "."
     }
 
     // MARK: Tolerances
@@ -98,7 +162,7 @@ struct TodayAgreement: Equatable {
         let agree = gap <= rhrTolerance
         let detail = gap < 0.5 ? String(localized: "Same reading")
             : String(localized: "\(Int(gap.rounded())) bpm apart")
-        return Row(metric: .rhr, watch: f(w), whoop: f(h), agree: agree, detail: detail)
+        return Row(metric: .rhr, watch: f(w), whoop: f(h), agree: agree, detail: detail, gap: gap)
     }
 
     static func sleep(_ w: Double?, _ h: Double?) -> Row {
@@ -109,7 +173,7 @@ struct TodayAgreement: Equatable {
         let gap = abs(w - h)
         let detail = gap < 5 ? String(localized: "Same night")
             : (w > h ? String(localized: "Watch counts \(fmtHM(gap)) more") : String(localized: "WHOOP counts \(fmtHM(gap)) more"))
-        return Row(metric: .sleep, watch: fmtHM(w), whoop: fmtHM(h), agree: gap <= sleepTolerance, detail: detail)
+        return Row(metric: .sleep, watch: fmtHM(w), whoop: fmtHM(h), agree: gap <= sleepTolerance, detail: detail, gap: gap)
     }
 
     /// HRV and strain: each tracker against its own last 7 days.
