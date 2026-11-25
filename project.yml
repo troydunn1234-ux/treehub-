@@ -577,6 +577,7 @@ targets:
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
         NSPhotoLibraryAddUsageDescription: Ride Quest saves the images you choose to keep.
+        NSCameraUsageDescription: Ride Quest uses the camera only when you take a photo of your car for the Garage.
         ITSAppUsesNonExemptEncryption: false
     settings:
       base:

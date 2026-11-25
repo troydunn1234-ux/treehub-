@@ -91,62 +91,62 @@ a { color: var(--red-text); }
 .lab { font-size: .8rem; color: var(--silver); font-weight: 600; }
 .sec { font-size: .82rem; font-weight: 700; color: var(--silver); padding: 14px 2px 2px; }
 
-/* ---------- Garage hero: the coupe in a tachometer, on carbon ---------- */
-.hero { padding: 14px 14px 16px; overflow: hidden; background: #0a0a0c; border-color: rgba(255,255,255,.09); }
-/* the weave fades out toward the edges under a plain gradient in the hero's own color (no mask or filter anywhere in the
-   hero: they are slow to redraw while the needle sweeps, and the phone has to redraw what lies under it) */
-.hero::before { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5;
-  background:
-    radial-gradient(130% 85% at 50% 28%, rgba(10,10,12,0) 25%, #0a0a0c 82%) 0 0 / 100% 100% no-repeat,
-    linear-gradient(27deg, #0d0d0f 5px, transparent 5px) 0 5px / 20px 20px,
-    linear-gradient(207deg, #0d0d0f 5px, transparent 5px) 10px 0 / 20px 20px,
-    linear-gradient(27deg, #141416 5px, transparent 5px) 0 10px / 20px 20px,
-    linear-gradient(207deg, #141416 5px, transparent 5px) 10px 5px / 20px 20px,
-    linear-gradient(90deg, #101012 10px, transparent 10px) 0 0 / 20px 20px,
-    linear-gradient(#111113 25%, #0e0e10 25%, #0e0e10 50%, transparent 50%, transparent 75%, #151517 75%, #151517) 0 0 / 20px 20px;
-  background-color: #0b0b0d; }
-.hero::after { content: ""; position: absolute; left: -20%; right: -20%; bottom: -30%; height: 60%; pointer-events: none;
-  background: radial-gradient(50% 50% at 18% 50%, rgba(255,42,42,.14), transparent 70%); }
-.hero > * { position: relative; z-index: 1; }
+/* ---------- Garage hero: your car's photo, full-bleed, fading into the page; then the numbers, calm ---------- */
+.hero { position: relative; margin: -6px -16px 0; }
+.hph { position: relative; display: block; width: 100%; aspect-ratio: 16 / 10; max-height: 340px; padding: 0; border: 0; overflow: hidden; background: #0b0b0d; color: inherit; }
+.hph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 50%; display: block; }
+/* blacked out: a dark veil at the top for the header seam, and a long fade into the page at the bottom */
+.hph::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(7,7,8,.42) 0%, rgba(7,7,8,0) 22%, rgba(7,7,8,0) 50%, rgba(7,7,8,.72) 80%, #070708 100%); }
+/* the tail-light line: one thin red light bar where the photo meets the page */
+.tl { position: absolute; left: 16px; right: 16px; bottom: 6px; z-index: 1; height: 2px; border-radius: 2px; pointer-events: none;
+  background: linear-gradient(90deg, rgba(255,42,42,0), #ff2a2a 24%, #ff3b3b 50%, #ff2a2a 76%, rgba(255,42,42,0)); box-shadow: 0 0 12px rgba(255,42,42,.5); }
+.hph.load { background: linear-gradient(180deg, #111215, #070708); }
+@media (prefers-reduced-motion: no-preference) { .hph img { animation: phin .45s ease-out; } @keyframes phin { from { opacity: 0; } } }
+/* no photo yet: a quiet card with one button, no car art */
+.hph.empty { aspect-ratio: auto; max-height: none; width: auto; margin: 8px 16px 0; padding: 30px 18px 32px; border-radius: var(--r); border: 1px solid var(--line);
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; text-align: center;
+  background: radial-gradient(120% 100% at 50% 0%, #18191d 0%, #0e0f12 62%, #0b0b0d 100%); }
+.hph.empty::after { display: none; }
+.hph.empty .eic { width: 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; color: var(--silver); background: rgba(255,255,255,.04); border: 1px solid var(--line2); }
+.hph.empty .eic svg { width: 24px; height: 24px; stroke: currentColor; fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.hph.empty p { font-size: .86rem; color: var(--silver); max-width: 28ch; line-height: 1.4; }
+.hph.empty .btn { min-width: min(15rem, 100%); }
+.hb { padding: 6px 16px 0; }
 .hero-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
-.hero-name { min-width: 0; display: flex; flex-direction: column; gap: 6px; padding-top: 2px; }
-.hero-name h2 { font-family: var(--font-d); font-size: min(1.5rem, 7.6vw); font-weight: 800; letter-spacing: -.02em; line-height: 1.12; overflow-wrap: anywhere; }
-.streak { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; min-height: 26px; padding: 0 10px 0 8px; border-radius: 99px; font-size: .76rem; font-weight: 700; color: var(--ink);
-  background: rgba(255,255,255,.06); border: 1px solid var(--line2); }
-.streak svg { width: 14px; height: 14px; fill: var(--red); }
-.gauge { position: relative; margin: 2px -6px 0; }
-.gauge > svg { display: block; width: 100%; height: auto; overflow: visible; }
-.gauge text { font-family: var(--font); }
-.gauge .lit, .gauge .hot { transition: none; }
-.gauge .ndl { transform-box: view-box; }
-.gauge.go .lit, .gauge.go .hot { transition: stroke-dasharray 1.35s cubic-bezier(.22,.9,.28,1); }
-.gauge.go .ndl { transition: transform 1.35s cubic-bezier(.22,.9,.28,1.02); }
-.read { position: absolute; left: 0; right: 0; top: 25%; text-align: center; pointer-events: none; padding: 0 64px; }
-.read .rl { display: block; font-size: min(.82rem, 3.7vw); font-weight: 600; color: var(--silver); }
-.read .rv { display: block; margin-top: 2px; font-family: var(--font-d); font-weight: 800; font-size: min(2.25rem, 9.2vw); letter-spacing: -.015em; line-height: 1.06; white-space: nowrap; }
-.read .rs { display: flex; align-items: center; justify-content: center; gap: 7px; margin-top: 7px; font-size: min(.86rem, 3.8vw); color: var(--silver); white-space: nowrap; }
-.read .pct { display: inline-block; padding: 1px 8px; border-radius: 99px; background: rgba(255,255,255,.08); border: 1px solid var(--line2); color: var(--ink); font-weight: 700; font-size: min(.78rem, 3.5vw); font-style: normal; }
-.carin { position: absolute; left: -2%; right: -2%; bottom: -2%; pointer-events: none; }
-.car { display: block; width: 100%; height: auto; }
-.car .sweep { opacity: 0; }
-@media (prefers-reduced-motion: no-preference) {
-  .car.go .sweep { animation: sweep 2.4s cubic-bezier(.45,.05,.3,1) .5s 1 both; }
-  @keyframes sweep { 0% { opacity: 1; transform: skewX(-18deg) translateX(0); } 100% { opacity: 1; transform: skewX(-18deg) translateX(560px); } }
-  .car.go .tail { animation: tail 1.6s ease-out .2s 1 both; }
-  @keyframes tail { 0% { opacity: .25; } 35% { opacity: 1; } 55% { opacity: .55; } 100% { opacity: 1; } }
-}
-.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(8.6rem, 100%), 1fr)); gap: 12px 14px; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
-.target { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; padding: 11px 12px; border-radius: 14px; font-size: .86rem; line-height: 1.4; color: var(--silver); background: rgba(255,255,255,.04); border: 1px solid var(--line); }
-.target b { color: var(--ink); font-weight: 700; }
-.target svg { flex: 0 0 auto; width: 18px; height: 18px; margin-top: 1px; stroke: var(--silver); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-.target.behind { background: var(--amber-soft); border-color: rgba(255,181,71,.28); }
-.target.behind svg { stroke: var(--amber); }
-.target.ahead svg { stroke: var(--ink); }
-.stat { min-width: 0; display: flex; flex-direction: column; gap: 3px; }
-.stat > span { font-size: .78rem; color: var(--silver); font-weight: 600; }
-.stat > b { font-family: var(--font-d); font-size: 1.12rem; font-weight: 800; letter-spacing: -.01em; overflow-wrap: anywhere; line-height: 1.15; }
-.stat > small { font-size: .76rem; color: var(--silver2); line-height: 1.3; }
-.stat > button.lk { margin: 0 -6px; min-height: 30px; justify-content: flex-start; font-size: 1rem; }
+.hero-name { min-width: 0; display: flex; flex-direction: column; gap: 6px; padding-top: 4px; }
+.hero-name h2 { font-family: var(--font-d); font-size: min(1.42rem, 7.2vw); font-weight: 800; letter-spacing: -.02em; line-height: 1.12; overflow-wrap: anywhere; }
+.streak { display: inline-flex; align-self: flex-start; align-items: center; gap: 6px; min-height: 24px; padding: 0 9px 0 7px; border-radius: 99px; font-size: .74rem; font-weight: 700; color: var(--silver);
+  background: rgba(255,255,255,.05); border: 1px solid var(--line); }
+.streak svg { width: 13px; height: 13px; fill: var(--red); }
+.hsv { margin-top: 16px; display: flex; flex-direction: column; gap: 2px; }
+.hsv .rl { font-size: .8rem; font-weight: 600; color: var(--silver); }
+.hsv .rv { font-family: var(--font-d); font-weight: 800; font-size: min(2.7rem, 11.4vw); letter-spacing: -.025em; line-height: 1.04; overflow-wrap: anywhere; }
+.hsv .rs { font-size: .9rem; color: var(--silver); }
+.hsv .rs .n:last-child { color: var(--ink); font-weight: 700; }
+.hbar { margin-top: 14px; height: 6px; }
+.bar.hbar > i { background: linear-gradient(90deg, #a40d12, var(--red)); box-shadow: 0 0 10px rgba(255,42,42,.45); }
+.hmeta { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(8.5rem, 100%), 1fr)); gap: 12px 16px; margin-top: 16px; }
+.hm { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.hm b { font-family: var(--font-d); font-size: 1.14rem; font-weight: 800; letter-spacing: -.01em; overflow-wrap: anywhere; line-height: 1.15; }
+.hm span { font-size: .78rem; color: var(--silver); }
+.hm.r { text-align: right; align-items: flex-end; }
+.hm .lk { margin: 0 -6px; min-height: 30px; font-size: 1rem; }
+.tline { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 44px; margin-top: 14px; padding: 9px 12px; border-radius: var(--r2); border: 1px solid var(--line); background: rgba(255,255,255,.03);
+  color: var(--silver); font-size: .84rem; line-height: 1.35; text-align: left; }
+.tline > span { flex: 1 1 auto; min-width: 0; }
+.tline b { color: var(--ink); font-weight: 700; }
+.tline > svg:first-child { flex: 0 0 auto; width: 17px; height: 17px; stroke: var(--silver); fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+.tline.behind { border-color: rgba(255,181,71,.3); background: var(--amber-soft); }
+.tline.behind > svg:first-child { stroke: var(--amber); }
+/* the photo sheet: frame the shot by dragging, or with two buttons */
+.phframe { position: relative; aspect-ratio: 16 / 10; border-radius: 14px; overflow: hidden; background: #0b0b0d; border: 1px solid var(--line2); touch-action: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.phframe img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; pointer-events: none; -webkit-user-drag: none; }
+.phframe .phhint { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); padding: 4px 10px; border-radius: 99px; font-size: .74rem; font-weight: 650; color: var(--ink); background: rgba(0,0,0,.62); white-space: nowrap; }
+.cph { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+.cph .th { flex: 0 0 auto; width: 6.4rem; aspect-ratio: 16 / 10; border-radius: 10px; overflow: hidden; border: 1px solid var(--line2); background: #0b0b0d; padding: 0; }
+.cph .th img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.cph .mid { gap: 2px; }
 .src { margin-top: 12px; font-size: .76rem; color: var(--silver2); }
 
 /* quick add: three controls under the hero */
@@ -156,14 +156,6 @@ a { color: var(--red-text); }
 .qb.hot { background: linear-gradient(180deg, rgba(255,42,42,.16), rgba(255,42,42,.05)); border-color: var(--red-line); }
 .qb.hot svg { stroke: var(--red-text); }
 
-/* wallets strip */
-.wal { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(8.5rem, 100%), 1fr)); gap: 10px; }
-.wt { display: flex; flex-direction: column; gap: 3px; min-width: 0; min-height: 44px; padding: 12px 12px 11px; border-radius: 14px; border: 1px solid var(--line); background: var(--card2); color: inherit; text-align: left; }
-.wt span { font-size: .78rem; color: var(--silver); font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.wt b { font-family: var(--font-d); font-size: 1.12rem; font-weight: 800; letter-spacing: -.01em; overflow-wrap: anywhere; }
-.wt small { font-size: .72rem; color: var(--silver2); line-height: 1.3; }
-.wtot { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 10px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); font-weight: 700; }
-
 /* ledger: label on the left, the number on the right (tabular, so columns line up) */
 .ledger { display: flex; flex-direction: column; }
 .lr { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; min-height: 40px; padding: 8px 0; border-top: 1px solid var(--line); }
@@ -171,6 +163,7 @@ a { color: var(--red-text); }
 .lr > span:first-child { display: flex; flex-direction: column; gap: 1px; min-width: 0; font-size: .92rem; font-weight: 600; color: var(--silver); }
 .lr > span:first-child small { font-size: .74rem; font-weight: 500; color: var(--silver2); }
 .lr > b { font-family: var(--font-d); font-size: 1.16rem; font-weight: 800; letter-spacing: -.01em; text-align: right; white-space: nowrap; }
+button.lr { width: 100%; margin: 0; border-left: 0; border-right: 0; border-bottom: 0; background: none; color: inherit; text-align: left; }
 .lr.tot { border-top: 1px solid var(--line2); }
 .lr.tot > span:first-child { color: var(--ink); font-weight: 700; }
 /* KPI trio */
@@ -394,8 +387,6 @@ details.det[open] > summary { margin-bottom: 8px; }
 .empty .btn { margin-top: 8px; min-width: min(12rem, 100%); }
 
 /* ---------- Car tab ---------- */
-.carhead { position: relative; margin: -4px -8px 0; }
-.carhead .car { margin-top: -6px; }
 .goalbig { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
 .goalbig b { font-family: var(--font-d); font-size: min(2rem, 8.6vw); font-weight: 800; letter-spacing: -.015em; }
 .loanbig { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
@@ -470,15 +461,19 @@ details.det[open] > summary { margin-bottom: 8px; }
 <main class="main">
   <!-- GARAGE -->
   <section class="scr" id="s-garage" aria-label="Garage">
-    <div class="card hero" id="hero">
-      <div class="hero-top">
-        <div class="hero-name"><h2 id="goalName">Dream car</h2><span id="streak" hidden></span></div>
-        <button class="ib" type="button" data-tab="car" aria-label="Edit your car goal"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+    <div class="hero" id="hero">
+      <div id="gPhotoSlot"></div>
+      <div class="hb">
+        <div class="hero-top">
+          <div class="hero-name"><h2 id="goalName">Dream car</h2><span id="streak" hidden></span></div>
+          <button class="ib" type="button" data-tab="car" aria-label="Edit your car goal"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+        </div>
+        <div class="hsv"><span class="rl">Saved</span><b class="rv n" id="gSaved"></b><span class="rs">of <span class="n" id="gGoal"></span> &middot; <span class="n" id="gPct"></span></span></div>
+        <span class="bar hbar" id="gBar" role="img" aria-label="Savings progress"><i style="width:0%"></i></span>
+        <div class="hmeta" id="heroStats"></div>
+        <div id="heroTarget" hidden></div>
+        <p class="src" id="heroSrc"></p>
       </div>
-      <div class="gauge" id="gauge" role="group" aria-label="Savings progress"></div>
-      <div class="stats" id="heroStats"></div>
-      <div id="heroTarget" hidden></div>
-      <p class="src" id="heroSrc"></p>
     </div>
     <div class="qadd" role="group" aria-label="Quick add">
       <button class="qb" type="button" data-act="qa" data-m="tx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>Purchase</button>
@@ -568,6 +563,7 @@ details.det[open] > summary { margin-bottom: 8px; }
   <button class="tab" role="tab" id="t-more" data-tab="more" aria-selected="false" aria-controls="s-more"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5.5" cy="12" r="1.4"/><circle cx="12" cy="12" r="1.4"/><circle cx="18.5" cy="12" r="1.4"/></svg>More</button>
 </nav>
 
+<input type="file" id="carPhotoFile" accept="image/*" hidden>
 <div class="sheet" id="sheet" hidden>
   <div class="sbd" data-act="sheetclose"></div>
   <div class="spanel" id="spanel" role="dialog" aria-modal="true" aria-label="Details"></div>
@@ -2397,6 +2393,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     flame: '<path d="M12 21c-4 0-6.5-2.7-6.5-6.3 0-3.6 2.6-5.2 3.6-8.7 2.5 1.6 3.4 3.8 3.4 3.8s1.1-1.3 1.3-3.3c2.7 2.2 4.7 4.9 4.7 8.2 0 3.6-2.5 6.3-6.5 6.3z"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     loan: '<rect x="3.5" y="6" width="17" height="12" rx="2.5"/><path d="M3.5 10h17M7 14.5h3"/>',
+    photo: '<rect x="3.5" y="5.5" width="17" height="13" rx="2.5"/><circle cx="9" cy="10.5" r="1.7"/><path d="m20.5 15.5-4.6-4.6-8.4 7.6"/>',
     road: '<path d="M8 3.5 4.5 20.5M16 3.5l3.5 17M12 5v2.5M12 11v2.5M12 17v2.5"/>'
   };
   function kico(k) { return '<svg viewBox="0 0 24 24" aria-hidden="true">' + (KI[k] || KI.coin) + "</svg>"; }
@@ -2509,109 +2506,153 @@ details.det[open] > summary { margin-bottom: 8px; }
   /* the old arcade's sounds are gone; a save gets a light haptic instead */
   function beep(kind) { if (TESTING) return; haptic(kind === "tick" ? "select" : "success"); }
 
-  /* ---------- the car: an original, generic low coupe in profile (no real model's lines, no badges), facing right ---------- */
-  var carN = 0;
-  function carSVG() {
-    var id = "cv" + (++carN), u = function (k) { return id + k; };
-    var body = "M26 101 L21 93 Q18 85 21 78 L24 70 Q26 65 34 64 L52 63 C80 53 110 37 152 35 C172 34.5 186 37 198 43 L230 59 C268 61 312 64 336 69 Q350 72 354 81 L355 89 Q354 97 344 100 L309 101 A27 27 0 0 0 255 101 L117 101 A27 27 0 0 0 63 101 Z";
-    var glass = "M90 58 C108 48 128 40.5 152 39.5 C170 39 182 41.5 193 46.5 L213 57.5 C170 57.8 128 57.6 90 58 Z";
-    function wheel(cx, cy) {
-      var s = '<circle cx="' + cx + '" cy="' + cy + '" r="23" fill="#050506" stroke="#2a2c31" stroke-width="1.2"/>' +
-        '<circle cx="' + cx + '" cy="' + cy + '" r="17" fill="#0a0b0d" stroke="rgba(200,206,214,.6)" stroke-width="1"/>' +
-        '<path d="M' + (cx - 11.5) + " " + (cy + 6) + " A13 13 0 0 1 " + (cx - 7) + " " + (cy - 10.5) + '" fill="none" stroke="#e3161b" stroke-width="3.4" stroke-linecap="round"/>';
-      for (var i = 0; i < 5; i++) {
-        var a = i * 2 * Math.PI / 5 - Math.PI / 2;
-        [-0.13, 0.13].forEach(function (o) {
-          s += '<line x1="' + (cx + 4 * Math.cos(a)).toFixed(2) + '" y1="' + (cy + 4 * Math.sin(a)).toFixed(2) + '" x2="' + (cx + 16 * Math.cos(a + o)).toFixed(2) + '" y2="' + (cy + 16 * Math.sin(a + o)).toFixed(2) + '" stroke="rgba(196,202,210,.7)" stroke-width="1.5" stroke-linecap="round"/>';
-        });
-      }
-      return s + '<circle cx="' + cx + '" cy="' + cy + '" r="3.6" fill="#16171a" stroke="rgba(200,206,214,.65)" stroke-width=".9"/>';
-    }
-    return '<svg class="car" viewBox="0 0 400 132" aria-hidden="true" focusable="false"><defs>' +
-      '<linearGradient id="' + u("p") + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#202226"/><stop offset=".42" stop-color="#0e0f11"/><stop offset="1" stop-color="#030304"/></linearGradient>' +
-      '<linearGradient id="' + u("g") + '" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#30333a"/><stop offset="1" stop-color="#08090a"/></linearGradient>' +
-      '<linearGradient id="' + u("sh") + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".4" stop-color="#fff" stop-opacity=".6"/><stop offset=".75" stop-color="#fff" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-      '<linearGradient id="' + u("bm") + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#eef2ff" stop-opacity=".5"/><stop offset="1" stop-color="#eef2ff" stop-opacity="0"/></linearGradient>' +
-      '<radialGradient id="' + u("tl") + '"><stop offset="0" stop-color="#ff2a2a" stop-opacity=".8"/><stop offset="1" stop-color="#ff2a2a" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="' + u("gd") + '"><stop offset="0" stop-color="#000" stop-opacity=".95"/><stop offset="1" stop-color="#000" stop-opacity="0"/></radialGradient>' +
-      '<radialGradient id="' + u("hl") + '"><stop offset="0" stop-color="#eef2ff" stop-opacity=".9"/><stop offset="1" stop-color="#eef2ff" stop-opacity="0"/></radialGradient>' +
-      '<linearGradient id="' + u("sw") + '" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity=".22"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>' +
-      '<clipPath id="' + u("c") + '"><path d="' + body + '"/></clipPath></defs>' +
-      '<ellipse cx="190" cy="124" rx="182" ry="8" fill="url(#' + u("gd") + ')"/>' +
-      '<ellipse cx="30" cy="121" rx="46" ry="5" fill="url(#' + u("tl") + ')" opacity=".5"/>' +
-      '<path d="M352 74 L400 60 L400 98 L352 79 Z" fill="url(#' + u("bm") + ')" opacity=".55"/>' +
-      '<path d="' + body + '" fill="url(#' + u("p") + ')" stroke="rgba(205,210,218,.34)" stroke-width="1"/>' +
-      '<path d="' + glass + '" fill="url(#' + u("g") + ')" stroke="rgba(205,210,218,.2)" stroke-width=".8"/>' +
-      '<path d="M161 39.6 L165 57.6" stroke="#050506" stroke-width="3.2"/>' +
-      '<path d="M213 57.5 l7 -5 l7 1.4 l-2.4 4.2 Z" fill="#0b0c0e" stroke="rgba(205,210,218,.3)" stroke-width=".7"/>' +
-      '<path d="M30 73 C120 67 230 65 344 74" fill="none" stroke="rgba(225,230,236,.15)" stroke-width="1"/>' +
-      '<path d="M56 74 C80 63 110 63 134 71" fill="none" stroke="rgba(225,230,236,.12)" stroke-width="1"/>' +
-      '<path d="M121 94 L251 94" fill="none" stroke="rgba(225,230,236,.12)" stroke-width="1"/>' +
-      '<path d="M170 60 L174 93" fill="none" stroke="rgba(225,230,236,.07)" stroke-width="1"/>' +
-      '<path d="M318 84 L334 84" stroke="rgba(225,230,236,.14)" stroke-width="1.4" stroke-linecap="round"/>' +
-      '<path d="M58 61 C86 50 112 38 152 36 C172 35.5 185 38 197 44" fill="none" stroke="url(#' + u("sh") + ')" stroke-width="1.6" stroke-linecap="round"/>' +
-      '<path d="M236 60 C272 62 308 65 334 70" fill="none" stroke="url(#' + u("sh") + ')" stroke-width="1.2" stroke-linecap="round" opacity=".7"/>' +
-      '<g clip-path="url(#' + u("c") + ')"><rect class="sweep" x="-140" y="20" width="120" height="100" fill="url(#' + u("sw") + ')"/></g>' +
-      '<g class="tail"><ellipse cx="29" cy="72.7" rx="19" ry="6.5" fill="url(#' + u("tl") + ')"/>' +
-      '<rect x="20" y="71" width="20" height="3.4" rx="1.7" fill="#ff4b4b"/><circle cx="25" cy="72.6" r="17" fill="url(#' + u("tl") + ')" opacity=".75"/></g>' +
-      '<ellipse cx="343" cy="73.6" rx="15" ry="6" fill="url(#' + u("hl") + ')" opacity=".8"/>' +
-      '<path d="M334 69.5 L352 74.5 L351 77.5 L333 72.5 Z" fill="#f7f9ff"/>' +
-      wheel(90, 99) + wheel(282, 99) + "</svg>";
+  /* ---------- your car's photo ----------
+     You pick it from Photos or Files; the phone shrinks it (at most 1600 px wide, JPEG 0.8) and keeps it on this iPhone only:
+     in IndexedDB, and in the app's own photo folder too when Ride Quest runs in its iPhone shell. The saved state only
+     remembers that there is one, and how it's framed: goal.photo = { y: 0-100 (vertical focus), id: app photo id, at, w, h }.
+     Nothing about the photo goes into exports or backups beyond that. */
+  var PH = { url: "", key: 0, busy: false, loading: false };
+  var PH_DB = "ridequest-photos", PH_ST = "photos";
+  function phMeta() { var m = S.goal && S.goal.photo; return m && typeof m === "object" && !Array.isArray(m) ? m : null; }
+  function phY(m) { m = m || phMeta(); var y = m ? Number(m.y) : 50; return isFinite(y) && m && m.y !== null && m.y !== "" ? Math.min(100, Math.max(0, Math.round(y))) : 50; }
+  /* the size the phone saves: never wider than 1600 px or taller than 2400 px, never enlarged */
+  function phFit(w, h) { w = Math.max(1, +w || 1); h = Math.max(1, +h || 1); var k = Math.min(1, 1600 / w, 2400 / h); return { w: Math.max(1, Math.round(w * k)), h: Math.max(1, Math.round(h * k)) }; }
+  function idbOpen() {
+    return new Promise(function (res, rej) {
+      try {
+        if (!window.indexedDB) { rej(new Error("IndexedDB is off")); return; }
+        var r = indexedDB.open(PH_DB, 1);
+        r.onupgradeneeded = function () { if (!r.result.objectStoreNames.contains(PH_ST)) r.result.createObjectStore(PH_ST); };
+        r.onsuccess = function () { res(r.result); };
+        r.onerror = function () { rej(r.error || new Error("IndexedDB")); };
+        r.onblocked = function () { rej(new Error("IndexedDB blocked")); };
+      } catch (e) { rej(e); }
+    });
+  }
+  function idbDo(mode, fn) {
+    return idbOpen().then(function (d) {
+      return new Promise(function (res, rej) {
+        var out, rq, tx;
+        try { tx = d.transaction(PH_ST, mode); rq = fn(tx.objectStore(PH_ST)); } catch (e) { d.close(); rej(e); return; }
+        rq.onsuccess = function () { out = rq.result; };
+        tx.oncomplete = function () { d.close(); res(out); };
+        tx.onerror = tx.onabort = function () { d.close(); rej(tx.error || rq.error || new Error("IndexedDB")); };
+      });
+    });
+  }
+  function photoPut(key, rec) { return idbDo("readwrite", function (st) { return st.put(rec, key); }); }
+  function photoGet(key) { return idbDo("readonly", function (st) { return st.get(key); }); }
+  function photoDel(key) { return idbDo("readwrite", function (st) { return st["delete"](key); }); }
+  function isQuota(e) { return !!e && (e.name === "QuotaExceededError" || e.code === 22 || /quota|space/i.test(String(e.message || ""))); }
+  function shrinkImage(file) {
+    return new Promise(function (res, rej) {
+      var url = URL.createObjectURL(file), im = new Image();
+      im.onload = function () {
+        try {
+          var s = phFit(im.naturalWidth, im.naturalHeight), c = document.createElement("canvas"), x = c.getContext("2d");
+          c.width = s.w; c.height = s.h; x.fillStyle = "#000"; x.fillRect(0, 0, s.w, s.h); x.imageSmoothingQuality = "high"; x.drawImage(im, 0, 0, s.w, s.h);
+          URL.revokeObjectURL(url);
+          c.toBlob(function (b) { if (b) res({ blob: b, w: s.w, h: s.h }); else rej(new Error("encode")); }, "image/jpeg", 0.8);
+        } catch (e) { URL.revokeObjectURL(url); rej(e); }
+      };
+      im.onerror = function () { URL.revokeObjectURL(url); rej(new Error("decode")); };
+      im.src = url;
+    });
+  }
+  /* a second copy in the app's own photo folder (Documents/blobs, served at /_blob/<id>), when the iPhone shell is there */
+  function phNativeSave(blob) {
+    var c = window.claude, h = window.webkit && window.webkit.messageHandlers && window.webkit.messageHandlers.native;
+    if (!h || !c || typeof c.use !== "function") return Promise.resolve("");
+    return c.use("assets").then(function (a) { return a && a.upload ? a.upload(blob).then(function (r) { return (r && r.id) || ""; }) : ""; }).then(null, function () { return ""; });
+  }
+  function phShow(blob, key) {
+    if (PH.url && PH.url.indexOf("blob:") === 0) { try { URL.revokeObjectURL(PH.url); } catch (e) {} }
+    PH.url = blob ? URL.createObjectURL(blob) : ""; PH.key = key || 0;
+  }
+  function photoLoad() {
+    var m = phMeta();
+    if (!m) { if (PH.url) phShow(null); return Promise.resolve(false); }
+    if (PH.key === m.at || PH.loading) return Promise.resolve(!!PH.url);
+    PH.loading = true;
+    return photoGet("car").then(function (r) { return r && r.blob ? r : null; }, function () { return null; }).then(function (r) {
+      PH.loading = false;
+      var m2 = phMeta(); if (!m2) { phShow(null); return false; }
+      if (r && (!r.at || r.at === m2.at)) phShow(r.blob, m2.at);
+      else if (m2.id && /^[A-Za-z0-9]+$/.test(m2.id)) { phShow(null); PH.url = "/_blob/" + m2.id; PH.key = m2.at; }
+      else { phShow(null); PH.key = m2.at; }
+      if (loaded) renderHero();
+      return !!PH.url;
+    });
+  }
+  function photoPick() { var f = $("carPhotoFile"); if (f && !PH.busy) { f.value = ""; f.click(); } }
+  function photoSet(file) {
+    if (!file) return;
+    if (file.type && !/^image\//.test(file.type)) { toast("Pick a photo (JPEG, PNG or HEIC).", true); return; }
+    PH.busy = true; if (!$("sheet").hidden) closeSheet(); renderHero();
+    shrinkImage(file).then(function (im) {
+      var at = Date.now(), rec = { blob: im.blob, w: im.w, h: im.h, at: at };
+      return Promise.all([photoPut("car", rec).then(function () { return true; }, function (e) { return e || new Error("IndexedDB"); }), phNativeSave(im.blob)]).then(function (r) {
+        if (r[0] !== true && !r[1]) throw r[0];
+        S.goal.photo = { y: 50, id: r[1] || "", at: at, w: im.w, h: im.h };
+        phShow(im.blob, at);
+        touch(); renderAll(); haptic("success");
+        toast("Photo set. Tap it to frame the shot.");
+      });
+    }).then(null, function (e) {
+      diag("photo-fail", e && (e.name || e.message));
+      toast(isQuota(e) ? "Not enough free space for the photo. Free up some space or pick a smaller one." : "Couldn't use that photo. Try another one.", true);
+    }).then(function () { PH.busy = false; renderHero(); if (tab === "car") renderTab(); });
+  }
+  function photoRemove() {
+    delete S.goal.photo; phShow(null);
+    photoDel("car").then(null, function () {});
+    closeSheet(); touch(); renderAll(); toast("Photo removed");
+  }
+  function photoFrame(y) {
+    var m = phMeta(); if (!m) return;
+    m.y = Math.min(100, Math.max(0, Math.round(y)));
+    var pos = "50% " + m.y + "%";
+    ["gPhoto", "phImg", "cPhoto"].forEach(function (id) { var el = $(id); if (el) el.style.objectPosition = pos; });
+  }
+  /* how far the picture can slide up or down inside a 16:10 frame (0 = it already fits) */
+  function phSlack(frameW) {
+    var m = phMeta(); if (!m || !(m.w > 0) || !(m.h > 0)) return 1;
+    var fh = frameW * 10 / 16, ih = frameW * m.h / m.w;
+    return ih > fh ? ih - fh : 0;
+  }
+  function openPhoto() {
+    var m = phMeta();
+    if (!m || !PH.url) { photoPick(); return; }
+    var fits = phSlack(320) === 0;
+    openSheet(sheetHead("Your car photo", "Done") +
+      '<div class="phframe" id="phFrame" aria-hidden="true"><img id="phImg" src="' + esc(PH.url) + '" alt="" draggable="false" style="object-position:50% ' + phY(m) + '%">' +
+      '<span class="phhint">' + (fits ? "The whole photo fits" : "Drag to frame") + "</span></div>" +
+      (fits ? "" : '<div class="btns"><button class="btn ghost sm" type="button" data-act="phmove" data-d="-10">Move up</button><button class="btn ghost sm" type="button" data-act="phmove" data-d="10">Move down</button></div>') +
+      '<div class="btns col"><button class="btn" type="button" data-act="photopick" style="justify-content:center">Change photo</button><button class="btn danger" type="button" data-act="photodel" style="justify-content:center">Remove photo</button></div>' +
+      '<p class="note">The photo stays on this iPhone. It isn\'t part of exports or the backup file.</p>', "Your car photo");
+  }
+  /* drag inside the frame: the picture follows your finger */
+  (function () {
+    var drag = null;
+    document.addEventListener("pointerdown", function (e) {
+      var f = e.target.closest && e.target.closest("#phFrame"); if (!f || !phMeta()) return;
+      var sl = phSlack(f.clientWidth); if (!sl) return;
+      drag = { y0: e.clientY, f0: phY(), sl: sl, id: e.pointerId }; try { f.setPointerCapture(e.pointerId); } catch (x) {}
+      e.preventDefault();
+    });
+    document.addEventListener("pointermove", function (e) { if (!drag || e.pointerId !== drag.id) return; photoFrame(drag.f0 - (e.clientY - drag.y0) / drag.sl * 100); });
+    function end(e) { if (!drag || e.pointerId !== drag.id) return; drag = null; touch(); renderHero(); haptic("select"); }
+    document.addEventListener("pointerup", end); document.addEventListener("pointercancel", end);
+    var inp = $("carPhotoFile"); if (inp) inp.addEventListener("change", function () { photoSet(inp.files && inp.files[0]); });
+  })();
+  function heroPhotoHtml() {
+    var m = phMeta();
+    if (m && PH.url && PH.key === m.at) return { k: "p" + PH.url + (PH.busy ? "b" : ""), h: '<button class="hph" type="button" data-act="photosheet" aria-label="Your car photo: frame, change or remove it"><img id="gPhoto" src="' + esc(PH.url) + '" alt="" style="object-position:50% ' + phY(m) + '%"><span class="tl" aria-hidden="true"></span></button>' };
+    if (m && (PH.loading || PH.key !== m.at) && !PH.busy) return { k: "load", h: '<div class="hph load" aria-hidden="true"><span class="tl"></span></div>' };
+    return { k: PH.busy ? "busy" : "empty", h: '<div class="hph empty"><span class="eic" aria-hidden="true">' + kico("photo") + "</span><p>Your goal car, front and center. The photo stays on this iPhone.</p>" +
+      '<button class="btn" type="button" data-act="photopick"' + (PH.busy ? " disabled" : "") + ">" + (PH.busy ? "Adding the photo…" : "Add a photo of your car") + '</button><span class="tl" aria-hidden="true"></span></div>' };
   }
 
-  /* ---------- the tachometer: progress to the goal, redline in the last 15% ---------- */
-  var GZ = { cx: 180, cy: 156, R: 124, red: 0.85 };
-  function gpt(t, r) { var a = (-120 + 240 * t) * Math.PI / 180; return [GZ.cx + r * Math.sin(a), GZ.cy - r * Math.cos(a)]; }
-  function garc(t0, t1, r) { var a = gpt(t0, r), b = gpt(t1, r); return "M" + a[0].toFixed(2) + " " + a[1].toFixed(2) + " A" + r + " " + r + " 0 " + ((t1 - t0) * 240 > 180 ? 1 : 0) + " 1 " + b[0].toFixed(2) + " " + b[1].toFixed(2); }
-  function arcLen(t0, t1, r) { return (t1 - t0) * 240 * Math.PI / 180 * r; }
-  function niceStep(x) { if (!(x > 0)) return 1; var m = Math.pow(10, Math.floor(Math.log10(x))), r = x / m; return (r <= 1 ? 1 : r <= 2 ? 2 : r <= 2.5 ? 2.5 : r <= 5 ? 5 : 10) * m; }
-  /* tick labels only: "$0", "$750", "$10K", "$59.5K", "$1.2M" (every money figure elsewhere is exact) */
-  function kShort(c) {
-    var d = c / 100;
-    if (d >= 1e6) return "$" + (Math.round(d / 1e5) / 10).toString().replace(/\.0$/, "") + "M";
-    if (d >= 1000) return "$" + (Math.round(d / 100) / 10).toString().replace(/\.0$/, "") + "K";
-    return "$" + Math.round(d);
-  }
-  function gaugeSVG(goalC) {
-    var R = GZ.R, s = '<svg viewBox="0 0 360 300" aria-hidden="true" focusable="false"><defs>' +
-      '<linearGradient id="gLit" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#7d838b"/><stop offset="1" stop-color="#ffffff"/></linearGradient>' +
-      '<radialGradient id="gFace" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#1a1b1f"/><stop offset="1" stop-color="#0b0b0d" stop-opacity="0"/></radialGradient></defs>';
-    s += '<circle cx="' + GZ.cx + '" cy="' + GZ.cy + '" r="' + (R - 6) + '" fill="url(#gFace)"/>';
-    s += '<path d="' + garc(0, 1, R) + '" fill="none" stroke="#1d1f23" stroke-width="8" stroke-linecap="round"/>';
-    s += '<path d="' + garc(GZ.red, 1, R + 9) + '" fill="none" stroke="#ff2a2a" stroke-width="2.5" stroke-linecap="round"/>';
-    var i, n;
-    for (i = 0; i <= 50; i++) {
-      var t = i / 50, maj = i % 5 === 0, a1 = gpt(t, R - 11), a2 = gpt(t, R - (maj ? 21 : 16));
-      s += '<line x1="' + a1[0].toFixed(1) + '" y1="' + a1[1].toFixed(1) + '" x2="' + a2[0].toFixed(1) + '" y2="' + a2[1].toFixed(1) + '" stroke="' + (t >= GZ.red - 1e-9 ? "#ff4a4a" : maj ? "#c3c8cf" : "#464a51") + '" stroke-width="' + (maj ? 1.6 : 1) + '"/>';
-    }
-    if (goalC > 0) {
-      var step = niceStep(goalC / 6);
-      for (n = 0; n * step < goalC; n++) {
-        var v = n * step; if (n > 0 && goalC - v < step * 0.5) continue;
-        var q = gpt(v / goalC, R + 21);
-        s += '<text x="' + q[0].toFixed(1) + '" y="' + (q[1] + 4).toFixed(1) + '" text-anchor="middle" fill="#8e949c" font-size="11" font-weight="600">' + kShort(v) + "</text>";
-      }
-      var qg = gpt(1, R + 21);
-      s += '<text x="' + (qg[0] + 4).toFixed(1) + '" y="' + (qg[1] + 4).toFixed(1) + '" text-anchor="middle" fill="#ff5c5c" font-size="11" font-weight="700">' + kShort(goalC) + "</text>";
-    }
-    var L1 = arcLen(0, GZ.red, R), L2 = arcLen(GZ.red, 1, R), n1 = gpt(0, R - 28), n2 = gpt(0, R + 10);
-    /* glows are plain wide, faint strokes (no SVG filters: they are slow to redraw while the needle sweeps) */
-    var d1 = garc(0, GZ.red, R), d2 = garc(GZ.red, 1, R), z1 = "stroke-dasharray:0 " + (L1 * 2).toFixed(1) + ";opacity:0", z2 = "stroke-dasharray:0 " + (L2 * 2).toFixed(1) + ";opacity:0";
-    s += '<path class="lit" id="gLitH" d="' + d1 + '" fill="none" stroke="url(#gLit)" stroke-opacity=".16" stroke-width="18" stroke-linecap="round" style="' + z1 + '"/>';
-    s += '<path class="hot" id="gHotH" d="' + d2 + '" fill="none" stroke="#ff2a2a" stroke-opacity=".22" stroke-width="18" stroke-linecap="round" style="' + z2 + '"/>';
-    s += '<path class="lit" id="gLitP" d="' + d1 + '" fill="none" stroke="url(#gLit)" stroke-width="8" stroke-linecap="round" style="' + z1 + '" data-l="' + L1.toFixed(2) + '"/>';
-    s += '<path class="hot" id="gHotP" d="' + d2 + '" fill="none" stroke="#ff2a2a" stroke-width="8" stroke-linecap="round" style="' + z2 + '" data-l="' + L2.toFixed(2) + '"/>';
-    var nl = 'x1="' + n1[0].toFixed(1) + '" y1="' + n1[1].toFixed(1) + '" x2="' + n2[0].toFixed(1) + '" y2="' + n2[1].toFixed(1) + '"';
-    s += '<g class="ndl" id="gNdl" style="transform-origin:' + GZ.cx + "px " + GZ.cy + 'px;transform:rotate(0deg)"><line ' + nl + ' stroke="#ff2a2a" stroke-opacity=".25" stroke-width="10" stroke-linecap="round"/><line ' + nl + ' stroke="#ff2a2a" stroke-width="4" stroke-linecap="round"/></g>';
-    return s + "</svg>";
-  }
-  function setGauge(p) {
-    var lit = $("gLitP"), hot = $("gHotP"), nd = $("gNdl"); if (!lit) return;
-    var L1 = +lit.dataset.l, L2 = +hot.dataset.l, a = Math.min(p, GZ.red) / GZ.red, b = p > GZ.red ? (p - GZ.red) / (1 - GZ.red) : 0;
-    [lit, $("gLitH")].forEach(function (el) { if (!el) return; el.style.strokeDasharray = (L1 * a).toFixed(2) + " " + (L1 * 2).toFixed(1); el.style.opacity = p > 0.002 ? "1" : "0"; });
-    [hot, $("gHotH")].forEach(function (el) { if (!el) return; el.style.strokeDasharray = (L2 * b).toFixed(2) + " " + (L2 * 2).toFixed(1); el.style.opacity = b > 0.002 ? "1" : "0"; });
-    nd.style.transform = "rotate(" + (p * 240).toFixed(2) + "deg)";
-  }
   /* numbers roll to their new value (exact cents at the end); instant with Reduce Motion */
   var ROLL = {};
   function rollTo(el, key, c) {
@@ -2629,62 +2670,58 @@ details.det[open] > summary { margin-bottom: 8px; }
   /* ---------- Garage ---------- */
   var heroIntro = true;
   function renderHero() {
-    var g = goalInfo(), pc = paceInfo(), p = g.gC > 0 ? Math.min(1, Math.max(0, g.have / g.gC)) : 0, gs = $("gauge");
+    var g = goalInfo(), pc = paceInfo(), p = g.gC > 0 ? Math.min(1, Math.max(0, g.have / g.gC)) : 0;
+    var m = phMeta();
+    if (!TESTING && loaded && ((m && PH.key !== m.at && !PH.loading) || (!m && PH.url))) photoLoad();
+    var ph = heroPhotoHtml(), slot = $("gPhotoSlot");
+    if (slot.dataset.k !== ph.k) {
+      slot.innerHTML = ph.h; slot.dataset.k = ph.k;
+      var img = $("gPhoto"); if (img) img.addEventListener("error", function () { if (PH.url && PH.url.indexOf("/_blob/") === 0) { PH.url = ""; slot.dataset.k = ""; renderHero(); } });
+    } else if ($("gPhoto")) $("gPhoto").style.objectPosition = "50% " + phY(m) + "%";
     $("goalName").textContent = S.goal.name || "Dream car";
     var st = saveStreak(), se = $("streak");
     se.hidden = st < 2;
     if (st >= 2) { se.className = "streak"; se.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="' + 'M12 21c-4 0-6.5-2.7-6.5-6.3 0-3.6 2.6-5.2 3.6-8.7 2.5 1.6 3.4 3.8 3.4 3.8s1.1-1.3 1.3-3.3c2.7 2.2 4.7 4.9 4.7 8.2 0 3.6-2.5 6.3-6.5 6.3z' + '"/></svg>' + st + "-week saving streak"; }
-    if (gs.dataset.k !== String(g.gC)) {
-      gs.innerHTML = gaugeSVG(g.gC) + '<div class="read"><span class="rl">Saved</span><b class="rv n" id="gSaved"></b><span class="rs"><span>of <span class="n" id="gGoal"></span></span><em class="pct n" id="gPct"></em></span></div>' +
-        '<p class="sr" id="gSr"></p><div class="carin">' + carSVG() + "</div>";
-      gs.dataset.k = String(g.gC);
-      if (!heroIntro) setGauge(p);
-    }
     $("gGoal").textContent = fmtC(g.gC);
     $("gPct").textContent = pctTxt(g.have, g.gC);
-    $("gSr").textContent = "Savings progress: " + pctTxt(g.have, g.gC) + " of the goal" + (g.gC > 0 && g.left === 0 ? ", goal reached." : ".");
-    if (heroIntro && !TESTING && !REDUCE) ROLL.saved = 0; /* the first time: the number rolls up with the needle */
+    var bar = $("gBar"), fill = bar.firstChild;
+    bar.setAttribute("aria-label", "Savings progress: " + pctTxt(g.have, g.gC) + " of the goal" + (g.gC > 0 && g.left === 0 ? ", goal reached" : ""));
+    if (heroIntro && !TESTING && !REDUCE) { ROLL.saved = 0; fill.style.width = "0%"; requestAnimationFrame(function () { requestAnimationFrame(function () { fill.style.width = (p * 100).toFixed(2) + "%"; }); }); }
+    else fill.style.width = (p * 100).toFixed(2) + "%";
+    if (!TESTING) heroIntro = false;
     rollTo($("gSaved"), "saved", g.have);
-    if (heroIntro && !TESTING) {
-      heroIntro = false; setGauge(0);
-      if (REDUCE) setGauge(p);
-      else requestAnimationFrame(function () { requestAnimationFrame(function () { gs.classList.add("go"); setGauge(p); }); });
-    } else setGauge(p);
-    /* the three numbers under the gauge: what's left, when you'll get there, what the target date needs */
+    /* two numbers: what's left, and when you'll get there */
     var h = "";
-    if (g.gC > 0 && g.left === 0) h += '<div class="stat"><span>Goal reached</span><b class="n">' + (g.have > g.gC ? fmtC(g.have - g.gC) : fmtC(g.gC)) + "</b><small>" + (g.have > g.gC ? "more than you need" : "exactly there") + "</small></div>";
-    else h += '<div class="stat"><span>Still to save</span><b class="n">' + fmtC(g.left) + "</b><small>to reach " + fmtC(g.gC) + "</small></div>";
+    if (g.gC > 0 && g.left === 0) h += '<div class="hm"><b class="n">' + (g.have > g.gC ? fmtC(g.have - g.gC) : fmtC(g.gC)) + "</b><span>" + (g.have > g.gC ? "more than you need, goal reached" : "goal reached, exactly") + "</span></div>";
+    else h += '<div class="hm"><b class="n">' + fmtC(g.left) + "</b><span>to go</span></div>";
     var paceM = "", tg = "";
     if (g.left > 0 && g.gC > 0) {
-      if (pc.planDate) { paceM = pc.planDate; h += '<div class="stat"><span>On pace for</span><b>' + esc(monYear(pc.planDate)) + '</b><small>at <span class="n">' + fmtC(pc.plan) + "</span> a month, your plan</small></div>"; }
-      else if (pc.avgDate) { paceM = pc.avgDate; h += '<div class="stat"><span>On pace for</span><b>' + esc(monYear(pc.avgDate)) + '</b><small>at your recent <span class="n">' + fmtC(pc.avg.c) + "</span> a month</small></div>"; }
-      else h += '<div class="stat"><span>On pace for</span><button class="lk" type="button" data-tab="car">Set a monthly plan</button><small>to see your date</small></div>';
-      /* the target month: what it takes, and whether the plan gets there */
+      if (pc.planDate) { paceM = pc.planDate; h += '<div class="hm r"><b>' + esc(monYear(pc.planDate)) + '</b><span>on pace, <span class="n">' + fmtC(pc.plan) + "</span>/mo</span></div>"; }
+      else if (pc.avgDate) { paceM = pc.avgDate; h += '<div class="hm r"><b>' + esc(monYear(pc.avgDate)) + '</b><span>on pace, recent <span class="n">' + fmtC(pc.avg.c) + "</span>/mo</span></div>"; }
+      else h += '<div class="hm r"><button class="lk" type="button" data-tab="car">Set a monthly plan</button><span>to see your date</span></div>';
+      /* the target month, in one line: what it takes, and whether the plan gets there (details on the Car tab) */
       if (g.perMonth) {
-        var behind = paceM && paceM > g.by, ahead = paceM && paceM <= g.by, rate = pc.planDate ? pc.plan : pc.avgDate ? pc.avg.c : 0;
-        tg = '<div class="target' + (behind ? " behind" : ahead ? " ahead" : "") + '">' + kico(behind ? "alert" : ahead ? "check" : "cal") + "<div>To reach it by <b>" + esc(monYear(g.by)) + '</b>: <b class="n">' + fmtC(g.perMonth) + '</b> a month or <b class="n">' + fmtC(g.perWeek) + "</b> a week." +
-          (behind && rate ? ' That\'s <b class="n">' + fmtC(g.perMonth - rate) + "</b> a month more than " + (pc.planDate ? "your plan." : "your recent pace.") : ahead ? " You're on track." : "") + "</div></div>";
+        var behind = paceM && paceM > g.by, ahead = paceM && paceM <= g.by;
+        tg = '<button class="tline' + (behind ? " behind" : "") + '" type="button" data-tab="car">' + kico(behind ? "alert" : ahead ? "check" : "cal") + "<span>" +
+          (ahead ? "On track for <b>" + esc(monYear(g.by)) + "</b>" : "By <b>" + esc(monYear(g.by)) + '</b>: <b class="n">' + fmtC(g.perMonth) + "</b> a month") + "</span>" + CHEV + "</button>";
       }
-      else if (g.past) tg = '<div class="target behind">' + kico("alert") + "<div>Your target month, <b>" + esc(monName(g.by)) + '</b>, has passed. <button class="lk" type="button" data-tab="car" style="margin:0;min-height:0;padding:0">Pick a new one</button></div></div>';
+      else if (g.past) tg = '<button class="tline behind" type="button" data-tab="car">' + kico("alert") + "<span>Target month <b>" + esc(monYear(g.by)) + "</b> has passed. Pick a new one</span>" + CHEV + "</button>";
     }
     $("heroStats").innerHTML = h;
     $("heroTarget").innerHTML = tg; $("heroTarget").hidden = !tg;
     $("heroSrc").textContent = g.sv.bank ? g.sv.name + ", bank balance as of " + whenLbl(g.sv.at) : "Savings balance from your entries";
   }
-  function introMotion() {
-    if (REDUCE) return;
-    setTimeout(function () { Array.prototype.forEach.call(document.querySelectorAll("#gauge .car"), function (c) { c.classList.add("go"); }); }, 60);
-  }
+  function introMotion() {}
   function renderWallets() {
-    var v = walletView(), tot = 0, tiles = [];
+    var v = walletView(), tot = 0, rows = [];
     v.forEach(function (x) {
       tot += x.c;
       if (x.w === "savings") return;
       var sub = x.bank ? (x.av !== null ? (x.avReal ? "Available " : "After pending ") + fmtC(x.av) : "Bank balance") : (x.w === "cash" ? "Counted by you, tap to set" : "From your entries, tap to set");
       var tag = x.bank ? "div" : "button", attrs = x.bank ? "" : ' type="button" data-act="setbal" data-w="' + x.w + '"';
-      tiles.push("<" + tag + ' class="wt"' + attrs + "><span>" + esc(x.name) + '</span><b class="n' + (x.c < 0 ? " red" : "") + '">' + fmtC(x.c) + "</b><small>" + esc(sub) + "</small></" + tag + ">");
+      rows.push("<" + tag + ' class="lr"' + attrs + "><span>" + esc(x.name) + "<small>" + esc(sub) + '</small></span><b class="n' + (x.c < 0 ? " red" : "") + '">' + fmtC(x.c) + "</b></" + tag + ">");
     });
-    $("gWallets").innerHTML = '<div class="ch"><h2>Accounts</h2></div><div class="wal">' + tiles.join("") + '</div><div class="wtot"><span>Total with car savings</span><span class="n">' + fmtC(tot) + "</span></div>";
+    $("gWallets").innerHTML = '<div class="ch"><h2>Accounts</h2></div><div class="ledger">' + rows.join("") + '<div class="lr tot"><span>Total with car savings</span><b class="n">' + fmtC(tot) + "</b></div></div>";
   }
   function budgetMeter(spentC, budC, m, brief) {
     var over = budC > 0 && spentC > budC, pc = budC > 0 ? Math.min(100, Math.max(0, spentC / budC * 100)) : 0, warn = budC > 0 && !over && spentC * 100 >= budC * 85;
@@ -3010,7 +3047,12 @@ details.det[open] > summary { margin-bottom: 8px; }
   /* ---------- Car ---------- */
   function renderCar() {
     var g = goalInfo(), pc = paceInfo(), p = g.gC > 0 ? Math.min(1, g.have / g.gC) : 0, sv = g.sv;
-    var h = '<div class="carhead">' + carSVG() + "</div>" +
+    var pm = phMeta(), ph = pm && PH.url && PH.key === pm.at;
+    var h = '<div class="cph">' + (ph ? '<button class="th" type="button" data-act="photosheet" aria-label="Frame your car photo"><img id="cPhoto" src="' + esc(PH.url) + '" alt="" style="object-position:50% ' + phY(pm) + '%"></button>'
+        : '<span class="ic" aria-hidden="true">' + kico("photo") + "</span>") +
+      '<span class="mid"><span class="t">Car photo</span><span class="s wrap">' + (ph ? "On your Garage. Stays on this iPhone." : "None yet. It shows at the top of Garage.") + "</span></span></div>" +
+      '<div class="btns" style="margin:-4px 0 16px">' + (ph ? '<button class="btn ghost sm" type="button" data-act="photopick">Change photo</button><button class="btn danger sm" type="button" data-act="photodel">Remove photo</button>'
+        : '<button class="btn ghost sm" type="button" data-act="photopick"' + (PH.busy ? " disabled" : "") + ">" + kico("plus") + "Add a photo of your car</button>") + "</div>" +
       '<div class="ch" style="margin-top:2px"><h2>' + esc(S.goal.name || "Dream car") + '</h2><span class="aux n">' + pctTxt(g.have, g.gC) + " saved</span></div>" +
       '<div class="goalbig"><b class="n">' + fmtC(g.have) + '</b><span class="mut">of <span class="n">' + fmtC(g.gC) + "</span></span></div>" +
       '<span class="bar' + (p >= 0.85 ? " over" : "") + '" style="margin:10px 0 4px" role="img" aria-label="' + pctTxt(g.have, g.gC) + ' of the goal"><i style="width:' + (p * 100).toFixed(2) + '%"></i></span>';
@@ -3105,7 +3147,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     $("selfSet").innerHTML = '<label class="f"><span>Your name, for transfers to yourself</span><input class="in" type="text" data-set="selfName" autocomplete="name" autocapitalize="words" placeholder="As your bank shows it" value="' + esc(S.selfName || "") + '"></label>';
     renderRules();
     $("about").innerHTML = '<div class="row" style="border-top:0;padding-top:0"><span class="hd-mark" aria-hidden="true">' + document.querySelector(".hd-mark").innerHTML + '</span><span class="mid"><span class="t">Ride Quest</span><span class="s wrap">Version 2, a private build for saving toward your car</span></span></div>' +
-      '<p class="note" style="margin-top:8px">Your money data stays on this iPhone. Bank sync goes from this phone to SimpleFIN Bridge and back, nowhere else. Car art in the app is an original drawing, not any real model.</p>';
+      '<p class="note" style="margin-top:8px">Your money data stays on this iPhone. Bank sync goes from this phone to SimpleFIN Bridge and back, nowhere else. Your car photo stays on this iPhone too.</p>';
   }
 
   /* ---------- sheets ---------- */
@@ -3859,9 +3901,27 @@ details.det[open] > summary { margin-bottom: 8px; }
     var txts = ["garage", "money", "subs", "car", "more"].map(tabText);
     ok("Every tab renders the old save with no NaN, undefined or Infinity", txts.every(clean), txts.map(function (x, i) { return clean(x) ? "" : i + ":" + (x.match(/.{40}(NaN|undefined|Infinity).{40}/) || [""])[0]; }));
     ok("Garage shows the old savings exactly: $8,120.55 of $20,000.00 (40.6%)", $("gSaved").textContent === "$8,120.55" && $("gGoal").textContent === "$20,000.00" && $("gPct").textContent === "40.6%", [$("gSaved").textContent, $("gGoal").textContent]);
+    var slot0 = $("gPhotoSlot");
+    ok("An old save without a photo shows the clean placeholder (one Add a photo button, no car art, no image)", !("photo" in nn.goal) && slot0.querySelector(".hph.empty") !== null && slot0.querySelectorAll("button").length === 1 &&
+      /Add a photo of your car/.test(slot0.textContent) && slot0.querySelector("img") === null && !document.querySelector("#s-garage svg.car, #s-garage .gauge"), slot0.innerHTML.slice(0, 120));
+    ok("The Car tab offers Add a photo when there is none", (setTab("car"), /Add a photo of your car/.test($("cGoal").textContent) && !$("cGoal").querySelector("img")));
+    setTab("garage");
     ok("Money lists the old purchases with clean names (PAYPAL *TACOSHOP shows as Tacoshop)", (setTab("money"), $("mList").textContent.indexOf("Tacoshop") >= 0 && $("mList").textContent.indexOf("PAYPAL") < 0 && $("uncBox").hidden === false));
     ok("Subscriptions lists the old ones by category, with the bill (Rent) too", (setTab("subs"), /Streamflix/.test($("sbGroups").textContent) && /Rent/.test($("sbGroups").textContent) && /Streaming/.test($("sbGroups").textContent) && /Canceling/.test($("sbGroups").textContent)));
     ok("The saving streak counts weeks in a row with money into savings (2 here)", saveStreak() === 2 && /2-week saving streak/.test($("streak").textContent));
+
+    /* ===== the car photo: saved framing loads unchanged; sizes; the hero shows it ===== */
+    var pn = norm({ goal: { name: "X", amount: 100, photo: { y: 30, id: "pabc123", at: 5, w: 1600, h: 1200, future: "keep" } } });
+    ok("A saved photo's framing rides along unchanged, and loads twice the same", pn.goal.photo.y === 30 && pn.goal.photo.id === "pabc123" && pn.goal.photo.future === "keep" && JSON.stringify(norm(pn)) === JSON.stringify(pn), pn.goal);
+    ok("Photos shrink to at most 1600 px wide (2400 tall), never grow", JSON.stringify(phFit(4032, 3024)) === '{"w":1600,"h":1200}' && JSON.stringify(phFit(3024, 4032)) === '{"w":1600,"h":2133}' && JSON.stringify(phFit(800, 600)) === '{"w":800,"h":600}' &&
+      JSON.stringify(phFit(1000, 9000)) === '{"w":267,"h":2400}', [phFit(4032, 3024), phFit(3024, 4032)]);
+    ok("Framing is kept between 0 and 100 (50 when unset or damaged)", phY({ y: -20 }) === 0 && phY({ y: 140 }) === 100 && phY({ y: "x" }) === 50 && phY({}) === 50 && phY({ y: 42.4 }) === 42);
+    var keepPH = { url: PH.url, key: PH.key, busy: PH.busy, loading: PH.loading };
+    S = pn; PH.url = "data:image/gif;base64,R0lGODlhAQABAAAAACw="; PH.key = 5; PH.busy = false; PH.loading = false; REC = null; renderAll(); setTab("garage");
+    var gi = $("gPhoto");
+    ok("With a photo, the Garage hero shows it, framed where you left it, with no placeholder", !!gi && gi.style.objectPosition === "50% 30%" && !$("gPhotoSlot").querySelector(".hph.empty") && $("gPhotoSlot").querySelector(".tl") !== null, gi && gi.style.objectPosition);
+    ok("The Car tab then offers Change photo and Remove photo", (setTab("car"), /Change photo/.test($("cGoal").textContent) && /Remove photo/.test($("cGoal").textContent) && !!$("cPhoto")));
+    PH.url = keepPH.url; PH.key = keepPH.key; PH.busy = keepPH.busy; PH.loading = keepPH.loading; $("gPhotoSlot").dataset.k = ""; setTab("garage");
 
     /* ===== a brand-new user: clean empty states, no stray numbers ===== */
     S = norm({}); REC = null; renderAll();
@@ -3976,6 +4036,28 @@ details.det[open] > summary { margin-bottom: 8px; }
       n30[0].it.n === "Gym" && n30[0].d === addDays(t0, 1) && n30.filter(function (o) { return o.it.n === "Gym"; }).length === gymN && n30.some(function (o) { return o.it.n === "Streamflix" && o.d === addDays(t0, 3); }), n30.map(function (o) { return o.it.n + " " + o.d; }));
   }
 
+  /* the photo store, on a made-up picture under its own key (your car photo is never read, changed or removed) */
+  function photoChecks() {
+    var out = [], fails = 0, n = 0, KEY = "selftest";
+    function ok(name, cond, info) { n++; if (!cond) fails++; out.push((cond ? "PASS " : "FAIL ") + name + (cond || info === undefined ? "" : " -> " + JSON.stringify(info))); }
+    var c = document.createElement("canvas"); c.width = 3200; c.height = 1800;
+    var x = c.getContext("2d"), gr = x.createLinearGradient(0, 0, 3200, 1800); gr.addColorStop(0, "#202226"); gr.addColorStop(1, "#ff2a2a"); x.fillStyle = gr; x.fillRect(0, 0, 3200, 1800);
+    var im = null;
+    return new Promise(function (res) { c.toBlob(res, "image/png"); }).then(function (png) { return shrinkImage(png); }).then(function (r) {
+      im = r;
+      ok("A 3200 x 1800 test picture is shrunk on the phone to a 1600 x 900 JPEG", r.w === 1600 && r.h === 900 && r.blob.type === "image/jpeg" && r.blob.size > 0, { w: r.w, h: r.h, type: r.blob.type });
+      return photoPut(KEY, { blob: r.blob, w: r.w, h: r.h, at: 1 });
+    }).then(function () { return photoGet(KEY); }).then(function (rec) {
+      ok("It saves to the photo store and loads back the same", !!rec && !!rec.blob && rec.blob.size === im.blob.size && rec.w === 1600 && rec.h === 900 && rec.at === 1, rec && { size: rec.blob && rec.blob.size, w: rec.w });
+      return photoDel(KEY);
+    }).then(function () { return photoGet(KEY); }).then(function (rec) {
+      ok("Remove deletes it", rec === undefined || rec === null, rec);
+    }).then(null, function (e) { fails++; out.push("FAIL photo store: " + (e && (e.name + " " + e.message))); }).then(function () {
+      return { ok: fails === 0, fails: fails, total: n, results: out };
+    });
+  }
+  window.__rqPhotoSelfTest = photoChecks;
+
   /* ---------- screens ---------- */
   var TABS = ["garage", "money", "subs", "car", "more"];
   var TITLES = { garage: "Garage", money: "Money", subs: "Subscriptions", car: "Car", more: "More" };
@@ -4072,7 +4154,14 @@ details.det[open] > summary { margin-bottom: 8px; }
     else if (a === "budgetalerts") setBudgetAlerts(!S.budgetAlerts);
     else if (a === "weeklyrecap") setWeeklyRecap(!S.weeklyRecap);
     else if (a === "subalerts") setSubAlerts(!S.subAlerts);
-    else if (a === "selftest") { var rs = runChecks(), el = $("stMsg"); el.className = "msg" + (rs.ok ? "" : " bad"); el.textContent = rs.ok ? "All " + rs.total + " checks passed." : rs.fails + " of " + rs.total + " failed: " + rs.results.filter(function (x) { return /^FAIL/.test(x); }).slice(0, 3).join(" | "); }
+    else if (a === "selftest") {
+      var rs = runChecks(), el = $("stMsg");
+      el.className = "msg"; el.textContent = "Checking\u2026";
+      photoChecks().then(function (r2) {
+        var all = rs.results.concat(r2.results), nf = rs.fails + r2.fails, nt = rs.total + r2.total;
+        el.className = "msg" + (nf ? " bad" : ""); el.textContent = !nf ? "All " + nt + " checks passed." : nf + " of " + nt + " failed: " + all.filter(function (x) { return /^FAIL/.test(x); }).slice(0, 3).join(" | ");
+      });
+    }
     else if (a === "recat") recatUnc();
     else if (a === "forgetrule") arm(t, function () { if (S.bankRules) delete S.bankRules[t.dataset.k]; touch(); renderRules(); toast("Forgot " + t.dataset.k); });
     else if (a === "delcat") arm(t, function () { S.budgets.splice(+t.dataset.i, 1); touch(); renderAll(); });
@@ -4082,6 +4171,10 @@ details.det[open] > summary { margin-bottom: 8px; }
     else if (a === "ppcsv") ppCsvPick();
     else if (a === "banktoggle") { S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[id] = !S.bankIgnore[id]; touch(); renderAll(); if (!S.bankIgnore[id]) bankSync(true); }
     else if (a === "bankoff") arm(t, function () { bankNative({ op: "simplefin", action: "disconnect" }).then(function () { BANK.msg = "Disconnected. Imported entries stay."; bankStatus(); }); });
+    else if (a === "photopick") photoPick();
+    else if (a === "photosheet") openPhoto();
+    else if (a === "photodel") arm(t, photoRemove);
+    else if (a === "phmove") { photoFrame(phY() + (+t.dataset.d || 0)); touch(); renderHero(); haptic("select"); }
     else if (a === "loanedit") openLoan();
     else if (a === "loandel") arm(t, function () { carState().loan = null; closeSheet(); touch(); renderAll(); toast("Car loan removed"); });
     else if (a === "regedit") openReg();
