@@ -98,6 +98,16 @@ def same_as(path, other):
         return False
 
 
+home_ref = {}   # udid -> a screenshot of that simulator's home screen, taken before the app's first launch
+
+
+def remember_home(udid):
+    p = os.path.join(out, f".home-{udid[:8]}.png")
+    time.sleep(3)
+    sh("xcrun", "simctl", "io", udid, "screenshot", p, quiet=True)
+    home_ref[udid] = p
+
+
 def is_running(udid, bundle):
     r = sh("xcrun", "simctl", "spawn", udid, "launchctl", "list", quiet=True, timeout=60)
     return r.stderr == "timeout" or bundle in r.stdout   # a hung launchctl says nothing about the app
@@ -120,6 +130,16 @@ def shoot(udid, bundle, args, wait, path, route=None, section=None):
         if not blank(path): break
         print("  (still loading, waiting)")
         time.sleep(10)
+        sh("xcrun", "simctl", "io", udid, "screenshot", path)
+    # The simulator's home screen instead of the app (it left the foreground on a loaded runner)? Launch it again.
+    home = home_ref.get(udid)
+    for _ in range(2):
+        if not (home and os.path.exists(home) and same_as(path, home)):
+            break
+        print("  (the home screen, not the app: launching it again)")
+        sh("xcrun", "simctl", "terminate", udid, bundle, quiet=True)
+        sh("xcrun", "simctl", "launch", udid, bundle, *args.split())
+        time.sleep(float(wait))
         sh("xcrun", "simctl", "io", udid, "screenshot", path)
     # Same picture as the previous shot with other arguments? Its screen hadn't opened yet: give it longer.
     prev = last_shot["path"]
@@ -166,6 +186,7 @@ if meta.get("capture") or meta.get("paywall"):
     if meta.get("location"):
         sh("xcrun", "simctl", "location", udid, "set", meta["location"], quiet=True)
 
+    remember_home(udid)
     for c in meta.get("capture", []):
         if c.get("fresh"):  # start from a clean install (e.g. no trip left over from the previous shot)
             sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
@@ -270,5 +291,10 @@ if w:
                 fails += not shoot(wid, w["bundle"], c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "watch", c["file"]))
             sh("xcrun", "simctl", "shutdown", wid, quiet=True)
 
+for p in home_ref.values():
+    try:
+        os.remove(p)
+    except OSError:
+        pass
 print("captured:", {d: sorted(os.listdir(os.path.join(out, d))) for d in ("raw", "watch", "paywall", "ipad")})
 sys.exit(1 if fails else 0)
