@@ -4,3 +4,5 @@
 [02:02]   ... still on simctl bootstatus -b (99s); load 221.4 on 4 cpus; ~6892 MB free; swap 0 MB; busiest: intelligenceplatformd 59.3% 85 MB, lsd 57.0% 44 MB, diagnosticd 51.7% 7 MB
 [03:58]   ... still on simctl bootstatus -b (179s); load 338.4 on 4 cpus; ~5708 MB free; swap 0 MB; busiest: mobileassetd 35.2% 98 MB, CalendarWidgetExtension 32.2% 98 MB, diagnosticd 31.7% 122 MB
 [04:41] iPhone simulator booted in 257s; load 526.1 on 4 cpus; ~5782 MB free; swap 0 MB; busiest: NewsToday2 49.9% 215 MB, AccountSubscriber 43.8% 5 MB, launchd_sim 42.3% 34 MB
+[06:24]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (59s); load 678.1 on 4 cpus; ~6366 MB free; swap 0 MB; busiest: STExtractionService 92.2% 26 MB, diagnosticd 76.7% 123 MB, diagnosticd 60.1% 7 MB
+[07:25]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (120s); load 480.4 on 4 cpus; ~6412 MB free; swap 0 MB; busiest: diagnosticd 91.6% 123 MB, diagnosticd 46.3% 7 MB, mlhostd 34.7% 5 MB
