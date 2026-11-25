@@ -1,0 +1,6 @@
+OK    06-recap  -demo -pro -open recap  (73s, 236 MB)  [40 error/fault log lines]
+OK    07-settings  -demo -pro -tab settings  (140s, 204 MB)  [8 error/fault log lines]
+OK    08-settings-free  -demo -free -tab settings  (75s, 198 MB)  [6 error/fault log lines]
+OK    09-monthly-free  -demo -free -open monthly  (37s, 197 MB)  [2 error/fault log lines]
+OK    10-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  (44s, 219 MB)  [6 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 14 min

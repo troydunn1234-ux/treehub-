@@ -1,0 +1,544 @@
+2026-11-25 04:29:14.161 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107d04dd0] activating connection: mach=true listener=false peer=false name=com.apple.cfprefsd.daemon
+2026-11-25 04:29:14.191 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Creating a user notification center
+2026-11-25 04:29:14.193 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Setting 4 notification categories
+2026-11-25 04:29:19.140 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107b04f40] activating connection: mach=true listener=false peer=false name=com.apple.usernotifications.listener
+2026-11-25 04:29:19.142 F  Roamr[24235:1159b] [com.apple.locationd.Legacy:Generic_deprecated] could not read user kCFPreferencesCurrentUser uid/gid
+2026-11-25 04:29:19.142 A  Roamr[24235:1159b] (libsystem_trace.dylib) Activity for state dumps
+2026-11-25 04:29:19.142 Df Roamr[24235:1159b] (libMobileGestalt.dylib) No persisted cache on this platform.
+2026-11-25 04:29:26.954 E  Roamr[24235:1159b] [com.apple.locationd.Core:Core] {"msg":"file does not exist... clearing", "file":/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, "error":Error Domain=NSCocoaErrorDomain Code=260 "The file “com.apple.CoreMotion.plist” couldn’t be opened because there is no such file." UserInfo={NSFilePath=/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSURL=file:///Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS%2026.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed%20Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSUnderlyingError=0x600000c00240 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}}
+2026-11-25 04:29:26.955 A  Roamr[24235:1159b] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-25 04:29:26.956 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.956 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":initWithEffectiveBundleIdentifier:bundlePath:websiteIdentifier:delegate:silo:, "self":"0x600000010250", "identifier":(null), "bundlePath":(null)}
+2026-11-25 04:29:26.956 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"client allocated", "client":"0x107b06ba0"}
+2026-11-25 04:29:26.956 A  Roamr[24235:11476] (CoreLocation) CL: _CLClientCreateConnection
+2026-11-25 04:29:26.957 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"_CLClientCreateConnection", "event":activity, "client":"0x107b06ba0"}
+2026-11-25 04:29:26.957 A  Roamr[24235:114d4] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-25 04:29:26.957 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.957 Df Roamr[24235:114d4] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-25 04:29:26.957 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.957 Df Roamr[24235:114d4] [com.apple.xpc:connection] [0x107d05c20] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-25 04:29:26.957 A  Roamr[24235:11aa3] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-25 04:29:26.957 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.957 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:26.957 Df Roamr[24235:11aa3] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-25 04:29:26.958 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:26.958 Df Roamr[24235:11aa3] [com.apple.xpc:connection] [0x107d06cd0] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-25 04:29:26.958 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDelegate:, "self":"0x600000010250", "delegate":"0x108818200"}
+2026-11-25 04:29:26.958 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.958 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDesiredAccuracy:, "self":"0x600000010250", "accuracy":"-1.000000"}
+2026-11-25 04:29:26.959 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.959 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setPausesLocationUpdatesAutomatically:, "self":"0x600000010250", "pausesLocationUpdatesAutomatically":0}
+2026-11-25 04:29:26.960 A  Roamr[24235:11476] (CoreLocation) CL: CLInternalGetAuthorizationStatus
+2026-11-25 04:29:26.960 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLInternalGetAuthorizationStatus", "event":activity}
+2026-11-25 04:29:26.962 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107906de0] activating connection: mach=true listener=false peer=false name=com.apple.locationd.synchronous
+2026-11-25 04:29:26.967 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.967 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setActivityType:, "self":"0x600000010250", "activityType":3}
+2026-11-25 04:29:26.967 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.967 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:26.967 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.968 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.968 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDistanceFilter:, "self":"0x600000010250", "distance":"4.000000"}
+2026-11-25 04:29:26.968 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:26.980 Df Roamr[24235:11476] [com.apple.BoardServices:XPCErrors] [C:1] Alloc com.apple.sessionservices
+2026-11-25 04:29:26.981 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107b08170] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-25 04:29:26.982 Df Roamr[24235:11476] [com.apple.activitykit:pushToken] Activated ActivityPushTokenClient connection
+2026-11-25 04:29:26.983 Df Roamr[24235:11476] [com.apple.activitykit:outputClient] Activated ActivityOutputClient connection
+2026-11-25 04:29:26.985 Df Roamr[24235:11476] [com.apple.activitykit:activityClient] Activated ActivityClient connection
+2026-11-25 04:29:26.992 Df Roamr[24235:114d4] [com.apple.activitykit:pushToken] Push tokens changed: [:]
+2026-11-25 04:29:26.996 Df Roamr[24235:11476] [com.apple.activitykit:outputClient] Fetched descriptors for content states: []
+2026-11-25 04:29:26.997 Df Roamr[24235:11476] [com.apple.activitykit:outputClient] Fetched descriptors for content states: []
+2026-11-25 04:29:26.997 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.997 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":initWithEffectiveBundleIdentifier:bundlePath:websiteIdentifier:delegate:silo:, "self":"0x60000000c7c0", "identifier":(null), "bundlePath":(null)}
+2026-11-25 04:29:26.997 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"client allocated", "client":"0x107d089c0"}
+2026-11-25 04:29:26.997 A  Roamr[24235:11476] (CoreLocation) CL: _CLClientCreateConnection
+2026-11-25 04:29:26.997 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"_CLClientCreateConnection", "event":activity, "client":"0x107d089c0"}
+2026-11-25 04:29:26.997 A  Roamr[24235:114d4] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-25 04:29:26.997 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.998 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:26.999 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:26.999 A  Roamr[24235:11aa3] (LocationSupport) CL: Sending cached messages to daemon
+2026-11-25 04:29:27.000 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDelegate:, "self":"0x60000000c7c0", "delegate":"0x6000030041b0"}
+2026-11-25 04:29:27.000 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:27.001 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setDesiredAccuracy:, "self":"0x60000000c7c0", "accuracy":"10.000000"}
+2026-11-25 04:29:27.002 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:27.003 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setActivityType:, "self":"0x60000000c7c0", "activityType":2}
+2026-11-25 04:29:27.004 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:27.005 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:27.006 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setPausesLocationUpdatesAutomatically:, "self":"0x60000000c7c0", "pausesLocationUpdatesAutomatically":1}
+2026-11-25 04:29:27.007 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:27.008 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":setShowsBackgroundLocationIndicator:, "self":"0x60000000c7c0", "shows":0}
+2026-11-25 04:29:27.009 A  Roamr[24235:11476] (LocationSupport) CL: CLConnectionClient::sendMessage(cache)
+2026-11-25 04:29:27.010 A  Roamr[24235:11476] (CoreLocation) CL: CLInternalGetAuthorizationStatus
+2026-11-25 04:29:27.011 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLInternalGetAuthorizationStatus", "event":activity}
+2026-11-25 04:29:27.013 Df Roamr[24235:11aa3] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-25 04:29:27.014 Df Roamr[24235:114d4] [com.apple.LocationSupport:Connection] {"msg":"Sending cached messages to daemon", "event":activity}
+2026-11-25 04:29:27.015 Df Roamr[24235:11aa3] [com.apple.xpc:connection] [0x107905ed0] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-25 04:29:27.016 Df Roamr[24235:114d4] [com.apple.xpc:connection] [0x107c07d00] activating connection: mach=true listener=false peer=false name=com.apple.locationd.registration
+2026-11-25 04:29:27.018 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:27.019 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:27.020 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:27.021 A  Roamr[24235:114d4] (LocationSupport) CL: CLConnection::sendMessage
+2026-11-25 04:29:27.046 Df Roamr[24235:11476] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=24235 task=Roamr[24235]/0#-1 LF=22
+2026-11-25 04:29:27.049 A  Roamr[24235:11aa9] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-25 04:29:27.051 Df Roamr[24235:11aa3] [com.apple.BoardServices:XPCErrors] [C:2] Alloc com.apple.frontboard.systemappservices
+2026-11-25 04:29:27.052 Df Roamr[24235:11aa3] [com.apple.xpc:connection] [0x1079077b0] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-25 04:29:27.055 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason added: 10; deactivation reasons: 0 -> 1024; animating application lifecycle event: 0
+2026-11-25 04:29:27.056 Df Roamr[24235:11476] [com.apple.runningboard:connection] Initializing connection
+2026-11-25 04:29:27.056 Df Roamr[24235:11476] [com.apple.runningboard:process] Removing all cached process handles
+2026-11-25 04:29:27.056 Df Roamr[24235:11476] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.open
+2026-11-25 04:29:27.057 Df Roamr[24235:11476] [com.apple.BoardServices:Injection] activating monitor for service com.apple.frontboard.workspace-service
+2026-11-25 04:29:27.057 Df Roamr[24235:11aaf] [com.apple.runningboard:connection] Sending handshake request attempt #1 to server
+2026-11-25 04:29:27.057 Df Roamr[24235:11aaf] [com.apple.runningboard:connection] Creating connection to com.apple.runningboard
+2026-11-25 04:29:27.057 Df Roamr[24235:11476] [com.apple.FrontBoard:Common] FBSWorkspace registering source: com.apple.frontboard.systemappservices
+2026-11-25 04:29:27.057 Df Roamr[24235:11aaf] [com.apple.xpc:connection] [0x107b09790] activating connection: mach=true listener=false peer=false name=com.apple.runningboard
+2026-11-25 04:29:27.059 Df Roamr[24235:11476] [com.apple.FrontBoard:Common] FBSWorkspace connected to endpoint : <BSServiceConnectionEndpoint: 0x60000021d620; target: com.apple.frontboard.systemappservices; service: com.apple.frontboard.workspace-service>
+2026-11-25 04:29:27.060 Df Roamr[24235:11476] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003004750 com.apple.frontboard.systemappservices> attempting immediate handshake from activate
+2026-11-25 04:29:27.060 Df Roamr[24235:11476] [com.apple.FrontBoard:Common] <FBSWorkspaceScenesClient:0x600003004750 com.apple.frontboard.systemappservices> sent handshake
+2026-11-25 04:29:27.060 Df Roamr[24235:11476] [com.apple.runningboard:general] Added observer for process assertions expiration warning: <_RBSExpirationWarningClient: 0x6000002150c0>
+2026-11-25 04:29:27.064 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UIApplicationSceneKeyboardSettings on FBSSceneSettings
+2026-11-25 04:29:27.065 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneOcclusionSettings> on FBSSceneSettings
+2026-11-25 04:29:27.066 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneInterfaceProtectionSettings> on FBSSceneSettings
+2026-11-25 04:29:27.067 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferencesHostSettingsExtension on FBSSceneSettings
+2026-11-25 04:29:27.067 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneSafeAreaSettingsExtension on FBSSceneSettings
+2026-11-25 04:29:27.068 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneLayoutPreferenceClientSettingsExtension on FBSSceneClientSettings
+2026-11-25 04:29:27.093 A  Roamr[24235:11ab3] (RunningBoardServices) didChangeInheritances
+2026-11-25 04:29:27.094 Df Roamr[24235:11aaf] [com.apple.runningboard:connection] Handshake succeeded
+2026-11-25 04:29:27.115 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UIHomeAffordanceHostSceneSettings> on FBSSceneSettings
+2026-11-25 04:29:27.116 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISystemShellSceneHostingEnvironmentSettings on FBSSceneSettings
+2026-11-25 04:29:27.117 Df Roamr[24235:11aaf] [com.apple.runningboard:connection] Identity resolved as app<com.troydunn.roamr((null))>
+2026-11-25 04:29:27.117 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneRenderingEnvironmentSettings on FBSSceneSettings
+2026-11-25 04:29:27.118 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneRenderingEnvironmentClientSettings> on FBSSceneClientSettings
+2026-11-25 04:29:27.119 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneTransitioningHostSettings> on FBSSceneSettings
+2026-11-25 04:29:27.120 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneFocusSystemSettings> on FBSSceneSettings
+2026-11-25 04:29:27.120 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationSettingsExtension on FBSSceneSettings
+2026-11-25 04:29:27.121 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneOrientationClientSettingsExtension on FBSSceneClientSettings
+2026-11-25 04:29:27.121 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneWindowingControlClientSettings on FBSSceneClientSettings
+2026-11-25 04:29:27.122 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneSettingsCore on FBSSceneSettings
+2026-11-25 04:29:27.124 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneClientSettingsCore on FBSSceneClientSettings
+2026-11-25 04:29:27.134 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneSettings setting counterpart class: UIApplicationSceneSettings
+2026-11-25 04:29:27.135 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] UIMutableApplicationSceneClientSettings setting counterpart class: UIApplicationSceneClientSettings
+2026-11-25 04:29:27.136 Df Roamr[24235:11aab] [com.apple.FrontBoard:SceneExtension] Realizing settings extension FBSSceneTransitionContextCore on FBSSceneTransitionContext
+2026-11-25 04:29:27.887 Df Roamr[24235:114d4] [com.apple.UIKit:BackgroundTask] Creating new assertion because there is no existing background assertion.
+2026-11-25 04:29:27.887 Df Roamr[24235:114d4] [com.apple.UIKit:BackgroundTask] Creating new background assertion
+2026-11-25 04:29:27.887 Df Roamr[24235:114d4] [com.apple.UIKit:BackgroundTask] Created new background assertion <BKSProcessAssertion: 0x60000210b750>
+2026-11-25 04:29:27.889 Df Roamr[24235:114d4] [com.apple.UIKit:BackgroundTask] Incrementing reference count for background assertion <BKSProcessAssertion: 0x60000210b750>
+2026-11-25 04:29:27.889 Df Roamr[24235:114d4] [com.apple.UIKit:BackgroundTask] Created background task <_UIBackgroundTaskInfo: 0x600001721440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2279 (elapsed = 0).
+2026-11-25 04:29:27.889 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingContentSizePreferenceClientSettings> on FBSSceneClientSettings
+2026-11-25 04:29:27.890 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension _UISceneHostingTraitCollectionPropagationSettings on FBSSceneSettings
+2026-11-25 04:29:27.891 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationSettings> on FBSSceneSettings
+2026-11-25 04:29:27.892 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingSheetPresentationClientSettings> on FBSSceneClientSettings
+2026-11-25 04:29:27.893 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingEventDeferringSettings> on FBSSceneSettings
+2026-11-25 04:29:27.895 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneSettings
+2026-11-25 04:29:27.896 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <UIKit__UITypedKeyValueSceneSettings> on FBSSceneClientSettings
+2026-11-25 04:29:27.896 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneHostingViewControllerPreferencePropagationClientSettings> on FBSSceneClientSettings
+2026-11-25 04:29:27.897 Df Roamr[24235:114d4] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneZoomTransitionSettings> on FBSSceneSettings
+2026-11-25 04:29:28.221 A  Roamr[24235:11ad6] (RunningBoardServices) didChangeInheritances
+2026-11-25 04:29:28.892 Df Roamr[24235:11ad7] [com.apple.UIKit:BackgroundTask] Ending background task with UIBackgroundTaskIdentifier: 1
+2026-11-25 04:29:28.892 Df Roamr[24235:11ad7] [com.apple.UIKit:BackgroundTask] Ending task with identifier 1 and description: <_UIBackgroundTaskInfo: 0x600001721440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2279 (elapsed = 1), _expireHandler: (null)
+2026-11-25 04:29:28.892 Df Roamr[24235:11ad7] [com.apple.UIKit:BackgroundTask] Decrementing reference count for assertion <BKSProcessAssertion: 0x60000210b750> (used by background task with identifier 1: <_UIBackgroundTaskInfo: 0x600001721440>: taskID = 1, taskName = Launch Background Task for Coalescing, creationTime = 2279 (elapsed = 1))
+2026-11-25 04:29:28.892 Df Roamr[24235:11ad7] [com.apple.UIKit:BackgroundTask] Will invalidate assertion: <BKSProcessAssertion: 0x60000210b750> for task identifier: 1
+2026-11-25 04:29:29.106 Df Roamr[24235:11476] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x107d0cd80> for initial
+2026-11-25 04:29:29.107 Df Roamr[24235:11476] [com.apple.UIKit:UIScreen] Evaluated capturing state as 0 on <UIScreen: 0x107d0cd80> for CADisplay KVO
+2026-11-25 04:29:29.110 Df Roamr[24235:11476] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 1, category name = (null)
+2026-11-25 04:29:29.111 Df Roamr[24235:11476] [com.apple.Accessibility:AXSupportCommon] Read CategoryName: per-app = 0, category name = UICTContentSizeCategoryL
+2026-11-25 04:29:29.122 Df Roamr[24235:11476] [com.apple.dt.xctest:Default] Registering for test daemon availability notify post.
+2026-11-25 04:29:29.123 Df Roamr[24235:11476] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-25 04:29:29.123 Df Roamr[24235:11476] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-25 04:29:29.123 Df Roamr[24235:11476] [com.apple.dt.xctest:Default] notify_get_state check indicated test daemon not ready.
+2026-11-25 04:29:29.125 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason added: 11; deactivation reasons: 1024 -> 3072; animating application lifecycle event: 0
+2026-11-25 04:29:29.127 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason removed: 10; deactivation reasons: 3072 -> 2048; animating application lifecycle event: 0
+2026-11-25 04:29:29.128 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:29.128 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onClientEventRegistration:, "self":"0x600000010250", "clientKey":icom.troydunn.roamr:}
+2026-11-25 04:29:29.128 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x600000010250", "delegate":"0x108818200", "selector":locationManagerDidChangeAuthorization:, "authorizationStatus":3, "limitsPrecision":0, "isAuthorizedForWidgetUpdates":1}
+2026-11-25 04:29:29.128 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:29.128 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onClientEventRegistration:, "self":"0x60000000c7c0", "clientKey":icom.troydunn.roamr:}
+2026-11-25 04:29:29.128 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"#CLLocationManager invoking #delegate", "self":"0x60000000c7c0", "delegate":"0x6000030041b0", "selector":locationManagerDidChangeAuthorization:, "authorizationStatus":3, "limitsPrecision":0, "isAuthorizedForWidgetUpdates":1}
+2026-11-25 04:29:29.129 Df Roamr[24235:11476] [com.apple.UIKit:EventBus] Event Timing Profile for Touch: not found, path="/System/Library/EventTimingProfiles/Sim.Touch.plist"
+2026-11-25 04:29:29.129 Df Roamr[24235:11476] [com.apple.UIKit:EventBus] Event Timing Profile for Pencil: not found, path="/System/Library/EventTimingProfiles/Sim.Pencil.plist"
+2026-11-25 04:29:29.129 Df Roamr[24235:11476] [com.apple.UIKit:UpdateScheduler] Selected display: name=LCD (PurpleMain), id=1
+2026-11-25 04:29:29.496 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107d0ff70] activating connection: mach=true listener=false peer=false name=com.apple.lsd.mapdb
+2026-11-25 04:29:35.496 Df Roamr[24235:11476] [com.apple.BoardServices:XPCErrors] [C:3] Alloc com.apple.backboard.hid-services.xpc
+2026-11-25 04:29:35.496 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107b10510] activating connection: mach=false listener=false peer=false name=(anonymous)
+2026-11-25 04:29:35.497 Df Roamr[24235:11aa9] [com.apple.BackBoard:EventDelivery] BKSHIDEventDeliveryManager - connection activation
+2026-11-25 04:29:35.501 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason added: 5; deactivation reasons: 2048 -> 2080; animating application lifecycle event: 1
+2026-11-25 04:29:35.502 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Should send trait collection or coordinate space update, interface style 2 -> 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:35.504 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:35.505 Df Roamr[24235:11476] [com.apple.UIKit:HomeAffordanceObservation] Initializing: <_UIHomeAffordanceSceneNotifier: 0x60000290cd20>; with scene: <UIWindowScene: 0x107c0c290>
+2026-11-25 04:29:35.505 Df Roamr[24235:11476] [com.apple.BacklightServices:scenes] 0x600000c23450 setDelegate:<0x600000c22e80 _UIBacklightEnvironment> hasDelegate:YES for environment:sceneID:com.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:35.505 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:35.506 Df Roamr[24235:11476] [com.apple.UIKit:EventDeferring] [0x60000290ccb0] Initialized with scene: <UIWindowScene: 0x107c0c290>; behavior: <_UIEventDeferringBehavior_iOS: 0x600000222ea0>; availableForProcess: 1, systemShellManagesKeyboardFocus: 1
+2026-11-25 04:29:35.509 Df Roamr[24235:11aa9] [com.apple.BackBoard:EventDelivery] BKSHIDEventObserver - connection activation
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002607d20; process scope; status: target> was:none
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to LastOneWins
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Scene target of keyboard event deferring environment did change: 1; scene: UIWindowScene: 0x107c0c290; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.UIKit:EventDeferring] [0x60000290ccb0] Scene target of event deferring environments did update: scene: 0x107c0c290; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x107c0c290; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:35.509 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Stack[KeyWindow] 0x600000c27870: Taking no further action for migration from LastOneWins -> SystemShellManaged as there are no scenes
+2026-11-25 04:29:35.510 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Setting default evaluation strategy for UIUserInterfaceIdiomPhone to SystemShellManaged
+2026-11-25 04:29:35.510 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Key window needs update: 0; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x107c0c290; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x0; reason: UIWindowScene: 0x107c0c290: Window scene became target of keyboard environment
+2026-11-25 04:29:35.510 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:35.511 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:35.513 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:36.989 Df Roamr[24235:11476] [com.apple.UIKit:Orientation] <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4) Scene updated orientation preferences: none -> ( Pu )
+2026-11-25 04:29:36.996 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Key window API is scene-level: YES
+2026-11-25 04:29:36.996 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] UIWindowScene: 0x107c0c290: Window became key in scene: UIWindow: 0x10790a700; contextId: 0x45BD8B6D: reason: UIWindowScene: 0x107c0c290: Window requested to become key in scene: 0x10790a700
+2026-11-25 04:29:36.996 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Key window needs update: 1; currentKeyWindowScene: 0x0; evaluatedKeyWindowScene: 0x107c0c290; currentApplicationKeyWindow: 0x0; evaluatedApplicationKeyWindow: 0x10790a700; reason: UIWindowScene: 0x107c0c290: Window requested to become key in scene: 0x10790a700
+2026-11-25 04:29:36.996 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Window did become application key: UIWindow: 0x10790a700; contextId: 0x45BD8B6D; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:36.996 Df Roamr[24235:11476] [com.apple.UIKit:EventDeferring] [0x60000290ccb0] Begin local event deferring requested for token: 0x60000260a3a0; environments: 1; reason: UIWindowScene: 0x107c0c290: Begin event deferring in keyboardFocus for window: 0x10790a700
+2026-11-25 04:29:36.999 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:37.000 Df Roamr[24235:11476] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4  persistentID: FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:37.001 Df Roamr[24235:11476] [com.apple.UIKit:Application] Ignoring already applied deactivation reason: 5; deactivation reasons: 2080
+2026-11-25 04:29:37.001 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason added: 12; deactivation reasons: 2080 -> 6176; animating application lifecycle event: 1
+2026-11-25 04:29:37.001 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:37.001 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onWillEnterForeground:, "self":"0x600000010250", "notification":NSConcreteNotification 0x60000022c580 {name = UIApplicationWillEnterForegroundNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x107b07930>}}
+2026-11-25 04:29:37.001 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:37.001 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onWillEnterForeground:, "self":"0x60000000c7c0", "notification":NSConcreteNotification 0x60000022c580 {name = UIApplicationWillEnterForegroundNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x107b07930>}}
+2026-11-25 04:29:37.001 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason removed: 11; deactivation reasons: 6176 -> 4128; animating application lifecycle event: 1
+2026-11-25 04:29:37.002 Df Roamr[24235:11aa9] [com.apple.BackBoard:EventDelivery] policyStatus:<BKSHIDEventDeliveryPolicyObserver: 0x600002607d20; token: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4; status: ancestor> was:target
+2026-11-25 04:29:37.003 Df Roamr[24235:11476] [com.apple.FrontBoard:SceneExtension] Realizing settings extension <_UISceneIntelligenceSupportSettings> on FBSSceneSettings
+2026-11-25 04:29:37.004 Df Roamr[24235:11ab9] [com.apple.UIIntelligenceSupport:xpc] establishing connection to agent
+2026-11-25 04:29:37.004 Df Roamr[24235:11ab9] [com.apple.xpc:session] [0x600002114230] Session created.
+2026-11-25 04:29:37.004 Df Roamr[24235:11ab9] [com.apple.xpc:session] [0x600002114230] Session created from connection [0x107c137a0]
+2026-11-25 04:29:37.004 Df Roamr[24235:11ab9] [com.apple.xpc:connection] [0x107c137a0] activating connection: mach=true listener=false peer=false name=com.apple.uiintelligencesupport.agent
+2026-11-25 04:29:37.005 Df Roamr[24235:11ab9] [com.apple.xpc:session] [0x600002114230] Session activated
+2026-11-25 04:29:37.005 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:37.014 A  Roamr[24235:11476] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-25 04:29:37.328 A  Roamr[24235:11476] (CoreFoundation) Updating Key-Value Observers Of Preferences
+2026-11-25 04:29:39.306 Df Roamr[24235:11ab9] [com.apple.xpc:connection] [0x107c16960] activating connection: mach=true listener=false peer=false name=com.apple.fontservicesd
+2026-11-25 04:29:39.308 Df Roamr[24235:11aa9] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=24235 task=Roamr[24235]/0#-1 LF=22
+2026-11-25 04:29:39.612 Df Roamr[24235:11476] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=24235 task=Roamr[24235]/0#-1 LF=22
+2026-11-25 04:29:39.613 E  Roamr[24235:11476] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-25 04:29:39.615 F  Roamr[24235:11476] [com.apple.coreui:framework] CoreUI: CUIThemeStore: No theme registered with id=0
+2026-11-25 04:29:39.615 A  Roamr[24235:11476] (libsystem_trace.dylib) Activity for state dumps
+2026-11-25 04:29:39.633 Df Roamr[24235:11476] [PrototypeTools:domain] Not observing PTDefaults on customer install.
+2026-11-25 04:29:40.174 Df Roamr[24235:11476] [com.apple.UIKit:_UIVisualStyleRegistry] Note: no default visual style class registered as fallback for stylable class UIActivityIndicatorView
+2026-11-25 04:29:40.174 Df Roamr[24235:11476] [com.apple.UIKit:_UIVisualStyleRegistry] Note: no default visual style class registered as fallback for stylable class UIActivityIndicatorView
+2026-11-25 04:29:40.485 Df Roamr[24235:11476] [com.apple.FrontBoard:SceneClient] [(FBSceneManager):sceneID:com.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4] Sending action(s): BLSInvalidateFrameSpecifiersAction
+2026-11-25 04:29:40.486 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:44.805 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107975790] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-25 04:29:44.806 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107c26fa0] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-25 04:29:44.807 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107b84770] activating connection: mach=true listener=false peer=false name=com.apple.metal.simulator
+2026-11-25 04:29:46.097 Df Roamr[24235:11476] [com.apple.renderbox:misc] RBDevice: initialized bg state: false
+2026-11-25 04:29:46.103 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107d8d260] activating connection: mach=true listener=false peer=false name=com.apple.IOSurface.Remote
+2026-11-25 04:29:46.256 A  Roamr[24235:11ab5] (RunningBoardServices) didChangeInheritances
+2026-11-25 04:29:46.273 A  Roamr[24235:11aa9] (RunningBoardServices) didChangeInheritances
+2026-11-25 04:29:46.368 A  Roamr[24235:11aa9] (RunningBoardServices) didChangeInheritances
+2026-11-25 04:29:47.298 Df Roamr[24235:11476] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:1 [182671FB-EEA5-46B0-B7E8-E4D8D8181A9E] (reporting strategy default)>
+2026-11-25 04:29:47.298 Df Roamr[24235:11476] [com.apple.network:activity] Create activity from XPC object <nw_activity 50:2 [527644DB-5DBA-4DFD-9758-5EC7A3A397C8] (reporting strategy default)>
+2026-11-25 04:29:47.298 Df Roamr[24235:11abb] [com.apple.CoreAnalytics:client] No XPC connection in Simulator
+2026-11-25 04:29:47.298 E  Roamr[24235:11abb] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 0 event_name: com.apple.app_launch_measurement.FirstFramePresentationMetric
+2026-11-25 04:29:47.298 Df Roamr[24235:11476] [com.apple.network:activity] Set activity <nw_activity 50:1 [182671FB-EEA5-46B0-B7E8-E4D8D8181A9E] (reporting strategy default)> as the global parent
+2026-11-25 04:29:47.300 Df Roamr[24235:11476] [com.apple.UIKit:UpdateScheduler] Target list changed: <CADisplay:LCD PurpleMain>
+2026-11-25 04:29:48.979 Df Roamr[24235:11476] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4  persistentID: FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:48.981 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:48.987 Df Roamr[24235:11476] [com.apple.Accessibility:AXCommon] Read Per-App on Init: Smart invert = (null)
+2026-11-25 04:29:49.146 Df Roamr[24235:11476] [com.apple.UIKit:EventDeferring] [0x60000290ccb0] Scene target of event deferring environments did update: scene: 0x107c0c290; current systemShellManagesKeyboardFocus: 1; systemShellManagesKeyboardFocusForScene: 1; eligibleForRecordRemoval: 1;
+2026-11-25 04:29:49.146 Df Roamr[24235:11476] [com.apple.UIKit:KeyWindow] Scene became target of keyboard event deferring environment: UIWindowScene: 0x107c0c290; scene identity: com.apple.frontboard.systemappservices/FBSceneManager:sceneID%3Acom.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:49.201 Df Roamr[24235:11476] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-25 04:29:49.201 Df Roamr[24235:11476] [com.apple.network:] networkd_settings_read_from_file initialized networkd settings by reading plist directly
+2026-11-25 04:29:49.204 Df Roamr[24235:11476] [com.apple.securityd:SecWarning] SecTaskLoadEntitlements failed error=22 cs_flags=200, pid=24235 task=Roamr[24235]/0#-1 LF=22
+2026-11-25 04:29:49.209 Sd Roamr[24235:0] (A299881B-E111-3F0F-9D55-34CFBD73EF69) CLLocationManagerStateTracker
+2026-11-25 04:29:49.210 Df Roamr[24235:11abb] [com.apple.CFNetwork:Default] Task <4FCD0B51-7630-4D31-B12D-6C01EAF10E53>.<1> resuming, timeouts(60.0, 604800.0) qos(0x19) voucher((null)) activity(00000000-0000-0000-0000-000000000000)
+2026-11-25 04:29:49.211 A  Roamr[24235:11abb] (CoreFoundation) Loading Preferences From User Session CFPrefsD
+2026-11-25 04:29:49.220 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Getting notification settings (async)
+2026-11-25 04:29:49.226 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Getting notification settings (async)
+2026-11-25 04:29:49.228 Df Roamr[24235:11ab5] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-25 04:29:49.234 Df Roamr[24235:11ab5] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-25 04:29:49.847 Df Roamr[24235:11476] [com.apple.FrontBoard:SceneExtension] Realizing settings extension SBUISecureRenderingSettingsExtension on FBSSceneSettings
+2026-11-25 04:29:49.848 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:49.849 Df Roamr[24235:11476] [com.apple.UIKit:InterfaceStyle] Not push traits update to screen for new style 2, <UIWindowScene: 0x107c0c290> (FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4)
+2026-11-25 04:29:49.853 Df Roamr[24235:11476] [com.apple.UIKit:AppLifecycle] sceneOfRecord: sceneID: sceneID:com.troydunn.roamr-FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4  persistentID: FEBC1DF3-C70E-4503-8E2C-DFA02B41F1B4
+2026-11-25 04:29:49.853 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason removed: 12; deactivation reasons: 4128 -> 32; animating application lifecycle event: 1
+2026-11-25 04:29:49.853 Df Roamr[24235:11476] [com.apple.KeyboardArbiter:Client] Send setDeactivating: N (-DeactivationReason:SuspendedEventsOnly)
+2026-11-25 04:29:49.856 Df Roamr[24235:11476] [com.apple.UIKit:Application] Deactivation reason removed: 5; deactivation reasons: 32 -> 0; animating application lifecycle event: 0
+2026-11-25 04:29:49.856 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:49.858 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onDidBecomeActive:, "self":"0x600000010250", "notification":NSConcreteNotification 0x600000331f40 {name = UIApplicationDidBecomeActiveNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x107b07930>}}
+2026-11-25 04:29:49.859 A  Roamr[24235:11476] (CoreLocation) CL: CLLocationManager
+2026-11-25 04:29:49.860 Df Roamr[24235:11476] [com.apple.locationd.Core:Client] {"msg":"CLLocationManager", "event":activity, "_cmd":onDidBecomeActive:, "self":"0x60000000c7c0", "notification":NSConcreteNotification 0x600000331f40 {name = UIApplicationDidBecomeActiveNotification; object = <_TtC7SwiftUIP33_ACC2C5639A7D76F611E170E831FCA49118SwiftUIApplication: 0x107b07930>}}
+2026-11-25 04:29:49.967 Df Roamr[24235:11476] [com.apple.activitykit:outputClient] Fetched descriptors for content states: []
+2026-11-25 04:29:50.047 Df Roamr[24235:11abb] [com.apple.CFNetwork:Summary] Task <4FCD0B51-7630-4D31-B12D-6C01EAF10E53>.<1> summary for task success {transaction_duration_ms=826, response_status=200, cache_hit=true}
+2026-11-25 04:29:50.049 Df Roamr[24235:11abb] [com.apple.CFNetwork:Default] Task <4FCD0B51-7630-4D31-B12D-6C01EAF10E53>.<1> finished successfully
+2026-11-25 04:29:50.180 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Getting notification settings (async)
+2026-11-25 04:29:50.181 Sd Roamr[24235:0] (A299881B-E111-3F0F-9D55-34CFBD73EF69) CLLocationManagerStateTracker
+2026-11-25 04:29:50.182 Df Roamr[24235:11476] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Getting notification settings (async)
+2026-11-25 04:29:50.192 Df Roamr[24235:121c8] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-25 04:29:50.194 Df Roamr[24235:11abb] [com.apple.UserNotifications:Connections] [com.troydunn.roamr] Got notification settings [ hasResult: 1 hasCompletionHandler: 1 ]
+2026-11-25 04:29:50.418 Df Roamr[24235:11476] [com.apple.KeyboardArbiter:Client] startConnection
+2026-11-25 04:29:50.418 Df Roamr[24235:11476] [com.apple.xpc:connection] [0x107b09c70] activating connection: mach=true listener=false peer=false name=com.apple.UIKit.KeyboardManagement.hosted
+2026-11-25 04:29:50.420 Sd Roamr[24235:0] (EB73264B-09AE-3310-B642-B0B5D9390089) IOHIDManager State
+2026-11-25 04:29:50.423 Sd Roamr[24235:0] (8932B5E7-350E-3E7D-A9DF-0DAD1BBE74A3) UAUserActivity
+2026-11-25 04:29:50.552 Df Roamr[24235:11476] [com.apple.KeyboardArbiter:Client] handleKeyboardChange: set currentKeyboard:N (wasKeyboard:N)
+2026-11-25 04:29:50.612 Df Roamr[24235:11476] [com.apple.UIKit:KeyboardArbiterClientLog] isWritingToolsHandlingKeyboardTracking:Y (WT ready:Y, Arbiter ready:Y)
+2026-11-25 04:29:50.723 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:50.724 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:50.927 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:50.930 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:50.987 Df Roamr[24235:11476] [com.apple.network:activity] <nw_activity 50:1 [182671FB-EEA5-46B0-B7E8-E4D8D8181A9E] (global parent) (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 39148ms
+2026-11-25 04:29:50.987 Df Roamr[24235:11476] [com.apple.network:activity] <nw_activity 50:2 [527644DB-5DBA-4DFD-9758-5EC7A3A397C8] (reporting strategy default) complete (reason success)> complete with reason 2 (success), duration 39147ms
+2026-11-25 04:29:50.988 Df Roamr[24235:11476] [com.apple.network:activity] Unsetting the global parent activity <nw_activity 50:1 [182671FB-EEA5-46B0-B7E8-E4D8D8181A9E] (global parent) (reporting strategy default) complete (reason success)>
+2026-11-25 04:29:50.988 Df Roamr[24235:11476] [com.apple.network:activity] Unset the global parent activity
+2026-11-25 04:29:50.988 E  Roamr[24235:121cd] [com.apple.app_launch_measurement:General] Failed to send CA Event for app launch measurements for ca_event_type: 1 event_name: com.apple.app_launch_measurement.ExtendedLaunchMetrics
+2026-11-25 04:29:50.993 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.026 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.076 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.126 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.176 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.476 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.476 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:51.542 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.577 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.629 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:51.911 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:51.911 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:52.027 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:52.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:52.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:52.242 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:52.461 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:52.461 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:52.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:52.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:52.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:52.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:53.111 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:53.111 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:53.309 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:53.310 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:53.511 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:53.511 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:53.710 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:53.710 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:53.859 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:53.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:54.077 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:54.078 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:54.161 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:54.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:54.411 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:54.412 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:54.527 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:54.542 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:54.727 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:54.727 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:54.825 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.061 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:55.062 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:55.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:55.194 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.227 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.276 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.325 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.376 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.578 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:55.578 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:55.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:55.961 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:55.961 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:56.210 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:56.210 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:56.327 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:56.528 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:56.528 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:56.643 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:56.794 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:56.794 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:56.910 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.111 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.111 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:57.227 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.378 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.378 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:57.494 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.509 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:57.743 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:57.743 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:57.861 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.028 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.028 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:58.143 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.360 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.360 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:58.443 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:58.475 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:58.678 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.678 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:58.692 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:58.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:58.943 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:58.943 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:59.192 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:59.193 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:59.311 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:59.510 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:59.511 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:59.626 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:59.642 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:59.827 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:29:59.827 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:29:59.909 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:29:59.926 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.144 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:00.144 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:00.262 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:00.276 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.325 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.526 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:00.526 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:00.559 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.577 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.794 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:00.794 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:00.916 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:00.925 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:00.994 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.054 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.076 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.127 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.328 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:01.328 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:01.444 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:01.460 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.476 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:01.761 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:01.761 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:01.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:01.893 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:02.076 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:02.077 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:02.126 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:02.342 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:02.343 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:02.460 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:02.475 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:02.676 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:02.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:02.692 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:02.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:02.960 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:02.960 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:03.078 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:03.092 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:03.278 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:03.278 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:03.342 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:03.594 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:03.595 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:04.059 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:04.079 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:04.129 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:04.411 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:04.414 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:04.576 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:04.625 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:04.784 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:04.950 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:04.950 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:05.359 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:05.377 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:05.426 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:05.627 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:05.627 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:05.693 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:05.960 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:05.961 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:06.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:06.377 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:06.378 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:06.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:06.909 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:06.910 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:07.026 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.043 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:07.076 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:07.277 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.277 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:07.394 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.611 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.611 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:07.727 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:07.876 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:07.994 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:08.009 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:08.226 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:08.226 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:08.343 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:08.359 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:08.375 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:08.428 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:08.628 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:08.629 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:08.745 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:08.759 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:08.776 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.026 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:09.026 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:09.144 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:09.159 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.175 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.379 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:09.379 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:09.459 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.696 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:09.700 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:09.829 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:09.844 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.880 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.928 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:09.977 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:10.032 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:10.078 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:10.294 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:10.294 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:10.709 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:10.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:10.896 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:11.014 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:11.046 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:11.078 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:11.328 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:11.328 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:11.519 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:11.525 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:11.577 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:11.896 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:11.896 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:12.093 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:12.229 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:12.377 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:12.377 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:12.777 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:12.993 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:12.993 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:13.145 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.177 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.443 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:13.443 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:13.560 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:13.577 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.631 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.693 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.727 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.778 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:13.827 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:14.028 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:14.028 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:14.142 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:14.393 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:14.394 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:14.493 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:14.526 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:14.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:14.727 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:15.127 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.178 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.454 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:15.455 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:15.575 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.626 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.677 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.726 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
+2026-11-25 04:30:15.927 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: full image queue, 0x107d8ecd0
+2026-11-25 04:30:15.927 Df Roamr[24235:11476] [com.apple.renderbox:error] RBDrawable: no surface, dropping frame
+2026-11-25 04:30:16.027 Df Roamr[24235:11476] [com.apple.renderbox:error] RBLayer: stale image queue, 0x107d8ecd0
