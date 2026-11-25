@@ -1,0 +1,6 @@
+OK    01-stats  -demo -pro -tab stats  (38s, 202 MB)  [7 error/fault log lines]
+OK    02-lifetime  -demo -pro -open lifetime  (56s, 207 MB)  [4 error/fault log lines]
+OK    03-history-together  -demo -pro -tab history  (61s, 191 MB)  [2 error/fault log lines]
+OK    04-monthly  -demo -pro -open monthly  (21s, 203 MB)  [3 error/fault log lines]
+OK    05-activity  -demo -pro -open activity  (25s, 237 MB)  [7 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 11 min

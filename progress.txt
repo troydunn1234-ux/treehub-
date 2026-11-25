@@ -1,0 +1,19 @@
+[00:00] shard s1: iPhone screens 01-stats, 02-lifetime, 03-history-together, 04-monthly, 05-activity; Watch screens no
+[00:53] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 3.0 on 4 cpus; ~9202 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 92.8% 15 MB, tccd 12.8% 13 MB, simdiskimaged 8.7% 73 MB
+[00:54]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:03]   ... still on simctl bootstatus -b (59s); load 188.9 on 4 cpus; ~7158 MB free; swap 0 MB; busiest: lsd 49.7% 45 MB, geod 44.6% 77 MB, diagnosticd 43.7% 6 MB
+[03:11]   ... still on simctl bootstatus -b (130s); load 246.2 on 4 cpus; ~6963 MB free; swap 0 MB; busiest: lsd 77.4% 45 MB, intelligenceplatformd 45.1% 85 MB, diagnosticd 43.2% 99 MB
+[04:56]   ... still on simctl bootstatus -b (195s); load 335.2 on 4 cpus; ~5918 MB free; swap 0 MB; busiest: diagnosticd 43.2% 124 MB, diagnosticd 39.9% 8 MB, mobileassetd 33.1% 103 MB
+[05:02] iPhone simulator booted in 247s; load 440.3 on 4 cpus; ~5688 MB free; swap 0 MB; busiest: healthd 63.5% 95 MB, apsd 46.1% 46 MB, mobileassetd 43.3% 103 MB
+[06:16]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (56s); load 384.0 on 4 cpus; ~5778 MB free; swap 0 MB; busiest: STExtractionService 81.2% 28 MB, diagnosticd 55.7% 125 MB, diagnosticd 38.9% 8 MB
+[07:27] OK    01-stats  -demo -pro -tab stats  (38s, 202 MB)
+[07:36]   load 239.9 on 4 cpus; ~5757 MB free; swap 0 MB; busiest: diagnosticd 96.5% 87 MB, diagnosticd 61.8% 7 MB, STExtractionService 47.6% 22 MB
+[08:55] OK    02-lifetime  -demo -pro -open lifetime  (56s, 207 MB)
+[08:57]   load 391.5 on 4 cpus; ~5756 MB free; swap 0 MB; busiest: diagnosticd 61.0% 119 MB, SpringBoard 59.5% 384 MB, backboardd 56.7% 117 MB
+[10:04] OK    03-history-together  -demo -pro -tab history  (61s, 191 MB)
+[10:05]   load 240.1 on 4 cpus; ~5674 MB free; swap 0 MB; busiest: diagnosticd 70.4% 120 MB, SpringBoard 48.4% 384 MB, diagnosticd 37.3% 8 MB
+[10:30] OK    04-monthly  -demo -pro -open monthly  (21s, 203 MB)
+[10:31]   load 183.9 on 4 cpus; ~5610 MB free; swap 0 MB; busiest: diagnosticd 70.6% 95 MB, SpringBoard 70.4% 384 MB, BackgroundShortcutRunner 57.4% 201 MB
+[11:01] OK    05-activity  -demo -pro -open activity  (25s, 237 MB)
+[11:03]   load 159.5 on 4 cpus; ~5671 MB free; swap 0 MB; busiest: diagnosticd 82.7% 94 MB, BackgroundShortcutRunner 79.5% 222 MB, backboardd 61.4% 118 MB
+[11:11]   app logs: 2408 lines for 5 screens
