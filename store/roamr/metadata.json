@@ -65,7 +65,7 @@
     {
       "file": "rm-6-trip.png",
       "args": "-demo -pro -open activity",
-      "wait": 12,
+      "wait": 22,
       "fresh": true
     }
   ],
