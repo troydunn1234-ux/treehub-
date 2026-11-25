@@ -32,15 +32,22 @@ enum StackDemo {
             context.insert(s)
             supps.append(s)
         }
-        // A 9-day streak before today (a day skipped before that), and this morning's two already checked off.
+        // A 9-day streak before today (the day before it skipped), and a 60-day history. The demo health data
+        // (DemoData) has its easy weeks about 17-33 and 50-60 days back, so the stack is mostly taken then and mostly
+        // skipped in the hard weeks between: the Stack vs recovery card shows the made-up stack helping.
         let today = Day.key(Date())
-        for back in 1...9 {
+        for back in 1...60 {
             let k = Day.shift(today, by: -back)
-            for s in supps { context.insert(SuppDose(suppID: s.id, day: k)) }
-        }
-        for back in 11...16 {
-            let k = Day.shift(today, by: -back)
-            for (i, s) in supps.enumerated() where (i + back) % 4 != 0 { context.insert(SuppDose(suppID: s.id, day: k)) }
+            for (i, s) in supps.enumerated() {
+                let taken: Bool
+                switch back {
+                case 1...9: taken = true
+                case 10...16: taken = false
+                case 17...33, 50...60: taken = (back + i) % 7 != 0
+                default: taken = (back + i) % 6 == 0
+                }
+                if taken { context.insert(SuppDose(suppID: s.id, day: k)) }
+            }
         }
         for s in supps where s.time == .morning { context.insert(SuppDose(suppID: s.id, day: today)) }
         try? context.save()
