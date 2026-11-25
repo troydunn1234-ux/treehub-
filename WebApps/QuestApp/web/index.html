@@ -439,6 +439,80 @@ details.det[open] > summary { margin-bottom: 8px; }
 .toast.bad { border-color: var(--red-line); color: #ffd6d6; }
 @media (prefers-reduced-motion: no-preference) { .toast { animation: tin .25s ease-out; } @keyframes tin { from { opacity: 0; transform: translate(-50%, 8px); } } }
 
+/* ---------- Ride Quest 4: progressive disclosure. Each tab is a short summary; details open in sheets or expand in place ---------- */
+button.hsv { width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: left; align-items: flex-start; }
+.pillbtn { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 0 16px 0 12px; border-radius: 99px; border: 1px solid rgba(255,90,90,.5);
+  background: linear-gradient(180deg, #e31c22, #c80f15); color: #fff; font-weight: 700; font-size: .92rem; box-shadow: inset 0 1px 0 rgba(255,255,255,.22); }
+.pillbtn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.stack { display: flex; flex-direction: column; gap: 10px; }
+.stack:empty { display: none; }
+.gh { font-size: .8rem; font-weight: 700; color: var(--silver2); letter-spacing: .04em; text-transform: uppercase; padding: 10px 4px 0; margin-bottom: -6px; }
+.card.list { padding-top: 4px; padding-bottom: 4px; }
+/* tiles: a label, one number, one short line; the whole tile opens the detail */
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(10rem, 100%), 1fr)); gap: 12px; }
+.tile { position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; min-height: 112px; min-width: 0; padding: 14px 14px 13px; border-radius: var(--r); border: 1px solid var(--line);
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,0) 42%), var(--card); color: inherit; text-align: left; }
+.tile .tl2 { display: flex; align-items: center; gap: 7px; width: 100%; font-size: .8rem; font-weight: 650; color: var(--silver); }
+.tile .tl2 svg:first-child { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 1.9; stroke-linecap: round; stroke-linejoin: round; flex: 0 0 auto; }
+.tile .tl2 .chev { margin-left: auto; }
+.tile b { font-family: var(--font-d); font-size: 1.32rem; font-weight: 800; letter-spacing: -.01em; line-height: 1.15; overflow-wrap: anywhere; margin-top: auto; }
+.tile small { font-size: .78rem; color: var(--silver); line-height: 1.3; overflow-wrap: anywhere; }
+.tile .bar { width: 100%; height: 5px; margin: 4px 0 2px; }
+.tile.warn { border-color: rgba(255,181,71,.3); }
+.tile.bad { border-color: var(--red-line); }
+/* nav rows: icon, title + one line, value, chevron */
+.nr { display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 0; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; text-align: left; }
+.list > .nr:first-child, .list > details:first-child > summary.nr { border-top: 0; }
+.nr .mid .t { white-space: normal; }
+.nr .v { flex: 0 0 auto; max-width: 46%; text-align: right; font-weight: 700; font-size: .96rem; overflow-wrap: anywhere; }
+.nr .v small { display: block; font-size: .74rem; font-weight: 500; color: var(--silver2); }
+.nr .ic { width: 2.2rem; height: 2.2rem; border-radius: 11px; }
+.nr.danger .t { color: var(--red-text); }
+details.xr > summary { list-style: none; cursor: pointer; }
+details.xr > summary::-webkit-details-marker { display: none; }
+details.xr > summary .chev { transition: transform .2s ease; }
+details.xr[open] > summary .chev { transform: rotate(90deg); }
+details.xr > .xb { padding: 0 0 8px; }
+@media (prefers-reduced-motion: no-preference) { details.xr[open] > .xb { animation: xin .22s ease-out; } @keyframes xin { from { opacity: 0; transform: translateY(-4px); } } }
+.xb .row:first-child { border-top: 1px solid var(--line); }
+/* three numbers in one row */
+.kpi3 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.kpi3 > * { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.kpi3 span { font-size: .76rem; font-weight: 600; color: var(--silver); }
+.kpi3 b { font-family: var(--font-d); font-size: 1.04rem; font-weight: 800; overflow-wrap: anywhere; line-height: 1.2; }
+@media (max-width: 340px) { .kpi3 { grid-template-columns: 1fr; } }
+button.kpi3 { width: 100%; padding: 0; border: 0; background: none; color: inherit; text-align: left; min-height: 44px; }
+/* where it went: the 3D ring and its legend */
+.w3 { position: relative; height: min(15rem, 62vw); margin: 2px -8px 4px; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.w3 canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; cursor: grab; }
+.w3 .ctr { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; display: flex; flex-direction: column; gap: 1px; }
+.w3 .ctr b { font-family: var(--font-d); font-size: min(1.4rem, 6.4vw); font-weight: 800; letter-spacing: -.01em; text-shadow: 0 1px 8px rgba(0,0,0,.85); }
+.w3 .ctr small { font-size: .72rem; font-weight: 650; color: var(--silver); text-shadow: 0 1px 6px rgba(0,0,0,.9); }
+.w3.flat { height: min(13rem, 54vw); }
+.w3.flat .ctr { transform: translate(-50%, -50%); }
+.w3hint { text-align: center; font-size: .74rem; color: var(--silver2); margin-top: -2px; }
+.leg { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 46px; padding: 8px 0; border: 0; border-top: 1px solid var(--line); background: none; color: inherit; text-align: left; }
+.leg:first-child { border-top: 0; }
+.leg .swc { flex: 0 0 auto; width: 12px; height: 12px; border-radius: 4px; }
+.leg .t { flex: 1 1 auto; min-width: 0; font-weight: 600; font-size: .94rem; white-space: normal; }
+.leg .p { flex: 0 0 auto; font-size: .8rem; color: var(--silver); min-width: 3.2em; text-align: right; }
+.leg .a { flex: 0 0 auto; font-weight: 700; font-size: .94rem; text-align: right; min-width: 5.6em; }
+.leg.on { background: rgba(255,255,255,.04); border-radius: 10px; }
+.leg.neg .a { color: var(--silver); }
+/* a sheet's own title block with a number */
+.shero { display: flex; flex-direction: column; gap: 4px; }
+.shero b { font-family: var(--font-d); font-size: min(2rem, 8.6vw); font-weight: 800; letter-spacing: -.015em; line-height: 1.05; }
+.shero span { font-size: .86rem; color: var(--silver); }
+.sh .back { display: inline-flex; align-items: center; gap: 2px; }
+.sh .back svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.chip.link { color: var(--ink); background: rgba(255,255,255,.06); }
+.chip.link::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #0aac23; }
+@media (prefers-reduced-motion: no-preference) { .sheet.out .spanel { animation: sheetdn .17s ease-in forwards; } .sheet.out .sbd { animation: fade .17s ease-in forwards; } @keyframes sheetdn { to { transform: translateY(40px); opacity: 0; } } @keyframes fade { to { opacity: 0; } } }
+
+.empty .btns.col > .btn { justify-content: center; }
+.spanel > * { flex-shrink: 0; }
+.tlx { display: flex; flex-direction: column; }
+.tlx > .tg:first-child { border-top: 0; padding-top: 2px; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; scroll-behavior: auto !important; }
 }
@@ -459,50 +533,31 @@ details.det[open] > summary { margin-bottom: 8px; }
 </header>
 
 <main class="main">
-  <!-- GARAGE -->
+  <!-- GARAGE: the car, one line of pace, then four tiles that open the details -->
   <section class="scr" id="s-garage" aria-label="Garage">
     <div class="hero" id="hero">
       <div id="gPhotoSlot"></div>
       <div class="hb">
         <div class="hero-top">
           <div class="hero-name"><h2 id="goalName">Dream car</h2><span id="streak" hidden></span></div>
-          <button class="ib" type="button" data-tab="car" aria-label="Edit your car goal"><svg viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button>
+          <button class="pillbtn" type="button" data-act="qa" data-m="save" aria-label="Move money to car savings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6.5 11.5 12 6l5.5 5.5"/></svg>Save</button>
         </div>
-        <div class="hsv"><span class="rl">Saved</span><b class="rv n" id="gSaved"></b><span class="rs">of <span class="n" id="gGoal"></span> &middot; <span class="n" id="gPct"></span></span></div>
+        <button class="hsv" type="button" data-act="goalsheet" aria-describedby="gPct"><span class="rl">Saved</span><b class="rv n" id="gSaved"></b><span class="rs">of <span class="n" id="gGoal"></span> &middot; <span class="n" id="gPct"></span></span></button>
         <span class="bar hbar" id="gBar" role="img" aria-label="Savings progress"><i style="width:0%"></i></span>
         <div class="hmeta" id="heroStats"></div>
         <div id="heroTarget" hidden></div>
-        <p class="src" id="heroSrc"></p>
       </div>
     </div>
-    <div class="qadd" role="group" aria-label="Quick add">
-      <button class="qb" type="button" data-act="qa" data-m="tx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5.5 8h13l-1 12.5h-11z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg>Purchase</button>
-      <button class="qb" type="button" data-act="qa" data-m="in"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v10M8 10.5l4 4 4-4"/><path d="M4.5 15v3.5a1.5 1.5 0 0 0 1.5 1.5h12a1.5 1.5 0 0 0 1.5-1.5V15"/></svg>Income</button>
-      <button class="qb hot" type="button" data-act="qa" data-m="save"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 15.5V12l1.9-4.6A2 2 0 0 1 7.2 6.2h9.6a2 2 0 0 1 1.8 1.2l1.9 4.6v3.5"/><path d="M3.8 12h16.4"/><circle cx="7.5" cy="16" r="1.8"/><circle cx="16.5" cy="16" r="1.8"/><path d="M12 2.5v5M9.8 5.3 12 7.5l2.2-2.2"/></svg>To savings</button>
-    </div>
-    <div id="gNudge" class="scr" style="gap:10px"></div>
-    <div class="card" id="gWallets"></div>
-    <div class="card" id="gMonth"></div>
-    <div class="card" id="gNext"></div>
+    <div id="gNudge" class="stack"></div>
+    <div class="tiles" id="gTiles"></div>
   </section>
 
-  <!-- MONEY -->
+  <!-- MONEY: where it went (3D), the month in three numbers, then rows that open activity and budgets -->
   <section class="scr" id="s-money" aria-label="Money" hidden>
     <div class="mnav"><button type="button" data-act="prev" aria-label="Previous month"><svg viewBox="0 0 24 24"><path d="m15 5-7 7 7 7"/></svg></button><b class="n" id="monLbl">&nbsp;</b><button type="button" data-act="next" aria-label="Next month"><svg viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></svg></button></div>
+    <div class="card" id="mWhere"></div>
     <div class="card" id="mSum"></div>
-    <div class="seg" role="group" aria-label="Show"><button type="button" data-act="mseg" data-v="act" aria-pressed="true">Activity</button><button type="button" data-act="mseg" data-v="bud" aria-pressed="false">Budgets</button></div>
-    <div class="scr" id="mAct">
-      <div class="card" id="uncBox" hidden></div>
-      <label class="search"><span class="sr">Search activity</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="mQ" placeholder="Search stores, notes or amounts" autocomplete="off" enterkeyhint="search"></label>
-      <div class="fchips" id="mChips" role="group" aria-label="Filter"></div>
-      <div class="card" id="mList"></div>
-    </div>
-    <div class="scr" id="mBud" hidden>
-      <div class="card" id="bSum"></div>
-      <div class="card" id="bCats"></div>
-      <div class="card" id="bTrend"></div>
-      <div class="card" id="bTop"></div>
-    </div>
+    <div class="card list" id="mLinks"></div>
   </section>
 
   <!-- SUBSCRIPTIONS -->
@@ -510,18 +565,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     <div class="card" id="sbHead"></div>
     <div class="card" id="sbAlerts" hidden></div>
     <div class="card" id="sbNext"></div>
-    <div class="scr" id="sbGroups"></div>
-    <div class="card" id="sbFound"></div>
-    <div class="card" id="sbAdd">
-      <div class="ch"><h2>Add subscriptions</h2></div>
-      <div class="btns"><button class="btn" type="button" data-act="subnew"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Add a subscription</button></div>
-      <details class="det" style="margin-top:10px"><summary>Paste a list</summary>
-        <p class="note">One per line: <b>Name, price, monthly or yearly, YYYY-MM-DD</b> (the next charge). A name you already have is updated, never added twice. An import code that starts with <b>RQ1:</b> works here too.</p>
-        <label class="f" style="margin-top:10px"><span class="sr">Subscriptions to import</span><textarea class="ta" id="sbPaste" placeholder="Car insurance, 142.00, monthly, 2026-12-18&#10;Gym, 29.99, monthly, 2026-12-01"></textarea></label>
-        <div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" data-act="sbimport">Review import</button></div>
-        <p class="msg" id="sbPasteMsg" role="status"></p>
-      </details>
-    </div>
+    <div id="sbGroups"></div>
+    <div class="card list" id="sbAdd"></div>
   </section>
 
   <!-- CAR -->
@@ -531,27 +576,15 @@ details.det[open] > summary { margin-bottom: 8px; }
     <div class="card" id="cCost"></div>
   </section>
 
-  <!-- MORE -->
+  <!-- MORE: one list of settings; each opens its own sheet -->
   <section class="scr" id="s-more" aria-label="More" hidden>
-    <div class="card" id="bankBox"><div class="ch"><h2>Bank sync</h2></div><div id="bankBody"></div><p class="msg" id="bankMsg" role="status"></p><input type="file" id="ppCsvFile" accept=".csv,text/csv,text/comma-separated-values,text/plain" hidden></div>
-    <div class="card" id="limBox"><div class="ch"><h2>Monthly budgets</h2><span class="aux n" id="limTot"></span></div><div id="limitSet"></div>
-      <form class="two" id="catForm" style="margin-top:12px"><label class="f"><span>New category</span><input class="in" type="text" id="newCat" autocomplete="off" placeholder="Pets"></label>
-        <label class="f"><span>Monthly limit</span><input class="in n" type="text" id="newLim" inputmode="decimal" autocomplete="off" placeholder="0.00"></label>
-        <button class="btn ghost" type="submit">Add category</button></form></div>
-    <div class="card"><div class="ch"><h2>Notifications</h2></div><div class="list" id="notifySet"></div></div>
-    <div class="card"><div class="ch"><h2>Balances you count</h2></div><p class="note">Type what a wallet really holds today. Ride Quest keeps your entries and adjusts the starting point to match. Accounts synced with your bank always show the bank's balance.</p><div class="form" id="startSet" style="margin-top:12px"></div></div>
-    <div class="card"><div class="ch"><h2>Transfers to yourself</h2></div><p class="note">Bank lines that say "Zelle to" or "Zelle from" this name count as moving your own money, not spending or income. Zelle between two of your linked accounts is caught either way.</p><div class="form" id="selfSet" style="margin-top:12px"></div></div>
-    <div class="card"><div class="ch"><h2>Auto-categorize</h2></div>
-      <p class="note">Bank imports are sorted by store. Change a purchase's category once and Ride Quest files that store there from then on.</p><div id="ruleList" style="margin-top:8px"></div></div>
-    <div class="card"><div class="ch"><h2>Import and export</h2></div><p class="note">Everything saves on its own, on this iPhone. Exports open in Numbers or Excel; the backup holds everything.</p>
-      <div class="btns col" style="margin-top:12px"><button class="btn ghost" id="dlTx" type="button">Export purchases<span class="mut2">CSV</span></button><button class="btn ghost" id="dlMv" type="button">Export transfers<span class="mut2">CSV</span></button><button class="btn ghost" id="dlAll" type="button">Save a full backup<span class="mut2">JSON</span></button>
-        <button class="btn ghost" type="button" data-act="goimport">Import subscriptions<span class="mut2">List or code</span></button></div>
-      <p class="msg" id="dlMsg" role="status"></p></div>
-    <div class="card"><div class="ch"><h2>Check the math</h2></div><p class="note">Runs Ride Quest's money checks on made-up numbers. Nothing of yours is read, changed or saved.</p>
-      <div class="btns" style="margin-top:12px"><button class="btn ghost" type="button" data-act="selftest">Run checks</button></div><p class="msg" id="stMsg" role="status"></p></div>
-    <div class="card"><div class="ch"><h2>Danger zone</h2></div><p class="note">Removes every purchase and transfer. Budgets, subscriptions, the goal and the bank connection stay.</p>
-      <div class="btns" style="margin-top:12px"><button class="btn danger" type="button" data-act="resetall">Wipe all entries</button></div></div>
-    <div class="card" id="about"></div>
+    <p class="gh">Your money</p>
+    <div class="card list" id="moreBank"></div>
+    <p class="gh">Plan</p>
+    <div class="card list" id="morePlan"></div>
+    <p class="gh">Data</p>
+    <div class="card list" id="moreData"></div>
+    <div id="about"></div>
   </section>
 </main>
 
@@ -564,6 +597,8 @@ details.det[open] > summary { margin-bottom: 8px; }
 </nav>
 
 <input type="file" id="carPhotoFile" accept="image/*" hidden>
+<input type="file" id="ppCsvFile" accept=".csv,text/csv,text/comma-separated-values,text/plain" hidden>
+<input type="file" id="bankFile" accept=".ofx,.qfx,.csv,.txt,application/x-ofx,application/vnd.intu.qfx,text/csv,text/plain" hidden>
 <div class="sheet" id="sheet" hidden>
   <div class="sbd" data-act="sheetclose"></div>
   <div class="spanel" id="spanel" role="dialog" aria-modal="true" aria-label="Details"></div>
@@ -943,7 +978,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     S.bankWallet = S.bankWallet || {};
     if (S.bankWallet[acc.id]) return S.bankWallet[acc.id];
     if (isPayPalAcc(acc)) return "paypal";
-    return /saving/i.test(acc.name || "") ? "savings" : "checking";
+    return /saving|money market|\bshares?\b(?!\s*draft)|certificate/i.test(acc.name || "") ? "savings" : "checking";
   }
   function isoDay(sec) { var d = new Date(sec * 1000); return d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate()); }
   /* "Zelle to <your name>" / "Zelle from <your name>", only when you've set your name in Settings */
@@ -1205,9 +1240,48 @@ details.det[open] > summary { margin-bottom: 8px; }
     return !!S.bankIgnore[a.id];
   }
   function liveAccounts(res) { return (res.accounts || []).filter(function (a) { return !bankIgnored(a); }); }
+  /* "Credit Union", "Federal Credit Union", "FCU" in a bank's name is the kind of bank, not a credit card */
+  var CU_RE = /\b(?:federal\s+)?credit\s+union\b|\bf\.?c\.?u\.?\b/ig;
   function isCredit(a) {
     if (isPayPalAcc(a)) return false;
-    return /discover|credit|card|visa|mastercard|amex|apple card/i.test((a.name || "") + " " + (a.org || "")) || (amtC(a.balance) || 0) < 0;
+    if (a.kind === "card" || a.kind === "loan") return true;
+    if (a.kind === "bank") return false;
+    if (isLoanAcc(a)) return true;
+    var txt = String(a.name || "").replace(CU_RE, " ") + " " + String(a.org || "").replace(CU_RE, " ");
+    return /discover|credit|card|visa|mastercard|amex|apple card/i.test(txt) || (amtC(a.balance) || 0) < 0;
+  }
+  /* a loan account (car loan, auto loan, personal loan): its lines are never purchases or income; payments into it from
+     checking count as spending (the car payment); its balance feeds the Car tab when you link it there */
+  var LOAN_RE = /\bloans?\b|\bauto\s*(?:fin|lend)|\bvehicle\b|\bmortgage\b|\bheloc\b|\blending\b|\binstall?ment\b/i;
+  function isLoanAcc(a) {
+    if (!a || isPayPalAcc(a)) return false;
+    if (a.kind === "loan") return true;
+    if (a.kind === "card" || a.kind === "bank") return false;
+    var L = S.car && S.car.loan;
+    if (L && L.link && L.link === a.id) return true;
+    return LOAN_RE.test(String(a.name || ""));
+  }
+  /* the words that name a bank in a statement line ("Credit Union A" -> "credit union a"; "Bank A, N.A." -> "bank a") */
+  function orgWords(org) {
+    var w = String(org || "").toLowerCase().replace(/,?\s*n\.?a\.?$/, "").replace(/[^a-z0-9 ]+/g, " ").split(/\s+/).filter(function (x) { return x && ["the", "of", "inc", "na", "bank", "federal", "national", "credit", "union", "fcu", "savings", "financial", "and"].indexOf(x) < 0 && x.length >= 3; });
+    return w;
+  }
+  /* a line that names your other bank ("ACH DEPOSIT MIRA..." on one side, "TRANSFER TO <BANK>" on the other) */
+  function mentionsOrg(t, a) {
+    var w = orgWords(a && a.org), txt = String((t.description || "") + " " + (t.payee || "") + " " + (t.memo || "")).toLowerCase();
+    return w.length > 0 && w.some(function (x) { return new RegExp("\\b" + x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\b").test(txt); });
+  }
+  /* "SHARE DRAFT CHECKING x0001" -> "Share Draft Checking ··0001"; "Mira Federal Credit Union" -> "Mira FCU" (looks only) */
+  function cleanOrg(o) {
+    o = String(o || "").trim().replace(/,?\s*(?:n\.?a\.?|inc\.?|llc)$/i, "").replace(/\bfederal credit union\b/i, "FCU");
+    return o.length > 26 ? o.replace(/\bcredit union\b/i, "CU") : o;
+  }
+  function cleanAcct(n, org) {
+    var s = String(n || "").trim(), tail = "", m = /(?:\s*[-–]?\s*(?:x+|\.{2,}|…|\*+|#|acct\.?|account)\s*(\d{3,4}))\s*$/i.exec(s) || /\s(\d{4})$/.exec(s);
+    if (m) { tail = m[1]; s = s.slice(0, m.index).trim(); }
+    if (org) { var o = String(org).trim(); if (o && s.toLowerCase().indexOf(o.toLowerCase()) === 0 && s.length > o.length + 2) s = s.slice(o.length).replace(/^[\s\-–:]+/, ""); }
+    if (s && !/[a-z]/.test(s)) s = prettyName(s);
+    return (s || "Account") + (tail ? " ··" + tail : "");
   }
   /* Manual override: type what the wallet holds right now; the log stays as is and the starting balance absorbs the difference. */
   function setBalanceC(acct, c) {
@@ -1226,6 +1300,7 @@ details.det[open] > summary { margin-bottom: 8px; }
      each account's balance exactly as the bank reported it, with its time, to show on Home. Credit cards aren't wallets. */
   function bankReconcile(res) {
     var sums = {}, any = false, pend = {}, asOf = 0, snap = [], now = Math.floor(Date.now() / 1000);
+    loanSnap(res);
     liveAccounts(res).forEach(function (a) {
       if (isCredit(a)) return;
       var bc = amtC(a.balance);
@@ -1251,11 +1326,39 @@ details.det[open] > summary { margin-bottom: 8px; }
     Object.keys(sums).forEach(function (w) { S.start[w] = fromC(sums[w] - (balC(w) - toC(S.start[w]))); });
     /* an account that skipped a beat this time keeps its last reported balance (with its older time) */
     var ids = {}; (res.accounts || []).forEach(function (a) { if (!bankIgnored(a)) ids[a.id] = 1; });
-    var keep = (S.bankAcc || []).filter(function (x) { return ids[x.id] && !snap.some(function (y) { return y.id === x.id; }); });
+    var keep = (S.bankAcc || []).filter(function (x) { return (ids[x.id] || x.file) && !snap.some(function (y) { return y.id === x.id; }); });
     S.bankAcc = snap.concat(keep);
     S.bankMatchedAt = Date.now();
     return true;
   }
+  /* Loan accounts (and any card you linked as the car loan): the bank's balance owed, with its time, and the payments
+     the feed shows (newest 8), kept between syncs. Nothing here is spending; the Car tab reads it. */
+  function loanSnap(res) {
+    var now = Math.floor(Date.now() / 1000), old = {}, out = [], ids = {};
+    (S.bankLoans || []).forEach(function (x) { old[x.id] = x; });
+    liveAccounts(res).forEach(function (a) {
+      if (!isLoanAcc(a)) return;
+      var bc = amtC(a.balance); if (!isFinite(bc)) return;
+      var prev = old[a.id] || {}, pays = (prev.pays || []).slice(), seen = {};
+      pays.forEach(function (p) { seen[p.id] = 1; });
+      (a.transactions || []).forEach(function (t) {
+        var c = amtC(t.amount); if (!(c > 0) || t.pending || !t.id || seen[t.id]) return;
+        pays.push({ id: String(t.id), d: isoDay(t.posted || t.transacted), c: c }); seen[t.id] = 1;
+      });
+      pays.sort(function (p, q) { return p.d < q.d ? -1 : p.d > q.d ? 1 : 0; });
+      ids[a.id] = 1;
+      out.push({ id: String(a.id), n: String(a.name || "").slice(0, 60), org: String(a.org || "").slice(0, 40), c: Math.abs(bc), at: +a.balanceDate > 0 ? Math.floor(+a.balanceDate) : now, pays: pays.slice(-8) });
+    });
+    if (!out.length && !(S.bankLoans || []).length) return;
+    S.bankLoans = out.concat((S.bankLoans || []).filter(function (x) { return !ids[x.id]; }));
+  }
+  function loanAcc(id) { return (S.bankLoans || []).filter(function (x) { return x.id === id; })[0] || null; }
+  /* the budget category a car payment goes in: yours if you have one ("Car payment", "Car loan", "Auto loan"), else "Car payment" */
+  function carPayCat() {
+    var b = S.budgets.filter(function (x) { return /car\s*(payment|loan|note)|auto\s*(loan|payment)|\bloan\b/i.test(x.n); })[0];
+    return b ? b.n : "Car payment";
+  }
+  var LOAN_PAY_RE = /\bloan\b.{0,24}\b(pmt|pymt|payment|pay)\b|\b(pmt|pymt|payment)\b.{0,24}\bloan\b|\bto\s+loan\b/i;
   /* What one record does to the wallet w, in cents: purchases are negative, deposits positive */
   function flowOn(o, w) {
     if (S.tx.indexOf(o) >= 0) return -toC(o.amt);
@@ -1281,18 +1384,31 @@ details.det[open] > summary { margin-bottom: 8px; }
     var pp = ppOn(res);
     /* PayPal lines (the PayPal account, or SoFi's "PAYPAL ..." lines) are paired by ppLink, not here */
     function ppRel(x) { return pp && (isPayPalAcc(x.a) || (!isCredit(x.a) && isPPLine(x.t))); }
-    var all = [], live = {};
-    liveAccounts(res).forEach(function (a) { (a.transactions || []).forEach(function (t) { all.push({ a: a, t: t, c: amtC(t.amount) }); if (t.id) live[a.id + ":" + t.id] = true; }); });
+    var all = [], live = {}, loanLines = [];
+    liveAccounts(res).forEach(function (a) {
+      var ln = isLoanAcc(a);
+      (a.transactions || []).forEach(function (t) { if (ln) loanLines.push({ a: a, t: t, c: amtC(t.amount) }); else all.push({ a: a, t: t, c: amtC(t.amount) }); if (t.id) live[a.id + ":" + t.id] = true; });
+    });
+    /* a car payment: money out of checking that lands in a loan account (same cents, within 5 days), or a line that says so ("AUTO LOAN PMT") */
+    var loanPay = {};
+    all.forEach(function (x, i) {
+      if (!isFinite(x.c) || x.c >= 0 || isCredit(x.a)) return;
+      var hit = null;
+      loanLines.forEach(function (y) { if (!hit && y.c === -x.c && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 5 * 86400) hit = y; });
+      if (hit) loanPay[i] = hit.a.id;
+      else if (LOAN_PAY_RE.test((x.t.description || "") + " " + (x.t.payee || ""))) loanPay[i] = (S.car && S.car.loan && S.car.loan.link) || "?";
+    });
     /* transfers between your own accounts: same amount, opposite sign, different account, within 4 days */
     var mirror = {};
     all.forEach(function (x, i) {
-      if (mirror[i] || ppRel(x) || !isFinite(x.c)) return;
+      if (mirror[i] || loanPay[i] || ppRel(x) || !isFinite(x.c)) return;
       for (var j = i + 1; j < all.length; j++) {
         var y = all[j];
-        if (mirror[j] || y.a.id === x.a.id || ppRel(y) || !isFinite(y.c)) continue;
+        if (mirror[j] || loanPay[j] || y.a.id === x.a.id || ppRel(y) || !isFinite(y.c)) continue;
         /* only pair real transfers: same bank, one side says transfer/payment, or both sides are Zelle between your own linked accounts
            (a $5 coffee on the card isn't a transfer) */
-        var related = (x.a.org && x.a.org === y.a.org) || looksLikeTransfer(x.t) || looksLikeTransfer(y.t) || (isZelle(x.t) && isZelle(y.t));
+        var related = (x.a.org && x.a.org === y.a.org) || looksLikeTransfer(x.t) || looksLikeTransfer(y.t) || (isZelle(x.t) && isZelle(y.t)) ||
+          (x.a.org !== y.a.org && (mentionsOrg(x.t, y.a) || mentionsOrg(y.t, x.a)));
         if (related && x.c + y.c === 0 && Math.abs((x.t.posted || x.t.transacted) - (y.t.posted || y.t.transacted)) < 4 * 86400) { mirror[i] = j + 1; mirror[j] = i + 1; break; }
       }
     });
@@ -1307,7 +1423,7 @@ details.det[open] > summary { margin-bottom: 8px; }
       }
       if (existing === true) return;
       /* the one-time look further back only brings in PayPal purchases from before the usual window */
-      if (opt.oldBefore && !existing && (t.posted || t.transacted || 0) < opt.oldBefore && !ppSpendLine(a, t, c, pp)) return;
+      if (opt.oldBefore && !existing && (t.posted || t.transacted || 0) < opt.oldBefore && !ppSpendLine(a, t, c, pp) && !(opt.newAcc && opt.newAcc[a.id])) return;
       if (existing) {
         if (existing.bank && existing.bank.pend) {
           /* pending that has now posted (same id): the bank's final amount and date win */
@@ -1342,6 +1458,16 @@ details.det[open] > summary { margin-bottom: 8px; }
         seen[id] = true;
         if (pk === "sp" || pk === "rf") added++; else if (pk === "in") inc++; else skipped++;
         return;
+      }
+      if (loanPay[i]) {
+        var lday = isoDay((t.pending ? (t.transacted || t.posted) : (t.posted || t.transacted)) || Date.now() / 1000), ltext = t.payee || t.description || "Car payment";
+        var lbank = { id: id, org: a.org || a.name, key: payeeKey(ltext), pend: !!t.pending, acc: a.id, loan: 1 };
+        if (loanPay[i] !== "?") lbank.lacc = loanPay[i];
+        if (t.description && t.description !== ltext) lbank.desc = String(t.description).slice(0, 80);
+        var lman = findManualTx(w, -c, lday);
+        if (lman) { lbank.man = 1; lman.bank = lbank; seen[id] = lman; merged++; return; }
+        var lt = { id: uid(), d: lday, cat: carPayCat(), what: ltext.slice(0, 60), amt: fromC(-c), acct: w, note: "", bank: lbank, auto: "rule" };
+        S.tx.push(lt); seen[id] = lt; added++; return;
       }
       if (mirror[i]) {
         var o = all[mirror[i] - 1], oid = o.t.id ? o.a.id + ":" + o.t.id : "";
@@ -1412,8 +1538,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     var cut = isoDay(Date.now() / 1000 - 2 * 86400), dropped = 0;
     function gone(o) { return o.bank && o.bank.pend && !o.bank.csv && !live[o.bank.id] && o.d < cut; }
     function keep(o) { if (!gone(o)) return true; if (o.bank.man) { delete o.bank; return true; } dropped++; return false; }
-    S.tx = S.tx.filter(keep); S.moves = S.moves.filter(keep);
-    if (S.ppShadow) S.ppShadow = S.ppShadow.filter(function (x) { return !(x.pend && !x.csv && !live[x.id] && x.d < cut); });
+    if (!opt.file) { S.tx = S.tx.filter(keep); S.moves = S.moves.filter(keep); }
+    if (S.ppShadow && !opt.file) S.ppShadow = S.ppShadow.filter(function (x) { return !(x.pend && !x.csv && !live[x.id] && x.d < cut); });
     var linked = ppLink();
     return { added: added, inc: inc, skipped: skipped, dropped: dropped, linked: linked, merged: merged };
   }
@@ -1425,8 +1551,13 @@ details.det[open] > summary { margin-bottom: 8px; }
     var since = last ? Math.floor(last / 1000) - BANK_BACK : Math.floor(Date.now() / 1000) - 30 * 86400, opt = {};
     /* once: look 75 days back for SoFi charges paid through PayPal that older versions skipped, so repeating ones show up under Bills */
     if (!S.ppBack && last) { opt = { ppBack: 1, oldBefore: since }; since = Math.min(since, Math.floor(Date.now() / 1000) - 75 * 86400); }
+    var known = knownAccIds();
     bankNative({ op: "simplefin", action: "sync", since: since }).then(function (res) {
       var r = bankImport(res || {}, opt);
+      /* a bank you just added in SimpleFIN (a New connection): bring in its last 60 days once, not just the usual window */
+      var fresh = {}, nf = 0;
+      if (last && !opt.newAcc) liveAccounts(res || {}).forEach(function (a) { if (!known[a.id]) { fresh[a.id] = 1; nf++; } });
+      if (nf) setTimeout(function () { bankBackfill(fresh, since); }, 50);
       if (res && res.accounts && !S.ppBack) { S.ppBack = 1; touch(); }
       var matched = bankReconcile(res || {});
       BANK.busy = false;
@@ -1443,48 +1574,30 @@ details.det[open] > summary { margin-bottom: 8px; }
       if (manual) toast(BANK.msg, true);
     });
   }
+  /* every account id Ride Quest has seen before: balances, loans, and the account on each imported line */
+  function knownAccIds() {
+    var k = {};
+    (S.bankAcc || []).forEach(function (x) { k[x.id] = 1; }); (S.bankLoans || []).forEach(function (x) { k[x.id] = 1; });
+    Object.keys(S.bankIgnore || {}).forEach(function (id) { k[id] = 1; });
+    S.tx.concat(S.moves).forEach(function (o) { if (o.bank && o.bank.acc) k[o.bank.acc] = 1; });
+    ((BANK.st && BANK.st.accounts) || []).forEach(function (x) { k[x.id] = 1; });
+    return k;
+  }
+  function bankBackfill(fresh, before) {
+    if (BANK.busy) return;
+    BANK.busy = true; renderStatus();
+    bankNative({ op: "simplefin", action: "sync", since: Math.floor(Date.now() / 1000) - 60 * 86400 }).then(function (res) {
+      var r = bankImport(res || {}, { newAcc: fresh, oldBefore: before });
+      bankReconcile(res || {});
+      BANK.busy = false;
+      var n = Object.keys(fresh).length;
+      BANK.msg = "Added " + n + " new account" + (n === 1 ? "" : "s") + " with the last 60 days" + (r.added || r.inc ? ": " + r.added + " purchases, " + r.inc + " deposits or transfers." : ".");
+      touch(); renderAll(); toast(BANK.msg);
+      return bankStatus();
+    }, function (e) { BANK.busy = false; BANK.msg = String((e && e.message) || e || "Sync failed"); renderBank(); renderStatus(); });
+  }
   function bankStatus() {
     return bankNative({ op: "simplefin", action: "status" }).then(function (st) { BANK.on = true; BANK.st = st; renderBank(); renderStatus(); if (loaded && tab === "garage") renderGarage(); return st; }, function () { BANK.on = false; renderBank(); renderStatus(); });
-  }
-  function renderBank() {
-    renderNotify();
-    var box = $("bankBody"); if (!box) return;
-    var st = BANK.st || {}, body = "";
-    if (!BANK.on) {
-      body = '<p class="note">Bank sync runs in the Ride Quest app on your iPhone. Here you can still add entries by hand.</p>' + importBlock();
-    } else if (!st.connected) {
-      body = '<ol class="steps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and connect SoFi there.</li>' +
-        "<li>In SimpleFIN Bridge, make a <b>setup token</b> and copy it.</li><li>Tap the button below. Purchases then come in on their own.</li></ol>" +
-        '<div class="btns" style="margin-top:12px"><button class="btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting…" : "Paste setup token") + "</button></div>" + importBlock();
-    } else {
-      var accs = st.accounts || [], live = accs.filter(function (a) { return !bankIgnored(a); }), orgs = [];
-      live.forEach(function (a) { var o = isPayPalAcc(a) ? "PayPal" : (a.org || a.name || "Bank"); if (orgs.indexOf(o) < 0) orgs.push(o); });
-      var when = BANK.busy ? "Syncing now…" : st.lastSync ? "Last synced " + whenLbl(st.lastSync) + " · syncs hourly" : "Not synced yet";
-      body = '<div class="row" style="border-top:0;padding-top:0"><span class="ic">' + kico("bank") + '</span><span class="mid"><span class="t wrap">' + esc((orgs.join(", ") || "Your bank") + " via SimpleFIN") + '</span><span class="s wrap">' + esc(when) + '</span></span><span class="chip ok">On</span></div>' +
-        (bankPendingNote() ? '<p class="note" style="margin-top:8px">' + esc(bankPendingNote()) + "</p>" : "") +
-        '<div class="btns" style="margin-top:12px"><button class="btn" type="button" data-act="banksync"' + (BANK.busy ? " disabled" : "") + ">" + (BANK.busy ? "Syncing…" : "Sync now") + "</button></div>" +
-        '<p class="note" style="margin-top:12px">PayPal purchases are picked up from your bank automatically and show as the store, tagged <span class="chip">via PayPal</span>. New charges can take a few hours to reach SimpleFIN.</p>' +
-        '<details class="det" style="margin-top:14px"><summary>Accounts (' + accs.length + ")</summary>" + (accs.length ? '<div class="list">' + accs.map(function (a) {
-          var off = bankIgnored(a);
-          var to = off ? "Off, not synced" : isCredit(a) ? "Card · purchases count as spending" : ("Shows as " + (walletFor(a) === "savings" ? "Car savings" : walletFor(a) === "cash" ? "Cash" : walletFor(a) === "paypal" ? "PayPal" : "Checking"));
-          return '<div class="set"' + (off ? ' style="opacity:.6"' : "") + '><div><div class="t">' + esc(a.name) + '</div><div class="s">' + esc((a.org ? a.org + ", " : "") + to) + "</div></div>" +
-            '<button class="btn ghost sm" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '">' + (off ? "Use" : "Stop") + "</button></div>";
-        }).join("") + "</div>" : '<p class="note">Tap Sync now to pull your accounts.</p>') +
-        '<div class="btns" style="margin-top:12px"><button class="btn danger" type="button" data-act="bankoff">Disconnect bank</button></div></details>' + importBlock();
-    }
-    box.innerHTML = body;
-    $("bankMsg").textContent = BANK.msg || "";
-  }
-  /* the PayPal CSV, tucked away: only needed for PayPal activity that never touches the bank (money already sitting in PayPal) */
-  function importBlock() {
-    var done = "";
-    if (S.ppCsv) {
-      var n = S.tx.concat(S.moves).filter(function (o) { return o.bank && o.bank.csv; }).length;
-      done = '<div class="set" style="border-top:0"><div><div class="t">PayPal activity (CSV)</div><div class="s">' + n + " entr" + (n === 1 ? "y" : "ies") + ", imported " + esc(whenLbl(S.ppCsv.at)) + (S.ppCsv.last ? ", through " + esc(dayLbl(S.ppCsv.last)) : "") + "</div></div></div>";
-    }
-    return '<details class="det" style="margin-top:10px"><summary>Import a file</summary>' + done +
-      '<p class="note" style="margin-top:8px">Only needed for PayPal purchases paid from your PayPal balance. On paypal.com: <b>Activity</b>, <b>Download</b>, <b>CSV</b>. Importing the same file twice adds nothing twice.</p>' +
-      '<div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" data-act="ppcsv">Import PayPal CSV</button></div></details>';
   }
   /* "Balances include $42.10 in pending charges. Bank balance as of 3:10 PM." */
   function bankPendingNote() {
@@ -1507,7 +1620,139 @@ details.det[open] > summary { margin-bottom: 8px; }
       }, function (e) { BANK.busy = false; BANK.msg = String((e && e.message) || e); renderBank(); });
     }, function () { BANK.msg = "Couldn't read the clipboard."; renderBank(); });
   }
+  /* ---------- Import a file: an OFX / QFX / CSV statement from any bank (for one SimpleFIN can't reach) ----------
+     The file becomes one account, shaped like a SimpleFIN account, and goes through the same import as bank sync: the
+     same rules for purchases, refunds, income, transfers and car payments, and the same ids, so the same file twice adds nothing. */
+  function hashStr(s) { var h = 5381, i; for (i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return (h >>> 0).toString(36); }
+  function ofxTag(block, tag) { var m = new RegExp("<" + tag + ">\\s*([^<\\r\\n]*)", "i").exec(block); return m ? m[1].trim() : ""; }
+  function ofxDay(v) { var m = /^(\d{4})(\d{2})(\d{2})/.exec(String(v || "")); return m ? m[1] + "-" + m[2] + "-" + m[3] : ""; }
+  function dayToSec(k) { var q = k.split("-"); return Math.floor(new Date(+q[0], +q[1] - 1, +q[2], 12, 0, 0).getTime() / 1000); }
+  /* -> {fmt, org, name, last4, kind ("bank"|"card"), balC|null, balD, rows:[{id, d, c, desc}]} or {err} */
+  function parseOFX(txt) {
+    txt = String(txt || "");
+    if (!/<OFX>/i.test(txt) || !/<STMTTRN>/i.test(txt)) return { err: "That file has no OFX transactions in it." };
+    var r = { fmt: "OFX", org: ofxTag(txt, "ORG"), kind: /<CCSTMTRS>/i.test(txt) ? "card" : "bank", rows: [], balC: null, balD: "" };
+    var acct = ofxTag(txt, "ACCTID"), type = ofxTag(txt, "ACCTTYPE");
+    r.last4 = acct.replace(/\D/g, "").slice(-4); r.acctKey = hashStr(acct || r.org || "ofx");
+    r.name = type ? (type.charAt(0) + type.slice(1).toLowerCase()).replace("Moneymrkt", "Money market").replace("Creditline", "Credit line") : (r.kind === "card" ? "Card" : "Account");
+    if (/creditline/i.test(type)) r.kind = "card";
+    var lb = /<LEDGERBAL>([\s\S]*?)(<\/LEDGERBAL>|<AVAILBAL>|<\/STMTRS>|<\/CCSTMTRS>)/i.exec(txt);
+    if (lb) { var bc = parseC(ofxTag(lb[1], "BALAMT")); if (isFinite(bc)) { r.balC = bc; r.balD = ofxDay(ofxTag(lb[1], "DTASOF")); } }
+    var re = /<STMTTRN>([\s\S]*?)(?=<\/STMTTRN>|<STMTTRN>|<\/BANKTRANLIST>)/ig, m, n = 0;
+    while ((m = re.exec(txt)) && n < 5000) {
+      var b = m[1], c = parseC(ofxTag(b, "TRNAMT")), d = ofxDay(ofxTag(b, "DTPOSTED") || ofxTag(b, "DTUSER")), fit = ofxTag(b, "FITID");
+      if (!isFinite(c) || !c || !d) continue;
+      var nm = ofxTag(b, "NAME") || ofxTag(b, "PAYEE"), memo = ofxTag(b, "MEMO");
+      r.rows.push({ id: fit || hashStr(d + c + nm + memo + "#" + n), d: d, c: c, desc: (nm + (memo && memo !== nm ? " " + memo : "")).replace(/&amp;/g, "&").trim() || "Bank line" });
+      n++;
+    }
+    if (!r.rows.length) return { err: "No transactions with a date and an amount in that file." };
+    return r;
+  }
+  /* any bank's CSV: a header row with a date and an amount (or Debit / Credit columns) */
+  function parseBankCSV(txt) {
+    var all = csvRows(txt), hi = -1, H = {}, i;
+    for (i = 0; i < Math.min(all.length, 15); i++) {
+      var low = all[i].map(function (h) { return String(h).trim().toLowerCase(); });
+      var hasD = low.some(function (h) { return /date/.test(h); }), hasA = low.some(function (h) { return /^(amount|amt|transaction amount|debit|credit|withdrawals?|deposits?)/.test(h); });
+      if (hasD && low.indexOf("gross") >= 0) return { err: "paypal" };
+      if (hasD && hasA) { hi = i; low.forEach(function (h, j) { if (H[h] === undefined) H[h] = j; }); break; }
+    }
+    if (hi < 0) return { err: "Couldn't find the Date and Amount columns in that CSV." };
+    if (H.gross !== undefined || H["balance impact"] !== undefined) return { err: "paypal" };
+    function find(res) { for (var q = 0; q < res.length; q++) { var k = Object.keys(H).filter(function (h) { return res[q].test(h); })[0]; if (k !== undefined) return H[k]; } return -1; }
+    var cD = find([/^posted date$/, /^posting date$/, /^date$/, /^transaction date$/, /date/]), cA = find([/^amount$/, /^transaction amount$/, /^amt$/, /^amount \(usd\)$/]);
+    var cDr = find([/^debit/, /^withdrawals?/]), cCr = find([/^credit/, /^deposits?/]), cN = find([/^description$/, /^payee$/, /^name$/, /^merchant/, /^transaction description/, /descr/, /^details$/]), cM = find([/^memo$/, /^notes?$/, /^extended description/]);
+    var cB = find([/^balance$/, /^running balance/]);
+    var r = { fmt: "CSV", org: "", name: "Account", kind: "bank", rows: [], balC: null, balD: "", acctKey: "" }, skipped = 0, seenK = {}, balRows = [];
+    all.slice(hi + 1).forEach(function (row) {
+      var d = ppDate(row[cD]), c = NaN;
+      if (cA >= 0 && String(row[cA] == null ? "" : row[cA]).trim() !== "") c = parseC(row[cA]);
+      else { var dr = cDr >= 0 ? parseC(row[cDr]) : NaN, cr = cCr >= 0 ? parseC(row[cCr]) : NaN; c = (isFinite(cr) ? Math.abs(cr) : 0) - (isFinite(dr) ? Math.abs(dr) : 0); if (!isFinite(dr) && !isFinite(cr)) c = NaN; }
+      if (!d || !isFinite(c) || !c) { skipped++; return; }
+      var desc = String(cN >= 0 ? row[cN] || "" : "").trim(), memo = String(cM >= 0 ? row[cM] || "" : "").trim(), base = d + "|" + c + "|" + desc.toLowerCase();
+      seenK[base] = (seenK[base] || 0) + 1; /* two identical lines on one day stay two */
+      r.rows.push({ id: hashStr(base) + "-" + seenK[base], d: d, c: c, desc: (desc + (memo && memo !== desc ? " " + memo : "")).trim() || "Bank line" });
+      if (cB >= 0) { var bb = parseC(row[cB]); if (isFinite(bb)) balRows.push({ d: d, c: bb }); }
+    });
+    if (!r.rows.length) return { err: "No lines with a date and an amount in that CSV." };
+    /* the running balance on the newest line is the balance now (files list newest first or oldest first) */
+    if (balRows.length) { var b0 = balRows[0], b1 = balRows[balRows.length - 1], nb = b1.d > b0.d ? b1 : b0; r.balC = nb.c; r.balD = nb.d; }
+    r.skipped = skipped;
+    return r;
+  }
+  function parseStatement(txt, fname) {
+    if (/<OFX>|OFXHEADER/i.test(String(txt).slice(0, 4000))) return parseOFX(txt);
+    var r = parseBankCSV(txt);
+    if (!r.err) r.acctKey = hashStr(String(fname || "csv").toLowerCase().replace(/[^a-z]+/g, ""));
+    return r;
+  }
+  /* the parsed file, as the account and lines bankImport reads (sign: + is money in; flip for cards that print charges as +) */
+  function statementRes(p, o) {
+    var id = "file:" + o.key, flip = o.flip ? -1 : 1;
+    var acc = { id: id, name: o.name || p.name, org: o.org || p.org || "Imported", kind: o.kind === "card" ? "card" : o.kind === "loan" ? "loan" : "bank", balance: p.balC === null ? null : fromC(p.balC), balanceDate: p.balD ? dayToSec(p.balD) : 0, transactions: [] };
+    p.rows.forEach(function (x) { var sec = dayToSec(x.d); acc.transactions.push({ id: x.id, posted: sec, transacted: sec, amount: fromC(x.c * flip), description: x.desc, payee: x.desc, memo: "", pending: false }); });
+    return { accounts: [acc], errors: [] };
+  }
+  var FILE = null;
+  function bankFilePick() { var f = $("bankFile"); if (f) { f.value = ""; f.click(); } }
+  function bankFileRead(file) {
+    if (!file) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      var txt = String(rd.result || ""), p = parseStatement(txt, file.name);
+      if (p.err === "paypal") { ppCsvFile(file); return; }
+      if (p.err) { toast(p.err, true); BANK.msg = p.err; renderBank(); return; }
+      FILE = { p: p, name: file.name }; openFileReview();
+    };
+    rd.onerror = function () { toast("Couldn't read that file.", true); };
+    rd.readAsText(file);
+  }
+  /* the review: which account it is, how it counts, what's in it. Nothing is saved until Import. */
+  function openFileReview(flipNow) {
+    if (!FILE) return;
+    var p = FILE.p, meta = (S.fileAcc || {})["file:" + p.acctKey] || {}, kind = meta.kind || p.kind, flip = flipNow === undefined ? !!meta.flip : flipNow;
+    var res = statementRes(p, { key: p.acctKey, flip: flip, kind: kind }), ins = 0, outs = 0, d0 = "", d1 = "";
+    res.accounts[0].transactions.forEach(function (t) { var c = amtC(t.amount); if (c > 0) ins += c; else outs -= c; var d = isoDay(t.posted); if (!d0 || d < d0) d0 = d; if (!d1 || d > d1) d1 = d; });
+    var prev = res.accounts[0].transactions.slice(0, 4).map(function (t) { var c = amtC(t.amount); return "<div><span>" + esc(dayShort(isoDay(t.posted)) + ", " + shopName(t.description).slice(0, 24)) + '</span><span class="n">' + fmtC(c, "+") + "</span></div>"; }).join("");
+    var sel = meta.w === "savings" && kind === "bank" ? "savings" : kind === "bank" ? "checking" : kind;
+    openSheet(sheetHead("Import a statement", "Cancel") +
+      '<p class="note"><b>' + esc(FILE.name) + "</b>: " + p.rows.length + " line" + (p.rows.length === 1 ? "" : "s") + ", " + esc(dayShort(d0)) + " to " + esc(dayShort(d1)) + (p.skipped ? ", " + p.skipped + " without an amount skipped" : "") + ".</p>" +
+      '<form class="form" data-form="fileimp">' +
+      '<div class="two"><label class="f"><span>Bank</span><input class="in" name="org" autocomplete="off" maxlength="40" value="' + esc(meta.org || p.org || "") + '" placeholder="Credit union or bank"></label>' +
+      '<label class="f"><span>Account</span><input class="in" name="name" autocomplete="off" maxlength="40" value="' + esc(meta.name || (p.name + (p.last4 ? " ··" + p.last4 : ""))) + '"></label></div>' +
+      '<label class="f"><span>Counts as</span><select class="sel" name="kind">' + opts([["checking", "Checking (spending money)"], ["savings", "Car savings"], ["card", "Credit card"], ["loan", "Loan (car loan)"]], sel) + "</select></label>" +
+      swRow("fileflip", flip, "Charges are positive in this file", "Turn on if purchases show as money in below (some card files print charges as +).") +
+      '<span class="lab">First lines, as Ride Quest reads them</span><div class="kv">' + prev + "</div>" +
+      '<div class="kpi"><div><span>Money in</span><b class="n">' + fmtC(ins) + '</b></div><div><span>Money out</span><b class="n">' + fmtC(outs) + "</b></div></div>" +
+      '<p class="note">Purchases, refunds, paychecks, transfers between your own accounts and car payments are sorted the same way as bank sync. Importing the same file again adds nothing twice.</p>' +
+      '<p class="msg bad" data-msg role="alert"></p><div class="btns"><button class="btn" type="submit">Import ' + p.rows.length + " line" + (p.rows.length === 1 ? "" : "s") + "</button></div></form>", "Import a statement");
+  }
+  function fileImportSubmit(form) {
+    if (!FILE) { closeSheet(); return; }
+    var F = form.elements, p = FILE.p, k = F.kind.value, flip = form.querySelector('[data-act="fileflip"]').getAttribute("aria-checked") === "true";
+    var kind = k === "card" ? "card" : k === "loan" ? "loan" : "bank";
+    var r = fileImportApply(p, { key: p.acctKey, org: F.org.value.trim().slice(0, 40), name: F.name.value.trim().slice(0, 40), kind: kind, w: k === "savings" ? "savings" : "checking", flip: flip });
+    FILE = null; closeSheet(true); touch(); renderAll(); beep("coin");
+    toast("Imported " + r.added + " purchase" + (r.added === 1 ? "" : "s") + " and " + r.inc + " deposit" + (r.inc === 1 ? "" : "s") + " or transfer" + (r.inc === 1 ? "" : "s") + (r.merged ? ", " + r.merged + " matched to entries you had" : "") + ".");
+  }
+  /* save how the file's account counts, import its lines, and keep its balance (from the file) next to your synced ones */
+  function fileImportApply(p, o) {
+    var id = "file:" + o.key;
+    S.fileAcc = S.fileAcc || {};
+    S.fileAcc[id] = { org: o.org || p.org || "", name: o.name || p.name, kind: o.kind, w: o.w, flip: o.flip ? 1 : 0, fmt: p.fmt, at: Date.now() };
+    S.bankWallet = S.bankWallet || {}; if (o.kind === "bank") S.bankWallet[id] = o.w; else delete S.bankWallet[id];
+    S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[id] = false;
+    var res = statementRes(p, o), a = res.accounts[0], r = bankImport(res, { file: 1 });
+    if (o.kind === "loan") loanSnap(res);
+    if (o.kind === "bank" && p.balC !== null) {
+      var snap = { id: id, n: a.name, org: a.org, w: o.w, c: p.balC, av: null, p: 0, np: 0, at: a.balanceDate || Math.floor(Date.now() / 1000), got: Math.floor(Date.now() / 1000), file: 1 };
+      S.bankAcc = (S.bankAcc || []).filter(function (x) { return x.id !== id; }).concat([snap]);
+    }
+    return r;
+  }
   document.addEventListener("visibilitychange", function () { if (document.visibilityState === "visible" && loaded) bankSync(false); });
+  (function () { var f = $("bankFile"); if (f) f.addEventListener("change", function () { bankFileRead(f.files && f.files[0]); }); })();
   (function () { var f = $("ppCsvFile"); if (f) f.addEventListener("change", function () { ppCsvFile(f.files && f.files[0]); }); })();
   /* ---------- dates ---------- */
   function dim(m) { return new Date(+m.slice(0, 4), +m.slice(5, 7), 0).getDate(); }
@@ -2263,6 +2508,49 @@ details.det[open] > summary { margin-bottom: 8px; }
     if (end) { r.end = end; r.monthsToEnd = (+end.slice(0, 4) - +t0.slice(0, 4)) * 12 + (+end.slice(5, 7) - +t0.slice(5, 7)); }
     return r;
   }
+  /* The loan as the Car tab shows it. Linked to a bank loan account: the balance (and its date) is the bank's, the payment
+     and due day fall back to the last payment the bank shows, the lender to the bank's name. Your typed fields fill the rest. */
+  function loanLast(L) {
+    var acc = L && L.link ? loanAcc(L.link) : null, best = null;
+    function take(d, c, src) { if (!best || d > best.d) best = { d: d, c: c, src: src }; }
+    if (acc) (acc.pays || []).forEach(function (p) { take(p.d, p.c, "loan"); });
+    S.tx.forEach(function (t) { if (t.bank && t.bank.loan && toC(t.amt) > 0 && (!L.link || !t.bank.lacc || t.bank.lacc === L.link || t.bank.lacc === "?")) take(t.d, toC(t.amt), "checking"); });
+    loanCharges(L).forEach(function (t) { take(t.d, toC(t.amt), "checking"); });
+    return best;
+  }
+  function loanEff(L) {
+    var e = cleanLoan(L), acc = L.link ? loanAcc(L.link) : null, last = loanLast(L);
+    e.acc = acc; e.last = last;
+    if (acc) { e.bal = fromC(acc.c); e.at = isoDay(acc.at); if (!e.lender) e.lender = cleanOrg(acc.org) || cleanAcct(acc.n); }
+    if (!(toC(e.pay) > 0) && last) e.pay = fromC(last.c);
+    return e;
+  }
+  /* bank accounts that could be the car loan: loans first, then cards/credit lines (never checking or savings) */
+  function loanCandidates() {
+    var out = [], seen = {};
+    (S.bankLoans || []).forEach(function (x) { seen[x.id] = 1; out.push({ id: x.id, n: x.n, org: x.org, c: x.c, at: x.at, loan: 1 }); });
+    ((BANK.st && BANK.st.accounts) || []).forEach(function (a) {
+      if (seen[a.id] || isPayPalAcc(a) || !isCredit(a)) return;
+      seen[a.id] = 1; out.push({ id: a.id, n: a.name, org: a.org, c: Math.abs(amtC(a.balance) || 0), at: +a.balanceDate || 0, loan: isLoanAcc(a) ? 1 : 0 });
+    });
+    return out.sort(function (a, b) { return b.loan - a.loan; });
+  }
+  /* link the Car tab's loan to a bank account (making the loan from the bank's numbers if you hadn't added one) */
+  function linkLoan(id) {
+    var car = carState(), L = car.loan ? cleanLoan(car.loan) : cleanLoan({ lender: "", pay: 0, day: 1, apr: 0, bal: 0, at: today() });
+    L.link = id;
+    var acc = loanAcc(id), cand = loanCandidates().filter(function (x) { return x.id === id; })[0];
+    if (!acc && cand) { S.bankLoans = (S.bankLoans || []).concat([{ id: cand.id, n: String(cand.n || "").slice(0, 60), org: String(cand.org || "").slice(0, 40), c: cand.c, at: cand.at || Math.floor(Date.now() / 1000), pays: [] }]); acc = loanAcc(id); }
+    var last = loanLast(L);
+    if (!(toC(L.pay) > 0) && last) L.pay = fromC(last.c);
+    if (!car.loan && last) L.day = +last.d.slice(8, 10);
+    if (!L.lender && acc) L.lender = cleanOrg(acc.org).slice(0, 60);
+    if (acc) { L.bal = fromC(acc.c); L.at = isoDay(acc.at); }
+    car.loan = L;
+    /* payments already imported as purchases now point at this loan */
+    S.tx.forEach(function (t) { if (t.bank && t.bank.loan && (!t.bank.lacc || t.bank.lacc === "?")) t.bank.lacc = id; });
+    return L;
+  }
   /* payments to the lender that came in from the bank (by the lender's name or statement name, near the payment amount) */
   function loanCharges(L) {
     if (!L || !L.lender) return [];
@@ -2290,7 +2578,8 @@ details.det[open] > summary { margin-bottom: 8px; }
   /* What the car costs a month, each line with where its number comes from (nothing is made up) */
   function costToOwn() {
     var rows = [], car = carState(), items = REC || recurItems();
-    if (car.loan && toC(car.loan.pay) > 0) rows.push({ k: "loan", n: "Car payment", c: toC(car.loan.pay), src: (car.loan.lender ? car.loan.lender + " loan" : "Your car loan"), exact: 1 });
+    var le = car.loan ? loanEff(car.loan) : null;
+    if (le && toC(le.pay) > 0 && loanInfo(le).left !== 0) rows.push({ k: "loan", n: "Car payment", c: toC(le.pay), src: (le.lender ? le.lender + " loan" : "Your car loan") + (le.acc ? ", from your bank" : ""), exact: 1 });
     var ins = items.filter(function (it) { return (isLive(it) || it.st === "cancel") && subCatKey(it) === "insurance"; }), insC = 0, insYr = false;
     ins.forEach(function (it) { if (it.cad.k === "monthly") insC += it.priceC; else { insC += Math.round(it.perYearC / 12); insYr = true; } });
     if (ins.length) rows.push({ k: "ins", n: "Insurance", c: insC, src: "From Subscriptions: " + ins.map(function (it) { return it.n; }).join(", ") + (insYr ? " (yearly price spread over 12 months)" : ""), exact: !insYr });
@@ -2454,7 +2743,7 @@ details.det[open] > summary { margin-bottom: 8px; }
           if (a.av !== null && a.av !== undefined) { hasAv = true; av += a.av; } else av += a.c + (a.p || 0);
           at = at ? Math.min(at, a.at || 0) : (a.at || 0);
         });
-        out.push({ w: w, role: wl[1], name: accs.length === 1 ? acctName(accs[0]) : (accs[0].org ? accs[0].org + " " : "") + wl[1], c: c, bank: true, at: at, p: p, np: np, av: (np || hasAv) ? av : null, avReal: hasAv, n: accs.length });
+        out.push({ w: w, role: wl[1], name: accs.length === 1 ? acctName(accs[0]) : accs.every(function (a) { return a.org === accs[0].org; }) ? (accs[0].org ? cleanOrg(accs[0].org) + " " : "") + wl[1] : wl[1] + " at " + accs.length + " accounts", c: c, bank: true, at: at, p: p, np: np, av: (np || hasAv) ? av : null, avReal: hasAv, n: accs.length });
       } else {
         out.push({ w: w, role: wl[1], name: w === "savings" ? "Car savings" : wl[1], c: balC(w), bank: false });
       }
@@ -2709,20 +2998,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     }
     $("heroStats").innerHTML = h;
     $("heroTarget").innerHTML = tg; $("heroTarget").hidden = !tg;
-    $("heroSrc").textContent = g.sv.bank ? g.sv.name + ", bank balance as of " + whenLbl(g.sv.at) : "Savings balance from your entries";
   }
   function introMotion() {}
-  function renderWallets() {
-    var v = walletView(), tot = 0, rows = [];
-    v.forEach(function (x) {
-      tot += x.c;
-      if (x.w === "savings") return;
-      var sub = x.bank ? (x.av !== null ? (x.avReal ? "Available " : "After pending ") + fmtC(x.av) : "Bank balance") : (x.w === "cash" ? "Counted by you, tap to set" : "From your entries, tap to set");
-      var tag = x.bank ? "div" : "button", attrs = x.bank ? "" : ' type="button" data-act="setbal" data-w="' + x.w + '"';
-      rows.push("<" + tag + ' class="lr"' + attrs + "><span>" + esc(x.name) + "<small>" + esc(sub) + '</small></span><b class="n' + (x.c < 0 ? " red" : "") + '">' + fmtC(x.c) + "</b></" + tag + ">");
-    });
-    $("gWallets").innerHTML = '<div class="ch"><h2>Accounts</h2></div><div class="ledger">' + rows.join("") + '<div class="lr tot"><span>Total with car savings</span><b class="n">' + fmtC(tot) + "</b></div></div>";
-  }
   function budgetMeter(spentC, budC, m, brief) {
     var over = budC > 0 && spentC > budC, pc = budC > 0 ? Math.min(100, Math.max(0, spentC / budC * 100)) : 0, warn = budC > 0 && !over && spentC * 100 >= budC * 85;
     var left = budC - spentC, al = allowance(m);
@@ -2730,12 +3007,6 @@ details.det[open] > summary { margin-bottom: 8px; }
       '<span class="bar' + (over ? " over" : warn ? " warn" : "") + '" role="img" aria-label="' + usedPct(spentC, budC) + ' of the budget used"><i style="width:' + pc.toFixed(2) + '%"></i></span>' +
       '<div class="mf"><span>' + (budC > 0 ? usedPct(spentC, budC) + " used" : "No budgets set") + "</span>" +
       (budC > 0 ? (over ? '<span class="over">' + kico("alert") + fmtC(-left) + " over</span>" : '<span class="' + (warn ? "warn" : "") + '">' + (warn ? kico("alert") : "") + (brief ? (warn ? "Close to the limit" : "") : fmtC(left) + " left" + (al && al.perDayC > 0 ? ", " + fmtC(al.perDayC) + " a day" : "")) + "</span>") : "<span></span>") + "</div>";
-  }
-  function renderGarageMonth() {
-    var cm = monthOf(today()), f = monthFlow(cm), tb = totalBudgetC();
-    $("gMonth").innerHTML = '<div class="ch"><h2>This month</h2>' + chevLink("Money", 'data-act="gomoney"') + "</div>" + flowLedger(f) +
-      '<div class="meter" style="margin-top:12px;border-top:1px solid var(--line);padding-top:14px">' + budgetMeter(f.spentC, tb, cm) + "</div>" +
-      (f.saveC ? '<p class="note" style="margin-top:2px">Moved to car savings this month: <b class="n">' + fmtC(f.saveC, "+") + "</b></p>" : "");
   }
   /* money in, money out and net for a month: the same rows on Garage and Money */
   function flowLedger(f, detail) {
@@ -2748,7 +3019,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     var items = REC || recurItems(), out = [], t0 = today();
     items.forEach(function (it) { if ((isLive(it) || it.st === "cancel") && it.next) out.push({ it: it, d: it.next, late: it.late, n: it.n, c: it.priceC, varies: it.varies }); });
     var L = carState().loan;
-    if (L && toC(L.pay) > 0) { var li = loanInfo(L); if (li.left !== 0) out.push({ loan: 1, d: li.next, n: (L.lender ? L.lender : "Car") + " payment", c: toC(L.pay) }); }
+    if (L) { var le = loanEff(L), li = loanInfo(le); if (toC(le.pay) > 0 && li.left !== 0) out.push({ loan: 1, d: li.next, n: (le.lender ? le.lender : "Car") + " payment", c: toC(le.pay) }); }
     out.sort(function (a, b) { return (a.late ? 0 : 1) - (b.late ? 0 : 1) || (a.d < b.d ? -1 : a.d > b.d ? 1 : 0) || a.n.localeCompare(b.n); });
     return n ? out.slice(0, n) : out;
   }
@@ -2766,46 +3037,639 @@ details.det[open] > summary { margin-bottom: 8px; }
       '<span class="mid"><span class="t">' + esc(u.n) + '</span><span class="s' + (soon ? " red" : u.late ? " amber" : "") + '"' + (soon ? ' style="font-weight:700"' : "") + ">" + esc(whenWord(u.d, u.late)) + "</span>" + (chips ? '<span class="chips">' + chips + "</span>" : "") + "</span>" +
       '<span class="amt n">' + (u.varies ? "Varies" : fmtC(u.c)) + "</span></button>";
   }
-  function renderNextUp() {
-    var list = upcomingList(3), all = upcomingList(0).length;
-    $("gNext").innerHTML = '<div class="ch"><h2>Next up</h2>' + (list.length ? chevLink("Subscriptions", 'data-tab="subs"') : "") + "</div>" +
-      (list.length ? '<div class="list">' + list.map(nextRow).join("") + "</div>" + (all > 3 ? moreBtn("All " + all + " upcoming charges", 'data-tab="subs"') : "")
-        : emptyState("cal", "Nothing coming up", "Add your subscriptions and bills and the next three charges show here.", '<button class="btn" type="button" data-tab="subs">Add subscriptions</button>'));
-  }
   function renderGarageNudges() {
     var n = uncList().length, items = REC || recurItems(), al = recurAlerts(items).concat(trialAlerts(items)), red = al.some(function (a) { return a.red; }), h = "";
     if (al.length) h += '<button class="nudge ' + (red ? "bad" : "warn") + '" type="button" data-tab="subs"><span class="ic ' + (red ? "bad" : "warn") + '">' + kico("alert") + '</span><span class="tx"><b>' + al.length + " subscription alert" + (al.length === 1 ? "" : "s") + "</b>, " + esc(stripTags(al[0].h)) + "</span>" + CHEV + "</button>";
     if (n) h += '<button class="nudge warn" type="button" data-act="gounc"><span class="ic warn">' + kico("tag") + '</span><span class="tx"><b>' + n + " purchase" + (n === 1 ? "" : "s") + "</b> need" + (n === 1 ? "s" : "") + " a category</span>" + CHEV + "</button>";
     var el = $("gNudge"); el.innerHTML = h; el.hidden = !h;
   }
-  function stripTags(s) { var d = document.createElement("div"); d.innerHTML = s; return d.textContent || ""; }
-  function renderGarage() { renderHero(); renderGarageNudges(); renderWallets(); renderGarageMonth(); renderNextUp(); }
+  /* ---------- "Where it went": a small hand-written 3D ring on a 2D canvas (no libraries, no filters) ----------
+     Each spending category is a slice of an extruded ring: its angle is its share of the month's money out and its
+     height grows with it too. Drag sideways to turn it; tap a slice (or its legend row) to open that category.
+     With Reduce Motion (or no canvas) it draws the same ring flat, from straight above, and never animates. */
+  var PAL = ["#338ced", "#e76624", "#00a888", "#d28e05", "#e24d8b", "#0aac23", "#9887ef", "#eb6263"], PAL_OTHER = "#8e949c";
+  var R3 = { yaw: -0.5, sig: "", grow: 1 };
+  function hexRgb(h) { var n = parseInt(h.slice(1), 16); return [n >> 16 & 255, n >> 8 & 255, n & 255]; }
+  function shade(rgb, k, lift) { return "rgb(" + rgb.map(function (v) { return Math.max(0, Math.min(255, Math.round(v * k + (lift || 0) * (255 - v)))); }).join(",") + ")"; }
+  /* the month's money out by category: purchases minus refunds per category, plus money paid out; refund-only categories listed apart */
+  function whereData(m) {
+    var f = monthFlow(m), per = catSpendC(m), pos = [], neg = [], names = catNames();
+    Object.keys(per).forEach(function (c) { if (per[c] > 0) pos.push({ n: c, c: per[c] }); else if (per[c] < 0) neg.push({ n: c, c: per[c] }); });
+    if (f.paidC > 0) pos.push({ n: "Paid out", c: f.paidC, k: "@out" });
+    pos.sort(function (a, b) { return b.c - a.c || a.n.localeCompare(b.n); });
+    var posC = 0; pos.forEach(function (x) { posC += x.c; });
+    /* color follows the category (its place in your category list), never its rank this month */
+    var used = {};
+    pos.forEach(function (x, i) {
+      if (i >= 7 && pos.length > 8) return;
+      var j = x.k === "@out" ? 7 : names.indexOf(x.n), slot = (j < 0 ? 0 : j) % 8, g = 0;
+      while (used[slot] && g++ < 8) slot = (slot + 1) % 8;
+      used[slot] = 1; x.col = PAL[slot];
+    });
+    pos.forEach(function (x) { x.pct = posC > 0 ? Math.round(x.c * 1000 / posC) / 10 : 0; });
+    var slices = pos.length > 8 ? pos.slice(0, 7).concat([{ n: "Other", c: pos.slice(7).reduce(function (s, x) { return s + x.c; }, 0), other: pos.slice(7), col: PAL_OTHER }]) : pos;
+    slices.forEach(function (x) { if (!x.col) x.col = PAL_OTHER; x.share = posC > 0 ? x.c / posC : 0; });
+    return { f: f, outC: f.outC, posC: posC, neg: neg, cats: pos, slices: slices };
+  }
+  function r3Flat() { return REDUCE || !R3.ok; }
+  R3.ok = (function () { try { var c = document.createElement("canvas"); return !!(c.getContext && c.getContext("2d")); } catch (e) { return false; } })();
+  function r3Mount(host, data, key) {
+    var cv = host.querySelector("canvas"); if (!cv || !R3.ok) return;
+    R3.cv = cv; R3.host = host; R3.data = data;
+    var sig = key + "|" + data.slices.map(function (x) { return x.n + x.c; }).join(",");
+    if (sig !== R3.sig) { R3.sig = sig; R3.sel = -1; R3.grow = (TESTING || r3Flat()) ? 1 : 0; }
+    r3Size(); r3Draw();
+    if (R3.grow < 1) r3Anim();
+    if (!cv.dataset.bound) { cv.dataset.bound = "1"; r3Bind(cv); }
+  }
+  function r3Size() {
+    var cv = R3.cv; if (!cv) return;
+    var w = cv.clientWidth || 300, h = cv.clientHeight || 220, d = Math.min(3, Math.max(2, window.devicePixelRatio || 1));
+    if (cv.width !== Math.round(w * d) || cv.height !== Math.round(h * d)) { cv.width = Math.round(w * d); cv.height = Math.round(h * d); }
+    R3.w = w; R3.h = h; R3.d = d;
+  }
+  function r3Anim() {
+    if (R3.raf) return;
+    var t0 = 0, y0 = R3.yaw;
+    function step(now) {
+      if (!t0) t0 = now;
+      var k = Math.min(1, (now - t0) / 750), e = 1 - Math.pow(1 - k, 3);
+      R3.grow = e; R3.yaw = y0 + (1 - e) * 0.6;
+      if (!R3.cv || !R3.cv.isConnected) { R3.raf = 0; R3.grow = 1; return; }
+      r3Draw();
+      R3.raf = k < 1 ? requestAnimationFrame(step) : 0;
+    }
+    R3.raf = requestAnimationFrame(step);
+  }
+  /* geometry: faces as screen polygons with a depth, drawn far to near (painter's order), each remembering its slice */
+  function r3Faces() {
+    var flat = r3Flat(), el = flat ? Math.PI / 2 : 0.86, se = Math.sin(el), ce = Math.cos(el), W = R3.w, H = R3.h;
+    var sl = R3.data.slices, RO = 1, RI = 0.56, HM = flat ? 0 : 0.42, gap = sl.length > 1 ? 0.014 : 0;
+    var s = Math.min(W * 0.44, (H * 0.9) / (2 * se + HM * ce + 0.12)), cx = W / 2, cy = H / 2 + HM * ce * s * 0.42;
+    var cy0 = Math.cos(R3.yaw), sy0 = Math.sin(R3.yaw), faces = [], maxShare = 0;
+    sl.forEach(function (x) { if (x.share > maxShare) maxShare = x.share; });
+    function P(x, y, z) { var xr = x * cy0 - y * sy0, yr = x * sy0 + y * cy0; return [cx + xr * s, cy + yr * se * s - z * ce * s, yr * ce + z * se]; }
+    function face(pts, si, col, kind) { var d = 0; pts.forEach(function (p) { d += p[2]; }); faces.push({ p: pts, d: d / pts.length + (kind === "top" ? 0.0005 : 0), si: si, col: col, kind: kind }); }
+    var a = -Math.PI / 2;
+    sl.forEach(function (x, si) {
+      var span = x.share * Math.PI * 2, a0 = a + gap, a1 = a + span - gap; a += span;
+      if (a1 <= a0) return;
+      var h = HM * (0.28 + 0.72 * (maxShare > 0 ? x.share / maxShare : 0)) * R3.grow, ex = si === R3.sel && !flat ? 0.07 : 0, mid = (a0 + a1) / 2, ox = Math.cos(mid) * ex, oy = Math.sin(mid) * ex;
+      if (flat) h = 0; else h = Math.max(h, 0.02);
+      var n = Math.max(2, Math.ceil((a1 - a0) / 0.09)), rgb = hexRgb(x.col), i;
+      for (i = 0; i < n; i++) {
+        var b0 = a0 + (a1 - a0) * i / n, b1 = a0 + (a1 - a0) * (i + 1) / n;
+        var c0 = Math.cos(b0), s0 = Math.sin(b0), c1 = Math.cos(b1), s1 = Math.sin(b1);
+        face([P(ox + c0 * RO, oy + s0 * RO, h), P(ox + c1 * RO, oy + s1 * RO, h), P(ox + c1 * RI, oy + s1 * RI, h), P(ox + c0 * RI, oy + s0 * RI, h)], si, shade(rgb, 1, si === R3.sel ? 0.22 : 0.1), "top");
+        if (h > 0) {
+          var bm = (b0 + b1) / 2, ny = Math.cos(bm) * sy0 + Math.sin(bm) * cy0; /* the wall's normal, toward the viewer when > 0 */
+          if (ny > 0) face([P(ox + c0 * RO, oy + s0 * RO, 0), P(ox + c1 * RO, oy + s1 * RO, 0), P(ox + c1 * RO, oy + s1 * RO, h), P(ox + c0 * RO, oy + s0 * RO, h)], si, shade(rgb, 0.5 + 0.32 * ny), "out");
+          else face([P(ox + c0 * RI, oy + s0 * RI, 0), P(ox + c1 * RI, oy + s1 * RI, 0), P(ox + c1 * RI, oy + s1 * RI, h), P(ox + c0 * RI, oy + s0 * RI, h)], si, shade(rgb, 0.42 + 0.2 * -ny), "in");
+        }
+      }
+      if (h > 0) [a0, a1].forEach(function (b, k) {
+        var tn = k ? 1 : -1, ny = (-Math.sin(b) * sy0 + Math.cos(b) * cy0) * tn;
+        if (ny <= 0) return;
+        var c = Math.cos(b), sn = Math.sin(b);
+        face([P(ox + c * RI, oy + sn * RI, 0), P(ox + c * RO, oy + sn * RO, 0), P(ox + c * RO, oy + sn * RO, h), P(ox + c * RI, oy + sn * RI, h)], si, shade(rgb, 0.6 + 0.2 * ny), "cap");
+      });
+    });
+    faces.sort(function (p, q) { return p.d - q.d; });
+    R3.cy = cy - HM * ce * s * 0.35;
+    return faces;
+  }
+  function r3Draw() {
+    var cv = R3.cv; if (!cv || !R3.data) return;
+    var x = cv.getContext("2d"); x.setTransform(R3.d, 0, 0, R3.d, 0, 0); x.clearRect(0, 0, R3.w, R3.h);
+    if (!R3.data.slices.length) return;
+    var faces = r3Faces(); R3.faces = faces;
+    var ctr = R3.host && R3.host.querySelector(".ctr"); if (ctr) ctr.style.top = R3.cy.toFixed(1) + "px";
+    faces.forEach(function (f) {
+      x.beginPath(); x.moveTo(f.p[0][0], f.p[0][1]); for (var i = 1; i < f.p.length; i++) x.lineTo(f.p[i][0], f.p[i][1]); x.closePath();
+      x.fillStyle = f.col; x.fill(); x.strokeStyle = f.col; x.lineWidth = 0.7; x.stroke();
+    });
+  }
+  function r3Hit(px, py) {
+    var fs = R3.faces || [], i, j, k;
+    for (i = fs.length - 1; i >= 0; i--) {
+      var p = fs[i].p, inside = false;
+      for (j = 0, k = p.length - 1; j < p.length; k = j++) if ((p[j][1] > py) !== (p[k][1] > py) && px < (p[k][0] - p[j][0]) * (py - p[j][1]) / (p[k][1] - p[j][1]) + p[j][0]) inside = !inside;
+      if (inside) return fs[i].si;
+    }
+    return -1;
+  }
+  function r3Bind(cv) {
+    var dn = null, vel = 0, last = 0;
+    cv.addEventListener("pointerdown", function (e) { dn = { x: e.clientX, y: e.clientY, yaw: R3.yaw, moved: false, id: e.pointerId }; vel = 0; last = e.clientX; try { cv.setPointerCapture(e.pointerId); } catch (x) {} });
+    cv.addEventListener("pointermove", function (e) {
+      if (!dn || e.pointerId !== dn.id || r3Flat()) return;
+      var dx = e.clientX - dn.x;
+      if (!dn.moved && Math.abs(dx) > 6) dn.moved = true;
+      if (dn.moved) { R3.yaw = dn.yaw - dx * 0.012; vel = -(e.clientX - last) * 0.012; last = e.clientX; r3Draw(); }
+    });
+    function up(e) {
+      if (!dn || e.pointerId !== dn.id) return;
+      var moved = dn.moved; dn = null;
+      if (!moved) { var r = cv.getBoundingClientRect(), si = r3Hit(e.clientX - r.left, e.clientY - r.top); if (si >= 0) r3Pick(si, true); return; }
+      if (REDUCE) return;
+      (function spin() { if (Math.abs(vel) < 0.002 || !cv.isConnected) return; R3.yaw += vel; vel *= 0.92; r3Draw(); requestAnimationFrame(spin); })();
+    }
+    cv.addEventListener("pointerup", up); cv.addEventListener("pointercancel", function () { dn = null; });
+  }
+  /* a slice (or legend row) picked: lift it, then open its category */
+  function r3Pick(si, open) {
+    var x = R3.data && R3.data.slices[si]; if (!x) return;
+    R3.sel = si; r3Draw(); haptic("select");
+    Array.prototype.forEach.call(document.querySelectorAll("#mWhere .leg"), function (b) { b.classList.toggle("on", b.dataset.c === x.n); });
+    if (open) openCat(x.other ? "@other" : x.k || x.n, mon);
+  }
+  window.addEventListener("resize", function () { if (R3.cv && R3.cv.isConnected) { r3Size(); r3Draw(); } });
+  /* ---------- shared bits for the summary-first layout ---------- */
+  function navRow(attrs, ico, title, sub, val, valSub, cls) {
+    return '<button class="nr' + (cls ? " " + cls : "") + '" type="button" ' + attrs + ">" + (ico ? '<span class="ic' + (cls && /warn|bad/.test(cls) ? " " + cls : "") + '">' + kico(ico) + "</span>" : "") +
+      '<span class="mid"><span class="t">' + title + "</span>" + (sub ? '<span class="s wrap">' + sub + "</span>" : "") + "</span>" +
+      (val !== undefined && val !== null && val !== "" ? '<span class="v n">' + val + (valSub ? "<small>" + valSub + "</small>" : "") + "</span>" : "") + CHEV + "</button>";
+  }
+  function tileHtml(attrs, ico, label, big, small, extra, cls) {
+    return '<button class="tile' + (cls ? " " + cls : "") + '" type="button" ' + attrs + '><span class="tl2">' + kico(ico) + "<span>" + esc(label) + "</span>" + CHEV + "</span><b class=\"n\">" + big + "</b>" + (extra || "") + "<small>" + small + "</small></button>";
+  }
+  function acctRole(w) { return w === "savings" ? "Car savings" : w === "cash" ? "Cash" : w === "paypal" ? "PayPal" : "Checking"; }
+  /* every account, grouped by bank: synced balances, loans and cards, files you imported, and the wallets you count yourself */
+  function accountGroups() {
+    var groups = {}, order = [], st = (BANK.st && BANK.st.accounts) || [], snap = bankSnap(), seen = {};
+    function g(org) { var k = cleanOrg(org) || "Your bank"; if (!groups[k]) { groups[k] = { org: k, rows: [], tot: 0 }; order.push(k); } return groups[k]; }
+    snap.forEach(function (a) { seen[a.id] = 1; var gr = g(a.org || (isPayPalAcc({ name: a.n, org: a.org }) ? "PayPal" : "")); gr.rows.push({ id: a.id, n: cleanAcct(a.n, a.org), role: acctRole(a.w), c: a.c, at: a.at, p: a.p, av: a.av, file: a.file }); gr.tot += a.c; });
+    (S.bankLoans || []).forEach(function (a) { if (seen[a.id] || (S.bankIgnore || {})[a.id]) return; seen[a.id] = 1; var gr = g(a.org); gr.rows.push({ id: a.id, n: cleanAcct(a.n, a.org), role: "Loan", c: -a.c, at: a.at, loan: 1 }); gr.tot -= a.c; });
+    st.forEach(function (a) {
+      if (seen[a.id] || bankIgnored(a) || !isCredit(a)) return;
+      var bc = amtC(a.balance); if (!isFinite(bc)) return;
+      seen[a.id] = 1; var gr = g(a.org); gr.rows.push({ id: a.id, n: cleanAcct(a.name, a.org), role: isLoanAcc(a) ? "Loan" : "Card", c: bc > 0 ? -bc : bc, at: +a.balanceDate || 0, card: 1 }); gr.tot += bc > 0 ? -bc : bc;
+    });
+    var mine = walletView().filter(function (v) { return !v.bank; });
+    return { groups: order.map(function (k) { return groups[k]; }), mine: mine };
+  }
 
-  /* ---------- Money: activity and budgets for one month ---------- */
-  var mseg = "act", mq = "", mfilter = "";
+  /* ---------- Garage ---------- */
+  function renderTiles() {
+    var v = walletView(), tot = 0, banks = accountGroups().groups.length;
+    v.forEach(function (x) { tot += x.c; });
+    var cm = monthOf(today()), f = monthFlow(cm), tb = totalBudgetC(), over = tb > 0 && f.spentC > tb, warn = tb > 0 && !over && f.spentC * 100 >= tb * 85;
+    var pc = tb > 0 ? Math.min(100, Math.max(0, f.spentC / tb * 100)) : 0;
+    var up = upcomingList(1)[0], t = "";
+    var synced = BANK.st && BANK.st.connected && BANK.st.lastSync;
+    t += tileHtml('data-act="accsheet"', "bank", "Accounts", fmtC(tot), banks ? banks + " bank" + (banks === 1 ? "" : "s") + (synced ? ", synced " + esc(whenLbl(BANK.st.lastSync)) : "") : "From your entries");
+    t += tileHtml('data-act="gomoney"', "coin", "Spent in " + monShort(cm), fmtC(f.spentC), tb > 0 ? (over ? fmtC(f.spentC - tb) + " over budget" : fmtC(tb - f.spentC) + " left of " + fmtC(tb)) : "No budget set",
+      tb > 0 ? '<span class="bar' + (over ? " over" : warn ? " warn" : "") + '" aria-hidden="true"><i style="width:' + pc.toFixed(2) + '%"></i></span>' : "", over ? "bad" : warn ? "warn" : "");
+    if (up) {
+      var dd = daysBetween(today(), up.d), soon = !up.late && dd >= 0 && dd <= 1;
+      t += tileHtml('data-act="upsheet"', "cal", "Next up", up.varies ? "Varies" : fmtC(up.c), esc(up.n) + ", " + esc(whenWord(up.d, up.late)), "", soon || up.late ? "warn" : "");
+    } else t += tileHtml('data-act="upsheet"', "cal", "Next up", "Nothing coming up", "Add subscriptions and bills");
+    var L = carState().loan;
+    if (L) {
+      var e = loanEff(L), li = loanInfo(e);
+      t += tileHtml('data-tab="car"', "loan", "Car loan", li.left === 0 ? "Paid off" : fmtC(li.balC), li.left === 0 ? "Nothing left to pay" : "Next " + fmtC(li.payC) + " " + esc(dayShort(li.next)));
+    } else {
+      var co = costToOwn();
+      t += tileHtml('data-tab="car"', "car", "Car costs", co.n ? fmtC(co.totC) : "Not yet", co.n ? "a month to own and run" : "Gas, insurance, repairs");
+    }
+    $("gTiles").innerHTML = t;
+  }
+  function renderGarage() { renderHero(); renderGarageNudges(); renderTiles(); }
+  function openAccounts() {
+    var ag = accountGroups(), h = "";
+    ag.groups.forEach(function (gr) {
+      h += '<p class="sec">' + esc(gr.org) + '</p><div class="list">' + gr.rows.map(function (r) {
+        var sub = r.role + (r.file ? ", from a file" : "") + (r.at ? ", as of " + (r.file ? dayShort(isoDay(r.at)) : whenLbl(r.at)) : "") + (r.av !== null && r.av !== undefined && r.av !== r.c ? ", " + fmtC(r.av) + " after pending" : "");
+        return navRow('data-act="acct" data-id="' + esc(r.id) + '"', r.loan ? "loan" : r.card ? "wallet" : r.role === "Car savings" ? "car" : "bank", esc(r.n), esc(sub), '<span class="' + (r.c < 0 ? "red" : "") + '">' + fmtC(r.c) + "</span>");
+      }).join("") + "</div>";
+    });
+    if (ag.mine.length) h += '<p class="sec">Counted by you</p><div class="list">' + ag.mine.map(function (x) {
+      return navRow('data-act="setbal" data-w="' + x.w + '"', x.w === "cash" ? "cash" : "wallet", esc(x.w === "savings" ? "Car savings" : x.role), x.w === "cash" ? "Tap to count your cash" : "From your entries, tap to set", fmtC(x.c));
+    }).join("") + "</div>";
+    var cash = 0, owed = 0; walletView().forEach(function (x) { cash += x.c; });
+    ag.groups.forEach(function (gr) { gr.rows.forEach(function (r) { if (r.loan || r.card) owed -= r.c; }); });
+    openSheet(sheetHead("Accounts") + '<div class="shero"><b class="n">' + fmtC(cash) + "</b><span>Cash and savings" + (owed > 0 ? ', <span class="n">' + fmtC(owed) + "</span> owed on loans and cards" : "") + "</span></div>" + h +
+      '<div class="btns" style="margin-top:6px"><button class="btn ghost" type="button" data-act="banksheet">' + (BANK.st && BANK.st.connected ? "Banks and sync" : "Connect your banks") + "</button></div>", "Accounts", openAccounts);
+  }
+  /* one account: what the bank says, and how Ride Quest counts it */
+  function openAcct(id) {
+    var st = ((BANK.st && BANK.st.accounts) || []).filter(function (a) { return a.id === id; })[0], sn = (S.bankAcc || []).filter(function (a) { return a.id === id; })[0], ln = loanAcc(id), fa = (S.fileAcc || {})[id];
+    var a = st || (sn ? { id: id, name: sn.n, org: sn.org, balance: fromC(sn.c), balanceDate: sn.at } : ln ? { id: id, name: ln.n, org: ln.org, balance: -fromC(ln.c), balanceDate: ln.at } : fa ? { id: id, name: fa.name, org: fa.org, kind: fa.kind } : null);
+    if (!a) return;
+    var credit = isCredit(a), loan = isLoanAcc(a), w = walletFor(a), off = bankIgnored(a), n = 0;
+    S.tx.concat(S.moves).forEach(function (o) { if (o.bank && o.bank.acc === id) n++; });
+    var L = carState().loan, linked = L && L.link === id;
+    var h = sheetHead(esc(cleanAcct(a.name, a.org))) + '<div class="shero"><b class="n">' + (sn ? fmtC(sn.c) : ln ? fmtC(ln.c) : isFinite(amtC(a.balance)) ? fmtC(Math.abs(amtC(a.balance))) : "") + "</b><span>" +
+      esc(cleanOrg(a.org) + (loan ? ", owed" : credit ? ", card balance" : "")) + (a.balanceDate ? ", as of " + esc(whenLbl(+a.balanceDate)) : "") + "</span></div>" +
+      '<div class="kv"><div><span>Counts as</span><span>' + (loan ? "Loan: payments into it are your car payment" : credit ? "Card: its purchases are spending" : acctRole(w)) + "</span></div><div><span>Entries from it</span><span>" + n + "</span></div>" + (fa ? "<div><span>Source</span><span>Imported " + esc(fa.fmt || "file") + "</span></div>" : "") + "</div>";
+    if (!credit && !loan) h += '<label class="f"><span>Show its balance as</span><select class="sel" data-acctw="' + esc(id) + '">' + opts([["checking", "Checking (spending money)"], ["savings", "Car savings"], ["cash", "Cash"]], w === "paypal" ? "checking" : w) + "</select><small>Car savings is what the Garage goal counts. New entries from this account follow it.</small></label>";
+    if (loan || credit) h += '<div class="btns"><button class="btn ghost" type="button" data-act="' + (linked ? "loansheet" : "loanlink") + '" data-id="' + esc(id) + '">' + (linked ? "Linked to your car loan" : "Use as my car loan") + "</button></div>";
+    if (st) h += '<div class="btns"><button class="btn ' + (off ? "" : "danger") + '" type="button" data-act="banktoggle" data-id="' + esc(id) + '">' + (off ? "Sync this account again" : "Stop syncing this account") + "</button></div>";
+    openSheet(h, "Account " + id, function () { openAcct(id); });
+  }
+  function openUpcoming() {
+    var list = upcomingList(0);
+    openSheet(sheetHead("Next up") + (list.length ? '<div class="list">' + list.map(nextRow).join("") + "</div>" :
+      emptyState("cal", "Nothing coming up", "Add your subscriptions and bills and every upcoming charge shows here.", '<button class="btn" type="button" data-tab="subs">Add subscriptions</button>')), "Next up", openUpcoming);
+  }
+  /* the goal in a sheet: where the number comes from, the pace, and the target */
+  function openGoal() {
+    var g = goalInfo(), pc = paceInfo(), lines = [];
+    if (g.gC > 0 && g.left === 0) lines.push("Goal reached" + (g.have > g.gC ? ", with " + fmtC(g.have - g.gC) + " to spare." : "."));
+    else {
+      if (pc.planDate) lines.push("At your plan of <b class=\"n\">" + fmtC(pc.plan) + "</b> a month: <b>" + esc(monYear(pc.planDate)) + "</b> (" + pc.planMonths + " month" + (pc.planMonths === 1 ? "" : "s") + ").");
+      if (pc.avgDate) lines.push("At your recent pace, <b class=\"n\">" + fmtC(pc.avg.c) + "</b> a month (" + esc(monthsLbl(pc.avg.months)) + "): <b>" + esc(monYear(pc.avgDate)) + "</b>.");
+      else if (pc.avg && pc.avg.c <= 0) lines.push("Your car savings went down or stayed flat lately (" + esc(monthsLbl(pc.avg.months)) + ").");
+      if (g.perMonth) lines.push("To reach it by <b>" + esc(monName(g.by)) + "</b>: <b class=\"n\">" + fmtC(g.perMonth) + "</b> a month or <b class=\"n\">" + fmtC(g.perWeek) + "</b> a week.");
+      else if (g.past) lines.push('<span class="amber">The target month (' + esc(monName(g.by)) + ") has passed. Pick a new one.</span>");
+      if (!lines.length) lines.push("Add a monthly plan or a target month to see when you'll get there.");
+    }
+    openSheet(sheetHead(esc(S.goal.name || "Dream car")) + '<div class="shero"><b class="n">' + fmtC(g.have) + '</b><span>saved of <span class="n">' + fmtC(g.gC) + "</span>, " + pctTxt(g.have, g.gC) + "</span></div>" +
+      '<div class="note" style="display:flex;flex-direction:column;gap:8px">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>" +
+      '<div class="kv"><div><span>Saved comes from</span><span>' + esc(g.sv.bank ? g.sv.name + ", bank balance as of " + whenLbl(g.sv.at) : "Your entries in Car savings") + "</span></div><div><span>To go</span><span class=\"n\">" + fmtC(g.left) + "</span></div></div>" +
+      '<div class="btns"><button class="btn" type="button" data-act="qa" data-m="save">Move to car savings</button><button class="btn ghost" type="button" data-act="goaledit">Edit goal</button></div>', "Goal", openGoal);
+  }
+  function openGoalEdit() {
+    var g = goalInfo(), sv = g.sv;
+    openSheet(sheetHead("Edit goal", "Done") + '<div class="form">' +
+      '<label class="f"><span>Car</span><input class="in" type="text" data-set="goal.name" value="' + esc(S.goal.name) + '" autocomplete="off" maxlength="60" placeholder="Dream car"></label>' +
+      '<div class="two"><label class="f"><span>Price</span><input class="in n" type="text" inputmode="decimal" data-set="goal.amount" data-money="1" value="' + moneyIn(toC(S.goal.amount)) + '" placeholder="59,495.00"><small>Tax and fees can be in it.</small></label>' +
+      (sv.bank ? '<div class="f"><span>Saved so far</span><input class="in n" type="text" readonly value="' + esc(fmtC(g.have)) + '" aria-label="Saved so far, from ' + esc(sv.name) + '"><small>From ' + esc(sv.name) + "</small></div>"
+        : '<label class="f"><span>Saved so far</span><input class="in n" type="text" inputmode="decimal" data-bal="savings" value="' + moneyIn(g.have) + '"></label>') + "</div>" +
+      '<div class="two"><label class="f"><span>Reach it by (month)</span><input class="in" type="month" data-set="goal.by" value="' + esc(S.goal.by || "") + '"></label>' +
+      '<label class="f"><span>Monthly plan</span><input class="in n" type="text" inputmode="decimal" data-set="goal.monthly" data-money="1" value="' + (toC(S.goal.monthly || 0) > 0 ? moneyIn(toC(S.goal.monthly)) : "") + '" placeholder="0.00"><small>What you mean to save a month.</small></label></div></div>', "Edit goal");
+  }
+  /* ---------- Money: where it went, the month in three numbers, and rows that open the rest ---------- */
+  var mq = "", mfilter = "", mseg = "act";
   function catNames() {
     var names = S.budgets.map(function (b) { return b.n; });
     S.tx.forEach(function (t) { var c = t.cat || UNCAT; if (names.indexOf(c) < 0) names.push(c); });
     return names;
   }
+  function legRow(x) {
+    return '<button class="leg" type="button" data-act="cat" data-c="' + esc(x.k || x.n) + '" aria-label="' + esc(x.n + ": " + fmtC(x.c) + ", " + x.pct + " percent") + '"><span class="swc" style="background:' + (x.col || PAL_OTHER) + '" aria-hidden="true"></span><span class="t">' + esc(x.n) + '</span><span class="p n">' + x.pct + '%</span><span class="a n">' + fmtC(x.c) + "</span></button>";
+  }
   function renderMoney() {
     var cm = monthOf(today());
     $("monLbl").textContent = monName(mon);
     var nb = document.querySelector('#s-money [data-act="next"]'); if (nb) nb.disabled = mon >= cm;
-    var f = monthFlow(mon);
-    $("mSum").innerHTML = flowLedger(f, true) +
-      (f.saveC ? '<p class="note" style="margin-top:12px;padding-top:12px;border-top:1px solid var(--line)">Moved to car savings: <b class="n">' + fmtC(f.saveC, "+") + "</b>. Transfers between your own accounts aren't money in or out.</p>" : "");
-    Array.prototype.forEach.call(document.querySelectorAll('#s-money [data-act="mseg"]'), function (b) { b.setAttribute("aria-pressed", b.dataset.v === mseg ? "true" : "false"); });
-    $("mAct").hidden = mseg !== "act"; $("mBud").hidden = mseg !== "bud";
-    if (mseg === "act") renderActivity(); else renderBudgets();
+    var wd = whereData(mon), f = wd.f, flat = r3Flat(), h = '<div class="ch"><h2>Where it went</h2><span class="aux">' + (wd.cats.length ? wd.cats.length + " categor" + (wd.cats.length === 1 ? "y" : "ies") : "") + "</span></div>";
+    if (!wd.cats.length) h += emptyState("coin", "Nothing spent in " + monOnly(mon), S.tx.length || S.moves.length ? "Pick another month, or add what you spent." : "Connect your banks in More, or add a purchase yourself.", '<button class="btn" type="button" data-act="qa" data-m="tx">Add a purchase</button>');
+    else {
+      var lbl = "Where your money went in " + monName(mon) + ": " + wd.cats.slice(0, 5).map(function (x) { return x.n + " " + x.pct + "%"; }).join(", ");
+      h += '<div class="w3' + (flat ? " flat" : "") + '" id="w3"><canvas role="img" aria-label="' + esc(lbl) + '"></canvas><div class="ctr"><b class="n">' + fmtC(wd.outC) + "</b><small>money out</small></div></div>" +
+        '<p class="w3hint">' + (flat ? "Tap a slice to see what's in it" : "Drag to turn it, tap a slice to open it") + "</p>";
+      var top = wd.cats.slice(0, 4), rest = wd.cats.slice(4);
+      h += '<div class="list" style="margin-top:8px">' + top.map(legRow).join("") + "</div>";
+      if (rest.length || wd.neg.length) h += '<details class="xr"><summary class="nr" style="min-height:48px"><span class="mid"><span class="t" style="color:var(--red-text)">' + (rest.length ? "All " + wd.cats.length + " categories" : "Refunds") + "</span></span>" + CHEV + '</summary><div class="xb list">' + rest.map(legRow).join("") +
+        wd.neg.map(function (x) { return '<button class="leg neg" type="button" data-act="cat" data-c="' + esc(x.n) + '"><span class="swc" style="background:transparent;border:1px solid var(--line2)" aria-hidden="true"></span><span class="t">' + esc(x.n) + ' <small class="mut2">refunds</small></span><span class="p"></span><span class="a n">' + fmtC(x.c) + "</span></button>"; }).join("") + "</div></details>";
+    }
+    $("mWhere").innerHTML = h;
+    $("mSum").innerHTML = '<button class="kpi3" type="button" data-act="monthsheet" aria-label="' + esc(monName(mon) + ": money in " + fmtC(f.inC) + ", money out " + fmtC(f.outC) + ", net " + fmtC(f.netC)) + '">' +
+      '<span><span>Money in</span><b class="n">' + fmtC(f.inC, "+") + '</b></span><span><span>Money out</span><b class="n">' + fmtC(-f.outC, "+") + '</b></span><span><span>Net</span><b class="n' + (f.netC < 0 ? " red" : "") + '">' + fmtC(f.netC, "+") + "</b></span></button>";
+    var ents = entryList(function (o) { return monthOf(o.d) === mon; }), np = 0, ni = 0;
+    ents.forEach(function (e) { if (e.k === "tx") np++; else if (e.o.from === "outside") ni++; });
+    var tb = totalBudgetC(), sp = sumTxC(monthTx(mon)), left = tb - sp, unc = uncList().length;
+    $("mLinks").innerHTML = navRow('data-act="actsheet"', "tag", "Activity", ents.length ? np + " purchase" + (np === 1 ? "" : "s") + ", " + ni + " deposit" + (ni === 1 ? "" : "s") + (ents.length - np - ni ? ", " + (ents.length - np - ni) + " transfer" + (ents.length - np - ni === 1 ? "" : "s") : "") : "Nothing yet", ents.length || "") +
+      navRow('data-act="budsheet"', "bill", "Budgets", tb > 0 ? fmtC(sp) + " of " + fmtC(tb) : "No limits set yet", tb > 0 ? '<span class="' + (left < 0 ? "red" : "") + '">' + fmtC(Math.abs(left)) + "</span>" : "", tb > 0 ? (left < 0 ? "over" : "left") : "") +
+      (unc ? navRow('data-act="uncsheet"', "tag", unc + " purchase" + (unc === 1 ? "" : "s") + " need" + (unc === 1 ? "s" : "") + " a category", "Pick once, Ride Quest remembers the store", "", "", "warn") : "");
+    if (wd.cats.length) setTimeout(function () { var w3 = $("w3"); if (w3 && !$("s-money").hidden) r3Mount(w3, wd, mon); }, 0);
   }
+  function openMonth() {
+    var f = monthFlow(mon);
+    openSheet(sheetHead(esc(monName(mon))) + flowLedger(f, true) +
+      '<p class="note">' + (f.saveC ? "Moved to car savings: <b class=\"n\">" + fmtC(f.saveC, "+") + "</b>. " : "") + "Transfers between your own accounts, at any of your banks, are neither money in nor out. Refunds lower money out.</p>", "Month");
+  }
+  /* a category's month: total, share, its budget, and every purchase in it */
+  function openCat(c, m) {
+    m = m || mon;
+    var wd = whereData(m), x = wd.cats.filter(function (y) { return (y.k || y.n) === c; })[0], h;
+    if (c === "@other") {
+      var ot = (wd.slices.filter(function (y) { return y.other; })[0] || { other: [], c: 0 });
+      openSheet(sheetHead("Other") + '<div class="shero"><b class="n">' + fmtC(ot.c) + "</b><span>" + ot.other.length + " smaller categories in " + esc(monName(m)) + '</span></div><div class="list">' + ot.other.map(legRow).join("") + "</div>", "Other", function () { openCat(c, m); });
+      return;
+    }
+    var list = entryList(function (o, k) { return monthOf(o.d) === m && (c === "@out" ? k === "mv" && o.to === "outside" && o.from !== "outside" : k === "tx" && (o.cat || UNCAT) === c); });
+    var tot = 0; list.forEach(function (e) { tot -= entryFlowC(e); });
+    var r = catRows(m).filter(function (y) { return y.n === c; })[0];
+    h = sheetHead('<span class="swc" style="display:inline-block;width:12px;height:12px;border-radius:4px;margin-right:8px;background:' + ((x && x.col) || PAL_OTHER) + '" aria-hidden="true"></span>' + esc(c === "@out" ? "Paid out" : c)) +
+      '<div class="shero"><b class="n">' + fmtC(tot) + "</b><span>" + esc(monName(m)) + ", " + list.length + " entr" + (list.length === 1 ? "y" : "ies") + (x ? ", " + x.pct + "% of money out" : "") + "</span></div>" +
+      (r && r.lc > 0 ? '<div class="meter" style="border-top:0;padding-top:0">' + budgetMeter(r.sc, r.lc, m) + "</div>" : "") +
+      (list.length ? '<div class="list">' + list.map(function (e) { return entryRow(e, true); }).join("") + "</div>" : '<p class="note">Nothing here this month.</p>');
+    openSheet(h, "Category " + c, function () { openCat(c, m); });
+  }
+  function openActivity(f) {
+    if (f !== undefined) mfilter = f;
+    openSheet(sheetHead("Activity") + '<p class="note" style="margin-top:-6px">' + esc(monName(mon)) + "</p>" +
+      '<label class="search"><span class="sr">Search activity</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="m16 16 4.5 4.5"/></svg><input type="search" id="mQ" placeholder="Search stores, notes or amounts" autocomplete="off" enterkeyhint="search" value="' + esc(mq) + '"></label>' +
+      '<div class="fchips" id="mChips" role="group" aria-label="Filter"></div><div id="mList"></div>', "Activity", function () { openActivity(); });
+    renderActivity();
+  }
+  function openUnc() {
+    openSheet(sheetHead("Needs a category") + '<div id="uncBox"></div>', "Needs a category", openUnc);
+    renderUncBox();
+  }
+  function openBudgets() {
+    openSheet(sheetHead(esc(monOnly(mon)) + " budget") + '<div id="bSum"></div><div id="bCats"></div><div id="bTrend"></div><div id="bTop"></div>', "Budgets", openBudgets);
+    renderBudgets();
+  }
+  function renderSubs() {
+    var items = REC || recurItems(), tot = recurTotals(items), al = trialAlerts(items).concat(recurAlerts(items));
+    var sb = subBudget(), bl = sb ? toC(sb.l) : 0, pr = bl > 0 ? tot.moC / bl : 0, cls = pr > 1 ? "over" : pr >= 0.85 ? "warn" : "";
+    var next30 = upcomingCharges(items, 30), n30C = 0; next30.forEach(function (o) { n30C += o.it.priceC; });
+    var nTrial = items.filter(function (it) { return it.trial; }).length;
+    /* header: the monthly total against the budget, as a ring; two more numbers */
+    var C = 2 * Math.PI * 42, fill = bl > 0 ? Math.min(1, pr) : 0;
+    var used = bl > 0 ? (tot.moC > bl ? Math.floor(tot.moC * 100 / bl) + "%" : pctTxt(tot.moC, bl)) : "";
+    var ring = '<div class="ring ' + cls + '"' + (bl > 0 ? ' role="img" aria-label="' + esc(used + " of the subscriptions budget") + '"' : ' aria-hidden="true"') + '><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="tr" cx="50" cy="50" r="42"/>' +
+      (fill > 0 ? '<circle class="fl" cx="50" cy="50" r="42" style="stroke-dasharray:' + (C * fill).toFixed(2) + " " + C.toFixed(2) + '"/>' : "") + "</svg><div><span><b class=\"n\">" + (bl > 0 ? used : tot.n) + "</b><small>" + (bl > 0 ? "of budget" : "active") + "</small></span></div></div>";
+    var left = bl - tot.moC;
+    $("sbHead").innerHTML = '<div class="subhead">' + ring + '<div class="subtot"><span class="lab">Each month</span><b class="big n">' + fmtC(tot.moC) + "</b>" +
+      (bl > 0 ? '<button class="lk" type="button" data-act="subbudget" aria-label="Change the subscriptions budget, now ' + esc(fmtC(bl)) + '">of ' + fmtC(bl) + " budget" + kico("pencil") + "</button>" +
+        '<span class="left ' + cls + '">' + (cls ? kico("alert") : kico("check")) + (left < 0 ? fmtC(-left) + " over budget" : fmtC(left) + " left") + "</span>"
+        : '<button class="lk" type="button" data-act="subbudget">Set a monthly budget' + kico("pencil") + "</button>") + "</div></div>" +
+      '<div class="subkv"><div><span>Per year</span><b class="n">' + fmtC(tot.perYearC) + "</b><small>" + (tot.yrC ? "yearly ones included" : "every charge") + '</small></div><div><span>Active</span><b class="n">' + tot.n + "</b><small>" + (nTrial ? nTrial + " in a free trial" : "subscriptions and bills") + "</small></div></div>";
+    /* needs you: one row each, details open the subscription */
+    var box = $("sbAlerts");
+    box.hidden = !al.length;
+    box.innerHTML = '<div class="ch"><h2>Needs you</h2><span class="aux">' + al.length + '</span></div><div class="list">' + al.map(function (a) {
+      return '<button class="nr" type="button" data-act="' + (a.it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(a.it.id) + '"><span class="ic ' + (a.red ? "bad" : "warn") + '">' + kico(a.trial ? "cal" : "alert") + '</span><span class="mid"><span class="t" style="font-weight:500;font-size:.92rem">' + a.h + "</span></span>" + CHEV + "</button>";
+    }).join("") + "</div>";
+    /* coming up: the next three, the rest a tap away */
+    var soon = next30.slice(0, 3);
+    $("sbNext").hidden = !items.length;
+    $("sbNext").innerHTML = '<div class="ch"><h2>Coming up</h2></div>' + (soon.length ? '<div class="list">' + soon.map(function (o) { return nextRow({ it: o.it, d: o.d, n: o.it.n, c: o.it.priceC, varies: o.it.varies }); }).join("") + "</div>" +
+      moreBtn("Next 30 days: " + next30.length + " charge" + (next30.length === 1 ? "" : "s") + ", " + fmtC(n30C), 'data-act="subnext"') : '<p class="note">No charges in the next 30 days.</p>');
+    /* by category: one row each, open it to see the subscriptions */
+    var live = items.filter(function (it) { return it.st !== "ended"; }), ended = items.filter(function (it) { return it.st === "ended"; }), g = "";
+    SUB_CATS.forEach(function (c) {
+      var list = live.filter(function (it) { return subCatKey(it) === c[0]; }).sort(function (a, b) { return a.n.toLowerCase() < b.n.toLowerCase() ? -1 : 1; });
+      if (!list.length) return;
+      var mo = 0, yr = 0; list.forEach(function (it) { if (!isLive(it)) return; if (it.cad.k === "monthly") mo += it.priceC; else yr += it.perYearC; });
+      var warn = list.some(function (it) { return it.trial || it.st === "failing" || it.st === "cancel"; });
+      g += '<details class="xr"><summary class="nr"><span class="ic">' + kico(SUB_CAT_ICON[c[0]]) + '</span><span class="mid"><span class="t">' + esc(c[1]) + '</span><span class="s">' + esc(list.map(function (it) { return it.n; }).join(", ")) + "</span></span>" +
+        '<span class="v n">' + (mo ? fmtC(mo) + "<small>a month</small>" : yr ? fmtC(yr) + "<small>a year</small>" : "") + (warn ? '<small class="amber">needs a look</small>' : "") + "</span>" + CHEV + '</summary><div class="xb"><div class="list">' + list.map(subRow).join("") + "</div></div></details>";
+    });
+    if (ended.length) g += '<details class="xr"><summary class="nr"><span class="ic">' + kico("sub") + '</span><span class="mid"><span class="t">Ended</span><span class="s">' + ended.length + " you stopped</span></span>" + CHEV + '</summary><div class="xb"><div class="list">' + ended.map(subRow).join("") + "</div></div></details>";
+    $("sbGroups").innerHTML = items.length ? '<div class="card list"><div class="ch" style="margin-top:8px"><h2>By category</h2></div>' + g + "</div>" :
+      '<div class="card">' + emptyState("sub", "Lock in your subscriptions", "Add each one with its price and next charge date, paste a list, or import them with one link. Bank charges then keep the prices exact.", '<button class="btn" type="button" data-act="subnew">Add a subscription</button>') + "</div>";
+    var found = detectSubs(items);
+    $("sbAdd").innerHTML = (found.length ? navRow('data-act="foundsheet"', "spark", "Looks like a subscription", found.length + " repeating charge" + (found.length === 1 ? "" : "s") + " from your bank", found.length, "", "warn") : "") +
+      navRow('data-act="subnew"', "plus", "Add a subscription", "", "") + navRow('data-act="pastesheet"', "bill", "Paste a list or an import code", "", "");
+  }
+  function openSubNext() {
+    var items = REC || recurItems(), next30 = upcomingCharges(items, 30), n30C = 0, tl = "", lastD = "", grp = [];
+    next30.forEach(function (o) { n30C += o.it.priceC; });
+    function flush() {
+      if (!grp.length) return;
+      var d = grp[0].d, n = daysBetween(today(), d), q = d.split("-"), dt = new Date(+q[0], +q[1] - 1, +q[2]);
+      tl += '<div class="tg' + (n <= 1 ? " soon" : "") + '"><div class="tdate"><small>' + esc(dt.toLocaleString("en-US", { weekday: "short" })) + "</small><b>" + esc(dt.toLocaleString("en-US", { month: "short" })) + " " + (+q[2]) + "</b>" + (n === 0 ? "<em>Today</em>" : n === 1 ? "<em>Tomorrow</em>" : "") + '</div><div class="titems">' +
+        grp.map(function (o) { var it = o.it, sc = statusChips(it).filter(function (c) { return c.t !== "Active"; }); return '<button class="ti" type="button" data-act="' + (it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(it.id) + '"><span class="mid"><span class="t">' + esc(it.n) + "</span>" + (sc.length ? '<span class="chips">' + chipsHtml(sc) + "</span>" : "") + '</span><span class="amt n">' + (it.varies ? "Varies" : fmtC(it.priceC)) + "</span></button>"; }).join("") + "</div></div>";
+      grp = [];
+    }
+    next30.forEach(function (o) { if (o.d !== lastD) { flush(); lastD = o.d; } grp.push(o); });
+    flush();
+    openSheet(sheetHead("Next 30 days") + '<div class="shero"><b class="n">' + fmtC(n30C) + "</b><span>" + next30.length + " charge" + (next30.length === 1 ? "" : "s") + " due</span></div>" + (next30.length ? '<div class="tlx">' + tl + "</div>" : '<p class="note">No charges in the next 30 days.</p>'), "Next 30 days", openSubNext);
+  }
+  function openFound() {
+    var found = detectSubs(REC || recurItems());
+    openSheet(sheetHead("Looks like a subscription") + '<p class="note">Charges from your bank that repeat about monthly. Add the real ones; the rest stay hidden.</p>' + (found.length ? '<div class="list">' + found.map(function (b) {
+      var nm = prettyName(b.name);
+      return '<div class="spot"><div class="row"><span class="mono" aria-hidden="true">' + esc(monogram(nm)) + '</span><span class="mid"><span class="t">' + esc(nm) + '</span><span class="s">' + (b.cyc === "yearly" ? "Yearly" : "Monthly") + ", " + b.n + " charges, last " + esc(dayShort(b.lastD)) + "</span>" + (b.pp ? '<span class="chips">' + chip("via PayPal") + "</span>" : "") + '</span><span class="amt n">' + fmtC(b.c) + "</span></div>" +
+        '<div class="btns inline"><button class="btn sm" type="button" data-act="sbadd" data-k="' + esc(b.k) + '" data-n="' + esc(nm) + '" data-amt="' + fromC(b.c) + '" data-cyc="' + b.cyc + '" data-next="' + b.next + '" data-pp="' + (b.pp ? 1 : 0) + '" aria-label="Add ' + esc(nm) + '">Add</button><button class="btn ghost sm" type="button" data-act="sbskip" data-k="' + esc(b.k) + '">Not a subscription</button></div></div>';
+    }).join("") + "</div>" : '<p class="note">Nothing new right now.</p>'), "Looks like a subscription", openFound);
+  }
+  function openPaste() {
+    openSheet(sheetHead("Paste a list", "Cancel") + '<p class="note">One per line: <b>Name, price, monthly or yearly, YYYY-MM-DD</b> (the next charge). A name you already have is updated, never added twice. An import code that starts with <b>RQ1:</b> works here too.</p>' +
+      '<label class="f"><span class="sr">Subscriptions to import</span><textarea class="ta" id="sbPaste" placeholder="Car insurance, 142.00, monthly, 2026-12-18&#10;Gym, 29.99, monthly, 2026-12-01"></textarea></label>' +
+      '<div class="btns"><button class="btn" type="button" data-act="sbimport">Review import</button></div><p class="msg" id="sbPasteMsg" role="status"></p>', "Paste a list");
+  }
+  /* ---------- Car: the goal in brief, the loan (from the bank when linked), cost to own folded away ---------- */
+  function renderCar() {
+    var g = goalInfo(), pc = paceInfo(), p = g.gC > 0 ? Math.min(1, g.have / g.gC) : 0;
+    var pm = phMeta(), ph = pm && PH.url && PH.key === pm.at, line = "";
+    if (g.gC > 0 && g.left === 0) line = "Goal reached" + (g.have > g.gC ? ", " + fmtC(g.have - g.gC) + " to spare" : "");
+    else if (pc.planDate) line = "On pace for " + monYear(pc.planDate) + " at " + fmtC(pc.plan) + " a month";
+    else if (pc.avgDate) line = "On pace for " + monYear(pc.avgDate) + " at your recent pace";
+    else if (g.perMonth) line = fmtC(g.perMonth) + " a month reaches it by " + monYear(g.by);
+    else line = "Set a monthly plan to see your date";
+    $("cGoal").innerHTML = '<div class="cph">' + (ph ? '<button class="th" type="button" data-act="photosheet" aria-label="Your car photo: frame, change or remove it"><img id="cPhoto" src="' + esc(PH.url) + '" alt="" style="object-position:50% ' + phY(pm) + '%"></button>'
+        : '<button class="ic" type="button" data-act="photopick" aria-label="Add a photo of your car" style="width:3rem;height:3rem">' + kico("photo") + "</button>") +
+      '<span class="mid"><span class="t wrap" style="font-size:1.06rem;font-weight:750">' + esc(S.goal.name || "Dream car") + '</span><span class="s wrap">' + (ph ? "Your car photo is on the Garage" : '<button class="lk" type="button" data-act="photopick" style="margin:-10px -6px">Add a photo of your car</button>') + "</span></span></div>" +
+      '<div class="goalbig"><b class="n">' + fmtC(g.have) + '</b><span class="mut">of <span class="n">' + fmtC(g.gC) + "</span>, " + pctTxt(g.have, g.gC) + "</span></div>" +
+      '<span class="bar" style="margin:10px 0 2px" role="img" aria-label="' + pctTxt(g.have, g.gC) + ' of the goal"><i style="width:' + (p * 100).toFixed(2) + '%"></i></span>' +
+      moreBtn(line, 'data-act="goalsheet"');
+    renderLoanCard(); renderCostCard();
+  }
+  function renderLoanCard() {
+    var L = carState().loan, el = $("cLoan"), cands = loanCandidates();
+    if (!L) {
+      el.innerHTML = '<div class="ch"><h2>Car loan</h2></div>' + emptyState("loan", "No car loan yet", cands.length ? "Your bank has a loan account. Link it and the balance, payments and payoff come in on their own." : "Link your lender's loan account (connect it in More, Banks) or add the loan by hand.",
+        '<div class="btns col" style="width:100%">' + (cands.length ? '<button class="btn" type="button" data-act="linksheet">Link a bank loan</button>' : "") + '<button class="btn' + (cands.length ? " ghost" : "") + '" type="button" data-act="loanedit">Add by hand</button></div>');
+      return;
+    }
+    var e = loanEff(L), li = loanInfo(e), last = e.last, noApr = !(L.apr > 0) && !L.aprSet && !!L.link;
+    var h = '<div class="ch"><h2>' + esc(e.lender || "Car loan") + "</h2>" + (e.acc ? '<span class="chip link">Linked</span>' : chevLink("Link bank", 'data-act="linksheet"')) + "</div>";
+    if (li.left === 0) h += '<div class="count"><b>Paid off</b><span>Nothing left on the balance</span></div>';
+    else h += '<button class="hsv" type="button" data-act="loansheet" style="margin-top:2px"><span class="rl">Owed</span><b class="rv n" style="font-size:min(2.1rem,9vw)">' + fmtC(li.balC) + '</b><span class="rs">' + (e.acc ? "From " + esc(cleanOrg(e.acc.org) || "your bank") + ", " + esc(whenLbl(e.acc.at)) : li.paidSince ? "Estimated from what you entered" : "As you entered it, " + esc(dayShort(li.at))) + "</span></button>";
+    if (li.never) h += '<div class="callout red" style="margin-top:12px">' + kico("alert") + "<div>The payment doesn't cover the monthly interest at " + L.apr + "% APR. Check the numbers.</div></div>";
+    h += '<div class="kpi3" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><span><span>Next payment</span><b>' + esc(dayShort(li.next)) + '</b><span class="n" style="font-weight:500">' + (li.payC ? fmtC(li.payC) : "Not set") + "</span></span>" +
+      "<span><span>Last paid</span><b>" + (last ? esc(dayShort(last.d)) : "Not yet") + '</b><span class="n" style="font-weight:500">' + (last ? fmtC(last.c) : "&nbsp;") + "</span></span>" +
+      "<span><span>Paid off</span><b>" + (li.end ? (noApr ? "" : "") + esc(monYear(li.end)) : "Unknown") + '</b><span style="font-weight:500">' + (noApr ? "or later, add the APR" : li.left ? li.left + " left" : li.end ? "" : "add the APR") + "</span></span></div>" +
+      moreBtn("Loan details", 'data-act="loansheet"');
+    el.innerHTML = h;
+  }
+  function openLoanSheet() {
+    var L = carState().loan; if (!L) return;
+    var e = loanEff(L), li = loanInfo(e), pays = [], noApr = !(L.apr > 0) && !L.aprSet && !!L.link;
+    if (e.acc) (e.acc.pays || []).forEach(function (p) { pays.push({ d: p.d, c: p.c, s: "Into the loan" }); });
+    S.tx.forEach(function (t) { if (t.bank && t.bank.loan && toC(t.amt) > 0 && (!L.link || !t.bank.lacc || t.bank.lacc === L.link || t.bank.lacc === "?")) pays.push({ d: t.d, c: toC(t.amt), s: "From " + acctLbl(t) }); });
+    if (!pays.length) loanCharges(L).forEach(function (t) { pays.push({ d: t.d, c: toC(t.amt), s: "From " + acctLbl(t) }); });
+    pays.sort(function (a, b) { return a.d < b.d ? 1 : a.d > b.d ? -1 : 0; });
+    var seenD = {}; pays = pays.filter(function (p) { var k = p.d + p.c; if (seenD[k]) return false; seenD[k] = 1; return true; }).slice(0, 6);
+    openSheet(sheetHead(esc(e.lender || "Car loan")) + '<div class="shero"><b class="n">' + fmtC(li.balC) + "</b><span>owed" + (e.acc ? ", the bank's balance as of " + esc(whenLbl(e.acc.at)) : li.paidSince ? ", estimated after " + li.paidSince + " payment" + (li.paidSince === 1 ? "" : "s") + " since " + esc(dayShort(li.at)) : ", as of " + esc(dayShort(li.at))) + "</span></div>" +
+      '<div class="kpi"><div><span>Monthly payment</span><b class="n">' + (li.payC ? fmtC(li.payC) : "Not set") + "</b><small>" + (toC(L.pay) > 0 ? "day " + L.day + " of each month" : e.last ? "from your last payment" : "") + "</small></div>" +
+      '<div><span>Interest left</span><b class="n">' + (noApr ? "Unknown" : li.intC !== undefined ? fmtC(li.intC) : "Unknown") + "</b><small>" + (noApr ? "add the APR in Edit numbers" : L.apr > 0 ? "about, at " + L.apr + "% APR" : li.intC === 0 ? "0% APR" : "add the APR") + "</small></div>" +
+      '<div><span>Payments left</span><b class="n">' + (li.left !== undefined ? li.left + (noApr ? "+" : "") : "Unknown") + "</b><small>" + (noApr ? "at least, before interest" : li.end ? (li.payoffSet && li.payoff && li.payoffSet !== li.payoff ? "lender says " + esc(monYear(li.payoffSet)) : "paid off " + esc(monYear(li.end))) : "") + "</small></div></div>" +
+      '<span class="lab">Payments seen</span>' + (pays.length ? '<div class="kv">' + pays.map(function (p) { return "<div><span>" + esc(dayShort(p.d) + ", " + p.s) + '</span><span class="n">' + fmtC(p.c) + "</span></div>"; }).join("") + "</div>" : '<p class="note">None yet. Payments show here once your bank has them.</p>') +
+      '<p class="note">' + (e.acc ? "Balance and payments come from your bank on every sync. The payment out of checking counts as spending (" + esc(carPayCat()) + "); the loan account itself is never spending or income. Payoff and interest are estimates." : "Link the lender's loan account and the balance and payments come in on their own. Until then, payments are matched by the lender's name.") + "</p>" +
+      '<div class="btns"><button class="btn ghost" type="button" data-act="loanedit">Edit numbers</button><button class="btn ghost" type="button" data-act="linksheet">' + (e.acc ? "Change account" : "Link bank loan") + "</button></div>" +
+      (e.acc ? '<div class="btns"><button class="btn danger" type="button" data-act="loanunlink">Unlink the bank account</button></div>' : ""), "Loan", openLoanSheet);
+  }
+  function openLinkSheet() {
+    var c = loanCandidates(), L = carState().loan;
+    openSheet(sheetHead("Link your car loan") + '<p class="note">Pick the loan account from your bank. Ride Quest then reads the balance owed and every payment from it.</p>' +
+      (c.length ? '<div class="list">' + c.map(function (a) { return navRow('data-act="loanlink" data-id="' + esc(a.id) + '"', a.loan ? "loan" : "wallet", esc(cleanAcct(a.n, a.org)), esc(cleanOrg(a.org) + (a.loan ? ", loan" : ", card or credit line") + (L && L.link === a.id ? ", linked now" : "")), fmtC(a.c), "owed"); }).join("") + "</div>" :
+        emptyState("loan", "No loan accounts yet", "Add your lender in SimpleFIN Bridge (New connection), then Sync now in More, Banks. Or import its statement as a Loan.", '<button class="btn" type="button" data-act="banksheet">Banks and sync</button>')), "Link loan");
+  }
+  function renderCostCard() {
+    var co = costToOwn(), rows = co.rows.map(function (r) {
+      return '<div class="row"><span class="ic">' + kico(r.k === "loan" ? "loan" : r.k === "ins" ? "ins" : r.k === "gas" ? "gas" : r.k === "up" ? "car" : "bill") + '</span><span class="mid"><span class="t">' + esc(r.n) + '</span><span class="s wrap">' + esc(r.src) + "</span></span>" +
+        (r.c !== null ? '<span class="amt n">' + fmtC(r.c) + "</span>" : r.add ? '<button class="btn ghost sm" type="button" data-act="regedit">Add</button>' : '<span class="amt mut2">None</span>') + "</div>";
+    }).join(""), miss = co.rows.filter(function (r) { return r.c === null; }).map(function (r) { return r.n.toLowerCase(); });
+    $("cCost").innerHTML = '<details class="xr"><summary class="nr" style="border-top:0"><span class="ic">' + kico("gas") + '</span><span class="mid"><span class="t">Cost to own</span><span class="s wrap">' + (co.n ? "Payment, insurance, gas, upkeep" : "Fills in from your purchases") + '</span></span><span class="v n">' + (co.n ? fmtC(co.totC) + "<small>a month</small>" : "") + "</span>" + CHEV + "</summary>" +
+      '<div class="xb"><div class="list">' + rows + "</div>" + (co.n ? '<p class="note" style="margin-top:8px"><span class="n">' + fmtC(co.totC * 12) + "</span> a year" + (miss.length ? ", not counting " + esc(miss.join(" or ")) : "") + ". Averages come from your categorized purchases.</p>" : "") +
+      (toC(carState().reg) > 0 ? '<div class="btns" style="margin-top:10px"><button class="btn ghost sm" type="button" data-act="regedit">Change registration</button></div>' : "") + "</div></details>";
+  }
+
+  /* ---------- More: one list; each row opens its own sheet ---------- */
+  function swRow(act, on, title, sub, extra) {
+    return '<div class="set"><div><div class="t">' + title + '</div><div class="s">' + sub + "</div>" + (extra || "") + '</div><button class="sw" type="button" role="switch" aria-checked="' + (on ? "true" : "false") + '" aria-label="' + esc(title.replace(/<[^>]+>/g, "")) + '" data-act="' + act + '"></button></div>';
+  }
+  function renderNotify() {
+    var el = $("notifySet"); if (!el) return;
+    el.innerHTML = BANK.on ? swRow("subalerts", !!S.subAlerts, "Trial and cancel-by reminders", "The day before a free trial turns into charges, and the day before a cancel-by date you set, at 10 AM.") +
+      swRow("budgetalerts", !!S.budgetAlerts, "Budget alerts", "When a category reaches 80% of its monthly limit, and again when it goes over.") +
+      swRow("weeklyrecap", !!S.weeklyRecap, "Weekly recap", "Sundays at 7 PM: what you spent and saved this week.", '<div class="s" style="margin-top:6px;color:var(--silver2)">' + esc(recapBody(recapStats(nextSunday()))) + "</div>")
+      : '<p class="note">Notifications work in the Ride Quest app on your iPhone.</p>';
+  }
+  function renderRules() {
+    var el = $("ruleList"); if (!el) return;
+    var r = S.bankRules || {}, keys = Object.keys(r).filter(function (k) { return k && k !== "transfer"; }).sort();
+    el.innerHTML = keys.length ? '<div class="list">' + keys.map(function (k) {
+      return '<div class="set"><div><div class="t">' + esc(k) + '</div><div class="s">' + esc(r[k]) + '</div></div><button class="x" type="button" data-act="forgetrule" data-k="' + esc(k) + '" aria-label="Forget ' + esc(k) + '">&times;</button></div>';
+    }).join("") + "</div>" : '<p class="note">No stores learned yet.</p>';
+  }
+  function renderLimits() {
+    if ($("limTot")) $("limTot").textContent = fmtC(totalBudgetC()) + " a month";
+    if (!$("limitSet")) return;
+    $("limitSet").innerHTML = S.budgets.length ? S.budgets.map(function (b, i) {
+      return '<div class="lim"><span class="t" style="white-space:normal">' + esc(b.n) + '</span><input class="in n" type="text" inputmode="decimal" data-lim="' + i + '" value="' + moneyIn(toC(b.l)) + '" aria-label="Monthly limit for ' + esc(b.n) + '">' +
+        '<button class="x" type="button" data-act="delcat" data-i="' + i + '" aria-label="Remove ' + esc(b.n) + '">&times;</button></div>';
+    }).join("") : '<p class="note">No categories yet.</p>';
+  }
+  function bankOrgs() {
+    var o = [];
+    ((BANK.st && BANK.st.accounts) || []).forEach(function (a) { if (bankIgnored(a)) return; var n = isPayPalAcc(a) ? "PayPal" : cleanOrg(a.org || a.name || "Bank"); if (o.indexOf(n) < 0) o.push(n); });
+    Object.keys(S.fileAcc || {}).forEach(function (id) { var n = cleanOrg(S.fileAcc[id].org) || "Imported"; if (o.indexOf(n) < 0) o.push(n); });
+    return o;
+  }
+  function renderMore() {
+    var st = BANK.st || {}, orgs = bankOrgs(), nOn = (S.subAlerts ? 1 : 0) + (S.budgetAlerts ? 1 : 0) + (S.weeklyRecap ? 1 : 0), nr = Object.keys(S.bankRules || {}).filter(function (k) { return k && k !== "transfer"; }).length;
+    var manual = walletView().filter(function (x) { return !x.bank; });
+    $("moreBank").innerHTML = navRow('data-act="banksheet"', "bank", "Banks and sync", esc(!BANK.on ? "Works in the Ride Quest app" : !st.connected ? "Connect SimpleFIN Bridge" : (orgs.join(", ") || "Connected") + (st.lastSync ? ", synced " + whenLbl(st.lastSync) : "")), BANK.on && st.connected ? (BANK.busy ? "Syncing" : "On") : "") +
+      navRow('data-act="importsheet"', "income", "Import a file", "OFX, QFX or CSV from any bank, or PayPal", "") +
+      navRow('data-act="accsheet"', "wallet", "Accounts", orgs.length + " bank" + (orgs.length === 1 ? "" : "s") + (manual.length ? ", " + manual.length + " counted by you" : ""), "");
+    $("morePlan").innerHTML = navRow('data-act="limsheet"', "bill", "Monthly budgets", S.budgets.length + " categories", fmtC(totalBudgetC()), "a month") +
+      navRow('data-act="notifysheet"', "cal", "Notifications", BANK.on ? nOn + " of 3 on" : "In the app", "") +
+      navRow('data-act="balsheet"', "cash", "Balances you count", manual.length ? manual.map(function (x) { return x.w === "savings" ? "Car savings" : x.role; }).join(", ") : "Every wallet is synced", "") +
+      navRow('data-act="selfsheet"', "xfer", "Transfers to yourself", S.selfName ? "Zelle as " + esc(S.selfName) : "Your name for Zelle lines", "") +
+      navRow('data-act="rulesheet"', "tag", "Auto-categorize", nr ? nr + " store" + (nr === 1 ? "" : "s") + " learned" : "Learns as you sort", "");
+    $("moreData").innerHTML = navRow('data-act="exportsheet"', "out", "Export and backup", "CSV for Numbers or Excel, full backup", "") +
+      navRow('data-act="mathsheet"', "check", "Check the math", "Runs the money checks on made-up numbers", "") +
+      navRow('data-act="wipesheet"', "alert", "Wipe all entries", "", "", "", "danger");
+    $("about").innerHTML = '<p class="note" style="text-align:center;padding:14px 8px 4px">Ride Quest 4, a private build for saving toward your car.<br>Your money data and car photo stay on this iPhone. Bank sync goes from this phone to SimpleFIN Bridge and back.</p>';
+    renderBank();
+  }
+  function openMoreSheet(k) {
+    var h = "", lbl = "";
+    if (k === "bank") { lbl = "Banks and sync"; h = sheetHead("Banks and sync") + '<div id="bankBody"></div><p class="msg" id="bankMsg" role="status"></p>'; }
+    else if (k === "import") { lbl = "Import a file"; h = sheetHead("Import a file") + importBlock(); }
+    else if (k === "lim") { lbl = "Monthly budgets"; h = sheetHead("Monthly budgets") + '<div class="shero"><b class="n" id="limTot"></b></div><div id="limitSet"></div>' +
+      '<form class="two" data-form="cat" style="margin-top:4px"><label class="f"><span>New category</span><input class="in" type="text" id="newCat" autocomplete="off" placeholder="Pets"></label><label class="f"><span>Monthly limit</span><input class="in n" type="text" id="newLim" inputmode="decimal" autocomplete="off" placeholder="0.00"></label><button class="btn ghost" type="submit">Add category</button></form>'; }
+    else if (k === "notify") { lbl = "Notifications"; h = sheetHead("Notifications") + '<div class="list" id="notifySet"></div>'; }
+    else if (k === "bal") { lbl = "Balances you count"; h = sheetHead("Balances you count") + '<p class="note">Type what a wallet really holds today. Ride Quest keeps your entries and adjusts the starting point to match. Synced accounts always show the bank\'s balance.</p><div class="form" id="startSet"></div>'; }
+    else if (k === "self") { lbl = "Transfers to yourself"; h = sheetHead("Transfers to yourself") + '<p class="note">Bank lines that say "Zelle to" or "Zelle from" this name count as moving your own money, not spending or income. Transfers between your linked accounts, at any of your banks, are caught either way.</p>' +
+      '<label class="f"><span>Your name, for transfers to yourself</span><input class="in" type="text" data-set="selfName" autocomplete="name" autocapitalize="words" placeholder="As your bank shows it" value="' + esc(S.selfName || "") + '"></label>'; }
+    else if (k === "rule") { lbl = "Auto-categorize"; h = sheetHead("Auto-categorize") + '<p class="note">Bank imports are sorted by store. Change a purchase\'s category once and Ride Quest files that store there from then on.</p><div id="ruleList"></div>'; }
+    else if (k === "export") { lbl = "Export and backup"; h = sheetHead("Export and backup") + '<p class="note">Everything saves on its own, on this iPhone. Exports open in Numbers or Excel; the backup holds everything.</p>' +
+      '<div class="btns col"><button class="btn ghost" type="button" data-act="dltx">Export purchases<span class="mut2">CSV</span></button><button class="btn ghost" type="button" data-act="dlmv">Export transfers<span class="mut2">CSV</span></button><button class="btn ghost" type="button" data-act="dlall">Save a full backup<span class="mut2">JSON</span></button>' +
+      '<button class="btn ghost" type="button" data-act="pastesheet">Import subscriptions<span class="mut2">List or code</span></button></div><p class="msg" id="dlMsg" role="status"></p>'; }
+    else if (k === "math") { lbl = "Check the math"; h = sheetHead("Check the math") + '<p class="note">Runs Ride Quest\'s money checks on made-up numbers. Nothing of yours is read, changed or saved.</p><div class="btns"><button class="btn" type="button" data-act="selftest">Run checks</button></div><p class="msg" id="stMsg" role="status"></p>'; }
+    else if (k === "wipe") { lbl = "Wipe all entries"; h = sheetHead("Wipe all entries", "Cancel") + '<p class="note">Removes every purchase and transfer. Budgets, subscriptions, the goal and the bank connection stay. Save a backup first if you might want them back.</p><div class="btns"><button class="btn danger" type="button" data-act="resetall">Wipe all entries</button></div>'; }
+    openSheet(h, lbl, function () { openMoreSheet(k); });
+    if (k === "bank") renderBank();
+    if (k === "lim") renderLimits();
+    if (k === "notify") renderNotify();
+    if (k === "rule") renderRules();
+    if (k === "bal") $("startSet").innerHTML = walletView().filter(function (x) { return !x.bank; }).map(function (x) {
+      return '<label class="f"><span>' + esc(x.w === "cash" ? "Cash on hand now" : x.name + " now") + '</span><input class="in n" type="text" inputmode="decimal" data-bal="' + x.w + '" value="' + moneyIn(balC(x.w)) + '"></label>';
+    }).join("") || '<p class="note">Every wallet is synced with your bank.</p>';
+  }
+  function renderBank() {
+    renderNotify();
+    var box = $("bankBody"); if (!box) return;
+    var st = BANK.st || {}, body = "";
+    if (!BANK.on) {
+      body = '<p class="note">Bank sync runs in the Ride Quest app on your iPhone. Here you can still add entries by hand or import a file.</p>';
+    } else if (!st.connected) {
+      body = '<ol class="steps"><li>Make a SimpleFIN Bridge account at <a href="https://beta-bridge.simplefin.org" target="_blank" rel="noopener">beta-bridge.simplefin.org</a> and add each bank and credit union you use (New connection).</li>' +
+        "<li>In SimpleFIN Bridge, make a <b>setup token</b> and copy it.</li><li>Tap the button below. Every bank on that account then syncs on its own.</li></ol>" +
+        '<div class="btns" style="margin-top:12px"><button class="btn" type="button" data-act="bankpaste">' + (BANK.busy ? "Connecting…" : "Paste setup token") + "</button></div>";
+    } else {
+      var accs = st.accounts || [], when = BANK.busy ? "Syncing now…" : st.lastSync ? "Synced " + whenLbl(st.lastSync) + ", every hour" : "Not synced yet", groups = {}, order = [];
+      accs.forEach(function (a) { var o = isPayPalAcc(a) ? "PayPal" : cleanOrg(a.org || a.name || "Bank"); if (!groups[o]) { groups[o] = []; order.push(o); } groups[o].push(a); });
+      body = '<div class="row" style="border-top:0;padding-top:0"><span class="ic">' + kico("bank") + '</span><span class="mid"><span class="t wrap">SimpleFIN Bridge</span><span class="s wrap">' + esc(when) + '</span></span><span class="chip ok">On</span></div>' +
+        (bankPendingNote() ? '<p class="note">' + esc(bankPendingNote()) + "</p>" : "") +
+        '<div class="btns"><button class="btn" type="button" data-act="banksync"' + (BANK.busy ? " disabled" : "") + ">" + (BANK.busy ? "Syncing…" : "Sync now") + "</button></div>" +
+        (order.length ? order.map(function (o) {
+          return '<p class="sec">' + esc(o) + '</p><div class="list">' + groups[o].map(function (a) {
+            var off = bankIgnored(a), to = off ? "Off, not synced" : isLoanAcc(a) ? "Loan" + (carState().loan && carState().loan.link === a.id ? ", your car loan" : "") : isCredit(a) ? "Card, purchases count as spending" : acctRole(walletFor(a));
+            return '<div class="set"' + (off ? ' style="opacity:.62"' : "") + '><div><div class="t">' + esc(cleanAcct(a.name, a.org)) + '</div><div class="s">' + esc(to) + "</div></div>" +
+              '<button class="btn ghost sm" type="button" data-act="banktoggle" data-id="' + esc(a.id) + '">' + (off ? "Use" : "Stop") + "</button></div>";
+          }).join("") + "</div>";
+        }).join("") : '<p class="note">Tap Sync now to pull your accounts.</p>') +
+        '<details class="det"><summary>Add another bank or credit union</summary><ol class="steps"><li>In SimpleFIN Bridge, tap <b>New connection</b> and pick your bank or credit union.</li><li>Come back and tap <b>Sync now</b>. New accounts show up here, grouped by bank, with their last 60 days.</li>' +
+        "<li>Paychecks and deposits at any bank count as income; moving money between your own banks is a transfer, never spending.</li><li>Not in SimpleFIN? Download its statement (OFX, QFX or CSV) and use <b>Import a file</b>.</li></ol></details>" +
+        '<div class="btns"><button class="btn danger" type="button" data-act="bankoff">Disconnect SimpleFIN</button></div>';
+    }
+    box.innerHTML = body;
+    if ($("bankMsg")) $("bankMsg").textContent = BANK.msg || "";
+  }
+  /* the Import a file sheet: any bank's statement, or PayPal's own CSV */
+  function importBlock() {
+    var files = Object.keys(S.fileAcc || {}).map(function (id) {
+      var fa = S.fileAcc[id], n = 0; S.tx.concat(S.moves).forEach(function (o) { if (o.bank && o.bank.acc === id) n++; });
+      return '<div class="set"><div><div class="t">' + esc((cleanOrg(fa.org) ? cleanOrg(fa.org) + " " : "") + (fa.name || "Account")) + '</div><div class="s">' + n + " entr" + (n === 1 ? "y" : "ies") + ", " + esc(fa.fmt || "file") + ", last imported " + esc(whenLbl(Math.floor(fa.at / 1000))) + "</div></div></div>";
+    }).join("");
+    var pp = "";
+    if (S.ppCsv) { var n = S.tx.concat(S.moves).filter(function (o) { return o.bank && o.bank.csv; }).length; pp = '<div class="set"><div><div class="t">PayPal activity (CSV)</div><div class="s">' + n + " entr" + (n === 1 ? "y" : "ies") + ", imported " + esc(whenLbl(S.ppCsv.at)) + "</div></div></div>"; }
+    return '<p class="note">For a bank SimpleFIN can\'t reach. In its website or app, download your statement or activity as <b>OFX</b>, <b>QFX</b> (Quicken) or <b>CSV</b>. Importing the same file twice adds nothing twice.</p>' +
+      '<div class="btns"><button class="btn" type="button" data-act="bankfile">Choose a statement file</button></div>' +
+      (files || pp ? '<p class="sec">Imported</p><div class="list">' + files + pp + "</div>" : "") +
+      '<details class="det"><summary>PayPal activity</summary><p class="note">Only needed for PayPal purchases paid from your PayPal balance. On paypal.com: <b>Activity</b>, <b>Download</b>, <b>CSV</b>.</p><div class="btns" style="margin-top:10px"><button class="btn ghost" type="button" data-act="ppcsv">Import PayPal CSV</button></div></details>';
+  }
+  /* ---------- sheets: one at a time, stacked like iOS. A sheet opened from another returns to it on Back or after saving ---------- */
+  var sheetReturn = null, SHEETS = [], curSheet = null, popping = false, sheetOut = null;
+  function openSheet(html, label, re) {
+    var p = $("spanel"), sh = $("sheet");
+    if (sheetOut) { clearTimeout(sheetOut); sheetOut = null; sh.classList.remove("out"); }
+    var wasOpen = !sh.hidden;
+    if (!wasOpen) { sheetReturn = document.activeElement; SHEETS = []; }
+    else if (!popping && curSheet && curSheet.re && curSheet.label !== label) SHEETS.push({ re: curSheet.re, top: p.scrollTop });
+    curSheet = { label: label || "Details", re: re || null };
+    p.innerHTML = '<div class="grab" aria-hidden="true"></div>' + html;
+    if (SHEETS.length) { var cb = p.querySelector('.sh [data-act="sheetclose"]'); if (cb && /^(Close|Done)$/.test(cb.textContent)) { cb.classList.add("back"); cb.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 5-7 7 7 7"/></svg>Back'; } }
+    p.setAttribute("aria-label", label || "Details");
+    sh.hidden = false;
+    document.documentElement.style.overflow = "hidden";
+    if (!popping) p.scrollTop = 0;
+    if (!popping && !wasOpen) setTimeout(function () { var f = p.querySelector("[autofocus]") || p.querySelector("h2"); if (f) { if (!f.hasAttribute("tabindex") && f.tagName === "H2") f.setAttribute("tabindex", "-1"); try { f.focus({ preventScroll: true }); } catch (e) {} } }, 80);
+  }
+  function closeSheet(all) {
+    if ($("sheet").hidden) return;
+    editId = null;
+    if (all !== true && SHEETS.length) {
+      var prev = SHEETS.pop(); popping = true;
+      try { prev.re(); $("spanel").scrollTop = prev.top || 0; } finally { popping = false; }
+      return;
+    }
+    SHEETS = []; curSheet = null;
+    function done() { sheetOut = null; $("sheet").classList.remove("out"); $("sheet").hidden = true; $("spanel").innerHTML = ""; }
+    document.documentElement.style.overflow = "";
+    if (REDUCE || TESTING) done(); else { $("sheet").classList.add("out"); sheetOut = setTimeout(done, 170); }
+    if (sheetReturn && sheetReturn.isConnected) { try { sheetReturn.focus({ preventScroll: true }); } catch (e) {} }
+    sheetReturn = null;
+  }
+  function stripTags(s) { var d = document.createElement("div"); d.innerHTML = s; return d.textContent || ""; }
+
+  /* ---------- Money: activity and budgets for one month ---------- */
   function renderUncBox() {
     var list = uncList(), box = $("uncBox");
-    box.hidden = !list.length;
-    if (!list.length) { box.innerHTML = ""; return; }
+    if (!box) return;
+    if (!list.length) { box.innerHTML = emptyState("check", "All sorted", "Every purchase has a category.", ""); return; }
     var names = S.budgets.map(function (b) { return b.n; });
-    box.innerHTML = '<div class="ch"><h2>Needs a category</h2><span class="aux">' + list.length + "</span></div>" +
-      '<p class="note">Bank imports from stores you haven\'t sorted before. Pick one and Ride Quest remembers that store.</p><div class="list" style="margin-top:6px">' +
+    box.innerHTML = '<p class="note">Bank imports from stores you haven\'t sorted before. Pick one and Ride Quest remembers that store.</p><div class="list" style="margin-top:6px">' +
       list.slice(0, 40).map(function (t) {
         return '<div class="row" style="flex-wrap:wrap"><span class="mid" style="flex:1 1 9rem"><span class="t">' + esc(shopName(t.what) || "Purchase") + '</span><span class="s">' + esc(dayShort(t.d) + ", " + acctLbl(t)) + '</span></span><span class="amt n">' + fmtC(-toC(t.amt), "+") + "</span>" +
           '<select class="sel" style="flex:1 1 100%;min-height:44px" data-uc="' + esc(t.id) + '" aria-label="Category for ' + esc(shopName(t.what) || "purchase") + '"><option value="">Pick a category</option>' +
@@ -2851,7 +3715,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     return [shopName(o.what || ""), o.what, o.note, o.cat, e.k === "tx" ? acctLbl(o) : wName(o.from) + " " + wName(o.to), fmtC(c), fromC(c).toFixed(2), (o.bank && o.bank.desc) || ""].join(" ").toLowerCase();
   }
   function renderActivity() {
-    renderUncBox();
+    if (!$("mList")) return;
     var txs = monthTx(mon), per = {}, q = mq.trim().toLowerCase();
     txs.forEach(function (t) { var c = t.cat || UNCAT; per[c] = (per[c] || 0) + toC(t.amt); });
     var cats = Object.keys(per).filter(function (c) { return per[c] !== 0; }).sort(function (a, b) { return per[b] - per[a]; });
@@ -2917,8 +3781,9 @@ details.det[open] > summary { margin-bottom: 8px; }
       (r.lc > 0 ? (over ? '<span class="over">' + kico("alert") + fmtC(-left) + " over</span>" : '<span class="' + (warn ? "warn" : "") + '">' + (warn ? kico("alert") : "") + fmtC(left) + " left</span>") : "<span></span>") + "</span></button>";
   }
   function renderBudgets() {
+    if (!$("bSum")) return;
     var cm = monthOf(today()), cur = mon === cm, rows = catRows(mon), tb = totalBudgetC(), sp = sumTxC(monthTx(mon)), left = tb - sp, al = allowance(mon);
-    var sum = '<div class="ch"><h2>' + esc(monOnly(mon)) + " budget</h2>" + chevLink("Edit limits", 'data-act="editbudgets"') + "</div>" + '<div class="meter" style="padding-top:4px">' + budgetMeter(sp, tb, mon, cur && tb > 0) + "</div>";
+    var sum = '<div class="ch"><h2>Total</h2>' + chevLink("Edit limits", 'data-act="editbudgets"') + "</div>" + '<div class="meter" style="padding-top:4px">' + budgetMeter(sp, tb, mon, cur && tb > 0) + "</div>";
     if (cur && tb > 0) sum += '<div class="kpi" style="margin-top:4px;padding-top:14px;border-top:1px solid var(--line)"><div><span>Safe to spend today</span><b class="n' + (al.perDayC > 0 ? "" : " red") + '">' + fmtC(al.perDayC) + "</b><small>" + al.days + " day" + (al.days === 1 ? "" : "s") + " left in " + esc(monOnly(mon)) + '</small></div><div><span>Left this month</span><b class="n' + (left < 0 ? " red" : "") + '">' + fmtC(left) + "</b><small>" + (left < 0 ? "over the total budget" : "of " + fmtC(tb)) + "</small></div></div>";
     else if (!cur) sum += '<p class="note" style="margin-top:4px">' + (mon > cm ? "This month hasn't started." : "Finished " + fmtC(Math.abs(left)) + (left < 0 ? " over" : " under") + " budget.") + " Refunds count against spending.</p>";
     $("bSum").innerHTML = sum;
@@ -2982,191 +3847,10 @@ details.det[open] > summary { margin-bottom: 8px; }
       '<span class="mid"><span class="t">' + esc(it.n) + '</span><span class="s">' + esc(when) + '</span><span class="chips">' + chips + "</span></span>" +
       '<span class="amt n">' + price + "<small>" + (it.varies && it.minC !== undefined ? fmtC(it.minC) + " to " + fmtC(it.maxC) : esc(perLbl(it))) + "</small></span></button>";
   }
-  function renderSubs() {
-    var items = REC || recurItems(), tot = recurTotals(items), al = trialAlerts(items).concat(recurAlerts(items));
-    var sb = subBudget(), bl = sb ? toC(sb.l) : 0, pr = bl > 0 ? tot.moC / bl : 0, cls = pr > 1 ? "over" : pr >= 0.85 ? "warn" : "";
-    var next30 = upcomingCharges(items, 30), n30C = 0; next30.forEach(function (o) { n30C += o.it.priceC; });
-    var nYear = items.filter(function (it) { return isLive(it) && it.cad.k === "yearly"; }), nTrial = items.filter(function (it) { return it.trial; }).length;
-    /* header: monthly total against the budget, as a ring */
-    var C = 2 * Math.PI * 42, fill = bl > 0 ? Math.min(1, pr) : 0;
-    var used = bl > 0 ? (tot.moC > bl ? Math.floor(tot.moC * 100 / bl) + "%" : pctTxt(tot.moC, bl)) : "";
-    var ring = '<div class="ring ' + cls + '"' + (bl > 0 ? ' role="img" aria-label="' + esc(used + " of the subscriptions budget") + '"' : ' aria-hidden="true"') + '><svg viewBox="0 0 100 100" aria-hidden="true"><circle class="tr" cx="50" cy="50" r="42"/>' +
-      (fill > 0 ? '<circle class="fl" cx="50" cy="50" r="42" style="stroke-dasharray:' + (C * fill).toFixed(2) + " " + C.toFixed(2) + '"/>' : "") + "</svg><div><span><b class=\"n\">" + (bl > 0 ? used : tot.n) + "</b><small>" + (bl > 0 ? "of budget" : "active") + "</small></span></div></div>";
-    var left = bl - tot.moC;
-    var hd = '<div class="subhead">' + ring + '<div class="subtot"><span class="lab">Each month</span><b class="big n">' + fmtC(tot.moC) + "</b>" +
-      (bl > 0 ? '<button class="lk" type="button" data-act="subbudget" aria-label="Change the subscriptions budget, now ' + esc(fmtC(bl)) + '">of ' + fmtC(bl) + " budget" + kico("pencil") + "</button>" +
-        '<span class="left ' + cls + '">' + (cls ? kico("alert") : kico("check")) + (left < 0 ? fmtC(-left) + " over budget" : fmtC(left) + " left") + "</span>"
-        : '<button class="lk" type="button" data-act="subbudget">Set a monthly budget' + kico("pencil") + "</button>") +
-      "</div></div>" +
-      '<div class="subkv"><div><span>Per year</span><b class="n">' + fmtC(tot.perYearC) + '</b><small>every charge</small></div><div><span>Next 30 days</span><b class="n">' + fmtC(n30C) + "</b><small>" + next30.length + " charge" + (next30.length === 1 ? "" : "s") + '</small></div><div><span>Active</span><b class="n">' + tot.n + "</b><small>" + (nTrial ? nTrial + " in a free trial" : "subscriptions and bills") + "</small></div></div>" +
-      ((nYear.length || tot.otherC || tot.cancelC) ? '<p class="note" style="margin-top:12px">' + (nYear.length ? "Billed yearly, not in the monthly total: <b class=\"n\">" + fmtC(tot.yrC) + "</b> a year. " : "") + (tot.otherC ? "Weekly and other rhythms: <b class=\"n\">" + fmtC(tot.otherC) + "</b> a year. " : "") + (tot.cancelC ? "Marked to cancel: " + fmtC(tot.cancelC) + " a year once they stop." : "") + "</p>" : "");
-    $("sbHead").innerHTML = hd;
-    /* needs you */
-    var box = $("sbAlerts");
-    box.hidden = !al.length;
-    box.innerHTML = '<div class="ch"><h2>Needs you</h2><span class="aux">' + al.length + "</span></div>" + al.map(function (a) {
-      var lk = a.it.kind === "sub" ? subLink(a.it.x) : "";
-      return '<div class="al"><span class="ic ' + (a.red ? "bad" : "warn") + '">' + kico(a.trial ? "cal" : "alert") + "</span><div>" + a.h + '<div class="btns"><button class="btn ghost sm" type="button" data-act="' + (a.it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(a.it.id) + '">Details</button>' +
-        (lk ? '<a class="btn ghost sm" href="' + esc(lk) + '" target="_blank" rel="noopener">Manage</a>' : "") + "</div></div></div>";
-    }).join("");
-    /* next 30 days */
-    var tl = "", lastD = "", grp = [];
-    function flush() {
-      if (!grp.length) return;
-      var d = grp[0].d, n = daysBetween(today(), d), q = d.split("-"), dt = new Date(+q[0], +q[1] - 1, +q[2]);
-      tl += '<div class="tg' + (n <= 1 ? " soon" : "") + '"><div class="tdate"><small>' + esc(dt.toLocaleString("en-US", { weekday: "short" })) + '</small><b>' + esc(dt.toLocaleString("en-US", { month: "short" })) + " " + (+q[2]) + "</b>" + (n === 0 ? "<em>Today</em>" : n === 1 ? "<em>Tomorrow</em>" : "") + '</div><div class="titems">' +
-        grp.map(function (o) { var it = o.it, sc = statusChips(it).filter(function (c) { return c.t !== "Active"; }); return '<button class="ti" type="button" data-act="' + (it.kind === "sub" ? "subedit" : "billedit") + '" data-id="' + esc(it.id) + '"><span class="mid"><span class="t">' + esc(it.n) + "</span>" + (sc.length ? '<span class="chips">' + chipsHtml(sc) + "</span>" : "") + '</span><span class="amt n">' + (it.varies ? "Varies" : fmtC(it.priceC)) + "</span></button>"; }).join("") + "</div></div>";
-      grp = [];
-    }
-    next30.forEach(function (o) { if (o.d !== lastD) { flush(); lastD = o.d; } grp.push(o); });
-    flush();
-    $("sbNext").hidden = !items.length;
-    $("sbNext").innerHTML = '<div class="ch"><h2>Next 30 days</h2></div>' + (next30.length ? '<div class="tl">' + tl + '</div><div class="ttot"><span>Due in the next 30 days</span><span class="n">' + fmtC(n30C) + "</span></div>"
-      : '<p class="note">' + (items.length ? "No charges in the next 30 days." : "Your upcoming charges show here, day by day.") + "</p>");
-    /* by category */
-    var live = items.filter(function (it) { return it.st !== "ended"; }), ended = items.filter(function (it) { return it.st === "ended"; }), g = "";
-    if (!items.length) g = '<div class="card">' + emptyState("sub", "Lock in your subscriptions", "Add each one with its price and next charge date, paste a list, or import them with one link. Bank charges then keep the prices exact.", '<button class="btn" type="button" data-act="subnew">Add a subscription</button>') + "</div>";
-    SUB_CATS.forEach(function (c) {
-      var list = live.filter(function (it) { return subCatKey(it) === c[0]; }).sort(function (a, b) { return a.n.toLowerCase() < b.n.toLowerCase() ? -1 : 1; });
-      if (!list.length) return;
-      var mo = 0, yr = 0; list.forEach(function (it) { if (!isLive(it)) return; if (it.cad.k === "monthly") mo += it.priceC; else yr += it.perYearC; });
-      g += '<div class="card"><div class="cath"><span class="ic">' + kico(SUB_CAT_ICON[c[0]]) + "</span><h2>" + esc(c[1]) + '</h2><span class="aux n">' + (mo ? fmtC(mo) + "/mo" : "") + (mo && yr ? "<br>" : "") + (yr ? fmtC(yr) + "/yr" : "") + "</span></div>" +
-        '<div class="list">' + list.map(subRow).join("") + "</div></div>";
-    });
-    if (ended.length) g += '<div class="card"><details class="det"><summary>Ended (' + ended.length + ')</summary><div class="list">' + ended.map(subRow).join("") + "</div></details></div>";
-    $("sbGroups").innerHTML = g;
-    /* repeating bank charges that aren't on the list */
-    var found = detectSubs(items);
-    $("sbFound").innerHTML = '<div class="ch"><h2>Looks like a subscription</h2>' + (found.length ? '<span class="aux">from your bank</span>' : "") + "</div>" + (found.length ? '<div class="list">' + found.map(function (b) {
-      var nm = prettyName(b.name);
-      return '<div class="spot"><div class="row"><span class="mono" aria-hidden="true">' + esc(monogram(nm)) + '</span><span class="mid"><span class="t">' + esc(nm) + '</span><span class="s">' + (b.cyc === "yearly" ? "Yearly" : "Monthly") + ", " + b.n + " charges, last " + esc(dayShort(b.lastD)) + "</span>" + (b.pp ? '<span class="chips">' + chip("via PayPal") + "</span>" : "") + '</span><span class="amt n">' + fmtC(b.c) + "</span></div>" +
-        '<div class="btns inline"><button class="btn sm" type="button" data-act="sbadd" data-k="' + esc(b.k) + '" data-n="' + esc(nm) + '" data-amt="' + fromC(b.c) + '" data-cyc="' + b.cyc + '" data-next="' + b.next + '" data-pp="' + (b.pp ? 1 : 0) + '" aria-label="Add ' + esc(nm) + '">Add</button><button class="btn ghost sm" type="button" data-act="sbskip" data-k="' + esc(b.k) + '">Not a subscription</button></div></div>';
-    }).join("") + "</div>" : '<p class="note">' + (BANK.st && BANK.st.connected ? "Nothing new. A charge that repeats about monthly shows up here after its second time, PayPal ones included." : "Once your bank is synced (More), charges that repeat show up here to add in one tap.") + "</p>");
-  }
 
-  /* ---------- Car ---------- */
-  function renderCar() {
-    var g = goalInfo(), pc = paceInfo(), p = g.gC > 0 ? Math.min(1, g.have / g.gC) : 0, sv = g.sv;
-    var pm = phMeta(), ph = pm && PH.url && PH.key === pm.at;
-    var h = '<div class="cph">' + (ph ? '<button class="th" type="button" data-act="photosheet" aria-label="Frame your car photo"><img id="cPhoto" src="' + esc(PH.url) + '" alt="" style="object-position:50% ' + phY(pm) + '%"></button>'
-        : '<span class="ic" aria-hidden="true">' + kico("photo") + "</span>") +
-      '<span class="mid"><span class="t">Car photo</span><span class="s wrap">' + (ph ? "On your Garage. Stays on this iPhone." : "None yet. It shows at the top of Garage.") + "</span></span></div>" +
-      '<div class="btns" style="margin:-4px 0 16px">' + (ph ? '<button class="btn ghost sm" type="button" data-act="photopick">Change photo</button><button class="btn danger sm" type="button" data-act="photodel">Remove photo</button>'
-        : '<button class="btn ghost sm" type="button" data-act="photopick"' + (PH.busy ? " disabled" : "") + ">" + kico("plus") + "Add a photo of your car</button>") + "</div>" +
-      '<div class="ch" style="margin-top:2px"><h2>' + esc(S.goal.name || "Dream car") + '</h2><span class="aux n">' + pctTxt(g.have, g.gC) + " saved</span></div>" +
-      '<div class="goalbig"><b class="n">' + fmtC(g.have) + '</b><span class="mut">of <span class="n">' + fmtC(g.gC) + "</span></span></div>" +
-      '<span class="bar' + (p >= 0.85 ? " over" : "") + '" style="margin:10px 0 4px" role="img" aria-label="' + pctTxt(g.have, g.gC) + ' of the goal"><i style="width:' + (p * 100).toFixed(2) + '%"></i></span>';
-    var lines = [];
-    if (g.gC > 0 && g.left === 0) lines.push("Goal reached" + (g.have > g.gC ? ", with " + fmtC(g.have - g.gC) + " to spare." : "."));
-    else {
-      if (pc.planDate) lines.push("At your plan of <b class=\"n\">" + fmtC(pc.plan) + "</b> a month: <b>" + esc(monYear(pc.planDate)) + "</b> (" + pc.planMonths + " month" + (pc.planMonths === 1 ? "" : "s") + ").");
-      if (pc.avgDate) lines.push("At your recent pace, <b class=\"n\">" + fmtC(pc.avg.c) + "</b> a month (" + esc(monthsLbl(pc.avg.months)) + "): <b>" + esc(monYear(pc.avgDate)) + "</b>.");
-      else if (pc.avg && pc.avg.c <= 0) lines.push("Your car savings went down or stayed flat lately (" + esc(monthsLbl(pc.avg.months)) + ").");
-      if (g.perMonth) lines.push("To reach it by <b>" + esc(monName(g.by)) + "</b>: <b class=\"n\">" + fmtC(g.perMonth) + "</b> a month or <b class=\"n\">" + fmtC(g.perWeek) + "</b> a week.");
-      else if (g.past) lines.push('<span class="amber">The target month (' + esc(monName(g.by)) + ") has passed. Pick a new one below.</span>");
-      if (!lines.length) lines.push("Add a monthly plan or a target month below to see when you'll get there.");
-    }
-    h += '<div class="note" style="display:flex;flex-direction:column;gap:6px;margin:10px 0 14px">' + lines.map(function (l) { return "<p>" + l + "</p>"; }).join("") + "</div>";
-    h += '<div class="form">' +
-      '<label class="f"><span>Car</span><input class="in" type="text" data-set="goal.name" value="' + esc(S.goal.name) + '" autocomplete="off" maxlength="60" placeholder="Dream car"></label>' +
-      '<div class="two"><label class="f"><span>Price</span><input class="in n" type="text" inputmode="decimal" data-set="goal.amount" data-money="1" value="' + moneyIn(toC(S.goal.amount)) + '" placeholder="59,495.00"></label>' +
-      (sv.bank ? '<div class="f"><span>Saved so far</span><input class="in n" type="text" readonly value="' + esc(fmtC(g.have)) + '" aria-label="Saved so far, from ' + esc(sv.name) + '"><small>From ' + esc(sv.name) + "</small></div>"
-        : '<label class="f"><span>Saved so far</span><input class="in n" type="text" inputmode="decimal" data-bal="savings" value="' + moneyIn(g.have) + '"></label>') + "</div>" +
-      '<div class="two"><label class="f"><span>Reach it by (month)</span><input class="in" type="month" data-set="goal.by" value="' + esc(S.goal.by || "") + '"></label>' +
-      '<label class="f"><span>Monthly plan</span><input class="in n" type="text" inputmode="decimal" data-set="goal.monthly" data-money="1" value="' + (toC(S.goal.monthly || 0) > 0 ? moneyIn(toC(S.goal.monthly)) : "") + '" placeholder="0.00"></label></div>' +
-      '<p class="note">The price can include tax and fees. Your monthly plan is what you mean to move into car savings each month.</p></div>';
-    $("cGoal").innerHTML = h;
-    renderLoanCard(); renderCostCard();
-  }
-  function renderLoanCard() {
-    var L = carState().loan, el = $("cLoan");
-    if (!L) {
-      el.innerHTML = '<div class="ch"><h2>Car payment</h2></div>' + emptyState("loan", "No car loan yet", "When you finance, add the loan here. Ride Quest counts down the payoff and the interest left, and puts each payment in Next up.", '<button class="btn" type="button" data-act="loanedit">Add a car loan</button>');
-      return;
-    }
-    var li = loanInfo(L), seen = loanCharges(L), last = seen.length ? seen[seen.length - 1] : null, h = '<div class="ch"><h2>' + esc(L.lender ? L.lender : "Car loan") + "</h2>" + chevLink("Edit", 'data-act="loanedit"') + "</div>";
-    if (li.left === 0) h += '<div class="count"><b>Paid off</b><span>Nothing left on the balance</span></div>';
-    else if (li.never) h += '<div class="callout red">' + kico("alert") + "<div>The payment doesn't cover the monthly interest at " + L.apr + "% APR, so this balance never goes down. Check the numbers.</div></div>";
-    else if (li.left) h += '<div class="loanbig"><div class="count"><b class="n">' + li.left + '</b><span>payment' + (li.left === 1 ? "" : "s") + " left</span></div>" +
-      '<div class="count" style="text-align:right"><b>' + esc(monYear(li.end)) + "</b><span>" + (li.payoffSet && li.payoff && li.payoffSet !== li.payoff ? "lender's payoff (we figure " + esc(monYear(li.payoff)) + ")" : "paid off") + "</span></div></div>";
-    else if (li.end) h += '<div class="count"><b>' + esc(monYear(li.end)) + "</b><span>paid off, " + li.monthsToEnd + " months away</span></div>";
-    h += '<div class="kpi" style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)"><div><span>Monthly payment</span><b class="n">' + (li.payC ? fmtC(li.payC) : "Not set") + '</b><small>day ' + L.day + ' of each month</small></div>' +
-      '<div><span>Next payment</span><b>' + esc(dayShort(li.next)) + "</b><small>" + esc(li.days === 0 ? "today" : li.days === 1 ? "tomorrow" : "in " + li.days + " days") + "</small></div>" +
-      '<div><span>Balance now</span><b class="n">' + fmtC(li.balC) + "</b><small>" + (li.paidSince ? "estimated, after " + li.paidSince + " payment" + (li.paidSince === 1 ? "" : "s") + " since " + esc(dayShort(li.at)) : "as of " + esc(dayShort(li.at))) + "</small></div>" +
-      '<div><span>Interest left</span><b class="n">' + (li.intC !== undefined ? fmtC(li.intC) : "Unknown") + "</b><small>" + (L.apr > 0 ? "about, at " + L.apr + "% APR" : li.intC === 0 ? "0% APR" : "add the APR") + "</small></div></div>";
-    h += '<div class="kv" style="margin-top:14px"><div><span>Seen on your bank</span><span class="n">' + (last ? fmtC(toC(last.amt)) + " on " + esc(dayShort(last.d)) : "Not yet") + "</span></div></div>" +
-      '<p class="note" style="margin-top:10px">Payments on your bank are matched by the lender\'s name' + (L.mt ? " or how it shows on your statement" : "") + ". Linking the lender's account directly comes later; this card is ready for it.</p>";
-    el.innerHTML = h;
-  }
-  function renderCostCard() {
-    var co = costToOwn(), h = '<div class="ch"><h2>Cost to own</h2><span class="aux">a month</span></div><div class="list">';
-    co.rows.forEach(function (r) {
-      h += '<div class="row"><span class="ic">' + kico(r.k === "loan" ? "loan" : r.k === "ins" ? "ins" : r.k === "gas" ? "gas" : r.k === "up" ? "car" : "bill") + '</span><span class="mid"><span class="t">' + esc(r.n) + '</span><span class="s wrap">' + esc(r.src) + "</span></span>" +
-        (r.c !== null ? '<span class="amt n">' + fmtC(r.c) + "</span>" : r.add ? '<button class="btn ghost sm" type="button" data-act="regedit">Add</button>' : '<span class="amt mut2">None</span>') + "</div>";
-    });
-    var miss = co.rows.filter(function (r) { return r.c === null; }).map(function (r) { return r.n.toLowerCase(); });
-    h += "</div>" + (co.n ? '<div class="ctot"><span>About, each month</span><b class="n">' + fmtC(co.totC) + '</b></div><p class="note" style="margin-top:6px">That\'s <span class="n">' + fmtC(co.totC * 12) + "</span> a year" + (miss.length ? ", not counting " + esc(miss.join(" or ")) : "") + ". Averages come from your categorized bank purchases, so they sharpen over time.</p>" : '<p class="note" style="margin-top:8px">Nothing to add up yet. Categorized gas, insurance and repair purchases fill this in.</p>') +
-      (toC(carState().reg) > 0 ? '<div class="btns" style="margin-top:10px"><button class="btn ghost sm" type="button" data-act="regedit">Change registration</button></div>' : "");
-    $("cCost").innerHTML = h;
-  }
 
-  /* ---------- More ---------- */
-  function swRow(act, on, title, sub, extra) {
-    return '<div class="set"><div><div class="t">' + title + '</div><div class="s">' + sub + "</div>" + (extra || "") + '</div><button class="sw" type="button" role="switch" aria-checked="' + (on ? "true" : "false") + '" aria-label="' + esc(title.replace(/<[^>]+>/g, "")) + '" data-act="' + act + '"></button></div>';
-  }
-  function renderNotify() {
-    var el = $("notifySet"); if (!el) return;
-    el.innerHTML = BANK.on ? swRow("subalerts", !!S.subAlerts, "Trial and cancel-by reminders", "The day before a free trial turns into charges, and the day before a cancel-by date you set, at 10 AM.") +
-      swRow("budgetalerts", !!S.budgetAlerts, "Budget alerts", "When a category reaches 80% of its monthly limit, and again when it goes over.") +
-      swRow("weeklyrecap", !!S.weeklyRecap, "Weekly recap", "Sundays at 7 PM: what you spent and saved this week.", '<div class="s" style="margin-top:6px;color:var(--silver2)">' + esc(recapBody(recapStats(nextSunday()))) + "</div>")
-      : '<p class="note">Notifications work in the Ride Quest app on your iPhone.</p>';
-  }
-  function renderRules() {
-    var el = $("ruleList"); if (!el) return;
-    var r = S.bankRules || {}, keys = Object.keys(r).filter(function (k) { return k && k !== "transfer"; }).sort();
-    el.innerHTML = keys.length ? '<details class="det"><summary>Stores you\'ve sorted (' + keys.length + ")</summary>" +
-      '<div class="list">' + keys.map(function (k) {
-        return '<div class="set"><div><div class="t">' + esc(k) + '</div><div class="s">' + esc(r[k]) + '</div></div><button class="x" type="button" data-act="forgetrule" data-k="' + esc(k) + '" aria-label="Forget ' + esc(k) + '">&times;</button></div>';
-      }).join("") + "</div></details>" : '<p class="note">No stores learned yet.</p>';
-  }
-  function renderLimits() {
-    $("limTot").textContent = fmtC(totalBudgetC()) + " a month";
-    $("limitSet").innerHTML = S.budgets.length ? S.budgets.map(function (b, i) {
-      return '<div class="lim"><span class="t" style="white-space:normal">' + esc(b.n) + '</span><input class="in n" type="text" inputmode="decimal" data-lim="' + i + '" value="' + moneyIn(toC(b.l)) + '" aria-label="Monthly limit for ' + esc(b.n) + '">' +
-        '<button class="x" type="button" data-act="delcat" data-i="' + i + '" aria-label="Remove ' + esc(b.n) + '">&times;</button></div>';
-    }).join("") : '<p class="note">No categories yet.</p>';
-  }
-  function renderMore() {
-    renderBank();
-    renderLimits();
-    renderNotify();
-    var v = walletView();
-    $("startSet").innerHTML = v.filter(function (x) { return !x.bank; }).map(function (x) {
-      return '<label class="f"><span>' + esc(x.w === "cash" ? "Cash on hand now" : x.name + " now") + '</span><input class="in n" type="text" inputmode="decimal" data-bal="' + x.w + '" value="' + moneyIn(balC(x.w)) + '"></label>';
-    }).join("") || '<p class="note">Every wallet is synced with your bank.</p>';
-    $("selfSet").innerHTML = '<label class="f"><span>Your name, for transfers to yourself</span><input class="in" type="text" data-set="selfName" autocomplete="name" autocapitalize="words" placeholder="As your bank shows it" value="' + esc(S.selfName || "") + '"></label>';
-    renderRules();
-    $("about").innerHTML = '<div class="row" style="border-top:0;padding-top:0"><span class="hd-mark" aria-hidden="true">' + document.querySelector(".hd-mark").innerHTML + '</span><span class="mid"><span class="t">Ride Quest</span><span class="s wrap">Version 2, a private build for saving toward your car</span></span></div>' +
-      '<p class="note" style="margin-top:8px">Your money data stays on this iPhone. Bank sync goes from this phone to SimpleFIN Bridge and back, nowhere else. Your car photo stays on this iPhone too.</p>';
-  }
 
   /* ---------- sheets ---------- */
-  var sheetReturn = null;
-  function openSheet(html, label) {
-    var p = $("spanel");
-    if ($("sheet").hidden) sheetReturn = document.activeElement;
-    p.innerHTML = '<div class="grab" aria-hidden="true"></div>' + html;
-    p.setAttribute("aria-label", label || "Details");
-    $("sheet").hidden = false;
-    document.documentElement.style.overflow = "hidden";
-    p.scrollTop = 0;
-    setTimeout(function () { var f = p.querySelector("[autofocus]") || p.querySelector("h2"); if (f) { if (!f.hasAttribute("tabindex") && f.tagName === "H2") f.setAttribute("tabindex", "-1"); try { f.focus({ preventScroll: true }); } catch (e) {} } }, 80);
-  }
-  function closeSheet() {
-    $("sheet").hidden = true; $("spanel").innerHTML = ""; document.documentElement.style.overflow = ""; editId = null;
-    if (sheetReturn && sheetReturn.isConnected) { try { sheetReturn.focus({ preventScroll: true }); } catch (e) {} }
-    sheetReturn = null;
-  }
   function sheetHead(title, close) { return '<div class="sh"><h2>' + title + '</h2><button class="lk" type="button" data-act="sheetclose">' + (close || "Close") + "</button></div>"; }
   function opts(list, val) { return list.map(function (x) { return '<option value="' + esc(x[0]) + '"' + (x[0] === val ? " selected" : "") + ">" + esc(x[1]) + "</option>"; }).join(""); }
   var ACCTS = [["checking", "Checking"], ["savings", "Car savings"], ["cash", "Cash"], ["paypal", "PayPal"], ["none", "Carried over"]];
@@ -3421,7 +4105,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     IMP = null;
     if (remind !== null) S.subAlerts = remind ? 1 : 0;
     closeSheet(); touch(); renderAll(); setTab("subs"); beep("up");
-    if (src === "paste") { $("sbPaste").value = ""; $("sbPasteMsg").textContent = "Imported."; }
+    if (src === "paste" && $("sbPaste")) { $("sbPaste").value = ""; $("sbPasteMsg").textContent = "Imported."; }
     toast("Imported: " + r.add + " added, " + r.upd + " updated" + (r.goal ? ", goal updated" : ""));
     if (r.trials && S.subAlerts) askNotify();
   }
@@ -3448,7 +4132,7 @@ details.det[open] > summary { margin-bottom: 8px; }
     if (!isFinite(apr) || apr < 0 || apr > 60) { sheetMsg(form, "Enter the APR as a percent, like 6.49."); return; }
     if (F.payoff.value && !/^\d{4}-\d{2}$/.test(F.payoff.value)) { sheetMsg(form, "Pick a payoff month, or leave it empty."); return; }
     var car = carState(), old = car.loan || {}, L = cleanLoan(old);
-    L.lender = F.lender.value.trim().slice(0, 60); L.pay = fromC(pay); L.day = day; L.apr = Math.round(apr * 1000) / 1000; L.payoff = F.payoff.value || ""; L.mt = F.mt.value.trim().slice(0, 120);
+    L.lender = F.lender.value.trim().slice(0, 60); L.pay = fromC(pay); L.day = day; L.apr = Math.round(apr * 1000) / 1000; if (F.apr.value.trim()) L.aprSet = 1; L.payoff = F.payoff.value || ""; L.mt = F.mt.value.trim().slice(0, 120);
     if (toC(old.bal || 0) !== bal || !old.at) { L.bal = fromC(bal); L.at = today(); }
     car.loan = L;
     closeSheet(); touch(); renderAll(); beep("coin"); toast("Car loan saved");
@@ -3852,6 +4536,7 @@ details.det[open] > summary { margin-bottom: 8px; }
         nn.quests["2026-01-02"][0] === "log" && nn.tx[0].zzz === 1 && nn.subs[0].extra === "keep" && nn.bills[0].memo === "keep" && nn.budgets[0].icon === "keep" && nn.extras === 0, nn);
       ok("Loading a saved state twice gives the same thing", JSON.stringify(norm(nn)) === JSON.stringify(nn));
       runChecks2(ok, day, tx, acc);
+      runChecks3(ok, day, tx, acc);
     } catch (e) { fails++; out.push("FAIL exception " + (e && (e.stack || e.message))); }
     S = keepS; BANK.st = keepSt; BANK.on = keepOn; mon = keepMon; mseg = keepSeg; mq = keepQ; mfilter = keepF; REC = keepRec; TESTING = false;
     if (loaded) { setTab(keepTab); renderAll(); }
@@ -3905,8 +4590,10 @@ details.det[open] > summary { margin-bottom: 8px; }
     ok("An old save without a photo shows the clean placeholder (one Add a photo button, no car art, no image)", !("photo" in nn.goal) && slot0.querySelector(".hph.empty") !== null && slot0.querySelectorAll("button").length === 1 &&
       /Add a photo of your car/.test(slot0.textContent) && slot0.querySelector("img") === null && !document.querySelector("#s-garage svg.car, #s-garage .gauge"), slot0.innerHTML.slice(0, 120));
     ok("The Car tab offers Add a photo when there is none", (setTab("car"), /Add a photo of your car/.test($("cGoal").textContent) && !$("cGoal").querySelector("img")));
+    setTab("money"); openActivity("");
+    ok("Money's Activity sheet lists the old purchases with clean names (PAYPAL *TACOSHOP shows as Tacoshop)", $("mList").textContent.indexOf("Tacoshop") >= 0 && $("mList").textContent.indexOf("PAYPAL") < 0 && /need/.test($("mLinks").textContent), $("mList").textContent.slice(0, 120));
+    closeSheet(true);
     setTab("garage");
-    ok("Money lists the old purchases with clean names (PAYPAL *TACOSHOP shows as Tacoshop)", (setTab("money"), $("mList").textContent.indexOf("Tacoshop") >= 0 && $("mList").textContent.indexOf("PAYPAL") < 0 && $("uncBox").hidden === false));
     ok("Subscriptions lists the old ones by category, with the bill (Rent) too", (setTab("subs"), /Streamflix/.test($("sbGroups").textContent) && /Rent/.test($("sbGroups").textContent) && /Streaming/.test($("sbGroups").textContent) && /Canceling/.test($("sbGroups").textContent)));
     ok("The saving streak counts weeks in a row with money into savings (2 here)", saveStreak() === 2 && /2-week saving streak/.test($("streak").textContent));
 
@@ -3920,7 +4607,9 @@ details.det[open] > summary { margin-bottom: 8px; }
     S = pn; PH.url = "data:image/gif;base64,R0lGODlhAQABAAAAACw="; PH.key = 5; PH.busy = false; PH.loading = false; REC = null; renderAll(); setTab("garage");
     var gi = $("gPhoto");
     ok("With a photo, the Garage hero shows it, framed where you left it, with no placeholder", !!gi && gi.style.objectPosition === "50% 30%" && !$("gPhotoSlot").querySelector(".hph.empty") && $("gPhotoSlot").querySelector(".tl") !== null, gi && gi.style.objectPosition);
-    ok("The Car tab then offers Change photo and Remove photo", (setTab("car"), /Change photo/.test($("cGoal").textContent) && /Remove photo/.test($("cGoal").textContent) && !!$("cPhoto")));
+    setTab("car"); openPhoto();
+    ok("The Car tab shows the photo; its sheet offers Change photo and Remove photo", !!$("cPhoto") && /Change photo/.test($("spanel").textContent) && /Remove photo/.test($("spanel").textContent));
+    closeSheet(true);
     PH.url = keepPH.url; PH.key = keepPH.key; PH.busy = keepPH.busy; PH.loading = keepPH.loading; $("gPhotoSlot").dataset.k = ""; setTab("garage");
 
     /* ===== a brand-new user: clean empty states, no stray numbers ===== */
@@ -4023,17 +4712,130 @@ details.det[open] > summary { margin-bottom: 8px; }
     REC = null; mon = cm; renderAll();
     var f = monthFlow(cm);
     ok("This month: in $1,000.00, out $65.00 ($40.00 spent + $25.00 paid out), net $935.00; the savings transfer is neither", f.inC === 100000 && f.spentC === 4000 && f.paidC === 2500 && f.outC === 6500 && f.netC === 93500 && f.saveC === 30000, f);
-    setTab("garage"); var gk = $("gMonth").querySelector(".ledger").textContent; setTab("money"); var mk = $("mSum").querySelector(".ledger").textContent;
-    ok("Garage and Money show the same in, out and net for the month", gk.indexOf("+$1,000.00") >= 0 && gk.indexOf(MINUS + "$65.00") >= 0 && gk.indexOf("+$935.00") >= 0 && mk.indexOf("+$1,000.00") >= 0 && mk.indexOf(MINUS + "$65.00") >= 0 && mk.indexOf("+$935.00") >= 0, [gk, mk]);
+    setTab("money"); var mk = $("mSum").textContent; openMonth(); var gk = $("spanel").querySelector(".ledger").textContent; closeSheet(true);
+    ok("Money's summary and its month sheet show the same in, out and net", gk.indexOf("+$1,000.00") >= 0 && gk.indexOf(MINUS + "$65.00") >= 0 && gk.indexOf("+$935.00") >= 0 && mk.indexOf("+$1,000.00") >= 0 && mk.indexOf(MINUS + "$65.00") >= 0 && mk.indexOf("+$935.00") >= 0, [gk, mk]);
+    var wd = whereData(cm), sl = 0; wd.cats.forEach(function (x) { sl += x.c; }); wd.neg.forEach(function (x) { sl += x.c; });
+    ok("Where it went adds up to money out exactly: Gas $40.00 (after the $0.10 refund) + paid out $25.00 = $65.00, savings transfer left out", wd.outC === 6500 && sl === 6500 && wd.cats.length === 2 && wd.cats[0].n === "Gas" && wd.cats[0].c === 4000 && wd.cats[1].k === "@out" && /\$65\.00/.test($("mWhere").textContent), wd.cats);
+    setTab("garage");
+    ok("The Garage spending tile shows the same $40.00 spent", /\$40\.00/.test($("gTiles").textContent), $("gTiles").textContent);
     setTab("subs");
     ok("Subscriptions: $45.48 a month against the $50.00 budget, $645.75 a year (12 x $45.48 + $99.99)", /\$45\.48/.test($("sbHead").textContent) && /\$4\.52 left/.test($("sbHead").textContent) && /\$645\.75/.test($("sbHead").textContent) && recurTotals(REC).perYearC === 1549 * 12 + 2999 * 12 + 9999, $("sbHead").textContent);
     var nx3 = upcomingList(3);
     ok("Next up is the soonest first, from the same list: Gym (tomorrow), Streamflix", nx3[0].n === "Gym" && nx3[1].n === "Streamflix" && nx3[0].d === addDays(t0, 1));
-    ok("Due tomorrow is highlighted with a word, not just color", (setTab("garage"), $("gNext").querySelector(".nx.soon") !== null && /Tomorrow/.test($("gNext").querySelector(".nx.soon").textContent)));
+    ok("Due tomorrow is highlighted with a word, not just color (Next up tile)", (setTab("garage"), /Gym, Tomorrow/.test($("gTiles").textContent) && $("gTiles").querySelector(".tile.warn") !== null), $("gTiles").textContent);
+    openUpcoming();
+    ok("The Next up sheet lists every upcoming charge, soonest first", $("spanel").querySelectorAll(".nx").length === upcomingList(0).length && $("spanel").querySelector(".nx.soon") !== null);
+    closeSheet(true);
     var n30 = upcomingCharges(REC, 30), end30 = addDays(t0, 30), gymN = 0, gd = addDays(t0, 1);
     while (gd <= end30) { gymN++; gd = addCycle(gd, "monthly"); }
     ok("The next 30 days list every charge in the window (soonest first) and leave out the yearly one due in 60 days", n30.every(function (o) { return o.it.n !== "Cloud" && o.d >= t0 && o.d <= end30; }) &&
       n30[0].it.n === "Gym" && n30[0].d === addDays(t0, 1) && n30.filter(function (o) { return o.it.n === "Gym"; }).length === gymN && n30.some(function (o) { return o.it.n === "Streamflix" && o.d === addDays(t0, 3); }), n30.map(function (o) { return o.it.n + " " + o.d; }));
+  }
+
+  /* Ride Quest 4 checks: banks besides SoFi (credit unions are banks, not cards), transfers between your banks, the car loan
+     from a loan account, statement files, and the 3D ring's numbers. All made-up names: "Bank A", "Credit Union A". */
+  function runChecks3(ok, day, tx, acc) {
+    var t0 = today(), cm = monthOf(t0);
+    ok("A credit union is a bank, not a credit card (its checking and savings count as yours)", !isCredit({ name: "SHARE DRAFT CHECKING", org: "Credit Union A", balance: 50 }) && !isCredit({ name: "Primary Share", org: "Mira Federal Credit Union", balance: 5 }) &&
+      !isCredit({ name: "Checking", org: "Example FCU", balance: 5 }) && isCredit({ name: "Visa Platinum", org: "Credit Union A", balance: -40 }) && isCredit({ name: "Rewards Card", org: "Bank A", balance: 10 }));
+    ok("Loan accounts are found by name (auto loan, vehicle loan) and never by a checking name", isLoanAcc({ name: "AUTO LOAN 0007", org: "Credit Union A" }) && isLoanAcc({ name: "New Vehicle 72mo", org: "Credit Union A" }) && !isLoanAcc({ name: "Checking", org: "Bank A" }));
+    ok("Account and bank names read clean", cleanAcct("SHARE DRAFT CHECKING x0001", "Credit Union A") === "Share Draft Checking ··0001" && cleanAcct("Checking ...4821", "Bank A") === "Checking ··4821" && cleanOrg("Mira Federal Credit Union") === "Mira FCU" && cleanOrg("Bank A, N.A.") === "Bank A",
+      [cleanAcct("SHARE DRAFT CHECKING x0001", "Credit Union A"), cleanAcct("Checking ...4821", "Bank A"), cleanOrg("Mira Federal Credit Union")]);
+    ok("Credit-union savings names land in savings (Share Savings, Money Market), Share Draft in checking", walletFor({ id: "q1", name: "Share Savings" }) === "savings" && walletFor({ id: "q2", name: "Money Market" }) === "savings" && walletFor({ id: "q3", name: "SHARE DRAFT" }) === "checking");
+
+    /* ===== two banks, one SimpleFIN token ===== */
+    function twoBanks() {
+      return { errors: [], accounts: [
+        acc("a-chk", "Checking ...4821", "Bank A", [tx("a1", 3, -54.12, "CHEVRON 0098"), tx("a2", 5, 400, "ACH DEPOSIT CREDIT UNION A XFER"), tx("a3", 6, -15.49, "NETFLIX.COM"), tx("a4", 7, 24.99, "AMAZON MKTPLACE REFUND"), tx("a5", 9, -129.99, "AMAZON MKTPLACE")], 1842.17),
+        acc("a-sav", "Savings", "Bank A", [], 820),
+        acc("b-chk", "SHARE DRAFT CHECKING x0001", "Credit Union A", [tx("b1", 2, 1186.42, "ACME LOGISTICS PAYROLL DIR DEP"), tx("b2", 5, -400, "TRANSFER TO BANK A"), tx("b3", 4, -150, "ONLINE TRANSFER TO SHARE SAVINGS"), tx("b4", 6, -412.58, "AUTO LOAN PMT TO LOAN 0007")], 2210.4),
+        acc("b-sav", "Car Fund Savings", "Credit Union A", [tx("c1", 4, 150, "ONLINE TRANSFER FROM SHARE DRAFT")], 8120.55),
+        acc("b-loan", "AUTO LOAN 0007", "Credit Union A", [tx("l1", 6, 412.58, "PAYMENT FROM SHARE DRAFT"), tx("l2", 1, -61.2, "INTEREST CHARGED")], -18412.66)] };
+    }
+    S = norm({ budgets: [{ n: "Gas", l: 200 }, { n: "Subscriptions", l: 50 }, { n: "Wants", l: 150 }] }); REC = null; BANK.on = true;
+    var res = twoBanks(), r = bankImport(res), rec = bankReconcile(res);
+    BANK.st = { connected: true, lastSync: day(0), accounts: res.accounts.map(function (a) { return { id: a.id, name: a.name, org: a.org, balance: a.balance, balanceDate: a.balanceDate }; }) };
+    var pay = S.moves.filter(function (m) { return m.from === "outside" && m.to === "checking"; });
+    ok("A paycheck at the credit union is income (+$1,186.42), not a refund", pay.length === 1 && toC(pay[0].amt) === 118642 && !S.tx.some(function (t) { return /ACME/.test(t.what); }), S.moves);
+    ok("$400.00 from the credit union to Bank A is a transfer between your own accounts: not income, not spending", !S.moves.some(function (m) { return m.from === "outside" && toC(m.amt) === 40000; }) && !S.tx.some(function (t) { return toC(t.amt) === 40000; }));
+    ok("Share Draft to Car Fund Savings ($150.00) is a move into car savings", S.moves.some(function (m) { return m.from === "checking" && m.to === "savings" && toC(m.amt) === 15000; }));
+    var lp = S.tx.filter(function (t) { return t.bank && t.bank.loan; });
+    ok("The car payment out of checking counts once, as spending in Car payment ($412.58), tied to the loan account", lp.length === 1 && toC(lp[0].amt) === 41258 && lp[0].cat === "Car payment" && lp[0].bank.lacc === "b-loan", lp);
+    ok("The loan account's own lines (the payment in, interest) are never purchases or income", !S.tx.some(function (t) { return t.bank && t.bank.acc === "b-loan"; }) && !S.moves.some(function (m) { return m.bank && m.bank.acc === "b-loan"; }));
+    ok("Purchases and the refund on Bank A come in as usual (refund lowers spending)", S.tx.some(function (t) { return /CHEVRON/.test(t.what) && toC(t.amt) === 5412; }) && S.tx.some(function (t) { return toC(t.amt) === -2499; }));
+    var wv = walletView(), wc = wv.filter(function (x) { return x.w === "checking"; })[0], ws = wv.filter(function (x) { return x.w === "savings"; })[0];
+    ok("Balances add up across banks: checking $1,842.17 + $2,210.40 = $4,052.57; savings $820.00 + $8,120.55 = $8,940.55", rec && wc.c === 405257 && ws.c === 894055, [wc, ws]);
+    var ln = loanAcc("b-loan");
+    ok("The loan's balance owed is kept exactly ($18,412.66) with the payment it saw", ln && ln.c === 1841266 && ln.pays.length === 1 && ln.pays[0].c === 41258, ln);
+    var ag = accountGroups();
+    ok("Accounts are grouped by bank: Bank A (2), Credit Union A (checking, savings, loan)", ag.groups.length === 2 && ag.groups[0].org === "Bank A" && ag.groups[0].rows.length === 2 && ag.groups[1].rows.length === 3 && ag.groups[1].rows.some(function (x) { return x.role === "Loan" && x.c === -1841266; }), ag.groups.map(function (g) { return g.org + ":" + g.rows.map(function (x) { return x.n + "=" + x.c; }).join("|"); }));
+    var snap1 = JSON.stringify([S.tx.length, S.moves.length]), r2 = bankImport(twoBanks()); bankReconcile(twoBanks());
+    ok("Syncing the same lines again adds nothing", JSON.stringify([S.tx.length, S.moves.length]) === snap1 && !r2.added && !r2.inc, r2);
+    /* link the Car tab's loan */
+    ok("The loan account is offered first when linking", loanCandidates()[0].id === "b-loan");
+    var L = linkLoan("b-loan"), e = loanEff(L), li = loanInfo(e);
+    ok("Linking makes the car loan from the bank: balance $18,412.66, payment $412.58 on its day, lender Credit Union A", e.acc && toC(e.bal) === 1841266 && toC(e.pay) === 41258 && L.day === +addDays(t0, -6).slice(8, 10) && e.lender === "Credit Union A" && li.balC <= 1841266 && li.balC > 1841266 - 41258 * 2, { e: e, li: li });
+    ok("Last payment and next due come from the bank data", e.last && e.last.c === 41258 && e.last.d === addDays(t0, -6) && li.next > t0, e.last);
+    ok("With no APR, payments left are balance / payment (45)", li.left === Math.ceil(1841266 / 41258), li.left);
+    S.car.loan.apr = 6.5; li = loanInfo(loanEff(S.car.loan));
+    ok("Add the APR and the payoff counts interest too (more payments, interest left above $0.00)", li.left > 45 && li.intC > 0, li);
+    var res3 = twoBanks(); res3.accounts[4].balance = -17999.99; res3.accounts[4].transactions.push(tx("l3", 0, 412.58, "PAYMENT FROM SHARE DRAFT")); res3.accounts[2].transactions.push(tx("b9", 0, -412.58, "AUTO LOAN PMT TO LOAN 0007"));
+    bankImport(res3); bankReconcile(res3); e = loanEff(S.car.loan);
+    ok("The next sync updates the loan on its own: new balance $17,999.99, last payment today", toC(e.bal) === 1799999 && e.last.d === t0 && S.tx.filter(function (t) { return t.bank && t.bank.loan; }).length === 2, e);
+    ok("The car payment is in Next up and Cost to own", upcomingList(0).some(function (u) { return u.loan && u.c === 41258; }) && costToOwn().rows.some(function (x) { return x.k === "loan" && x.c === 41258; }));
+    renderAll(); setTab("car");
+    ok("The Car tab shows Linked, the bank's balance and the last payment", /Linked/.test($("cLoan").textContent) && /\$17,999\.99/.test($("cLoan").textContent) && /\$412\.58/.test($("cLoan").textContent), $("cLoan").textContent.slice(0, 200));
+
+    /* ===== a bank added later: its last 60 days come in once; older lines of the bank you had stay out ===== */
+    S = norm({ budgets: [{ n: "Gas", l: 200 }] }); REC = null;
+    var old = { accounts: [acc("a-chk", "Checking", "Bank A", [tx("o1", 40, -10, "SHELL 11"), tx("o2", 3, -20, "SHELL 12")], 500), acc("n-chk", "Checking", "Credit Union A", [tx("n1", 40, -30, "ARCO 3"), tx("n2", 3, -40, "ARCO 4")], 600)] };
+    var nw = {}; nw["n-chk"] = 1;
+    bankImport(old, { newAcc: nw, oldBefore: day(10) });
+    ok("A new bank's older lines come in; the old bank's older lines (outside the usual window) don't", S.tx.some(function (t) { return t.amt === 30; }) && S.tx.some(function (t) { return t.amt === 40; }) && S.tx.some(function (t) { return t.amt === 20; }) && !S.tx.some(function (t) { return t.amt === 10; }), S.tx.map(function (t) { return t.amt; }));
+
+    /* ===== statement files ===== */
+    var ofx = "OFXHEADER:100\nDATA:OFXSGML\n<OFX><SIGNONMSGSRSV1><SONRS><FI><ORG>Credit Union A<FID>1</FI></SONRS></SIGNONMSGSRSV1><BANKMSGSRSV1><STMTTRNRS><STMTRS><CURDEF>USD<BANKACCTFROM><BANKID>1<ACCTID>000123450001<ACCTTYPE>CHECKING</BANKACCTFROM><BANKTRANLIST>" +
+      "<STMTTRN><TRNTYPE>DEBIT<DTPOSTED>" + addDays(t0, -2).replace(/-/g, "") + "120000<TRNAMT>-23.45<FITID>F1<NAME>SAFEWAY #1460</STMTTRN>" +
+      "<STMTTRN><TRNTYPE>CREDIT<DTPOSTED>" + addDays(t0, -3).replace(/-/g, "") + "<TRNAMT>1,186.42<FITID>F2<NAME>ACME LOGISTICS<MEMO>PAYROLL</STMTTRN>" +
+      "<STMTTRN><TRNTYPE>DEBIT<DTPOSTED>" + addDays(t0, -4).replace(/-/g, "") + "<TRNAMT>-9.99<FITID>F3<NAME>SPOTIFY USA</STMTTRN>" +
+      "</BANKTRANLIST><LEDGERBAL><BALAMT>2210.40<DTASOF>" + t0.replace(/-/g, "") + "</LEDGERBAL></STMTRS></STMTTRNRS></BANKMSGSRSV1></OFX>";
+    var po = parseStatement(ofx, "export.qfx");
+    ok("An OFX/QFX statement reads: 3 lines to the cent, the bank's name, the last 4, the balance", !po.err && po.rows.length === 3 && po.rows[1].c === 118642 && po.rows[0].c === -2345 && po.org === "Credit Union A" && po.last4 === "0001" && po.balC === 221040 && po.kind === "bank", po);
+    S = norm({ budgets: [{ n: "Food / groceries", l: 300 }, { n: "Subscriptions", l: 30 }] }); REC = null;
+    var fr = fileImportApply(po, { key: po.acctKey, org: "Credit Union A", name: "Checking", kind: "bank", w: "checking", flip: false });
+    ok("Importing it files 2 purchases and 1 paycheck, sorted like bank sync", fr.added === 2 && fr.inc === 1 && S.tx.some(function (t) { return t.cat === "Food / groceries" && toC(t.amt) === 2345; }) && S.moves.some(function (m) { return m.from === "outside" && toC(m.amt) === 118642; }), fr);
+    var fr2 = fileImportApply(po, { key: po.acctKey, org: "Credit Union A", name: "Checking", kind: "bank", w: "checking", flip: false });
+    ok("Importing the same file again adds nothing; its balance shows with your accounts", fr2.added === 0 && fr2.inc === 0 && S.tx.length === 2 && (S.bankAcc || []).some(function (a) { return a.id === "file:" + po.acctKey && a.c === 221040; }), fr2);
+    var csv = "Posting Date,Description,Debit,Credit,Balance\n" + addDays(t0, -1).slice(5, 7) + "/" + addDays(t0, -1).slice(8) + "/" + addDays(t0, -1).slice(0, 4) + ",\"STARBUCKS, 2231\",5.75,,1000.00\n" +
+      addDays(t0, -2).slice(5, 7) + "/" + addDays(t0, -2).slice(8) + "/" + addDays(t0, -2).slice(0, 4) + ",DIRECT DEP ACME,,500.00,1005.75\n";
+    var pc = parseStatement(csv, "cu.csv");
+    ok("A CSV with Debit and Credit columns reads money out and in, and the newest running balance", !pc.err && pc.rows.length === 2 && pc.rows[0].c === -575 && pc.rows[1].c === 50000 && pc.balC === 100000 && pc.rows[0].desc === "STARBUCKS, 2231", pc);
+    var pc2 = parseStatement("Date,Description,Amount\n" + t0 + ",CARD PURCHASE,12.00\n" + t0 + ",CARD PURCHASE,12.00\n", "card.csv");
+    var sres = statementRes(pc2, { key: "k", flip: true, kind: "card" });
+    ok("Two identical lines on one day stay two; a card file with charges printed positive reads right with the flip", pc2.rows.length === 2 && pc2.rows[0].id !== pc2.rows[1].id && amtC(sres.accounts[0].transactions[0].amount) === -1200 && isCredit(sres.accounts[0]), sres.accounts[0]);
+    ok("PayPal's CSV is sent to the PayPal import, and a file without dates or amounts is refused", parseBankCSV("Date,Time,Name,Gross,Balance Impact\n").err === "paypal" && !!parseStatement("hello,world\n1,2", "x.csv").err);
+
+    /* ===== saved data with the new fields ===== */
+    var sv = norm({ bankLoans: [{ id: "x", n: "Loan", org: "CU", c: 100, at: 1, pays: [{ id: "p", d: "2026-01-01", c: 5 }], future: 1 }], fileAcc: { "file:k": { org: "CU", name: "Chk", kind: "bank", w: "checking", flip: 0 } }, car: { loan: { lender: "CU", pay: 1, day: 2, link: "x" }, reg: 0 } });
+    ok("Loans, imported accounts and the loan link load unchanged, twice the same", sv.bankLoans[0].future === 1 && sv.fileAcc["file:k"].w === "checking" && sv.car.loan.link === "x" && JSON.stringify(norm(sv)) === JSON.stringify(sv), sv);
+
+    /* ===== the 3D ring: colors follow the category, not its rank ===== */
+    S = norm({ budgets: [{ n: "Gas", l: 0 }, { n: "Fun", l: 0 }], tx: [{ id: "1", d: t0, cat: "Gas", what: "x", amt: 10, acct: "checking" }, { id: "2", d: t0, cat: "Fun", what: "y", amt: 30, acct: "checking" }] }); REC = null;
+    var w1 = whereData(cm), gasCol = w1.cats.filter(function (x) { return x.n === "Gas"; })[0].col;
+    S.tx[0].amt = 50; var w2 = whereData(cm);
+    ok("Ring colors follow the category, never its rank (Gas keeps its color when it moves to first)", w2.cats[0].n === "Gas" && w2.cats[0].col === gasCol && w1.cats[0].n === "Fun" && w1.cats[0].pct === 75 && w2.cats[0].pct === 62.5, [w1.cats, w2.cats]);
+    var many = norm({}); many.budgets = []; many.tx = [];
+    for (var q = 0; q < 11; q++) many.tx.push({ id: "m" + q, d: t0, cat: "C" + q, what: "w", amt: 11 - q, acct: "checking" });
+    S = many; var w3 = whereData(cm);
+    ok("More than 8 categories fold into Other (7 + Other), and the slices still add up", w3.slices.length === 8 && w3.slices[7].n === "Other" && w3.slices.reduce(function (s2, x) { return s2 + x.c; }, 0) === w3.outC, w3.slices.map(function (x) { return x.n + x.c; }));
+
+    /* ===== sheets return to where you were ===== */
+    S = norm({ tx: [{ id: "e1", d: t0, cat: "Gas", what: "Fuel", amt: 10, acct: "checking" }] }); REC = null; mon = cm; renderAll();
+    openActivity(""); openEdit("e1");
+    var inEdit = /Save/.test($("spanel").textContent); closeSheet();
+    ok("Opening an entry from Activity and going back returns to Activity", inEdit && !$("sheet").hidden && !!$("mList") && /Fuel/.test($("mList").textContent));
+    closeSheet(true);
+    ok("Closing for good closes every sheet", $("sheet").hidden);
   }
 
   /* the photo store, on a made-up picture under its own key (your car photo is never read, changed or removed) */
@@ -4070,8 +4872,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     if (tab === "money") renderMoney();
     else if (tab === "subs") renderSubs();
     /* don't rebuild fields while you're typing in one (it would close the keyboard); refresh what they feed */
-    else if (tab === "car") { if (typingIn("s-car")) { renderLoanCard(); renderCostCard(); } else renderCar(); }
-    else if (tab === "more") { if (typingIn("s-more")) { $("limTot").textContent = fmtC(totalBudgetC()) + " a month"; renderBank(); } else renderMore(); }
+    else if (tab === "car") renderCar();
+    else if (tab === "more") renderMore();
   }
   function setTab(n) {
     var a = TAB_ALIAS[String(n || "")] || String(n || ""), seg = "";
@@ -4094,6 +4896,8 @@ details.det[open] > summary { margin-bottom: 8px; }
     renderStatus();
     renderGarage();
     renderTab();
+    /* an open sheet keeps its fields (no keyboard closing); only its live parts refresh */
+    renderBank(); renderLimits();
     syncWidget(); scheduleRecap(); scheduleSubReminders();
   }
   window.addEventListener("scroll", function () { var h = $("hd"); if (h) h.classList.toggle("lined", window.scrollY > 4); }, { passive: true });
@@ -4116,12 +4920,11 @@ details.det[open] > summary { margin-bottom: 8px; }
   function scrollToEl(id) { setTimeout(function () { var el = $(id); if (el) el.scrollIntoView({ block: "start", behavior: REDUCE ? "auto" : "smooth" }); }, 60); }
   function toggleSw(t) { t.setAttribute("aria-checked", t.getAttribute("aria-checked") === "true" ? "false" : "true"); haptic("select"); }
   function runAct(t) {
-    if (t.dataset.tab) { if (!$("sheet").hidden) closeSheet(); setTab(t.dataset.tab); return; }
+    if (t.dataset.tab) { if (!$("sheet").hidden) closeSheet(true); setTab(t.dataset.tab); return; }
     var a = t.dataset.act, id = t.dataset.id;
     if (a === "prev") { mon = shift(mon, -1); renderTab(); }
     else if (a === "next") { if (mon < monthOf(today())) { mon = shift(mon, 1); renderTab(); } }
     else if (a === "setmon") { mon = t.dataset.m; renderTab(); }
-    else if (a === "mseg") { mseg = t.dataset.v === "bud" ? "bud" : "act"; renderMoney(); }
     else if (a === "mfilt") { mfilter = t.dataset.v || ""; renderActivity(); }
     else if (a === "qa") qaOpen(t.dataset.m || "tx");
     else if (a === "qamode") { var keep = $("spanel").querySelector('[name="amt"]') ? $("spanel").querySelector('[name="amt"]').value : ""; qaPre = null; qaOpen(t.dataset.m); var a2 = $("spanel").querySelector('[name="amt"]'); if (a2) a2.value = keep; }
@@ -4145,11 +4948,37 @@ details.det[open] > summary { margin-bottom: 8px; }
     else if (a === "sbskip") { S.subSkip = (S.subSkip || []).concat([t.dataset.k]).slice(-200); touch(); renderAll(); }
     else if (a === "sbimport") sbImport();
     else if (a === "impgo") importGo(t);
-    else if (a === "goimport") { setTab("subs"); var dd = document.querySelector("#sbAdd details"); if (dd) dd.open = true; scrollToEl("sbAdd"); setTimeout(function () { try { $("sbPaste").focus({ preventScroll: true }); } catch (e) {} }, 400); }
-    else if (a === "catgo") { mon = t.dataset.m || monthOf(today()); mseg = "act"; mfilter = t.dataset.c; mq = ""; $("mQ").value = ""; setTab("money"); }
-    else if (a === "gomoney") { mon = monthOf(today()); mseg = "act"; mfilter = ""; setTab("money"); }
-    else if (a === "gounc") { mseg = "act"; mon = monthOf(today()); setTab("money"); scrollToEl("uncBox"); }
-    else if (a === "editbudgets") { setTab("more"); scrollToEl("limBox"); }
+    else if (a === "goimport" || a === "pastesheet") openPaste();
+    else if (a === "catgo" || a === "cat") { if (t.dataset.m) mon = t.dataset.m; openCat(t.dataset.c, mon); if (a === "cat" && R3.data) { var si = -1; R3.data.slices.forEach(function (x, i) { if ((x.k || x.n) === t.dataset.c) si = i; }); if (si >= 0) { R3.sel = si; r3Draw(); } } }
+    else if (a === "gomoney") { mon = monthOf(today()); mfilter = ""; setTab("money"); }
+    else if (a === "gounc" || a === "uncsheet") openUnc();
+    else if (a === "editbudgets" || a === "limsheet") openMoreSheet("lim");
+    else if (a === "actsheet") { mq = ""; openActivity(t.dataset.f || ""); }
+    else if (a === "budsheet") openBudgets();
+    else if (a === "monthsheet") openMonth();
+    else if (a === "accsheet") openAccounts();
+    else if (a === "acct") openAcct(id);
+    else if (a === "upsheet") openUpcoming();
+    else if (a === "goalsheet") openGoal();
+    else if (a === "goaledit") openGoalEdit();
+    else if (a === "subnext") openSubNext();
+    else if (a === "foundsheet") openFound();
+    else if (a === "loansheet") openLoanSheet();
+    else if (a === "linksheet") openLinkSheet();
+    else if (a === "loanlink") { var Ln = linkLoan(id); closeSheet(true); touch(); renderAll(); setTab("car"); beep("coin"); toast("Car loan linked to " + (Ln.lender || "your bank")); }
+    else if (a === "loanunlink") arm(t, function () { var Lu = carState().loan; if (Lu) Lu.link = ""; closeSheet(true); touch(); renderAll(); toast("Unlinked. Your typed numbers stay."); });
+    else if (a === "banksheet") openMoreSheet("bank");
+    else if (a === "importsheet") openMoreSheet("import");
+    else if (a === "notifysheet") openMoreSheet("notify");
+    else if (a === "balsheet") openMoreSheet("bal");
+    else if (a === "selfsheet") openMoreSheet("self");
+    else if (a === "rulesheet") openMoreSheet("rule");
+    else if (a === "exportsheet") openMoreSheet("export");
+    else if (a === "mathsheet") openMoreSheet("math");
+    else if (a === "wipesheet") openMoreSheet("wipe");
+    else if (a === "bankfile") bankFilePick();
+    else if (a === "fileflip") { toggleSw(t); var fm2 = t.closest("form"), keepK = fm2 && fm2.elements.kind.value, keepO = fm2 && fm2.elements.org.value, keepN = fm2 && fm2.elements.name.value; openFileReview(t.getAttribute("aria-checked") === "true"); var fm3 = $("spanel").querySelector("form"); if (fm3 && keepK) { fm3.elements.kind.value = keepK; fm3.elements.org.value = keepO; fm3.elements.name.value = keepN; } }
+    else if (a === "dltx") dlTx(); else if (a === "dlmv") dlMv(); else if (a === "dlall") dlAll();
     else if (a === "setbal") { var w0 = t.dataset.w; setBalance(w0, w0 === "cash" ? "Cash" : wName(w0)); }
     else if (a === "budgetalerts") setBudgetAlerts(!S.budgetAlerts);
     else if (a === "weeklyrecap") setWeeklyRecap(!S.weeklyRecap);
@@ -4165,18 +4994,18 @@ details.det[open] > summary { margin-bottom: 8px; }
     else if (a === "recat") recatUnc();
     else if (a === "forgetrule") arm(t, function () { if (S.bankRules) delete S.bankRules[t.dataset.k]; touch(); renderRules(); toast("Forgot " + t.dataset.k); });
     else if (a === "delcat") arm(t, function () { S.budgets.splice(+t.dataset.i, 1); touch(); renderAll(); });
-    else if (a === "resetall") arm(t, function () { S.tx = []; S.moves = []; touch(); renderAll(); toast("All entries removed"); });
+    else if (a === "resetall") arm(t, function () { S.tx = []; S.moves = []; closeSheet(true); touch(); renderAll(); toast("All entries removed"); });
     else if (a === "bankpaste") bankPaste();
     else if (a === "banksync") bankSync(true);
     else if (a === "ppcsv") ppCsvPick();
-    else if (a === "banktoggle") { S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[id] = !S.bankIgnore[id]; touch(); renderAll(); if (!S.bankIgnore[id]) bankSync(true); }
+    else if (a === "banktoggle") { S.bankIgnore = S.bankIgnore || {}; S.bankIgnore[id] = !S.bankIgnore[id]; touch(); renderAll(); if (curSheet && /^Account /.test(curSheet.label)) openAcct(id); if (!S.bankIgnore[id]) bankSync(true); }
     else if (a === "bankoff") arm(t, function () { bankNative({ op: "simplefin", action: "disconnect" }).then(function () { BANK.msg = "Disconnected. Imported entries stay."; bankStatus(); }); });
     else if (a === "photopick") photoPick();
     else if (a === "photosheet") openPhoto();
     else if (a === "photodel") arm(t, photoRemove);
     else if (a === "phmove") { photoFrame(phY() + (+t.dataset.d || 0)); touch(); renderHero(); haptic("select"); }
     else if (a === "loanedit") openLoan();
-    else if (a === "loandel") arm(t, function () { carState().loan = null; closeSheet(); touch(); renderAll(); toast("Car loan removed"); });
+    else if (a === "loandel") arm(t, function () { carState().loan = null; closeSheet(true); touch(); renderAll(); toast("Car loan removed"); });
     else if (a === "regedit") openReg();
     else if (a === "regdel") arm(t, function () { carState().reg = 0; closeSheet(); touch(); renderAll(); toast("Registration removed"); });
   }
@@ -4186,8 +5015,11 @@ details.det[open] > summary { margin-bottom: 8px; }
   window.__shellOpen = function (n, q) {
     n = String(n || "");
     if (n === "import") { pendingImport = String(q == null ? "" : q); if (loaded) runPendingImport(); return; }
-    if (!$("sheet").hidden) closeSheet();
+    if (!$("sheet").hidden) closeSheet(true);
+    var al = TAB_ALIAS[n] || n;
     setTab(n);
+    /* old section names for the activity list and budgets open them as sheets */
+    if (al === "money:bud") setTimeout(openBudgets, 60); else if (al === "money:act" && n !== "money") setTimeout(function () { openActivity(""); }, 60);
     window.scrollTo(0, 0);
   };
   /* Screenshot launch flags from the app shell: #demo&sec=subs opens that section. */
@@ -4199,20 +5031,26 @@ details.det[open] > summary { margin-bottom: 8px; }
       try {
         if (k === "qa") qaSubmit(f); else if (k === "edit") editSubmit(f); else if (k === "sub") subSubmit(f); else if (k === "bill") billSubmit(f);
         else if (k === "subbud") subBudgetSubmit(f); else if (k === "loan") loanSubmit(f); else if (k === "reg") regSubmit(f);
+        else if (k === "cat") catSubmit(); else if (k === "fileimp") fileImportSubmit(f);
       } catch (err) { toast("Error: " + (err && err.message), true); diag("submit-exception", err && (err.stack || err.message)); }
     }
   });
-  $("catForm").addEventListener("submit", function (e) {
-    e.preventDefault();
+  function catSubmit() {
     var n = $("newCat").value.trim(), raw = $("newLim").value.trim(), c = raw ? parseC(raw) : 0;
     if (!n) { toast("Name the category.", true); return; }
     if (!isFinite(c) || c < 0) { toast("Enter a monthly limit like 75.00.", true); return; }
     if (S.budgets.some(function (b) { return b.n.toLowerCase() === n.toLowerCase(); })) { toast(n + " is already there.", true); return; }
     S.budgets.push({ n: n, l: fromC(c) }); $("newCat").value = ""; $("newLim").value = "";
-    touch(); renderAll(); toast("Added " + n);
-  });
+    touch(); renderAll(); renderLimits(); toast("Added " + n);
+  }
   var qTimer = null;
-  $("mQ").addEventListener("input", function () { clearTimeout(qTimer); qTimer = setTimeout(function () { mq = $("mQ").value; renderActivity(); }, 160); });
+  document.addEventListener("input", function (e) { if (e.target && e.target.id === "mQ") { clearTimeout(qTimer); qTimer = setTimeout(function () { mq = $("mQ") ? $("mQ").value : ""; renderActivity(); }, 160); } });
+  document.addEventListener("change", function (e) {
+    var t = e.target; if (!t || !t.dataset || !t.dataset.acctw) return;
+    var v = t.value; S.bankWallet = S.bankWallet || {}; S.bankWallet[t.dataset.acctw] = v === "savings" || v === "cash" ? v : "checking";
+    (S.bankAcc || []).forEach(function (x) { if (x.id === t.dataset.acctw) x.w = S.bankWallet[t.dataset.acctw]; });
+    touch(); renderSoon(); toast("Counts as " + acctRole(S.bankWallet[t.dataset.acctw]) + " now");
+  });
   /* a change event can fire while focus is moving to the next field: redraw right after, not in the middle of it */
   function renderSoon() { setTimeout(renderAll, 0); }
   document.addEventListener("change", function (e) {
@@ -4248,7 +5086,7 @@ details.det[open] > summary { margin-bottom: 8px; }
   /* ---------- downloads (CSV for Numbers or Excel, and a full JSON backup) ---------- */
   function csvCell(v) { v = String(v == null ? "" : v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
   function saveFile(name, data) {
-    var msg = $("dlMsg"), c = window.claude;
+    var msg = $("dlMsg") || {}, c = window.claude;
     if (!c || typeof c.use !== "function") { msg.textContent = "Downloads work in the Ride Quest app."; return; }
     c.use("downloads").then(function (dl) {
       if (!dl) { msg.textContent = "Downloads work in the Ride Quest app."; return; }
@@ -4259,15 +5097,15 @@ details.det[open] > summary { margin-bottom: 8px; }
   }
   function download(name, rows) { saveFile(name, rows.map(function (r) { return r.map(csvCell).join(","); }).join("\n")); }
   function money2(v) { return fromC(toC(v)).toFixed(2); }
-  $("dlTx").addEventListener("click", function () {
+  function dlTx() {
     download("ride-quest-purchases.csv", [["Date", "Category", "What you bought", "Amount spent", "Paid from", "Notes"]].concat(
       S.tx.slice().sort(byDateAsc).map(function (t) { return [t.d, t.cat, t.what, money2(t.amt), ALAB[t.acct] || t.acct, t.note]; })));
-  });
-  $("dlMv").addEventListener("click", function () {
+  }
+  function dlMv() {
     download("ride-quest-transfers.csv", [["Date", "From", "To", "Amount", "Note"]].concat(
       S.moves.slice().sort(byDateAsc).map(function (m) { return [m.d, ALAB[m.from] || m.from, ALAB[m.to] || m.to, money2(m.amt), m.note]; })));
-  });
-  $("dlAll").addEventListener("click", function () { saveFile("ride-quest-backup-" + today() + ".json", JSON.stringify({ app: "Ride Quest", savedAt: new Date().toISOString(), state: S }, null, 1)); });
+  }
+  function dlAll() { saveFile("ride-quest-backup-" + today() + ".json", JSON.stringify({ app: "Ride Quest", savedAt: new Date().toISOString(), state: S }, null, 1)); }
 
   setStatus("load");
   boot();
