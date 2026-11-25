@@ -1,0 +1,6 @@
+OK    11-moreapps  -demo -pro -tab stats -open moreapps  (50s, 219 MB)  [7 error/fault log lines]
+OK    12-lifetime-largetype  -demo -pro -open lifetime  (71s, 200 MB)  [2 error/fault log lines]
+OK    13-recap-largetype  -demo -pro -open recap  (85s, 197 MB)  [37 error/fault log lines]
+OK    14-history-largetype  -demo -pro -tab history  (32s, 191 MB)  [2 error/fault log lines]
+OK    19-intro  -demo -roamrIntro  (45s, 283 MB)  [5 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 12 min

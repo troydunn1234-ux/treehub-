@@ -1,0 +1,17 @@
+[00:00] shard s3: iPhone screens 11-moreapps, 12-lifetime-largetype, 13-recap-largetype, 14-history-largetype, 19-intro; Watch screens no
+[00:14] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 41.1 on 4 cpus; ~9633 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 100.7% 15 MB, trustd 60.2% 11 MB, provjobd1776175617 37.5% 27 MB
+[00:14]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:02]   ... still on simctl bootstatus -b (102s); load 295.7 on 4 cpus; ~7424 MB free; swap 0 MB; busiest: diagnosticd 61.3% 111 MB, intelligenceplatformd 59.1% 87 MB, diagnosticd 56.1% 7 MB
+[05:08]   ... still on simctl bootstatus -b (166s); load 196.0 on 4 cpus; ~6581 MB free
+[06:08] iPhone simulator booted in 351s; load 682.5 on 4 cpus; ~6005 MB free; swap 0 MB; busiest: STExtractionService 100.9% 41 MB, diagnosticd 65.5% 124 MB, diagnosticd 33.5% 8 MB
+[07:42] OK    11-moreapps  -demo -pro -tab stats -open moreapps  (50s, 219 MB)
+[07:45]   load 789.6 on 4 cpus; ~5804 MB free; swap 0 MB; busiest: backboardd 94.0% 113 MB, diagnosticd 75.8% 124 MB, diagnosticd 35.0% 8 MB
+[09:04] OK    12-lifetime-largetype  -demo -pro -open lifetime  (71s, 200 MB)
+[09:05]   load 406.0 on 4 cpus; ~5805 MB free; swap 0 MB; busiest: diagnosticd 77.7% 98 MB, SpringBoard 49.7% 365 MB, diagnosticd 39.7% 7 MB
+[10:38] OK    13-recap-largetype  -demo -pro -open recap  (85s, 197 MB)
+[10:38]   load 240.9 on 4 cpus; ~5854 MB free; swap 0 MB; busiest: diagnosticd 62.4% 133 MB, apsd 35.1% 53 MB, SpringBoard 33.5% 387 MB
+[11:17] OK    14-history-largetype  -demo -pro -tab history  (32s, 191 MB)
+[11:18]   load 161.6 on 4 cpus; ~5780 MB free; swap 0 MB; busiest: diagnosticd 66.5% 135 MB, (managedappdistri) 42.2% 5 MB, SpringBoard 41.6% 387 MB
+[12:07] OK    19-intro  -demo -roamrIntro  (45s, 283 MB)
+[12:08]   load 150.7 on 4 cpus; ~5743 MB free; swap 0 MB; busiest: SpringBoard 70.8% 388 MB, diagnosticd 59.7% 135 MB, backboardd 52.3% 120 MB
+[12:24]   app logs: 2988 lines for 5 screens
