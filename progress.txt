@@ -6,3 +6,5 @@
 [04:41] iPhone simulator booted in 257s; load 526.1 on 4 cpus; ~5782 MB free; swap 0 MB; busiest: NewsToday2 49.9% 215 MB, AccountSubscriber 43.8% 5 MB, launchd_sim 42.3% 34 MB
 [06:24]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (59s); load 678.1 on 4 cpus; ~6366 MB free; swap 0 MB; busiest: STExtractionService 92.2% 26 MB, diagnosticd 76.7% 123 MB, diagnosticd 60.1% 7 MB
 [07:25]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (120s); load 480.4 on 4 cpus; ~6412 MB free; swap 0 MB; busiest: diagnosticd 91.6% 123 MB, diagnosticd 46.3% 7 MB, mlhostd 34.7% 5 MB
+[10:28] OK    05b-activity-drive  -demo -pro -open activity -openDrive  (94s, 197 MB)
+[10:31]   load 265.1 on 4 cpus; ~5703 MB free; swap 0 MB; busiest: backboardd 85.1% 97 MB, diagnosticd 53.5% 132 MB, BackgroundShortcutRunner 42.8% 227 MB
