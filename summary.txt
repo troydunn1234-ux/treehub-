@@ -1,0 +1,2 @@
+OK    18-live-run-largetype  -demo -pro -autostart  (340s, 164 MB)  [46 error/fault log lines]
+1 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 12 min
