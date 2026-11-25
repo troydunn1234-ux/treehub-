@@ -179,9 +179,16 @@ def sh(*cmd, timeout=240):
 
 def pick(platform, prefer):
     best = None
-    try:
-        devs_by_rt = json.loads(sh("xcrun", "simctl", "list", "devices", "available", "-j", timeout=120).stdout)["devices"]
-    except Exception:
+    # On a fresh runner the first simctl call can sit for minutes while the simulator disk images mount: try again.
+    devs_by_rt = None
+    for attempt in range(4):
+        try:
+            devs_by_rt = json.loads(sh("xcrun", "simctl", "list", "devices", "available", "-j", timeout=120).stdout)["devices"]
+            break
+        except Exception:
+            say(f"  simctl list gave nothing (try {attempt + 1} of 4); {machine()}")
+            time.sleep(20)
+    if devs_by_rt is None:
         return None
     for rt, devs in devs_by_rt.items():
         if platform not in rt: continue

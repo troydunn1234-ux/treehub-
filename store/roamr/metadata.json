@@ -69,6 +69,7 @@
       "fresh": true
     }
   ],
+  "capture_shards": [["rm-1-live.png"], ["rm-2-drive.png"], ["rm-3-history.png", "rm-4-stats.png"], ["rm-5-track.png", "rm-6-trip.png"], ["paywall", "watch"]],
   "paywall": {
     "args": "-demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99",
     "wait": 14

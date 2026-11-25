@@ -17,6 +17,13 @@ metadata.json keys used (all optional except capture):
   "watch":    {"product": "RoamrWatch", "bundle": "com.troydunn.roamr.watchkitapp",
                "capture": [{"file": "w1.png", "args": "-demo", "wait": 6}]}   -> <out>/watch/
 
+  "capture_shards": [["rm-1-live.png"], ["rm-3-history.png", "rm-4-stats.png"], ["paywall", "watch"], ...]
+              (optional: listing.yml then takes the screenshots in short shards, one runner each; "paywall",
+              "watch" and "ipad" name those passes)
+
+Shards: with STORE_SHARD set, only the iPhone captures named in STORE_ONLY (comma-separated file names) are taken,
+and the paywall / iPad / Watch passes only when STORE_ONLY also names "paywall" / "ipad" / "watch".
+
 Writes raw iPhone shots to <out>/raw, watch shots to <out>/watch, the paywall to <out>/paywall.
 Only demo data is ever shown: every launch passes -demo.
 """
@@ -130,41 +137,52 @@ def shoot(udid, bundle, args, wait, path, route=None, section=None):
 
 
 fails = 0
+if os.environ.get("STORE_SHARD"):
+    only = {x.strip() for x in os.environ.get("STORE_ONLY", "").split(",") if x.strip()}
+    meta["capture"] = [c for c in meta.get("capture", []) if c["file"] in only]
+    for k in ("paywall", "watch", "ipad"):
+        if k not in only:
+            meta.pop(k, None)
+    if "ipad" not in only:
+        meta["_no_ipad"] = True
+    print(f"shard {os.environ['STORE_SHARD']}: {', '.join(c['file'] for c in meta['capture']) or 'no iPhone shots'}"
+          f"; passes: {', '.join(k for k in ('paywall', 'ipad', 'watch') if k in only) or 'none'}")
 bundle = meta["bundle"]
 app = os.path.join(products, "Release-iphonesimulator", meta["scheme"] + ".app")
 if not os.path.isdir(app):
     sys.exit(f"missing {app}")
 
 # ---- iPhone (largest Pro Max on the newest iOS)
-best = pick("iOS", lambda n: (n.startswith("iPhone"), "Pro Max" in n, "Pro" in n))
-udid = best[1]
-print("iPhone simulator:", best[2], best[3])
-boot(udid)
-sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100",
-   "--cellularBars", "4", "--wifiBars", "3", "--operatorName", "")
-sh("xcrun", "simctl", "install", udid, app, check=True)
-for svc in meta.get("grant", []):
-    sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
-if meta.get("location"):
-    sh("xcrun", "simctl", "location", udid, "set", meta["location"], quiet=True)
+if meta.get("capture") or meta.get("paywall"):
+    best = pick("iOS", lambda n: (n.startswith("iPhone"), "Pro Max" in n, "Pro" in n))
+    udid = best[1]
+    print("iPhone simulator:", best[2], best[3])
+    boot(udid)
+    sh("xcrun", "simctl", "status_bar", udid, "override", "--time", "9:41", "--batteryState", "charged", "--batteryLevel", "100",
+       "--cellularBars", "4", "--wifiBars", "3", "--operatorName", "")
+    sh("xcrun", "simctl", "install", udid, app, check=True)
+    for svc in meta.get("grant", []):
+        sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
+    if meta.get("location"):
+        sh("xcrun", "simctl", "location", udid, "set", meta["location"], quiet=True)
 
-for c in meta.get("capture", []):
-    if c.get("fresh"):  # start from a clean install (e.g. no trip left over from the previous shot)
+    for c in meta.get("capture", []):
+        if c.get("fresh"):  # start from a clean install (e.g. no trip left over from the previous shot)
+            sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
+            sh("xcrun", "simctl", "install", udid, app, check=True)
+            for svc in meta.get("grant", []):
+                sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
+        fails += not shoot(udid, bundle, c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "raw", c["file"]), c.get("route"), c.get("section"))
+
+    if meta.get("paywall"):
+        p = meta["paywall"]
+        # A fresh install so nothing (trial, purchase cache) is remembered.
         sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
         sh("xcrun", "simctl", "install", udid, app, check=True)
         for svc in meta.get("grant", []):
             sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
-    fails += not shoot(udid, bundle, c.get("args", "-demo"), c.get("wait", 7), os.path.join(out, "raw", c["file"]), c.get("route"), c.get("section"))
-
-if meta.get("paywall"):
-    p = meta["paywall"]
-    # A fresh install so nothing (trial, purchase cache) is remembered.
-    sh("xcrun", "simctl", "uninstall", udid, bundle, quiet=True)
-    sh("xcrun", "simctl", "install", udid, app, check=True)
-    for svc in meta.get("grant", []):
-        sh("xcrun", "simctl", "privacy", udid, "grant", svc, bundle, quiet=True)
-    fails += not shoot(udid, bundle, p["args"], p.get("wait", 7), os.path.join(out, "paywall", "iap-review.png"))
-sh("xcrun", "simctl", "shutdown", udid, quiet=True)
+        fails += not shoot(udid, bundle, p["args"], p.get("wait", 7), os.path.join(out, "paywall", "iap-review.png"))
+    sh("xcrun", "simctl", "shutdown", udid, quiet=True)
 
 # ---- iPad Pro 13-inch (2064x2752), only when the app runs on iPad (App Store Connect then requires a 13" set)
 import plistlib
@@ -173,7 +191,7 @@ try:
 except Exception as e:
     print("::warning::couldn't read UIDeviceFamily:", e); family = [1]
 print("UIDeviceFamily:", family)
-if 2 in family:
+if 2 in family and not meta.get("_no_ipad"):
     def ipad13():
         best = None
         for rt, devs in devices().items():

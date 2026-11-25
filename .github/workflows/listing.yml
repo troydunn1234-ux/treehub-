@@ -15,6 +15,10 @@ name: Update App Store listing
 # The captioned set lands on the store-shots-<app> branch (raw captures under raw/). Fill in the App Store page
 # with the same command and -f upload=true. Check the text and captions locally first (seconds, no simulator):
 #   python3 .github/scripts/store_lint.py            (every app; or pass store/<app>/metadata.json)
+# An app whose metadata.json has "capture_shards" (Roamr: its one-runner capture lost the runner on Nov 18 and 24)
+# is built once (shots-build), captured in short shards, one runner each (shots), and captioned, published and
+# (upload=true) sent from one finishing job (shots-finish), which lists any capture a lost shard never took in
+# missing.txt. Every other app runs in the single listing job as before.
 on:
   workflow_dispatch:
     inputs:
@@ -36,7 +40,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  pick:
+    runs-on: ubuntu-latest
+    outputs:
+      sharded: ${{ steps.p.outputs.sharded }}
+      shards: ${{ steps.p.outputs.shards }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: p
+        run: |
+          M=store/$(echo "${{ inputs.app }}" | tr A-Z a-z)/metadata.json
+          python3 - "$M" >> $GITHUB_OUTPUT <<'PY'
+          import json, sys
+          groups = json.load(open(sys.argv[1])).get("capture_shards") or []
+          shards = [{"shard": f"s{i}", "only": ",".join(g), "watch": "1" if "watch" in g else "0"}
+                    for i, g in enumerate(groups, 1)]
+          print("sharded=" + ("yes" if shards else "no"))
+          print("shards=" + json.dumps(shards or [{"shard": "none", "only": "", "watch": "0"}]))
+          PY
+          cat $GITHUB_OUTPUT
+
   listing:
+    needs: pick
+    if: needs.pick.outputs.sharded != 'yes'
     # Apple-silicon runner: the simulators run several times faster than on Intel, where Roamr's capture
     # (iPhone + 13-inch iPad + Watch) starved the runner until it "lost communication" (3 runs in a row).
     runs-on: macos-15-intel
@@ -137,4 +163,204 @@ jobs:
           cd "$TMP"; git init -q -b $BR
           git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
           git add -A; git commit -q -m "Store screenshots for ${GITHUB_SHA::7}"
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $BR
+
+  # ---- Sharded capture (apps with "capture_shards" in metadata.json)
+  shots-build:
+    needs: pick
+    if: needs.pick.outputs.sharded == 'yes'
+    runs-on: macos-15-intel
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick app settings
+        run: |
+          STORE=store/$(echo "${{ inputs.app }}" | tr A-Z a-z)
+          echo "STORE=$STORE" >> $GITHUB_ENV
+          echo "HAS_WATCH=$(python3 -c "import json;print('1' if json.load(open('$STORE/metadata.json')).get('watch') else '')")" >> $GITHUB_ENV
+
+      - name: Check the listing text and captions (App Store limits, wording, caption style)
+        run: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
+          python3 .github/scripts/store_lint.py $STORE/metadata.json
+
+      - name: Pick newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+
+      - name: Make sure the watchOS SDK is installed (Apple Watch apps)
+        if: env.HAS_WATCH == '1'
+        timeout-minutes: 20
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
+      - name: Generate Xcode project
+        timeout-minutes: 10
+        run: |
+          brew install xcodegen
+          for d in FoodBook QuestApp; do [ -f WebApps/$d/seed.json ] || echo '{}' > WebApps/$d/seed.json; done
+          if [ "${{ inputs.app }}" = RideQuest ]; then python3 store/ridequest/demo_seed.py > WebApps/QuestApp/seed.json; fi
+          xcodegen generate
+
+      - name: Build for the simulator
+        timeout-minutes: 30
+        run: |
+          set -o pipefail
+          xcodebuild build -project TreeHub.xcodeproj -scheme ${{ inputs.app }} \
+            -destination 'generic/platform=iOS Simulator' -configuration Release -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO | tee build.log | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          grep -q "BUILD SUCCEEDED" build.log || { grep -E "error:" build.log | head -30; exit 1; }
+
+      - name: Build the Apple Watch app for its simulator
+        if: env.HAS_WATCH == '1'
+        timeout-minutes: 15
+        run: |
+          W=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json'))['watch']['product'])")
+          if [ ! -d build/Build/Products/Release-watchsimulator/$W.app ]; then
+            xcodebuild build -project TreeHub.xcodeproj -target $W -sdk watchsimulator -configuration Release \
+              SYMROOT=$PWD/build/Build/Products CODE_SIGNING_ALLOWED=NO | grep -E "error:|BUILD (SUCCEEDED|FAILED)" || true
+          fi
+          ls -d build/Build/Products/Release-watchsimulator/*.app || true
+
+      - name: Pack the built apps for the shards
+        run: |
+          cd build/Build/Products
+          tar -czf "$GITHUB_WORKSPACE/listing-products.tgz" $(ls -d Release-iphonesimulator/*.app Release-watchsimulator/*.app 2>/dev/null)
+          ls -lh "$GITHUB_WORKSPACE/listing-products.tgz"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: listing-build-${{ inputs.app }}
+          path: listing-products.tgz
+          retention-days: 1
+
+  shots:
+    needs: [pick, shots-build]
+    if: needs.pick.outputs.sharded == 'yes'
+    name: shots (${{ matrix.shard }} ${{ matrix.only }})
+    runs-on: macos-15-intel
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      max-parallel: 3
+      matrix:
+        include: ${{ fromJson(needs.pick.outputs.shards) }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick newest Xcode
+        run: sudo xcode-select -s "$(ls -d /Applications/Xcode_*.app | sort -V | tail -1)"
+
+      - name: Make sure the watchOS simulator is installed
+        if: matrix.watch == '1'
+        timeout-minutes: 20
+        run: xcodebuild -showsdks | grep -q watchos || xcodebuild -downloadPlatform watchOS
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: listing-build-${{ inputs.app }}
+
+      - name: Unpack the built apps
+        run: mkdir -p build/Build/Products && tar -xzf listing-products.tgz -C build/Build/Products && ls build/Build/Products/*
+
+      - name: Screenshots for this shard (demo data only)
+        timeout-minutes: 28
+        env:
+          PYTHONUNBUFFERED: "1"
+          STORE_SHARD: ${{ matrix.shard }}
+          STORE_ONLY: ${{ matrix.only }}
+        run: |
+          pip3 install --quiet --break-system-packages pillow || pip3 install --quiet pillow || true
+          # Keep GitHub's runner processes ahead of the simulator (a starved runner "loses communication").
+          for p in $(pgrep -f 'Runner\.(Listener|Worker)'); do sudo renice -n -10 -p "$p" > /dev/null || true; done
+          python3 .github/scripts/store_capture.py store/$(echo "${{ inputs.app }}" | tr A-Z a-z)/metadata.json build/Build/Products shots
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: listing-shots-${{ inputs.app }}-${{ matrix.shard }}
+          path: shots/
+          if-no-files-found: ignore
+          retention-days: 3
+
+  shots-finish:
+    needs: [pick, shots-build, shots]
+    if: ${{ always() && needs.pick.outputs.sharded == 'yes' && needs.shots-build.result == 'success' }}
+    runs-on: macos-15-intel
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick app settings
+        run: |
+          STORE=store/$(echo "${{ inputs.app }}" | tr A-Z a-z)
+          echo "STORE=$STORE" >> $GITHUB_ENV
+          echo "BUNDLE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json'))['bundle'])")" >> $GITHUB_ENV
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: listing-shots-${{ inputs.app }}-*
+          path: shots
+          merge-multiple: true
+
+      - name: List captures a lost shard never took
+        run: |
+          mkdir -p shots/raw shots/watch shots/paywall
+          python3 - $STORE/metadata.json <<'PY' | tee missing.txt
+          import json, os, sys
+          m = json.load(open(sys.argv[1]))
+          want = [os.path.join("shots/raw", c["file"]) for c in m.get("capture", [])]
+          want += [os.path.join("shots/watch", c["file"]) for c in (m.get("watch") or {}).get("capture", [])]
+          if m.get("paywall"):
+              want.append("shots/paywall/iap-review.png")
+          for p in want:
+              if not os.path.exists(p):
+                  print("MISSING", p)
+          PY
+          if [ -s missing.txt ]; then echo "::warning::$(wc -l < missing.txt | tr -d ' ') store screenshot(s) missing (a shard was lost); re-run failed jobs"; fi
+
+      - name: Caption the iPhone screenshots
+        run: |
+          pip3 install --quiet --break-system-packages pillow "pyjwt[crypto]" || pip3 install --quiet pillow "pyjwt[crypto]"
+          python3 .github/scripts/marketing_shots.py $STORE/metadata.json shots/raw store-shots
+          if ls shots/ipad/*.png >/dev/null 2>&1; then
+            python3 .github/scripts/marketing_shots.py $STORE/metadata.json shots/ipad store-shots-ipad --ipad
+          fi
+
+      - name: Fill in the App Store page
+        # Only with every screenshot there: a partial set would replace the live one.
+        if: inputs.upload && needs.shots.result == 'success'
+        env:
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          KID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          [ -s missing.txt ] && { echo "::error::screenshots missing, not uploading"; exit 1; }
+          mkdir -p ~/private_keys
+          printf '%s\n' "$P8" > ~/private_keys/AuthKey_${KID}.p8
+          export KEY_PATH=$HOME/private_keys/AuthKey_${KID}.p8
+          python3 .github/scripts/asc_listing.py $BUNDLE $STORE/metadata.json store-shots shots/watch store-shots-ipad || echo "::warning::listing step failed"
+          PRICE=$(python3 -c "import json;print(json.load(open('$STORE/metadata.json')).get('price',''))")
+          [ -n "$PRICE" ] && { python3 .github/scripts/asc_price.py $BUNDLE $PRICE || echo "::warning::price step failed"; }
+          python3 .github/scripts/asc_ready.py $BUNDLE $STORE/metadata.json || echo "::warning::ready step failed"
+          if [ -f shots/paywall/iap-review.png ]; then
+            FORCE=1 python3 .github/scripts/asc_review_shots.py $BUNDLE shots/paywall/iap-review.png || echo "::warning::review screenshot step failed"
+          fi
+
+      - name: Remove key
+        if: always()
+        run: rm -rf ~/private_keys
+
+      - name: Publish the screenshots to the store-shots-<app> branch
+        if: always()
+        run: |
+          [ -d shots ] || exit 0
+          TMP=$(mktemp -d); mkdir -p "$TMP/raw"
+          cp -R store-shots/. "$TMP"/ 2>/dev/null || true
+          [ -d store-shots-ipad ] && { mkdir -p "$TMP/ipad"; cp -R store-shots-ipad/. "$TMP/ipad"/; } || true
+          cp -R shots/. "$TMP/raw"/ 2>/dev/null || true
+          cp missing.txt "$TMP/missing.txt" 2>/dev/null || true
+          BR=store-shots-$(echo "${{ inputs.app }}" | tr A-Z a-z)
+          cd "$TMP"; git init -q -b $BR
+          git config user.name "TreeHub CI"; git config user.email "ci@users.noreply.github.com"
+          git add -A; git commit -q -m "Store screenshots for ${GITHUB_SHA::7} (sharded)"
           git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" $BR
