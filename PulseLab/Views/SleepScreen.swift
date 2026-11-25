@@ -33,6 +33,10 @@ struct SleepScreen: View {
                     Spacer()
                     SourceChip(source: .watch)
                 }
+                if let n = store.lastNight(.watch), n.asleepMin > 0 {
+                    Text(n.windowLine).font(.footnote).foregroundStyle(Lab.dim)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
                 if store.hypnogram.isEmpty {
                     EmptyNote(text: "Wear your Apple Watch to bed with Sleep turned on to see stages here.", symbol: "moon.zzz", title: "No stages from last night")
                 } else {
@@ -119,7 +123,7 @@ struct SleepScreen: View {
             }
         }
         return LabChartTooltip(title: LabChartTooltip.dayTitle(day), lines: lines,
-                               note: n.map { String(localized: "Asleep \(fmtHM($0.asleepMin))") })
+                               note: n.map { String(localized: "Asleep \(fmtHM($0.asleepMin))") + "\n" + $0.windowLine })
     }
 
     private var averages: some View {
@@ -136,6 +140,9 @@ struct SleepScreen: View {
                 VSRow(title: "REM", unit: "min", watch: avg(.watch) { $0.remMin }, whoop: avg(.whoop) { $0.remMin })
                 Divider().overlay(Lab.line)
                 VSRow(title: "Efficiency", unit: "%", watch: effAvg(.watch), whoop: effAvg(.whoop))
+                Text("Asleep counts each minute once, even when several apps or devices wrote the same night, and only the main sleep of each night: naps and the iPhone's Sleep-schedule \u{201C}in bed\u{201D} time are left out. Nights a tracker missed are skipped, not counted as zero.")
+                    .font(.footnote).foregroundStyle(Lab.faint)
+                    .fixedSize(horizontal: false, vertical: true)
                 Text("Trackers split light vs deep sleep differently, so deep and REM minutes rarely match exactly. Watch the trend, not the single night.")
                     .font(.footnote).foregroundStyle(Lab.faint)
                     .fixedSize(horizontal: false, vertical: true)

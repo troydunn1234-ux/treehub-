@@ -156,7 +156,7 @@ struct TodayScreen: View {
                 Divider().overlay(Lab.line)
                 h2hRow("HRV", "ms", .hrv,
                        store.reading(.watch, \.hrv, recent: "hrv"), store.reading(.whoop, \.hrv, manual: .hrv),
-                       note: "SDNN vs RMSSD",
+                       note: "SDNN vs RMSSD", comparable: false,
                        watchHint: String(localized: "Wear your Watch to bed for overnight HRV"), whoopHint: String(localized: "Not in yet"))
                 Divider().overlay(Lab.line)
                 h2hRow("Respiratory", "br/min", .resp,
@@ -180,7 +180,7 @@ struct TodayScreen: View {
     }
 
     private func h2hRow(_ title: String, _ unit: String, _ m: MetricKey, _ w: LabStore.Reading?, _ h: LabStore.Reading?,
-                        decimals: Int = 0, note: String? = nil, watchHint: String, whoopHint: String,
+                        decimals: Int = 0, note: String? = nil, comparable: Bool = true, watchHint: String, whoopHint: String,
                         edit: WhoopQuickEdit? = nil) -> some View {
         let f: (Double) -> String = { $0.formatted(.number.precision(.fractionLength(decimals))) }
         return VStack(alignment: .leading, spacing: 6) {
@@ -194,7 +194,8 @@ struct TodayScreen: View {
             HStack(alignment: .top, spacing: Lab.S.s) {
                 h2hSide(w, .watch, unit, f, hint: watchHint)
                     .frame(maxWidth: .infinity, alignment: .leading)
-                if let w, let h {
+                // HRV: SDNN and RMSSD are different measures, so a "gap" between them would mean nothing.
+                if comparable, let w, let h {
                     DeltaPill(value: w.value - h.value, decimals: decimals)
                         .padding(.top, 8)
                         .accessibilityHidden(true)
@@ -358,6 +359,11 @@ struct TodayScreen: View {
             Text(fmtHM(n?.asleepMin)).font(Lab.number(26)).foregroundStyle(n == nil ? Lab.faint : Lab.color(s))
                 .contentTransition(.numericText())
             Text(n == nil ? "No night recorded" : "Asleep").font(.caption).foregroundStyle(Lab.faint)
+            if let n {
+                Text(n.windowLine).font(.caption2).foregroundStyle(Lab.faint)
+                    .multilineTextAlignment(s == .watch ? .leading : .trailing)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
             HStack(spacing: 8) {
                 stat("DEEP", n?.deepMin)
                 stat("REM", n?.remMin)

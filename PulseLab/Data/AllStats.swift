@@ -167,9 +167,9 @@ enum AllStats {
         ]
         let sleep: [StatDef] = [
             StatDef(id: "asleep", section: .sleep, title: "Time asleep", unit: "h", decimals: 1,
-                    note: "Light + deep + REM, credited to the morning you woke up.", read: nights { $0.asleepMin > 0 ? $0.asleepMin / 60 : nil }),
+                    note: "Light + deep + REM, each minute counted once even when several apps wrote it, main sleep only (naps left out), credited to the morning you woke up.", read: nights { $0.asleepMin > 0 ? $0.asleepMin / 60 : nil }),
             StatDef(id: "inBed", section: .sleep, title: "Time in bed", unit: "h", decimals: 1,
-                    note: "In bed (or asleep + awake when the tracker doesn't log in-bed time).",
+                    note: "Apple Watch: asleep + awake through the night as the Watch measured it (the iPhone's Sleep-schedule time is left out). WHOOP: its own in-bed time.",
                     read: nights { n in let b = max(n.inBedMin, n.asleepMin + n.awakeMin); return b > 0 ? b / 60 : nil }),
             StatDef(id: "deep", section: .sleep, title: "Deep sleep", unit: "min", note: "Slow-wave sleep.", read: nights { $0.deepMin > 0 ? $0.deepMin : nil }),
             StatDef(id: "rem", section: .sleep, title: "REM sleep", unit: "min", note: "Dream sleep.", read: nights { $0.remMin > 0 ? $0.remMin : nil }),

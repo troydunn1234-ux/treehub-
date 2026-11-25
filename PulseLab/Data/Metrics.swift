@@ -57,10 +57,12 @@ struct DayStat: Identifiable, Equatable, Codable {
     var totalKcalWhoop: Double?  // WHOOP gives one total for the cycle
     var maxHR: Double?           // WHOOP cycle peak heart rate
 
+    /// Total energy: WHOOP's own cycle total, else active + resting. Both halves are needed: active energy on its
+    /// own (e.g. a tracker that writes only active energy to Health) is not a total and would read ~1,700 kcal low.
     var totalKcal: Double? {
         if let t = totalKcalWhoop { return t }
-        guard activeKcal != nil || basalKcal != nil else { return nil }
-        return (activeKcal ?? 0) + (basalKcal ?? 0)
+        guard let a = activeKcal, let b = basalKcal else { return nil }
+        return a + b
     }
 
     init(day: Date) { self.day = day }
@@ -106,6 +108,21 @@ struct SleepNight: Identifiable, Equatable, Codable {
     }
     func minutes(_ s: SleepStage) -> Double {
         switch s { case .awake: awakeMin; case .rem: remMin; case .core: coreMin + unspecifiedMin; case .deep: deepMin }
+    }
+}
+
+extension SleepNight {
+    /// Where and when the number came from, so it can be checked against the Health app:
+    /// "Last night 11:42 PM – 7:05 AM · Apple Watch" (older nights: "Woke up Mon, Nov 23 11:42 PM – 7:05 AM · …").
+    var windowLine: String {
+        let cal = Calendar.current
+        let when: String
+        if cal.isDateInToday(night) { when = String(localized: "Last night") }
+        else { when = String(localized: "Woke up \(night.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()))") }
+        guard let start, let end else { return "\(when) · \(source.name)" }
+        let t: (Date) -> String = { $0.formatted(date: .omitted, time: .shortened) }
+        let sep = cal.isDateInToday(night) ? " " : " · "
+        return "\(when)\(sep)\(t(start)) – \(t(end)) · \(source.name)"
     }
 }
 

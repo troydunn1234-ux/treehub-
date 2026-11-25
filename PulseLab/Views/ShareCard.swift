@@ -37,7 +37,7 @@ struct VSShareCard: View {
                 }
                 VStack(spacing: 26) {
                     row("RESTING HR", "bpm", watch?.rhr, whoop?.rhr, 0)
-                    row("HRV", "ms", watch?.hrv, whoop?.hrv, 0)
+                    row("HRV", "SDNN ms · RMSSD ms", watch?.hrv, whoop?.hrv, 0)
                     row("SLEEP", "h", watchSleep.map { $0.asleepMin / 60 }, whoopSleep.map { $0.asleepMin / 60 }, 1)
                     row("CALORIES", "kcal", watch?.totalKcal, whoop?.totalKcal, 0)
                 }

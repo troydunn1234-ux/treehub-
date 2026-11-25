@@ -22,15 +22,16 @@ struct ReadinessSheet: View {
                         ScreenTitle(kicker: "Apple Watch", title: "Readiness")
                         CloseButton { dismiss() }
                     }
-                    if let d = detail {
+                    if let d = detail, d.hasBaseline {
                         hero(d)
                         breakdown(d)
                         if !d.missing.isEmpty { missingCard(d.missing) }
                     } else {
                         emptyCard
+                        if let d = detail, !d.missing.isEmpty { missingCard(d.missing) }
                     }
-                    trendCard(today: detail?.score)
-                    whoopCard(today: detail?.score)
+                    trendCard(today: store.readinessToday)
+                    whoopCard(today: store.readinessToday)
                     howCard
                     Text("Readiness is a general wellness estimate, not medical advice.")
                         .font(.footnote).foregroundStyle(Lab.faint)
@@ -210,7 +211,7 @@ struct ReadinessSheet: View {
             VStack(spacing: Lab.S.sm) {
                 SymbolTile(symbol: "applewatch", tint: Lab.watch, size: 52)
                 Text("No readiness yet").font(.title3.weight(.bold)).foregroundStyle(Lab.text)
-                Text("Readiness needs HRV or resting heart rate from your Watch in the last day. Wear your Watch to sleep for overnight HRV and sleep, and it fills in each morning.")
+                Text("Not enough data yet. Readiness needs HRV or resting heart rate from your Watch in the last day, plus at least 3 earlier days to compare it with. Wear your Watch to sleep and it fills in.")
                     .font(.subheadline).foregroundStyle(Lab.dim)
                     .multilineTextAlignment(.center)
                     .fixedSize(horizontal: false, vertical: true)

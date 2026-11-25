@@ -8,6 +8,10 @@ final class HealthPull: @unchecked Sendable {
     let store = HKHealthStore()
 
     static var available: Bool { HKHealthStore.isHealthDataAvailable() }
+    /// Bump when the way saved days / nights are worked out changes: the saved history is then re-read once in
+    /// place (LabStore), without clearing it. 2: sleep is the union of one tracker's asleep samples, main session
+    /// only; Apple-side totals leave WHOOP out by query; heart metrics never borrow another app's readings.
+    static let mathVersion = 2
 
     /// Quantity types we read, with how to aggregate a day and the unit we keep.
     struct QSpec {
@@ -63,12 +67,14 @@ final class HealthPull: @unchecked Sendable {
         return all
     }()
 
-    /// Metrics the Watch doesn't measure itself (scales, food apps, the Health app): when no Watch sample
-    /// exists for a day, the Apple side uses whatever else is in Health instead of showing a gap.
+    /// Metrics the Watch doesn't measure itself (scales, food apps, the Health app, the iPhone's walking metrics):
+    /// when no Watch sample exists for a day, the Apple side uses whatever else is in Health instead of a gap
+    /// (the Sources screen names where it came from). Heart, HRV, breathing, blood oxygen and VO₂ max are NOT
+    /// here: another app's reading shown under "Apple Watch" would be a wrong head-to-head, so those show
+    /// "no reading" when the Watch has none.
     static let fallbackToAnySource: Set<HKQuantityTypeIdentifier> = [
-        .bodyMass, .bodyFatPercentage, .leanBodyMass, .bodyMassIndex, .height, .vo2Max, .oxygenSaturation,
-        .respiratoryRate, .walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, .walkingDoubleSupportPercentage,
-        .walkingHeartRateAverage, .restingHeartRate, .heartRateVariabilitySDNN, .heartRate,
+        .bodyMass, .bodyFatPercentage, .leanBodyMass, .bodyMassIndex, .height,
+        .walkingSpeed, .walkingStepLength, .walkingAsymmetryPercentage, .walkingDoubleSupportPercentage,
     ]
 
     var readTypes: Set<HKObjectType> {
@@ -106,15 +112,15 @@ final class HealthPull: @unchecked Sendable {
 
     // MARK: - Source tagging
 
-    /// WHOOP samples carry WHOOP's bundle id / name. Everything from an Apple Watch says "Watch"
-    /// in the device or source name. iPhone-only samples are neither.
+    /// WHOOP samples carry WHOOP's bundle id / name. Apple Watch samples come from Apple's per-Watch source.
+    /// iPhone-only samples and third-party apps are neither (a third-party app called "… Watch" is not a Watch).
     enum Origin { case watch, whoop, other }
     static func origin(_ src: HKSource) -> Origin {
         let id = src.bundleIdentifier.lowercased(), name = src.name.lowercased()
         if id.contains("whoop") || name.contains("whoop") { return .whoop }
         // Apple Watch samples come from a per-device source "com.apple.health.<UUID>" — the user may have
         // renamed the watch, so don't rely on the name alone. The iPhone's own source is "com.apple.health".
-        if id.hasPrefix("com.apple.health.") || name.contains("watch") { return .watch }
+        if id.hasPrefix("com.apple.health.") || (id.hasPrefix("com.apple") && name.contains("watch")) { return .watch }
         return .other
     }
     /// Short badge text for a non-Watch, non-WHOOP source: "IPHONE" for the phone / Health app, else the app's name.
@@ -160,8 +166,8 @@ final class HealthPull: @unchecked Sendable {
         for (key, id, unit) in kinds {
             guard let t = HKQuantityType.quantityType(forIdentifier: id) else { continue }
             let all = await samples(t, from: since).compactMap { $0 as? HKQuantitySample }
-            var mine = all.filter { Self.origin($0) == .watch }
-            if mine.isEmpty { mine = all.filter { Self.origin($0) == .other } }
+            // Watch samples only: another app's reading isn't the Watch's (same rule as the daily values).
+            let mine = all.filter { Self.origin($0) == .watch }
             guard let newest = mine.max(by: { $0.endDate < $1.endDate }) else { continue }
             if key != "rhr", let s = sleepStart, let e = sleepEnd, e > since {
                 let night = mine.filter { $0.startDate >= s.addingTimeInterval(-1800) && $0.startDate <= e.addingTimeInterval(1800) }
@@ -326,6 +332,10 @@ final class HealthPull: @unchecked Sendable {
     private func daily(_ spec: QSpec, from start: Date, failed: FailFlag) async -> ([Date: [Double?]], String?) {
         guard let type = HKQuantityType.quantityType(forIdentifier: spec.id) else { return ([:], nil) }
         let pred = HKQuery.predicateForSamples(withStart: start, end: Date(), options: .strictStartDate)
+        // Cumulative metrics: Health's own de-duplicated total of every source except WHOOP. (Subtracting WHOOP's
+        // raw share from the all-sources total under-counts the Apple side whenever Health had already dropped
+        // overlapping WHOOP samples by source priority.)
+        let appleTotals: [Date: Double]? = spec.cumulative ? await nonWhoopTotals(type, spec.unit, from: start, pred) : nil
         let opts: HKStatisticsOptions = spec.cumulative ? [.cumulativeSum, .separateBySource] : [.discreteAverage, .separateBySource]
         return await withCheckedContinuation { cont in
             let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: pred, options: opts,
@@ -353,10 +363,12 @@ final class HealthPull: @unchecked Sendable {
                     let whoopV: Double? = wh.isEmpty ? nil : (spec.cumulative ? wh.reduce(0, +) : wh.reduce(0, +) / Double(wh.count))
                     // Cumulative metrics (steps, energy, distance…): Health's merged total already removes the
                     // overlap between iPhone and Watch (and between two Watches). Summing per source double-counts,
-                    // so the Apple side is always merged − WHOOP's share.
-                    if spec.cumulative, let merged = stat.sumQuantity()?.doubleValue(for: spec.unit) {
-                        let v = max(0, merged - (whoopV ?? 0))
-                        watchV = v > 0 ? v : nil
+                    // so the Apple side is Health's merged total of every non-WHOOP source.
+                    if spec.cumulative {
+                        let v: Double?
+                        if let appleTotals { v = appleTotals[stat.startDate.dayStart] }
+                        else { v = stat.sumQuantity()?.doubleValue(for: spec.unit) }
+                        watchV = (v ?? 0) > 0 ? v : nil
                     }
                     if watchV != nil || whoopV != nil { out[stat.startDate.dayStart] = [watchV, whoopV] }
                     if watchV != nil {
@@ -369,6 +381,38 @@ final class HealthPull: @unchecked Sendable {
                     }
                 }
                 cont.resume(returning: (out, newestOrigin))
+            }
+            store.execute(q)
+        }
+    }
+
+    /// Every app / device that wrote `type` matching `pred`.
+    private func sources(_ type: HKSampleType, _ pred: NSPredicate) async -> Set<HKSource> {
+        await withCheckedContinuation { cont in
+            let q = HKSourceQuery(sampleType: type, samplePredicate: pred) { _, s, _ in cont.resume(returning: s ?? []) }
+            store.execute(q)
+        }
+    }
+
+    /// Health's de-duplicated daily sums without WHOOP's samples; nil when WHOOP wrote none (the plain total is then right).
+    private func nonWhoopTotals(_ type: HKQuantityType, _ unit: HKUnit, from start: Date, _ pred: NSPredicate) async -> [Date: Double]? {
+        let whoopSrc = await sources(type, pred).filter { Self.origin($0) == .whoop }
+        guard !whoopSrc.isEmpty else { return nil }
+        let notWhoop = NSCompoundPredicate(notPredicateWithSubpredicate: HKQuery.predicateForObjects(from: whoopSrc))
+        return await totals(type, unit, from: start, NSCompoundPredicate(andPredicateWithSubpredicates: [pred, notWhoop]))
+    }
+
+    /// Health's de-duplicated daily sum for `pred`.
+    private func totals(_ type: HKQuantityType, _ unit: HKUnit, from start: Date, _ pred: NSPredicate) async -> [Date: Double] {
+        await withCheckedContinuation { cont in
+            let q = HKStatisticsCollectionQuery(quantityType: type, quantitySamplePredicate: pred, options: .cumulativeSum,
+                                                anchorDate: start, intervalComponents: DateComponents(day: 1))
+            q.initialResultsHandler = { _, collection, _ in
+                var out: [Date: Double] = [:]
+                collection?.enumerateStatistics(from: start, to: Date()) { stat, _ in
+                    if let v = stat.sumQuantity()?.doubleValue(for: unit) { out[stat.startDate.dayStart] = v }
+                }
+                cont.resume(returning: out)
             }
             store.execute(q)
         }
@@ -394,53 +438,51 @@ final class HealthPull: @unchecked Sendable {
     }
 
     /// Nights are attributed to the day you woke up: anything ending after 6 pm counts toward tomorrow.
-    static func nightKey(_ end: Date) -> Date {
-        let hour = Calendar.current.component(.hour, from: end)
-        return hour >= 18 ? end.dayStart.adding(days: 1) : end.dayStart
+    static func nightKey(_ end: Date) -> Date { SleepMath.nightKey(end) }
+
+    /// Sleep written by Apple's own software running on an Apple Watch. The iPhone's Sleep-schedule "in bed"
+    /// samples and third-party sleep apps (even ones with "Watch" in their name, or running on the Watch) are
+    /// not the Watch's measurement and stay out of the Watch's night.
+    static func isAppleWatchSleep(_ s: HKSample) -> Bool {
+        let src = s.sourceRevision.source
+        let id = src.bundleIdentifier.lowercased()
+        if id.contains("whoop") || src.name.lowercased().contains("whoop") { return false }
+        if id.hasPrefix("com.apple.health.") { return true }
+        guard id.hasPrefix("com.apple") else { return false }
+        if let pt = s.sourceRevision.productType?.lowercased(), pt.contains("watch") { return true }
+        if let model = s.device?.model?.lowercased(), model.contains("watch") { return true }
+        return false
     }
 
+    static func sleepStage(_ value: Int) -> SleepMath.Sample.Stage? {
+        switch HKCategoryValueSleepAnalysis(rawValue: value) {
+        case .inBed: .inBed
+        case .awake: .awake
+        case .asleepCore: .core
+        case .asleepDeep: .deep
+        case .asleepREM: .rem
+        case .asleepUnspecified: .unspecified
+        default: nil
+        }
+    }
+
+    /// One night per morning per tracker (see `SleepMath`): asleep is the union of asleep samples from that
+    /// tracker only, naps and the iPhone's "in bed" left out. The hypnogram is the newest Watch night.
     private func sleepNights(from start: Date, failed: FailFlag) async -> ([SleepNight], [HypnoSegment]) {
         guard let t = HKCategoryType.categoryType(forIdentifier: .sleepAnalysis) else { return ([], []) }
         let all = await samples(t, from: start, failed: failed).compactMap { $0 as? HKCategorySample }
-        var nights: [String: SleepNight] = [:]
+        var watch: [SleepMath.Sample] = [], whoop: [SleepMath.Sample] = []
         for s in all {
-            let o = Self.origin(s)
-            guard o != .other || Self.isAppleOther(s) else { continue }
-            let src: Source = o == .whoop ? .whoop : .watch
-            let key = Self.nightKey(s.endDate)
-            let id = "\(src.rawValue)-\(key.timeIntervalSince1970)"
-            var n = nights[id] ?? SleepNight(night: key, source: src)
-            let m = s.endDate.timeIntervalSince(s.startDate) / 60
-            switch HKCategoryValueSleepAnalysis(rawValue: s.value) {
-            case .inBed: n.inBedMin += m
-            case .awake: n.awakeMin += m
-            case .asleepCore: n.coreMin += m
-            case .asleepDeep: n.deepMin += m
-            case .asleepREM: n.remMin += m
-            case .asleepUnspecified: n.unspecifiedMin += m
-            default: break
-            }
-            n.start = min(n.start ?? s.startDate, s.startDate)
-            n.end = max(n.end ?? s.endDate, s.endDate)
-            nights[id] = n
+            guard let stage = Self.sleepStage(s.value) else { continue }
+            let x = SleepMath.Sample(start: s.startDate, end: s.endDate, stage: stage)
+            if Self.origin(s.sourceRevision.source) == .whoop { whoop.append(x) }
+            else if Self.isAppleWatchSleep(s) { watch.append(x) }
         }
-        // Hypnogram: the latest Watch night, stage by stage.
-        var hypno: [HypnoSegment] = []
-        if let last = nights.values.filter({ $0.source == .watch && $0.asleepMin > 0 }).max(by: { $0.night < $1.night }),
-           let s0 = last.start, let e0 = last.end {
-            for s in all where Self.origin(s) == .watch && s.startDate >= s0 && s.endDate <= e0 {
-                let stage: SleepStage?
-                switch HKCategoryValueSleepAnalysis(rawValue: s.value) {
-                case .awake: stage = .awake
-                case .asleepREM: stage = .rem
-                case .asleepCore, .asleepUnspecified: stage = .core
-                case .asleepDeep: stage = .deep
-                default: stage = nil
-                }
-                if let stage { hypno.append(HypnoSegment(start: s.startDate, end: s.endDate, stage: stage)) }
-            }
-        }
-        return (nights.values.filter { $0.asleepMin > 0 || $0.inBedMin > 0 }.sorted { $0.night < $1.night }, hypno)
+        let w = SleepMath.nights(watch, source: .watch)
+        let h = SleepMath.nights(whoop, source: .whoop)
+        let hypno = w.last(where: { $0.night.asleepMin > 0 })?.segments ?? []
+        let nights = (w + h).map(\.night).filter { $0.asleepMin > 0 }.sorted { $0.night < $1.night }
+        return (nights, hypno)
     }
 
     private func workouts(from start: Date, failed: FailFlag) async -> [WorkoutRec] {

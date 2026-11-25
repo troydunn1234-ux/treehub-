@@ -145,7 +145,7 @@ enum Compare {
         "Blood oxygen": "Both read overnight from the wrist. Watch readings are spot checks; WHOOP averages the night. Within 2% is the same number.",
         "Temp deviation": "Both show change from your own baseline, not a thermometer reading. Apple measures wrist temperature in sleep; WHOOP measures skin temperature on the strap, which sits tighter.",
         "Calories": "Apple = active + resting energy from Watch motion and HR. WHOOP = one total per cycle from HR alone, converted from kJ. WHOOP usually comes in lower on active days. A 250 kcal gap is normal.",
-        "Sleep": "WHOOP's night is strap-based and ends at wake; Apple's comes from the Watch and the Sleep schedule. 20 minutes apart is normal; big gaps are usually one side missing a nap or a late bedtime.",
+        "Sleep": "WHOOP's night is strap-based and ends at wake; Apple's comes from the Watch's own sleep tracking. Both count only the main sleep, never naps. 20 minutes apart is normal; big gaps are usually one side missing the start or end of the night.",
     ]
 
     struct Spec { let metric: String; let unit: String; let tol: Double; let trend: Bool; let get: (DayStat) -> Double? }
@@ -214,11 +214,13 @@ enum Compare {
     /// HRV vs your personal baseline (biggest weight), resting HR vs baseline, last night's sleep, and small
     /// penalties for raised breathing rate or wrist temperature. Every point is itemised in `ReadinessDetail.parts`.
     static func readiness(day: Date, watch: [DayStat], sleeps: [SleepNight]) -> Double? {
-        readinessDetail(day: day, watch: watch, sleeps: sleeps, carryOver: false)?.score
+        readinessDetail(day: day, watch: watch, sleeps: sleeps, carryOver: false).flatMap { $0.hasBaseline ? $0.score : nil }
     }
 
     /// Days of history `readinessDetail` looks back over (the day itself plus this many before it).
     static let readinessLookback = 14
+    /// Fewest earlier readings that make an HRV / resting HR baseline.
+    static let minBaseline = 3
 
     /// The score and exactly how it was reached, so the app can show every step.
     struct ReadinessDetail {
@@ -303,6 +305,9 @@ enum Compare {
         /// What's missing, in plain words ("Wear your Watch to sleep for overnight HRV").
         var missing: [String] = []
         static let start = 55.0
+        /// True when HRV or resting HR could be compared with a real baseline. Without one the 55 start is not a
+        /// measurement, so screens show "not enough data" instead of a score.
+        var hasBaseline: Bool { parts.contains { ($0.kind == .hrv || $0.kind == .rhr) && $0.scored } }
     }
 
     /// `carryOver`: for *today's* score, fall back to yesterday's HRV / resting HR when the Watch hasn't
@@ -328,8 +333,10 @@ enum Compare {
         let window = filled14 >= 10 ? 14 : 7
         let prior = prior14.filter { $0.day >= anchor.adding(days: -window) }
         let hrvVals = prior.compactMap(\.hrv), rhrVals = prior.compactMap(\.rhr)
-        let hrvBase = Stats.mean(hrvVals), hrvSD = Stats.sd(hrvVals)
-        let rhrBase = Stats.mean(rhrVals)
+        // A baseline needs at least 3 earlier readings (missing days are skipped, never counted as 0);
+        // one or two days aren't "your normal" and would swing the score on noise.
+        let hrvBase = hrvVals.count >= Self.minBaseline ? Stats.mean(hrvVals) : nil, hrvSD = Stats.sd(hrvVals)
+        let rhrBase = rhrVals.count >= Self.minBaseline ? Stats.mean(rhrVals) : nil
 
         typealias Part = ReadinessDetail.Part
         var d = ReadinessDetail(score: 0, usedYesterday: used, baselineDays: window,

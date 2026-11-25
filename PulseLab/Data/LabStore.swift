@@ -128,7 +128,8 @@ final class LabStore {
     }
     func lastNight(_ s: Source) -> SleepNight? { sleeps.filter { $0.source == s }.max { $0.night < $1.night } }
 
-    var readinessToday: Double? { readinessDetailToday?.score }
+    /// Nil until there is a baseline to score against (see `ReadinessDetail.hasBaseline`).
+    var readinessToday: Double? { readinessDetailToday.flatMap { $0.hasBaseline ? $0.score : nil } }
     /// True when this morning's readiness leans on yesterday's Watch HRV / resting HR.
     var readinessUsesYesterday: Bool { readinessDetailToday?.usedYesterday ?? false }
     /// Today's readiness with every contributor itemised (the readiness detail screen).
@@ -355,9 +356,14 @@ final class LabStore {
             var cutoff = today.adding(days: -3)
             if let last = healthSynced { cutoff = min(cutoff, last.dayStart.adding(days: -1)) }
             if let dirty = dirtyBefore { cutoff = min(cutoff, dirty) }
+            // Saved history worked out with older maths (e.g. sleep that summed overlapping samples) is read
+            // again once, in place: the saved numbers stay on screen until the corrected ones replace them.
+            let stale = UserDefaults.standard.integer(forKey: Self.healthMathKey) < HealthPull.mathVersion
+            if stale { cutoff = from }
             cutoff = max(cutoff, from)
             let fresh = await HealthPull.shared.pull(from: cutoff, progress: progress)
             guard !fresh.failed else { return nil }
+            if stale { UserDefaults.standard.set(HealthPull.mathVersion, forKey: Self.healthMathKey) }
             return saveHealth(cache.merged(with: fresh, from: cutoff), from: from, dirtyBefore: dirtyBefore)
         }
         let from = today.adding(days: -(HealthCache.historyDays - 1))
@@ -366,8 +372,12 @@ final class LabStore {
         defer { backfilling = false }
         let fresh = await HealthPull.shared.pull(from: from, progress: progress)
         guard !fresh.failed else { return nil }
+        UserDefaults.standard.set(HealthPull.mathVersion, forKey: Self.healthMathKey)
         return saveHealth(fresh, from: from, dirtyBefore: dirtyBefore)
     }
+
+    /// Which `HealthPull.mathVersion` the saved Health history was worked out with.
+    static let healthMathKey = "healthMathVersion"
 
     private func saveHealth(_ result: HealthPull.Result, from: Date, dirtyBefore: Date?) -> HealthPull.Result {
         healthCache = result
