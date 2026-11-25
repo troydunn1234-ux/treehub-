@@ -156,13 +156,24 @@ enum BankSync {
             ["id": id, "posted": now - daysAgo * day, "transacted": now - daysAgo * day, "amount": amt,
              "description": desc, "payee": desc, "memo": "", "pending": false]
         }
-        return ["errors": [], "accounts": [
-            ["id": "demo-chk", "name": "SoFi Checking", "org": "SoFi", "balance": 1842.17, "currency": "USD", "transactions": [
-                tx("d1", 1, -54.12, "CHEVRON 0098"), tx("d2", 2, -18.40, "CHIPOTLE 1123"), tx("d3", 3, 1450.00, "PAYROLL DEPOSIT"),
-                tx("d4", 4, -39.99, "AUTOZONE #3321"), tx("d5", 6, -82.31, "SAFEWAY 1460")]],
-            ["id": "demo-sav", "name": "SoFi Savings", "org": "SoFi", "balance": 8120.55, "currency": "USD", "transactions": []],
-            ["id": "demo-dsc", "name": "Discover it Card", "org": "Discover", "balance": -212.40, "currency": "USD", "transactions": [
-                tx("d6", 2, -15.99, "SPOTIFY USA"), tx("d7", 5, -156.00, "GEICO AUTO INSURANCE")]]]]
+        func acct(_ id: String, _ name: String, _ org: String, _ bal: Double, _ txs: [[String: Any]]) -> [String: Any] {
+            ["id": id, "name": name, "org": org, "balance": bal, "currency": "USD", "balanceDate": now - 3600, "transactions": txs]
+        }
+        // Made-up institutions for -demo screenshots: a bank, a credit union with an auto loan, and transfers between them.
+        let bankChecking: [[String: Any]] = [
+            tx("d1", 1, -54.12, "CHEVRON 0098"), tx("d2", 2, -18.40, "CHIPOTLE 1123"), tx("d4", 4, -39.99, "AUTOZONE #3321"),
+            tx("d5", 6, -82.31, "SAFEWAY 1460"), tx("d6", 3, -15.99, "SPOTIFY USA"), tx("d7", 5, -156.00, "GEICO AUTO INSURANCE"),
+            tx("d8", 8, 400.00, "ACH DEPOSIT CREDIT UNION A XFER")]
+        let cuChecking: [[String: Any]] = [
+            tx("c1", 3, 1450.00, "PAYROLL DIR DEP"), tx("c2", 8, -400.00, "TRANSFER TO BANK A"),
+            tx("c3", 4, -150.00, "ONLINE TRANSFER TO SHARE SAVINGS"), tx("c4", 6, -412.58, "AUTO LOAN PMT TO LOAN 0007")]
+        let accounts: [[String: Any]] = [
+            acct("demo-chk", "Checking ...4821", "Bank A", 1842.17, bankChecking),
+            acct("demo-sav", "Savings", "Bank A", 820.00, []),
+            acct("demo-cu-chk", "SHARE DRAFT CHECKING x0001", "Credit Union A", 2210.40, cuChecking),
+            acct("demo-cu-sav", "Car Fund Savings", "Credit Union A", 8120.55, [tx("s1", 4, 150.00, "ONLINE TRANSFER FROM SHARE DRAFT")]),
+            acct("demo-cu-loan", "AUTO LOAN 0007", "Credit Union A", -18412.66, [tx("l1", 6, 412.58, "PAYMENT FROM SHARE DRAFT")])]
+        return ["errors": [String](), "accounts": accounts]
     }
 
     static func pasteboardText() -> String { UIPasteboard.general.string ?? "" }
