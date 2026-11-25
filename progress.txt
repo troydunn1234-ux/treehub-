@@ -2,3 +2,4 @@
 [00:16] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 2.6 on 4 cpus; ~8995 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 74.7% 15 MB, provjobd1610250897 38.7% 28 MB, mds 12.2% 36 MB
 [00:16]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
 [02:02]   ... still on simctl bootstatus -b (99s); load 221.4 on 4 cpus; ~6892 MB free; swap 0 MB; busiest: intelligenceplatformd 59.3% 85 MB, lsd 57.0% 44 MB, diagnosticd 51.7% 7 MB
+[03:58]   ... still on simctl bootstatus -b (179s); load 338.4 on 4 cpus; ~5708 MB free; swap 0 MB; busiest: mobileassetd 35.2% 98 MB, CalendarWidgetExtension 32.2% 98 MB, diagnosticd 31.7% 122 MB
