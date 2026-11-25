@@ -1,0 +1,15 @@
+[00:00] shard s6: iPhone screens 16-drive, 17-live-run; Watch screens no
+[01:00]   ... still on simctl list devices available -j (60s); load 3.3 on 4 cpus; ~10045 MB free; swap 0 MB; busiest: simdiskimaged 99.2% 128 MB, provjobd2329977712 4.2% 29 MB, Python 3.9% 13 MB
+[01:18] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 3.9 on 4 cpus; ~9384 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 71.1% 16 MB, provjobd2329977712 33.0% 29 MB, SimulatorTrampoline 24.8% 10 MB
+[01:19]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:46]   ... still on simctl bootstatus -b (63s); load 156.0 on 4 cpus; ~7659 MB free; swap 0 MB
+[04:13]   ... still on simctl bootstatus -b (151s); load 313.1 on 4 cpus; ~7243 MB free; swap 0 MB
+[05:13]   ... still on simctl bootstatus -b (224s); load 372.0 on 4 cpus; ~7201 MB free; swap 0 MB; busiest: diagnosticd 48.0% 128 MB, intelligenceplatformd 44.9% 84 MB, diagnosticd 39.1% 7 MB
+[08:35]   ... still on simctl list devices -j (70s); load 736.2 on 4 cpus; ~5797 MB free; swap 0 MB
+[08:38] iPhone simulator booted in 428s; load 749.6 on 4 cpus; ~5800 MB free; swap 0 MB; busiest: diagnosticd 42.6% 129 MB, HealthCycleTrackingWidgetExtension 35.7% 109 MB, diagnosticd 31.6% 7 MB
+[11:00]   ... still on simctl install build/Build/Products/Debug-iphonesimulator/Roamr.app (106s); load 297.1 on 4 cpus; ~5761 MB free; swap 0 MB; busiest: diagnosticd 64.0% 136 MB, STExtractionService 34.9% 29 MB, diskimagesiod 32.3% 52 MB
+[13:18] OK    16-drive  -demo -autodrive  (114s, 216 MB)
+[13:23]   load 477.2 on 4 cpus; ~5863 MB free; swap 0 MB; busiest: SpringBoard 70.3% 385 MB, backboardd 52.3% 115 MB, diagnosticd 46.7% 136 MB
+[15:03] OK    17-live-run  -demo -pro -autostart  (92s, 176 MB)
+[15:05]   load 184.2 on 4 cpus; ~5768 MB free; swap 0 MB; busiest: diagnosticd 83.1% 136 MB, SpringBoard 57.9% 388 MB, BackgroundShortcutRunner 56.2% 238 MB
+[15:19]   app logs: 1842 lines for 2 screens
