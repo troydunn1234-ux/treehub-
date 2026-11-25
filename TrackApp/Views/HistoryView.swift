@@ -18,6 +18,9 @@ struct HistoryView: View {
     @State private var namingPin: NavPlace?
     @State private var pinName = ""
     @State private var pinned = 0
+    /// Go together cards grow with the text size, so their date ("TUE, NOV 24") is never cut off.
+    @ScaledMetric(relativeTo: .body) private var togetherCardWidth: CGFloat = 190
+    @ScaledMetric(relativeTo: .body) private var togetherCardHeight: CGFloat = 132
 
     /// One calendar week of trips, split into days, with totals for the header.
     private struct WeekGroup: Identifiable {
@@ -169,7 +172,7 @@ struct HistoryView: View {
                 Button("Cancel", role: .cancel) {}
             }
             .sensoryFeedback(.success, trigger: pinned)
-            .onAppear { openPendingActivity() }
+            .onAppear { openPendingActivity(justAppeared: true) }
             .task {
                 // -demo -open monthly / activity / recap (simulator QA), once the demo trips are in.
                 guard let open = TrackDemo.open, ["monthly", "activity", "recap"].contains(open) else { return }
@@ -177,11 +180,16 @@ struct HistoryView: View {
                 guard path.isEmpty else { return }
                 // "-openDrive" picks the first drive, so QA can see the speed-colored route.
                 let wantsDrive = ProcessInfo.processInfo.arguments.contains("-openDrive")
-                if open == "monthly" { path.append("monthly") }
-                else if let a = wantsDrive ? (activities.first { $0.kind == .drive } ?? activities.first) : activities.first { path.append(a.id) }
+                // Shown straight away (no push animation), the same way a trip link opens it.
+                var t = Transaction()
+                t.disablesAnimations = true
+                if open == "monthly" { withTransaction(t) { path.append("monthly") } }
+                else if let a = wantsDrive ? (activities.first { $0.kind == .drive } ?? activities.first) : activities.first {
+                    withTransaction(t) { path.append(a.id) }
+                }
             }
             .onReceive(NotificationCenter.default.publisher(for: DriveFinishedNotifier.openActivityNote)) { _ in
-                openPendingActivity()
+                openPendingActivity(justAppeared: false)
             }
         }
     }
@@ -189,12 +197,29 @@ struct HistoryView: View {
     /// Opens the activity a "Drive finished" notification (or Rootbound's "Open in Roamr") pointed at, if there is
     /// one waiting. The request is used up either way: a trip that isn't here any more (deleted after Rootbound
     /// attached it as a walk) just leaves History open, instead of sending Roamr to History on every open.
-    private func openPendingActivity() {
+    ///
+    /// `justAppeared`: History is still fading in from the tab switch. A push started inside that transition could
+    /// be dropped or left half-done (a dimmed History with no trip page), so it waits for the fade, then shows the
+    /// trip without a second animation. With History already on screen it pushes the usual way.
+    private func openPendingActivity(justAppeared: Bool) {
         guard let raw = UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) else { return }
         UserDefaults.standard.removeObject(forKey: DriveFinishedNotifier.pendingOpenKey)
         guard let id = UUID(uuidString: raw), activities.contains(where: { $0.id == id }) else { return }
-        path = NavigationPath()
-        path.append(id)
+        guard justAppeared else {
+            path = NavigationPath()
+            path.append(id)
+            return
+        }
+        Task { @MainActor in
+            try? await Task.sleep(for: .milliseconds(450))
+            var t = Transaction()
+            t.disablesAnimations = true
+            withTransaction(t) {
+                var p = NavigationPath()
+                p.append(id)
+                path = p
+            }
+        }
     }
 
     // MARK: Header
@@ -377,6 +402,9 @@ struct HistoryView: View {
                 Text(Format.day(g.date).uppercased())
                     .font(Theme.rounded(11, .heavy)).tracking(1)
                     .foregroundStyle(Theme.textDim)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.85)
+                    .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)
                 if g.hosted {
                     Image(systemName: "crown.fill").font(.system(size: 10, weight: .bold)).foregroundStyle(Theme.gold)
@@ -403,7 +431,7 @@ struct HistoryView: View {
             }
         }
         .padding(14)
-        .frame(width: 190, height: 132, alignment: .topLeading)
+        .frame(width: min(togetherCardWidth, 320), height: togetherCardHeight, alignment: .topLeading)
         .background {
             RoundedRectangle(cornerRadius: 22, style: .continuous).fill(.ultraThinMaterial).opacity(0.5)
             RoundedRectangle(cornerRadius: 22, style: .continuous).fill(Theme.sky.opacity(0.08))

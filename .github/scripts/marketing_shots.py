@@ -7,7 +7,9 @@ Dynamic Island) with floating glass feature chips. Every app gets the same
 layout and type; the colors come from THEMES below (each app keeps its own
 accent, like the apps themselves). Apps without a theme keep the original neon.
 
-metadata.json "shots": [{file, eyebrow, line1, line2, sub, chips: [..], tilt}]
+metadata.json "shots": [{file, eyebrow, line1, line2, sub, chips: [..], tilt, chip_y}]
+  chip_y (optional, iPhone set only): [y of the left chip, y of the right chip] on the 2868 px canvas, for a
+          screen whose buttons sit where the chips normally go (default 1960 and 2500).
 usage: marketing_shots.py metadata.json shots_dir out_dir [--ipad]
   --ipad: 13-inch iPad set (2064x2752) from raw iPad shots, drawn in an iPad frame;
           only the "shots" entries whose raw file exists are made.
@@ -277,6 +279,8 @@ for i, s in enumerate(m["shots"]):
         left = k % 2 == 0
         x = (60 if left else W - tw - 60) if IPAD else (28 if left else W - tw - 28)
         y = (1640 + k * 420) if IPAD else (1960 + k * 540)
+        if not IPAD and k < len(s.get("chip_y") or []):
+            y = s["chip_y"][k]
         chip(img, x, y, text, accents[(i + k + 1) % 3], f)
 
     path = os.path.join(out, f"{i + 1:02d}-{s['file']}")

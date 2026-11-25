@@ -117,7 +117,7 @@
       "chips": [
         "Auto drive detect",
         "Gas and MPG log"
-      ]
+      ], "chip_y": [1960, 1720]
     },
     {
       "file": "rm-4-stats.png",
@@ -139,7 +139,7 @@
       "chips": [
         "Live Activity",
         "Top speed"
-      ]
+      ], "chip_y": [1960, 1720]
     },
     {
       "file": "rm-5-track.png",
@@ -150,7 +150,7 @@
       "chips": [
         "Pinned places",
         "Drive detect"
-      ]
+      ], "chip_y": [1330, 1150]
     }
   ],
   "privacyPolicyUrl": "https://github.com/troydunn1234-ux/treehub-/blob/main/store/roamr/PRIVACY.md",

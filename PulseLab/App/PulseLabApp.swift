@@ -7,7 +7,8 @@ import UserNotifications
 struct PulseLabApp: App {
     @UIApplicationDelegateAdaptor(PulseLabAppDelegate.self) private var appDelegate
     @State private var store = LabStore.shared
-    private let container = CloudSync.makeContainer()
+    /// `-demo` (screenshots / QA) gets a sample stack in memory only and never opens the real Stack store.
+    private let container = LabStore.isDemo ? StackDemo.container : CloudSync.makeContainer()
 
     var body: some Scene {
         WindowGroup {

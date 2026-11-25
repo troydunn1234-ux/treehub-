@@ -123,8 +123,32 @@ struct TrackView: View {
     /// of asking the map for live location (which would keep the location arrow on).
     private var followCamera: MapCameraPosition {
         if tracker.state == .recording { return .userLocation(followsHeading: false, fallback: .automatic) }
-        guard let c = tracker.lastKnownCoordinate else { return .automatic }
+        guard let c = tracker.lastKnownCoordinate else { return restingCamera }
         return .camera(MapCamera(centerCoordinate: c, distance: tracker.kind == .drive ? 1400 : 700, heading: mapHeading, pitch: 45))
+    }
+
+    /// Where the live map opens when there is no fresh GPS to follow (a recovered recording, or no fix yet):
+    /// the whole route so far, else its last point, else the phone's cached fix, else where the newest saved
+    /// trip ended. While recording with no points yet, it follows the GPS dot and uses this until there is one.
+    private var restingCamera: MapCameraPosition {
+        let pts = tracker.points
+        let fallback: MapCameraPosition
+        if pts.count > 1 {
+            let lats = pts.map(\.lat), lngs = pts.map(\.lng)
+            let minLat = lats.min() ?? 0, maxLat = lats.max() ?? 0, minLng = lngs.min() ?? 0, maxLng = lngs.max() ?? 0
+            // Extra room below for the stats card over the bottom half of the map.
+            let span = MKCoordinateSpan(latitudeDelta: max(0.01, (maxLat - minLat) * 2.4),
+                                        longitudeDelta: max(0.01, (maxLng - minLng) * 1.5))
+            let center = CLLocationCoordinate2D(latitude: (minLat + maxLat) / 2 - span.latitudeDelta * 0.22,
+                                                longitude: (minLng + maxLng) / 2)
+            fallback = .region(MKCoordinateRegion(center: center, span: span))
+        } else if let c = tracker.lastKnownCoordinate ?? activities.first(where: { $0.routeData != nil })?.route.last?.coordinate {
+            fallback = .camera(MapCamera(centerCoordinate: c, distance: tracker.kind == .drive ? 1800 : 900, heading: 0, pitch: 45))
+        } else {
+            fallback = .automatic
+        }
+        if tracker.state == .recording && pts.isEmpty { return .userLocation(followsHeading: false, fallback: fallback) }
+        return fallback
     }
 
     private var screenTitle: String {
@@ -599,7 +623,11 @@ struct TrackView: View {
                 followIfNeeded()
                 if let here = tracker.points.last?.coordinate { nav.update(here, speed: tracker.currentSpeed) }
             }
-            .onAppear { followIfNeeded() }
+            .onAppear {
+                // A recovered (paused) recording opens on its route so far; one with no points yet opens on the
+                // last place we know of. Never the default whole-continent view.
+                if tracker.recoveredFromCrash || tracker.points.isEmpty { camera = restingCamera } else { followIfNeeded() }
+            }
             // Paused (GPS off): stop asking the map for live location. Recording again: follow you.
             .onChange(of: tracker.state) { _, state in
                 if state == .paused, camera.followsUserLocation { camera = followCamera }

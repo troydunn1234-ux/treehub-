@@ -84,8 +84,31 @@ struct TrackRootView: View {
     @Environment(RouteTracker.self) private var tracker
     @Environment(\.scenePhase) private var scenePhase
     @Environment(\.modelContext) private var context
-    /// "track", "history", "stats" or "settings".
-    @State private var tab: String = "track"
+    /// "track", "history", "stats" or "settings". Starts on the tab the launch asks for, so a launch that opens
+    /// History (a trip link, a "Drive finished" tap, -open activity) never builds the Track screen's 3D map first
+    /// and then cross-fades away from it: on a slow device that fade could stall half-way over the trip page.
+    @State private var tab: String = TrackRootView.launchTab()
+
+    /// The tab to show on the first frame. The onAppear switches below still run and agree with it.
+    static func launchTab() -> String {
+        if TrackDemo.isOn {
+            var t = "track"
+            switch TrackDemo.open {
+            case "lifetime": t = "stats"
+            case "monthly", "activity", "recap": t = "history"
+            default: break
+            }
+            switch TrackDemo.argument(after: "-tab") {
+            case "history": t = "history"
+            case "stats": t = "stats"
+            case "settings": t = "settings"
+            default: break
+            }
+            return t
+        }
+        if UserDefaults.standard.string(forKey: DriveFinishedNotifier.pendingOpenKey) != nil { return "history" }
+        return "track"
+    }
     @State private var detector = DriveDetector.shared
     @State private var autoFinish = AutoFinish.shared
     @State private var showGas = false
