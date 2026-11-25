@@ -1,0 +1,12 @@
+[00:00] shard s7: iPhone screens 18-live-run-largetype; Watch screens no
+[00:41] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 3.1 on 4 cpus; ~9210 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 135.0% 16 MB, simdiskimaged 11.4% 54 MB, diskarbitrationd 10.5% 5 MB
+[00:42]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:07]   ... still on simctl bootstatus -b (72s); load 218.9 on 4 cpus; ~7211 MB free; swap 0 MB; busiest: diagnosticd 51.6% 131 MB, intelligenceplatformd 48.0% 87 MB, lsd 39.3% 45 MB
+[03:19]   ... still on simctl bootstatus -b (147s); load 193.7 on 4 cpus; ~6950 MB free; swap 0 MB; busiest: diagnosticd 79.2% 106 MB, diagnosticd 59.9% 8 MB, lsd 58.5% 46 MB
+[04:40]   ... still on simctl bootstatus -b (213s); load 307.9 on 4 cpus; ~6047 MB free; swap 0 MB; busiest: diagnosticd 59.6% 123 MB, iconservicesagent 54.9% 48 MB, BackgroundShortcutRunner 53.6% 147 MB
+[04:51] iPhone simulator booted in 248s; load 359.6 on 4 cpus; ~6007 MB free; swap 0 MB; busiest: diagnosticd 71.9% 123 MB, BackgroundShortcutRunner 53.0% 151 MB, apsd 49.2% 46 MB
+[06:48]   ... still on simctl terminate com.troydunn.roamr (80s); load 510.3 on 4 cpus; ~6071 MB free; swap 0 MB; busiest: STExtractionService 91.3% 28 MB, diagnosticd 63.4% 123 MB, apsd 47.2% 52 MB
+[07:55]   ... still on simctl ui content_size accessibility-large (54s); load 280.6 on 4 cpus; ~5961 MB free; swap 0 MB; busiest: amsengagementd 73.1% 141 MB, diagnosticd 72.3% 8 MB, diagnosticd 40.9% 125 MB
+[11:08] OK    18-live-run-largetype  -demo -pro -autostart  (340s, 164 MB)
+[11:09]   load 220.9 on 4 cpus; ~5679 MB free; swap 0 MB; busiest: backboardd 80.4% 156 MB, diagnosticd 65.1% 137 MB, SimRenderServer 38.6% 32 MB
+[11:35]   app logs: 1284 lines for 1 screens

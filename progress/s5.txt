@@ -1,0 +1,10 @@
+[00:00] shard s5: iPhone screens 05d-activity-drive-light, 15-track; Watch screens no
+[00:10] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 1.3 on 4 cpus; ~9009 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 66.6% 15 MB, tccd 10.3% 13 MB, simdiskimaged 7.9% 25 MB
+[00:11]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:48]   ... still on simctl bootstatus -b (120s); load 281.2 on 4 cpus; ~5686 MB free; swap 0 MB; busiest: STExtractionService 56.0% 41 MB, diagnosticd 50.2% 125 MB, BackgroundShortcutRunner 37.3% 155 MB
+[02:58] iPhone simulator booted in 166s; load 427.1 on 4 cpus; ~5986 MB free; swap 0 MB; busiest: STExtractionService 87.6% 40 MB, BackgroundShortcutRunner 54.6% 163 MB, diagnosticd 50.0% 8 MB
+[04:57] OK    05d-activity-drive-light  -demo -pro -open activity -openDrive  (42s, 177 MB)
+[04:59]   load 356.0 on 4 cpus; ~5877 MB free; swap 0 MB; busiest: backboardd 72.2% 113 MB, diagnosticd 68.6% 122 MB, BackgroundShortcutRunner 57.4% 216 MB
+[05:46] OK    15-track  -demo -pro -tab track  (39s, 271 MB)
+[05:48]   load 265.6 on 4 cpus; ~5843 MB free; swap 0 MB; busiest: backboardd 87.6% 101 MB, diagnosticd 51.7% 96 MB, SpringBoard 45.3% 378 MB
+[06:03]   app logs: 1241 lines for 2 screens

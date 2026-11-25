@@ -1,0 +1,46 @@
+2026-11-25 04:46:37.442 F  Roamr[17075:ce9e] [com.apple.locationd.Legacy:Generic_deprecated] could not read user kCFPreferencesCurrentUser uid/gid
+2026-11-25 04:46:37.608 E  Roamr[17075:ce9e] [com.apple.locationd.Core:Core] {"msg":"file does not exist... clearing", "file":/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, "error":Error Domain=NSCocoaErrorDomain Code=260 "The file “com.apple.CoreMotion.plist” couldn’t be opened because there is no such file." UserInfo={NSFilePath=/Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS 26.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSURL=file:///Library/Developer/CoreSimulator/Volumes/iOS_23C54/Library/Developer/CoreSimulator/Profiles/Runtimes/iOS%2026.2.simruntime/Contents/Resources/RuntimeRoot/private/var/Managed%20Preferences/kCFPreferencesCurrentUser/com.apple.CoreMotion.plist, NSUnderlyingError=0x600000c08990 {Error Domain=NSPOSIXErrorDomain Code=2 "No such file or directory"}}}
+2026-11-25 04:46:47.492 E  Roamr[17075:ce12] [com.apple.GeoServices:ResourceManifest] Failed to locate resource named "default.csv"
+2026-11-25 04:46:47.774 E  Roamr[17075:ce12] [com.apple.coreanimation:API] CAMetalLayer ignoring invalid setDrawableSize width=0.000000 height=0.000000
+2026-11-25 04:46:49.419 E  Roamr[17075:ce12] [com.apple.coreanimation:API] CAMetalLayer ignoring invalid setDrawableSize width=0.000000 height=0.000000
+2026-11-25 04:46:50.572 E  Roamr[17075:ce12] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-25 04:46:50.572 E  Roamr[17075:ce12] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-25 04:46:52.340 E  Roamr[17075:ce12] (libCoreFSCache.dylib) fopen failed for data file: errno = 2 (No such file or directory)
+2026-11-25 04:46:52.340 E  Roamr[17075:ce12] (libCoreFSCache.dylib) Errors found! Invalidating cache...
+2026-11-25 04:46:52.380 F  Roamr[17075:ce12] [com.apple.renderbox:error] building pipeline path_edges-hfa15feba4 took 1.808115 seconds
+2026-11-25 04:46:55.706 E  Roamr[17075:cea4] [com.apple.containermanager:unspecified] _container_query_get_result_at_index: error = 2→(98) NOT_CODESIGNED;
+2026-11-25 04:46:55.708 E  Roamr[17075:cea4] [com.apple.containermanager:unspecified] container_system_group_path_for_identifier: error = ((container_error_t)98) NOT_CODESIGNED
+2026-11-25 04:46:56.631 E  Roamr[17075:cf9e] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-25 04:46:57.044 E  Roamr[17075:cf9e] [com.apple.network:connection] nw_socket_set_connection_idle [C1.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-25 04:47:02.348 E  Roamr[17075:cf9f] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E
+2026-11-25 04:47:05.978 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5237.12664.15.255 t:38 kt:0, 32
+2026-11-25 04:47:05.983 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5237.12664.15.255 t:38 kt:0 type: 38, -1001: NSURLErrorDomain
+2026-11-25 04:47:05.992 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5238.12664.15.255 t:15 kt:0, 39
+2026-11-25 04:47:05.993 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5238.12664.15.255 t:15 kt:0 type: 15, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.094 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5237.12664.15.255 t:15 kt:0, 19
+2026-11-25 04:47:06.094 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5237.12664.15.255 t:15 kt:0 type: 15, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.100 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5238.12665.15.255 t:15 kt:0, 17
+2026-11-25 04:47:06.100 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5238.12665.15.255 t:15 kt:0 type: 15, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.157 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5238.12665.15.255 t:38 kt:0, 9
+2026-11-25 04:47:06.157 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5238.12665.15.255 t:38 kt:0 type: 38, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.175 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 10476.25330.16.255 t:40 kt:0, 4
+2026-11-25 04:47:06.175 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 10476.25330.16.255 t:40 kt:0 type: 40, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.203 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 5238.12664.15.255 t:40 kt:0, 7
+2026-11-25 04:47:06.203 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 5238.12664.15.255 t:40 kt:0 type: 40, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.220 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 2619.6332.14.255 t:47 kt:0, 30
+2026-11-25 04:47:06.221 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] Failed to load key: 2619.6332.14.255 t:47 kt:0 type: 47, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.227 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 327.791.11.255 t:27 kt:0, 18
+2026-11-25 04:47:06.227 E  Roamr[17075:cfc9] [com.apple.VectorKit:ResourceLoading] Failed to load key: 327.791.11.255 t:27 kt:0 type: 27, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.232 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 163.395.10.255 t:32 kt:0, 49
+2026-11-25 04:47:06.232 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] Failed to load key: 163.395.10.255 t:32 kt:0 type: 32, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.235 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 327.791.11.255 t:30 kt:0, 51
+2026-11-25 04:47:06.235 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] Failed to load key: 327.791.11.255 t:30 kt:0 type: 30, -1001: NSURLErrorDomain
+2026-11-25 04:47:06.236 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] [0x10e47c000][Dev] TiledGEOResourceFetcher received failed Resource: 20.49.7.255 t:29 kt:0, 43
+2026-11-25 04:47:06.237 E  Roamr[17075:cea4] [com.apple.VectorKit:ResourceLoading] Failed to load key: 20.49.7.255 t:29 kt:0 type: 29, -1001: NSURLErrorDomain
+2026-11-25 04:47:10.019 E  Roamr[17075:cf9f] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E
+2026-11-25 04:47:10.519 E  Roamr[17075:d135] [com.apple.network:connection] nw_socket_set_connection_idle [C3.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-25 04:47:10.520 E  Roamr[17075:d135] [com.apple.network:connection] nw_socket_set_connection_idle [C3.1.1.1:3] setsockopt SO_CONNECTION_IDLE failed [42: Protocol not available]
+2026-11-25 04:47:22.620 E  Roamr[17075:cf9f] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E
+2026-11-25 04:47:34.084 E  Roamr[17075:cf9e] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E
+2026-11-25 04:47:46.037 E  Roamr[17075:d12e] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E
+2026-11-25 04:47:57.943 E  Roamr[17075:d12e] [com.apple.activitykit:api] Updating content for activity E15DFA61-5B33-4E77-BD41-82CD01C8B76E

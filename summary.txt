@@ -1,0 +1,39 @@
+== shard s1 (01-stats, 02-lifetime, 03-history-together, 04-monthly, 05-activity)
+OK    01-stats  -demo -pro -tab stats  (38s, 202 MB)  [7 error/fault log lines]
+OK    02-lifetime  -demo -pro -open lifetime  (56s, 207 MB)  [4 error/fault log lines]
+OK    03-history-together  -demo -pro -tab history  (61s, 191 MB)  [2 error/fault log lines]
+OK    04-monthly  -demo -pro -open monthly  (21s, 203 MB)  [3 error/fault log lines]
+OK    05-activity  -demo -pro -open activity  (25s, 237 MB)  [7 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 11 min
+== shard s2 (06-recap, 07-settings, 08-settings-free, 09-monthly-free, 10-paywall)
+OK    06-recap  -demo -pro -open recap  (73s, 236 MB)  [40 error/fault log lines]
+OK    07-settings  -demo -pro -tab settings  (140s, 204 MB)  [8 error/fault log lines]
+OK    08-settings-free  -demo -free -tab settings  (75s, 198 MB)  [6 error/fault log lines]
+OK    09-monthly-free  -demo -free -open monthly  (37s, 197 MB)  [2 error/fault log lines]
+OK    10-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  (44s, 219 MB)  [6 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 14 min
+== shard s3 (11-moreapps, 12-lifetime-largetype, 13-recap-largetype, 14-history-largetype, 19-intro)
+OK    11-moreapps  -demo -pro -tab stats -open moreapps  (50s, 219 MB)  [7 error/fault log lines]
+OK    12-lifetime-largetype  -demo -pro -open lifetime  (71s, 200 MB)  [2 error/fault log lines]
+OK    13-recap-largetype  -demo -pro -open recap  (85s, 197 MB)  [37 error/fault log lines]
+OK    14-history-largetype  -demo -pro -tab history  (32s, 191 MB)  [2 error/fault log lines]
+OK    19-intro  -demo -roamrIntro  (45s, 283 MB)  [5 error/fault log lines]
+5 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 12 min
+== shard s4 (05b-activity-drive, 05c-activity-drive-largetype)
+OK    05b-activity-drive  -demo -pro -open activity -openDrive  (94s, 197 MB)
+MISSING 05c-activity-drive-largetype  (not taken: the shard stopped early)
+== shard s5 (05d-activity-drive-light, 15-track)
+OK    05d-activity-drive-light  -demo -pro -open activity -openDrive  (42s, 177 MB)  [36 error/fault log lines]
+OK    15-track  -demo -pro -tab track  (39s, 271 MB)  [4 error/fault log lines]
+2 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 6 min
+== shard s6 (16-drive, 17-live-run)
+OK    16-drive  -demo -autodrive  (114s, 216 MB)  [26 error/fault log lines]
+OK    17-live-run  -demo -pro -autostart  (92s, 176 MB)  [2 error/fault log lines]
+2 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 15 min
+== shard s7 (18-live-run-largetype)
+OK    18-live-run-largetype  -demo -pro -autostart  (340s, 164 MB)  [46 error/fault log lines]
+1 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 12 min
+== shard watch (Watch)
+OK    watch-w1-home  -demo  (23s, 116 MB)  [1 error/fault log lines]
+OK    watch-w2-nophone    (19s, 111 MB)
+2 OK, 0 crashed, 0 stopped for memory, 0 skipped, in 4 min

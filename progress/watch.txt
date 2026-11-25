@@ -1,0 +1,9 @@
+[00:00] shard watch: iPhone screens none; Watch screens yes
+[00:15] Watch simulator: Apple Watch Ultra 3 (49mm) com.apple.CoreSimulator.SimRuntime.watchOS-26-2
+[02:17]   ... still on simctl bootstatus -b (98s); load 182.2 on 4 cpus; ~7004 MB free; swap 0 MB; busiest: passd 57.2% 55 MB, STExtractionService 37.8% 28 MB, assetsubscriptiond 37.1% 44 MB
+[03:04] Watch simulator booted in 167s; load 296.4 on 4 cpus; ~6547 MB free; swap 0 MB; busiest: diagnosticd 64.5% 171 MB, apsd 45.5% 37 MB, diagnosticd 39.4% 7 MB
+[03:44] OK    watch-w1-home  -demo  (23s, 116 MB)
+[03:44]   load 256.6 on 4 cpus; ~6311 MB free; swap 0 MB; busiest: diagnosticd 110.2% 180 MB, diagnosticd 52.8% 8 MB, Carousel 32.0% 263 MB
+[04:05] OK    watch-w2-nophone    (19s, 111 MB)
+[04:06]   load 212.8 on 4 cpus; ~6201 MB free; swap 0 MB; busiest: diagnosticd 71.6% 183 MB, apsd 45.5% 38 MB, Carousel 32.3% 268 MB
+[04:11]   app logs: 404 lines for 2 screens

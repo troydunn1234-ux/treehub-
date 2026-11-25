@@ -1,0 +1,19 @@
+[00:00] shard s2: iPhone screens 06-recap, 07-settings, 08-settings-free, 09-monthly-free, 10-paywall; Watch screens no
+[00:59] iPhone simulator: iPhone 17 Pro Max com.apple.CoreSimulator.SimRuntime.iOS-26-2; budget 20 min; load 2.0 on 4 cpus; ~9195 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 118.9% 16 MB, tccd 12.7% 13 MB, simdiskimaged 6.7% 72 MB
+[01:00]   ... still on simctl list devices available -j (59s); load 2.0 on 4 cpus; ~9189 MB free; swap 0 MB; busiest: com.apple.CoreSimulator.CoreSimulatorService 10.8% 16 MB, Runner.Worker 6.0% 79 MB, provjobd1157629014 6.0% 29 MB
+[01:00]   graphics: Chipset Model: Apple Paravirtualized Graphics Device; VRAM (Total): 64 MB; Vendor: Apple (0x106b); Metal Support: Metal 2
+[02:05]   ... still on simctl bootstatus -b (56s); load 176.4 on 4 cpus; ~7284 MB free; swap 0 MB; busiest: diagnosticd 67.8% 129 MB, lsd 45.8% 46 MB, diagnosticd 39.6% 6 MB
+[03:06]   ... still on simctl bootstatus -b (119s); load 189.8 on 4 cpus; ~6919 MB free; swap 0 MB; busiest: lsd 57.4% 45 MB, intelligenceplatformd 41.2% 84 MB, diagnosticd 31.0% 114 MB
+[05:31]   ... still on simctl bootstatus -b (183s); load 235.9 on 4 cpus
+[05:46] iPhone simulator booted in 284s; load 531.4 on 4 cpus; ~5840 MB free; swap 0 MB; busiest: STExtractionService 64.3% 30 MB, diagnosticd 55.0% 126 MB, mobileassetd 52.4% 106 MB
+[07:50] OK    06-recap  -demo -pro -open recap  (73s, 236 MB)
+[07:52]   load 748.4 on 4 cpus; ~6014 MB free; swap 0 MB; busiest: backboardd 79.8% 114 MB, SpringBoard 57.7% 359 MB, diagnosticd 55.4% 130 MB
+[10:18] OK    07-settings  -demo -pro -tab settings  (140s, 204 MB)
+[10:20]   load 416.5 on 4 cpus; ~5795 MB free; swap 0 MB; busiest: backboardd 83.4% 127 MB, diagnosticd 61.3% 123 MB, CalendarWidgetExtension 49.6% 109 MB
+[11:45] OK    08-settings-free  -demo -free -tab settings  (75s, 198 MB)
+[11:47]   load 242.5 on 4 cpus; ~5810 MB free; swap 0 MB; busiest: diagnosticd 66.8% 123 MB, SpringBoard 46.2% 362 MB, diagnosticd 43.2% 8 MB
+[12:29] OK    09-monthly-free  -demo -free -open monthly  (37s, 197 MB)
+[12:30]   load 176.9 on 4 cpus; ~5690 MB free; swap 0 MB; busiest: SpringBoard 88.4% 385 MB, diagnosticd 72.0% 112 MB, MTLCompilerService 34.2% 35 MB
+[13:20] OK    10-paywall  -demo -paywall -demoPrice 39.99 -demoPlans 19.99,2.99  (44s, 219 MB)
+[13:22]   load 250.6 on 4 cpus; ~5791 MB free; swap 0 MB; busiest: backboardd 66.9% 119 MB, diagnosticd 62.1% 107 MB, SpringBoard 44.1% 387 MB
+[13:34]   app logs: 3708 lines for 5 screens
